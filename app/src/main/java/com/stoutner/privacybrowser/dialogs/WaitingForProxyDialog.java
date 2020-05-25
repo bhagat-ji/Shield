@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -41,39 +40,26 @@ public class WaitingForProxyDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get the context and the activity.
-        Context context = getContext();
-        Activity activity = getActivity();
-
-        // Remove the incorrect lint warnings below that the context or the activity might be null.
-        assert context != null;
-        assert activity != null;
+        // Get a handle for the context.
+        Context context = requireContext();
 
         // Get the activity's layout inflater.
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        // Get the screenshot and theme preferences.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
 
         // Use a builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialog);
 
         // Set the layout.  The parent view is `null` because it will be assigned by the alert dialog.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.waiting_for_proxy_dialog, null));
 
         // Create an alert dialog from the alert dialog builder.
         AlertDialog alertDialog = dialogBuilder.create();
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

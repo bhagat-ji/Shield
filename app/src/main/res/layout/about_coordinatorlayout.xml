@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,15 +18,12 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- android:fitsSystemWindows="true" moves the AppBar below the status bar.
-    When it is specified the theme should include <item name="android:windowTranslucentStatus">true</item> to make the status bar a transparent, darkened overlay. -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/about_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_width="match_parent" >
 
     <!-- The linear layout with `orientation="vertical"` moves the view pager below the app bar layout. -->
     <LinearLayout
@@ -34,32 +31,25 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- `android:background="?attr/colorPrimaryDark"` must be set here or any space to the right of the tab layout on large devices will be the theme background color. -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/about_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:background="?attr/colorPrimaryDark" >
+            android:background="?android:attr/colorBackground" >
 
-            <!-- `android:theme="?attr/appBarTextTheme"` sets the color of the text and icons in the `AppBar`. -->
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/about_toolbar"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:background="?attr/colorPrimaryDark"
-                android:theme="?attr/appBarTextTheme" />
+                android:layout_width="match_parent" />
 
-            <!-- For some reason `tabIndicatorColor` does not pull from the style unless specified explicitly here. -->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/about_tablayout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                app:tabMode="scrollable"
-                app:tabIndicatorColor="?attr/tabIndicatorColor"
-                android:theme="?attr/tabLayoutTheme" />
+                app:tabMode="scrollable" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- `android:layout_weight="1"` makes `about_viewpager` fill the rest of the screen. -->
+        <!-- `android:layout_weight="1"` makes the view pager fill the rest of the screen. -->
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/about_viewpager"
             android:layout_height="0dp"

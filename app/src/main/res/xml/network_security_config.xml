@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018,2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -19,6 +19,7 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <!-- Allow HTTP traffic and disable HSTS, which has no benefit for Privacy Browser (because unspecified links default to HTTPS) but has negative fingerprinting implications. -->
-<network-security-config>
-    <base-config cleartextTrafficPermitted="true" hstsEnforced="false" />
+<network-security-config
+    xmlns:tools="http://schemas.android.com/tools">
+    <base-config cleartextTrafficPermitted="true" hstsEnforced="false" tools:ignore="InsecureBaseConfiguration" />
 </network-security-config>

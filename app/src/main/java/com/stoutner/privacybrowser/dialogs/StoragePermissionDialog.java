@@ -19,16 +19,17 @@
 
 package com.stoutner.privacybrowser.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
@@ -86,23 +87,17 @@ public class StoragePermissionDialog extends DialogFragment {
         // Get the save type.
         int requestType = arguments.getInt("request_type");
 
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
         // Use a builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
-        // Set the style and the icon according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-            dialogBuilder.setIcon(R.drawable.import_export_dark);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.import_export_night);
         } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-            dialogBuilder.setIcon(R.drawable.import_export_light);
+            dialogBuilder.setIcon(R.drawable.import_export_day);
         }
 
         // Set the title.
@@ -119,6 +114,12 @@ public class StoragePermissionDialog extends DialogFragment {
 
         // Create an alert dialog from the builder.
         final AlertDialog alertDialog = dialogBuilder.create();
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

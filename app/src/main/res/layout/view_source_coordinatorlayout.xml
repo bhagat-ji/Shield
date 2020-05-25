@@ -18,8 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.  When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay.
-    Setting the layout root to be `focusableInTouchMode` prevents the URL toolbar from stealing focus on launch and opening the keyboard. -->
+<!-- Setting the layout root to be `focusableInTouchMode` prevents the URL toolbar from stealing focus on launch and opening the keyboard. -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/view_source_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,7 +26,6 @@
     tools:context="com.stoutner.privacybrowser.activities.ViewSourceActivity"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
     android:focusable="true"
     android:focusableInTouchMode="true" >
 
@@ -37,11 +35,10 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- The app bar layout theme may not need to be specified here.  But more testing on all APIs needs to be done before it can be removed. -->
         <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:theme="@style/PrivacyBrowserAppBarLight" >
+            android:background="?android:attr/colorBackground" >
 
             <!-- The frame layout allows the toolbar and the progress bar to occupy the same space. -->
             <FrameLayout

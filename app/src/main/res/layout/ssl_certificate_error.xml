@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/red_a700"
+            android:textColor="?attr/redText"
             android:textStyle="bold"/>
 
         <!-- URL. -->

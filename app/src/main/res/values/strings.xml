@@ -645,8 +645,17 @@
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for toggling cookies and DOM storage.</string>
-        <string name="dark_theme">Dark theme</string>
-        <string name="dark_theme_summary">Changing the theme will restart Privacy Browser.</string>
+        <string name="app_theme">App theme</string>
+        <string-array name="app_theme_entries">
+            <item>System default</item>
+            <item>Light</item>
+            <item>Dark</item>
+        </string-array>
+        <string-array name="app_theme_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
+            <item>System default</item>
+            <item>Light</item>
+            <item>Dark</item>
+        </string-array>
         <string name="night_mode">Night mode</string>
         <string name="night_mode_summary">Enabling night mode will also enable JavaScript for all web pages.</string>
         <string name="wide_viewport_preference">Wide viewport</string>
@@ -665,6 +674,7 @@
     <string name="download_location_default_value" translatable="false">Auto</string>
     <string name="download_custom_location_default_value" translatable="false" />
     <string name="font_size_default_value" translatable="false">100</string>
+    <string name="app_theme_default_value" translatable="false">System default</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
     <string name="google_app_id" translatable="false">Null</string>

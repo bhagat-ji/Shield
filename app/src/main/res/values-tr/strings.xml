@@ -531,8 +531,6 @@
         <string name="scroll_app_bar_summary">WebView aşağı kaydırıldığında, ekranın üst kısmından uygulama çubuğunu kaydırır.</string>
         <string name="display_additional_app_bar_icons">Ek uygulama çubuğu simgelerini göster</string>
         <string name="display_additional_app_bar_icons_summary">WebView\'ı yenilemek, yer varsa çerezleri ve DOM depolamayı değiştirmek için simgeleri uygulama çubuğunda gösterir.</string>
-        <string name="dark_theme">Koyu tema</string>
-        <string name="dark_theme_summary">Temayı değiştirmek Privacy Browser\'ı yeniden başlatır.</string>
         <string name="night_mode">Gece modu</string>
         <string name="night_mode_summary">Gece modunu etkinleştirmek, aynı zamanda tüm sitelerde JavaScript\'i etkinleştirir.</string>
         <string name="wide_viewport_preference">Geniş ekran</string>

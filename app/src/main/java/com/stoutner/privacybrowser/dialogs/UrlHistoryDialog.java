@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,6 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
@@ -91,11 +91,8 @@ public class UrlHistoryDialog extends DialogFragment{
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Remove the incorrect lint warning that `getActivity()` might be null.
-        assert getActivity() != null;
-
         // Get the activity's layout inflater.
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
 
         // Get the arguments.
         Bundle arguments = getArguments();
@@ -169,21 +166,7 @@ public class UrlHistoryDialog extends DialogFragment{
         int currentPageId = webBackForwardList.getSize() - 1 - currentPageIndex;
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
         // Set the title.
         dialogBuilder.setTitle(R.string.history);
@@ -205,6 +188,12 @@ public class UrlHistoryDialog extends DialogFragment{
         // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
@@ -222,6 +211,9 @@ public class UrlHistoryDialog extends DialogFragment{
 
         // Get a handle for the list view.
         ListView listView = alertDialog.findViewById(R.id.history_listview);
+
+        // Remove the incorrect lint warning below that the view might be null.
+        assert listView != null;
 
         // Set the list view adapter.
         listView.setAdapter(historyArrayAdapter);

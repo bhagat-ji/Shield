@@ -39,7 +39,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 10;
+    private static final int SCHEMA_VERSION = 11;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -83,7 +83,7 @@ public class ImportExportDatabaseHelper {
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
     private static final String SCROLL_APP_BAR = "scroll_app_bar";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
-    private static final String DARK_THEME = "dark_theme";
+    private static final String APP_THEME = "app_theme";
     private static final String NIGHT_MODE = "night_mode";
     private static final String WIDE_VIEWPORT = "wide_viewport";
     private static final String DISPLAY_WEBPAGE_IMAGES = "display_webpage_images";
@@ -238,7 +238,7 @@ public class ImportExportDatabaseHelper {
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
                     SCROLL_APP_BAR + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
-                    DARK_THEME + " BOOLEAN, " +
+                    APP_THEME + " TEXT, " +
                     NIGHT_MODE + " BOOLEAN, " +
                     WIDE_VIEWPORT + " BOOLEAN, " +
                     DISPLAY_WEBPAGE_IMAGES + " BOOLEAN)";
@@ -290,7 +290,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
-            preferencesContentValues.put(DARK_THEME, sharedPreferences.getBoolean(DARK_THEME, false));
+            preferencesContentValues.put(APP_THEME, sharedPreferences.getString(APP_THEME, context.getString(R.string.app_theme_default_value)));
             preferencesContentValues.put(NIGHT_MODE, sharedPreferences.getBoolean(NIGHT_MODE, false));
             preferencesContentValues.put(WIDE_VIEWPORT, sharedPreferences.getBoolean(WIDE_VIEWPORT, true));
             preferencesContentValues.put(DISPLAY_WEBPAGE_IMAGES, sharedPreferences.getBoolean(DISPLAY_WEBPAGE_IMAGES, true));
@@ -540,6 +540,32 @@ public class ImportExportDatabaseHelper {
                         // Populate the preferences table with the current download location values.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_LOCATION + " = '" + downloadLocation + "'");
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_CUSTOM_LOCATION + " = '" + downloadCustomLocation + "'");
+
+                    // Upgrade from schema version 10.
+                    case 10:
+                        // Add the app theme column to the preferences table.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + APP_THEME + " TEXT");
+
+                        // Get a cursor for the dark theme preference.
+                        Cursor darkThemePreferencesCursor = importDatabase.rawQuery("SELECT dark_theme FROM " + PREFERENCES_TABLE, null);
+
+                        // Move to the first preference.
+                        darkThemePreferencesCursor.moveToFirst();
+
+                        // Get the old dark theme value, which is in column 0.
+                        int darkTheme = darkThemePreferencesCursor.getInt(0);
+
+                        // Close the dark theme preference cursor.
+                        darkThemePreferencesCursor.close();
+
+                        // Populate the app theme according to the old dark theme preference.
+                        if (darkTheme == 0) {  // A light theme was selected.
+                            // Set the app theme to be the system default.
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + APP_THEME + " = 'System default'");
+                        } else {  // A dark theme was selected.
+                            // Set the app theme to be dark.
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + APP_THEME + " = 'Dark'");
+                        }
                 }
             }
 
@@ -646,7 +672,7 @@ public class ImportExportDatabaseHelper {
             bookmarksDatabaseHelper.close();
 
 
-            // Get a cursor for the bookmarks table.
+            // Get a cursor for the preferences table.
             Cursor importPreferencesCursor = importDatabase.rawQuery("SELECT * FROM " + PREFERENCES_TABLE, null);
 
             // Move to the first preference.
@@ -695,7 +721,7 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
                     .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SCROLL_APP_BAR)) == 1)
                     .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
-                    .putBoolean(DARK_THEME, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DARK_THEME)) == 1)
+                    .putString(APP_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(APP_THEME)))
                     .putBoolean(NIGHT_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(NIGHT_MODE)) == 1)
                     .putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(WIDE_VIEWPORT)) == 1)
                     .putBoolean(DISPLAY_WEBPAGE_IMAGES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_WEBPAGE_IMAGES)) == 1)

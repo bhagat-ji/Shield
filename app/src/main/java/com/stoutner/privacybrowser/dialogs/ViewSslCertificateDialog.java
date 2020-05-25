@@ -21,10 +21,10 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -39,7 +39,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -75,12 +76,8 @@ public class ViewSslCertificateDialog extends DialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get a handle for the activity and the context.
-        Activity activity = getActivity();
-        Context context = getContext();
-
-        // Remove the incorrect lint warnings below that the activity and context might be null.
-        assert activity != null;
-        assert context != null;
+        Activity activity = requireActivity();
+        Context context = requireContext();
 
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = activity.getLayoutInflater();
@@ -108,21 +105,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
 
         // Use a builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialog);
 
         // Create a drawable version of the favorite icon.
         Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), nestedScrollWebView.getFavoriteOrDefaultIcon());
@@ -135,6 +118,12 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
         // Get the SSL certificate.
         SslCertificate sslCertificate = nestedScrollWebView.getCertificate();
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Check to see if the website is encrypted.
         if (sslCertificate == null) {  // The website is not encrypted.
@@ -192,6 +181,18 @@ public class ViewSslCertificateDialog extends DialogFragment {
             TextView startDateTextView = alertDialog.findViewById(R.id.start_date);
             TextView endDateTextView = alertDialog.findViewById(R.id.end_date);
 
+            // Remove the incorrect warning that the views might be null.
+            assert domainTextView != null;
+            assert ipAddressesTextView != null;
+            assert issuedToCNameTextView != null;
+            assert issuedToONameTextView != null;
+            assert issuedToUNameTextView != null;
+            assert issuedByCNameTextView != null;
+            assert issuedByONameTextView != null;
+            assert issuedByUNameTextView != null;
+            assert startDateTextView != null;
+            assert endDateTextView != null;
+
             // Setup the labels.
             String domainLabel = getString(R.string.domain_label) + "  ";
             String ipAddressesLabel = getString(R.string.ip_addresses) + "  ";
@@ -229,17 +230,20 @@ public class ViewSslCertificateDialog extends DialogFragment {
             SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDate));
             SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate));
 
-            // Create a red foreground color span.  The deprecated `getColor` must be used until the minimum API >= 23.
-            ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
-
-            // Create a blue foreground color span.
+            // Define the color spans.
             ForegroundColorSpan blueColorSpan;
+            ForegroundColorSpan redColorSpan;
 
-            // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            if (darkTheme) {
+            // Get the current theme status.
+            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+            // Set the color spans according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+                redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
             } else {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+                redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
             }
 
             // Remove the incorrect lint error that `.equals` might produce a NullPointerException.

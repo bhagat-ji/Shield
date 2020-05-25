@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,10 +20,10 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
@@ -39,7 +39,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -111,28 +112,16 @@ public class HttpAuthenticationDialog extends DialogFragment{
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialog);
 
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            // Set the dialog theme.
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.lock_dark);
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.lock_night);
         } else {
-            // Set the dialog theme.
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.lock_light);
+            dialogBuilder.setIcon(R.drawable.lock_day);
         }
 
         // Set the title.
@@ -168,6 +157,12 @@ public class HttpAuthenticationDialog extends DialogFragment{
         // Remove the incorrect lint warning below that the dialog window might be null.
         assert dialogWindow != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -185,11 +180,15 @@ public class HttpAuthenticationDialog extends DialogFragment{
         usernameEditText = alertDialog.findViewById(R.id.http_authentication_username);
         passwordEditText = alertDialog.findViewById(R.id.http_authentication_password);
 
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert realmTextView != null;
+        assert hostTextView != null;
+
         // Set the realm text.
         realmTextView.setText(httpAuthRealm);
 
-        // Set the realm text color according to the theme.  The deprecated `.getColor()` must be used until API >= 23.
-        if (darkTheme) {
+        // Set the realm text color according to the theme.  The deprecated `getResources()` must be used until API >= 23.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             realmTextView.setTextColor(getResources().getColor(R.color.gray_300));
         } else {
             realmTextView.setTextColor(getResources().getColor(R.color.black));
@@ -202,8 +201,8 @@ public class HttpAuthenticationDialog extends DialogFragment{
         // Create a blue `ForegroundColorSpan`.
         ForegroundColorSpan blueColorSpan;
 
-        // Set `blueColorSpan` according to the theme.  The deprecated `getColor()` must be used until API >= 23.
-        if (darkTheme) {
+        // Set `blueColorSpan` according to the theme.  The deprecated `getResources()` must be used until API >= 23.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
         } else {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));

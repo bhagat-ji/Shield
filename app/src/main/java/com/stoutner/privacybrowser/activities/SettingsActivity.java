@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -37,19 +37,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Get the screenshot and theme preferences.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the activity theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserSettingsDark);
-        } else {
-            setTheme(R.style.PrivacyBrowserSettingsLight);
-        }
+        // Set the theme.
+        setTheme(R.style.PrivacyBrowserSettings);
 
         // Run the default commands.
         super.onCreate(savedInstanceState);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017,2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -19,6 +19,8 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 
+<!-- An attribute that points to a drawable has to be used for the `android:background` until the minimum API >= 21.
+  After that, a single drawable may be referenced directly, which can set the background color using an attribute defined inside the drawable. -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"

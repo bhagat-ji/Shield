@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,8 +45,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <= 22.
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.BookmarksActivity;
@@ -83,21 +83,7 @@ public class MoveToFolderDialog extends DialogFragment {
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
         // Set the title.
         dialogBuilder.setTitle(R.string.move_to_folder);
@@ -121,6 +107,12 @@ public class MoveToFolderDialog extends DialogFragment {
 
         // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -278,8 +270,13 @@ public class MoveToFolderDialog extends DialogFragment {
             };
         }
 
-        // Display the ListView
+        // Get a handle for the folders list view.
         ListView foldersListView = alertDialog.findViewById(R.id.move_to_folder_listview);
+
+        // Remove the incorrect lint warning below that the view might be null.
+        assert foldersListView != null;
+
+        // Set the folder list view adapter.
         foldersListView.setAdapter(foldersCursorAdapter);
 
         // Enable the move button when a folder is selected.

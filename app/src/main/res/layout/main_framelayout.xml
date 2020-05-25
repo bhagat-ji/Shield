@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017,2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2017,2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>>.
 
@@ -31,14 +31,11 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent" >
 
-        <!-- The relative layout contains the AdView and the coordinator layout, which contains the rest of the views.
-            `android:fitsSystemWindows="true"` moves the toolbar below the system status bar but lets the drawers slide under the translucent status bar.
-            When it is specified, the theme should include `<item name="android:windowTranslucentStatus">true</item>`. -->
+        <!-- The relative layout contains the AdView and the coordinator layout, which contains the rest of the views. -->
         <RelativeLayout
             android:id="@+id/main_content_relativelayout"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:fitsSystemWindows="true" >
+            android:layout_width="match_parent" >
 
             <!-- Include the AdView.  For the standard flavor, this just includes a TextView with `visibility="gone"`. -->
             <include layout="@layout/adview" />
@@ -51,21 +48,20 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true" >
 
-                <!-- The theme has to be defined here because the activity uses a `NoActionBar` theme. -->
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/appbar_layout"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:theme="@style/PrivacyBrowserAppBarLight" >
+                    android:layout_width="match_parent" >
 
+                    <!-- The toolbar.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
                     <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        app:layout_scrollFlags="scroll|enterAlways|snap"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:layout_scrollFlags="scroll|enterAlways|snap" />
 
-                    <!-- The find on page linear layout.  It is initially `visibility="gone"`. -->
+                    <!-- The find on page linear layout.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
                     <LinearLayout
                         android:id="@+id/find_on_page_linearlayout"
                         android:layout_height="wrap_content"
@@ -122,7 +118,7 @@
 
                         <ImageView
                             android:id="@+id/close_find"
-                            android:src="@drawable/close_light"
+                            android:src="@drawable/close_day"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
                             android:layout_marginStart="4dp"
@@ -133,13 +129,14 @@
                             android:onClick="closeFindOnPage" />
                     </LinearLayout>
 
+                    <!-- The tab linear layout.  It sets the background to the right of the add tab button.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
                     <LinearLayout
                         android:id="@+id/tabs_linearlayout"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_scrollFlags="scroll|enterAlways|snap"
-                        android:visibility="gone" >
+                        android:visibility="gone"
+                        app:layout_scrollFlags="scroll|enterAlways|snap" >
 
                         <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
@@ -148,7 +145,7 @@
                             android:layout_gravity="center_vertical"
                             android:paddingStart="10dp"
                             android:paddingEnd="10dp"
-                            android:src="@drawable/close_light"
+                            android:src="@drawable/close_day"
                             android:tint="?attr/addTabIconTintColor"
                             android:background="?attr/selectableItemBackground"
                             android:onClick="closeTab"
@@ -169,7 +166,7 @@
                             android:layout_gravity="center_vertical"
                             android:paddingStart="10dp"
                             android:paddingEnd="10dp"
-                            android:src="@drawable/add_light"
+                            android:src="@drawable/add_day"
                             android:tint="?attr/addTabIconTintColor"
                             android:background="?attr/selectableItemBackground"
                             android:onClick="addTab"
@@ -198,7 +195,6 @@
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
             android:layout_gravity="start"
-            app:headerLayout="@layout/navigation_header"
             app:menu="@menu/webview_navigation_menu"
             app:itemIconTint="?attr/navigationIconTintColor" />
 
@@ -236,6 +232,6 @@
             android:layout_margin="10dp"
             android:textSize="16sp"
             android:textAlignment="center"
-            android:textColor="?android:textColorPrimary" />
+            android:textColor="?android:attr/textColorPrimary" />
     </RelativeLayout>
 </FrameLayout>

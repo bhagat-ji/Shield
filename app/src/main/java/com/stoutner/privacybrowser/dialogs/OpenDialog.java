@@ -22,13 +22,13 @@ package com.stoutner.privacybrowser.dialogs;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +42,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
@@ -76,36 +77,20 @@ public class OpenDialog extends DialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get a handle for the activity and the context.
-        Activity activity = getActivity();
-        Context context = getContext();
-
-        // Remove the incorrect lint warnings below that the activity and the context might be null.
-        assert activity != null;
-        assert context != null;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        Activity activity = requireActivity();
+        Context context = requireContext();
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialog);
 
-        // Set the style and icon according to the theme.
-        if (darkTheme) {
-            // Set the style.
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.proxy_enabled_dark);
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.proxy_enabled_night);
         } else {
-            // Set the style.
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
-
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.proxy_enabled_light);
+            dialogBuilder.setIcon(R.drawable.proxy_enabled_day);
         }
 
         // Set the title.
@@ -129,6 +114,12 @@ public class OpenDialog extends DialogFragment {
         // Remove the incorrect lint warning below that the window might be null.
         assert alertDialog.getWindow() != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -143,6 +134,12 @@ public class OpenDialog extends DialogFragment {
         TextView fileDoesNotExistTextView = alertDialog.findViewById(R.id.file_does_not_exist_textview);
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button openButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert fileNameEditText != null;
+        assert browseButton != null;
+        assert fileDoesNotExistTextView != null;
+        assert storagePermissionTextView != null;
 
         // Update the status of the open button when the file name changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {

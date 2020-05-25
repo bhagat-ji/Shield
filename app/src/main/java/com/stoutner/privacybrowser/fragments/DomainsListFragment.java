@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,9 +20,8 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;  // The AndroidX fragment must be used until minimum API >= 23.  Otherwise `getContext()` does not work.
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,7 +46,7 @@ public class DomainsListFragment extends Fragment {
         void dismissSnackbar();
     }
 
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 
@@ -77,11 +76,14 @@ public class DomainsListFragment extends Fragment {
                 // Get a handle for the domain settings fragment.
                 Fragment domainSettingsFragment = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container);
 
-                // Remove the incorrect lint error below that the domain settings fragment might be null.
+                // Remove the incorrect lint warning below that the domain settings fragment might be null.
                 assert domainSettingsFragment != null;
 
                 // Get a handle for the domain settings fragment view.
                 View domainSettingsFragmentView = domainSettingsFragment.getView();
+
+                // Remove the incorrect lint warning below that the domain settings fragment view might be null.
+                assert domainSettingsFragmentView != null;
 
                 // Get a handle for the domains activity.
                 DomainsActivity domainsActivity = new DomainsActivity();
@@ -108,17 +110,14 @@ public class DomainsListFragment extends Fragment {
                     // Enable the delete menu item.
                     DomainsActivity.deleteMenuItem.setEnabled(true);
 
-                    // Get a handle for the shared preferences.
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-                    // Get the theme preferences.
-                    boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+                    // Get the current theme status.
+                    int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                     // Set the delete icon according to the theme.
-                    if (darkTheme) {
-                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_dark);
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_night);
                     } else {
-                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_light);
+                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_day);
                     }
                 }
 

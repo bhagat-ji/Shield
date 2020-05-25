@@ -22,13 +22,13 @@ package com.stoutner.privacybrowser.dialogs;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,8 +43,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment is required or an error is produced on API <=22.  It is also required for the browse button to work correctly.
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
@@ -74,39 +75,23 @@ public class SaveLogcatDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        // Get a handle for the activity and the context.
+        Activity activity = requireActivity();
+        Context context = requireContext();
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the activity and the context.
-        Activity activity = getActivity();
-        Context context = getContext();
-
-        // Remove the incorrect lint warnings.
-        assert activity != null;
-        assert context != null;
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
-        }
-
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialog);
         // Set the title.
         dialogBuilder.setTitle(R.string.save_logcat);
 
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
         // Set the icon according to the theme.
-        if (darkTheme) {
-            dialogBuilder.setIcon(R.drawable.save_dialog_dark);
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.save_dialog_night);
         } else {
-            dialogBuilder.setIcon(R.drawable.save_dialog_light);
+            dialogBuilder.setIcon(R.drawable.save_dialog_day);
         }
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
@@ -129,6 +114,12 @@ public class SaveLogcatDialog extends DialogFragment {
         // Remove the incorrect lint warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -143,6 +134,12 @@ public class SaveLogcatDialog extends DialogFragment {
         TextView fileExistsWarningTextView = alertDialog.findViewById(R.id.file_exists_warning_textview);
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert fileNameEditText != null;
+        assert browseButton != null;
+        assert fileExistsWarningTextView != null;
+        assert storagePermissionTextView != null;
 
         // Update the status of the save button when the file name changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {

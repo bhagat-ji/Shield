@@ -58,6 +58,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Patterns;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -96,6 +97,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
@@ -124,7 +126,6 @@ import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
-import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.FontSizeDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
@@ -167,9 +168,9 @@ import java.util.Objects;
 import java.util.Set;
 
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
-        EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener,
-        OpenDialog.OpenListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveWebpageListener,
-        StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener,
+        PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveWebpageListener, StoragePermissionDialog.StoragePermissionDialogListener,
+        UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
     public static String orbotStatus = "unknown";
@@ -276,11 +277,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ForegroundColorSpan initialGrayColorSpan;
     private ForegroundColorSpan finalGrayColorSpan;
 
-    // The drawer header padding variables are used in `onCreate()` and `onConfigurationChanged()`.
-    private int drawerHeaderPaddingLeftAndRight;
-    private int drawerHeaderPaddingTop;
-    private int drawerHeaderPaddingBottom;
-
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
     // and `loadBookmarksFolder()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
@@ -298,11 +294,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ValueCallback<Uri[]> fileChooserCallback;
 
     // The default progress view offsets are set in `onCreate()` and used in `initializeWebView()`.
+    private int appBarHeight;
     private int defaultProgressViewStartOffset;
     private int defaultProgressViewEndOffset;
-
-    // The swipe refresh layout top padding is used when exiting full screen browsing mode.  It is used in an inner class in `initializeWebView()`.
-    private int swipeRefreshLayoutPaddingTop;
 
     // The URL sanitizers are set in `applyAppSettings()` and used in `sanitizeUrl()`.
     private boolean sanitizeGoogleAnalytics;
@@ -318,10 +312,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
-        // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
-        if (Build.VERSION.SDK_INT >= 21) {
-            WebView.enableSlowWholeDocumentDraw();
-        }
+        // Run the default commands.
+        super.onCreate(savedInstanceState);
 
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -329,24 +321,42 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the theme and screenshot preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        // Get the screenshot preference.
+        String appTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
+        // Get the theme entry values string array.
+        String[] appThemeEntryValuesStringArray = getResources().getStringArray(R.array.app_theme_entry_values);
+
+        // Set the app theme according to the preference.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+        if (appTheme.equals(appThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+            // Apply the light theme.
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else if (appTheme.equals(appThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+            // Apply the dark theme.
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {  // The system default theme is selected.
+            if (Build.VERSION.SDK_INT >= 28) {  // The system default theme is supported.
+                // Follow the system default theme.
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            } else {  // The system default theme is not supported.
+                // Follow the battery saver mode.
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
+            }
+        }
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the activity theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserDark);
-        } else {
-            setTheme(R.style.PrivacyBrowserLight);
+        // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
+        if (Build.VERSION.SDK_INT >= 21) {
+            WebView.enableSlowWholeDocumentDraw();
         }
 
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
+        // Set the theme.
+        setTheme(R.style.PrivacyBrowser);
 
         // Set the content view.
         setContentView(R.layout.main_framelayout);
@@ -356,11 +366,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         Toolbar toolbar = findViewById(R.id.toolbar);
         ViewPager webViewPager = findViewById(R.id.webviewpager);
 
-        // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
-        setSupportActionBar(toolbar);
+        // Get a handle for the app compat delegate.
+        AppCompatDelegate appCompatDelegate = getDelegate();
+
+        // Set the support action bar.
+        appCompatDelegate.setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
 
         // This is needed to get rid of the Android Studio warning that the action bar might be null.
         assert actionBar != null;
@@ -369,11 +382,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         actionBar.setCustomView(R.layout.url_app_bar);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
-        // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
         // Create the hamburger icon at the start of the AppBar.
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
+
+        // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         // Initialize the web view pager adapter.
         webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
@@ -568,9 +581,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get a handle for the root frame layouts.
             FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
 
-            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
             /* Hide the system bars.
              * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
              * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
@@ -619,12 +629,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onDestroy() {
-        // Unregister the orbot status broadcast receiver.
-        this.unregisterReceiver(orbotStatusBroadcastReceiver);
+        // Unregister the orbot status broadcast receiver if it exists.
+        if (orbotStatusBroadcastReceiver != null) {
+            this.unregisterReceiver(orbotStatusBroadcastReceiver);
+        }
 
-        // Close the bookmarks cursor and database.
-        bookmarksCursor.close();
-        bookmarksDatabaseHelper.close();
+        // Close the bookmarks cursor if it exists.
+        if (bookmarksCursor != null) {
+            bookmarksCursor.close();
+        }
+
+        // Close the bookmarks database if it exists.
+        if (bookmarksDatabaseHelper != null) {
+            bookmarksDatabaseHelper.close();
+        }
 
         // Run the default commands.
         super.onDestroy();
@@ -668,7 +686,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get the dark theme and app bar preferences..
         boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {
@@ -686,12 +703,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the title.
             refreshMenuItem.setTitle(R.string.stop);
 
-            // If the icon is displayed in the AppBar, set it according to the theme.
+            // Set the icon if it is displayed in the app bar.
             if (displayAdditionalAppBarIcons) {
-                if (darkTheme) {
-                    refreshMenuItem.setIcon(R.drawable.close_dark);
+                // Get the current theme status.
+                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                // Set the icon according to the current theme status.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    // Set the dark stop icon.
+                    refreshMenuItem.setIcon(R.drawable.close_night);
                 } else {
-                    refreshMenuItem.setIcon(R.drawable.close_light);
+                    // Set the light stop icon.
+                    refreshMenuItem.setIcon(R.drawable.close_day);
                 }
             }
         }
@@ -2017,18 +2040,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onConfigurationChanged(newConfig);
 
-        // Get the status bar pixel size.
-        int statusBarResourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarPixelSize = getResources().getDimensionPixelSize(statusBarResourceId);
-
-        // Get the resource density.
-        float screenDensity = getResources().getDisplayMetrics().density;
-
-        // Recalculate the drawer header padding.
-        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
-        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
-        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
-
         // Reload the ad for the free flavor if not in full screen mode.
         if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
             // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
@@ -2458,47 +2469,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
-        // Get the dialog.
-        Dialog dialog = dialogFragment.getDialog();
-
-        // Remove the incorrect lint warning below that the dialog might be null.
-        assert dialog != null;
-
-        // Get handles for the views from the dialog.
-        EditText editBookmarkNameEditText = dialog.findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = dialog.findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = dialog.findViewById(R.id.edit_bookmark_current_icon_radiobutton);
-
-        // Store the bookmark strings.
-        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
-        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
-
-        // Update the bookmark.
-        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
-        } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Create a favorite icon byte array output stream.
-            ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-
-            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
-
-            // Convert the favorite icon byte array stream to a byte array.
-            byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
-
-            //  Update the bookmark and the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, newFavoriteIconByteArray);
-        }
-
-        // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
-
-        // Update the list view.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
-    }
-
-    @Override
     public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
@@ -2633,29 +2603,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Apply the appropriate full screen mode flags.
             if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-                // Hide the app bar if specified.
-                if (hideAppBar) {
-                    // Get handles for the views.
-                    LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
-                    ActionBar actionBar = getSupportActionBar();
-
-                    // Remove the incorrect lint warning below that the action bar might be null.
-                    assert actionBar != null;
-
-                    // Hide the tab linear layout.
-                    tabsLinearLayout.setVisibility(View.GONE);
-
-                    // Hide the action bar.
-                    actionBar.hide();
-                }
-
                 // Hide the banner ad in the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
                     AdHelper.hideAd(findViewById(R.id.adview));
                 }
-
-                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
                 /* Hide the system bars.
                  * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
@@ -2665,12 +2616,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                  */
                 rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+                // Reload the website if the app bar is hidden.  Otherwise, there is some bug in Android that causes the WebView to be entirely black.
+                if (hideAppBar) {
+                    // Reload the WebView.
+                    currentWebView.reload();
+                }
             } else {  // Switch to normal viewing mode.
                 // Remove the `SYSTEM_UI` flags from the root frame layout.
                 rootFrameLayout.setSystemUiVisibility(0);
-
-                // Add the translucent status flag.
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
 
             // Reload the ad for the free flavor if not in full screen mode.
@@ -3205,10 +3159,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             searchURL = searchString;
         }
 
+        // Get a handle for the app compat delegate.
+        AppCompatDelegate appCompatDelegate = getDelegate();
+
         // Get handles for the views that need to be modified.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
         Toolbar toolbar = findViewById(R.id.toolbar);
         LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
         LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
@@ -3297,9 +3254,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 AdHelper.hideAd(findViewById(R.id.adview));
             }
 
-            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
             /* Hide the system bars.
              * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
              * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
@@ -3326,19 +3280,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Remove the `SYSTEM_UI` flags from the root frame layout.
             rootFrameLayout.setSystemUiVisibility(0);
-
-            // Add the translucent status flag.
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
 
     private void initializeApp() {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Get the theme preference.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Get a handle for the input method.
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -3528,20 +3473,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
-        // The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21 and and `getResources().getColor()` must be used until the minimum API >= 23.
-        if (darkTheme) {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_dark));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
-        } else {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_light));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
-        }
-
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
         launchBookmarksActivityFab.setOnClickListener(v -> {
             // Get a copy of the favorite icon bitmap.
@@ -3629,15 +3560,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         defaultProgressViewStartOffset = swipeRefreshLayout.getProgressViewStartOffset();
         defaultProgressViewEndOffset = swipeRefreshLayout.getProgressViewEndOffset();
 
-        // Set the swipe to refresh color according to the theme.
-        if (darkTheme) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_800);
-            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_850);
-        } else {
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the refresh color scheme according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
+        } else {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
         }
 
-        // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
+        // Initialize a color background typed value.
+        TypedValue colorBackgroundTypedValue = new TypedValue();
+
+        // Get the color background from the theme.
+        getTheme().resolveAttribute(android.R.attr.colorBackground, colorBackgroundTypedValue, true);
+
+        // Get the color background int from the typed value.
+        int colorBackgroundInt = colorBackgroundTypedValue.data;
+
+        // Set the swipe refresh background color.
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt);
+
+        // The drawer titles identify the drawer layouts in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
         drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
 
@@ -3710,18 +3655,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         });
 
-        // Get the status bar pixel size.
-        int statusBarResourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarPixelSize = getResources().getDimensionPixelSize(statusBarResourceId);
-
-        // Get the resource density.
-        float screenDensity = getResources().getDisplayMetrics().density;
-
-        // Calculate the drawer header padding.  This is used to move the text in the drawer headers below any cutouts.
-        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
-        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
-        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
-
         // The drawer listener is used to update the navigation menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -3739,20 +3672,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onDrawerStateChanged(int newState) {
                 if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // A drawer is opening or closing.
-                    // Get handles for the drawer headers.
-                    TextView navigationHeaderTextView = findViewById(R.id.navigationText);
-                    TextView bookmarksHeaderTextView = findViewById(R.id.bookmarks_title_textview);
-
-                    // Apply the navigation header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
-                    if (navigationHeaderTextView != null) {
-                        navigationHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
-                    }
-
-                    // Apply the bookmarks header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
-                    if (bookmarksHeaderTextView != null) {
-                        bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
-                    }
-
                     // Update the navigation menu items if the WebView is not null.
                     if (currentWebView != null) {
                         navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
@@ -3938,7 +3857,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
-            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
             boolean wideViewport = sharedPreferences.getBoolean("wide_viewport", true);
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
@@ -4182,8 +4100,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         break;
                 }
 
-                // Set a green background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-                if (darkTheme) {
+                // Get the current theme status.
+                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                // Set a background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
                 } else {
                     urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
@@ -4296,12 +4217,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void applyProxy(boolean reloadWebViews) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Get the theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Get a handle for the app bar layout.
         AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
 
@@ -4311,20 +4226,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Reset the waiting for proxy tracker.
         waitingForProxy = false;
 
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
         // Update the user interface and reload the WebViews if requested.
         switch (proxyMode) {
             case ProxyHelper.NONE:
+                // Initialize a color background typed value.
+                TypedValue colorBackgroundTypedValue = new TypedValue();
+
+                // Get the color background from the theme.
+                getTheme().resolveAttribute(android.R.attr.colorBackground, colorBackgroundTypedValue, true);
+
+                // Get the color background int from the typed value.
+                int colorBackgroundInt = colorBackgroundTypedValue.data;
+
                 // Set the default app bar layout background.
-                if (darkTheme) {
-                    appBarLayout.setBackgroundResource(R.color.gray_900);
-                } else {
-                    appBarLayout.setBackgroundResource(R.color.gray_100);
-                }
+                appBarLayout.setBackgroundColor(colorBackgroundInt);
                 break;
 
             case ProxyHelper.TOR:
                 // Set the app bar background to indicate proxying through Orbot is enabled.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     appBarLayout.setBackgroundResource(R.color.dark_blue_30);
                 } else {
                     appBarLayout.setBackgroundResource(R.color.blue_50);
@@ -4366,7 +4289,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case ProxyHelper.I2P:
                 // Set the app bar background to indicate proxying through Orbot is enabled.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     appBarLayout.setBackgroundResource(R.color.dark_blue_30);
                 } else {
                     appBarLayout.setBackgroundResource(R.color.blue_50);
@@ -4393,7 +4316,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case ProxyHelper.CUSTOM:
                 // Set the app bar background to indicate proxying through Orbot is enabled.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     appBarLayout.setBackgroundResource(R.color.dark_blue_30);
                 } else {
                     appBarLayout.setBackgroundResource(R.color.blue_50);
@@ -4426,12 +4349,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
         // Only update the privacy icons if the options menu and the current WebView have already been populated.
         if ((optionsMenu != null) && (currentWebView != null)) {
-            // Get a handle for the shared preferences.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-            // Get the theme and screenshot preferences.
-            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
             // Get handles for the menu items.
             MenuItem privacyMenuItem = optionsMenu.findItem(R.id.toggle_javascript);
             MenuItem firstPartyCookiesMenuItem = optionsMenu.findItem(R.id.toggle_first_party_cookies);
@@ -4447,14 +4364,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 privacyMenuItem.setIcon(R.drawable.privacy_mode);
             }
 
+            // Get the current theme status.
+            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
             // Update the first-party cookies icon.
             if (currentWebView.getAcceptFirstPartyCookies()) {  // First-party cookies are enabled.
                 firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
             } else {  // First-party cookies are disabled.
-                if (darkTheme) {
-                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
                 } else {
-                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_light);
+                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_day);
                 }
             }
 
@@ -4462,27 +4382,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (currentWebView.getSettings().getJavaScriptEnabled() && currentWebView.getSettings().getDomStorageEnabled()) {  // Both JavaScript and DOM storage are enabled.
                 domStorageMenuItem.setIcon(R.drawable.dom_storage_enabled);
             } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled but DOM storage is disabled.
-                if (darkTheme) {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_night);
                 } else {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_light);
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_day);
                 }
             } else {  // JavaScript is disabled, so DOM storage is ghosted.
-                if (darkTheme) {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_night);
                 } else {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_light);
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_day);
                 }
             }
 
             // Update the refresh icon.
-            if (darkTheme) {
-                refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
             } else {
-                refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
+                refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
             }
 
-            // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.
+            // `invalidateOptionsMenu()` calls `onPrepareOptionsMenu()` and redraws the icons in the app bar.
             if (runInvalidateOptionsMenu) {
                 invalidateOptionsMenu();
             }
@@ -4953,12 +4873,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void setCurrentWebView(int pageNumber) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Get the theme preference.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Get handles for the URL views.
         RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
@@ -5036,8 +4950,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Set the background to indicate the domain settings status.
             if (currentWebView.getDomainSettingsApplied()) {
+                // Get the current theme status.
+                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
                 // Set a green background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
                 } else {
                     urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
@@ -5062,11 +4979,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url) {
+        // Get a handle for the app compat delegate.
+        AppCompatDelegate appCompatDelegate = getDelegate();
+
         // Get handles for the activity views.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
         LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
         TabLayout tabLayout = findViewById(R.id.tablayout);
@@ -5124,9 +5044,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Toggle the full screen browsing mode.
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
-                        // Store the swipe refresh layout top padding.
-                        swipeRefreshLayoutPaddingTop = swipeRefreshLayout.getPaddingTop();
-
                         // Hide the app bar if specified.
                         if (hideAppBar) {
                             // Close the find on page bar if it is visible.
@@ -5138,10 +5055,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Hide the action bar.
                             actionBar.hide();
 
-                            // Check to see if app bar scrolling is disabled.
+                            // If the app bar is not being scrolled, the swipe refresh layout needs to be adjusted.
                             if (!scrollAppBar) {
                                 // Remove the padding from the top of the swipe refresh layout.
                                 swipeRefreshLayout.setPadding(0, 0, 0, 0);
+
+                                // The swipe refresh circle must be moved above the now removed status bar location.
+                                swipeRefreshLayout.setProgressViewOffset(false, -200, defaultProgressViewEndOffset);
                             }
                         }
 
@@ -5149,9 +5069,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
                             AdHelper.hideAd(findViewById(R.id.adview));
                         }
-
-                        // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
                         /* Hide the system bars.
                          * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
@@ -5162,16 +5079,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     } else {  // Switch to normal viewing mode.
-                        // Show the tab linear layout.
-                        tabsLinearLayout.setVisibility(View.VISIBLE);
+                        // Show the app bar if it was hidden.
+                        if (hideAppBar) {
+                            // Show the tab linear layout.
+                            tabsLinearLayout.setVisibility(View.VISIBLE);
 
-                        // Show the action bar.
-                        actionBar.show();
+                            // Show the action bar.
+                            actionBar.show();
 
-                        // Check to see if app bar scrolling is disabled.
-                        if (!scrollAppBar) {
-                            // Add the padding from the top of the swipe refresh layout.
-                            swipeRefreshLayout.setPadding(0, swipeRefreshLayoutPaddingTop, 0, 0);
+                            // If the app bar is not being scrolled, the swipe refresh layout needs to be adjusted.
+                            if (!scrollAppBar) {
+                                // The swipe refresh layout must be manually moved below the app bar layout.
+                                swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
+
+                                // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
+                                swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10 + appBarHeight, defaultProgressViewEndOffset + appBarHeight);
+                            }
                         }
 
                         // Show the banner ad in the free flavor.
@@ -5182,9 +5105,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Remove the `SYSTEM_UI` flags from the root frame layout.
                         rootFrameLayout.setSystemUiVisibility(0);
-
-                        // Add the translucent status flag.
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                     }
 
                     // Consume the double-tap.
@@ -5411,12 +5331,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Hide the main content relative layout.
                 mainContentRelativeLayout.setVisibility(View.GONE);
 
-                // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
                 /* Hide the system bars.
                  * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
                  * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
@@ -5479,9 +5393,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         AdHelper.hideAd(findViewById(R.id.adview));
                     }
 
-                    // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
                     /* Hide the system bars.
                      * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
                      * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
@@ -5493,9 +5404,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else {  // Switch to normal viewing mode.
                     // Remove the `SYSTEM_UI` flags from the root frame layout.
                     rootFrameLayout.setSystemUiVisibility(0);
-
-                    // Add the translucent status flag.
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 }
 
                 // Reload the ad for the free flavor if not in full screen mode.
@@ -5992,21 +5900,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 // Get the preferences.
                 boolean scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
-                boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
                 // Get a handler for the app bar layout.
                 AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
 
-                // Set the top padding of the swipe refresh layout according to the app bar scrolling preference.
-                if (scrollAppBar) {
+                // Set the top padding of the swipe refresh layout according to the app bar scrolling preference.  This can't be done in `appAppSettings()` because the app bar is not yet populated there.
+                if (scrollAppBar || (inFullScreenBrowsingMode && hideAppBar)) {
                     // No padding is needed because it will automatically be placed below the app bar layout due to the scrolling layout behavior.
                     swipeRefreshLayout.setPadding(0, 0, 0, 0);
 
                     // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
                     swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10, defaultProgressViewEndOffset);
                 } else {
-                    // Get the app bar layout height.  This can't be done in `applyAppSettings()` because the app bar is not yet populated.
-                    int appBarHeight = appBarLayout.getHeight();
+                    // Get the app bar layout height.  This can't be done in `applyAppSettings()` because the app bar is not yet populated there.
+                    appBarHeight = appBarLayout.getHeight();
 
                     // The swipe refresh layout must be manually moved below the app bar layout.
                     swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
@@ -6021,6 +5928,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Reset the requests counters.
                 nestedScrollWebView.resetRequestsCounters();
 
+                // TODO.  Make the background of a new tab match the theme.
                 // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
                 if (nestedScrollWebView.getNightMode()) {
                     nestedScrollWebView.setVisibility(View.INVISIBLE);
@@ -6068,10 +5976,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // If the icon is displayed in the AppBar, set it according to the theme.
                     if (displayAdditionalAppBarIcons) {
-                        if (darkTheme) {
-                            refreshMenuItem.setIcon(R.drawable.close_dark);
+                        // Get the current theme status.
+                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                        // Set the stop icon according to the theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            refreshMenuItem.setIcon(R.drawable.close_night);
                         } else {
-                            refreshMenuItem.setIcon(R.drawable.close_light);
+                            refreshMenuItem.setIcon(R.drawable.close_day);
                         }
                     }
                 }
@@ -6094,14 +6006,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Get the app bar and theme preferences.
                     boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
-                    boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
-                    // If the icon is displayed in the AppBar, reset it according to the theme.
+                    // If the icon is displayed in the app bar, reset it according to the theme.
                     if (displayAdditionalAppBarIcons) {
-                        if (darkTheme) {
-                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
+                        // Get the current theme status.
+                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                        // Set the icon according to the theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
                         } else {
-                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
+                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
                         }
                     }
                 }

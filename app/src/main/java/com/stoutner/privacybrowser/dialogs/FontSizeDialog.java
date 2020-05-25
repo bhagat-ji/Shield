@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,11 +21,11 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,6 +34,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
 
@@ -87,9 +88,6 @@ public class FontSizeDialog extends DialogFragment {
         assert activity != null;
         assert context != null;
 
-        // Use a builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
         // Get the arguments.
         Bundle arguments = getArguments();
 
@@ -99,20 +97,17 @@ public class FontSizeDialog extends DialogFragment {
         // Get the current font size.
         int currentFontSize = arguments.getInt("font_size");
 
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // Use a builder to create the alert dialog.
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialog);
 
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        // Set the style and icon according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
-            dialogBuilder.setIcon(R.drawable.font_size_dark);
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.font_size_night);
         } else {
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
-            dialogBuilder.setIcon(R.drawable.font_size_light);
+            dialogBuilder.setIcon(R.drawable.font_size_day);
         }
 
         // Set the title.
@@ -139,6 +134,12 @@ public class FontSizeDialog extends DialogFragment {
         // Remove the incorrect lint warning below that the dialog window might be null.
         assert dialogWindow != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Get the screenshot preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             dialogWindow.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -152,6 +153,9 @@ public class FontSizeDialog extends DialogFragment {
 
         // Get a handle for the font size edit text.
         EditText fontSizeEditText = alertDialog.findViewById(R.id.font_size_edittext);
+
+        // Remove the incorrect lint warning below that the edit text might be null.
+        assert fontSizeEditText != null;
 
         // Display the current font size.
         fontSizeEditText.setText(String.valueOf(currentFontSize));

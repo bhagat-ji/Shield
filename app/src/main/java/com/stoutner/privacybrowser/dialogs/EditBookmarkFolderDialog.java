@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,6 +41,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
@@ -125,21 +125,7 @@ public class EditBookmarkFolderDialog extends DialogFragment {
         folderCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_folder);
@@ -167,6 +153,12 @@ public class EditBookmarkFolderDialog extends DialogFragment {
         // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -182,6 +174,13 @@ public class EditBookmarkFolderDialog extends DialogFragment {
         ImageView webPageFavoriteIconImageView = alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon_imageview);
         EditText folderNameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext);
         Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert iconRadioGroup != null;
+        assert currentIconRadioButton != null;
+        assert currentIconImageView != null;
+        assert webPageFavoriteIconImageView != null;
+        assert folderNameEditText != null;
 
         // Initially disable the edit button.
         editButton.setEnabled(false);

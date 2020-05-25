@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,11 +20,11 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
@@ -79,13 +80,6 @@ public class ViewRequestDialog extends DialogFragment {
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the theme and screenshot preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
         // Remove the incorrect lint warning that `getInt()` might be null.
         assert getArguments() != null;
 
@@ -95,15 +89,16 @@ public class ViewRequestDialog extends DialogFragment {
         String[] requestDetails = getArguments().getStringArray("request_details");
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
-        // Set the style and icon according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-            dialogBuilder.setIcon(R.drawable.block_ads_enabled_dark);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.block_ads_enabled_night);
         } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-            dialogBuilder.setIcon(R.drawable.block_ads_enabled_light);
+            dialogBuilder.setIcon(R.drawable.block_ads_enabled_day);
         }
 
         // Create the dialog title.
@@ -139,6 +134,12 @@ public class ViewRequestDialog extends DialogFragment {
         // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
@@ -165,6 +166,18 @@ public class ViewRequestDialog extends DialogFragment {
         Button previousButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         Button nextButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
 
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert requestDisposition != null;
+        assert requestUrl != null;
+        assert requestBlockListLabel != null;
+        assert requestBlockList != null;
+        assert requestSubListLabel != null;
+        assert requestSubList != null;
+        assert requestBlockListEntriesLabel != null;
+        assert requestBlockListEntries != null;
+        assert requestBlockListOriginalEntryLabel != null;
+        assert requestBlockListOriginalEntry != null;
+
         // Disable the previous button if the first resource request is displayed.
         previousButton.setEnabled(!(id == 1));
 
@@ -186,7 +199,7 @@ public class ViewRequestDialog extends DialogFragment {
                 requestDisposition.setText(R.string.allowed);
 
                 // Set the background color.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.blue_700_50));
                 } else {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.blue_100));
@@ -198,7 +211,7 @@ public class ViewRequestDialog extends DialogFragment {
                 requestDisposition.setText(R.string.third_party_blocked);
 
                 // Set the background color.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.yellow_700_50));
                 } else {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.yellow_100));
@@ -210,7 +223,7 @@ public class ViewRequestDialog extends DialogFragment {
                 requestDisposition.setText(R.string.blocked);
 
                 // Set the background color.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.red_700_40));
                 } else {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.red_100));

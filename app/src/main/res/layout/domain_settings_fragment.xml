@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -425,7 +425,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/user_agent_light"
+                    android:src="@drawable/user_agent_day"
                     android:tint="?attr/domainSettingsIconTintColor"
                     android:contentDescription="@string/user_agent" />
 
@@ -473,7 +473,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/font_size_light"
+                    android:src="@drawable/font_size_day"
                     android:tint="?attr/domainSettingsIconTintColor"
                     android:contentDescription="@string/font_size" />
 
@@ -966,7 +966,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:layout_marginStart="32dp"
-                        android:textColor="?attr/aboutText" />
+                        android:textColor="?attr/blueTextColor" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -998,7 +998,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:layout_marginStart="32dp"
-                        android:textColor="?attr/aboutText" />
+                        android:textColor="?attr/blueTextColor" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>

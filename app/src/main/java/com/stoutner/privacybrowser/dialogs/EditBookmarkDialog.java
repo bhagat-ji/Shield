@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,7 +41,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
@@ -125,21 +125,7 @@ public class EditBookmarkDialog extends DialogFragment {
         bookmarkCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_bookmark);
@@ -167,6 +153,12 @@ public class EditBookmarkDialog extends DialogFragment {
         // remove the incorrect lint warning below that `getWindow().addFlags()` might be null.
         assert alertDialog.getWindow() != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -182,6 +174,13 @@ public class EditBookmarkDialog extends DialogFragment {
         EditText nameEditText = alertDialog.findViewById(R.id.edit_bookmark_name_edittext);
         EditText urlEditText = alertDialog.findViewById(R.id.edit_bookmark_url_edittext);
         Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert iconRadioGroup != null;
+        assert currentIconImageView != null;
+        assert newFavoriteIconImageView != null;
+        assert nameEditText != null;
+        assert urlEditText != null;
 
         // Get the current favorite icon byte array from the cursor.
         byte[] currentIconByteArray = bookmarkCursor.getBlob(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
@@ -294,6 +293,11 @@ public class EditBookmarkDialog extends DialogFragment {
         EditText urlEditText = alertdialog.findViewById(R.id.edit_bookmark_url_edittext);
         RadioButton newIconRadioButton = alertdialog.findViewById(R.id.edit_bookmark_webpage_favorite_icon_radiobutton);
         Button editButton = alertdialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert nameEditText != null;
+        assert urlEditText != null;
+        assert newIconRadioButton != null;
 
         // Get the text from the edit texts.
         String newName = nameEditText.getText().toString();

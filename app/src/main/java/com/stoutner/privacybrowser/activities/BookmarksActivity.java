@@ -25,6 +25,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -128,8 +129,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the theme and screenshot preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        // Get the screenshot preference.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
@@ -137,12 +137,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the activity theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
-        } else {
-            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
-        }
+        // Set the theme.
+        setTheme(R.style.PrivacyBrowser);
 
         // Run the default commands.
         super.onCreate(savedInstanceState);
@@ -991,12 +987,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     private void updateMoveIcons() {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Get the theme and screenshot preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Get a long array of the selected bookmarks.
         long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
 
@@ -1006,6 +996,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // bookmarksListView is 0 indexed.
         int lastBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(bookmarksListView.getCount() - 1);
 
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
         // Update the move bookmark up `MenuItem`.
         if (selectedBookmarkDatabaseId == firstBookmarkDatabaseId) {  // The selected bookmark is in the first position.
             // Disable the move bookmark up `MenuItem`.
@@ -1014,14 +1007,14 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             //  Set the move bookmark up icon to be ghosted.
             moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_disabled);
         } else {  // The selected bookmark is not in the first position.
-            // Enable the move bookmark up `MenuItem`.
+            // Enable the move bookmark up menu item.
             moveBookmarkUpMenuItem.setEnabled(true);
 
             // Set the icon according to the theme.
-            if (darkTheme) {
-                moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_night);
             } else {
-                moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_light);
+                moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_day);
             }
         }
 
@@ -1037,10 +1030,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             moveBookmarkDownMenuItem.setEnabled(true);
 
             // Set the icon according to the theme.
-            if (darkTheme) {
-                moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_night);
             } else {
-                moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_light);
+                moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_day);
             }
         }
     }

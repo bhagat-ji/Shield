@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -29,7 +29,7 @@
     <ImageView
         android:id="@+id/back_arrow"
         android:src="@drawable/back"
-        android:tint="?attr/viewSourceIconTintColor"
+        android:tint="?attr/colorControlNormal"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerVertical="true"

@@ -23,10 +23,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,9 +63,8 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        // Get the screenshot and theme preferences.
+        // Get the screenshot preference.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -71,11 +72,7 @@ public class ViewSourceActivity extends AppCompatActivity {
         }
 
         // Set the theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserDark);
-        } else {
-            setTheme(R.style.PrivacyBrowserLight);
-        }
+        setTheme(R.style.PrivacyBrowser);
 
         // Run the default commands.
         super.onCreate(savedInstanceState);
@@ -189,13 +186,27 @@ public class ViewSourceActivity extends AppCompatActivity {
             }
         });
 
-        // Set the swipe to refresh color according to the theme.
-        if (darkTheme) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_600);
-            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_800);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the refresh color scheme according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
         } else {
             swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
         }
+
+        // Initialize a color background typed value.
+        TypedValue colorBackgroundTypedValue = new TypedValue();
+
+        // Get the color background from the theme.
+        getTheme().resolveAttribute(android.R.attr.colorBackground, colorBackgroundTypedValue, true);
+
+        // Get the color background int from the typed value.
+        int colorBackgroundInt = colorBackgroundTypedValue.data;
+
+        // Set the swipe refresh background color.
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt);
 
         // Get the source using an AsyncTask if the URL begins with `http`.
         if ((currentUrl != null) && currentUrl.startsWith("http")) {

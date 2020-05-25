@@ -20,10 +20,10 @@
 package com.stoutner.privacybrowser.dialogs
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -34,6 +34,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -87,27 +88,17 @@ class AddDomainDialog: DialogFragment() {
         // Get the URL from the bundle.
         val urlString = arguments.getString("url_string")
 
-        // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        // Get the screenshot and theme preferences.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
-        val darkTheme = sharedPreferences.getBoolean("dark_theme", false)
-
         // Use an alert dialog builder to create the alert dialog.
-        val dialogBuilder: AlertDialog.Builder
+        val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-        // USet the style and the icon according to the theme.
-        if (darkTheme) {
-            // Set the dark style.
-            dialogBuilder = AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogDark)
+        // Get the current theme status.
+        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             // Set the dark icon.
-            dialogBuilder.setIcon(R.drawable.domains_dark)
+            dialogBuilder.setIcon(R.drawable.domains_night)
         } else {
-            // Set the light style.
-            dialogBuilder = AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogLight)
-
             // Set the light icon.
             dialogBuilder.setIcon(R.drawable.domains_light)
         }
@@ -130,6 +121,12 @@ class AddDomainDialog: DialogFragment() {
         // Create an alert dialog from the builder.
         val alertDialog = dialogBuilder.create()
 
+        // Get a handle for the shared preferences.
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+        // Get the screenshot preference.
+        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -142,8 +139,8 @@ class AddDomainDialog: DialogFragment() {
         val domainsDatabaseHelper = DomainsDatabaseHelper(context, null, null, 0)
 
         // Get handles for the views in the alert dialog.
-        val addDomainEditText = alertDialog.findViewById<EditText>(R.id.domain_name_edittext)
-        val domainNameAlreadyExistsTextView = alertDialog.findViewById<TextView>(R.id.domain_name_already_exists_textview)
+        val addDomainEditText = alertDialog.findViewById<EditText>(R.id.domain_name_edittext)!!
+        val domainNameAlreadyExistsTextView = alertDialog.findViewById<TextView>(R.id.domain_name_already_exists_textview)!!
         val addButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         //  Update the status of the warning text and the add button when the domain name changes.

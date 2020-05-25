@@ -27,11 +27,13 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,8 +77,7 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the theme and screenshot preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        // Get the screenshot preference.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
@@ -84,12 +85,8 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the activity theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
-        } else {
-            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
-        }
+        // Set the theme.
+        setTheme(R.style.PrivacyBrowser);
 
         // Run the default commands.
         super.onCreate(savedInstanceState);
@@ -97,7 +94,7 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
         // Set the content view.
         setContentView(R.layout.logcat_coordinatorlayout);
 
-        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        // Set the toolbar as the action bar.
         Toolbar toolbar = findViewById(R.id.logcat_toolbar);
         setSupportActionBar(toolbar);
 
@@ -117,13 +114,27 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
             new GetLogcat(this).execute();
         });
 
-        // Set the swipe to refresh color according to the theme.
-        if (darkTheme) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_600);
-            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_800);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the refresh color scheme according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
         } else {
             swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
         }
+
+        // Initialize a color background typed value.
+        TypedValue colorBackgroundTypedValue = new TypedValue();
+
+        // Get the color background from the theme.
+        getTheme().resolveAttribute(android.R.attr.colorBackground, colorBackgroundTypedValue, true);
+
+        // Get the color background int from the typed value.
+        int colorBackgroundInt = colorBackgroundTypedValue.data;
+
+        // Set the swipe refresh background color.
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt);
 
         // Get the logcat.
         new GetLogcat(this).execute();

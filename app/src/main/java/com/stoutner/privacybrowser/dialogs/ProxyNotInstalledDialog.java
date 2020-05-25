@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,11 +19,11 @@
 
 package com.stoutner.privacybrowser.dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -57,13 +57,8 @@ public class ProxyNotInstalledDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get the context and the activity.
-        Context context = getContext();
-        Activity activity = getActivity();
-
-        // Remove the incorrect lint warnings below that the context or the activity might be null.
-        assert context != null;
-        assert activity != null;
+        // Get the context.
+        Context context = requireContext();
 
         // Get the arguments.
         Bundle arguments = getArguments();
@@ -74,32 +69,20 @@ public class ProxyNotInstalledDialog extends DialogFragment {
         // Get the proxy mode from the arguments.
         String proxyMode = arguments.getString("proxy_mode");
 
-        // Remove the incorrect lint warning below tha tth eproxy mode migth be null.
+        // Remove the incorrect lint warning below that the proxy mode might be null.
         assert proxyMode != null;
 
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        // Get the screenshot and the theme preferences.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Use a builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialog);
 
-        // Set the style and the icon according to the theme.
-        if (darkTheme) {
-            // Set the style.
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.proxy_enabled_dark);
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.proxy_enabled_night);
         } else {
-            // Set the style.
-            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
-
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.proxy_enabled_light);
+            dialogBuilder.setIcon(R.drawable.proxy_enabled_day);
         }
 
         // Set the title and the message according to the proxy mode.
@@ -128,6 +111,12 @@ public class ProxyNotInstalledDialog extends DialogFragment {
 
         // Create an alert dialog from the alert dialog builder.
         AlertDialog alertDialog = dialogBuilder.create();
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

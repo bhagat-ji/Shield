@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>>.
 
@@ -28,7 +28,8 @@
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:background="?android:attr/colorBackground" >
 
         <TextView
             android:id="@+id/bookmarks_title_textview"
@@ -36,8 +37,8 @@
             android:layout_width="match_parent"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:background="?attr/navigationHeaderBackground"
-            android:textColor="?attr/navigationHeaderTextColor" />
+            android:textColor="?android:attr/textColorPrimary"
+            android:layout_margin="10dp" />
 
         <ListView
             android:id="@+id/bookmarks_drawer_listview"
@@ -54,7 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="155dp" />
+        android:layout_marginBottom="155dp"
+        android:src="?attr/bookmarksIcon" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/create_bookmark_folder_fab"
@@ -62,12 +64,14 @@
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="85dp" />
+        android:layout_marginBottom="85dp"
+        android:src="?attr/createFolderIcon" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/create_bookmark_fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        android:src="?attr/createBookmarkIcon" />
 </FrameLayout>

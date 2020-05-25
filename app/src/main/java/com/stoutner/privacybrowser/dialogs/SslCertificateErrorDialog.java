@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,10 +21,10 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
@@ -41,7 +41,8 @@ import android.webkit.SslErrorHandler;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -137,35 +138,20 @@ public class SslCertificateErrorDialog extends DialogFragment {
         // Get a handle for the SSL error handler.
         SslErrorHandler sslErrorHandler = nestedScrollWebView.getSslErrorHandler();
 
-        // Remove the incorrect lint warning that `getActivity()` might be null.
-        assert getActivity() != null;
-
         // Get the activity's layout inflater.
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style and icon according to the theme.
-        if (darkTheme) {
-            // Set the style.
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_dark);
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_night);
         } else {
-            // Set the style.
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-
-            // Set the icon.
-            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_light);
+            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_day);
         }
 
         // Set the title.
@@ -202,6 +188,12 @@ public class SslCertificateErrorDialog extends DialogFragment {
         // Create an alert dialog from the alert dialog builder.
         AlertDialog alertDialog = dialogBuilder.create();
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
@@ -234,6 +226,20 @@ public class SslCertificateErrorDialog extends DialogFragment {
         TextView startDateTextView = alertDialog.findViewById(R.id.start_date);
         TextView endDateTextView = alertDialog.findViewById(R.id.end_date);
 
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert primaryErrorTextView != null;
+        assert urlTextView != null;
+        assert issuedToCNameTextView != null;
+        assert issuedToONameTextView != null;
+        assert issuedToUNameTextView != null;
+        assert issuedByTextView != null;
+        assert issuedByCNameTextView != null;
+        assert issuedByONameTextView != null;
+        assert issuedByUNameTextView != null;
+        assert validDatesTextView != null;
+        assert startDateTextView != null;
+        assert endDateTextView != null;
+
         // Setup the common strings.
         String urlLabel = getString(R.string.url_label) + "  ";
         String cNameLabel = getString(R.string.common_name) + "  ";
@@ -253,17 +259,17 @@ public class SslCertificateErrorDialog extends DialogFragment {
         SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + startDate);
         SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder((endDateLabel + endDate));
 
-        // Create a red foreground color span.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-        ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
-
-        // Create a blue `ForegroundColorSpan`.
+        // Define the color spans.
         ForegroundColorSpan blueColorSpan;
+        ForegroundColorSpan redColorSpan;
 
-        // Set a blue color span according to the theme.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-        if (darkTheme) {
+        // Set the color spans according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
         } else {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
         }
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
@@ -293,7 +299,11 @@ public class SslCertificateErrorDialog extends DialogFragment {
 
             case SslError.SSL_UNTRUSTED:
                 // Change the issued by text view text to red.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-                issuedByTextView.setTextColor(getResources().getColor(R.color.red_a700));
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    issuedByTextView.setTextColor(getResources().getColor(R.color.red_900));
+                } else {
+                    issuedByTextView.setTextColor(getResources().getColor(R.color.red_a700));
+                }
 
                 // Change the issued by span color to red.
                 issuedByCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), issuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -306,7 +316,11 @@ public class SslCertificateErrorDialog extends DialogFragment {
 
             case SslError.SSL_DATE_INVALID:
                 // Change the valid dates text view text to red.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-                validDatesTextView.setTextColor(getResources().getColor(R.color.red_a700));
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    validDatesTextView.setTextColor(getResources().getColor(R.color.red_900));
+                } else {
+                    validDatesTextView.setTextColor(getResources().getColor(R.color.red_a700));
+                }
 
                 // Change the date span colors to red.
                 startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length(), startDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -410,17 +424,14 @@ public class SslCertificateErrorDialog extends DialogFragment {
             // Create a spannable string builder.
             SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + ipAddresses);
 
-            // Get a handle for the shared preferences.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
-
-            // Get the screenshot and theme preferences.
-            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
             // Create a blue foreground color span.
             ForegroundColorSpan blueColorSpan;
 
+            // Get the current theme status.
+            int currentThemeStatus = activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            if (darkTheme) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_400));
             } else {
                 blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_700));
@@ -447,6 +458,9 @@ public class SslCertificateErrorDialog extends DialogFragment {
 
             // Get a handle for the IP addresses text view.
             TextView ipAddressesTextView = alertDialog.findViewById(R.id.ip_addresses);
+
+            // Remove the incorrect lint warning below that the view might be null.
+            assert ipAddressesTextView != null;
 
             // Populate the IP addresses text view.
             ipAddressesTextView.setText(ipAddresses);

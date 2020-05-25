@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -129,8 +130,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the theme and screenshot preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        // Get the screenshot preference.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
@@ -138,12 +138,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the activity theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
-        } else {
-            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
-        }
+        // Set the theme.
+        setTheme(R.style.PrivacyBrowser);
 
         // Run the default commands.
         super.onCreate(savedInstanceState);
@@ -396,7 +392,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                     // Disable the options `MenuItems`.
                     deleteMenuItem.setEnabled(false);
-                    deleteMenuItem.setIcon(R.drawable.delete_blue);
+                    deleteMenuItem.setIcon(R.drawable.delete_disabled);
 
                     // Remove the domain settings fragment.
                     fragmentManager.beginTransaction().remove(Objects.requireNonNull(fragmentManager.findFragmentById(R.id.domain_settings_fragment_container))).commit();
@@ -442,7 +438,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 // Get a handle for the activity.
                 Activity activity = this;
 
-                // Display a `Snackbar`.
+                // Display a snackbar.
                 undoDeleteSnackbar = Snackbar.make(domainsListView, R.string.domain_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, (View v) -> {
                             // Do nothing because everything will be handled by `onDismissed()` below.
@@ -482,17 +478,27 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             }
                                         };
 
-                                        // Update the `ListView`.
+                                        // Update the domains list view.
                                         domainsListView.setAdapter(undoDeleteDomainsCursorAdapter);
-                                        // Select the previously deleted domain in `domainsListView`.
+
+                                        // Select the previously deleted domain in the list view.
                                         domainsListView.setItemChecked(deletedDomainPosition, true);
 
-                                        // Display `domainSettingsFragment`.
+                                        // Display the domain settings fragment.
                                         fragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
 
-                                        // Enable the options `MenuItems`.
+                                        // Enable the options delete menu item.
                                         deleteMenuItem.setEnabled(true);
-                                        deleteMenuItem.setIcon(R.drawable.delete_light);
+
+                                        // Get the current theme status.
+                                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                                        // Set the delete menu item icon according to the theme.
+                                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                            deleteMenuItem.setIcon(R.drawable.delete_night);
+                                        } else {
+                                            deleteMenuItem.setIcon(R.drawable.delete_day);
+                                        }
                                     } else {  // The device in in one-paned mode.
                                         // Display `domainSettingsFragment`.
                                         fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
@@ -514,29 +520,26 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                     if (dismissingSnackbar) {
                                         // Create a `Runnable` to enable the delete menu item.
                                         Runnable enableDeleteMenuItemRunnable = () -> {
-                                            // Enable `deleteMenuItem` according to the display mode.
+                                            // Enable the delete menu item according to the display mode.
                                             if (twoPanedMode) {  // Two-paned mode.
                                                 // Enable the delete menu item.
                                                 deleteMenuItem.setEnabled(true);
 
-                                                // Get a handle for the shared preferences.
-                                                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                                // Get the current theme status.
+                                                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-                                                // Get the theme preferences.
-                                                boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
-                                                // Set the delete icon according to the theme.
-                                                if (darkTheme) {
-                                                    deleteMenuItem.setIcon(R.drawable.delete_dark);
+                                                // Set the delete menu item icon according to the theme.
+                                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                                    deleteMenuItem.setIcon(R.drawable.delete_night);
                                                 } else {
-                                                    deleteMenuItem.setIcon(R.drawable.delete_light);
+                                                    deleteMenuItem.setIcon(R.drawable.delete_day);
                                                 }
                                             } else {  // Single-paned mode.
-                                                // Show `deleteMenuItem`.
+                                                // Show the delete menu item.
                                                 deleteMenuItem.setVisible(true);
                                             }
 
-                                            // Reset `dismissingSnackbar`.
+                                            // Reset the dismissing snackbar tracker.
                                             dismissingSnackbar = false;
                                         };
 
@@ -853,22 +856,19 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Enable the delete options menu items.
             deleteMenuItem.setEnabled(true);
 
-            // Get a handle for the shared preferences.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-            // Get the theme and screenshot preferences.
-            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+            // Get the current theme status.
+            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
             // Set the delete icon according to the theme.
-            if (darkTheme) {
-                deleteMenuItem.setIcon(R.drawable.delete_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                deleteMenuItem.setIcon(R.drawable.delete_night);
             } else {
-                deleteMenuItem.setIcon(R.drawable.delete_light);
+                deleteMenuItem.setIcon(R.drawable.delete_day);
             }
         } else if (twoPanedMode) {  // Two-paned mode is enabled but there are no domains.
             // Disable the options `MenuItems`.
             deleteMenuItem.setEnabled(false);
-            deleteMenuItem.setIcon(R.drawable.delete_blue);
+            deleteMenuItem.setIcon(R.drawable.delete_disabled);
         }
     }
 

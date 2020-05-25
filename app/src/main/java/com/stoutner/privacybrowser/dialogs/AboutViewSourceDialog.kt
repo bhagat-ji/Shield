@@ -19,11 +19,12 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.app.AlertDialog
 import android.app.Dialog
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.WindowManager
 
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -31,29 +32,19 @@ import com.stoutner.privacybrowser.R
 
 class AboutViewSourceDialog: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        // Get the screenshot and theme preferences.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
-        val darkTheme = sharedPreferences.getBoolean("dark_theme", false)
-
         // Use a builder to create the alert dialog.
-        val dialogBuilder: AlertDialog.Builder
+        val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
+
+        // Get the current theme status.
+        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the style and the icon according to the theme.
-        if (darkTheme) {
-            // Use a dark style.
-            dialogBuilder = AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogDark)
-
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             // Set a dark icon.
-            dialogBuilder.setIcon(R.drawable.about_dark)
+            dialogBuilder.setIcon(R.drawable.about_night)
         } else {
-            // Use a light style.
-            dialogBuilder = AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogLight)
-
             // Set a light icon.
-            dialogBuilder.setIcon(R.drawable.about_light)
+            dialogBuilder.setIcon(R.drawable.about_day)
         }
 
         // Set the title.
@@ -67,6 +58,12 @@ class AboutViewSourceDialog: DialogFragment() {
 
         // Create an alert dialog from the alert dialog builder.
         val alertDialog = dialogBuilder.create()
+
+        // Get a handle for the shared preferences.
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+        // Get the screenshot preference.
+        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

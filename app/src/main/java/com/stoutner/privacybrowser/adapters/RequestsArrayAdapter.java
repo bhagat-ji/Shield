@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,8 +20,7 @@
 package com.stoutner.privacybrowser.adapters;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +44,6 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
     @Override
     @NonNull
     public View getView(int position, View view, @NonNull ViewGroup parent) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Get a handle for the context.
         Context context = getContext();
 
@@ -73,6 +66,9 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
         // The ID is one greater than the position because it is 0 based.
         int id = position + 1;
 
+        // Get the current theme status.
+        int currentThemeStatus = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
         // Set the action text and the background color.
         switch (entryStringArray[0]) {
             case BlocklistHelper.REQUEST_DEFAULT:
@@ -94,7 +90,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 dispositionTextView.setText(requestAllowed);
 
                 // Set the background color.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_700_50));
                 } else {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_100));
@@ -109,7 +105,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 dispositionTextView.setText(requestThirdParty);
 
                 // Set the background color.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_700_50));
                 } else {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_100));
@@ -125,7 +121,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 dispositionTextView.setText(requestBlocked);
 
                 // Set the background color.
-                if (darkTheme) {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_700_40));
                 } else {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_100));
@@ -137,7 +133,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
         urlTextView.setText(entryStringArray[1]);
 
         // Set the text color.  For some unexplained reason, `android:textColor="?android:textColorPrimary"` doesn't work in the layout file.  Probably some bug relating to array adapters.
-        if (darkTheme) {
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             dispositionTextView.setTextColor(context.getResources().getColor(R.color.gray_200));
             urlTextView.setTextColor(context.getResources().getColor(R.color.gray_200));
         } else {

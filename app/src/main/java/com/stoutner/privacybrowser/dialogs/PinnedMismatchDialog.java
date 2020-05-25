@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,11 +20,11 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 import androidx.viewpager.widget.PagerAdapter;
@@ -129,23 +130,7 @@ public class PinnedMismatchDialog extends DialogFragment {
         nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            // Set the dialog theme.
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            // Set the dialog theme.
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
         // Get the context.
         Context context = getContext();
@@ -170,11 +155,14 @@ public class PinnedMismatchDialog extends DialogFragment {
 
         // Set the favorite icon as the dialog icon if it exists.
         if (favoriteIconBitmap.sameAs(defaultFavoriteIconBitmap)) {  // There is no website favorite icon.
+            // Get the current theme status.
+            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
             // Set the icon according to the theme.
-            if (darkTheme) {
-                dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_night);
             } else {
-                dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_light);
+                dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_day);
             }
         } else {  // There is a favorite icon.
             // Create a drawable version of the favorite icon.
@@ -253,6 +241,12 @@ public class PinnedMismatchDialog extends DialogFragment {
         // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
@@ -265,15 +259,21 @@ public class PinnedMismatchDialog extends DialogFragment {
         // Show the alert dialog so the items in the layout can be modified.
         alertDialog.show();
 
-        //  Setup the view pager.
+        //  Get a handle for the views.
         WrapVerticalContentViewPager wrapVerticalContentViewPager = alertDialog.findViewById(R.id.pinned_ssl_certificate_mismatch_viewpager);
+        TabLayout tabLayout = alertDialog.findViewById(R.id.pinned_ssl_certificate_mismatch_tablayout);
+
+        // Remove the incorrect lint warning below that the views might be null.
+        assert wrapVerticalContentViewPager != null;
+        assert tabLayout != null;
+
+        // Set the view pager adapter.
         wrapVerticalContentViewPager.setAdapter(new pagerAdapter());
 
-        // Setup the tab layout and connect it to the view pager.
-        TabLayout tabLayout = alertDialog.findViewById(R.id.pinned_ssl_certificate_mismatch_tablayout);
+        // Connect the tab layout to the view pager.
         tabLayout.setupWithViewPager(wrapVerticalContentViewPager);
 
-        // `onCreateDialog()` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 
@@ -424,23 +424,20 @@ public class PinnedMismatchDialog extends DialogFragment {
                 }
             }
 
-            // Get a handle for the shared preferences.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-            // Get the screenshot and theme preferences.
-            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
-            // Create a red foreground color span.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-            ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
-
-            // Create a blue foreground color span.
+            // Define the color spans.
             ForegroundColorSpan blueColorSpan;
+            ForegroundColorSpan redColorSpan;
 
-            // Set the blue color span according to the theme.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-            if (darkTheme) {
+            // Get the current theme status.
+            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+            // Set the color spans according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+                redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
             } else {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+                redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
             }
 
             // Set the domain name to be blue.

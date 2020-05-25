@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -34,6 +33,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -104,19 +104,8 @@ class CreateBookmarkDialog: DialogFragment() {
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
 
-        // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        // Get the screenshot and theme preferences.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
-        val darkTheme = sharedPreferences.getBoolean("dark_theme", false)
-
-        // Use an alert dialog builder to create the dialog and set the style according to the theme.
-        val dialogBuilder = if (darkTheme) {
-            AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogDark)
-        } else {
-            AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogLight)
-        }
+        // Use an alert dialog builder to create the dialog.
+        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.create_bookmark)
@@ -142,6 +131,13 @@ class CreateBookmarkDialog: DialogFragment() {
         // Create an alert dialog from the builder.
         val alertDialog = dialogBuilder.create()
 
+
+        // Get a handle for the shared preferences.
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+        // Get the screenshot preference.
+        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -151,8 +147,8 @@ class CreateBookmarkDialog: DialogFragment() {
         alertDialog.show()
 
         // Get a handle for the edit texts.
-        val createBookmarkNameEditText = alertDialog.findViewById<EditText>(R.id.create_bookmark_name_edittext)
-        val createBookmarkUrlEditText = alertDialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)
+        val createBookmarkNameEditText = alertDialog.findViewById<EditText>(R.id.create_bookmark_name_edittext)!!
+        val createBookmarkUrlEditText = alertDialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)!!
 
         // Set the initial texts for the edit texts.
         createBookmarkNameEditText.setText(titleString)

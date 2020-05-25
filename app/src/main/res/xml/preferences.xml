@@ -265,7 +265,6 @@
             android:entries="@array/download_location_entries"
             android:entryValues="@array/download_location_entry_values"
             android:defaultValue="@string/download_location_default_value"
-            android:inputType="textUri"
             android:icon="?attr/downloadIcon" />
 
         <EditTextPreference
@@ -306,11 +305,13 @@
             android:summary="@string/display_additional_app_bar_icons_summary"
             android:defaultValue="false" />
 
-        <SwitchPreference
-            android:key="dark_theme"
-            android:title="@string/dark_theme"
-            android:summary="@string/dark_theme_summary"
-            android:defaultValue="false" />
+        <ListPreference
+            android:key="app_theme"
+            android:title="@string/app_theme"
+            android:entries="@array/app_theme_entries"
+            android:entryValues="@array/app_theme_entry_values"
+            android:defaultValue="@string/app_theme_default_value"
+            android:icon="?attr/appThemeIcon" />
 
         <SwitchPreference
             android:key="night_mode"

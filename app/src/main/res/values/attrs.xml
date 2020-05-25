@@ -19,46 +19,36 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <resources>
-    <attr name="appBarTheme" format="reference" />
-    <attr name="appBarTextTheme" format="reference" />
-    <attr name="dialogTabLayoutTheme" format="reference" />
-    <attr name="popupsTheme" format="reference" />
-    <attr name="tabLayoutTheme" format="reference" />
+    <!-- Colors. -->
+    <attr name="aboutBackground" format="color" />
+    <attr name="activatedListViewItemBackground" format="color" />
+    <attr name="blueTextColor" format="color" />
+    <attr name="blueTitleTextColor" format="color" />
+    <attr name="buttonBackgroundColorSelector" format="color" />
+    <attr name="buttonTextColorSelector" format="color" />
+    <attr name="redText" format="color" />
+    <attr name="sslTitle" format="color" />
+    <attr name="spinnerTextColorSelector" format="color" />
 
-    <attr name="aboutBackground" format="reference" />
-    <attr name="aboutTitle" format="reference" />
-    <attr name="aboutText" format="reference" />
-    <attr name="appbarSpinnerTextColorSelector" format="reference" />
-    <attr name="buttonBackgroundColorSelector" format="reference" />
-    <attr name="buttonTextColorSelector" format="reference" />
-    <attr name="mainStatusBarBackground" format="reference" />
-    <attr name="redText" format="reference" />
-    <attr name="sslTitle" format="reference" />
-    <attr name="sslHeader" format="reference" />
-    <attr name="spinnerHeaderTextColor" format="reference" />
-    <attr name="spinnerBackground" format="reference" />
-    <attr name="spinnerTextColorSelector" format="reference" />
-    <attr name="urlHistoryText" format="reference" />
-    <attr name="webViewBackground" format="reference" />
+    <!-- Tint Colors. -->
+    <attr name="addTabIconTintColor" format="color" />
+    <attr name="domainSettingsIconTintColor" format="color" />
+    <attr name="findOnPageIconTintColor" format="color" />
+    <attr name="navigationIconTintColor" format="color" />
+    <attr name="progressTintColor" format="color" />
 
-    <attr name="navigationHeaderBackground" format="reference" />
-    <attr name="navigationHeaderTextColor" format="reference" />
-
-    <attr name="addTabIconTintColor" format="reference" />
-    <attr name="domainSettingsIconTintColor" format="reference" />
-    <attr name="findOnPageIconTintColor" format="reference" />
-    <attr name="navigationIconTintColor" format="reference" />
-    <attr name="progressTintColor" format="reference" />
-    <attr name="viewSourceIconTintColor" format="reference" />
-
+    <!-- Drawables.  -->
     <attr name="listSelectorDrawable" format="reference" />
 
+    <!-- Icons. -->
     <attr name="aboutIcon" format="reference" />
-    <attr name="addBookmarkIcon" format="reference" />
-    <attr name="addFolderIcon" format="reference" />
     <attr name="addIcon" format="reference" />
+    <attr name="appThemeIcon" format="reference" />
+    <attr name="bookmarksIcon" format="reference" />
     <attr name="clearIcon" format="reference" />
     <attr name="copyIcon" format="reference" />
+    <attr name="createBookmarkIcon" format="reference" />
+    <attr name="createFolderIcon" format="reference" />
     <attr name="deleteIcon" format="reference" />
     <attr name="downloadIcon" format="reference" />
     <attr name="editIcon" format="reference" />

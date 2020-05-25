@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,13 +21,12 @@ package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -39,6 +38,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.webkit.WebViewCompat;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
@@ -101,11 +101,8 @@ public class AboutTabFragment extends Fragment {
         Context context = getContext();
         assert context != null;
 
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        // Get the theme preference.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
         // Load the tabs.  Tab numbers start at 0.
         if (tabNumber == 0) {  // Load the about tab.
@@ -230,8 +227,8 @@ public class AboutTabFragment extends Fragment {
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;
 
-            // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
-            if (darkTheme) {
+            // Set the blue color span according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
@@ -292,13 +289,13 @@ public class AboutTabFragment extends Fragment {
                 securityPatchTextView.setVisibility(View.GONE);
             }
 
-            // Only populate the WebView provider if the SDK >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
+            // Only populate the WebView provider if the SDK >= 21.
+            if (Build.VERSION.SDK_INT >= 21) {
                 // Create the WebView provider label.
                 String webViewProviderLabel = getString(R.string.webview_provider) + "  ";
 
                 // Get the current WebView package info.
-                PackageInfo webViewPackageInfo = WebView.getCurrentWebViewPackage();
+                PackageInfo webViewPackageInfo = WebViewCompat.getCurrentWebViewPackage(context);
 
                 // Remove the warning below that the package info might be null.
                 assert webViewPackageInfo != null;
@@ -314,7 +311,7 @@ public class AboutTabFragment extends Fragment {
 
                 // Display the WebView provider.
                 webViewProviderTextView.setText(webViewProviderStringBuilder);
-            } else {  // The API < 26.
+            } else {  // The API < 21.
                 // Hide the WebView provider text view.
                 webViewProviderTextView.setVisibility(View.GONE);
             }
@@ -415,7 +412,7 @@ public class AboutTabFragment extends Fragment {
             WebView tabWebView = (WebView) tabLayout;
 
             // Load the tabs according to the theme.
-            if (darkTheme) {  // The dark theme is applied.
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The dark theme is applied.
                 // Set the background color.  The deprecated `.getColor()` must be used until the minimum API >= 23.
                 tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 

@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -46,6 +48,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     // Define the class variables.
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesListener;
     private SharedPreferences savedPreferences;
+    private int currentThemeStatus;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -61,6 +64,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Get a handle for the context and the resources.
         Context context = activity.getApplicationContext();
         Resources resources = getResources();
+
+        // Get the current theme status.
+        currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
         // Initialize savedPreferences.
         savedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -105,7 +111,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
         Preference scrollAppBarPreference = findPreference("scroll_app_bar");
         Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
-        Preference darkThemePreference = findPreference("dark_theme");
+        Preference appThemePreference = findPreference("app_theme");
         Preference nightModePreference = findPreference("night_mode");
         Preference wideViewportPreference = findPreference("wide_viewport");
         Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
@@ -150,7 +156,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert swipeToRefreshPreference != null;
         assert scrollAppBarPreference != null;
         assert displayAdditionalAppBarIconsPreference != null;
-        assert darkThemePreference != null;
+        assert appThemePreference != null;
         assert nightModePreference != null;
         assert wideViewportPreference != null;
         assert displayWebpageImagesPreference != null;
@@ -172,7 +178,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
-        boolean darkTheme = savedPreferences.getBoolean("dark_theme", false);
         boolean nightMode = savedPreferences.getBoolean("night_mode", false);
 
         // Only enable the third-party cookies preference if first-party cookies are enabled and API >= 21.
@@ -330,6 +335,29 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
 
 
+        // Get the theme string arrays.
+        String[] appThemeEntriesStringArray = resources.getStringArray(R.array.app_theme_entries);
+        String[] appThemeEntryValuesStringArray = resources.getStringArray(R.array.app_theme_entry_values);
+
+        // Get the current theme.
+        String currentAppTheme = savedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
+
+        // Define a theme entry number.
+        int appThemeEntryNumber;
+
+        // Get the theme entry number that matches the current theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+        if (currentAppTheme.equals(appThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+            appThemeEntryNumber = 1;
+        } else if (currentAppTheme.equals(appThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+            appThemeEntryNumber = 2;
+        } else {  // The system default theme is selected.
+            appThemeEntryNumber = 0;
+        }
+
+        // Set the current theme as the summary text for the preference.
+        appThemePreference.setSummary(appThemeEntriesStringArray[appThemeEntryNumber]);
+
+
         // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
         javaScriptPreference.setEnabled(!nightMode);
 
@@ -344,10 +372,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (firstPartyCookiesEnabled) {
             firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
         } else {
-            if (darkTheme) {
-                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
             } else {
-                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
             }
         }
 
@@ -356,17 +384,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (thirdPartyCookiesEnabled) {
                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
             } else {
-                if (darkTheme) {
-                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
                 } else {
-                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
                 }
             }
         } else {
-            if (darkTheme) {
-                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_night);
             } else {
-                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
+                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_day);
             }
         }
 
@@ -375,17 +403,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (savedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {  // DOM storage is disabled.
-                if (darkTheme) {
-                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
                 } else {
-                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
                 }
             }
         } else {  // The preference is disabled.  The icon should be ghosted.
-            if (darkTheme) {
-                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
             } else {
-                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
+                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_day);
             }
         }
 
@@ -394,283 +422,283 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (savedPreferences.getBoolean("save_form_data", false)) {
                 formDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
-                if (darkTheme) {
-                    formDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    formDataPreference.setIcon(R.drawable.form_data_disabled_night);
                 } else {
-                    formDataPreference.setIcon(R.drawable.form_data_disabled_light);
+                    formDataPreference.setIcon(R.drawable.form_data_disabled_day);
                 }
             }
         }
 
         // Set the custom user agent icon.
         if (customUserAgentPreference.isEnabled()) {
-            if (darkTheme) {
-                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_night);
             } else {
-                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_light);
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_night);
             } else {
-                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_day);
             }
         }
 
         // Set the incognito mode icon.
         if (savedPreferences.getBoolean("incognito_mode", false)) {
-            if (darkTheme) {
-                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_night);
             } else {
-                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_light);
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_night);
             } else {
-                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_light);
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_day);
             }
         }
 
         // Set the Do Not Track icon.
         if (savedPreferences.getBoolean("do_not_track", false)) {
-            if (darkTheme) {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_night);
             } else {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_light);
+                doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_night);
             } else {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_light);
+                doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_day);
             }
         }
 
         // Set the allow screenshots icon.
         if (savedPreferences.getBoolean("allow_screenshots", false)) {
-            if (darkTheme) {
-                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_night);
             } else {
-                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_light);
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_night);
             } else {
-                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_light);
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_day);
             }
         }
 
         // Set the EasyList icon.
         if (savedPreferences.getBoolean("easylist", true)) {
-            if (darkTheme) {
-                easyListPreference.setIcon(R.drawable.block_ads_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                easyListPreference.setIcon(R.drawable.block_ads_enabled_night);
             } else {
-                easyListPreference.setIcon(R.drawable.block_ads_enabled_light);
+                easyListPreference.setIcon(R.drawable.block_ads_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                easyListPreference.setIcon(R.drawable.block_ads_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                easyListPreference.setIcon(R.drawable.block_ads_disabled_night);
             } else {
-                easyListPreference.setIcon(R.drawable.block_ads_disabled_light);
+                easyListPreference.setIcon(R.drawable.block_ads_disabled_day);
             }
         }
 
         // Set the EasyPrivacy icon.
         if (savedPreferences.getBoolean("easyprivacy", true)) {
-            if (darkTheme) {
-                easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_night);
             } else {
-                easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
+                easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_night);
             } else {
-                easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
+                easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_day);
             }
         }
 
         // Set the Fanboy lists icons.
         if (fanboyAnnoyanceListEnabled) {
-            if (darkTheme) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 // Set the Fanboy annoyance list icon.
-                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_dark);
+                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_night);
 
                 // Set the Fanboy social blocking list icon.
-                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_dark);
+                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_night);
             } else {
                 // Set the Fanboy annoyance list icon.
-                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_light);
+                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_day);
 
                 // Set the Fanboy social blocking list icon.
-                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_light);
+                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_day);
             }
         } else {
-            if (darkTheme) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 // Set the Fanboy annoyance list icon.
-                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_dark);
+                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_night);
 
                 // Set the Fanboy social blocking list icon.
                 if (fanboySocialBlockingEnabled) {
-                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_dark);
+                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_night);
                 } else {
-                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
+                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_night);
                 }
             } else {
                 // Set the Fanboy annoyance list icon.
-                fanboyAnnoyanceListPreference.setIcon(R.drawable.block_ads_disabled_light);
+                fanboyAnnoyanceListPreference.setIcon(R.drawable.block_ads_disabled_day);
 
                 // Set the Fanboy social blocking list icon.
                 if (fanboySocialBlockingEnabled) {
-                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_light);
+                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_day);
                 } else {
-                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
+                    fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_day);
                 }
             }
         }
 
         // Set the UltraList icon.
         if (savedPreferences.getBoolean("ultralist", true)){
-            if (darkTheme) {
-                ultraListPreference.setIcon(R.drawable.block_ads_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                ultraListPreference.setIcon(R.drawable.block_ads_enabled_night);
             } else {
-                ultraListPreference.setIcon(R.drawable.block_ads_enabled_light);
+                ultraListPreference.setIcon(R.drawable.block_ads_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                ultraListPreference.setIcon(R.drawable.block_ads_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                ultraListPreference.setIcon(R.drawable.block_ads_disabled_night);
             } else {
-                ultraListPreference.setIcon(R.drawable.block_ads_disabled_light);
+                ultraListPreference.setIcon(R.drawable.block_ads_disabled_day);
             }
         }
 
         // Set the UltraPrivacy icon.
         if (savedPreferences.getBoolean("ultraprivacy", true)) {
-            if (darkTheme) {
-                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_night);
             } else {
-                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_night);
             } else {
-                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_day);
             }
         }
 
         // Set the block all third-party requests icon.
         if (savedPreferences.getBoolean("block_all_third_party_requests", false)) {
-            if (darkTheme) {
-                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_night);
             } else {
-                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_light);
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_night);
             } else {
-                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_day);
             }
         }
 
         // Set the Google Analytics icon according to the theme.
         if (savedPreferences.getBoolean("google_analytics", true)) {
-            if (darkTheme) {
-                googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_night);
             } else {
-                googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_night);
             } else {
-                googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_day);
             }
         }
 
         // Set the Facebook Click IDs icon according to the theme.
         if (savedPreferences.getBoolean("facebook_click_ids", true)) {
-            if (darkTheme) {
-                facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_night);
             } else {
-                facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_night);
             } else {
-                facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_day);
             }
         }
 
         // Set the Twitter AMP redirects icon according to the theme.
         if (savedPreferences.getBoolean("twitter_amp_redirects", true)) {
-            if (darkTheme) {
-                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_night);
             } else {
-                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_night);
             } else {
-                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_day);
             }
         }
 
         // Set the search custom URL icon.
         if (searchCustomURLPreference.isEnabled()) {
-            if (darkTheme) {
-                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_night);
             } else {
-                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_night);
             } else {
-                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_day);
             }
         }
 
         // Set the Proxy icons according to the theme and status.
         if (proxyString.equals("None")) {  // Proxying is disabled.
-            if (darkTheme) {  // Dark theme.
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // Dark theme.
                 // Set the main proxy icon to be disabled.
-                proxyPreference.setIcon(R.drawable.proxy_disabled_dark);
+                proxyPreference.setIcon(R.drawable.proxy_disabled_night);
 
                 // Set the custom proxy URL icon to be ghosted.
-                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_night);
             } else {  // Light theme.
                 // Set the main proxy icon to be disabled.
-                proxyPreference.setIcon(R.drawable.proxy_disabled_light);
+                proxyPreference.setIcon(R.drawable.proxy_disabled_day);
 
                 // Set the custom proxy URL icon to be ghosted.
-                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
+                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_day);
             }
         } else {  // Proxying is enabled.
-            if (darkTheme) {  // Dark theme.
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // Dark theme.
                 // Set the main proxy icon to be enabled.
-                proxyPreference.setIcon(R.drawable.proxy_enabled_dark);
+                proxyPreference.setIcon(R.drawable.proxy_enabled_night);
 
                 // Set the custom proxy URL icon according to its status.
                 if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
-                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_dark);
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_night);
                 } else {  // Custom proxy is disabled.
-                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_night);
                 }
             } else {  // Light theme.
                 // Set the main proxy icon to be enabled.
-                proxyPreference.setIcon(R.drawable.proxy_enabled_light);
+                proxyPreference.setIcon(R.drawable.proxy_enabled_day);
 
                 // Set the custom proxy URL icon according to its status.
                 if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
-                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_light);
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_day);
                 } else {  // Custom proxy is disabled.
-                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_day);
                 }
             }
         }
@@ -678,45 +706,45 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Set the full screen browsing mode icons.
         if (fullScreenBrowsingMode) {  // Full screen browsing mode is enabled.
             // Set the `fullScreenBrowsingModePreference` icon according to the theme.
-            if (darkTheme) {
-                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_night);
             } else {
-                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_day);
             }
 
             // Set the hide app bar icon.
             if (savedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
                 // Set the icon according to the theme.
-                if (darkTheme) {
-                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
                 } else {
-                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
                 }
             } else {  // Hide app bar is disabled.
                 // Set the icon according to the theme.
-                if (darkTheme) {
-                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
                 } else {
-                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_day);
                 }
             }
         } else {  // Full screen browsing mode is disabled.
             // Set the icons according to the theme.
-            if (darkTheme) {
-                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
-                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_night);
+                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_night);
             } else {
-                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
-                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_light);
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_day);
+                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_day);
             }
         }
 
         // Set the clear everything preference icon.
         if (clearEverything) {
-            if (darkTheme) {
-                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_night);
             } else {
-                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_light);
+                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_day);
             }
         } else {
             clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
@@ -724,10 +752,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the clear cookies preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_cookies", true)) {
-            if (darkTheme) {
-                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
             } else {
-                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
+                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_day);
             }
         } else {
             clearCookiesPreference.setIcon(R.drawable.cookies_warning);
@@ -735,10 +763,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the clear DOM storage preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_dom_storage", true)) {
-            if (darkTheme) {
-                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
             } else {
-                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
+                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_day);
             }
         } else {
             clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
@@ -747,10 +775,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Set the clear form data preference icon if the API < 26.  It has no effect on newer versions of Android.
         if (Build.VERSION.SDK_INT < 26) {
             if (clearEverything || savedPreferences.getBoolean("clear_form_data", true)) {
-                if (darkTheme) {
-                    clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                    clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
                 } else {
-                    clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                    clearFormDataPreference.setIcon(R.drawable.form_data_cleared_day);
                 }
             } else {
                 clearFormDataPreference.setIcon(R.drawable.form_data_warning);
@@ -759,10 +787,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the clear cache preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_cache", true)) {
-            if (darkTheme) {
-                clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                clearCachePreference.setIcon(R.drawable.cache_cleared_night);
             } else {
-                clearCachePreference.setIcon(R.drawable.cache_cleared_light);
+                clearCachePreference.setIcon(R.drawable.cache_cleared_day);
             }
         } else {
             clearCachePreference.setIcon(R.drawable.cache_warning);
@@ -770,28 +798,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the download custom location icon.
         if (downloadCustomLocationPreference.isEnabled()) {
-            if (darkTheme) {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_night);
             } else {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_light);
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_night);
             } else {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_light);
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_day);
             }
         }
 
         // Set the open intents in new tab preference icon.
         if (savedPreferences.getBoolean("open_intents_in_new_tab", true)) {
-            if (darkTheme) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_dark);
             } else {
                 openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_light);
             }
         } else {
-            if (darkTheme) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_dark);
             } else {
                 openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_light);
@@ -800,98 +828,91 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the swipe to refresh preference icon.
         if (savedPreferences.getBoolean("swipe_to_refresh", true)) {
-            if (darkTheme) {
-                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_night);
             } else {
-                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_light);
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_night);
             } else {
-                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_light);
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_day);
             }
         }
 
         // Set the scroll app bar preference icon.
         if (savedPreferences.getBoolean("scroll_app_bar", true)) {
-            if (darkTheme) {
-                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
             } else {
-                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
             } else {
-                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_day);
             }
         }
 
         // Set the display additional app bar icons preference icon.
         if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-            if (darkTheme) {
-                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_night);
             } else {
-                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_light);
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_night);
             } else {
-                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_day);
             }
-        }
-
-        // Set the dark theme preference icon.
-        if (savedPreferences.getBoolean("dark_theme", false)) {
-            darkThemePreference.setIcon(R.drawable.theme_dark);
-        } else {
-            darkThemePreference.setIcon(R.drawable.theme_light);
         }
 
         // Set the night mode preference icon.
         if (nightMode) {
-            if (darkTheme) {
-                nightModePreference.setIcon(R.drawable.night_mode_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                nightModePreference.setIcon(R.drawable.night_mode_enabled_night);
             } else {
-                nightModePreference.setIcon(R.drawable.night_mode_enabled_light);
+                nightModePreference.setIcon(R.drawable.night_mode_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                nightModePreference.setIcon(R.drawable.night_mode_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                nightModePreference.setIcon(R.drawable.night_mode_disabled_night);
             } else {
-                nightModePreference.setIcon(R.drawable.night_mode_disabled_light);
+                nightModePreference.setIcon(R.drawable.night_mode_disabled_day);
             }
         }
 
         // Set the wide viewport preference icon.
         if (savedPreferences.getBoolean("wide_viewport", true)) {
-            if (darkTheme) {
-                wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_night);
             } else {
-                wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_light);
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_night);
             } else {
-                wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_light);
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_day);
             }
         }
 
         // Set the display webpage images preference icon.
         if (savedPreferences.getBoolean("display_webpage_images", true)) {
-            if (darkTheme) {
-                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_night);
             } else {
-                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
+                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_day);
             }
         } else {
-            if (darkTheme) {
-                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_dark);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_night);
             } else {
-                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_light);
+                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_day);
             }
         }
 
@@ -912,10 +933,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if (sharedPreferences.getBoolean("dom_storage", false)) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {
-                            if (darkTheme) {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
                             } else {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
                             }
                         }
                     } else {  // The JavaScript preference is disabled.
@@ -926,10 +947,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         domStoragePreference.setEnabled(false);
 
                         // Set the icon for DOM storage preference to be ghosted.
-                        if (darkTheme) {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
                         } else {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
+                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_day);
                         }
                     }
                     break;
@@ -945,32 +966,32 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                             } else {
-                                if (darkTheme) {
-                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
                                 } else {
-                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
                                 }
                             }
                         } else {
-                            if (darkTheme) {
-                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_night);
                             } else {
-                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
+                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_day);
                             }
                         }
                     } else {  // `first_party_cookies` is `false`.
                         // Update the icon for `first_party_cookies`.
-                        if (darkTheme) {
-                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
                         } else {
-                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
                         }
 
                         // Set the icon for `third_party_cookies` to be ghosted.
-                        if (darkTheme) {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_night);
                         } else {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
+                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_day);
                         }
                     }
 
@@ -983,10 +1004,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                         thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                     } else {
-                        if (darkTheme) {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
                         } else {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
                         }
                     }
                     break;
@@ -996,10 +1017,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     if (sharedPreferences.getBoolean("dom_storage", false)) {
                         domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                     } else {
-                        if (darkTheme) {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
                         } else {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
                         }
                     }
                     break;
@@ -1010,10 +1031,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     if (sharedPreferences.getBoolean("save_form_data", false)) {
                         formDataPreference.setIcon(R.drawable.form_data_enabled);
                     } else {
-                        if (darkTheme) {
-                            formDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            formDataPreference.setIcon(R.drawable.form_data_disabled_night);
                         } else {
-                            formDataPreference.setIcon(R.drawable.form_data_disabled_light);
+                            formDataPreference.setIcon(R.drawable.form_data_disabled_day);
                         }
                     }
                     break;
@@ -1038,10 +1059,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             customUserAgentPreference.setEnabled(false);
 
                             // Set the custom user agent preference icon according to the theme.
-                            if (darkTheme) {
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_night);
                             } else {
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_day);
                             }
                             break;
 
@@ -1053,10 +1074,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             customUserAgentPreference.setEnabled(true);
 
                             // Set the custom user agent preference icon according to the theme.
-                            if (darkTheme) {
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_night);
                             } else {
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_light);
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_day);
                             }
                             break;
 
@@ -1068,10 +1089,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             customUserAgentPreference.setEnabled(false);
 
                             // Set the custom user agent preference icon according to the theme.
-                            if (darkTheme) {
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_night);
                             } else {
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_day);
                             }
                     }
                     break;
@@ -1084,16 +1105,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "incognito_mode":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("incognito_mode", false)) {
-                        if (darkTheme) {
-                            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_night);
                         } else {
-                            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_light);
+                            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_night);
                         } else {
-                            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_light);
+                            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_day);
                         }
                     }
                     break;
@@ -1101,16 +1122,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "do_not_track":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("do_not_track", false)) {
-                        if (darkTheme) {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_night);
                         } else {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_light);
+                            doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_night);
                         } else {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_light);
+                            doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_day);
                         }
                     }
 
@@ -1119,16 +1140,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "allow_screenshots":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("allow_screenshots", false)) {
-                        if (darkTheme) {
-                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_night);
                         } else {
-                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_light);
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_night);
                         } else {
-                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_light);
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_day);
                         }
                     }
 
@@ -1160,16 +1181,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "easylist":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("easylist", true)) {
-                        if (darkTheme) {
-                            easyListPreference.setIcon(R.drawable.block_ads_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            easyListPreference.setIcon(R.drawable.block_ads_enabled_night);
                         } else {
-                            easyListPreference.setIcon(R.drawable.block_ads_enabled_light);
+                            easyListPreference.setIcon(R.drawable.block_ads_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            easyListPreference.setIcon(R.drawable.block_ads_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            easyListPreference.setIcon(R.drawable.block_ads_disabled_night);
                         } else {
-                            easyListPreference.setIcon(R.drawable.block_ads_disabled_light);
+                            easyListPreference.setIcon(R.drawable.block_ads_disabled_day);
                         }
                     }
                     break;
@@ -1177,16 +1198,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "easyprivacy":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("easyprivacy", true)) {
-                        if (darkTheme) {
-                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_night);
                         } else {
-                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
+                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_night);
                         } else {
-                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
+                            easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_day);
                         }
                     }
                     break;
@@ -1197,39 +1218,39 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the Fanboy icons.
                     if (currentFanboyAnnoyanceList) {  // Fanboy's annoyance list is enabled.
-                        if (darkTheme) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             // Update the Fanboy's annoyance list icon.
-                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_dark);
+                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_night);
 
                             // Update the Fanboy's social blocking list icon.
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_dark);
+                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_night);
                         } else {
                             // Update the Fanboy's annoyance list icon.
-                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_light);
+                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_day);
 
                             // Update the Fanboy's social blocking list icon.
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_light);
+                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_day);
                         }
                     } else {  // Fanboy's annoyance list is disabled.
-                        if (darkTheme) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             // Update the Fanboy's annoyance list icon.
-                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_dark);
+                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_night);
 
                             // Update the Fanboy's social blocking list icon.
                             if (currentFanboySocialBlockingList) {
-                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_dark);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_night);
                             } else {
-                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_night);
                             }
                         } else {
                             // Update the Fanboy's annoyance list icon.
-                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_light);
+                            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_day);
 
                             // Update the Fanboy's social blocking list icon.
                             if (currentFanboySocialBlockingList) {
-                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_light);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_day);
                             } else {
-                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_day);
                             }
                         }
                     }
@@ -1241,16 +1262,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "fanboys_social_blocking_list":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("fanboys_social_blocking_list", true)) {
-                        if (darkTheme) {
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_night);
                         } else {
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_light);
+                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_night);
                         } else {
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
+                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_day);
                         }
                     }
                     break;
@@ -1258,16 +1279,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "ultralist":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("ultralist", true)) {
-                        if (darkTheme) {
-                            ultraListPreference.setIcon(R.drawable.block_ads_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            ultraListPreference.setIcon(R.drawable.block_ads_enabled_night);
                         } else {
-                            ultraListPreference.setIcon(R.drawable.block_ads_enabled_light);
+                            ultraListPreference.setIcon(R.drawable.block_ads_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            ultraListPreference.setIcon(R.drawable.block_ads_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            ultraListPreference.setIcon(R.drawable.block_ads_disabled_night);
                         } else {
-                            ultraListPreference.setIcon(R.drawable.block_ads_disabled_light);
+                            ultraListPreference.setIcon(R.drawable.block_ads_disabled_day);
                         }
                     }
                     break;
@@ -1275,16 +1296,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "ultraprivacy":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("ultraprivacy", true)) {
-                        if (darkTheme) {
-                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_night);
                         } else {
-                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_night);
                         } else {
-                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_day);
                         }
                     }
                     break;
@@ -1292,16 +1313,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "block_all_third_party_requests":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("block_all_third_party_requests", false)) {
-                        if (darkTheme) {
-                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_night);
                         } else {
-                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_light);
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_night);
                         } else {
-                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_day);
                         }
                     }
                     break;
@@ -1309,16 +1330,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "google_analytics":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("google_analytics", true)) {
-                        if (darkTheme) {
-                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_night);
                         } else {
-                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_night);
                         } else {
-                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_day);
                         }
                     }
                     break;
@@ -1326,16 +1347,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "facebook_click_ids":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("facebook_click_ids", true)) {
-                        if (darkTheme) {
-                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_night);
                         } else {
-                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_night);
                         } else {
-                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_day);
                         }
                     }
                     break;
@@ -1343,16 +1364,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "twitter_amp_redirects":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("twitter_amp_redirects", true)) {
-                        if (darkTheme) {
-                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_night);
                         } else {
-                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_night);
                         } else {
-                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_day);
                         }
                     }
                     break;
@@ -1370,10 +1391,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         searchCustomURLPreference.setEnabled(true);
 
                         // Set the `searchCustomURLPreference` according to the theme.
-                        if (darkTheme) {
-                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_night);
                         } else {
-                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
+                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_day);
                         }
                     } else {  // `Custom URL` is not selected.
                         // Set the summary text to `newSearchString`.
@@ -1383,10 +1404,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         searchCustomURLPreference.setEnabled(false);
 
                         // Set the `searchCustomURLPreference` according to the theme.
-                        if (darkTheme) {
-                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_night);
                         } else {
-                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_day);
                         }
                     }
                     break;
@@ -1428,39 +1449,39 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the icons.
                     if (currentProxyString.equals("None")) {  // Proxying is disabled.
-                        if (darkTheme) {  // Dark theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // Dark theme.
                             // Set the main proxy icon to be disabled
-                            proxyPreference.setIcon(R.drawable.proxy_disabled_dark);
+                            proxyPreference.setIcon(R.drawable.proxy_disabled_night);
 
                             // Set the custom proxy URL icon to be ghosted.
-                            proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                            proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_night);
                         } else {  // Light theme.
                             // Set the main proxy icon to be disabled.
-                            proxyPreference.setIcon(R.drawable.proxy_disabled_light);
+                            proxyPreference.setIcon(R.drawable.proxy_disabled_day);
 
                             // Set the custom proxy URL icon to be ghosted.
-                            proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
+                            proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_day);
                         }
                     } else {  // Proxying is enabled.
-                        if (darkTheme) {  // Dark theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // Dark theme.
                             // Set the main proxy icon to be enabled.
-                            proxyPreference.setIcon(R.drawable.proxy_enabled_dark);
+                            proxyPreference.setIcon(R.drawable.proxy_enabled_night);
 
                             /// Set the custom proxy URL icon according to its status.
                             if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
-                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_dark);
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_night);
                             } else {  // Custom proxy is disabled.
-                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_night);
                             }
                         } else {  // Light theme.
                             // Set the main proxy icon to be enabled.
-                            proxyPreference.setIcon(R.drawable.proxy_enabled_light);
+                            proxyPreference.setIcon(R.drawable.proxy_enabled_day);
 
                             // Set the custom proxy URL icon according to its status.
                             if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
-                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_light);
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_day);
                             } else {  // Custom proxy is disabled.
-                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_day);
                             }
                         }
                     }
@@ -1474,36 +1495,36 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "full_screen_browsing_mode":
                     if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {  // Full screen browsing is enabled.
                         // Set the full screen browsing mode preference icon according to the theme.
-                        if (darkTheme) {
-                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_night);
                         } else {
-                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
+                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_day);
                         }
 
                         // Set the hide app bar preference icon.
                         if (sharedPreferences.getBoolean("hide_app_bar", true)) {  //  Hide app bar is enabled.
                             // Set the icon according to the theme.
-                            if (darkTheme) {
-                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
                             } else {
-                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
                             }
                         } else {  // Hide app bar is disabled.
                             // Set the icon according to the theme.
-                            if (darkTheme) {
-                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
                             } else {
-                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_day);
                             }
                         }
                     } else {  // Full screen browsing is disabled.
                         // Update the icons according to the theme.
-                        if (darkTheme) {
-                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
-                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_night);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_night);
                         } else {
-                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
-                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_light);
+                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_day);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_day);
                         }
                     }
                     break;
@@ -1512,17 +1533,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Update the icon.
                     if (sharedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
                         // Set the icon according to the theme.
-                        if (darkTheme) {
-                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
                         } else {
-                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
                         }
                     } else {  // Hide app bar is disabled.
                         // Set the icon according to the theme.
-                        if (darkTheme) {
-                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
                         } else {
-                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_day);
                         }
                     }
                     break;
@@ -1539,10 +1560,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the `clearEverythingPreference` icon.
                     if (newClearEverythingBoolean) {
-                        if (darkTheme) {
-                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_night);
                         } else {
-                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_light);
+                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_day);
                         }
                     } else {
                         clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
@@ -1550,10 +1571,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the `clearCookiesPreference` icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cookies", true)) {
-                        if (darkTheme) {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
                         } else {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_day);
                         }
                     } else {
                         clearCookiesPreference.setIcon(R.drawable.cookies_warning);
@@ -1561,10 +1582,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the `clearDomStoragePreference` icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                        if (darkTheme) {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
                         } else {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_day);
                         }
                     } else {
                         clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
@@ -1573,10 +1594,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Update the clear form data preference icon if the API < 26.
                     if (Build.VERSION.SDK_INT < 26) {
                         if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_form_data", true)) {
-                            if (darkTheme) {
-                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
                             } else {
-                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_day);
                             }
                         } else {
                             clearFormDataPreference.setIcon(R.drawable.form_data_warning);
@@ -1585,10 +1606,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the `clearCachePreference` icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cache", true)) {
-                        if (darkTheme) {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearCachePreference.setIcon(R.drawable.cache_cleared_night);
                         } else {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared_light);
+                            clearCachePreference.setIcon(R.drawable.cache_cleared_day);
                         }
                     } else {
                         clearCachePreference.setIcon(R.drawable.cache_warning);
@@ -1598,10 +1619,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_cookies":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_cookies", true)) {
-                        if (darkTheme) {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
                         } else {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_day);
                         }
                     } else {
                         clearCookiesPreference.setIcon(R.drawable.cookies_warning);
@@ -1611,10 +1632,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_dom_storage":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                        if (darkTheme) {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
                         } else {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_day);
                         }
                     } else {
                         clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
@@ -1625,10 +1646,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_form_data":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_form_data", true)) {
-                        if (darkTheme) {
-                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
                         } else {
-                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_day);
                         }
                     } else {
                         clearFormDataPreference.setIcon(R.drawable.form_data_warning);
@@ -1638,10 +1659,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_cache":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_cache", true)) {
-                        if (darkTheme) {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            clearCachePreference.setIcon(R.drawable.cache_cleared_night);
                         } else {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared_light);
+                            clearCachePreference.setIcon(R.drawable.cache_cleared_day);
                         }
                     } else {
                         clearCachePreference.setIcon(R.drawable.cache_warning);
@@ -1674,16 +1695,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the download custom location icon.
                     if (downloadCustomLocationPreference.isEnabled()) {
-                        if (darkTheme) {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_night);
                         } else {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_light);
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_night);
                         } else {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_light);
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_day);
                         }
                     }
                     break;
@@ -1701,13 +1722,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "open_intents_in_new_tab":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
-                        if (darkTheme) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_dark);
                         } else {
                             openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_light);
                         }
                     } else {
-                        if (darkTheme) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_dark);
                         } else {
                             openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_light);
@@ -1718,16 +1739,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "swipe_to_refresh":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
-                        if (darkTheme) {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_night);
                         } else {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_light);
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_night);
                         } else {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_light);
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_day);
                         }
                     }
                     break;
@@ -1735,16 +1756,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "scroll_app_bar":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
-                        if (darkTheme) {
-                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
                         } else {
-                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
                         } else {
-                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_day);
                         }
                     }
                     break;
@@ -1752,51 +1773,53 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "display_additional_app_bar_icons":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-                        if (darkTheme) {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_night);
                         } else {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_light);
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_night);
                         } else {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_day);
                         }
                     }
                     break;
 
-                case "dark_theme":
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean("dark_theme", false)) {
-                        darkThemePreference.setIcon(R.drawable.theme_dark);
-                    } else {
-                        darkThemePreference.setIcon(R.drawable.theme_light);
+                case "app_theme":
+                    // Get the new theme.
+                    String newAppTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
+
+                    // Update the system according to the new theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+                    if (newAppTheme.equals(appThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+                        // Update the theme preference summary text.
+                        appThemePreference.setSummary(appThemeEntriesStringArray[1]);
+
+                        // Apply the new theme.
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    } else if (newAppTheme.equals(appThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                        // Update the theme preference summary text.
+                        appThemePreference.setSummary(appThemeEntriesStringArray[2]);
+
+                        // Apply the new theme.
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    } else {  // The system default theme is selected.
+                        // Update the theme preference summary text.
+                        appThemePreference.setSummary(appThemeEntriesStringArray[0]);
+
+                        // Apply the new theme.
+                        if (Build.VERSION.SDK_INT >= 28) {  // The system default theme is supported.
+                            // Follow the system default theme.
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                        } else {// The system default theme is not supported.
+                            // Follow the battery saver mode.
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
+                        }
                     }
 
-                    // Create an intent to restart Privacy Browser.
-                    Intent changeThemeRestartIntent = getActivity().getParentActivityIntent();
-
-                    // Assert that the intent is not null to remove the lint error below.
-                    assert changeThemeRestartIntent != null;
-
-                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
-                    changeThemeRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                    // Create a handler to restart the activity.
-                    Handler changeThemeRestartHandler = new Handler();
-
-                    // Create a runnable to restart the activity.
-                    Runnable changeThemeRestartRunnable = () -> {
-                        // Restart the activity.
-                        startActivity(changeThemeRestartIntent);
-
-                        // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
-                        System.exit(0);
-                    };
-
-                    // Restart the activity after 150 milliseconds, so that the app has enough time to save the change to the preference.
-                    changeThemeRestartHandler.postDelayed(changeThemeRestartRunnable, 150);
+                    // Update the current theme status.
+                    currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                     break;
 
                 case "night_mode":
@@ -1806,16 +1829,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the icon.
                     if (currentNightModeBoolean) {
-                        if (darkTheme) {
-                            nightModePreference.setIcon(R.drawable.night_mode_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            nightModePreference.setIcon(R.drawable.night_mode_enabled_night);
                         } else {
-                            nightModePreference.setIcon(R.drawable.night_mode_enabled_light);
+                            nightModePreference.setIcon(R.drawable.night_mode_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            nightModePreference.setIcon(R.drawable.night_mode_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            nightModePreference.setIcon(R.drawable.night_mode_disabled_night);
                         } else {
-                            nightModePreference.setIcon(R.drawable.night_mode_disabled_light);
+                            nightModePreference.setIcon(R.drawable.night_mode_disabled_day);
                         }
                     }
 
@@ -1835,17 +1858,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if (sharedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {  // DOM storage is disabled.
-                            if (darkTheme) {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
                             } else {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
                             }
                         }
                     } else {  // The preference is disabled.  The icon should be ghosted.
-                        if (darkTheme) {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
                         } else {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
+                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_day);
                         }
                     }
                     break;
@@ -1853,16 +1876,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "wide_viewport":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("wide_viewport", true)) {
-                        if (darkTheme) {
-                            wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_night);
                         } else {
-                            wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_light);
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_night);
                         } else {
-                            wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_light);
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_day);
                         }
                     }
                     break;
@@ -1870,16 +1893,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "display_webpage_images":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("display_webpage_images", true)) {
-                        if (darkTheme) {
-                            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_night);
                         } else {
-                            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
+                            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_day);
                         }
                     } else {
-                        if (darkTheme) {
-                            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_dark);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_night);
                         } else {
-                            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_light);
+                            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_day);
                         }
                     }
                     break;

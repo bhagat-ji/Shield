@@ -18,17 +18,14 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.
-    When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/import_export_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:fitsSystemWindows="true" >
+    android:layout_width="match_parent" >
 
-    <!-- the `LinearLayout` with `orientation="vertical"` moves the content below the `AppBarLayout`. -->
+    <!-- the linear layout with `orientation="vertical"` moves the content below the app bar layout. -->
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -37,15 +34,13 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/import_export_appbarlayout"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent" >
+            android:layout_width="match_parent"
+            android:background="?android:attr/colorBackground" >
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/import_export_toolbar"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:background="?attr/colorPrimaryDark"
-                android:theme="?attr/appBarTextTheme"
-                app:popupTheme="?attr/popupsTheme" />
+                android:layout_width="match_parent" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <ScrollView
@@ -116,7 +111,6 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="10dp"
                             android:text="@string/kitkat_password_encryption_message"
-                            android:textColor="?android:textColorPrimary"
                             android:textAlignment="center" />
 
                         <!-- OpenKeychain required message. -->
@@ -127,7 +121,6 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="10dp"
                             android:text="@string/openkeychain_required"
-                            android:textColor="?android:textColorPrimary"
                             android:textAlignment="center" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -245,7 +238,6 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="5dp"
                             android:text="@string/openkeychain_import_instructions"
-                            android:textColor="?android:textColorPrimary"
                             android:textAlignment="center" />
 
                         <Button
@@ -271,7 +263,6 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
                     android:text="@string/storage_permission_explanation"
-                    android:textColor="?android:textColorPrimary"
                     android:textAlignment="center" />
             </LinearLayout>
         </ScrollView>

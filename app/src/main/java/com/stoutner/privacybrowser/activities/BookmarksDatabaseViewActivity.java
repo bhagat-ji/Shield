@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
@@ -107,8 +108,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the theme and screenshot preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        // Get the screenshot preference.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
@@ -117,11 +117,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         }
 
         // Set the activity theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
-        } else {
-            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
-        }
+        setTheme(R.style.PrivacyBrowser);
 
         // Run the default commands.
         super.onCreate(savedInstanceState);
@@ -334,8 +330,12 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                     parentFolderImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.folder_dark_blue));
                     bookmarkParentFolderTextView.setText(bookmarkParentFolder);
 
+                    // Get the current theme status.
+                    int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
                     // Set the text color according to the theme.
-                    if (darkTheme) {
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                        // This color is a little darker than the default night mode text.  But the effect is rather nice.
                         bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.gray_300));
                     } else {
                         bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
@@ -590,12 +590,6 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Get the theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Get the ID of the menu item that was selected.
         int menuItemId = menuItem.getItemId();
 
@@ -610,26 +604,29 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Update the sort by display order tracker.
                 sortByDisplayOrder = !sortByDisplayOrder;
 
-                // Get a handle for the bookmarks `ListView`.
+                // Get a handle for the bookmarks list view.
                 ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
+
+                // Get the current theme status.
+                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                 // Update the icon and display a snackbar.
                 if (sortByDisplayOrder) {  // Sort by display order.
                     // Update the icon according to the theme.
-                    if (darkTheme) {
-                        menuItem.setIcon(R.drawable.sort_selected_dark);
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                        menuItem.setIcon(R.drawable.sort_selected_night);
                     } else {
-                        menuItem.setIcon(R.drawable.sort_selected_light);
+                        menuItem.setIcon(R.drawable.sort_selected_day);
                     }
 
                     // Display a Snackbar indicating the current sort type.
                     Snackbar.make(bookmarksListView, R.string.sorted_by_display_order, Snackbar.LENGTH_SHORT).show();
                 } else {  // Sort by database id.
                     // Update the icon according to the theme.
-                    if (darkTheme) {
-                        menuItem.setIcon(R.drawable.sort_dark);
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+                        menuItem.setIcon(R.drawable.sort_night);
                     } else {
-                        menuItem.setIcon(R.drawable.sort_light);
+                        menuItem.setIcon(R.drawable.sort_day);
                     }
 
                     // Display a Snackbar indicating the current sort type.

@@ -99,7 +99,7 @@
         <activity
             android:name=".activities.MainWebViewActivity"
             android:label="@string/short_name"
-            android:theme="@style/PrivacyBrowserLight"
+            android:theme="@style/PrivacyBrowser"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="fullUser"

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,6 +49,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
@@ -136,21 +136,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         folderCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
-        // Set the style according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-        } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-        }
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_folder);
@@ -178,6 +164,12 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -195,6 +187,15 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         Spinner folderSpinner = alertDialog.findViewById(R.id.edit_folder_parent_folder_spinner);
         EditText displayOrderEditText = alertDialog.findViewById(R.id.edit_folder_display_order_edittext);
         Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Remove the incorrect lint warnings below that the views might be null.
+        assert databaseIdTextView != null;
+        assert iconRadioGroup != null;
+        assert currentIconImageView != null;
+        assert newFavoriteIconImageView != null;
+        assert nameEditText != null;
+        assert folderSpinner != null;
+        assert displayOrderEditText != null;
 
         // Store the current folder values.
         String currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
@@ -409,6 +410,12 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         EditText displayOrderEditText = alertDialog.findViewById(R.id.edit_folder_display_order_edittext);
         RadioButton currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
         Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Remove the incorrect lint warning below that the views might be null.
+        assert nameEditText != null;
+        assert folderSpinner != null;
+        assert displayOrderEditText != null;
+        assert currentIconRadioButton != null;
 
         // Get the values from the dialog.
         String newFolderName = nameEditText.getText().toString();

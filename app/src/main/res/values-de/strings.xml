@@ -588,8 +588,6 @@
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Zeigt in der App-Leiste die Icons zum Neu-Laden der Webseite und - sofern Platz vorhanden ist -
             zum Umschalten von Cookies und DOM Storage.</string>
-        <string name="dark_theme">Dunkles Thema</string>
-        <string name="dark_theme_summary">Wechseln des Themas startet Privacy Browser neu.</string>
         <string name="night_mode">Nacht-Modus</string>
         <string name="night_mode_summary">Aktivieren des Nacht-Modus aktiviert JavaScript für alle Webseiten.</string>
         <string name="wide_viewport_preference">Breiter Anzeigebereich</string>

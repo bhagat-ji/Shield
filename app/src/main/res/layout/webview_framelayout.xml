@@ -24,8 +24,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/webViewBackground" >
+    android:background="?android:attr/colorBackground" >
 
+    <!-- TODO.  The background and the visibility might not be necessary. -->
     <!-- The WebView is initially `visibility="invisible"` so that the background color matches the theme. -->
     <com.stoutner.privacybrowser.views.NestedScrollWebView
         android:id="@+id/nestedscroll_webview"

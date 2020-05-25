@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,7 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `tools:ignore="UseCompoundDrawables"` removes the lint warning about using a compound drawable, which doesn't work well with the layout options on the `ImageView`. -->
+<!-- `tools:ignore="UseCompoundDrawables"` removes the lint warning about using a compound drawable, which doesn't work well with the layout options on the image view. -->
 <LinearLayout
     android:id="@+id/bookmarks_item_linearlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"

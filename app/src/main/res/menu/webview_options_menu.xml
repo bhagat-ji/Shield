@@ -48,7 +48,7 @@
         android:title="@string/first_party_cookies"
         android:orderInCategory="400"
         android:checkable="true"
-        android:icon="@drawable/cookies_disabled_light"
+        android:icon="@drawable/cookies_disabled_day"
         app:showAsAction="never" />
 
     <item
@@ -63,7 +63,7 @@
         android:title="@string/dom_storage"
         android:orderInCategory="600"
         android:checkable="true"
-        android:icon="@drawable/dom_storage_disabled_light"
+        android:icon="@drawable/dom_storage_disabled_day"
         app:showAsAction="never" />
 
     <item

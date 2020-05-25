@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -34,7 +34,7 @@
         <item
             android:id="@+id/home"
             android:title="@string/home"
-            android:icon="@drawable/home_enabled_light"
+            android:icon="@drawable/home_enabled_day"
             android:orderInCategory="20" />
 
         <item
@@ -58,7 +58,7 @@
         <item
             android:id="@+id/open"
             android:title="@string/open"
-            android:icon="@drawable/proxy_enabled_light"
+            android:icon="@drawable/proxy_enabled_day"
             android:orderInCategory="60" />
     </group>
 
@@ -69,13 +69,13 @@
         <item
             android:id="@+id/requests"
             android:title="@string/requests"
-            android:icon="@drawable/block_ads_enabled_light"
+            android:icon="@drawable/block_ads_enabled_day"
             android:orderInCategory="70" />
 
         <item
             android:id="@+id/downloads"
             android:title="@string/downloads"
-            android:icon="@drawable/downloads_enabled_light"
+            android:icon="@drawable/downloads_enabled_day"
             android:orderInCategory="80" />
     </group>
 
@@ -98,7 +98,7 @@
         <item
             android:id="@+id/import_export"
             android:title="@string/import_export"
-            android:icon="@drawable/import_export_light"
+            android:icon="@drawable/import_export_day"
             android:orderInCategory="110" />
 
         <item
@@ -121,7 +121,7 @@
         <item
             android:id="@+id/about"
             android:title="@string/about"
-            android:icon="@drawable/about_light"
+            android:icon="@drawable/about_day"
             android:orderInCategory="140" />
     </group>
 </menu>

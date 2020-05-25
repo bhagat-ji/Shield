@@ -19,7 +19,6 @@
 package com.stoutner.privacybrowser.dialogs
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -37,6 +36,7 @@ import android.view.WindowManager
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
@@ -127,19 +127,8 @@ class EditBookmarkDatabaseViewDialog: DialogFragment() {
         // Move the cursor to the first position.
         bookmarkCursor.moveToFirst()
 
-        // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        // Get the screenshot and theme preferences.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
-        val darkTheme = sharedPreferences.getBoolean("dark_theme", false)
-
         // Use an alert dialog builder to create the dialog and set the style according to the theme.
-        val dialogBuilder = if (darkTheme) {
-            AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogDark)
-        } else {
-            AlertDialog.Builder(context, R.style.PrivacyBrowserAlertDialogLight)
-        }
+        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_bookmark)
@@ -159,6 +148,12 @@ class EditBookmarkDatabaseViewDialog: DialogFragment() {
         // Create an alert dialog from the alert dialog builder.
         val alertDialog = dialogBuilder.create()
 
+        // Get a handle for the shared preferences.
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+        // Get the screenshot preference.
+        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -168,15 +163,15 @@ class EditBookmarkDatabaseViewDialog: DialogFragment() {
         alertDialog.show()
 
         // Get handles for the layout items.
-        val databaseIdTextView = alertDialog.findViewById<TextView>(R.id.edit_bookmark_database_id_textview)
-        val iconRadioGroup = alertDialog.findViewById<RadioGroup>(R.id.edit_bookmark_icon_radiogroup)
-        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_bookmark_current_icon)
-        val newFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_bookmark_webpage_favorite_icon)
-        newIconRadioButton = alertDialog.findViewById(R.id.edit_bookmark_webpage_favorite_icon_radiobutton)
-        nameEditText = alertDialog.findViewById(R.id.edit_bookmark_name_edittext)
-        urlEditText = alertDialog.findViewById(R.id.edit_bookmark_url_edittext)
-        folderSpinner = alertDialog.findViewById(R.id.edit_bookmark_folder_spinner)
-        displayOrderEditText = alertDialog.findViewById(R.id.edit_bookmark_display_order_edittext)
+        val databaseIdTextView = alertDialog.findViewById<TextView>(R.id.edit_bookmark_database_id_textview)!!
+        val iconRadioGroup = alertDialog.findViewById<RadioGroup>(R.id.edit_bookmark_icon_radiogroup)!!
+        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_bookmark_current_icon)!!
+        val newFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_bookmark_webpage_favorite_icon)!!
+        newIconRadioButton = alertDialog.findViewById(R.id.edit_bookmark_webpage_favorite_icon_radiobutton)!!
+        nameEditText = alertDialog.findViewById(R.id.edit_bookmark_name_edittext)!!
+        urlEditText = alertDialog.findViewById(R.id.edit_bookmark_url_edittext)!!
+        folderSpinner = alertDialog.findViewById(R.id.edit_bookmark_folder_spinner)!!
+        displayOrderEditText = alertDialog.findViewById(R.id.edit_bookmark_display_order_edittext)!!
         editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Store the current bookmark values.

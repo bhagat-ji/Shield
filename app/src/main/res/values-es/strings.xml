@@ -584,8 +584,6 @@
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
-        <string name="dark_theme">Tema oscuro</string>
-        <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>
         <string name="night_mode_summary">Activar el modo noche también activará javascript para todas las páginas web.</string>
         <string name="wide_viewport_preference">Vista amplia</string>

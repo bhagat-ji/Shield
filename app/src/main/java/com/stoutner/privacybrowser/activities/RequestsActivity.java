@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -60,21 +60,16 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        // Get the screenshot and theme preferences.
+        // Get the screenshot preference.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the activity theme.
-        if (darkTheme) {
-            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
-        } else {
-            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
-        }
+        // Set the theme.
+        setTheme(R.style.PrivacyBrowser);
 
         // Run the default commands.
         super.onCreate(savedInstanceState);

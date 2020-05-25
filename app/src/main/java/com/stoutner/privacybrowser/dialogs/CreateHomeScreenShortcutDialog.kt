@@ -104,19 +104,8 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
 
-        // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        // Get the theme and screenshot preferences.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
-        val darkTheme = sharedPreferences.getBoolean("dark_theme", false)
-
-        // Use an alert dialog builder to create the dialog and set the style according to the theme.
-        val dialogBuilder = if (darkTheme) {
-            AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialogDark)
-        } else {
-            AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialogLight)
-        }
+        // Use an alert dialog builder to create the dialog.
+        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Create a drawable version of the favorite icon.
         val favoriteIconDrawable: Drawable = BitmapDrawable(resources, favoriteIconBitmap)
@@ -139,6 +128,12 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
 
         // Create an alert dialog from the alert dialog builder.
         val alertDialog = dialogBuilder.create()
+
+        // Get a handle for the shared preferences.
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+        // Get the screenshot preference.
+        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

@@ -19,11 +19,12 @@
 
 package com.stoutner.privacybrowser.asynctasks;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
@@ -163,6 +164,9 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
 
         // Get a handle for the file size text view.
         TextView fileSizeTextView = alertDialog.findViewById(R.id.file_size_textview);
+
+        // Remove the incorrect warning below that the file size text view might be null.
+        assert fileSizeTextView != null;
 
         // Update the file size.
         fileSizeTextView.setText(fileSize);

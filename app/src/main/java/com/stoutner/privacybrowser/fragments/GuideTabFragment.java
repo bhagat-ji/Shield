@@ -20,9 +20,8 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,20 +67,17 @@ public class GuideTabFragment extends Fragment {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the theme preference.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
         // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
         View tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
 
-        // Get a handle for `tabWebView`.
+        // Get a handle for the tab WebView.
         WebView tabWebView = (WebView) tabLayout;
 
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
         // Load the tabs according to the theme.
-        if (darkTheme) {  // The dark theme is applied.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The dark theme is applied.
             tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
             // Tab numbers start at 0.

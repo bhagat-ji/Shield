@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,16 +19,17 @@
 
 package com.stoutner.privacybrowser.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
@@ -39,23 +40,17 @@ public class AdConsentDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        // Get the screenshot and theme preferences.
-        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
-
         // Use a builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
 
-        // Set the style and the icon according to the theme.
-        if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-            dialogBuilder.setIcon(R.drawable.block_ads_enabled_dark);
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
+            dialogBuilder.setIcon(R.drawable.block_ads_enabled_night);
         } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-            dialogBuilder.setIcon(R.drawable.block_ads_enabled_light);
+            dialogBuilder.setIcon(R.drawable.block_ads_enabled_day);
         }
 
         // Remove the incorrect lint warning below that `getApplicationContext()` might be null.
@@ -99,6 +94,12 @@ public class AdConsentDialog extends DialogFragment {
         // Create an alert dialog from the alert dialog builder.
         AlertDialog alertDialog = dialogBuilder.create();
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot preference.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
@@ -114,7 +115,7 @@ public class AdConsentDialog extends DialogFragment {
 
     // Close Privacy Browser Free if the dialog is cancelled without selecting a button (by tapping on the background).
     @Override
-    public void onCancel(DialogInterface dialogInterface) {
+    public void onCancel(@NonNull DialogInterface dialogInterface) {
         // Remove the incorrect lint warning below that `getApplicationContext()` might be null.
         assert getActivity() != null;
 
@@ -125,7 +126,7 @@ public class AdConsentDialog extends DialogFragment {
         // Update the ad consent database.
         adConsentDatabaseHelper.updateAdConsent(false);
 
-        // Close the browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
+        // Close the browser.  `finishAndRemoveTask()` also removes Privacy Browser from the recent app list.
         if (Build.VERSION.SDK_INT >= 21) {
             getActivity().finishAndRemoveTask();
         } else {
