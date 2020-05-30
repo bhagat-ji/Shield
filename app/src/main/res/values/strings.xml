@@ -558,8 +558,6 @@
             <item>Searx</item>
             <item>DuckDuckGo - JavaScript disabled</item>
             <item>DuckDuckGo - JavaScript enabled</item>
-            <item>Qwant - JavaScript disabled</item>
-            <item>Qwant - JavaScript enabled</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript disabled</item>
@@ -571,8 +569,6 @@
             <item>https://searx.dev/?q=</item>
             <item>https://duckduckgo.com/html/?q=</item>
             <item>https://duckduckgo.com/?q=</item>
-            <item>https://lite.qwant.com/?q=</item>
-            <item>https://www.qwant.com/?q=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
             <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
