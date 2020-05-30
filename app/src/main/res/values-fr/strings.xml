@@ -586,6 +586,12 @@
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>
         <string name="display_additional_app_bar_icons_summary">Affichez des icônes dans la barre d\'applications pour actualiser WebView et, le cas échéant,
             pour activer/désactiver les cookies et le stockage DOM.</string>
+        <string name="app_theme">Thème de l\'application</string>
+        <string-array name="app_theme_entries">
+            <item>Par defaut</item>
+            <item>Clair</item>
+            <item>Sombre</item>
+        </string-array>
         <string name="night_mode">Mode nuit</string>
         <string name="night_mode_summary">L\'activation du mode nuit activera également JavaScript pour toutes les pages Web.</string>
         <string name="wide_viewport_preference">Large fenêtre</string>

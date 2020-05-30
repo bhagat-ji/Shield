@@ -27,12 +27,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="short_name">Privatsphäre</string>
+    <string name="short_name">Privacy</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">de</string>
 
     <!-- MainWebView. -->
-    <string name="privacy_mode">Privatsphäre-Modus</string>
+    <string name="privacy_mode">Privater Modus</string>
     <string name="javascript_enabled">JavaScript aktiviert</string>
     <string name="javascript_disabled">JavaScript deaktiviert</string>
     <string name="first_party_cookies_enabled">Erstanbieter-Cookies aktiviert</string>
@@ -588,6 +588,12 @@
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Zeigt in der App-Leiste die Icons zum Neu-Laden der Webseite und - sofern Platz vorhanden ist -
             zum Umschalten von Cookies und DOM Storage.</string>
+        <string name="app_theme">Erscheinungsbild</string>
+        <string-array name="app_theme_entries">
+            <item>System-Einstellung</item>
+            <item>Hell</item>
+            <item>Dunkel</item>
+        </string-array>
         <string name="night_mode">Nacht-Modus</string>
         <string name="night_mode_summary">Aktivieren des Nacht-Modus aktiviert JavaScript für alle Webseiten.</string>
         <string name="wide_viewport_preference">Breiter Anzeigebereich</string>

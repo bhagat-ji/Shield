@@ -584,6 +584,12 @@
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento di WebView e, se lo spazio è sufficiente,
             per l\'attivazione dei cookie e del DOM storage.</string>
+        <string name="app_theme">Tema Applicazione</string>
+        <string-array name="app_theme_entries">
+            <item>Predefinito</item>
+            <item>Chiaro</item>
+            <item>Scuro</item>
+        </string-array>
         <string name="night_mode">Modalità Notte</string>
         <string name="night_mode_summary">L\'abilitazione della modalità notte attiva anche JavaScript per tutte le pagine web.</string>
         <string name="wide_viewport_preference">Finestra grande</string>

@@ -577,6 +577,12 @@
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
+        <string name="app_theme">Тема</string>
+        <string-array name="app_theme_entries">
+            <item>По умолчанию</item>
+            <item>Светлая</item>
+            <item>Темная</item>
+        </string-array>
         <string name="night_mode">Ночной режим</string>
         <string name="night_mode_summary">Включение ночного режима также включает JavaScript для всех веб-страниц.</string>
         <string name="wide_viewport_preference">Широкий вид просмотра</string>
