@@ -513,7 +513,6 @@
     <string name="search">Поиск</string>
         <string-array name="search_entries">
             <item>Startpage</item>
-            <item>Searx</item>
             <item>DuckDuckGo - JavaScript выключен</item>
             <item>DuckDuckGo - JavaScript включен</item>
             <item>Google</item>
