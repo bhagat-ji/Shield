@@ -519,6 +519,7 @@
     <string name="search">Moteur de Recherche</string>
         <string-array name="search_entries">
             <item>Startpage</item>
+            <item>Mojeek</item>
             <item>DuckDuckGo - JavaScript désactivé</item>
             <item>DuckDuckGo - JavaScript activé</item>
             <item>Google</item>

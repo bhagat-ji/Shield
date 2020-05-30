@@ -492,6 +492,7 @@
     <string name="search">Arama</string>
         <string-array name="search_entries">
             <item>Startpage</item>
+            <item>Mojeek</item>
             <item>DuckDuckGo - JavaScript devre dışı</item>
             <item>DuckDuckGo - JavaScript etkin</item>
             <item>Google</item>
