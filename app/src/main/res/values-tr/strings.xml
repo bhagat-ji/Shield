@@ -461,7 +461,7 @@
         </string-array>
         <string name="custom_user_agent">Özel kullanıcı aracısı</string>
         <string name="incognito_mode">Gizli Mod</string>
-        <string name="incognito_mode_summary">Her web sayfasının yüklenmesi bittikten sonra geçmişi ve önbelleği temizler. İleri ve geri seçenekleri Gizli Mod aktifken çalışmaz.</string>
+        <string name="incognito_mode_summary">Her web sayfasının yüklenmesi bittikten sonra geçmişi ve önbelleği temizler. In Incognito Mode, back closes the tab (or the app if there is only one tab).</string>
         <string name="do_not_track">Takip Etme</string>
         <string name="do_not_track_summary">Web Serverlarına bu tarayıcıyı takip etmemesi için Takip Etme Başlığı gönderir.</string>
         <string name="allow_screenshots">Ekran görüntülerine izin ver</string>

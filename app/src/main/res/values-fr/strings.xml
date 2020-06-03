@@ -489,7 +489,7 @@
         </string-array>
         <string name="custom_user_agent">User agent personnalisé</string>
         <string name="incognito_mode">Mode Incognito</string>
-        <string name="incognito_mode_summary">Vider l\'historique et le cache après le chargement de chaque page. Précédent et Suivant ne fonctionnent pas en mode Incognito.</string>
+        <string name="incognito_mode_summary">Vider l\'historique et le cache après le chargement de chaque page. In Incognito Mode, back closes the tab (or the app if there is only one tab).</string>
         <string name="do_not_track">Ne pas me pister</string>
         <string name="do_not_track_summary">Envoyer aux sites web un signal «Ne pas me pister» indiquant poliement que vous ne souhaitez pas être pisté</string>
         <string name="allow_screenshots">Autoriser captures d\'écrans</string>

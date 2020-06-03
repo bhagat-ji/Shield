@@ -483,7 +483,8 @@
         </string-array>
         <string name="custom_user_agent">Настраиваемый user agent</string>
         <string name="incognito_mode">Режим инкогнито</string>
-        <string name="incognito_mode_summary">Очистка журнала и кэша после завершения загрузки каждой веб-страницы. Кнопки \'Вперед\' и \'Назад\' не работают в этом режиме.</string>
+        <string name="incognito_mode_summary">Очистка журнала и кэша по завершении загрузки каждой веб-страницы.
+            В режиме инкогнито нажатие кнопки Назад приведет к закрытию вкладки (или приложения, если открыта только одна вкладка).</string>
         <string name="do_not_track">Не отслеживать</string>
         <string name="do_not_track_summary">Отправлять заголовок \'Не отслеживать\', предлагающий веб-серверу не отслеживать этот браузер.</string>
         <string name="allow_screenshots">Разрешить скриншоты</string>

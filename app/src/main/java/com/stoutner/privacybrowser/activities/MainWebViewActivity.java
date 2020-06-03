@@ -4050,23 +4050,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.setSwipeToRefresh(defaultSwipeToRefresh);
 
-                        // Apply swipe to refresh according to the default.  This can be removed once the minimum API >= 23 because it is continuously set by an on scroll change listener.
-                        swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
+                        // Update the swipe refresh layout.
+                        if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
+                            // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                            swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                        } else {  // Swipe to refresh is disabled.
+                            // Disable the swipe refresh layout.
+                            swipeRefreshLayout.setEnabled(false);
+                        }
                         break;
 
                     case DomainsDatabaseHelper.ENABLED:
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.setSwipeToRefresh(true);
 
-                        // Enable swipe to refresh.  This can be removed once the minimum API >= 23 because it is continuously set by an on scroll change listener.
-                        swipeRefreshLayout.setEnabled(true);
+                        // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                        swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
                         break;
 
                     case DomainsDatabaseHelper.DISABLED:
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.setSwipeToRefresh(false);
 
-                        // Disable swipe to refresh.  This can be removed once the minimum API >= 23 because it is continuously set by an on scroll change listener.
+                        // Disable swipe to refresh.
                         swipeRefreshLayout.setEnabled(false);
                 }
 
@@ -4154,8 +4160,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Store the swipe to refresh status in the nested scroll WebView.
                 nestedScrollWebView.setSwipeToRefresh(defaultSwipeToRefresh);
 
-                // Apply swipe to refresh according to the default.
-                swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
+                // Update the swipe refresh layout.
+                if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
+                    // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                    swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                } else {  // Swipe to refresh is disabled.
+                    // Disable the swipe refresh layout.
+                    swipeRefreshLayout.setEnabled(false);
+                }
 
                 // Reset the pinned variables.
                 nestedScrollWebView.setDomainSettingsDatabaseId(-1);
@@ -5176,26 +5188,55 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.  Also reinforce full screen browsing mode.
-        // Once the minimum API >= 23 this can be replaced with `nestedScrollWebView.setOnScrollChangeListener()`.
-        nestedScrollWebView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            if (nestedScrollWebView.getSwipeToRefresh()) {
-                // Only enable swipe to refresh if the WebView is scrolled to the top.
-                swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
-            }
+        // On API < 23, `getViewTreeObserver().addOnScrollChangedListener()` must be used, but it is a little bit buggy and appears to get garbage collected from time to time.
+        if (Build.VERSION.SDK_INT >= 23) {
+            nestedScrollWebView.setOnScrollChangeListener((view, i, i1, i2, i3) -> {
+                if (nestedScrollWebView.getSwipeToRefresh()) {
+                    // Only enable swipe to refresh if the WebView is scrolled to the top.
+                    swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
+                } else {
+                    // Disable swipe to refresh.
+                    swipeRefreshLayout.setEnabled(false);
+                }
 
-            // Reinforce the system UI visibility flags if in full screen browsing mode.
-            // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
-            if (inFullScreenBrowsingMode) {
-                /* Hide the system bars.
-                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                 */
-                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            }
-        });
+                // Reinforce the system UI visibility flags if in full screen browsing mode.
+                // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
+                if (inFullScreenBrowsingMode) {
+                    /* Hide the system bars.
+                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                     */
+                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                }
+            });
+        } else {
+            nestedScrollWebView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+                if (nestedScrollWebView.getSwipeToRefresh()) {
+                    // Only enable swipe to refresh if the WebView is scrolled to the top.
+                    swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
+                } else {
+                    // Disable swipe to refresh.
+                    swipeRefreshLayout.setEnabled(false);
+                }
+
+
+                // Reinforce the system UI visibility flags if in full screen browsing mode.
+                // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
+                if (inFullScreenBrowsingMode) {
+                    /* Hide the system bars.
+                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                     */
+                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                }
+            });
+        }
 
         // Set the web chrome client.
         nestedScrollWebView.setWebChromeClient(new WebChromeClient() {
