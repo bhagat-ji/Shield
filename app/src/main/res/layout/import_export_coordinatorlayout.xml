@@ -217,7 +217,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="5dp"
                             android:text="@string/file_does_not_exist"
-                            android:textColor="?attr/redText"
+                            android:textColor="?attr/redTextColor"
                             android:textAlignment="center" />
 
                         <TextView
@@ -227,7 +227,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_margin="5dp"
                             android:text="@string/file_exists_warning"
-                            android:textColor="?attr/redText"
+                            android:textColor="?attr/redTextColor"
                             android:textAlignment="center" />
 
                         <!-- OpenKeychain import instructions -->

@@ -224,12 +224,12 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder ultraListStringBuilder = new SpannableStringBuilder(ultraListLabel + blocklistVersions[4]);
             SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[5]);
 
-            // Create the `blueColorSpan` variable.
+            // Define the blue color span variable.
             ForegroundColorSpan blueColorSpan;
 
             // Set the blue color span according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
             } else {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             }

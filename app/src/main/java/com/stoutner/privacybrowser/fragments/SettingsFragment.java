@@ -814,15 +814,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Set the open intents in new tab preference icon.
         if (savedPreferences.getBoolean("open_intents_in_new_tab", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_dark);
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_night);
             } else {
-                openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_light);
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_day);
             }
         } else {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_dark);
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_night);
             } else {
-                openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_light);
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_day);
             }
         }
 
@@ -1723,15 +1723,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Update the icon.
                     if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_dark);
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_night);
                         } else {
-                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_light);
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_day);
                         }
                     } else {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_dark);
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_night);
                         } else {
-                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_light);
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_day);
                         }
                     }
                     break;

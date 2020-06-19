@@ -87,7 +87,7 @@
                         android:text="@string/request_headers"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="@color/blue_600"
+                        android:textColor="?attr/blueTextColor"
                         android:textStyle="bold" />
 
                     <TextView
@@ -104,7 +104,7 @@
                         android:text="@string/response_message"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="@color/blue_600"
+                        android:textColor="?attr/blueTextColor"
                         android:textStyle="bold" />
 
                     <TextView
@@ -121,7 +121,7 @@
                         android:text="@string/response_headers"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="@color/blue_600"
+                        android:textColor="?attr/blueTextColor"
                         android:textStyle="bold" />
 
                     <TextView
@@ -138,7 +138,7 @@
                         android:text="@string/response_body"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="@color/blue_600"
+                        android:textColor="?attr/blueTextColor"
                         android:textStyle="bold" />
 
                     <TextView

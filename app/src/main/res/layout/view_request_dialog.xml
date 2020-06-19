@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018,2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:text="@string/disposition"
             android:textSize="12sp"
-            android:textColor="@color/blue_700"
+            android:textColor="?attr/blueTextColor"
             android:layout_marginTop="5dp" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:text="@string/url"
             android:textSize="12sp"
-            android:textColor="@color/blue_700"
+            android:textColor="?attr/blueTextColor"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:text="@string/blocklist"
             android:textSize="12sp"
-            android:textColor="@color/blue_700"
+            android:textColor="?attr/blueTextColor"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:text="@string/sublist"
             android:textSize="12sp"
-            android:textColor="@color/blue_700"
+            android:textColor="?attr/blueTextColor"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:text="@string/blocklist_entries"
             android:textSize="12sp"
-            android:textColor="@color/blue_700"
+            android:textColor="?attr/blueTextColor"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -125,7 +125,7 @@
             android:layout_width="match_parent"
             android:text="@string/blocklist_original_entry"
             android:textSize="12sp"
-            android:textColor="@color/blue_700"
+            android:textColor="?attr/blueTextColor"
             android:layout_marginTop="10dp" />
 
         <TextView

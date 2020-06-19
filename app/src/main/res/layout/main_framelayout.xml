@@ -166,7 +166,7 @@
                             android:layout_gravity="center_vertical"
                             android:paddingStart="10dp"
                             android:paddingEnd="10dp"
-                            android:src="@drawable/add_day"
+                            android:src="@drawable/add"
                             android:tint="?attr/addTabIconTintColor"
                             android:background="?attr/selectableItemBackground"
                             android:onClick="addTab"

@@ -51,5 +51,6 @@
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="?attr/addIcon" />
+        android:src="@drawable/add"
+        android:tint="?attr/fabIconTintColor" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

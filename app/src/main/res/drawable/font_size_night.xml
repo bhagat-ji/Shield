@@ -6,13 +6,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:height="24dp"
     android:width="24dp"
-    android:viewportHeight="24.0"
-    android:viewportWidth="24.0"
+    android:viewportHeight="24"
+    android:viewportWidth="24"
     android:autoMirrored="true"
     tools:ignore="VectorRaster" >
 
     <!-- A hard coded color must be used until API >= 21.  Then `@color` or `?attr/colorControlNormal` may be used instead. -->
     <path
-        android:fillColor="#FF1E88E5"
+        android:fillColor="#FF8AB4F8"
         android:pathData="M2.5,4v3h5v12h3L10.5,7h5L15.5,4h-13zM21.5,9h-9v3h3v7h3v-7h3L21.5,9z" />
 </vector>

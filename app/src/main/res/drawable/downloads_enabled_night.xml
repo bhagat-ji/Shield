@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:height="24dp"
     android:width="24dp"
-    android:viewportHeight="24.0"
-    android:viewportWidth="24.0" >
+    android:viewportHeight="24"
+    android:viewportWidth="24" >
 
     <!-- A hard coded color must be used until API >= 21.  Then `@color` or `?attr/colorControlNormal` may be used. -->
     <path
-        android:fillColor="#FF1E88E5"
+        android:fillColor="#FF8AB4F8"
         android:pathData="M19,9h-4V3H9v6H5l7,7 7,-7zM5,18v2h14v-2H5z" />
 </vector>

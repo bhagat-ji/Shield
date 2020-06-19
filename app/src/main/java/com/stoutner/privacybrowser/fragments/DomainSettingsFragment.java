@@ -295,16 +295,16 @@ public class DomainSettingsFragment extends Fragment {
             savedSslEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslEndDate));
         }
 
-        // Create a red foreground color span.  The deprecated `resources.getColor` must be used until the minimum API >= 23.
-        final ForegroundColorSpan redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
-
-        // Create a blue foreground color span.
+        // Create the foreground color spans.
+        final ForegroundColorSpan redColorSpan;
         final ForegroundColorSpan blueColorSpan;
 
-        // Set the blue color span according to the theme.  The deprecated `resources` must be used until the minimum API >= 23.
+        // Set the color spans according to the theme.  The deprecated `resources` must be used until the minimum API >= 23.
         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_400));
+            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_900));
+            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.violet_500));
         } else {
+            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
             blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_700));
         }
 
@@ -410,9 +410,13 @@ public class DomainSettingsFragment extends Fragment {
             if (firstPartyCookiesInt == 1) {  // First-party cookies are enabled.
                 // Set the third-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 if (thirdPartyCookiesInt == 1) {  // Both first-party and third-party cookies are enabled.
+                    // Set the third-party cookies switch to be checked.
                     thirdPartyCookiesSwitch.setChecked(true);
+
+                    // Set the icon to be red.
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
                 } else {  // First party cookies are enabled but third-party cookies are disabled.
+                    // Set the third-party cookies switch to be checked.
                     thirdPartyCookiesSwitch.setChecked(false);
 
                     // Set the icon according to the theme.
@@ -1362,6 +1366,7 @@ public class DomainSettingsFragment extends Fragment {
 
                 // Update the third-party cookies icon.
                 if (thirdPartyCookiesSwitch.isChecked()) {  // Third-party cookies are enabled.
+                    // Set the third-party cookies icon to be red.
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
                 } else {  // Third-party cookies are disabled.
                     // Set the third-party cookies icon according to the theme.
@@ -1395,6 +1400,7 @@ public class DomainSettingsFragment extends Fragment {
         thirdPartyCookiesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             // Update the icon.
             if (isChecked) {
+                // Set the third-party cookies icon to be red.
                 thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
             } else {
                 // Update the third-party cookies icon according to the theme.

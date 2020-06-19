@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -43,6 +43,6 @@
         android:id="@+id/clear"
         android:title="@string/clear"
         android:orderInCategory="30"
-        android:icon="?attr/clearIcon"
+        android:icon="?attr/closeIcon"
         app:showAsAction="ifRoom" />
 </menu>

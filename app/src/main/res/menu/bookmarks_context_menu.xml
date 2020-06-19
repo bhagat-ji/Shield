@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2017,2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -34,6 +34,7 @@
         android:orderInCategory="20"
         app:showAsAction="ifRoom" />
 
+    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/move_to_folder"
         android:title="@string/move_to_folder"
@@ -41,6 +42,7 @@
         android:icon="?attr/moveToFolderIcon"
         app:showAsAction="ifRoom" />
 
+    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/edit_bookmark"
         android:title="@string/edit"
@@ -48,6 +50,7 @@
         android:icon="?attr/editIcon"
         app:showAsAction="ifRoom" />
 
+    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/delete_bookmark"
         android:title="@string/delete"
@@ -55,6 +58,7 @@
         android:icon="?attr/deleteIcon"
         app:showAsAction="ifRoom" />
 
+    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/context_menu_select_all_bookmarks"
         android:title="@string/select_all"

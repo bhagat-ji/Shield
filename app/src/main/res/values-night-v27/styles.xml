@@ -29,34 +29,31 @@
 
         <!-- Colors.  -->
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
-        <item name="android:textColorHighlight">@color/blue_800</item>
-        <item name="blueTextColor">@color/blue_700</item>
-        <item name="blueTitleTextColor">@color/blue_600</item>
+        <item name="android:textColorHighlight">@color/violet_700</item>
+        <item name="blueTextColor">@color/violet_500</item>
+        <item name="blueTitleTextColor">@color/violet_700</item>
         <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_night</item>
         <item name="buttonTextColorSelector">@color/button_text_color_selector_night</item>
-        <item name="colorAccent">@color/blue_600</item>
-        <item name="domainSettingsIconTintColor">@color/blue_800</item>
-        <item name="redText">@color/red_900</item>
-        <item name="sslTitle">@color/blue_700</item>
+        <item name="colorAccent">@color/violet_500</item>
+        <item name="redTextColor">@color/red_900</item>
 
         <!-- Tints. -->
         <item name="addTabIconTintColor">@color/gray_400</item>
-        <item name="findOnPageIconTintColor">@color/blue_600</item>
-        <item name="navigationIconTintColor">@color/blue_600</item>
-        <item name="progressTintColor">@color/blue_600</item>
+        <item name="domainSettingsIconTintColor">@color/violet_500</item>
+        <item name="fabIconTintColor">@color/gray_875</item>
+        <item name="findOnPageIconTintColor">@color/violet_500</item>
+        <item name="navigationIconTintColor">@color/violet_500</item>
+        <item name="progressTintColor">@color/violet_500</item>
 
         <!-- Drawables. -->
         <item name="listSelectorDrawable">@drawable/list_selector_night</item>
 
         <!-- Icons. -->
         <item name="aboutIcon">@drawable/about_night</item>
-        <item name="addIcon">@drawable/add_night</item>
-        <item name="bookmarksIcon">@drawable/bookmarks_night</item>
-        <item name="clearIcon">@drawable/clear_night</item>
+        <item name="closeIcon">@drawable/close_night</item>
         <item name="copyIcon">@drawable/copy_night</item>
-        <item name="createBookmarkIcon">@drawable/create_bookmark_night</item>
-        <item name="createFolderIcon">@drawable/create_folder_night</item>
         <item name="deleteIcon">@drawable/delete_night</item>
+        <item name="domainsIcon">@drawable/domains_night</item>
         <item name="editIcon">@drawable/edit_night</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_night</item>
         <item name="saveIcon">@drawable/save_night</item>
@@ -72,11 +69,11 @@
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
 
         <!-- Colors. -->
-        <item name="colorAccent">@color/blue_600</item>
+        <item name="colorAccent">@color/violet_500</item>
         <item name="colorPrimary">?android:attr/colorBackground</item>  <!-- `colorPrimary` sets the background color of the app bar. -->
 
         <!-- Icons. -->
-        <item name="appThemeIcon">@drawable/theme_night</item>
+        <item name="appThemeIcon">@drawable/app_theme_night</item>
         <item name="downloadIcon">@drawable/downloads_enabled_night</item>
         <item name="fontSizeIcon">@drawable/font_size_night</item>
         <item name="homepageIcon">@drawable/home_enabled_night</item>
@@ -85,6 +82,6 @@
     </style>
 
     <style name="PrivacyBrowserAlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert" >
-        <item name="colorAccent">@color/blue_600</item>
+        <item name="colorAccent">@color/violet_500</item>
     </style>
 </resources>

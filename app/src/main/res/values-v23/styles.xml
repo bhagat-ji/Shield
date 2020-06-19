@@ -33,12 +33,12 @@
         <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_day</item>
         <item name="buttonTextColorSelector">@color/button_text_color_selector_day</item>
         <item name="colorAccent">@color/blue_700</item>
-        <item name="domainSettingsIconTintColor">@color/blue_800</item>
-        <item name="redText">@color/red_a700</item>
-        <item name="sslTitle">@color/blue_900</item>
+        <item name="redTextColor">@color/red_a700</item>
 
         <!-- Tints. -->
         <item name="addTabIconTintColor">@color/gray_700</item>
+        <item name="domainSettingsIconTintColor">@color/blue_700</item>
+        <item name="fabIconTintColor">@color/white</item>
         <item name="findOnPageIconTintColor">@color/blue_800</item>
         <item name="navigationIconTintColor">@color/blue_800</item>
         <item name="progressTintColor">@color/blue_700</item>
@@ -48,13 +48,10 @@
 
         <!-- Icons. -->
         <item name="aboutIcon">@drawable/about_day</item>
-        <item name="addIcon">@drawable/add_day</item>
-        <item name="bookmarksIcon">@drawable/bookmarks_day</item>
-        <item name="clearIcon">@drawable/clear_day</item>
+        <item name="closeIcon">@drawable/close_day</item>
         <item name="copyIcon">@drawable/copy_day</item>
-        <item name="createBookmarkIcon">@drawable/create_bookmark_day</item>
-        <item name="createFolderIcon">@drawable/create_folder_day</item>
         <item name="deleteIcon">@drawable/delete_day</item>
+        <item name="domainsIcon">@drawable/domains_day</item>
         <item name="editIcon">@drawable/edit_day</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_day</item>
         <item name="saveIcon">@drawable/save_day</item>
@@ -72,7 +69,7 @@
         <item name="colorPrimary">?android:attr/colorBackground</item>  <!-- `colorPrimary` sets the background color of the app bar. -->
 
         <!-- Icons. -->
-        <item name="appThemeIcon">@drawable/theme_day</item>
+        <item name="appThemeIcon">@drawable/app_theme_day</item>
         <item name="downloadIcon">@drawable/downloads_enabled_day</item>
         <item name="fontSizeIcon">@drawable/font_size_day</item>
         <item name="homepageIcon">@drawable/home_enabled_day</item>

@@ -265,7 +265,7 @@ public class SslCertificateErrorDialog extends DialogFragment {
 
         // Set the color spans according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
             redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
         } else {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
@@ -432,7 +432,7 @@ public class SslCertificateErrorDialog extends DialogFragment {
 
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_400));
+                blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.violet_500));
             } else {
                 blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_700));
             }

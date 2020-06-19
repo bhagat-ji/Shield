@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -22,7 +22,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
+    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/select_all"
         android:title="@string/select_all"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -37,7 +37,7 @@
             android:text="@string/domain"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="?attr/sslTitle" />
+            android:textColor="?attr/blueTitleTextColor" />
 
         <TextView
             android:id="@+id/domain"
@@ -57,7 +57,7 @@
             android:text="@string/issued_to"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="?attr/sslTitle" />
+            android:textColor="?attr/blueTitleTextColor" />
 
         <TextView
             android:id="@+id/issued_to_cname"
@@ -83,7 +83,7 @@
             android:text="@string/issued_by"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="?attr/sslTitle" />
+            android:textColor="?attr/blueTitleTextColor" />
 
         <TextView
             android:id="@+id/issued_by_cname"
@@ -109,7 +109,7 @@
             android:text="@string/valid_dates"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="?attr/sslTitle" />
+            android:textColor="?attr/blueTitleTextColor" />
 
         <TextView
             android:id="@+id/start_date"

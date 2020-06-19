@@ -6,8 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:autoMirrored="true"
     android:height="24dp"
-    android:viewportHeight="24.0"
-    android:viewportWidth="24.0"
+    android:viewportHeight="24"
+    android:viewportWidth="24"
     android:width="24dp"
     tools:ignore="VectorRaster">
 

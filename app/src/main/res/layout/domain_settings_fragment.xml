@@ -52,7 +52,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="12dp"
                     android:layout_gravity="bottom"
-                    android:src="@drawable/domains_light"
+                    android:src="@drawable/domains_day"
                     android:tint="?attr/domainSettingsIconTintColor"
                     tools:ignore="contentDescription" />
 
@@ -149,6 +149,7 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/cookies_enabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -722,7 +723,7 @@
                             android:text="@string/issued_to"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/sslTitle" />
+                            android:textColor="?attr/blueTitleTextColor" />
 
                         <TextView
                             android:id="@+id/saved_ssl_certificate_issued_to_cname"
@@ -747,7 +748,7 @@
                             android:text="@string/issued_by"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/sslTitle"/>
+                            android:textColor="?attr/blueTitleTextColor"/>
 
                         <TextView
                             android:id="@+id/saved_ssl_certificate_issued_by_cname"
@@ -772,7 +773,7 @@
                             android:text="@string/valid_dates"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/sslTitle"/>
+                            android:textColor="?attr/blueTitleTextColor"/>
 
                         <TextView
                             android:id="@+id/saved_ssl_certificate_start_date"
@@ -824,7 +825,7 @@
                             android:text="@string/issued_to"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/sslTitle" />
+                            android:textColor="?attr/blueTitleTextColor" />
 
                         <TextView
                             android:id="@+id/current_website_certificate_issued_to_cname"
@@ -849,7 +850,7 @@
                             android:text="@string/issued_by"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/sslTitle" />
+                            android:textColor="?attr/blueTitleTextColor" />
 
                         <TextView
                             android:id="@+id/current_website_certificate_issued_by_cname"
@@ -874,7 +875,7 @@
                             android:text="@string/valid_dates"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/sslTitle" />
+                            android:textColor="?attr/blueTitleTextColor" />
 
                         <TextView
                             android:id="@+id/current_website_certificate_start_date"

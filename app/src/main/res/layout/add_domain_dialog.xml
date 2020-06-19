@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017,2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017,2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="@string/domain_name_already_exists"
-        android:textColor="?attr/redText"
+        android:textColor="?attr/redTextColor"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" />
 </LinearLayout>
