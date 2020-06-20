@@ -582,8 +582,6 @@
             <item>Светлая</item>
             <item>Темная</item>
         </string-array>
-        <string name="night_mode">Ночной режим</string>
-        <string name="night_mode_summary">Включение ночного режима также включает JavaScript для всех веб-страниц.</string>
         <string name="wide_viewport_preference">Широкий вид просмотра</string>
         <string name="wide_viewport_summary">Использование широкого вида просмотра делает стиль некоторых веб-страниц более похожим на сайт для компьютера.</string>
         <string name="display_webpage_images">Показывать изображения веб-страницы</string>

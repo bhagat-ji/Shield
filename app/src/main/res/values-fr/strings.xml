@@ -591,8 +591,6 @@
             <item>Clair</item>
             <item>Sombre</item>
         </string-array>
-        <string name="night_mode">Mode nuit</string>
-        <string name="night_mode_summary">L\'activation du mode nuit activera également JavaScript pour toutes les pages Web.</string>
         <string name="wide_viewport_preference">Large fenêtre</string>
         <string name="wide_viewport_summary">L\'utilisation d\'une fenêtre d\'affichage large fait que la mise en page de certaines pages Web ressemble davantage au site de bureau.</string>
         <string name="display_webpage_images">Afficher images Web</string>

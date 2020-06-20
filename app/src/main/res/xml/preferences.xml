@@ -313,11 +313,13 @@
             android:defaultValue="@string/app_theme_default_value"
             android:icon="?attr/appThemeIcon" />
 
-        <SwitchPreference
-            android:key="night_mode"
-            android:title="@string/night_mode"
-            android:summary="@string/night_mode_summary"
-            android:defaultValue="false" />
+        <ListPreference
+            android:key="webview_theme"
+            android:title="@string/webview_theme"
+            android:entries="@array/webview_theme_entries"
+            android:entryValues="@array/webview_theme_entry_values"
+            android:defaultValue="@string/webview_theme_default_value"
+            android:icon="?attr/webViewThemeIcon" />
 
         <SwitchPreference
             android:key="wide_viewport"

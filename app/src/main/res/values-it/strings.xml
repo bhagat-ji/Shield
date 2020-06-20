@@ -589,8 +589,6 @@
             <item>Chiaro</item>
             <item>Scuro</item>
         </string-array>
-        <string name="night_mode">Modalità Notte</string>
-        <string name="night_mode_summary">L\'abilitazione della modalità notte attiva anche JavaScript per tutte le pagine web.</string>
         <string name="wide_viewport_preference">Finestra grande</string>
         <string name="wide_viewport_summary">L\'utilizzo di una finestra grande permette la visualizzazione di alcune pagine web come in modalità desktop.</string>
         <string name="display_webpage_images">Mostra immagini delle pagine web</string>

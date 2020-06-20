@@ -75,6 +75,7 @@
         <item name="homepageIcon">@drawable/home_enabled_night</item>
         <item name="searchIcon">@drawable/search_enabled_night</item>
         <item name="userAgentIcon">@drawable/user_agent_night</item>
+        <item name="webViewThemeIcon">@drawable/webview_theme_enabled_night</item>
     </style>
 
     <style name="PrivacyBrowserAlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert" >

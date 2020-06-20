@@ -580,10 +580,12 @@ public class DomainSettingsFragment extends Fragment {
 
         // Only enable Fanboy's Social Blocking List if Fanboy's Annoyance List is off.
         if (fanboysAnnoyanceListInt == 0) {  // Fanboy's Annoyance List is on.
+            // Enable Fanboy's Social Blocking List switch.
+            fanboysSocialBlockingListSwitch.setEnabled(true);
+
             // Enable Fanboy's Social Blocking List.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
             if (fanboysSocialBlockingListInt == 1) {  // Fanboy's Social Blocking List is on.
-                // Enable the switch and turn it on.
-                fanboysSocialBlockingListSwitch.setEnabled(true);
+                // Turn on Fanboy's Social Blocking List switch.
                 fanboysSocialBlockingListSwitch.setChecked(true);
 
                 // Set the icon according to the theme.
@@ -593,8 +595,7 @@ public class DomainSettingsFragment extends Fragment {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_day));
                 }
             } else {  // Fanboy's Social Blocking List is off.
-                // Enable the switch but turn it off.
-                fanboysSocialBlockingListSwitch.setEnabled(true);
+                // Turn off Fanboy's Social Blocking List switch.
                 fanboysSocialBlockingListSwitch.setChecked(false);
 
                 // Set the icon according to the theme.
@@ -605,14 +606,15 @@ public class DomainSettingsFragment extends Fragment {
                 }
             }
         } else {  // Fanboy's Annoyance List is on.
-            // Disable Fanboy's Social Blocking List.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+            // Disable Fanboy's Social Blocking List switch.
+            fanboysSocialBlockingListSwitch.setEnabled(false);
+
+            // Handle the status of Fanboy's Social Blocking List.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
             if (fanboysSocialBlockingListInt == 1) {  // Fanboy's Social Blocking List is on.
-                // Disable the switch but turn it on.
-                fanboysSocialBlockingListSwitch.setEnabled(false);
+                // Turn on Fanboy's Social Blocking List switch.
                 fanboysSocialBlockingListSwitch.setChecked(true);
             } else {  // Fanboy's Social Blocking List is off.
-                // Disable the switch and turn it off.
-                fanboysSocialBlockingListSwitch.setEnabled(false);
+                // Turn off Fanboy's Social Blocking List switch.
                 fanboysSocialBlockingListSwitch.setChecked(false);
             }
 
@@ -886,16 +888,16 @@ public class DomainSettingsFragment extends Fragment {
                 if (defaultNightMode) {  // Night mode enabled by default.
                     // Set the icon according to the theme.
                     if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_night));
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
                     } else {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_day));
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
                     }
                 } else {  // Night mode disabled by default.
                     // Set the icon according to the theme.
                     if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_night));
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
                     } else {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_day));
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
                     }
                 }
 
@@ -906,9 +908,9 @@ public class DomainSettingsFragment extends Fragment {
             case DomainsDatabaseHelper.ENABLED:
                 // Set the icon according to the theme.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_night));
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
                 } else {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_day));
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
                 }
 
                 // Hide the night mode TextView.
@@ -918,9 +920,9 @@ public class DomainSettingsFragment extends Fragment {
             case DomainsDatabaseHelper.DISABLED:
                 // Set the icon according to the theme.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_night));
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
                 } else {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_day));
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
                 }
 
                 // Hide the night mode TextView.
@@ -1779,16 +1781,16 @@ public class DomainSettingsFragment extends Fragment {
                         if (defaultNightMode) {  // Night mode enabled by default.
                             // Set the icon according to the theme.
                             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_night));
+                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
                             } else {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_day));
+                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
                             }
                         } else {  // Night mode disabled by default.
                             // Set the icon according to the theme.
                             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_night));
+                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
                             } else {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_day));
+                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
                             }
                         }
 
@@ -1799,9 +1801,9 @@ public class DomainSettingsFragment extends Fragment {
                     case DomainsDatabaseHelper.ENABLED:
                         // Set the icon according to the theme.
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_night));
+                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
                         } else {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_day));
+                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
                         }
 
                         // Hide `nightModeTextView`.
@@ -1811,9 +1813,9 @@ public class DomainSettingsFragment extends Fragment {
                     case DomainsDatabaseHelper.DISABLED:
                         // Set the icon according to the theme.
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_night));
+                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
                         } else {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_day));
+                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
                         }
 
                         // Hide `nightModeTextView`.

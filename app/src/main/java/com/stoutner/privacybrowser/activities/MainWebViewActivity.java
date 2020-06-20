@@ -107,6 +107,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -3732,10 +3734,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     @SuppressLint("SetJavaScriptEnabled")
-    private boolean applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetTab, boolean reloadWebsite) {
-        // Store a copy of the current user agent to track changes for the return boolean.
-        String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
-
+    private void applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetTab, boolean reloadWebsite) {
         // Store the current URL.
         nestedScrollWebView.setCurrentUrl(url);
 
@@ -4223,9 +4222,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (reloadWebsite) {
             nestedScrollWebView.reload();
         }
-
-        // Return the user agent changed status.
-        return !nestedScrollWebView.getSettings().getUserAgentString().equals(initialUserAgent);
     }
 
     private void applyProxy(boolean reloadWebViews) {
@@ -5238,6 +5234,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             });
         }
 
+        // TODO.
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_AUTO);
+        }
+
         // Set the web chrome client.
         nestedScrollWebView.setWebChromeClient(new WebChromeClient() {
             // Update the progress bar when a page is loading.
@@ -5491,28 +5492,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         nestedScrollWebView.setWebViewClient(new WebViewClient() {
-            // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
+            // `shouldOverrideUrlLoading` makes this WebView the default handler for URLs inside the app, so that links are not kicked out to other apps.
             // The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // Sanitize the url.
                 url = sanitizeUrl(url);
 
+                // Handle the URL according to the type.
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
                     // Apply the domain settings for the new URL.  This doesn't do anything if the domain has not changed.
-                    boolean userAgentChanged = applyDomainSettings(nestedScrollWebView, url, true, false);
+                    applyDomainSettings(nestedScrollWebView, url, true, false);
 
-                    // Check if the user agent has changed.
-                    if (userAgentChanged) {
-                        // Manually load the URL.  The changing of the user agent will cause WebView to reload the previous URL.
-                        nestedScrollWebView.loadUrl(url, customHeaders);
+                    // Manually load the URL.  The changing of the user agent will cause WebView to reload the previous URL.
+                    nestedScrollWebView.loadUrl(url, customHeaders);
 
-                        // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
-                        return true;
-                    } else {
-                        // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
-                        return false;
-                    }
+                    // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
+                    // Custom headers cannot be added if false is returned and the WebView handles the loading of the URL.
+                    return true;
                 } else if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
                     // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);

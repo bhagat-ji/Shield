@@ -112,7 +112,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference scrollAppBarPreference = findPreference("scroll_app_bar");
         Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
         Preference appThemePreference = findPreference("app_theme");
-        Preference nightModePreference = findPreference("night_mode");
+        Preference webViewThemePreference = findPreference("webview_theme");
         Preference wideViewportPreference = findPreference("wide_viewport");
         Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
 
@@ -157,12 +157,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert scrollAppBarPreference != null;
         assert displayAdditionalAppBarIconsPreference != null;
         assert appThemePreference != null;
-        assert nightModePreference != null;
+        assert webViewThemePreference != null;
         assert wideViewportPreference != null;
         assert displayWebpageImagesPreference != null;
 
-        // Set the hide app bar preference dependency.
+        // Set the preference dependencies.
         hideAppBarPreference.setDependency("full_screen_browsing_mode");
+        domStoragePreference.setDependency("javascript");
 
         // Get strings from the preferences.
         String userAgentName = savedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
@@ -173,26 +174,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Get booleans that are used in multiple places from the preferences.
         boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
         boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies", false);
-        boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies", false);
         boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboys_annoyance_list", true);
         boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
-        boolean nightMode = savedPreferences.getBoolean("night_mode", false);
 
         // Only enable the third-party cookies preference if first-party cookies are enabled and API >= 21.
         thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabled && (Build.VERSION.SDK_INT >= 21));
 
-        // Only enable the DOM storage preference if either JavaScript or Night Mode is enabled.
-        domStoragePreference.setEnabled(javaScriptEnabled || nightMode);
-
         // Remove the form data preferences if the API is >= 26 as they no longer do anything.
         if (Build.VERSION.SDK_INT >= 26) {
-            // Get the categories.
+            // Get handles for the categories.
             PreferenceCategory privacyCategory = findPreference("privacy");
             PreferenceCategory clearAndExitCategory = findPreference("clear_and_exit");
 
-            // Remove the lint warnings below that the preference categories might be null.
+            // Remove the incorrect lint warnings below that the preference categories might be null.
             assert privacyCategory != null;
             assert clearAndExitCategory != null;
 
@@ -335,22 +331,25 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
 
 
-        // Get the theme string arrays.
+        // Get the app theme string arrays.
         String[] appThemeEntriesStringArray = resources.getStringArray(R.array.app_theme_entries);
         String[] appThemeEntryValuesStringArray = resources.getStringArray(R.array.app_theme_entry_values);
 
-        // Get the current theme.
+        // Get the current app theme.
         String currentAppTheme = savedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
 
-        // Define a theme entry number.
+        // Define an app theme entry number.
         int appThemeEntryNumber;
 
-        // Get the theme entry number that matches the current theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+        // Get the app theme entry number that matches the current app theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
         if (currentAppTheme.equals(appThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+            // Store the app theme entry number.
             appThemeEntryNumber = 1;
         } else if (currentAppTheme.equals(appThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+            // Store the app theme entry number.
             appThemeEntryNumber = 2;
         } else {  // The system default theme is selected.
+            // Store the app theme entry number.
             appThemeEntryNumber = 0;
         }
 
@@ -358,11 +357,46 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         appThemePreference.setSummary(appThemeEntriesStringArray[appThemeEntryNumber]);
 
 
-        // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
-        javaScriptPreference.setEnabled(!nightMode);
+        // Get the WebView theme string arrays.
+        String[] webViewThemeEntriesStringArray = resources.getStringArray(R.array.webview_theme_entries);
+        String[] webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values);
+
+        // Hide the WebView theme preference if the API < 21.
+        if (Build.VERSION.SDK_INT < 21) {  // The device is running API 19.
+            // Get a handle for the general category.
+            PreferenceCategory generalCategory = findPreference("general");
+
+            // Remove the incorrect lint warning below that the general preference category might be null.
+            assert generalCategory != null;
+
+            // Remove the WebView theme preference.
+            generalCategory.removePreference(webViewThemePreference);
+        } else {  // The device is running API >= 21
+            // Get the current WebView theme.
+            String currentWebViewTheme = savedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
+
+            // Define a WebView theme entry number.
+            int webViewThemeEntryNumber;
+
+            // Get the WebView theme entry number that matches the current WebView theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+            if (currentWebViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+                // Store the WebView theme entry number.
+                webViewThemeEntryNumber = 1;
+            } else if (currentWebViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                // Store the WebView theme entry number.
+                webViewThemeEntryNumber = 2;
+            } else {  // The system default theme is selected.
+                // Store the WebView theme entry number.
+                webViewThemeEntryNumber = 0;
+            }
+
+            // Set the current theme as the summary text for the preference.
+            webViewThemePreference.setSummary(webViewThemeEntriesStringArray[webViewThemeEntryNumber]);
+        }
+
 
         // Set the JavaScript icon.
-        if (javaScriptEnabled || nightMode) {
+        if (javaScriptEnabled) {
             javaScriptPreference.setIcon(R.drawable.javascript_enabled);
         } else {
             javaScriptPreference.setIcon(R.drawable.privacy_mode);
@@ -381,7 +415,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the third party cookies icon.
         if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
-            if (thirdPartyCookiesEnabled) {
+            if (savedPreferences.getBoolean("third_party_cookies", false)) {
                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
             } else {
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
@@ -399,7 +433,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the DOM storage icon.
-        if (javaScriptEnabled || nightMode) {  // The preference is enabled.
+        if (javaScriptEnabled) {  // The preference is enabled.
             if (savedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {  // DOM storage is disabled.
@@ -868,21 +902,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_night);
             } else {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_day);
-            }
-        }
-
-        // Set the night mode preference icon.
-        if (nightMode) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                nightModePreference.setIcon(R.drawable.night_mode_enabled_night);
-            } else {
-                nightModePreference.setIcon(R.drawable.night_mode_enabled_day);
-            }
-        } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                nightModePreference.setIcon(R.drawable.night_mode_disabled_night);
-            } else {
-                nightModePreference.setIcon(R.drawable.night_mode_disabled_day);
             }
         }
 
@@ -1822,55 +1841,27 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                     break;
 
-                case "night_mode":
-                    // Store the current night mode status.
-                    boolean currentNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
-                    boolean currentJavaScriptBoolean = sharedPreferences.getBoolean("javascript", false);
+                case "webview_theme":
+                    // Get the new WebView theme.
+                    String newWebViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
 
-                    // Update the icon.
-                    if (currentNightModeBoolean) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            nightModePreference.setIcon(R.drawable.night_mode_enabled_night);
-                        } else {
-                            nightModePreference.setIcon(R.drawable.night_mode_enabled_day);
-                        }
-                    } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            nightModePreference.setIcon(R.drawable.night_mode_disabled_night);
-                        } else {
-                            nightModePreference.setIcon(R.drawable.night_mode_disabled_day);
-                        }
+                    // Define a new WebView theme entry number.
+                    int newWebViewThemeEntryNumber;
+
+                    // Get the webView theme entry number that matches the new WebView theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+                    if (newWebViewTheme.equals(webViewThemeEntriesStringArray[1])) {  // The light theme is selected.
+                        // Store the new WebView theme entry number.
+                        newWebViewThemeEntryNumber = 1;
+                    } else if (newWebViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                        // Store the WebView theme entry number.
+                        newWebViewThemeEntryNumber = 2;
+                    } else {  // The system default theme is selected.
+                        // Store the WebView theme entry number.
+                        newWebViewThemeEntryNumber = 0;
                     }
 
-                    // Update the status of `javaScriptPreference` and `domStoragePreference`.
-                    javaScriptPreference.setEnabled(!currentNightModeBoolean);
-                    domStoragePreference.setEnabled(currentNightModeBoolean || currentJavaScriptBoolean);
-
-                    // Update the `javaScriptPreference` icon.
-                    if (currentNightModeBoolean || currentJavaScriptBoolean) {
-                        javaScriptPreference.setIcon(R.drawable.javascript_enabled);
-                    } else {
-                        javaScriptPreference.setIcon(R.drawable.privacy_mode);
-                    }
-
-                    // Update the DOM storage preference icon.
-                    if (currentNightModeBoolean || currentJavaScriptBoolean) {  // The preference is enabled.
-                        if (sharedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
-                            domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
-                        } else {  // DOM storage is disabled.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
-                            } else {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
-                            }
-                        }
-                    } else {  // The preference is disabled.  The icon should be ghosted.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
-                        } else {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_day);
-                        }
-                    }
+                    // Set the current theme as the summary text for the preference.
+                    webViewThemePreference.setSummary(webViewThemeEntriesStringArray[newWebViewThemeEntryNumber]);
                     break;
 
                 case "wide_viewport":

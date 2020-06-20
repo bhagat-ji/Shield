@@ -593,8 +593,6 @@
             <item>Hell</item>
             <item>Dunkel</item>
         </string-array>
-        <string name="night_mode">Nacht-Modus</string>
-        <string name="night_mode_summary">Aktivieren des Nacht-Modus aktiviert JavaScript für alle Webseiten.</string>
         <string name="wide_viewport_preference">Breiter Anzeigebereich</string>
         <string name="wide_viewport_summary">Wird der breite Anzeigebereich verwendet, werden manche Webseiten eher wie am Desktop (Standrechner, Laptop) angezeigt.</string>
         <string name="display_webpage_images">Webseiten-Bilder anzeigen</string>

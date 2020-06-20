@@ -589,8 +589,6 @@
             <item>Claro</item>
             <item>Oscuro</item>
         </string-array>
-        <string name="night_mode">Modo noche</string>
-        <string name="night_mode_summary">Activar el modo noche también activará javascript para todas las páginas web.</string>
         <string name="wide_viewport_preference">Vista amplia</string>
         <string name="wide_viewport_summary">El uso de una vista amplia hace que el diseño de algunas páginas web se parezca más al sitio de escritorio.</string>
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>

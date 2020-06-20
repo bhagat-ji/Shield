@@ -652,8 +652,17 @@
             <item>Light</item>
             <item>Dark</item>
         </string-array>
-        <string name="night_mode">Night mode</string>
-        <string name="night_mode_summary">Enabling night mode will also enable JavaScript for all web pages.</string>
+        <string name="webview_theme">WebView theme</string>
+        <string-array name="webview_theme_entries">
+            <item>System default</item>
+            <item>Light</item>
+            <item>Dark</item>
+        </string-array>
+        <string-array name="webview_theme_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
+            <item>System default</item>
+            <item>Light</item>
+            <item>Dark</item>
+        </string-array>
         <string name="wide_viewport_preference">Wide viewport</string>
         <string name="wide_viewport_summary">Using a wide viewport makes some webpages layout more like the desktop site.</string>
         <string name="display_webpage_images">Display webpage images</string>
@@ -671,6 +680,7 @@
     <string name="download_custom_location_default_value" translatable="false" />
     <string name="font_size_default_value" translatable="false">100</string>
     <string name="app_theme_default_value" translatable="false">System default</string>
+    <string name="webview_theme_default_value" translatable="false">System default</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
     <string name="google_app_id" translatable="false">Null</string>

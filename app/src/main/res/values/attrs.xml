@@ -57,4 +57,5 @@
     <attr name="selectAllIcon" format="reference" />
     <attr name="sortIcon" format="reference" />
     <attr name="userAgentIcon" format="reference" />
+    <attr name="webViewThemeIcon" format="reference" />
 </resources>
