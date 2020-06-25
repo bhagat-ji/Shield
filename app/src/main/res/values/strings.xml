@@ -161,7 +161,7 @@
         <string name="swipe_to_refresh_options_menu">Swipe to Refresh</string>
         <string name="wide_viewport">Wide Viewport</string>
         <string name="display_images">Display Images</string>
-        <string name="options_night_mode">Night Mode</string>
+        <string name="dark_webview">Dark WebView</string>
         <string name="font_size">Font Size</string>
         <string name="find_on_page">Find on Page</string>
         <string name="print">Print</string>
@@ -330,10 +330,10 @@
         <item>Swipe to refresh enabled</item>
         <item>Swipe to refresh disabled</item>
     </string-array>
-    <string-array name="night_mode_array">
+    <string-array name="webview_theme_array">
         <item>System default</item>
-        <item>Night mode enabled</item>
-        <item>Night mode disabled</item>
+        <item>Light WebView theme</item>
+        <item>Dark WebView theme</item>
     </string-array>
     <string-array name="wide_viewport_array">
         <item>System default</item>

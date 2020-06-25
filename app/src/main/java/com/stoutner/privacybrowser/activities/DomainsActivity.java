@@ -707,7 +707,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Spinner fontSizeSpinner = view.findViewById(R.id.font_size_spinner);
         EditText customFontSizeEditText = view.findViewById(R.id.custom_font_size_edittext);
         Spinner swipeToRefreshSpinner = view.findViewById(R.id.swipe_to_refresh_spinner);
-        Spinner nightModeSpinner = view.findViewById(R.id.night_mode_spinner);
+        Spinner webViewThemeSpinner = view.findViewById(R.id.webview_theme_spinner);
         Spinner wideViewportSpinner = view.findViewById(R.id.wide_viewport_spinner);
         Spinner displayWebpageImagesSpinner = view.findViewById(R.id.display_webpage_images_spinner);
         Switch pinnedSslCertificateSwitch = view.findViewById(R.id.pinned_ssl_certificate_switch);
@@ -732,7 +732,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         int userAgentSwitchPosition = userAgentSpinner.getSelectedItemPosition();
         int fontSizeSwitchPosition = fontSizeSpinner.getSelectedItemPosition();
         int swipeToRefreshInt = swipeToRefreshSpinner.getSelectedItemPosition();
-        int nightModeInt = nightModeSpinner.getSelectedItemPosition();
+        int webViewThemeInt = webViewThemeSpinner.getSelectedItemPosition();
         int wideViewportInt = wideViewportSpinner.getSelectedItemPosition();
         int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
         boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
@@ -772,7 +772,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Save the domain settings.
         domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScript, firstPartyCookies, thirdPartyCookies, domStorage, formData, easyList, easyPrivacy,
-                fanboysAnnoyance, fanboysSocialBlocking, ultraList, ultraPrivacy, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt, wideViewportInt,
+                fanboysAnnoyance, fanboysSocialBlocking, ultraList, ultraPrivacy, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt,
                 displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
 
         // Update the pinned SSL certificate if a new one is checked.

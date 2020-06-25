@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -74,9 +74,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // Track the status of first-party cookies.
     private boolean acceptFirstPartyCookies;
 
-    // Track the domain settings JavaScript status.  This can be removed once night mode does not require JavaScript.
-    private boolean domainSettingsJavaScriptEnabled;
-
     // Track the resource requests.
     private List<String[]> resourceRequests = Collections.synchronizedList(new ArrayList<>());  // Using a synchronized list makes adding resource requests thread safe.
     private boolean easyListEnabled;
@@ -119,9 +116,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     // The default or favorite icon.
     private Bitmap favoriteOrDefaultIcon;
-
-    // Track night mode.
-    private boolean nightMode;
 
     // Track swipe to refresh.
     private boolean swipeToRefresh;
@@ -271,18 +265,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public boolean getAcceptFirstPartyCookies() {
         // Return the accept first-party cookies status.
         return acceptFirstPartyCookies;
-    }
-
-
-    // Domain settings JavaScript enabled.  This can be removed once night mode does not require JavaScript.
-    public void setDomainSettingsJavaScriptEnabled(boolean status) {
-        // Store the domain settings JavaScript status.
-        domainSettingsJavaScriptEnabled = status;
-    }
-
-    public boolean getDomainSettingsJavaScriptEnabled() {
-        // Return the domain settings JavaScript status.
-        return domainSettingsJavaScriptEnabled;
     }
 
 
@@ -635,18 +617,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public Bitmap getFavoriteOrDefaultIcon() {
         // Return the favorite or default icon.
         return favoriteOrDefaultIcon;
-    }
-
-
-    // Night mode.
-    public void setNightMode(boolean status) {
-        // Store the night mode status.
-        nightMode = status;
-    }
-
-    public boolean getNightMode() {
-        // Return the night mode status.
-        return nightMode;
     }
 
 

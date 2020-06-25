@@ -158,7 +158,6 @@
         <string name="swipe_to_refresh_options_menu">Glisser pour actualiser</string>
         <string name="wide_viewport">Fenêtre large</string>
         <string name="display_images">Afficher les images</string>
-        <string name="options_night_mode">Mode nuit</string>
         <string name="font_size">Police</string>
         <string name="find_on_page">Chercher sur la page</string>
         <string name="print">Imprimer</string>
@@ -324,11 +323,6 @@
         <item>Réglages systèmes</item>
         <item>Glisser pour actualiser activé</item>
         <item>Glisser pour actualiser déactivé</item>
-    </string-array>
-    <string-array name="night_mode_array">
-        <item>Réglages systèmes</item>
-        <item>Mode nuit activé</item>
-        <item>Mode nuit désactivé</item>
     </string-array>
     <string-array name="wide_viewport_array">
         <item>Réglages systèmes</item>

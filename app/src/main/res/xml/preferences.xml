@@ -318,8 +318,7 @@
             android:title="@string/webview_theme"
             android:entries="@array/webview_theme_entries"
             android:entryValues="@array/webview_theme_entry_values"
-            android:defaultValue="@string/webview_theme_default_value"
-            android:icon="?attr/webViewThemeIcon" />
+            android:defaultValue="@string/webview_theme_default_value" />
 
         <SwitchPreference
             android:key="wide_viewport"

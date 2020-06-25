@@ -154,7 +154,6 @@
         <string name="swipe_to_refresh_options_menu">Потянуть для обновления</string>
         <string name="wide_viewport">Широкий вид просмотра</string>
         <string name="display_images">Показывать изображения</string>
-        <string name="options_night_mode">Ночной режим</string>
         <string name="font_size">Размер шрифта</string>
         <string name="find_on_page">Найти на странице</string>
         <string name="print">Печать</string>
@@ -320,11 +319,6 @@
         <item>Настройки по умолчанию</item>
         <item>Потянуть для обновления - включено</item>
         <item>Потянуть для обновления - выключено</item>
-    </string-array>
-    <string-array name="night_mode_array">
-        <item>Настройки по умолчанию</item>
-        <item>Ночной режим включен</item>
-        <item>Ночной режим выключен</item>
     </string-array>
     <string-array name="wide_viewport_array">
         <item>Настройки по умолчанию</item>

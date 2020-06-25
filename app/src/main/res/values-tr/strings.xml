@@ -153,7 +153,6 @@
         <string name="swipe_to_refresh_options_menu">Yenilemek için kaydır</string>
         <string name="wide_viewport">Geniş ekran</string>
         <string name="display_images">Resimleri göster</string>
-        <string name="options_night_mode">Gece modu</string>
         <string name="font_size">Yazı Tipi Boyutu</string>
         <string name="find_on_page">Sayfada bul</string>
         <string name="print">Yazdır</string>
@@ -307,11 +306,6 @@
         <item>Sistem varsayılanı</item>
         <item>Yenilemek için kaydır etkin</item>
         <item>Yenilemek için kaydır devre dışı</item>
-    </string-array>
-    <string-array name="night_mode_array">
-        <item>Sistem varsayılanı</item>
-        <item>Gece modu etkin</item>
-        <item>Gece modu devre dışı</item>
     </string-array>
     <string-array name="wide_viewport_array">
         <item>Sistem varsayılanı</item>

@@ -157,7 +157,6 @@
         <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>
         <string name="wide_viewport">Vista amplia</string>
         <string name="display_images">Mostrar imágenes</string>
-        <string name="options_night_mode">Modo noche</string>
         <string name="font_size">Tamaño de fuente</string>
         <string name="find_on_page">Buscar en página</string>
         <string name="print">Imprimir</string>
@@ -324,11 +323,6 @@
         <item>Por defecto del sistema</item>
         <item>Deslizar para actualizar habilitado</item>
         <item>Deslizar para actualizar deshabilitado</item>
-    </string-array>
-    <string-array name="night_mode_array">
-        <item>Por defecto del sistema</item>
-        <item>Modo noche habilitado</item>
-        <item>Modo noche deshabilitado</item>
     </string-array>
     <string-array name="wide_viewport_array">
         <item>Por defecto del sistema</item>

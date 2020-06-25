@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>>.
 
@@ -23,11 +23,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground" >
+    android:layout_height="match_parent" >
 
-    <!-- TODO.  The background and the visibility might not be necessary. -->
-    <!-- The WebView is initially `visibility="invisible"` so that the background color matches the theme. -->
+    <!-- The nested scroll WebView is created with `visibility="invisible"` to prevent a white background splash in night mode.  It is set visible in `onProgressChanged()` in `MainWebViewActivity`. -->
     <com.stoutner.privacybrowser.views.NestedScrollWebView
         android:id="@+id/nestedscroll_webview"
         android:layout_height="match_parent"

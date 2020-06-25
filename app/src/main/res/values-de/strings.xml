@@ -161,7 +161,6 @@
         <string name="swipe_to_refresh_options_menu">Herunterziehen zum aktualisieren</string>
         <string name="wide_viewport">Breiter Anzeigebereich</string>
         <string name="display_images">Bilder anzeigen</string>
-        <string name="options_night_mode">Nacht-Modus</string>
         <string name="font_size">Schriftgröße</string>
         <string name="find_on_page">Auf Seite finden</string>
         <string name="print">Drucken</string>
@@ -327,11 +326,6 @@
         <item>Standardeinstellung</item>
         <item>Herunterziehen zum aktualisieren aktiviert</item>
         <item>Herunterziehen zum aktualisieren deaktiviert</item>
-    </string-array>
-    <string-array name="night_mode_array">
-        <item>Standardeinstellung</item>
-        <item>Nachtmodus aktiviert</item>
-        <item>Nachtmodus deaktiviert</item>
     </string-array>
     <string-array name="wide_viewport_array">
         <item>Standardeinstellung</item>

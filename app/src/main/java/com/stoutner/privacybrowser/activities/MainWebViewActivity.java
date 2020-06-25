@@ -668,6 +668,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
+        MenuItem darkWebViewMenuItem = menu.findItem(R.id.dark_webview);
         MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Only display third-party cookies if API >= 21
@@ -679,6 +680,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Disable the clear form data menu item if the API >= 26 so that the status of the main Clear Data is calculated correctly.
         clearFormDataMenuItem.setEnabled(Build.VERSION.SDK_INT < 26);
+
+        // Only display the dark WebView menu item if API >= 21.
+        darkWebViewMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
 
         // Only show Ad Consent if this is the free flavor.
         adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
@@ -751,7 +755,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem wideViewportMenuItem = menu.findItem(R.id.wide_viewport);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
-        MenuItem nightModeMenuItem = menu.findItem(R.id.night_mode);
+        MenuItem darkWebViewMenuItem = menu.findItem(R.id.dark_webview);
 
         // Get a handle for the cookie manager.
         CookieManager cookieManager = CookieManager.getInstance();
@@ -788,7 +792,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             swipeToRefreshMenuItem.setChecked(currentWebView.getSwipeToRefresh());
             wideViewportMenuItem.setChecked(currentWebView.getSettings().getUseWideViewPort());
             displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
-            nightModeMenuItem.setChecked(currentWebView.getNightMode());
 
             // Initialize the display names for the blocklists with the number of blocked requests.
             blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
@@ -811,6 +814,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Enable DOM Storage if JavaScript is enabled.
             domStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
+
+            // Set the checkbox status for dark WebView if the WebView supports it.
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                darkWebViewMenuItem.setChecked(WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON);
+            }
         }
 
         // Set the checked status of the first party cookies menu item.
@@ -1557,27 +1565,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.night_mode:
-                // Toggle night mode.
-                currentWebView.setNightMode(!currentWebView.getNightMode());
-
-                // Enable or disable JavaScript according to night mode, the global preference, and any domain settings.
-                if (currentWebView.getNightMode()) {  // Night mode is enabled, which requires JavaScript.
-                    // Enable JavaScript.
-                    currentWebView.getSettings().setJavaScriptEnabled(true);
-                } else if (currentWebView.getDomainSettingsApplied()) {  // Night mode is disabled and domain settings are applied.  Set JavaScript according to the domain settings.
-                    // Apply the JavaScript preference that was stored the last time domain settings were loaded.
-                    currentWebView.getSettings().setJavaScriptEnabled(currentWebView.getDomainSettingsJavaScriptEnabled());
-                } else {  // Night mode is disabled and domain settings are not applied.  Set JavaScript according to the global preference.
-                    // Apply the JavaScript preference.
-                    currentWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean("javascript", false));
+            case R.id.dark_webview:
+                // Check to see if dark WebView is supported by this WebView.
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                    // Toggle the dark WebView setting.
+                    if (WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON) {  // Dark WebView is currently enabled.
+                        // Turn off dark WebView.
+                        WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                    } else {  // Dark WebView is currently disabled.
+                        // turn on dark WebView.
+                        WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                    }
                 }
-
-                // Update the privacy icons.
-                updatePrivacyIcons(false);
-
-                // Reload the website.
-                currentWebView.reload();
 
                 // Consume the event.
                 return true;
@@ -3877,7 +3876,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Get the settings from the cursor.
                 nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
-                nestedScrollWebView.setDomainSettingsJavaScriptEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
+                nestedScrollWebView.getSettings().setJavaScriptEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
                 nestedScrollWebView.setAcceptFirstPartyCookies(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
                 boolean domainThirdPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
@@ -3899,7 +3898,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 String userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
-                int nightModeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
+                int webViewThemeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME));
                 int wideViewportInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT));
                 int displayWebpageImagesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
                 boolean pinnedSslCertificate = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
@@ -3930,6 +3929,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     pinnedSslEndDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
                 }
 
+                // Close the current host domain settings cursor.
+                currentDomainSettingsCursor.close();
+
                 // If there is a pinned SSL certificate, store it in the WebView.
                 if (pinnedSslCertificate) {
                     nestedScrollWebView.setPinnedSslCertificate(pinnedSslIssuedToCName, pinnedSslIssuedToOName, pinnedSslIssuedToUName, pinnedSslIssuedByCName, pinnedSslIssuedByOName, pinnedSslIssuedByUName,
@@ -3941,37 +3943,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.setPinnedIpAddresses(pinnedHostIpAddresses);
                 }
 
-                // Set night mode according to the night mode int.
-                switch (nightModeInt) {
-                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                        // Set night mode according to the current default.
-                        nestedScrollWebView.setNightMode(sharedPreferences.getBoolean("night_mode", false));
-                        break;
-
-                    case DomainsDatabaseHelper.ENABLED:
-                        // Enable night mode.
-                        nestedScrollWebView.setNightMode(true);
-                        break;
-
-                    case DomainsDatabaseHelper.DISABLED:
-                        // Disable night mode.
-                        nestedScrollWebView.setNightMode(false);
-                        break;
-                }
-
-                // Enable JavaScript if night mode is enabled.
-                if (nestedScrollWebView.getNightMode()) {
-                    // Enable JavaScript.
-                    nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
-                } else {
-                    // Set JavaScript according to the domain settings.
-                    nestedScrollWebView.getSettings().setJavaScriptEnabled(nestedScrollWebView.getDomainSettingsJavaScriptEnabled());
-                }
-
-                // Close the current host domain settings cursor.
-                currentDomainSettingsCursor.close();
-
-                // Apply the domain settings.
+                // Apply the cookie domain settings.
                 cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
 
                 // Set third-party cookies status if API >= 21.
@@ -4075,6 +4047,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         swipeRefreshLayout.setEnabled(false);
                 }
 
+                // Check to see if WebView themes are supported.
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                    // Set the WebView theme.
+                    switch (webViewThemeInt) {
+                        case DomainsDatabaseHelper.SYSTEM_DEFAULT:
+                            // // Ge the current system theme status.
+                            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                            // Set the WebView theme according to the current system theme status.
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The system is in night mode.
+                                // Turn on the WebView dark mode.
+                                WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                            } else {  // The system is in day mode.
+                                // Turn off the WebView dark mode.
+                                WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                            }
+                            break;
+
+                        case DomainsDatabaseHelper.LIGHT_THEME:
+                            // Turn off the WebView dark mode.
+                            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                            break;
+
+                        case DomainsDatabaseHelper.DARK_THEME:
+                            // Turn on the WebView dark mode.
+                            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                            break;
+                    }
+                }
+
                 // Set the viewport.
                 switch (wideViewportInt) {
                     case DomainsDatabaseHelper.SYSTEM_DEFAULT:
@@ -4116,7 +4118,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from the shared preferences.
-                boolean defaultJavaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
+                nestedScrollWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean("javascript", false));
                 nestedScrollWebView.setAcceptFirstPartyCookies(sharedPreferences.getBoolean("first_party_cookies", false));
                 boolean defaultThirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
@@ -4128,16 +4130,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, sharedPreferences.getBoolean("ultralist", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
-                nestedScrollWebView.setNightMode(sharedPreferences.getBoolean("night_mode", false));
-
-                // Enable JavaScript if night mode is enabled.
-                if (nestedScrollWebView.getNightMode()) {
-                    // Enable JavaScript.
-                    nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
-                } else {
-                    // Set JavaScript according to the domain settings.
-                    nestedScrollWebView.getSettings().setJavaScriptEnabled(defaultJavaScriptEnabled);
-                }
+                String webViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
 
                 // Apply the default first-party cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
@@ -4199,6 +4192,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     default:
                         // Get the user agent string from the user agent data array
                         nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
+                }
+
+                // Get the WebView theme entry values string array.
+                String[] webViewThemeEntryValuesStringArray = getResources().getStringArray(R.array.webview_theme_entry_values);
+
+                // Apply the WebView theme if supported by the installed WebView.
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                    // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
+                    if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+                        // Turn off the WebView dark mode.
+                        WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                    } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                        // Turn on the WebView dark mode.
+                        WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                    } else {  // The system default theme is selected.
+                        // Get the current system theme status.
+                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                        // Set the WebView theme according to the current system theme status.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The system is in night mode.
+                            // Turn on the WebView dark mode.
+                            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                        } else {  // The system is in day mode.
+                            // Turn off the WebView dark mode.
+                            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                        }
+                    }
                 }
 
                 // Set the viewport.
@@ -4987,6 +5007,39 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the WebView theme.
+        String webViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
+
+        // Get the WebView theme entry values string array.
+        String[] webViewThemeEntryValuesStringArray = getResources().getStringArray(R.array.webview_theme_entry_values);
+
+        // Apply the WebView theme if supported by the installed WebView.
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
+            if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+                // Turn off the WebView dark mode.
+                WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+            } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                // Turn on the WebView dark mode.
+                WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+            } else {  // The system default theme is selected.
+                // Get the current system theme status.
+                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                // Set the WebView theme according to the current system theme status.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The system is in night mode.
+                    // Turn on the WebView dark mode.
+                    WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                } else {  // The system is in day mode.
+                    // Turn off the WebView dark mode.
+                    WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                }
+            }
+        }
+
         // Get a handle for the app compat delegate.
         AppCompatDelegate appCompatDelegate = getDelegate();
 
@@ -5014,9 +5067,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Remove the lint warning below that the input method manager might be null.
         assert inputMethodManager != null;
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Initialize the favorite icon.
         nestedScrollWebView.initializeFavoriteIcon();
@@ -5234,46 +5284,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             });
         }
 
-        // TODO.
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_AUTO);
-        }
-
         // Set the web chrome client.
         nestedScrollWebView.setWebChromeClient(new WebChromeClient() {
             // Update the progress bar when a page is loading.
             @Override
             public void onProgressChanged(WebView view, int progress) {
-                // Inject the night mode CSS if night mode is enabled.
-                if (nestedScrollWebView.getNightMode()) {  // Night mode is enabled.
-                    // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
-                    // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
-                    // `border: none` removes all borders, which can also be used to underline text.  `a {color: #1565C0}` sets links to be a dark blue.
-                    // `::selection {background: #0D47A1}' sets the text selection highlight color to be a dark blue. `!important` takes precedent over any existing sub-settings.
-                    nestedScrollWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; " +
-                            "style.innerHTML = '* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important;" +
-                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;} ::selection {background: #0D47A1 !important;}'; parent.appendChild(style)})()", value -> {
-                        // Initialize a handler to display `mainWebView`.
-                        Handler displayWebViewHandler = new Handler();
-
-                        // Setup a runnable to display `mainWebView` after a delay to allow the CSS to be applied.
-                        Runnable displayWebViewRunnable = () -> {
-                            // Only display `mainWebView` if the progress bar is gone.  This prevents the display of the `WebView` while it is still loading.
-                            if (progressBar.getVisibility() == View.GONE) {
-                                nestedScrollWebView.setVisibility(View.VISIBLE);
-                            }
-                        };
-
-                        // Display the WebView after 500 milliseconds.
-                        displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
-                    });
-                } else {  // Night mode is disabled.
-                    // Display the nested scroll WebView if night mode is disabled.
-                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`,
-                    // when night mode is set by domain settings the WebView may be hidden even if night mode is not currently enabled.
-                    nestedScrollWebView.setVisibility(View.VISIBLE);
-                }
-
                 // Update the progress bar.
                 progressBar.setProgress(progress);
 
@@ -5287,6 +5302,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     //Stop the swipe to refresh indicator if it is running
                     swipeRefreshLayout.setRefreshing(false);
+                }
+
+                // If this is a new tab, the current WebView would have been created invisible in `webview_framelayout` to prevent a white background splash in night mode.
+                if (progress >= 50) {
+                    // Make the current WebView visible.
+                    currentWebView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -5504,7 +5525,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Apply the domain settings for the new URL.  This doesn't do anything if the domain has not changed.
                     applyDomainSettings(nestedScrollWebView, url, true, false);
 
-                    // Manually load the URL.  The changing of the user agent will cause WebView to reload the previous URL.
+                    // Load the URL.  By using `loadUrl()`, instead of `loadUrlFromBase()`, the Referer header will never be sent.
                     nestedScrollWebView.loadUrl(url, customHeaders);
 
                     // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
@@ -5965,14 +5986,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reset the requests counters.
                 nestedScrollWebView.resetRequestsCounters();
-
-                // TODO.  Make the background of a new tab match the theme.
-                // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
-                if (nestedScrollWebView.getNightMode()) {
-                    nestedScrollWebView.setVisibility(View.INVISIBLE);
-                } else {
-                    nestedScrollWebView.setVisibility(View.VISIBLE);
-                }
 
                 // Hide the keyboard.
                 inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.getWindowToken(), 0);

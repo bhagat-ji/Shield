@@ -311,8 +311,8 @@
                 app:showAsAction="never" />
 
             <item
-                android:id="@+id/night_mode"
-                android:title="@string/options_night_mode"
+                android:id="@+id/dark_webview"
+                android:title="@string/dark_webview"
                 android:orderInCategory="1160"
                 android:checkable="true"
                 app:showAsAction="never" />

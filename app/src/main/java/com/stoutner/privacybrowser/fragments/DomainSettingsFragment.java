@@ -104,7 +104,7 @@ public class DomainSettingsFragment extends Fragment {
         String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
         String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
         boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
-        boolean defaultNightMode = sharedPreferences.getBoolean("night_mode", false);
+        String defaultWebViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
         boolean defaultWideViewport = sharedPreferences.getBoolean("wide_viewport", true);
         boolean defaultDisplayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
@@ -144,9 +144,9 @@ public class DomainSettingsFragment extends Fragment {
         ImageView swipeToRefreshImageView = domainSettingsView.findViewById(R.id.swipe_to_refresh_imageview);
         Spinner swipeToRefreshSpinner = domainSettingsView.findViewById(R.id.swipe_to_refresh_spinner);
         TextView swipeToRefreshTextView = domainSettingsView.findViewById(R.id.swipe_to_refresh_textview);
-        ImageView nightModeImageView = domainSettingsView.findViewById(R.id.night_mode_imageview);
-        Spinner nightModeSpinner = domainSettingsView.findViewById(R.id.night_mode_spinner);
-        TextView nightModeTextView = domainSettingsView.findViewById(R.id.night_mode_textview);
+        ImageView webViewThemeImageView = domainSettingsView.findViewById(R.id.webview_theme_imageview);
+        Spinner webViewThemeSpinner = domainSettingsView.findViewById(R.id.webview_theme_spinner);
+        TextView webViewThemeTextView = domainSettingsView.findViewById(R.id.webview_theme_textview);
         ImageView wideViewportImageView = domainSettingsView.findViewById(R.id.wide_viewport_imageview);
         Spinner wideViewportSpinner = domainSettingsView.findViewById(R.id.wide_viewport_spinner);
         TextView wideViewportTextView = domainSettingsView.findViewById(R.id.wide_viewport_textview);
@@ -220,7 +220,7 @@ public class DomainSettingsFragment extends Fragment {
         String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
         int swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
-        int nightModeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
+        int webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME));
         int wideViewportInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT));
         int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
         int pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE));
@@ -250,7 +250,7 @@ public class DomainSettingsFragment extends Fragment {
         ArrayAdapter<CharSequence> translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item);
         ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.font_size_array, R.layout.spinner_item);
         ArrayAdapter<CharSequence> swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> nightModeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.night_mode_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> webViewThemeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.webview_theme_array, R.layout.spinner_item);
         ArrayAdapter<CharSequence> wideViewportArrayAdapter = ArrayAdapter.createFromResource(context, R.array.wide_viewport_array, R.layout.spinner_item);
         ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.spinner_item);
 
@@ -258,7 +258,7 @@ public class DomainSettingsFragment extends Fragment {
         translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
-        nightModeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
+        webViewThemeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         wideViewportArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         displayImagesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
 
@@ -266,7 +266,7 @@ public class DomainSettingsFragment extends Fragment {
         userAgentSpinner.setAdapter(translatedUserAgentArrayAdapter);
         fontSizeSpinner.setAdapter(fontSizeArrayAdapter);
         swipeToRefreshSpinner.setAdapter(swipeToRefreshArrayAdapter);
-        nightModeSpinner.setAdapter(nightModeArrayAdapter);
+        webViewThemeSpinner.setAdapter(webViewThemeArrayAdapter);
         wideViewportSpinner.setAdapter(wideViewportArrayAdapter);
         displayWebpageImagesSpinner.setAdapter(displayImagesArrayAdapter);
 
@@ -365,28 +365,13 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Create a boolean to track if night mode is enabled.
-        boolean nightModeEnabled = (nightModeInt == DomainsDatabaseHelper.ENABLED) || ((nightModeInt == DomainsDatabaseHelper.SYSTEM_DEFAULT) && defaultNightMode);
-
-        // Disable the JavaScript switch if night mode is enabled.
-        if (nightModeEnabled) {
-            javaScriptSwitch.setEnabled(false);
-        } else {
-            javaScriptSwitch.setEnabled(true);
-        }
-
-        // Set the JavaScript icon.
-        if ((javaScriptInt == 1) || nightModeEnabled) {
-            javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
-        } else {
-            javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
-        }
-
         // Set the JavaScript switch status.
         if (javaScriptInt == 1) {  // JavaScript is enabled.
             javaScriptSwitch.setChecked(true);
+            javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
         } else {  // JavaScript is disabled.
             javaScriptSwitch.setChecked(false);
+            javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
         }
 
         // Set the first-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
@@ -450,7 +435,7 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Only enable DOM storage if JavaScript is enabled.
-        if ((javaScriptInt == 1) || nightModeEnabled) {  // JavaScript is enabled.
+        if (javaScriptInt == 1) {  // JavaScript is enabled.
             // Enable the DOM storage `Switch`.
             domStorageSwitch.setEnabled(true);
 
@@ -488,19 +473,23 @@ public class DomainSettingsFragment extends Fragment {
             }
         }
 
-        // Set the form data status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.  Form data can be removed once the minimum API >= 26.
+        // Set the form data visibility.  Form data can be removed once the minimum API >= 26.
         if (Build.VERSION.SDK_INT >= 26) {  // Form data no longer applies to newer versions of Android.
-            // Hide the form data switch.
+            // Hide the form data image view and switch.
+            formDataImageView.setVisibility(View.GONE);
             formDataSwitch.setVisibility(View.GONE);
         } else {  // Form data should be displayed because this is an older version of Android.
             if (formDataInt == 1) {  // Form data is on.
+                // Turn the form data switch on.
                 formDataSwitch.setChecked(true);
+
+                // Set the form data icon.
                 formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
             } else {  // Form data is off.
                 // Turn the form data switch to off.
                 formDataSwitch.setChecked(false);
 
-                // Set the icon according to the theme.
+                // Set the icon according to the theme.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_night));
                 } else {
@@ -809,7 +798,7 @@ public class DomainSettingsFragment extends Fragment {
             fontSizeSpinner.performClick();
         });
 
-        // Display the swipe to refresh selection in the spinner.
+        // Select the swipe to refresh selection in the spinner.
         swipeToRefreshSpinner.setSelection(swipeToRefreshInt);
 
         // Set the swipe to refresh text.
@@ -872,71 +861,121 @@ public class DomainSettingsFragment extends Fragment {
             swipeToRefreshSpinner.performClick();
         });
 
-        // Display the night mode in the spinner.
-        nightModeSpinner.setSelection(nightModeInt);
+        // Get the WebView theme string arrays.
+        String[] webViewThemeStringArray = resources.getStringArray(R.array.webview_theme_array);
+        String[] webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values);
 
-        // Set the default night mode text.
-        if (defaultNightMode) {
-            nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED));
-        } else {
-            nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED));
+        // Define an app WebView theme entry number.
+        int appWebViewThemeEntryNumber;
+
+        // Get the WebView theme entry number that matches the current WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
+        if (defaultWebViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+            // Store the default WebView theme entry number.
+            appWebViewThemeEntryNumber = 1;
+        } else if (defaultWebViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+            // Store the default WebView theme entry number.
+            appWebViewThemeEntryNumber = 2;
+        } else {  // The system default theme is selected.
+            // Store the default WebView theme entry number.
+            appWebViewThemeEntryNumber = 0;
         }
 
-        // Set the night mode icon and TextView settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        switch (nightModeInt) {
-            case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                if (defaultNightMode) {  // Night mode enabled by default.
-                    // Set the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
-                    } else {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
-                    }
-                } else {  // Night mode disabled by default.
-                    // Set the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
-                    } else {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
-                    }
-                }
+        // Set the WebView theme visibility.
+        if (Build.VERSION.SDK_INT < 21) {  // The WebView theme cannot be set on API 19.
+            // Get a handle for the webView theme linear layout.
+            LinearLayout webViewThemeLinearLayout = domainSettingsView.findViewById(R.id.webview_theme_linearlayout);
 
-                // Show night mode TextView.
-                nightModeTextView.setVisibility(View.VISIBLE);
-                break;
+            // Hide the WebView theme linear layout.
+            webViewThemeLinearLayout.setVisibility(View.GONE);
+        } else {  // The WebView theme can be set on API >= 21.
+            // Select the WebView theme in the spinner.
+            webViewThemeSpinner.setSelection(webViewThemeInt);
 
-            case DomainsDatabaseHelper.ENABLED:
-                // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
+            // Set the WebView theme text.
+            if (appWebViewThemeEntryNumber == DomainsDatabaseHelper.SYSTEM_DEFAULT) {  // The app WebView theme is system default.
+                // Set the text according to the current UI theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    webViewThemeTextView.setText(webViewThemeStringArray[DomainsDatabaseHelper.LIGHT_THEME]);
                 } else {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
+                    webViewThemeTextView.setText(webViewThemeStringArray[DomainsDatabaseHelper.DARK_THEME]);
                 }
+            } else {  // The app WebView theme is not system default.
+                // Set the text according to the app WebView theme.
+                webViewThemeTextView.setText(webViewThemeStringArray[appWebViewThemeEntryNumber]);
+            }
 
-                // Hide the night mode TextView.
-                nightModeTextView.setVisibility(View.GONE);
-                break;
+            // Set the WebView theme icon and text visibility.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+            switch (webViewThemeInt) {
+                case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The domain WebView theme is system default.
+                    // Set the icon according to the app WebView theme.
+                    switch (appWebViewThemeEntryNumber) {
+                        case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The default WebView theme is system default.
+                            // Set the icon according to the app theme.
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                                // Set the light mode icon.
+                                webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_day));
+                            } else {
+                                // Set the dark theme icon.
+                                webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_night));
+                            }
+                            break;
 
-            case DomainsDatabaseHelper.DISABLED:
-                // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
-                } else {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
-                }
+                        case DomainsDatabaseHelper.LIGHT_THEME:  // the default WebView theme is light.
+                            // Set the icon according to the app theme.
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                                webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_day));
+                            } else {
+                                webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_night));
+                            }
+                            break;
 
-                // Hide the night mode TextView.
-                nightModeTextView.setVisibility(View.GONE);
-                break;
+                        case DomainsDatabaseHelper.DARK_THEME:  // the default WebView theme is dark.
+                            // Set the icon according to the app theme.
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                                webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_day));
+                            } else {
+                                webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_night));
+                            }
+                            break;
+                    }
+
+                    // Show the WebView theme text view.
+                    webViewThemeTextView.setVisibility(View.VISIBLE);
+                    break;
+
+                case DomainsDatabaseHelper.LIGHT_THEME:  // The domain WebView theme is light.
+                    // Set the icon according to the app theme.
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                        webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_day));
+                    } else {
+                        webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_night));
+                    }
+
+                    // Hide the WebView theme text view.
+                    webViewThemeTextView.setVisibility(View.GONE);
+                    break;
+
+                case DomainsDatabaseHelper.DARK_THEME:  // The domain WebView theme is dark.
+                    // Set the icon according to the app theme.
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                        webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_day));
+                    } else {
+                        webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_night));
+                    }
+
+                    // Hide the WebView theme text view.
+                    webViewThemeTextView.setVisibility(View.GONE);
+                    break;
+            }
+
+            // Open the WebView theme spinner when the text view is clicked.
+            webViewThemeTextView.setOnClickListener((View v) -> {
+                // Open the WebView theme spinner.
+                webViewThemeSpinner.performClick();
+            });
         }
 
-        // Open the night mode spinner when the TextView is clicked.
-        nightModeTextView.setOnClickListener((View v) -> {
-            // Open the night mode spinner.
-            nightModeSpinner.performClick();
-        });
-
-        // Display the wide viewport in the spinner.
+        // Select the wide viewport in the spinner.
         wideViewportSpinner.setSelection(wideViewportInt);
 
         // Set the default wide viewport text.
@@ -1771,112 +1810,72 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the night mode spinner listener.
-        nightModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        // Set the WebView theme spinner listener.
+        webViewThemeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Update the icon and the visibility of `nightModeTextView`.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+                // Update the icon and the visibility of the WebView theme text view.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 switch (position) {
-                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                        if (defaultNightMode) {  // Night mode enabled by default.
-                            // Set the icon according to the theme.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
-                            } else {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
-                            }
-                        } else {  // Night mode disabled by default.
-                            // Set the icon according to the theme.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
-                            } else {
-                                nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
-                            }
+                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // the domain WebView theme is system default.
+                        // Set the icon according to the app WebView theme.
+                        switch (appWebViewThemeEntryNumber) {
+                            case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The default WebView theme is system default.
+                                // Set the icon according to the app theme.
+                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                                    // Set the light mode icon.
+                                    webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_day));
+                                } else {
+                                    // Set the dark theme icon.
+                                    webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_night));
+                                }
+                                break;
+
+                            case DomainsDatabaseHelper.LIGHT_THEME:  // The default WebView theme is light.
+                                // Set the icon according to the app theme.
+                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                                    webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_day));
+                                } else {
+                                    webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_night));
+                                }
+                                break;
+
+                            case DomainsDatabaseHelper.DARK_THEME:  // The default WebView theme is dark.
+                                // Set the icon according to the app theme.
+                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                                    webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_day));
+                                } else {
+                                    webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_night));
+                                }
+                                break;
                         }
 
-                        // Show the night mode TextView.
-                        nightModeTextView.setVisibility(View.VISIBLE);
+                        // Show the WebView theme text view.
+                        webViewThemeTextView.setVisibility(View.VISIBLE);
                         break;
 
-                    case DomainsDatabaseHelper.ENABLED:
-                        // Set the icon according to the theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_night));
+                    case DomainsDatabaseHelper.LIGHT_THEME:  // The domain WebView theme is light.
+                        // Set the icon according to the app theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_day));
                         } else {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_enabled_day));
+                            webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_light_theme_night));
                         }
 
-                        // Hide `nightModeTextView`.
-                        nightModeTextView.setVisibility(View.GONE);
+                        // Hide the WebView theme text view.
+                        webViewThemeTextView.setVisibility(View.GONE);
                         break;
 
-                    case DomainsDatabaseHelper.DISABLED:
-                        // Set the icon according to the theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_night));
+                    case DomainsDatabaseHelper.DARK_THEME:  // The domain WebView theme is dark.
+                        // Set the icon according to the app theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_day));
                         } else {
-                            nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_theme_disabled_day));
+                            webViewThemeImageView.setImageDrawable(resources.getDrawable(R.drawable.webview_dark_theme_night));
                         }
 
-                        // Hide `nightModeTextView`.
-                        nightModeTextView.setVisibility(View.GONE);
+                        // Hide the WebView theme text view.
+                        webViewThemeTextView.setVisibility(View.GONE);
                         break;
-                }
-
-                // Create a boolean to store the current night mode setting.
-                boolean currentNightModeEnabled = (position == DomainsDatabaseHelper.ENABLED) || ((position == DomainsDatabaseHelper.SYSTEM_DEFAULT) && defaultNightMode);
-
-                // Disable the JavaScript switch if night mode is enabled.
-                if (currentNightModeEnabled) {
-                    javaScriptSwitch.setEnabled(false);
-                } else {
-                    javaScriptSwitch.setEnabled(true);
-                }
-
-                // Update the JavaScript icon.
-                if ((javaScriptInt == 1) || currentNightModeEnabled) {
-                    javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
-                } else {
-                    javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
-                }
-
-                // Update the DOM storage status.
-                if ((javaScriptInt == 1) || currentNightModeEnabled) {  // JavaScript is enabled.
-                    // Enable the DOM storage `Switch`.
-                    domStorageSwitch.setEnabled(true);
-
-                    // Set the DOM storage status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-                    if (domStorageInt == 1) {  // Both JavaScript and DOM storage are enabled.
-                        domStorageSwitch.setChecked(true);
-                        domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
-                    } else {  // JavaScript is enabled but DOM storage is disabled.
-                        // Set the DOM storage switch to off.
-                        domStorageSwitch.setChecked(false);
-
-                        // Set the icon according to the theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_night));
-                        } else {
-                            domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_day));
-                        }
-                    }
-                } else {  // JavaScript is disabled.
-                    // Disable the DOM storage `Switch`.
-                    domStorageSwitch.setEnabled(false);
-
-                    // Set the checked status of DOM storage.
-                    if (domStorageInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
-                        domStorageSwitch.setChecked(true);
-                    } else {  // Both JavaScript and DOM storage are disabled.
-                        domStorageSwitch.setChecked(false);
-                    }
-
-                    // Set the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_night));
-                    } else {
-                        domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_day));
-                    }
                 }
             }
 

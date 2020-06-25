@@ -157,7 +157,6 @@
         <string name="swipe_to_refresh_options_menu">Swipe per aggiornare</string>
         <string name="wide_viewport">Finestra grande</string>
         <string name="display_images">Mostra immagini</string>
-        <string name="options_night_mode">Modalità Notte</string>
         <string name="font_size">Dimensione font</string>
         <string name="find_on_page">Cerca nella pagina</string>
         <string name="print">Stampa</string>
@@ -323,11 +322,6 @@
         <item>Impostazioni di default</item>
         <item>Swipe per aggiornare abilitato</item>
         <item>Swipe per aggiornare disabilitato</item>
-    </string-array>
-    <string-array name="night_mode_array">
-        <item>Impostazioni di default</item>
-        <item>Modalità Notte abilitata</item>
-        <item>Modalità Notte disabilitata</item>
     </string-array>
     <string-array name="wide_viewport_array">
         <item>Impostazioni di default</item>
