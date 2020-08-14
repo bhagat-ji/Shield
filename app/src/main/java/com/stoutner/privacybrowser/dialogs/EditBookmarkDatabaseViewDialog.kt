@@ -205,7 +205,7 @@ class EditBookmarkDatabaseViewDialog: DialogFragment() {
         val matrixCursor = MatrixCursor(matrixCursorColumnNamesArray)
 
         // Add `Home Folder` as the first entry in the matrix folder.
-        matrixCursor.addRow(arrayOf<Any>(BookmarksDatabaseViewActivity.HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)))
+        matrixCursor.addRow(arrayOf(BookmarksDatabaseViewActivity.HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)))
 
         // Get a cursor with the list of all the folders.
         val foldersCursor = bookmarksDatabaseHelper.allFolders
@@ -321,15 +321,18 @@ class EditBookmarkDatabaseViewDialog: DialogFragment() {
             }
         })
 
-        // Update the edit button if the folder changes.
-        folderSpinner.onItemSelectedListener = object: OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                // Update the edit button.
-                updateEditButton(currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder)
-            }
+        // Wait to set the on item selected listener until the spinner has been inflated.  Otherwise the dialog will crash on restart.
+        folderSpinner.post {
+            // Update the edit button if the folder changes.
+            folderSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    // Update the edit button.
+                    updateEditButton(currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder)
+                }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing.
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Do nothing.
+                }
             }
         }
 

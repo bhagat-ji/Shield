@@ -79,16 +79,41 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class ImportExportActivity extends AppCompatActivity implements StoragePermissionDialog.StoragePermissionDialogListener {
-    // Create the encryption constants.
+    // Define the encryption constants.
     private final int NO_ENCRYPTION = 0;
     private final int PASSWORD_ENCRYPTION = 1;
     private final int OPENPGP_ENCRYPTION = 2;
 
-    // Create the activity result constants.
+    // Define the activity result constants.
     private final int BROWSE_RESULT_CODE = 0;
     private final int OPENPGP_EXPORT_RESULT_CODE = 1;
 
-    // `openKeychainInstalled` is accessed from an inner class.
+    // Define the saved instance state constants.
+    private final String PASSWORD_ENCRYPTED_TEXTINPUTLAYOUT_VISIBILITY = "password_encrypted_textinputlayout_visibility";
+    private final String KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY = "kitkat_password_encrypted_textview_visibility";
+    private final String OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY = "open_keychain_required_textview_visibility";
+    private final String FILE_LOCATION_CARD_VIEW = "file_location_card_view";
+    private final String FILE_NAME_LINEARLAYOUT_VISIBILITY = "file_name_linearlayout_visibility";
+    private final String FILE_DOES_NOT_EXIST_TEXTVIEW_VISIBILITY = "file_does_not_exist_textview_visibility";
+    private final String FILE_EXISTS_WARNING_TEXTVIEW_VISIBILITY = "file_exists_warning_textview_visibility";
+    private final String OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY = "open_keychain_import_instructions_textview_visibility";
+    private final String IMPORT_EXPORT_BUTTON_VISIBILITY = "import_export_button_visibility";
+    private final String FILE_NAME_TEXT = "file_name_text";
+    private final String IMPORT_EXPORT_BUTTON_TEXT = "import_export_button_text";
+
+    // Define the class views.
+    TextInputLayout passwordEncryptionTextInputLayout;
+    TextView kitKatPasswordEncryptionTextView;
+    TextView openKeychainRequiredTextView;
+    CardView fileLocationCardView;
+    LinearLayout fileNameLinearLayout;
+    EditText fileNameEditText;
+    TextView fileDoesNotExistTextView;
+    TextView fileExistsWarningTextView;
+    TextView openKeychainImportInstructionsTextView;
+    Button importExportButton;
+
+    // Define the class variables.
     private boolean openKeychainInstalled;
 
     @Override
@@ -138,19 +163,19 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
         // Get handles for the views that need to be modified.
         Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
-        TextInputLayout passwordEncryptionTextInputLayout = findViewById(R.id.password_encryption_textinputlayout);
+        passwordEncryptionTextInputLayout = findViewById(R.id.password_encryption_textinputlayout);
         EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
-        TextView kitKatPasswordEncryptionTextView = findViewById(R.id.kitkat_password_encryption_textview);
-        TextView openKeychainRequiredTextView = findViewById(R.id.openkeychain_required_textview);
-        CardView fileLocationCardView = findViewById(R.id.file_location_cardview);
+        kitKatPasswordEncryptionTextView = findViewById(R.id.kitkat_password_encryption_textview);
+        openKeychainRequiredTextView = findViewById(R.id.openkeychain_required_textview);
+        fileLocationCardView = findViewById(R.id.file_location_cardview);
         RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
         RadioButton exportRadioButton = findViewById(R.id.export_radiobutton);
-        LinearLayout fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
-        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
-        TextView fileDoesNotExistTextView = findViewById(R.id.file_does_not_exist_textview);
-        TextView fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
-        TextView openKeychainImportInstructionsTextView = findViewById(R.id.openkeychain_import_instructions_textview);
-        Button importExportButton = findViewById(R.id.import_export_button);
+        fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
+        fileNameEditText = findViewById(R.id.file_name_edittext);
+        fileDoesNotExistTextView = findViewById(R.id.file_does_not_exist_textview);
+        fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
+        openKeychainImportInstructionsTextView = findViewById(R.id.openkeychain_import_instructions_textview);
+        importExportButton = findViewById(R.id.import_export_button);
         TextView storagePermissionTextView = findViewById(R.id.import_export_storage_permission_textview);
 
         // Create an array adapter for the spinner.
@@ -161,16 +186,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
         // Set the array adapter for the spinner.
         encryptionSpinner.setAdapter(encryptionArrayAdapter);
-
-        // Initially hide the unneeded views.
-        passwordEncryptionTextInputLayout.setVisibility(View.GONE);
-        kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
-        openKeychainRequiredTextView.setVisibility(View.GONE);
-        fileNameLinearLayout.setVisibility(View.GONE);
-        fileDoesNotExistTextView.setVisibility(View.GONE);
-        fileExistsWarningTextView.setVisibility(View.GONE);
-        openKeychainImportInstructionsTextView.setVisibility(View.GONE);
-        importExportButton.setVisibility(View.GONE);
 
         // Instantiate the download location helper.
         DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
@@ -460,6 +475,55 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                 }
             }
         });
+
+        // Check to see if the activity has been restarted.
+        if (savedInstanceState == null) {  // The app has not been restarted.
+            // Initially hide the unneeded views.
+            passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+            kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
+            openKeychainRequiredTextView.setVisibility(View.GONE);
+            fileNameLinearLayout.setVisibility(View.GONE);
+            fileDoesNotExistTextView.setVisibility(View.GONE);
+            fileExistsWarningTextView.setVisibility(View.GONE);
+            openKeychainImportInstructionsTextView.setVisibility(View.GONE);
+            importExportButton.setVisibility(View.GONE);
+        } else {  // The app has been restarted.
+            // Restore the visibility of the views.
+            passwordEncryptionTextInputLayout.setVisibility(savedInstanceState.getInt(PASSWORD_ENCRYPTED_TEXTINPUTLAYOUT_VISIBILITY));
+            kitKatPasswordEncryptionTextView.setVisibility(savedInstanceState.getInt(KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY));
+            openKeychainRequiredTextView.setVisibility(savedInstanceState.getInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY));
+            fileLocationCardView.setVisibility(savedInstanceState.getInt(FILE_LOCATION_CARD_VIEW));
+            fileNameLinearLayout.setVisibility(savedInstanceState.getInt(FILE_NAME_LINEARLAYOUT_VISIBILITY));
+            fileDoesNotExistTextView.setVisibility(savedInstanceState.getInt(FILE_DOES_NOT_EXIST_TEXTVIEW_VISIBILITY));
+            fileExistsWarningTextView.setVisibility(savedInstanceState.getInt(FILE_EXISTS_WARNING_TEXTVIEW_VISIBILITY));
+            openKeychainImportInstructionsTextView.setVisibility(savedInstanceState.getInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY));
+            importExportButton.setVisibility(savedInstanceState.getInt(IMPORT_EXPORT_BUTTON_VISIBILITY));
+
+            // Restore the text.
+            fileNameEditText.post(() -> fileNameEditText.setText(savedInstanceState.getString(FILE_NAME_TEXT)));
+            importExportButton.setText(savedInstanceState.getString(IMPORT_EXPORT_BUTTON_TEXT));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState (@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Save the visibility of the views.
+        savedInstanceState.putInt(PASSWORD_ENCRYPTED_TEXTINPUTLAYOUT_VISIBILITY, passwordEncryptionTextInputLayout.getVisibility());
+        savedInstanceState.putInt(KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY, kitKatPasswordEncryptionTextView.getVisibility());
+        savedInstanceState.putInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY, openKeychainRequiredTextView.getVisibility());
+        savedInstanceState.putInt(FILE_LOCATION_CARD_VIEW, fileLocationCardView.getVisibility());
+        savedInstanceState.putInt(FILE_NAME_LINEARLAYOUT_VISIBILITY, fileNameLinearLayout.getVisibility());
+        savedInstanceState.putInt(FILE_DOES_NOT_EXIST_TEXTVIEW_VISIBILITY, fileDoesNotExistTextView.getVisibility());
+        savedInstanceState.putInt(FILE_EXISTS_WARNING_TEXTVIEW_VISIBILITY, fileExistsWarningTextView.getVisibility());
+        savedInstanceState.putInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY, openKeychainImportInstructionsTextView.getVisibility());
+        savedInstanceState.putInt(IMPORT_EXPORT_BUTTON_VISIBILITY, importExportButton.getVisibility());
+
+        // Save the text.
+        savedInstanceState.putString(FILE_NAME_TEXT, fileNameEditText.getText().toString());
+        savedInstanceState.putString(IMPORT_EXPORT_BUTTON_TEXT, importExportButton.getText().toString());
     }
 
     public void onClickRadioButton(View view) {

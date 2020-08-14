@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.HttpAuthHandler;
@@ -44,7 +45,7 @@ import java.util.List;
 
 // NestedScrollWebView extends WebView to handle nested scrolls (scrolling the app bar off the screen).
 public class NestedScrollWebView extends WebView implements NestedScrollingChild2 {
-    // These constants identify the blocklists.
+    // Define the blocklists constants.
     public final static int BLOCKED_REQUESTS = 0;
     public final static int EASYLIST = 1;
     public final static int EASYPRIVACY = 2;
@@ -53,6 +54,38 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public final static int ULTRALIST = 5;
     public final static int ULTRAPRIVACY = 6;
     public final static int THIRD_PARTY_REQUESTS = 7;
+
+    // Define the saved state constants.
+    private final String DOMAIN_SETTINGS_APPLIED = "domain_settings_applied";
+    private final String DOMAIN_SETTINGS_DATABASE_ID = "domain_settings_database_id";
+    private final String CURRENT_URl = "current_url";
+    private final String CURRENT_DOMAIN_NAME = "current_domain_name";
+    private final String ACCEPT_FIRST_PARTY_COOKIES = "accept_first_party_cookies";
+    private final String EASYLIST_ENABLED = "easylist_enabled";
+    private final String EASYPRIVACY_ENABLED = "easyprivacy_enabled";
+    private final String FANBOYS_ANNOYANCE_LIST_ENABLED = "fanboys_annoyance_list_enabled";
+    private final String FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED = "fanboys_social_blocking_list_enabled";
+    private final String ULTRALIST_ENABLED = "ultralist_enabled";
+    private final String ULTRAPRIVACY_ENABLED = "ultraprivacy_enabled";
+    private final String BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests";
+    private final String HAS_PINNED_SSL_CERTIFICATE = "has_pinned_ssl_certificate";
+    private final String PINNED_SSL_ISSUED_TO_CNAME = "pinned_ssl_issued_to_cname";
+    private final String PINNED_SSL_ISSUED_TO_ONAME = "pinned_ssl_issued_to_oname";
+    private final String PINNED_SSL_ISSUED_TO_UNAME = "pinned_ssl_issued_to_uname";
+    private final String PINNED_SSL_ISSUED_BY_CNAME = "pinned_ssl_issued_by_cname";
+    private final String PINNED_SSL_ISSUED_BY_ONAME = "pinned_ssl_issued_by_oname";
+    private final String PINNED_SSL_ISSUED_BY_UNAME = "pinned_ssl_issued_by_uname";
+    private final String PINNED_SSL_START_DATE = "pinned_ssl_start_date";
+    private final String PINNED_SSL_END_DATE = "pinned_ssl_end_date";
+    private final String HAS_PINNED_IP_ADDRESSES = "has_pinned_ip_addresses";
+    private final String PINNED_IP_ADDRESSES = "pinned_ip_addresses";
+    private final String IGNORE_PINNED_DOMAIN_INFORMATION = "ignore_pinned_domain_information";
+    private final String SWIPE_TO_REFRESH = "swipe_to_refresh";
+    private final String JAVASCRIPT_ENABLED = "javascript_enabled";
+    private final String DOM_STORAGE_ENABLED = "dom_storage_enabled";
+    private final String USER_AGENT = "user_agent";
+    private final String WIDE_VIEWPORT = "wide_viewport";
+    private final String FONT_SIZE = "font_size";
 
     // Keep a copy of the WebView fragment ID.
     private long webViewFragmentId;
@@ -71,7 +104,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // Keep track of when the domain name changes so that domain settings can be reapplied.  This should never be null.
     private String currentDomainName = "";
 
-    // Track the status of first-party cookies.
+    // Track the status of first-party cookies.  This is necessary because first-party cookie status is app wide instead of WebView specific.
     private boolean acceptFirstPartyCookies;
 
     // Track the resource requests.
@@ -738,6 +771,109 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
         // Return the status of the motion event.
         return motionEventHandled;
+    }
+
+    public Bundle saveNestedScrollWebViewState() {
+        // Create a saved state bundle.
+        Bundle savedState = new Bundle();
+
+        // Initialize the long date variables.
+        long pinnedSslStartDateLong = 0;
+        long pinnedSslEndDateLong = 0;
+
+        // Convert the dates to longs.
+        if (pinnedSslStartDate != null) {
+            pinnedSslStartDateLong = pinnedSslStartDate.getTime();
+        }
+
+        if (pinnedSslEndDate != null) {
+            pinnedSslEndDateLong = pinnedSslEndDate.getTime();
+        }
+
+        // Populate the saved state bundle.
+        savedState.putBoolean(DOMAIN_SETTINGS_APPLIED, domainSettingsApplied);
+        savedState.putInt(DOMAIN_SETTINGS_DATABASE_ID, domainSettingsDatabaseId);
+        savedState.putString(CURRENT_URl, currentUrl);
+        savedState.putString(CURRENT_DOMAIN_NAME, currentDomainName);
+        savedState.putBoolean(ACCEPT_FIRST_PARTY_COOKIES, acceptFirstPartyCookies);
+        savedState.putBoolean(EASYLIST_ENABLED, easyListEnabled);
+        savedState.putBoolean(EASYPRIVACY_ENABLED, easyPrivacyEnabled);
+        savedState.putBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED, fanboysAnnoyanceListEnabled);
+        savedState.putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED, fanboysSocialBlockingListEnabled);
+        savedState.putBoolean(ULTRALIST_ENABLED, ultraListEnabled);
+        savedState.putBoolean(ULTRAPRIVACY_ENABLED, ultraPrivacyEnabled);
+        savedState.putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests);
+        savedState.putBoolean(HAS_PINNED_SSL_CERTIFICATE, hasPinnedSslCertificate);
+        savedState.putString(PINNED_SSL_ISSUED_TO_CNAME, pinnedSslIssuedToCName);
+        savedState.putString(PINNED_SSL_ISSUED_TO_ONAME, pinnedSslIssuedToOName);
+        savedState.putString(PINNED_SSL_ISSUED_TO_UNAME, pinnedSslIssuedToUName);
+        savedState.putString(PINNED_SSL_ISSUED_BY_CNAME, pinnedSslIssuedByCName);
+        savedState.putString(PINNED_SSL_ISSUED_BY_ONAME, pinnedSslIssuedByOName);
+        savedState.putString(PINNED_SSL_ISSUED_BY_UNAME, pinnedSslIssuedByUName);
+        savedState.putLong(PINNED_SSL_START_DATE, pinnedSslStartDateLong);
+        savedState.putLong(PINNED_SSL_END_DATE, pinnedSslEndDateLong);
+        savedState.putBoolean(HAS_PINNED_IP_ADDRESSES, hasPinnedIpAddresses);
+        savedState.putString(PINNED_IP_ADDRESSES, pinnedIpAddresses);
+        savedState.putBoolean(IGNORE_PINNED_DOMAIN_INFORMATION, ignorePinnedDomainInformation);
+        savedState.putBoolean(SWIPE_TO_REFRESH, swipeToRefresh);
+        savedState.putBoolean(JAVASCRIPT_ENABLED, this.getSettings().getJavaScriptEnabled());
+        savedState.putBoolean(DOM_STORAGE_ENABLED, this.getSettings().getDomStorageEnabled());
+        savedState.putString(USER_AGENT, this.getSettings().getUserAgentString());
+        savedState.putBoolean(WIDE_VIEWPORT, this.getSettings().getUseWideViewPort());
+        savedState.putInt(FONT_SIZE, this.getSettings().getTextZoom());
+
+        // Return the saved state bundle.
+        return savedState;
+    }
+
+    public void restoreNestedScrollWebViewState(Bundle savedState) {
+        // Restore the class variables.
+        domainSettingsApplied = savedState.getBoolean(DOMAIN_SETTINGS_APPLIED);
+        domainSettingsDatabaseId = savedState.getInt(DOMAIN_SETTINGS_DATABASE_ID);
+        currentUrl = savedState.getString(CURRENT_URl);
+        currentDomainName = savedState.getString(CURRENT_DOMAIN_NAME);
+        acceptFirstPartyCookies = savedState.getBoolean(ACCEPT_FIRST_PARTY_COOKIES);
+        easyListEnabled = savedState.getBoolean(EASYLIST_ENABLED);
+        easyPrivacyEnabled = savedState.getBoolean(EASYPRIVACY_ENABLED);
+        fanboysAnnoyanceListEnabled = savedState.getBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED);
+        fanboysSocialBlockingListEnabled = savedState.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED);
+        ultraListEnabled = savedState.getBoolean(ULTRALIST_ENABLED);
+        ultraPrivacyEnabled = savedState.getBoolean(ULTRAPRIVACY_ENABLED);
+        blockAllThirdPartyRequests = savedState.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS);
+        hasPinnedSslCertificate = savedState.getBoolean(HAS_PINNED_SSL_CERTIFICATE);
+        pinnedSslIssuedToCName = savedState.getString(PINNED_SSL_ISSUED_TO_CNAME);
+        pinnedSslIssuedToOName = savedState.getString(PINNED_SSL_ISSUED_TO_ONAME);
+        pinnedSslIssuedToUName = savedState.getString(PINNED_SSL_ISSUED_TO_UNAME);
+        pinnedSslIssuedByCName = savedState.getString(PINNED_SSL_ISSUED_BY_CNAME);
+        pinnedSslIssuedByOName = savedState.getString(PINNED_SSL_ISSUED_BY_ONAME);
+        pinnedSslIssuedByUName = savedState.getString(PINNED_SSL_ISSUED_BY_UNAME);
+        hasPinnedIpAddresses = savedState.getBoolean(HAS_PINNED_IP_ADDRESSES);
+        pinnedIpAddresses = savedState.getString(PINNED_IP_ADDRESSES);
+        ignorePinnedDomainInformation = savedState.getBoolean(IGNORE_PINNED_DOMAIN_INFORMATION);
+        swipeToRefresh = savedState.getBoolean(SWIPE_TO_REFRESH);
+        this.getSettings().setJavaScriptEnabled(savedState.getBoolean(JAVASCRIPT_ENABLED));
+        this.getSettings().setDomStorageEnabled(savedState.getBoolean(DOM_STORAGE_ENABLED));
+        this.getSettings().setUserAgentString(savedState.getString(USER_AGENT));
+        this.getSettings().setUseWideViewPort(savedState.getBoolean(WIDE_VIEWPORT));
+        this.getSettings().setTextZoom(savedState.getInt(FONT_SIZE));
+
+        // Get the date longs.
+        long pinnedSslStartDateLong = savedState.getLong(PINNED_SSL_START_DATE);
+        long pinnedSslEndDateLong = savedState.getLong(PINNED_SSL_END_DATE);
+
+        // Set the pinned SSL start date to `null` if the saved date long is 0 because creating a new date results in an error if the input is 0.
+        if (pinnedSslStartDateLong == 0) {
+            pinnedSslStartDate = null;
+        } else {
+            pinnedSslStartDate = new Date(pinnedSslStartDateLong);
+        }
+
+        // Set the Pinned SSL end date to `null` if the saved date long is 0 because creating a new date results in an error if the input is 0.
+        if (pinnedSslEndDateLong == 0) {
+            pinnedSslEndDate = null;
+        } else {
+            pinnedSslEndDate = new Date(pinnedSslEndDateLong);
+        }
     }
 
     // The Android accessibility guidelines require overriding `performClick()` and calling it from `onTouchEvent()`.

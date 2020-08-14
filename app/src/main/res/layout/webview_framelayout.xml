@@ -25,13 +25,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <!-- The nested scroll WebView is created with `visibility="invisible"` to prevent a white background splash in night mode.  It is set visible in `onProgressChanged()` in `MainWebViewActivity`. -->
+    <!-- The nested scroll WebView is created with `visibility="invisible"` to prevent a white background splash in night mode because there is a delay in setting the background color.
+        It is set visible in `initializeWebView()` or `onProgressChanged()` in `MainWebViewActivity`. -->
     <com.stoutner.privacybrowser.views.NestedScrollWebView
         android:id="@+id/nestedscroll_webview"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:background="?android:attr/colorBackground"
         android:visibility="invisible" />
 
     <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.

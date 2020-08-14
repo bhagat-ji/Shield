@@ -72,35 +72,24 @@ import java.util.Arrays;
 
 public class BookmarksDatabaseViewActivity extends AppCompatActivity implements EditBookmarkDatabaseViewDialog.EditBookmarkDatabaseViewListener,
         EditBookmarkFolderDatabaseViewDialog.EditBookmarkFolderDatabaseViewListener {
-    // Instantiate the constants.
+    // Define the class constants.
     private static final int ALL_FOLDERS_DATABASE_ID = -2;
     public static final int HOME_FOLDER_DATABASE_ID = -1;
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()`, `updateBookmarksListView()`, `selectAllBookmarksInFolder()`, and `onDestroy()`.
-    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+    // Define the saved instance state constants.
+    private final String CURRENT_FOLDER_DATABASE_ID = "current_folder_database_id";
+    private final String CURRENT_FOLDER_NAME = "current_folder_name";
+    private final String SORT_BY_DISPLAY_ORDER = "sort_by_display_order";
 
-    // `bookmarksCursor` is used in `onCreate()`, `updateBookmarksListView()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, and `onDestroy()`.
-    private Cursor bookmarksCursor;
-
-    // `bookmarksCursorAdapter` is used in `onCreate()`, `selectAllBookmarksInFolder()`, and `updateBookmarksListView()`.
-    private CursorAdapter bookmarksCursorAdapter;
-
-    // `oldFolderNameString` is used in `onCreate()` and `onSaveBookmarkFolder()`.
-    private String oldFolderNameString;
-
-    // `currentFolderDatabaseId` is used in `onCreate()`, `updateBookmarksListView()`, `onSaveBookmark()`, and `onSaveBookmarkFolder()`.
+    // Define the class variables.
     private int currentFolderDatabaseId;
-
-    // `currentFolder` is used in `onCreate()`, `onSaveBookmark()`, and `onSaveBookmarkFolder()`.
     private String currentFolderName;
-
-    // `sortByDisplayOrder` is used in `onCreate()`, `onOptionsItemSelected()`, and `updateBookmarksListView()`.
     private boolean sortByDisplayOrder;
-
-    // `bookmarksDeletedSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+    private Cursor bookmarksCursor;
+    private CursorAdapter bookmarksCursorAdapter;
+    private String oldFolderNameString;
     private Snackbar bookmarksDeletedSnackbar;
-
-    // `closeActivityAfterDismissingSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
     private boolean closeActivityAfterDismissingSnackbar;
 
     @Override
@@ -137,8 +126,10 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Set the content view.
         setContentView(R.layout.bookmarks_databaseview_coordinatorlayout);
 
-        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        // Get a handle for the toolbar.
         Toolbar toolbar = findViewById(R.id.bookmarks_databaseview_toolbar);
+
+        // Set the support action bar.
         setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.
@@ -163,20 +154,20 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Get a cursor with the list of all the folders.
         Cursor foldersCursor = bookmarksDatabaseHelper.getAllFolders();
 
-        // Combine `matrixCursor` and `foldersCursor`.
+        // Combine the matrix cursor and the folders cursor.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
 
 
         // Get the default folder bitmap.  `ContextCompat` must be used until the minimum API >= 21.
         Drawable defaultFolderDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.folder_blue_bitmap);
 
-        // Cast the default folder drawable to a `BitmapDrawable`.
+        // Cast the default folder drawable to a bitmap drawable.
         BitmapDrawable defaultFolderBitmapDrawable = (BitmapDrawable) defaultFolderDrawable;
 
         // Remove the incorrect lint warning that `.getBitmap()` might be null.
         assert defaultFolderBitmapDrawable != null;
 
-        // Convert the default folder `BitmapDrawable` to a bitmap.
+        // Convert the default folder bitmap drawable to a bitmap.
         Bitmap defaultFolderBitmap = defaultFolderBitmapDrawable.getBitmap();
 
 
@@ -232,34 +223,54 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         Spinner folderSpinner = findViewById(R.id.spinner);
         folderSpinner.setAdapter(foldersCursorAdapter);
 
-        // Handle taps on the spinner dropdown.
-        folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Store the current folder database ID.
-                currentFolderDatabaseId = (int) id;
+        // Wait to set the on item selected listener until the spinner has been inflated.  Otherwise the activity will crash on restart.
+        folderSpinner.post(() -> {
+            // Handle taps on the spinner dropdown.
+            folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // Store the current folder database ID.
+                    currentFolderDatabaseId = (int) id;
 
-                // Get a handle for the selected view.
-                TextView selectedFolderTextView = findViewById(R.id.spinner_item_textview);
+                    // Get a handle for the selected view.
+                    TextView selectedFolderTextView = findViewById(R.id.spinner_item_textview);
 
-                // Store the current folder name.
-                currentFolderName = selectedFolderTextView.getText().toString();
+                    // Store the current folder name.
+                    currentFolderName = selectedFolderTextView.getText().toString();
 
-                // Update the list view.
-                updateBookmarksListView();
-            }
+                    // Update the list view.
+                    updateBookmarksListView();
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing.
-            }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Do nothing.
+                }
+            });
         });
 
-        // Get a handle for the bookmarks `ListView`.
+
+        // Get a handle for the bookmarks listview.
         ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
 
-        // Get a `Cursor` with the current contents of the bookmarks database.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarks();
+        // Check to see if the activity was restarted.
+        if (savedInstanceState == null) {  // The activity was not restarted.
+            // Set the default current folder database ID.
+            currentFolderDatabaseId = ALL_FOLDERS_DATABASE_ID;
+        } else {  // The activity was restarted.
+            // Restore the class variables from the saved instance state.
+            currentFolderDatabaseId = savedInstanceState.getInt(CURRENT_FOLDER_DATABASE_ID);
+            currentFolderName = savedInstanceState.getString(CURRENT_FOLDER_NAME);
+            sortByDisplayOrder = savedInstanceState.getBoolean(SORT_BY_DISPLAY_ORDER);
+
+            // Update the spinner if the home folder is selected.  Android handles this by default for the main cursor but not the matrix cursor.
+            if (currentFolderDatabaseId == HOME_FOLDER_DATABASE_ID) {
+                folderSpinner.setSelection(1);
+            }
+        }
+
+        // Update the bookmarks listview.
+        updateBookmarksListView();
 
         // Setup a `CursorAdapter` with `this` context.  `false` disables autoRequery.
         bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
@@ -347,9 +358,6 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Update the ListView.
         bookmarksListView.setAdapter(bookmarksCursorAdapter);
 
-        // Set the current folder database ID.
-        currentFolderDatabaseId = ALL_FOLDERS_DATABASE_ID;
-
         // Set a listener to edit a bookmark when it is tapped.
         bookmarksListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             // Convert the database ID to an int.
@@ -392,6 +400,17 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Disable the delete menu item if a delete is pending.
                 deleteMenuItem.setEnabled(!deletingBookmarks);
 
+                // Get the number of currently selected bookmarks.
+                int numberOfSelectedBookmarks = bookmarksListView.getCheckedItemCount();
+
+                // Set the action mode subtitle according to the number of selected bookmarks.  This must be set here or it will be missing if the activity is restarted.
+                mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
+
+                // Do not show the select all menu item if all the bookmarks are already checked.
+                if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {
+                    selectAllMenuItem.setVisible(false);
+                }
+
                 // Make it so.
                 return true;
             }
@@ -407,13 +426,15 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Calculate the number of selected bookmarks.
                 int numberOfSelectedBookmarks = bookmarksListView.getCheckedItemCount();
 
-                // Adjust the ActionMode according to the number of selected bookmarks.
+                // Update the action mode subtitle according to the number of selected bookmarks.
                 mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
 
-                // Do not show the select all menu item if all the bookmarks are already checked.
-                if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {
+                // Update the visibility of the the select all menu.
+                if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {  // All of the bookmarks are checked.
+                    // Hide the select all menu item.
                     selectAllMenuItem.setVisible(false);
-                } else {
+                } else {  // Not all of the bookmarks are checked.
+                    // Show the select all menu item.
                     selectAllMenuItem.setVisible(true);
                 }
 
@@ -584,6 +605,21 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Inflate the menu.
         getMenuInflater().inflate(R.menu.bookmarks_databaseview_options_menu, menu);
 
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Get a handle for the sort menu item.
+        MenuItem sortMenuItem = menu.findItem(R.id.sort);
+
+        // Change the sort menu item icon if the listview is sorted by display order, which restores the state after a restart.
+        if (sortByDisplayOrder) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                sortMenuItem.setIcon(R.drawable.sort_selected_day);
+            } else {
+                sortMenuItem.setIcon(R.drawable.sort_selected_night);
+            }
+        }
+
         // Success.
         return true;
     }
@@ -600,7 +636,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 onBackPressed();
                 break;
 
-            case R.id.options_menu_sort:
+            case R.id.sort:
                 // Update the sort by display order tracker.
                 sortByDisplayOrder = !sortByDisplayOrder;
 
@@ -613,20 +649,20 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Update the icon and display a snackbar.
                 if (sortByDisplayOrder) {  // Sort by display order.
                     // Update the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        menuItem.setIcon(R.drawable.sort_selected_night);
-                    } else {
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                         menuItem.setIcon(R.drawable.sort_selected_day);
+                    } else {
+                        menuItem.setIcon(R.drawable.sort_selected_night);
                     }
 
                     // Display a Snackbar indicating the current sort type.
                     Snackbar.make(bookmarksListView, R.string.sorted_by_display_order, Snackbar.LENGTH_SHORT).show();
                 } else {  // Sort by database id.
                     // Update the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        menuItem.setIcon(R.drawable.sort_night);
-                    } else {
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                         menuItem.setIcon(R.drawable.sort_day);
+                    } else {
+                        menuItem.setIcon(R.drawable.sort_night);
                     }
 
                     // Display a Snackbar indicating the current sort type.
@@ -638,6 +674,17 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState (@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Store the class variables in the bundle.
+        savedInstanceState.putInt(CURRENT_FOLDER_DATABASE_ID, currentFolderDatabaseId);
+        savedInstanceState.putString(CURRENT_FOLDER_NAME, currentFolderName);
+        savedInstanceState.putBoolean(SORT_BY_DISPLAY_ORDER, sortByDisplayOrder);
     }
 
     @Override
@@ -698,8 +745,10 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 }
         }
 
-        // Update the list view.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+        // Update the cursor adapter if it isn't null, which happens when the activity is restarted.
+        if (bookmarksCursorAdapter != null) {
+            bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+        }
     }
 
     private void selectAllBookmarksInFolder(int folderId) {

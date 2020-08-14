@@ -38,7 +38,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.DomainsActivity;
 
 public class DomainsListFragment extends Fragment {
-    // Instantiate the dismiss snackbar interface handle.
+    // Instantiate the dismiss snackbar interface.
     private DismissSnackbarInterface dismissSnackbarInterface;
 
     // Define the public dismiss snackbar interface.
@@ -50,7 +50,7 @@ public class DomainsListFragment extends Fragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for the dismiss snackbar interface.
+        // Populate the dismiss snackbar interface.
         dismissSnackbarInterface = (DismissSnackbarInterface) context;
     }
 
@@ -58,7 +58,7 @@ public class DomainsListFragment extends Fragment {
         // Inflate `domains_list_fragment`.  `false` does not attach it to the root `container`.
         View domainsListFragmentView = inflater.inflate(R.layout.domains_list_fragment, container, false);
 
-        // Initialize `domainsListView`.
+        // Get a handle for the domains listview.
         ListView domainsListView = domainsListFragmentView.findViewById(R.id.domains_listview);
 
         // Remove the incorrect lint error below that `.getSupportFragmentManager()` might be null.
@@ -103,7 +103,7 @@ public class DomainsListFragment extends Fragment {
             DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
             domainSettingsFragment.setArguments(argumentsBundle);
 
-            // Display the domain settings fragment.
+            // Check to see if the device is in two paned mode.
             if (DomainsActivity.twoPanedMode) {  // The device in in two-paned mode.
                 // enable `deleteMenuItem` if the system is not waiting for a `Snackbar` to be dismissed.
                 if (!DomainsActivity.dismissingSnackbar) {
@@ -124,6 +124,9 @@ public class DomainsListFragment extends Fragment {
                 // Display the domain settings fragment.
                 supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
             } else { // The device in in single-paned mode
+                // Save the domains listview position.
+                DomainsActivity.domainsListViewPosition = domainsListView.getFirstVisiblePosition();
+
                 // Show `deleteMenuItem` if the system is not waiting for a `Snackbar` to be dismissed.
                 if (!DomainsActivity.dismissingSnackbar) {
                     DomainsActivity.deleteMenuItem.setVisible(true);
@@ -138,6 +141,7 @@ public class DomainsListFragment extends Fragment {
             }
         });
 
+        // Return the domains list fragment.
         return domainsListFragmentView;
     }
 }

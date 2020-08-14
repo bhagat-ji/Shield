@@ -27,7 +27,6 @@
     <attr name="buttonBackgroundColorSelector" format="color" />
     <attr name="buttonTextColorSelector" format="color" />
     <attr name="redTextColor" format="color" />
-    <attr name="spinnerTextColorSelector" format="color" />
 
     <!-- Tint Colors. -->
     <attr name="addTabIconTintColor" format="color" />

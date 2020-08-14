@@ -35,9 +35,10 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API >= 21.
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
@@ -52,7 +53,10 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
     // The resource requests are populated by `MainWebViewActivity` before `RequestsActivity` is launched.
     public static List<String[]> resourceRequests;
 
-    // The list view is used in `onCreate()` and `launchViewRequestDialog()`.
+    // Initialize the class constants.
+    private final String LISTVIEW_POSITION = "listview_position";
+
+    // Define the class views.
     private ListView requestsListView;
 
     @Override
@@ -235,6 +239,24 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
             // Display the view request dialog.  The list view is 0 based, so the position must be incremented by 1.
             launchViewRequestDialog(position + 1);
         });
+
+        // Check to see if the activity has been restarted.
+        if (savedInstanceState != null) {
+            // Scroll to the saved position.
+            requestsListView.post(() -> requestsListView.setSelection(savedInstanceState.getInt(LISTVIEW_POSITION)));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Get the listview position.
+        int listViewPosition = requestsListView.getFirstVisiblePosition();
+
+        // Store the listview position in the bundle.
+        savedInstanceState.putInt(LISTVIEW_POSITION, listViewPosition);
     }
 
     @Override

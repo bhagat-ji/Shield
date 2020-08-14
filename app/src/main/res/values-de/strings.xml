@@ -327,6 +327,11 @@
         <item>Herunterziehen zum aktualisieren aktiviert</item>
         <item>Herunterziehen zum aktualisieren deaktiviert</item>
     </string-array>
+    <string-array name="webview_theme_array">
+        <item>System-Einstellung</item>
+        <item>Helles WebView-Erscheinungsbild</item>
+        <item>Dunkles WebView-Erscheinungsbild</item>
+    </string-array>
     <string-array name="wide_viewport_array">
         <item>Standardeinstellung</item>
         <item>Breiter Anzeigebereich aktiviert</item>
@@ -583,6 +588,12 @@
             zum Umschalten von Cookies und DOM Storage.</string>
         <string name="app_theme">Erscheinungsbild</string>
         <string-array name="app_theme_entries">
+            <item>System-Einstellung</item>
+            <item>Hell</item>
+            <item>Dunkel</item>
+        </string-array>
+        <string name="webview_theme">WebView-Erscheinungsbild</string>
+        <string-array name="webview_theme_entries">
             <item>System-Einstellung</item>
             <item>Hell</item>
             <item>Dunkel</item>

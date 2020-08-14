@@ -17,105 +17,37 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser.asynctasks;
+package com.stoutner.privacybrowser.backgroundtasks;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.LocaleList;
-import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
-import android.view.View;
 import android.webkit.CookieManager;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.helpers.ProxyHelper;
+import com.stoutner.privacybrowser.viewmodels.WebViewSource;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
-import java.util.Locale;
 
-// This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `SpannableStringBuilder[]` contains the results.
-public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]> {
-    // Define weak references to the calling context and activity.
-    private WeakReference<Context> contextWeakReference;
-    private WeakReference<Activity> activityWeakReference;
-
-    // Store the user agent.
-    private String userAgent;
-
-    public GetSource(Context context, Activity activity, String userAgent) {
-        // Populate the weak references to the calling context and activity.
-        contextWeakReference = new WeakReference<>(context);
-        activityWeakReference = new WeakReference<>(activity);
-
-        // Store the user agent.
-        this.userAgent = userAgent;
-    }
-
-    // `onPreExecute()` operates on the UI thread.
-    @Override
-    protected void onPreExecute() {
-        // Get a handle for the calling activity.
-        Activity activity = activityWeakReference.get();
-
-        // Abort if the activity is gone.
-        if ((activity == null) || activity.isFinishing()) {
-            return;
-        }
-
-        // Get a handle for the progress bar.
-        ProgressBar progressBar = activity.findViewById(R.id.progress_bar);
-
-        // Make the progress bar visible.
-        progressBar.setVisibility(View.VISIBLE);
-
-        // Set the progress bar to be indeterminate.
-        progressBar.setIndeterminate(true);
-    }
-
-    @Override
-    protected SpannableStringBuilder[] doInBackground(String... formattedUrlString) {
-        // Initialize the response body String.
+public class GetSourceBackgroundTask {
+    public SpannableStringBuilder[] acquire(String urlString, String userAgent, boolean doNotTrack, String localeString, Proxy proxy, WebViewSource webViewSource) {
+        // Initialize the spannable string builders.
         SpannableStringBuilder requestHeadersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder responseMessageBuilder = new SpannableStringBuilder();
         SpannableStringBuilder responseHeadersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder responseBodyBuilder = new SpannableStringBuilder();
 
-        // Get a handle for the context and activity.
-        Context context = contextWeakReference.get();
-        Activity activity = activityWeakReference.get();
-
-        // Abort if the activity is gone.
-        if ((activity == null) || activity.isFinishing()) {
-            return new SpannableStringBuilder[] {requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder};
-        }
-
         // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch `IOExceptions`.
         try {
             // Get the current URL from the main activity.
-            URL url = new URL(formattedUrlString[0]);
-
-            // Instantiate the proxy helper.
-            ProxyHelper proxyHelper = new ProxyHelper();
-
-            // Get the current proxy.
-            Proxy proxy = proxyHelper.getCurrentProxy(context);
+            URL url = new URL(urlString);
 
             // Open a connection to the URL.  No data is actually sent at this point.
             HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
@@ -255,11 +187,8 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
             requestHeadersBuilder.append(":  ?1");
 
 
-            // Get a handle for the shared preferences.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
-
             // Only populate `Do Not Track` if it is enabled.
-            if (sharedPreferences.getBoolean("do_not_track", false)) {
+            if (doNotTrack) {
                 // Set the `dnt` header property.
                 httpUrlConnection.setRequestProperty("dnt", "1");
 
@@ -293,67 +222,6 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
             requestHeadersBuilder.append(":  ");
             requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
 
-
-            // Instantiate a locale string.
-            String localeString;
-
-            // Populate the locale string.
-            if (Build.VERSION.SDK_INT >= 24) {  // SDK >= 24 has a list of locales.
-                // Get the list of locales.
-                LocaleList localeList = activity.getResources().getConfiguration().getLocales();
-
-                // Initialize a string builder to extract the locales from the list.
-                StringBuilder localesStringBuilder = new StringBuilder();
-
-                // Initialize a `q` value, which is used by `WebView` to indicate the order of importance of the languages.
-                int q = 10;
-
-                // Populate the string builder with the contents of the locales list.
-                for (int i = 0; i < localeList.size(); i++) {
-                    // Append a comma if there is already an item in the string builder.
-                    if (i > 0) {
-                        localesStringBuilder.append(",");
-                    }
-
-                    // Get the locale from the list.
-                    Locale locale = localeList.get(i);
-
-                    // Add the locale to the string.  `locale` by default displays as `en_US`, but WebView uses the `en-US` format.
-                    localesStringBuilder.append(locale.getLanguage());
-                    localesStringBuilder.append("-");
-                    localesStringBuilder.append(locale.getCountry());
-
-                    // If not the first locale, append `;q=0.x`, which drops by .1 for each removal from the main locale until q=0.1.
-                    if (q < 10) {
-                        localesStringBuilder.append(";q=0.");
-                        localesStringBuilder.append(q);
-                    }
-
-                    // Decrement `q` if it is greater than 1.
-                    if (q > 1) {
-                        q--;
-                    }
-
-                    // Add a second entry for the language only portion of the locale.
-                    localesStringBuilder.append(",");
-                    localesStringBuilder.append(locale.getLanguage());
-
-                    // Append `1;q=0.x`, which drops by .1 for each removal form the main locale until q=0.1.
-                    localesStringBuilder.append(";q=0.");
-                    localesStringBuilder.append(q);
-
-                    // Decrement `q` if it is greater than 1.
-                    if (q > 1) {
-                        q--;
-                    }
-                }
-
-                // Store the populated string builder in the locale string.
-                localeString = localesStringBuilder.toString();
-            } else {  // SDK < 24 only has a primary locale.
-                // Store the locale in the locale string.
-                localeString = Locale.getDefault().toString();
-            }
 
             // Set the `Accept-Language` header property.
             httpUrlConnection.setRequestProperty("Accept-Language", localeString);
@@ -479,7 +347,8 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                         byteArrayOutputStream.write(conversionBufferByteArray, 0, bufferLength);
                     }
                 } catch (IOException exception) {
-                    // Do nothing.
+                    // Return the error message.
+                    webViewSource.returnError(exception.toString());
                 }
 
                 // Close the input stream.
@@ -492,43 +361,11 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 httpUrlConnection.disconnect();
             }
         } catch (Exception exception) {
-            // Do nothing.
+            // Return the error message.
+            webViewSource.returnError(exception.toString());
         }
 
         // Return the response body string as the result.
         return new SpannableStringBuilder[] {requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder};
-    }
-
-    // `onPostExecute()` operates on the UI thread.
-    @Override
-    protected void onPostExecute(SpannableStringBuilder[] viewSourceStringArray){
-        // Get a handle for the activity.
-        Activity activity = activityWeakReference.get();
-
-        // Abort if the activity is gone.
-        if ((activity == null) || activity.isFinishing()) {
-            return;
-        }
-
-        // Get handles for the text views.
-        TextView requestHeadersTextView = activity.findViewById(R.id.request_headers);
-        TextView responseMessageTextView = activity.findViewById(R.id.response_message);
-        TextView responseHeadersTextView = activity.findViewById(R.id.response_headers);
-        TextView responseBodyTextView = activity.findViewById(R.id.response_body);
-        ProgressBar progressBar = activity.findViewById(R.id.progress_bar);
-        SwipeRefreshLayout swipeRefreshLayout = activity.findViewById(R.id.view_source_swiperefreshlayout);
-
-        // Populate the text views.  This can take a long time, and freeze the user interface, if the response body is particularly large.
-        requestHeadersTextView.setText(viewSourceStringArray[0]);
-        responseMessageTextView.setText(viewSourceStringArray[1]);
-        responseHeadersTextView.setText(viewSourceStringArray[2]);
-        responseBodyTextView.setText(viewSourceStringArray[3]);
-
-        // Hide the progress bar.
-        progressBar.setIndeterminate(false);
-        progressBar.setVisibility(View.GONE);
-
-        //Stop the swipe to refresh indicator if it is running
-        swipeRefreshLayout.setRefreshing(false);
     }
 }

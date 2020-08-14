@@ -19,6 +19,8 @@
 
 package com.stoutner.privacybrowser.adapters;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -34,9 +36,9 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
     private LinkedList<WebViewTabFragment> webViewFragmentsList = new LinkedList<>();
 
     // Define the constructor.
-    public WebViewPagerAdapter(FragmentManager fragmentManager){
+    public WebViewPagerAdapter(FragmentManager fragmentManager) {
         // Run the default commands.
-        super(fragmentManager);
+        super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
     @Override
@@ -101,17 +103,25 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         return position;
     }
 
-    public void addPage(int pageNumber, ViewPager webViewPager, String url, boolean moveToTab) {
+    public void addPage(int pageNumber, ViewPager webViewPager, String url, boolean moveToNewPage) {
         // Add a new page.
         webViewFragmentsList.add(WebViewTabFragment.createPage(pageNumber, url));
 
         // Update the view pager.
         notifyDataSetChanged();
 
-        // Move to the new page if it isn't the first one.
-        if (pageNumber > 0 && moveToTab) {
+        // Move to the new page if indicated.
+        if (moveToNewPage) {
             webViewPager.setCurrentItem(pageNumber);
         }
+    }
+
+    public void restorePage(Bundle savedState, Bundle savedNestedScrollWebViewState) {
+        // Restore the page.
+        webViewFragmentsList.add(WebViewTabFragment.restorePage(savedState, savedNestedScrollWebViewState));
+
+        // Update the view pager.
+        notifyDataSetChanged();
     }
 
     public boolean deletePage(int pageNumber, ViewPager webViewPager) {

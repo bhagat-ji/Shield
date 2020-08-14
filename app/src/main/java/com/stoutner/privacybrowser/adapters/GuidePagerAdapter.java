@@ -30,14 +30,15 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.GuideTabFragment;
 
 public class GuidePagerAdapter extends FragmentPagerAdapter {
-    // Define the class context variable.
+    // Define the class variables.
     private Context context;
 
+    // The default constructor.
     public GuidePagerAdapter(FragmentManager fragmentManager, Context context) {
         // Run the default commands.
         super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
-        // Store the context in a class variable.
+        // Store the class variables.
         this.context = context;
     }
 

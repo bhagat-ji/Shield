@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,7 +24,7 @@
 
     <!-- `android:iconTint` can be used once the minimum API >= 26 instead of including a separate drawable for each theme. -->
     <item
-        android:id="@+id/options_menu_sort"
+        android:id="@+id/sort"
         android:title="@string/sort"
         android:orderInCategory="10"
         android:icon="?attr/sortIcon"

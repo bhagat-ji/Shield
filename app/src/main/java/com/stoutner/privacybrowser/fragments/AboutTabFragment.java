@@ -54,9 +54,10 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class AboutTabFragment extends Fragment {
-    // Declare the class variables.
+    // Define the class variables.
     private int tabNumber;
     private String[] blocklistVersions;
+    private View tabLayout;
 
     public static AboutTabFragment createTab(int tabNumber, String[] blocklistVersions) {
         // Create a bundle.
@@ -94,9 +95,6 @@ public class AboutTabFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
-        // Create a tab layout view.
-        View tabLayout;
-
         // Get a handle for the context and assert that it isn't null.
         Context context = getContext();
         assert context != null;
@@ -470,7 +468,27 @@ public class AboutTabFragment extends Fragment {
             }
         }
 
+        // Scroll the tab if the saved instance state is not null.
+        if (savedInstanceState != null) {
+            tabLayout.post(() -> {
+                tabLayout.setScrollX(savedInstanceState.getInt("scroll_x"));
+                tabLayout.setScrollY(savedInstanceState.getInt("scroll_y"));
+            });
+        }
+
         // Return the formatted `tabLayout`.
         return tabLayout;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Save the scroll positions if the tab layout is not null, which can happen if a tab is not currently selected.
+        if (tabLayout != null) {
+            savedInstanceState.putInt("scroll_x", tabLayout.getScrollX());
+            savedInstanceState.putInt("scroll_y", tabLayout.getScrollY());
+        }
     }
 }

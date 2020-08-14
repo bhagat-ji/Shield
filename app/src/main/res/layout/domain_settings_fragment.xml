@@ -18,15 +18,15 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<ScrollView
-    android:id="@+id/domain_settings_scrollview"
+<ScrollView android:id="@+id/domain_settings_scrollview"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:descendantFocusability="beforeDescendants" >
+    android:descendantFocusability="beforeDescendants"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                     android:layout_marginBottom="12dp"
                     android:layout_gravity="bottom"
                     android:src="@drawable/domains_day"
-                    android:tint="?attr/domainSettingsIconTintColor"
+                    app:tint="?attr/domainSettingsIconTintColor"
                     tools:ignore="contentDescription" />
 
                 <!-- `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
@@ -96,7 +96,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/javascript_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -123,7 +123,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/first_party_cookies_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -152,7 +152,7 @@
                 android:src="@drawable/cookies_enabled"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/third_party_cookies_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -179,7 +179,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/dom_storage_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -206,7 +206,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/form_data_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -233,7 +233,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/easylist_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -260,7 +260,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/easyprivacy_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -287,7 +287,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/fanboys_annoyance_list_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -314,7 +314,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/fanboys_social_blocking_list_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -341,7 +341,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/ultralist_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -368,7 +368,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/ultraprivacy_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -395,7 +395,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="contentDescription" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/block_all_third_party_requests_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -427,7 +427,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/user_agent_day"
-                    android:tint="?attr/domainSettingsIconTintColor"
+                    app:tint="?attr/domainSettingsIconTintColor"
                     android:contentDescription="@string/user_agent" />
 
                 <Spinner
@@ -475,7 +475,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/font_size_day"
-                    android:tint="?attr/domainSettingsIconTintColor"
+                    app:tint="?attr/domainSettingsIconTintColor"
                     android:contentDescription="@string/font_size" />
 
                 <Spinner
@@ -675,14 +675,15 @@
                     android:layout_gravity="center_vertical"
                     tools:ignore="contentDescription" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/pinned_ssl_certificate_switch"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginStart="8dp"
                     android:text="@string/pinned_ssl_certificate"
                     android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:ignore="TooManyViews" />
             </LinearLayout>
 
             <!-- Saved Certificate -->
@@ -927,7 +928,7 @@
                     android:layout_gravity="center_vertical"
                     tools:ignore="contentDescription" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/pinned_ip_addresses_switch"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"

@@ -323,6 +323,11 @@
         <item>Swipe per aggiornare abilitato</item>
         <item>Swipe per aggiornare disabilitato</item>
     </string-array>
+    <string-array name="webview_theme_array">
+        <item>Predefinito</item>
+        <item>Tema Chiaro</item>
+        <item>Tema Scuro</item>
+    </string-array>
     <string-array name="wide_viewport_array">
         <item>Impostazioni di default</item>
         <item>Finestra grande abilitata</item>
@@ -579,6 +584,12 @@
             per l\'attivazione dei cookie e del DOM storage.</string>
         <string name="app_theme">Tema Applicazione</string>
         <string-array name="app_theme_entries">
+            <item>Predefinito</item>
+            <item>Chiaro</item>
+            <item>Scuro</item>
+        </string-array>
+        <string name="webview_theme">Tema di WebView</string>
+        <string-array name="webview_theme_entries">
             <item>Predefinito</item>
             <item>Chiaro</item>
             <item>Scuro</item>

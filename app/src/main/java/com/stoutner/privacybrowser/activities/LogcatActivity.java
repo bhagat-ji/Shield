@@ -30,7 +30,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -39,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -53,6 +53,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.asynctasks.GetLogcat;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.SaveLogcatDialog;
 import com.stoutner.privacybrowser.helpers.FileNameHelper;
@@ -66,11 +67,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 
 public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialog.SaveLogcatListener, StoragePermissionDialog.StoragePermissionDialogListener {
+    // Initialize the saved instance state constants.
+    private final String SCROLLVIEW_POSITION = "scrollview_position";
+
+    // Define the class variables.
     private String filePathString;
+
+    // Define the class views.
+    private TextView logcatTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,11 +114,14 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
         // Display the the back arrow in the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        // Populate the class views.
+        logcatTextView = findViewById(R.id.logcat_textview);
+
         // Implement swipe to refresh.
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.logcat_swiperefreshlayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Get the current logcat.
-            new GetLogcat(this).execute();
+            new GetLogcat(this, 0).execute();
         });
 
         // Get the current theme status.
@@ -136,8 +146,17 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
         // Set the swipe refresh background color.
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt);
 
+        // Initialize the scrollview Y position int.
+        int scrollViewYPositionInt = 0;
+
+        // Check to see if the activity has been restarted.
+        if (savedInstanceState != null) {
+            // Get the saved scrollview position.
+            scrollViewYPositionInt = savedInstanceState.getInt(SCROLLVIEW_POSITION);
+        }
+
         // Get the logcat.
-        new GetLogcat(this).execute();
+        new GetLogcat(this, scrollViewYPositionInt).execute();
     }
 
     @Override
@@ -159,9 +178,6 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
             case R.id.copy:
                 // Get a handle for the clipboard manager.
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
-                // Get a handle for the logcat text view.
-                TextView logcatTextView = findViewById(R.id.logcat_textview);
 
                 // Save the logcat in a ClipData.
                 ClipData logcatClipData = ClipData.newPlainText(getString(R.string.logcat), logcatTextView.getText());
@@ -197,7 +213,7 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
                     process.waitFor();
 
                     // Reload the logcat.
-                    new GetLogcat(this).execute();
+                    new GetLogcat(this, 0).execute();
                 } catch (IOException|InterruptedException exception) {
                     // Do nothing.
                 }
@@ -209,6 +225,21 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
                 // Don't consume the event.
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Get a handle for the logcat scrollview.
+        ScrollView logcatScrollView = findViewById(R.id.logcat_scrollview);
+
+        // Get the scrollview Y position.
+        int scrollViewYPositionInt = logcatScrollView.getScrollY();
+
+        // Store the scrollview Y position in the bundle.
+        savedInstanceState.putInt(SCROLLVIEW_POSITION, scrollViewYPositionInt);
     }
 
     @Override
@@ -273,18 +304,12 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
             // Save the logcat.
             saveLogcat(filePathString);
         } else {  // The storage permission was not granted.
-            // Get a handle for the logcat text view.
-            TextView logcatTextView = findViewById(R.id.logcat_textview);
-
             // Display an error snackbar.
             Snackbar.make(logcatTextView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
         }
     }
 
     private void saveLogcat(String fileNameString) {
-        // Get a handle for the logcat text view.
-        TextView logcatTextView = findViewById(R.id.logcat_textview);
-
         try {
             // Get the logcat as a string.
             String logcatString = logcatTextView.getText().toString();
@@ -372,81 +397,6 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
                     fileExistsWarningTextView.setVisibility(View.GONE);
                 }
             }
-        }
-    }
-
-    // `Void` does not declare any parameters.  `Void` does not declare progress units.  `String` contains the results.
-    private static class GetLogcat extends AsyncTask<Void, Void, String> {
-        // Create a weak reference to the calling activity.
-        private final WeakReference<Activity> activityWeakReference;
-
-        // Populate the weak reference to the calling activity.
-        GetLogcat(Activity activity) {
-            activityWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        protected String doInBackground(Void... parameters) {
-            // Get a handle for the activity.
-            Activity activity = activityWeakReference.get();
-
-            // Abort if the activity is gone.
-            if ((activity == null) || activity.isFinishing()) {
-                return "";
-            }
-
-            // Create a log string builder.
-            StringBuilder logStringBuilder = new StringBuilder();
-
-            try {
-                // Get the logcat.  `-b all` gets all the buffers (instead of just crash, main, and system).  `-v long` produces more complete information.  `-d` dumps the logcat and exits.
-                Process process = Runtime.getRuntime().exec("logcat -b all -v long -d");
-
-                // Wrap the logcat in a buffered reader.
-                BufferedReader logBufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-                // Create a log transfer string.
-                String logTransferString;
-
-                // Use the log transfer string to copy the logcat from the buffered reader to the string builder.
-                while ((logTransferString = logBufferedReader.readLine()) != null) {
-                    // Append a line.
-                    logStringBuilder.append(logTransferString);
-
-                    // Append a line break.
-                    logStringBuilder.append("\n");
-                }
-
-                // Close the buffered reader.
-                logBufferedReader.close();
-            } catch (IOException exception) {
-                // Do nothing.
-            }
-
-            // Return the logcat.
-            return logStringBuilder.toString();
-        }
-
-        // `onPostExecute()` operates on the UI thread.
-        @Override
-        protected void onPostExecute(String logcatString) {
-            // Get a handle for the activity.
-            Activity activity = activityWeakReference.get();
-
-            // Abort if the activity is gone.
-            if ((activity == null) || activity.isFinishing()) {
-                return;
-            }
-
-            // Get handles for the views.
-            TextView logcatTextView = activity.findViewById(R.id.logcat_textview);
-            SwipeRefreshLayout swipeRefreshLayout = activity.findViewById(R.id.logcat_swiperefreshlayout);
-
-            // Display the logcat.
-            logcatTextView.setText(logcatString);
-
-            // Stop the swipe to refresh animation if it is displayed.
-            swipeRefreshLayout.setRefreshing(false);
         }
     }
 }

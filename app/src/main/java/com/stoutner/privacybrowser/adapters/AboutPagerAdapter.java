@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -30,7 +30,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.AboutTabFragment;
 
 public class AboutPagerAdapter extends FragmentPagerAdapter {
-    // Define the class variable to store the blocklist versions.
+    // Define the class variables.
     private Context context;
     private String[] blocklistVersions;
 
@@ -38,10 +38,8 @@ public class AboutPagerAdapter extends FragmentPagerAdapter {
         // Run the default commands.
         super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
-        // Store the context in a class variable.
+        // Store the class variables.
         this.context = context;
-
-        // Store the blocklist versions in a class variable.
         this.blocklistVersions = blocklistVersions;
     }
 

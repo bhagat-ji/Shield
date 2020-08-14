@@ -24,7 +24,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.LocaleList;
 import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -36,18 +38,27 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.asynctasks.GetSource;
 import com.stoutner.privacybrowser.dialogs.AboutViewSourceDialog;
+import com.stoutner.privacybrowser.helpers.ProxyHelper;
+import com.stoutner.privacybrowser.viewmodelfactories.WebViewSourceFactory;
+import com.stoutner.privacybrowser.viewmodels.WebViewSource;
+
+import java.net.Proxy;
+import java.util.Locale;
 
 public class ViewSourceActivity extends AppCompatActivity {
     // `activity` is used in `onCreate()` and `goBack()`.
@@ -84,14 +95,19 @@ public class ViewSourceActivity extends AppCompatActivity {
         String userAgent = intent.getStringExtra("user_agent");
         String currentUrl = intent.getStringExtra("current_url");
 
+        // Remove the incorrect lint warning below that the user agent might be null.
+        assert userAgent != null;
+
         // Store a handle for the current activity.
         activity = this;
 
         // Set the content view.
         setContentView(R.layout.view_source_coordinatorlayout);
 
-        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        // Get a handle for the toolbar.
         Toolbar toolbar = findViewById(R.id.view_source_toolbar);
+
+        // Set the support action bar.
         setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.
@@ -104,16 +120,31 @@ public class ViewSourceActivity extends AppCompatActivity {
         actionBar.setCustomView(R.layout.view_source_app_bar);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
-        // Get a handle for the url text box.
+        // Get handles for the views.
         EditText urlEditText = findViewById(R.id.url_edittext);
+        TextView requestHeadersTextView = findViewById(R.id.request_headers);
+        TextView responseMessageTextView = findViewById(R.id.response_message);
+        TextView responseHeadersTextView = findViewById(R.id.response_headers);
+        TextView responseBodyTextView = findViewById(R.id.response_body);
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.view_source_swiperefreshlayout);
 
         // Populate the URL text box.
         urlEditText.setText(currentUrl);
 
-        // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
-        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        // Initialize the gray foreground color spans for highlighting the URLs.  The deprecated `getResources()` must be used until API >= 23.
         initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
         finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the red color span according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        } else {
+            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
+        }
 
         // Apply text highlighting to the URL.
         highlightUrlText();
@@ -143,57 +174,11 @@ public class ViewSourceActivity extends AppCompatActivity {
             }
         });
 
-        // Set the go button on the keyboard to request new source data.
-        urlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
-            // Request new source data if the enter key was pressed.
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                // Hide the soft keyboard.
-                inputMethodManager.hideSoftInputFromWindow(urlEditText.getWindowToken(), 0);
-
-                // Remove the focus from the URL box.
-                urlEditText.clearFocus();
-
-                // Get the URL.
-                String url = urlEditText.getText().toString();
-
-                // Get new source data for the current URL if it beings with `http`.
-                if (url.startsWith("http")) {
-                    new GetSource(this, this, userAgent).execute(url);
-                }
-
-                // Consume the key press.
-                return true;
-            } else {
-                // Do not consume the key press.
-                return false;
-            }
-        });
-
-        // Get a handle for the swipe refresh layout.
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.view_source_swiperefreshlayout);
-
-        // Implement swipe to refresh.
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Get the URL.
-            String url = urlEditText.getText().toString();
-
-            // Get new source data for the URL if it begins with `http`.
-            if (url.startsWith("http")) {
-                new GetSource(this, this, userAgent).execute(url);
-            } else {
-                // Stop the refresh animation.
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-        // Get the current theme status.
-        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
         // Set the refresh color scheme according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
-        } else {
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
             swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+        } else {
+            swipeRefreshLayout.setColorSchemeResources(R.color.violet_500);
         }
 
         // Initialize a color background typed value.
@@ -208,10 +193,156 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Set the swipe refresh background color.
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt);
 
-        // Get the source using an AsyncTask if the URL begins with `http`.
-        if ((currentUrl != null) && currentUrl.startsWith("http")) {
-            new GetSource(this, this, userAgent).execute(currentUrl);
+        // Get the Do Not Track status.
+        boolean doNotTrack = sharedPreferences.getBoolean("do_not_track", false);
+
+        // Instantiate a locale string.
+        String localeString;
+
+        // Populate the locale string.
+        if (Build.VERSION.SDK_INT >= 24) {  // SDK >= 24 has a list of locales.
+            // Get the list of locales.
+            LocaleList localeList = getResources().getConfiguration().getLocales();
+
+            // Initialize a string builder to extract the locales from the list.
+            StringBuilder localesStringBuilder = new StringBuilder();
+
+            // Initialize a `q` value, which is used by `WebView` to indicate the order of importance of the languages.
+            int q = 10;
+
+            // Populate the string builder with the contents of the locales list.
+            for (int i = 0; i < localeList.size(); i++) {
+                // Append a comma if there is already an item in the string builder.
+                if (i > 0) {
+                    localesStringBuilder.append(",");
+                }
+
+                // Get the locale from the list.
+                Locale locale = localeList.get(i);
+
+                // Add the locale to the string.  `locale` by default displays as `en_US`, but WebView uses the `en-US` format.
+                localesStringBuilder.append(locale.getLanguage());
+                localesStringBuilder.append("-");
+                localesStringBuilder.append(locale.getCountry());
+
+                // If not the first locale, append `;q=0.x`, which drops by .1 for each removal from the main locale until q=0.1.
+                if (q < 10) {
+                    localesStringBuilder.append(";q=0.");
+                    localesStringBuilder.append(q);
+                }
+
+                // Decrement `q` if it is greater than 1.
+                if (q > 1) {
+                    q--;
+                }
+
+                // Add a second entry for the language only portion of the locale.
+                localesStringBuilder.append(",");
+                localesStringBuilder.append(locale.getLanguage());
+
+                // Append `1;q=0.x`, which drops by .1 for each removal form the main locale until q=0.1.
+                localesStringBuilder.append(";q=0.");
+                localesStringBuilder.append(q);
+
+                // Decrement `q` if it is greater than 1.
+                if (q > 1) {
+                    q--;
+                }
+            }
+
+            // Store the populated string builder in the locale string.
+            localeString = localesStringBuilder.toString();
+        } else {  // SDK < 24 only has a primary locale.
+            // Store the locale in the locale string.
+            localeString = Locale.getDefault().toString();
         }
+
+        // Instantiate the proxy helper.
+        ProxyHelper proxyHelper = new ProxyHelper();
+
+        // Get the current proxy.
+        Proxy proxy = proxyHelper.getCurrentProxy(this);
+
+        // Make the progress bar visible.
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Set the progress bar to be indeterminate.
+        progressBar.setIndeterminate(true);
+
+        // Instantiate the WebView source factory.
+        ViewModelProvider.Factory webViewSourceFactory = new WebViewSourceFactory(currentUrl, userAgent, doNotTrack, localeString, proxy, MainWebViewActivity.executorService);
+
+        // Instantiate the WebView source view model class.
+        final WebViewSource webViewSource = new ViewModelProvider(this, webViewSourceFactory).get(WebViewSource.class);
+
+        // Create a source observer.
+        webViewSource.observeSource().observe(this, sourceStringArray -> {
+            // Populate the text views.  This can take a long time, and freezes the user interface, if the response body is particularly large.
+            requestHeadersTextView.setText(sourceStringArray[0]);
+            responseMessageTextView.setText(sourceStringArray[1]);
+            responseHeadersTextView.setText(sourceStringArray[2]);
+            responseBodyTextView.setText(sourceStringArray[3]);
+
+            // Hide the progress bar.
+            progressBar.setIndeterminate(false);
+            progressBar.setVisibility(View.GONE);
+
+            //Stop the swipe to refresh indicator if it is running
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        // Create an error observer.
+        webViewSource.observeErrors().observe(this, errorString -> {
+            // Display an error snackbar if the string is not `""`.
+            if (!errorString.equals("")) {
+                Snackbar.make(swipeRefreshLayout, errorString, Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        // Implement swipe to refresh.
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Make the progress bar visible.
+            progressBar.setVisibility(View.VISIBLE);
+
+            // Set the progress bar to be indeterminate.
+            progressBar.setIndeterminate(true);
+
+            // Get the URL.
+            String urlString = urlEditText.getText().toString();
+
+            // Get the updated source.
+            webViewSource.updateSource(urlString);
+        });
+
+        // Set the go button on the keyboard to request new source data.
+        urlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+            // Request new source data if the enter key was pressed.
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // Hide the soft keyboard.
+                inputMethodManager.hideSoftInputFromWindow(urlEditText.getWindowToken(), 0);
+
+                // Remove the focus from the URL box.
+                urlEditText.clearFocus();
+
+                // Make the progress bar visible.
+                progressBar.setVisibility(View.VISIBLE);
+
+                // Set the progress bar to be indeterminate.
+                progressBar.setIndeterminate(true);
+
+                // Get the URL.
+                String urlString = urlEditText.getText().toString();
+
+                // Get the updated source.
+                webViewSource.updateSource(urlString);
+
+                // Consume the key press.
+                return true;
+            } else {
+                // Do not consume the key press.
+                return false;
+            }
+        });
     }
 
     @Override

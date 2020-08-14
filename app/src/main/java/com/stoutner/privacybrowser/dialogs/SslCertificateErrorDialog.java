@@ -264,12 +264,12 @@ public class SslCertificateErrorDialog extends DialogFragment {
         ForegroundColorSpan redColorSpan;
 
         // Set the color spans according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
-            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
-        } else {
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        } else {
+            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
+            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
         }
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
@@ -403,16 +403,14 @@ public class SslCertificateErrorDialog extends DialogFragment {
 
                 // Add each IP address to the string builder.
                 for (InetAddress inetAddress : inetAddressesArray) {
-                    if (ipAddresses.length() == 0) {  // This is the first IP address.
-                        // Add the IP Address to the string builder.
-                        ipAddresses.append(inetAddress.getHostAddress());
-                    } else {  // This is not the first IP address.
+                    // Check to see if this is not the first IP address.
+                    if (ipAddresses.length() > 0) {
                         // Add a line break to the string builder first.
                         ipAddresses.append("\n");
-
-                        // Add the IP address to the string builder.
-                        ipAddresses.append(inetAddress.getHostAddress());
                     }
+
+                    // Add the IP Address to the string builder.
+                    ipAddresses.append(inetAddress.getHostAddress());
                 }
             } catch (UnknownHostException exception) {
                 // Do nothing.

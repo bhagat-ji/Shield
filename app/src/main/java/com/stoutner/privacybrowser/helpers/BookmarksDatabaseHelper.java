@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -334,12 +334,14 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Extract the array of IDs not to get to the string builder.
         for (long databaseIdLong : exceptIdLongArray) {
-            if (idsNotToGetStringBuilder.length() == 0) {  // This is the first number, so only add the number.
-                idsNotToGetStringBuilder.append(databaseIdLong);
-            } else {  // This is not the first number, so place a `,` before the new number.
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.length() > 0) {
+                // This is not the first number, so place a `,` before the new number.
                 idsNotToGetStringBuilder.append(",");
-                idsNotToGetStringBuilder.append(databaseIdLong);
             }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong);
         }
 
         // Prepare the SQL statement to select all items except those with the specified IDs.
@@ -360,12 +362,14 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Extract the array of IDs not to get to the string builder.
         for (long databaseIdLong : exceptIdLongArray) {
-            if (idsNotToGetStringBuilder.length() == 0) {  // This is the first number, so only add the number.
-                idsNotToGetStringBuilder.append(databaseIdLong);
-            } else {  // This is not the first number, so place a `,` before the new number.
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.length() > 0) {
+                // This is not the first number, so place a `,` before the new number.
                 idsNotToGetStringBuilder.append(",");
-                idsNotToGetStringBuilder.append(databaseIdLong);
             }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong);
         }
 
         // Prepare the SQL statement to select all items except those with the specified IDs.
@@ -436,12 +440,14 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Extract the array of IDs not to get to the string builder.
         for (long databaseIdLong : exceptIdLongArray) {
-            if (idsNotToGetStringBuilder.length() == 0) {  // This is the first number, so only add the number.
-                idsNotToGetStringBuilder.append(databaseIdLong);
-            } else {  // This is not the first number, so place a `,` before the new number.
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.length() > 0) {
+                // This is not the first number, so place a `,` before the new number.
                 idsNotToGetStringBuilder.append(",");
-                idsNotToGetStringBuilder.append(databaseIdLong);
             }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong);
         }
 
         // SQL escape the folder name.
@@ -466,12 +472,14 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Extract the array of IDs not to get to the string builder.
         for (long databaseIdLong : exceptIdLongArray) {
-            if (idsNotToGetStringBuilder.length() == 0) {  // This is the first number, so only add the number.
-                idsNotToGetStringBuilder.append(databaseIdLong);
-            } else {  // This is not the first number, so place a `,` before the new number.
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.length() > 0) {
+                // This is not the first number, so place a `,` before the new number.
                 idsNotToGetStringBuilder.append(",");
-                idsNotToGetStringBuilder.append(databaseIdLong);
             }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong);
         }
 
         // SQL escape `folderName`.

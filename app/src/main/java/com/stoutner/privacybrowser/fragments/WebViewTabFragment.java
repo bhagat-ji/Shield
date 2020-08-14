@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -40,11 +40,21 @@ public class WebViewTabFragment extends Fragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface NewTabListener {
-        void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url);
+        void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url, Boolean restoringState);
     }
 
     // The new tab listener is used in `onAttach()` and `onCreateView()`.
     private NewTabListener newTabListener;
+
+    // Define the bundle constants.
+    private final static String CREATE_NEW_PAGE = "create_new_page";
+    private final static String PAGE_NUMBER = "page_number";
+    private final static String URL = "url";
+    private final static String SAVED_STATE = "saved_state";
+    private final static String SAVED_NESTED_SCROLL_WEBVIEW_STATE = "saved_nested_scroll_webview_state";
+
+    // Define the class views.
+    NestedScrollWebView nestedScrollWebView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,18 +66,37 @@ public class WebViewTabFragment extends Fragment {
     }
 
     public static WebViewTabFragment createPage(int pageNumber, String url) {
-        // Create a bundle.
-        Bundle bundle = new Bundle();
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
 
-        // Store the page number and URL in the bundle.
-        bundle.putInt("page_number", pageNumber);
-        bundle.putString("url", url);
+        // Store the argument in the bundle.
+        argumentsBundle.putBoolean(CREATE_NEW_PAGE, true);
+        argumentsBundle.putInt(PAGE_NUMBER, pageNumber);
+        argumentsBundle.putString(URL, url);
 
         // Create a new instance of the WebView tab fragment.
         WebViewTabFragment webViewTabFragment = new WebViewTabFragment();
 
-        // Add the bundle to the fragment.
-        webViewTabFragment.setArguments(bundle);
+        // Add the arguments bundle to the fragment.
+        webViewTabFragment.setArguments(argumentsBundle);
+
+        // Return the new fragment.
+        return webViewTabFragment;
+    }
+
+    public static WebViewTabFragment restorePage(Bundle savedState, Bundle savedNestedScrollWebViewState) {
+        // Create an arguments bundle
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the saved states in the arguments bundle.
+        argumentsBundle.putBundle(SAVED_STATE, savedState);
+        argumentsBundle.putBundle(SAVED_NESTED_SCROLL_WEBVIEW_STATE, savedNestedScrollWebViewState);
+
+        // Create a new instance of the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = new WebViewTabFragment();
+
+        // Add the arguments bundle to the fragment.
+        webViewTabFragment.setArguments(argumentsBundle);
 
         // Return the new fragment.
         return webViewTabFragment;
@@ -75,30 +104,70 @@ public class WebViewTabFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
-        // Get the arguments.
-        Bundle arguments = getArguments();
+        // Check to see if the fragment is being restarted.
+        if (savedInstanceState == null) {  // The fragment is not being restarted.  Load and configure a new fragment.
+            // Get the arguments.
+            Bundle arguments = getArguments();
 
-        // Remove the incorrect lint warning that the arguments might be null.
-        assert arguments != null;
+            // Remove the incorrect lint warning that the arguments might be null.
+            assert arguments != null;
 
-        // Get the variables from the arguments
-        int pageNumber = arguments.getInt("page_number");
-        String url = arguments.getString("url");
+            // Check to see if a new page is being created.
+            if (arguments.getBoolean(CREATE_NEW_PAGE)) {  // A new page is being created.
+                // Get the variables from the arguments
+                int pageNumber = arguments.getInt(PAGE_NUMBER);
+                String url = arguments.getString(URL);
 
-        // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-        View newPageView = layoutInflater.inflate(R.layout.webview_framelayout, container, false);
+                // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
+                // The fragment will take care of attaching the root automatically.
+                View newPageView = layoutInflater.inflate(R.layout.webview_framelayout, container, false);
 
-        // Get handles for the views.
-        NestedScrollWebView nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview);
-        ProgressBar progressBar = newPageView.findViewById(R.id.progress_bar);
+                // Get handles for the views.
+                nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview);
+                ProgressBar progressBar = newPageView.findViewById(R.id.progress_bar);
 
-        // Store the WebView fragment ID in the nested scroll WebView.
-        nestedScrollWebView.setWebViewFragmentId(fragmentId);
+                // Store the WebView fragment ID in the nested scroll WebView.
+                nestedScrollWebView.setWebViewFragmentId(fragmentId);
 
-        // Request the main activity initialize the WebView.
-        newTabListener.initializeWebView(nestedScrollWebView, pageNumber, progressBar, url);
+                // Request the main activity initialize the WebView.
+                newTabListener.initializeWebView(nestedScrollWebView, pageNumber, progressBar, url, false);
 
-        // Return the new page view.
-        return newPageView;
+                // Return the new page view.
+                return newPageView;
+            } else {  // A page is being restored.
+                // Get the saved states from the arguments.
+                Bundle savedState = arguments.getBundle(SAVED_STATE);
+                Bundle savedNestedScrollWebViewState = arguments.getBundle(SAVED_NESTED_SCROLL_WEBVIEW_STATE);
+
+                // Remove the incorrect lint warning below that the saved nested scroll WebView state might be null.
+                assert savedNestedScrollWebViewState != null;
+
+                // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
+                // The fragment will take care of attaching the root automatically.
+                View newPageView = layoutInflater.inflate(R.layout.webview_framelayout, container, false);
+
+                // Get handles for the views.
+                nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview);
+                ProgressBar progressBar = newPageView.findViewById(R.id.progress_bar);
+
+                // Store the WebView fragment ID in the nested scroll WebView.
+                nestedScrollWebView.setWebViewFragmentId(fragmentId);
+
+                // Restore the nested scroll WebView state.
+                nestedScrollWebView.restoreNestedScrollWebViewState(savedNestedScrollWebViewState);
+
+                // Restore the WebView state.
+                nestedScrollWebView.restoreState(savedState);
+
+                // Initialize the WebView.
+                newTabListener.initializeWebView(nestedScrollWebView, 0, progressBar, null, true);
+
+                // Return the new page view.
+                return newPageView;
+            }
+        } else {  // The fragment is being restarted.
+            // Return null.  Otherwise, the fragment will be inflated and initialized by the OS on a restart, discarded, and then recreated with saved settings by Privacy Browser.
+            return null;
+        }
     }
 }

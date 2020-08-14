@@ -316,21 +316,26 @@
     <string name="domain_deleted">Domaine supprimé</string>
     <string name="domain_name_instructions">Faire précéder par *. pour inclure l\'ensemble des sous-domaines (ex. *.stoutner.com)</string>
     <string-array name="font_size_array">
-        <item>Réglages systèmes</item>
+        <item>Réglages système</item>
         <item>Taille de police personnalisée</item>
     </string-array>
     <string-array name="swipe_to_refresh_array">
-        <item>Réglages systèmes</item>
+        <item>Réglages système</item>
         <item>Glisser pour actualiser activé</item>
         <item>Glisser pour actualiser déactivé</item>
     </string-array>
+    <string-array name="webview_theme_array">
+        <item>Réglages système</item>
+        <item>Thème WebView clair</item>
+        <item>Thème WebView sombre</item>
+    </string-array>
     <string-array name="wide_viewport_array">
-        <item>Réglages systèmes</item>
+        <item>Réglages système</item>
         <item>Mode fenêtre large activé</item>
         <item>Mode fenêtre largé désactivé</item>
     </string-array>
     <string-array name="display_webpage_images_array">
-        <item>Réglages systèmes</item>
+        <item>Réglages système</item>
         <item>Images affichées</item>
         <item>Images masquées</item>
     </string-array>
@@ -581,7 +586,13 @@
             pour activer/désactiver les cookies et le stockage DOM.</string>
         <string name="app_theme">Thème de l\'application</string>
         <string-array name="app_theme_entries">
-            <item>Par defaut</item>
+            <item>Par défaut</item>
+            <item>Clair</item>
+            <item>Sombre</item>
+        </string-array>
+        <string name="webview_theme">Thème Android WebView</string>
+        <string-array name="webview_theme_entries">
+            <item>Par défaut</item>
             <item>Clair</item>
             <item>Sombre</item>
         </string-array>

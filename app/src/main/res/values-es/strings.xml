@@ -324,6 +324,11 @@
         <item>Deslizar para actualizar habilitado</item>
         <item>Deslizar para actualizar deshabilitado</item>
     </string-array>
+    <string-array name="webview_theme_array">
+        <item>Por defecto del sistema</item>
+        <item>Tema de WebView claro</item>
+        <item>Tema de WebView oscuro</item>
+    </string-array>
     <string-array name="wide_viewport_array">
         <item>Por defecto del sistema</item>
         <item>Vista amplia habilitada</item>
@@ -579,6 +584,12 @@
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
         <string name="app_theme">Tema de la app</string>
         <string-array name="app_theme_entries">
+            <item>Por defecto del sistema</item>
+            <item>Claro</item>
+            <item>Oscuro</item>
+        </string-array>
+        <string name="webview_theme">Tema de WebView</string>
+        <string-array name="webview_theme_entries">
             <item>Por defecto del sistema</item>
             <item>Claro</item>
             <item>Oscuro</item>

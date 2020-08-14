@@ -52,7 +52,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.DialogFragment;
 
@@ -68,6 +68,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
@@ -84,6 +85,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     // `restartFromBookmarksDatabaseViewActivity` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksDatabaseViewActivity;
 
+
+    // Define the saved instance state constants.
+    private final String CHECKED_BOOKMARKS_ARRAY_LIST = "checked_bookmarks_array_list";
+
+    // Define the class menu items.
+    private MenuItem moveBookmarkUpMenuItem;
+    private MenuItem moveBookmarkDownMenuItem;
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`,
     // `onMoveToFolder()`, `deleteBookmarkFolderContents()`, `loadFolder()`, and `onDestroy()`.
@@ -108,12 +116,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     // `oldFolderName` is used in `onCreate()` and `onSaveBookmarkFolder()`.
     private String oldFolderNameString;
-
-    // `moveBookmarkUpMenuItem` is used in `onCreate()` and `updateMoveIcons()`.
-    private MenuItem moveBookmarkUpMenuItem;
-
-    // `moveBookmarkDownMenuItem` is used in `onCreate()` and `updateMoveIcons()`.
-    private MenuItem moveBookmarkDownMenuItem;
 
     // `bookmarksDeletedSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
     private Snackbar bookmarksDeletedSnackbar;
@@ -583,6 +585,22 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             // Display the create bookmark dialog.
             createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
         });
+
+        // Restore the state if the app has been restarted.
+        if (savedInstanceState != null) {
+            // Update the bookmarks list view after it has loaded.
+            bookmarksListView.post(() -> {
+                // Get the checked bookmarks array list.
+                ArrayList<Integer> checkedBookmarksArrayList = savedInstanceState.getIntegerArrayList(CHECKED_BOOKMARKS_ARRAY_LIST);
+
+                // Check each previously checked bookmark in the list view.  When the minimum API >= 24 a `forEach()` command can be used instead.
+                if (checkedBookmarksArrayList != null) {
+                    for (int i = 0; i < checkedBookmarksArrayList.size(); i++) {
+                        bookmarksListView.setItemChecked(checkedBookmarksArrayList.get(i), true);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -598,6 +616,30 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             // Reset `restartFromBookmarksDatabaseViewActivity`.
             restartFromBookmarksDatabaseViewActivity = false;
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Get the array of the checked items.
+        SparseBooleanArray checkedBookmarksSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+
+        // Create a checked items array list.
+        ArrayList<Integer> checkedBookmarksArrayList = new ArrayList<>();
+
+        // Add each checked bookmark position to the array list.
+        for (int i = 0; i < checkedBookmarksSparseBooleanArray.size(); i++) {
+            // Check to see if the bookmark is currently checked.  Bookmarks that have previously been checked but currently aren't will be populated in the sparse boolean array, but will return false.
+            if (checkedBookmarksSparseBooleanArray.valueAt(i)) {
+                // Add the bookmark position to the checked bookmarks array list.
+                checkedBookmarksArrayList.add(checkedBookmarksSparseBooleanArray.keyAt(i));
+            }
+        }
+
+        // Store the checked items array list in the saved instance state.
+        savedInstanceState.putIntegerArrayList(CHECKED_BOOKMARKS_ARRAY_LIST, checkedBookmarksArrayList);
     }
 
     @Override

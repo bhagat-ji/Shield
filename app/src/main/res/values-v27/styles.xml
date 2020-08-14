@@ -39,7 +39,7 @@
 
         <!-- Tints. -->
         <item name="addTabIconTintColor">@color/gray_700</item>
-        <item name="domainSettingsIconTintColor">@color/blue_700</item>
+        <item name="domainSettingsIconTintColor">@color/blue_800</item>
         <item name="fabIconTintColor">@color/white</item>
         <item name="findOnPageIconTintColor">@color/blue_800</item>
         <item name="navigationIconTintColor">@color/blue_800</item>

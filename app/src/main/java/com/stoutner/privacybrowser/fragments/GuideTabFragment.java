@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,19 +32,22 @@ import androidx.fragment.app.Fragment;
 import com.stoutner.privacybrowser.R;
 
 public class GuideTabFragment extends Fragment {
-    // `tabNumber` is used in `onCreate()` and `onCreateView()`.
+    // Define the class variables.
     private int tabNumber;
+    private View tabLayout;
 
     // Store the tab number in the arguments bundle.
-    public static GuideTabFragment createTab (int tab) {
+    public static GuideTabFragment createTab (int tabNumber) {
         // Create a bundle.
         Bundle bundle = new Bundle();
 
         // Store the tab number in the bundle.
-        bundle.putInt("Tab", tab);
+        bundle.putInt("tab_number", tabNumber);
+
+        // Create a new guide tab fragment.
+        GuideTabFragment guideTabFragment = new GuideTabFragment();
 
         // Add the bundle to the fragment.
-        GuideTabFragment guideTabFragment = new GuideTabFragment();
         guideTabFragment.setArguments(bundle);
 
         // Return the new fragment.
@@ -57,18 +59,20 @@ public class GuideTabFragment extends Fragment {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Remove the lint warning that `getArguments()` might be null.
-        assert getArguments() != null;
+        // Get a handle for the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the lint warning below that arguments might be null.
+        assert arguments != null;
 
         // Store the tab number in a class variable.
-        tabNumber = getArguments().getInt("Tab");
+        tabNumber = arguments.getInt("tab_number");
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-        View tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
+        // Inflate the layout.  The fragment will take care of attaching the root automatically.
+        tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
 
         // Get a handle for the tab WebView.
         WebView tabWebView = (WebView) tabLayout;
@@ -159,7 +163,26 @@ public class GuideTabFragment extends Fragment {
             }
         }
 
+        // Scroll the WebView if the saved instance state is not null.
+        if (savedInstanceState != null) {
+            tabWebView.post(() -> tabWebView.setScrollY(savedInstanceState.getInt("scroll_y")));
+        }
+
         // Return the formatted `tabLayout`.
         return tabLayout;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Get a handle for the tab WebView.  A class variable cannot be used because it gets out of sync when restarting.
+        WebView tabWebView = (WebView) tabLayout;
+
+        // Save the scroll Y position if the tab WebView is not null, which can happen if a tab is not currently selected.
+        if (tabWebView != null) {
+            savedInstanceState.putInt("scroll_y", tabWebView.getScrollY());
+        }
     }
 }

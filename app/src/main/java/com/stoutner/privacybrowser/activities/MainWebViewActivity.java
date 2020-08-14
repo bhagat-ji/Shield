@@ -102,6 +102,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
@@ -168,11 +169,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener,
         PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveWebpageListener, StoragePermissionDialog.StoragePermissionDialogListener,
         UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
+
+    // The executor service handles background tasks.  It is accessed from `ViewSourceActivity`.  TODO.  Change the number of threads, or create a single thread executor.
+    public static ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
     public static String orbotStatus = "unknown";
@@ -215,6 +221,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private final int PERMISSION_SAVE_URL_REQUEST_CODE = 1;
     private final int PERMISSION_SAVE_AS_ARCHIVE_REQUEST_CODE = 2;
     private final int PERMISSION_SAVE_AS_IMAGE_REQUEST_CODE = 3;
+
+    // Define the saved instance state constants.
+    private final String SAVED_STATE_ARRAY_LIST = "saved_state_array_list";
+    private final String SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST = "saved_nested_scroll_webview_state_array_list";
+    private final String SAVED_TAB_POSITION = "saved_tab_position";
+    private final String PROXY_MODE = "proxy_mode";
+
+    // Define the saved instance state variables.
+    private ArrayList<Bundle> savedStateArrayList;
+    private ArrayList<Bundle> savedNestedScrollWebViewStateArrayList;
+    private int savedTabPosition;
+    private String savedProxyMode;
+
+    // Define the class views.
+    private AppBarLayout appBarLayout;
+    private TabLayout tabLayout;
+    private ViewPager webViewPager;
+
+    // Define the class variables.
+    private String newIntentUrl;
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxy()`, and `applyDomainSettings()`.
@@ -317,6 +343,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Check to see if the activity has been restarted.
+        if (savedInstanceState != null) {
+            // Store the saved instance state variables.
+            savedStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_STATE_ARRAY_LIST);
+            savedNestedScrollWebViewStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST);
+            savedTabPosition = savedInstanceState.getInt(SAVED_TAB_POSITION);
+            savedProxyMode = savedInstanceState.getString(PROXY_MODE);
+        }
+
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -363,10 +398,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the content view.
         setContentView(R.layout.main_framelayout);
 
-        // Get handles for the views that need to be modified.
+        // Get handles for the views.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        appBarLayout = findViewById(R.id.appbar_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        ViewPager webViewPager = findViewById(R.id.webviewpager);
+        tabLayout = findViewById(R.id.tablayout);
+        webViewPager = findViewById(R.id.webviewpager);
 
         // Get a handle for the app compat delegate.
         AppCompatDelegate appCompatDelegate = getDelegate();
@@ -398,6 +435,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Store up to 100 tabs in memory.
         webViewPager.setOffscreenPageLimit(100);
+
+        // Initialize the app.
+        initializeApp();
+
+        // Apply the app settings from the shared preferences.
+        applyAppSettings();
 
         // Populate the blocklists.
         new PopulateBlocklists(this, this).execute();
@@ -447,16 +490,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     url = intentUriData.toString();
                 }
 
-                // Add a new tab if specified in the preferences.
-                if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
-                    // Set the loading new intent flag.
-                    loadingNewIntent = true;
+                // Check to see if the app is in the process of restarting
+                if (savedStateArrayList == null) {  // The app is not in the process of being restarted.  Process the new intent.
+                    // Add a new tab if specified in the preferences.
+                    if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                        // Set the loading new intent flag.
+                        loadingNewIntent = true;
 
-                    // Add a new tab.
-                    addNewTab(url, true);
-                } else {  // Load the URL in the current tab.
-                    // Make it so.
-                    loadUrl(currentWebView, url);
+                        // Add a new tab.
+                        addNewTab(url, true);
+                    } else {  // Load the URL in the current tab.
+                        // Make it so.
+                        loadUrl(currentWebView, url);
+                    }
+                } else {  // The app is being restarted.  Store the URL, which will be processed in `finishedPopulatingBlocklists()`.
+                    newIntentUrl = url;
                 }
 
                 // Get a handle for the drawer layout.
@@ -630,6 +678,50 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Create the saved state array lists.
+        ArrayList<Bundle> savedStateArrayList = new ArrayList<>();
+        ArrayList<Bundle> savedNestedScrollWebViewStateArrayList = new ArrayList<>();
+
+        // Get the URLs from each tab.
+        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+            // Get the WebView tab fragment.
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+
+            // Get the fragment view.
+            View fragmentView = webViewTabFragment.getView();
+
+            if (fragmentView != null) {
+                // Get the nested scroll WebView from the tab fragment.
+                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                // Create saved state bundle.
+                Bundle savedStateBundle = new Bundle();
+
+                // Get the current states.
+                nestedScrollWebView.saveState(savedStateBundle);
+                Bundle savedNestedScrollWebViewStateBundle = nestedScrollWebView.saveNestedScrollWebViewState();
+
+                // Store the saved states in the array lists.
+                savedStateArrayList.add(savedStateBundle);
+                savedNestedScrollWebViewStateArrayList.add(savedNestedScrollWebViewStateBundle);
+            }
+        }
+
+        // Get the current tab position.
+        int currentTabPosition = tabLayout.getSelectedTabPosition();
+
+        // Store the saved states in the bundle.
+        savedInstanceState.putParcelableArrayList(SAVED_STATE_ARRAY_LIST, savedStateArrayList);
+        savedInstanceState.putParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST, savedNestedScrollWebViewStateArrayList);
+        savedInstanceState.putInt(SAVED_TAB_POSITION, currentTabPosition);
+        savedInstanceState.putString(PROXY_MODE, proxyMode);
+    }
+
+    @Override
     public void onDestroy() {
         // Unregister the orbot status broadcast receiver if it exists.
         if (orbotStatusBroadcastReceiver != null) {
@@ -715,12 +807,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                 // Set the icon according to the current theme status.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    // Set the dark stop icon.
-                    refreshMenuItem.setIcon(R.drawable.close_night);
-                } else {
-                    // Set the light stop icon.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     refreshMenuItem.setIcon(R.drawable.close_day);
+                } else {
+                    refreshMenuItem.setIcon(R.drawable.close_night);
                 }
             }
         }
@@ -1014,11 +1104,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Display a `Snackbar`.
                 if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScrip is enabled.
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (cookieManager.acceptCookie()) {  // JavaScript is disabled, but first-party cookies are enabled.
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the current WebView.
@@ -1064,11 +1154,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Display a snackbar.
                 if (cookieManager.acceptCookie()) {  // First-party cookies are enabled.
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is still enabled.
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the current WebView.
@@ -1087,9 +1177,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Display a snackbar.
                     if (cookieManager.acceptThirdPartyCookies(currentWebView)) {
-                        Snackbar.make(findViewById(R.id.webviewpager), R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(webViewPager, R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(findViewById(R.id.webviewpager), R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(webViewPager, R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                     }
 
                     // Reload the current WebView.
@@ -1111,9 +1201,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Display a snackbar.
                 if (currentWebView.getSettings().getDomStorageEnabled()) {
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the current WebView.
@@ -1132,9 +1222,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Display a snackbar.
                 if (currentWebView.getSettings().getSaveFormData()) {
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(webViewPager, R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
@@ -1147,7 +1237,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.clear_cookies:
-                Snackbar.make(findViewById(R.id.webviewpager), R.string.cookies_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(webViewPager, R.string.cookies_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> {
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
@@ -1171,7 +1261,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.clear_dom_storage:
-                Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(webViewPager, R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> {
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
@@ -1229,7 +1319,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Form data can be remove once the minimum API >= 26.
             case R.id.clear_form_data:
-                Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(webViewPager, R.string.form_data_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> {
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
@@ -2560,9 +2650,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Override `onBackPressed` to handle the navigation drawer and and the WebViews.
     @Override
     public void onBackPressed() {
-        // Get a handle for the drawer layout and the tab layout.
+        // Get a handle for the drawer layout.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-        TabLayout tabLayout = findViewById(R.id.tablayout);
 
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
             // Close the navigation drawer.
@@ -3130,160 +3219,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    private void applyAppSettings() {
-        // Initialize the app if this is the first run.  This is done here instead of in `onCreate()` to shorten the time that an unthemed background is displayed on app startup.
-        if (webViewDefaultUserAgent == null) {
-            initializeApp();
-        }
-
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Store the values from the shared preferences in variables.
-        incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
-        boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
-        sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
-        sanitizeFacebookClickIds = sharedPreferences.getBoolean("facebook_click_ids", true);
-        sanitizeTwitterAmpRedirects = sharedPreferences.getBoolean("twitter_amp_redirects", true);
-        proxyMode = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
-        fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
-        hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
-        scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
-
-        // Get the search string.
-        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
-
-        // Set the search string.
-        if (searchString.equals("Custom URL")) {  // A custom search string is used.
-            searchURL = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
-        } else {  // A custom search string is not used.
-            searchURL = searchString;
-        }
-
-        // Get a handle for the app compat delegate.
-        AppCompatDelegate appCompatDelegate = getDelegate();
-
-        // Get handles for the views that need to be modified.
-        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-        AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
-        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
-        LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-
-        // Remove the incorrect lint warning below that the action bar might be null.
-        assert actionBar != null;
-
-        // Apply the proxy.
-        applyProxy(false);
-
-        // Set Do Not Track status.
-        if (doNotTrackEnabled) {
-            customHeaders.put("DNT", "1");
-        } else {
-            customHeaders.remove("DNT");
-        }
-
-        // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command and using app bar layout parameters allows the `setScrollFlags()` command.
-        CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        AppBarLayout.LayoutParams findOnPageLayoutParams = (AppBarLayout.LayoutParams) findOnPageLinearLayout.getLayoutParams();
-        AppBarLayout.LayoutParams tabsLayoutParams = (AppBarLayout.LayoutParams) tabsLinearLayout.getLayoutParams();
-
-        // Add the scrolling behavior to the layout parameters.
-        if (scrollAppBar) {
-            // Enable scrolling of the app bar.
-            swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
-            toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-            findOnPageLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-            tabsLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-        } else {
-            // Disable scrolling of the app bar.
-            swipeRefreshLayoutParams.setBehavior(null);
-            toolbarLayoutParams.setScrollFlags(0);
-            findOnPageLayoutParams.setScrollFlags(0);
-            tabsLayoutParams.setScrollFlags(0);
-
-            // Expand the app bar if it is currently collapsed.
-            appBarLayout.setExpanded(true);
-        }
-
-        // Apply the modified layout parameters.
-        swipeRefreshLayout.setLayoutParams(swipeRefreshLayoutParams);
-        toolbar.setLayoutParams(toolbarLayoutParams);
-        findOnPageLinearLayout.setLayoutParams(findOnPageLayoutParams);
-        tabsLinearLayout.setLayoutParams(tabsLayoutParams);
-
-        // Set the app bar scrolling for each WebView.
-        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-            // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
-
-            // Get the fragment view.
-            View fragmentView = webViewTabFragment.getView();
-
-            // Only modify the WebViews if they exist.
-            if (fragmentView != null) {
-                // Get the nested scroll WebView from the tab fragment.
-                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
-
-                // Set the app bar scrolling.
-                nestedScrollWebView.setNestedScrollingEnabled(scrollAppBar);
-            }
-        }
-
-        // Update the full screen browsing mode settings.
-        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-            // Update the visibility of the app bar, which might have changed in the settings.
-            if (hideAppBar) {
-                // Hide the tab linear layout.
-                tabsLinearLayout.setVisibility(View.GONE);
-
-                // Hide the action bar.
-                actionBar.hide();
-            } else {
-                // Show the tab linear layout.
-                tabsLinearLayout.setVisibility(View.VISIBLE);
-
-                // Show the action bar.
-                actionBar.show();
-            }
-
-            // Hide the banner ad in the free flavor.
-            if (BuildConfig.FLAVOR.contentEquals("free")) {
-                AdHelper.hideAd(findViewById(R.id.adview));
-            }
-
-            /* Hide the system bars.
-             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-             */
-            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        } else {  // Privacy Browser is not in full screen browsing mode.
-            // Reset the full screen tracker, which could be true if Privacy Browser was in full screen mode before entering settings and full screen browsing was disabled.
-            inFullScreenBrowsingMode = false;
-
-            // Show the tab linear layout.
-            tabsLinearLayout.setVisibility(View.VISIBLE);
-
-            // Show the action bar.
-            actionBar.show();
-
-            // Show the banner ad in the free flavor.
-            if (BuildConfig.FLAVOR.contentEquals("free")) {
-                // Initialize the ads.  If this isn't the first run, `loadAd()` will be automatically called instead.
-                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getSupportFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
-            }
-
-            // Remove the `SYSTEM_UI` flags from the root frame layout.
-            rootFrameLayout.setSystemUiVisibility(0);
-        }
-    }
-
     private void initializeApp() {
         // Get a handle for the input method.
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -3291,10 +3226,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the lint warning below that the input method manager might be null.
         assert inputMethodManager != null;
 
-        // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
-        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        // Initialize the gray foreground color spans for highlighting the URLs.  The deprecated `getResources()` must be used until API >= 23.
         initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
         finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the red color span according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        } else {
+            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
+        }
 
         // Get handles for the URL views.
         EditText urlEditText = findViewById(R.id.url_edittext);
@@ -3389,9 +3333,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get handles for views that need to be modified.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         NavigationView navigationView = findViewById(R.id.navigationview);
-        TabLayout tabLayout = findViewById(R.id.tablayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-        ViewPager webViewPager = findViewById(R.id.webviewpager);
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
@@ -3401,12 +3343,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Listen for touches on the navigation menu.
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Get handles for the navigation menu and the back and forward menu items.  The menu is 0 based.
+        // Get handles for the navigation menu and the back and forward menu items.
         Menu navigationMenu = navigationView.getMenu();
-        MenuItem navigationBackMenuItem = navigationMenu.getItem(2);
-        MenuItem navigationForwardMenuItem = navigationMenu.getItem(3);
-        MenuItem navigationHistoryMenuItem = navigationMenu.getItem(4);
-        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
+        MenuItem navigationBackMenuItem = navigationMenu.findItem(R.id.back);
+        MenuItem navigationForwardMenuItem = navigationMenu.findItem(R.id.forward);
+        MenuItem navigationHistoryMenuItem = navigationMenu.findItem(R.id.history);
+        MenuItem navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
 
         // Update the web view pager every time a tab is modified.
         webViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -3423,7 +3365,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the current WebView.
                 setCurrentWebView(position);
 
-                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager or by creating a new tab.
+                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled by creating a new tab.
                 if (tabLayout.getSelectedTabPosition() != position) {
                     // Create a handler to select the tab.
                     Handler selectTabHandler = new Handler();
@@ -3440,7 +3382,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         tab.select();
                     };
 
-                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.
+                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.  TODO.  Switch to a post command.
                     selectTabHandler.postDelayed(selectTabRunnable, 150);
                 }
             }
@@ -3561,14 +3503,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         defaultProgressViewStartOffset = swipeRefreshLayout.getProgressViewStartOffset();
         defaultProgressViewEndOffset = swipeRefreshLayout.getProgressViewEndOffset();
 
-        // Get the current theme status.
-        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
         // Set the refresh color scheme according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
-        } else {
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
             swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+        } else {
+            swipeRefreshLayout.setColorSchemeResources(R.color.violet_500);
         }
 
         // Initialize a color background typed value.
@@ -3707,6 +3646,163 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         bareWebView.destroy();
     }
 
+    private void applyAppSettings() {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Store the values from the shared preferences in variables.
+        incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
+        boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
+        sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
+        sanitizeFacebookClickIds = sharedPreferences.getBoolean("facebook_click_ids", true);
+        sanitizeTwitterAmpRedirects = sharedPreferences.getBoolean("twitter_amp_redirects", true);
+        proxyMode = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
+        fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
+        hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
+        scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
+
+        // Apply the saved proxy mode if the app has been restarted.
+        if (savedProxyMode != null) {
+            // Apply the saved proxy mode.
+            proxyMode = savedProxyMode;
+
+            // Reset the saved proxy mode.
+            savedProxyMode = null;
+        }
+
+        // Get the search string.
+        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
+
+        // Set the search string.
+        if (searchString.equals("Custom URL")) {  // A custom search string is used.
+            searchURL = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
+        } else {  // A custom search string is not used.
+            searchURL = searchString;
+        }
+
+        // Get a handle for the app compat delegate.
+        AppCompatDelegate appCompatDelegate = getDelegate();
+
+        // Get handles for the views that need to be modified.
+        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+        LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
+        // Remove the incorrect lint warning below that the action bar might be null.
+        assert actionBar != null;
+
+        // Apply the proxy.
+        applyProxy(false);
+
+        // Set Do Not Track status.
+        if (doNotTrackEnabled) {
+            customHeaders.put("DNT", "1");
+        } else {
+            customHeaders.remove("DNT");
+        }
+
+        // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command and using app bar layout parameters allows the `setScrollFlags()` command.
+        CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        AppBarLayout.LayoutParams findOnPageLayoutParams = (AppBarLayout.LayoutParams) findOnPageLinearLayout.getLayoutParams();
+        AppBarLayout.LayoutParams tabsLayoutParams = (AppBarLayout.LayoutParams) tabsLinearLayout.getLayoutParams();
+
+        // Add the scrolling behavior to the layout parameters.
+        if (scrollAppBar) {
+            // Enable scrolling of the app bar.
+            swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+            toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+            findOnPageLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+            tabsLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+        } else {
+            // Disable scrolling of the app bar.
+            swipeRefreshLayoutParams.setBehavior(null);
+            toolbarLayoutParams.setScrollFlags(0);
+            findOnPageLayoutParams.setScrollFlags(0);
+            tabsLayoutParams.setScrollFlags(0);
+
+            // Expand the app bar if it is currently collapsed.
+            appBarLayout.setExpanded(true);
+        }
+
+        // Apply the modified layout parameters.
+        swipeRefreshLayout.setLayoutParams(swipeRefreshLayoutParams);
+        toolbar.setLayoutParams(toolbarLayoutParams);
+        findOnPageLinearLayout.setLayoutParams(findOnPageLayoutParams);
+        tabsLinearLayout.setLayoutParams(tabsLayoutParams);
+
+        // Set the app bar scrolling for each WebView.
+        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+            // Get the WebView tab fragment.
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+
+            // Get the fragment view.
+            View fragmentView = webViewTabFragment.getView();
+
+            // Only modify the WebViews if they exist.
+            if (fragmentView != null) {
+                // Get the nested scroll WebView from the tab fragment.
+                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                // Set the app bar scrolling.
+                nestedScrollWebView.setNestedScrollingEnabled(scrollAppBar);
+            }
+        }
+
+        // Update the full screen browsing mode settings.
+        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+            // Update the visibility of the app bar, which might have changed in the settings.
+            if (hideAppBar) {
+                // Hide the tab linear layout.
+                tabsLinearLayout.setVisibility(View.GONE);
+
+                // Hide the action bar.
+                actionBar.hide();
+            } else {
+                // Show the tab linear layout.
+                tabsLinearLayout.setVisibility(View.VISIBLE);
+
+                // Show the action bar.
+                actionBar.show();
+            }
+
+            // Hide the banner ad in the free flavor.
+            if (BuildConfig.FLAVOR.contentEquals("free")) {
+                AdHelper.hideAd(findViewById(R.id.adview));
+            }
+
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+             */
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } else {  // Privacy Browser is not in full screen browsing mode.
+            // Reset the full screen tracker, which could be true if Privacy Browser was in full screen mode before entering settings and full screen browsing was disabled.
+            inFullScreenBrowsingMode = false;
+
+            // Show the tab linear layout.
+            tabsLinearLayout.setVisibility(View.VISIBLE);
+
+            // Show the action bar.
+            actionBar.show();
+
+            // Show the banner ad in the free flavor.
+            if (BuildConfig.FLAVOR.contentEquals("free")) {
+                // Initialize the ads.  If this isn't the first run, `loadAd()` will be automatically called instead.
+                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getSupportFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+            }
+
+            // Remove the `SYSTEM_UI` flags from the root frame layout.
+            rootFrameLayout.setSystemUiVisibility(0);
+        }
+    }
+
     @Override
     public void navigateHistory(String url, int steps) {
         // Apply the domain settings.
@@ -3767,9 +3863,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Get the current page position.
                 int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
-
-                // Get a handle for the tab layout.
-                TabLayout tabLayout = findViewById(R.id.tablayout);
 
                 // Get the corresponding tab.
                 TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
@@ -3911,22 +4004,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 boolean pinnedIpAddresses = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
                 String pinnedHostIpAddresses = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
 
-                // Create the pinned SSL date variables.
+                // Get the pinned SSL date longs.
+                long pinnedSslStartDateLong = currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE));
+                long pinnedSslEndDateLong = currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE));
+
+                // Define the pinned SSL date variables.
                 Date pinnedSslStartDate;
                 Date pinnedSslEndDate;
 
-                // Set the pinned SSL certificate start date to `null` if the saved date `long` is 0 because creating a new Date results in an error if the input is 0.
-                if (currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) == 0) {
+                // Set the pinned SSL certificate start date to `null` if the saved date long is 0 because creating a new date results in an error if the input is 0.
+                if (pinnedSslStartDateLong == 0) {
                     pinnedSslStartDate = null;
                 } else {
-                    pinnedSslStartDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+                    pinnedSslStartDate = new Date(pinnedSslStartDateLong);
                 }
 
-                // Set the pinned SSL certificate end date to `null` if the saved date `long` is 0 because creating a new Date results in an error if the input is 0.
-                if (currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) == 0) {
+                // Set the pinned SSL certificate end date to `null` if the saved date long is 0 because creating a new date results in an error if the input is 0.
+                if (pinnedSslEndDateLong == 0) {
                     pinnedSslEndDate = null;
                 } else {
-                    pinnedSslEndDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+                    pinnedSslEndDate = new Date(pinnedSslEndDateLong);
                 }
 
                 // Close the current host domain settings cursor.
@@ -4056,12 +4153,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                             // Set the WebView theme according to the current system theme status.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The system is in night mode.
-                                // Turn on the WebView dark mode.
-                                WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
-                            } else {  // The system is in day mode.
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
                                 // Turn off the WebView dark mode.
                                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                            } else {  // The system is in night mode.
+                                // Turn on the WebView dark mode.
+                                WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                             }
                             break;
 
@@ -4110,11 +4207,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the current theme status.
                 int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-                // Set a background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+                // Set a background on the URL relative layout to indicate that custom domain settings are being used.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_light_green, null));
                 } else {
-                    urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_dark_blue, null));
                 }
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from the shared preferences.
@@ -4211,12 +4308,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                         // Set the WebView theme according to the current system theme status.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The system is in night mode.
-                            // Turn on the WebView dark mode.
-                            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
-                        } else {  // The system is in day mode.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
                             // Turn off the WebView dark mode.
                             WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                        } else {  // The system is in night mode.
+                            // Turn on the WebView dark mode.
+                            WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                         }
                     }
                 }
@@ -4227,8 +4324,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the loading of webpage images.
                 nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
-                // Set a transparent background on URL edit text.  The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21.
-                urlRelativeLayout.setBackground(getResources().getDrawable(R.color.transparent));
+                // Set a transparent background on URL edit text.
+                urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparent, null));
             }
 
             // Close the domains database helper.
@@ -4245,9 +4342,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void applyProxy(boolean reloadWebViews) {
-        // Get a handle for the app bar layout.
-        AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
-
         // Set the proxy according to the mode.  `this` refers to the current activity where an alert dialog might be displayed.
         ProxyHelper.setProxy(getApplicationContext(), appBarLayout, proxyMode);
 
@@ -4275,10 +4369,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case ProxyHelper.TOR:
                 // Set the app bar background to indicate proxying through Orbot is enabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     appBarLayout.setBackgroundResource(R.color.blue_50);
+                } else {
+                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
                 }
 
                 // Check to see if Orbot is installed.
@@ -4317,10 +4411,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case ProxyHelper.I2P:
                 // Set the app bar background to indicate proxying through Orbot is enabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     appBarLayout.setBackgroundResource(R.color.blue_50);
+                } else {
+                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
                 }
 
                 // Check to see if I2P is installed.
@@ -4344,10 +4438,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case ProxyHelper.CUSTOM:
                 // Set the app bar background to indicate proxying through Orbot is enabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     appBarLayout.setBackgroundResource(R.color.blue_50);
+                } else {
+                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
                 }
                 break;
         }
@@ -4399,10 +4493,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (currentWebView.getAcceptFirstPartyCookies()) {  // First-party cookies are enabled.
                 firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
             } else {  // First-party cookies are disabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_day);
+                } else {
+                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
                 }
             }
 
@@ -4410,24 +4504,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (currentWebView.getSettings().getJavaScriptEnabled() && currentWebView.getSettings().getDomStorageEnabled()) {  // Both JavaScript and DOM storage are enabled.
                 domStorageMenuItem.setIcon(R.drawable.dom_storage_enabled);
             } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled but DOM storage is disabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_night);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_day);
+                } else {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_night);
                 }
             } else {  // JavaScript is disabled, so DOM storage is ghosted.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_night);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_day);
+                } else {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_night);
                 }
             }
 
             // Update the refresh icon.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
+            } else {
+                refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
             }
 
             // `invalidateOptionsMenu()` calls `onPrepareOptionsMenu()` and redraws the icons in the app bar.
@@ -4653,8 +4747,63 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraList = combinedBlocklists.get(4);
         ultraPrivacy = combinedBlocklists.get(5);
 
-        // Add the first tab.
-        addNewTab("", true);
+        // Check to see if the activity has been restarted.
+        if ((savedStateArrayList == null) || (savedStateArrayList.size() == 0)) {  // The activity has not been restarted or it was restarted on start to force the night theme.
+            // Add the first tab.
+            addNewTab("", true);
+        } else {  // The activity has been restarted.
+            // Restore each tab.  Once the minimum API >= 24, a `forEach()` command can be used.
+            for (int i = 0; i < savedStateArrayList.size(); i++) {
+                // Add a new tab.
+                tabLayout.addTab(tabLayout.newTab());
+
+                // Get the new tab.
+                TabLayout.Tab newTab = tabLayout.getTabAt(i);
+
+                // Remove the lint warning below that the current tab might be null.
+                assert newTab != null;
+
+                // Set a custom view on the new tab.
+                newTab.setCustomView(R.layout.tab_custom_view);
+
+                // Add the new page.
+                webViewPagerAdapter.restorePage(savedStateArrayList.get(i), savedNestedScrollWebViewStateArrayList.get(i));
+            }
+
+            // Reset the saved state variables.
+            savedStateArrayList = null;
+            savedNestedScrollWebViewStateArrayList = null;
+
+            // Restore the selected tab position.
+            if (savedTabPosition == 0) {  // The first tab is selected.
+                // Set the first page as the current WebView.
+                setCurrentWebView(0);
+            } else {  // the first tab is not selected.
+                // Move to the selected tab.
+                webViewPager.setCurrentItem(savedTabPosition);
+            }
+
+            // Process the new intent if it exists.
+            if (newIntentUrl != null) {
+                // Get the shared preferences.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                // Add a new tab if specified in the preferences.
+                if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                    // Set the loading new intent flag.
+                    loadingNewIntent = true;
+
+                    // Add a new tab.
+                    addNewTab(newIntentUrl, true);
+                } else {  // Load the URL in the current tab.
+                    // Make it so.
+                    loadUrl(currentWebView, newIntentUrl);
+                }
+
+                // Reset the new intent URL.
+                newIntentUrl = null;
+            }
+        }
     }
 
     public void addTab(View view) {
@@ -4663,13 +4812,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void addNewTab(String url, boolean moveToTab) {
-        // Sanitize the URL.
-        url = sanitizeUrl(url);
-
-        // Get a handle for the tab layout and the view pager.
-        TabLayout tabLayout = findViewById(R.id.tablayout);
-        ViewPager webViewPager = findViewById(R.id.webviewpager);
-
         // Get the new page number.  The page numbers are 0 indexed, so the new page number will match the current count.
         int newTabNumber = tabLayout.getTabCount();
 
@@ -4690,9 +4832,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     public void closeTab(View view) {
-        // Get a handle for the tab layout.
-        TabLayout tabLayout = findViewById(R.id.tablayout);
-
         // Run the command according to the number of tabs.
         if (tabLayout.getTabCount() > 1) {  // There is more than one tab open.
             // Close the current tab.
@@ -4703,11 +4842,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void closeCurrentTab() {
-        // Get handles for the views.
-        AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
-        TabLayout tabLayout = findViewById(R.id.tablayout);
-        ViewPager webViewPager = findViewById(R.id.webviewpager);
-
         // Get the current tab number.
         int currentTabNumber = tabLayout.getSelectedTabPosition();
 
@@ -4981,16 +5115,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the current theme status.
                 int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-                // Set a green background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+                // Set a green background on the URL relative layout to indicate that custom domain settings are being used.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_light_green, null));
                 } else {
-                    urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_dark_blue, null));
                 }
             } else {
-                urlRelativeLayout.setBackground(getResources().getDrawable(R.color.transparent));
+                urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparent, null));
             }
-        } else {  // The fragment has not been populated.  Try again in 100 milliseconds.
+        } else {  // The fragment has not been populated.  Try again in 100 milliseconds.  //TODO try to replace this with a post command.
             // Create a handler to set the current WebView.
             Handler setCurrentWebViewHandler = new Handler();
 
@@ -5006,7 +5140,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url) {
+    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url, Boolean restoringState) {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -5022,6 +5156,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
                 // Turn off the WebView dark mode.
                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+
+                // Make the WebView visible. The WebView was created invisible in `webview_framelayout` to prevent a white background splash in night mode.
+                // If the system is currently in night mode, showing the WebView will be handled in `onProgressChanged()`.
+                nestedScrollWebView.setVisibility(View.VISIBLE);
             } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
                 // Turn on the WebView dark mode.
                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
@@ -5030,12 +5168,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                 // Set the WebView theme according to the current system theme status.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The system is in night mode.
-                    // Turn on the WebView dark mode.
-                    WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
-                } else {  // The system is in day mode.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
                     // Turn off the WebView dark mode.
                     WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+
+                    // Make the WebView visible. The WebView was created invisible in `webview_framelayout` to prevent a white background splash in night mode.
+                    // If the system is currently in night mode, showing the WebView will be handled in `onProgressChanged()`.
+                    nestedScrollWebView.setVisibility(View.VISIBLE);
+                } else {  // The system is in night mode.
+                    // Turn on the WebView dark mode.
+                    WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                 }
             }
         }
@@ -5050,7 +5192,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ActionBar actionBar = appCompatDelegate.getSupportActionBar();
         LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
-        TabLayout tabLayout = findViewById(R.id.tablayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
         // Remove the incorrect lint warning below that the action bar might be null.
@@ -5302,12 +5443,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     //Stop the swipe to refresh indicator if it is running
                     swipeRefreshLayout.setRefreshing(false);
-                }
 
-                // If this is a new tab, the current WebView would have been created invisible in `webview_framelayout` to prevent a white background splash in night mode.
-                if (progress >= 50) {
-                    // Make the current WebView visible.
-                    currentWebView.setVisibility(View.VISIBLE);
+                    // Make the current WebView visible.  If this is a new tab, the current WebView would have been created invisible in `webview_framelayout` to prevent a white background splash in night mode.
+                    nestedScrollWebView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -5617,8 +5755,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get a handle for the navigation menu.
                 Menu navigationMenu = navigationView.getMenu();
 
-                // Get a handle for the navigation requests menu item.  The menu is 0 based.
-                MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
+                // Get a handle for the navigation requests menu item.
+                MenuItem navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
 
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
@@ -5960,9 +6098,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the preferences.
                 boolean scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
 
-                // Get a handler for the app bar layout.
-                AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
-
                 // Set the top padding of the swipe refresh layout according to the app bar scrolling preference.  This can't be done in `appAppSettings()` because the app bar is not yet populated there.
                 if (scrollAppBar || (inFullScreenBrowsingMode && hideAppBar)) {
                     // No padding is needed because it will automatically be placed below the app bar layout due to the scrolling layout behavior.
@@ -6031,10 +6166,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                         // Set the stop icon according to the theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            refreshMenuItem.setIcon(R.drawable.close_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             refreshMenuItem.setIcon(R.drawable.close_day);
+                        } else {
+                            refreshMenuItem.setIcon(R.drawable.close_night);
                         }
                     }
                 }
@@ -6064,10 +6199,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
                         // Set the icon according to the theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
+                        } else {
+                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
                         }
                     }
                 }
@@ -6222,13 +6357,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Check to see if this is the first page.
-        if (pageNumber == 0) {
+        // Check to see if the state is being restored.
+        if (restoringState) {  // The state is being restored.
+            // Resume the nested scroll WebView JavaScript timers.
+            nestedScrollWebView.resumeTimers();
+        } else if (pageNumber == 0) {  // The first page is being loaded.
             // Set this nested scroll WebView as the current WebView.
             currentWebView = nestedScrollWebView;
-
-            // Apply the app settings from the shared preferences.
-            applyAppSettings();
 
             // Initialize the URL to load string.
             String urlToLoadString;
@@ -6257,6 +6392,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else if (launchingIntentUriData != null){  // The intent contains a URL.
                 // Store the URL.
                 urlToLoadString = launchingIntentUriData.toString();
+            } else if (!url.equals("")) {  // The activity has been restarted.
+                // Load the saved URL.
+                urlToLoadString = url;
             } else {  // The is no URL in the intent.
                 // Store the homepage to be loaded.
                 urlToLoadString = sharedPreferences.getString("homepage", getString(R.string.homepage_default_value));
@@ -6269,11 +6407,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 loadUrl(nestedScrollWebView, urlToLoadString);
             }
         } else {  // This is not the first tab.
-            // Apply the domain settings.
-            applyDomainSettings(nestedScrollWebView, url, false, false);
-
             // Load the URL.
-            nestedScrollWebView.loadUrl(url, customHeaders);
+            loadUrl(nestedScrollWebView, url);
 
             // Set the focus and display the keyboard if the URL is blank.
             if (url.equals("")) {

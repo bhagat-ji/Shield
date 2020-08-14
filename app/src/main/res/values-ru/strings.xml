@@ -320,6 +320,11 @@
         <item>Потянуть для обновления - включено</item>
         <item>Потянуть для обновления - выключено</item>
     </string-array>
+    <string-array name="webview_theme_array">
+        <item>Настройки по умолчанию</item>
+        <item>Светлая тема WebView</item>
+        <item>Темная тема WebView</item>
+    </string-array>
     <string-array name="wide_viewport_array">
         <item>Настройки по умолчанию</item>
         <item>Широкий вид просмотра включен</item>
@@ -570,8 +575,14 @@
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
-        <string name="app_theme">Тема</string>
+        <string name="app_theme">Тема приложения</string>
         <string-array name="app_theme_entries">
+            <item>По умолчанию</item>
+            <item>Светлая</item>
+            <item>Темная</item>
+        </string-array>
+        <string name="webview_theme">Тема WebView</string>
+        <string-array name="webview_theme_entries">
             <item>По умолчанию</item>
             <item>Светлая</item>
             <item>Темная</item>

@@ -38,17 +38,18 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -62,16 +63,11 @@ import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import java.util.Objects;
 
 public class DomainsActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener, DomainsListFragment.DismissSnackbarInterface {
-    // `twoPanedMode` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `populateDomainsListView()`.
+    // Define the public static variables.
+    public static int domainsListViewPosition;
     public static boolean twoPanedMode;
-
-    // `databaseId` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onCreateOptionsMenu()`, `saveDomainSettings()` and `populateDomainsListView()`.
     public static int currentDomainDatabaseId;
-
-    // `deleteMenuItem` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `onBackPressed()`.
     public static MenuItem deleteMenuItem;
-
-    // `dismissingSnackbar` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onOptionsItemSelected()`.
     public static boolean dismissingSnackbar;
 
     // The SSL certificate and IP address information are accessed from `DomainSettingsFragment` and `saveDomainSettings()`.
@@ -86,6 +82,21 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     public static String currentIpAddresses;
 
 
+    // Initialize the class constants.
+    private final String LISTVIEW_POSITION = "listview_position";
+    private final String DOMAIN_SETTINGS_DISPLAYED = "domain_settings_displayed";
+    private final String DOMAIN_SETTINGS_DATABASE_ID = "domain_settings_database_is";
+    private final String DOMAIN_SETTINGS_SCROLL_Y = "domain_settings_scroll_y";
+
+    // Initialize the class variables.
+    private boolean restartAfterRotate;
+    private boolean domainSettingsDisplayedBeforeRotate;
+    private int domainSettingsDatabaseIdBeforeRotate;
+    private int domainSettingsScrollY = 0;
+
+    // Defile the class views.
+    private ListView domainsListView;
+
     // `closeActivityAfterDismissingSnackbar` is used in `onOptionsItemSelected()`, and `onBackPressed()`.
     private boolean closeActivityAfterDismissingSnackbar;
 
@@ -95,23 +106,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `domainsDatabaseHelper` is used in `onCreate()`, `saveDomainSettings()`, and `onDestroy()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
 
-    // `domainsListView` is used in `onCreate()` and `populateDomainsList()`.
-    private ListView domainsListView;
-
     // `addDomainFAB` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `onBackPressed()`.
     private FloatingActionButton addDomainFAB;
 
     // `deletedDomainPosition` is used in an inner and outer class in `onOptionsItemSelected()`.
     private int deletedDomainPosition;
-
-    // `restartAfterRotate` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    private boolean restartAfterRotate;
-
-    // `domainSettingsDisplayedBeforeRotate` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    private boolean domainSettingsDisplayedBeforeRotate;
-
-    // `domainSettingsDatabaseIdBeforeRotate` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    private int domainSettingsDatabaseIdBeforeRotate;
 
     // `goDirectlyToDatabaseId` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private int goDirectlyToDatabaseId;
@@ -144,11 +143,16 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Extract the values from `savedInstanceState` if it is not `null`.
+        // Initialize the domains listview position.
+        domainsListViewPosition = 0;
+
+        // Extract the values from the saved instance state if it is not null.
         if (savedInstanceState != null) {
+            domainsListViewPosition = savedInstanceState.getInt(LISTVIEW_POSITION);
             restartAfterRotate = true;
-            domainSettingsDisplayedBeforeRotate = savedInstanceState.getBoolean("domain_settings_displayed");
-            domainSettingsDatabaseIdBeforeRotate = savedInstanceState.getInt("domain_settings_database_id");
+            domainSettingsDisplayedBeforeRotate = savedInstanceState.getBoolean(DOMAIN_SETTINGS_DISPLAYED);
+            domainSettingsDatabaseIdBeforeRotate = savedInstanceState.getInt(DOMAIN_SETTINGS_DATABASE_ID);
+            domainSettingsScrollY = savedInstanceState.getInt(DOMAIN_SETTINGS_SCROLL_Y);
         }
 
         // Get the launching intent
@@ -242,7 +246,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 fragmentManager.executePendingTransactions();
 
                 // Populate the list of domains.  `domainSettingsDatabaseId` highlights the domain that was highlighted before the rotation.
-                populateDomainsListView(domainSettingsDatabaseIdBeforeRotate);
+                populateDomainsListView(domainSettingsDatabaseIdBeforeRotate, domainsListViewPosition);
             } else {  // The device is in single-paned mode.
                 // Reset `restartAfterRotate`.
                 restartAfterRotate = false;
@@ -250,21 +254,26 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 // Store the current domain database ID.
                 currentDomainDatabaseId = domainSettingsDatabaseIdBeforeRotate;
 
-                // Add `currentDomainDatabaseId` to `argumentsBundle`.
+                // Create an arguments bundle.
                 Bundle argumentsBundle = new Bundle();
-                argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
 
-                // Add `argumentsBundle` to `domainSettingsFragment`.
+                // Add the domain settings arguments.
+                argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
+                argumentsBundle.putInt(DomainSettingsFragment.SCROLL_Y, domainSettingsScrollY);
+
+                // Instantiate a new domain settings fragment.
                 DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+
+                // Add the arguments bundle to the domain settings fragment.
                 domainSettingsFragment.setArguments(argumentsBundle);
 
-                // Show `deleteMenuItem`.
+                // Show the delete menu item.
                 deleteMenuItem.setVisible(true);
 
                 // Hide the add domain floating action button.
                 addDomainFAB.hide();
 
-                // Display `domainSettingsFragment`.
+                // Display the domain settings fragment.
                 fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
             }
         } else {  // The device was not rotated or, if it was, domain settings were not displayed previously.
@@ -279,23 +288,28 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     fragmentManager.executePendingTransactions();
 
                     // Populate the list of domains.  `domainSettingsDatabaseId` highlights the domain that was highlighted before the rotation.
-                    populateDomainsListView(goDirectlyToDatabaseId);
+                    populateDomainsListView(goDirectlyToDatabaseId, domainsListViewPosition);
                 } else {  // The device is in single-paned mode.
-                    // Add the domain ID to be loaded to `argumentsBundle`.
+                    // Create an arguments bundle.
                     Bundle argumentsBundle = new Bundle();
-                    argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, goDirectlyToDatabaseId);
 
-                    // Add `argumentsBundle` to `domainSettingsFragment`.
+                    // Add the domain settings to arguments bundle.
+                    argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, goDirectlyToDatabaseId);
+                    argumentsBundle.putInt(DomainSettingsFragment.SCROLL_Y, domainSettingsScrollY);
+
+                    // Instantiate a new domain settings fragment.
                     DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+
+                    // Add the arguments bundle to the domain settings fragment`.
                     domainSettingsFragment.setArguments(argumentsBundle);
 
-                    // Show `deleteMenuItem`.
+                    // Show the delete menu item.
                     deleteMenuItem.setVisible(true);
 
                     // Hide the add domain floating action button.
                     addDomainFAB.hide();
 
-                    // Display `domainSettingsFragment`.
+                    // Display the domain settings fragment.
                     fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
                 }
             } else {  // Highlight the first domain.
@@ -305,7 +319,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 fragmentManager.executePendingTransactions();
 
                 // Populate the list of domains.  `-1` highlights the first domain.
-                populateDomainsListView(-1);
+                populateDomainsListView(-1, domainsListViewPosition);
             }
         }
 
@@ -356,7 +370,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     fragmentManager.executePendingTransactions();
 
                     // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
-                    populateDomainsListView(-1);
+                    populateDomainsListView(-1, domainsListViewPosition);
 
                     // Show the add domain floating action button.
                     addDomainFAB.show();
@@ -448,12 +462,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                             public void onDismissed(Snackbar snackbar, int event) {
                                 // Run commands based on the event.
                                 if (event == Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The user pushed the `Undo` button.
-                                    // Store the database ID in arguments bundle.
+                                    // Create an arguments bundle.
                                     Bundle argumentsBundle = new Bundle();
+
+                                    // Store the domains settings in the arguments bundle.
                                     argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseIdToDelete);
+                                    argumentsBundle.putInt(DomainSettingsFragment.SCROLL_Y, domainSettingsScrollY);
+
+                                    // Instantiate a new domain settings fragment.
+                                    DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
 
                                     // Add the arguments bundle to the domain settings fragment.
-                                    DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
                                     domainSettingsFragment.setArguments(argumentsBundle);
 
                                     // Display the correct fragments.
@@ -500,16 +519,16 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             deleteMenuItem.setIcon(R.drawable.delete_day);
                                         }
                                     } else {  // The device in in one-paned mode.
-                                        // Display `domainSettingsFragment`.
+                                        // Display the domain settings fragment.
                                         fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
 
                                         // Hide the add domain floating action button.
                                         addDomainFAB.hide();
 
-                                        // Show and enable `deleteMenuItem`.
+                                        // Show and enable the delete menu item.
                                         deleteMenuItem.setVisible(true);
 
-                                        // Display `domainSettingsFragment`.
+                                        // Display the domain settings fragment.
                                         fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
                                     }
                                 } else {  // The snackbar was dismissed without the undo button being pushed.
@@ -567,21 +586,40 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        // Store the current `DomainSettingsFragment` state in `outState`.
-        if (findViewById(R.id.domain_settings_scrollview) != null) {  // `DomainSettingsFragment` is displayed.
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState);
+
+        // Get a handle for the domain settings scrollview.
+        ScrollView domainSettingsScrollView = findViewById(R.id.domain_settings_scrollview);
+
+        // Check to see if the domain settings scrollview exists.
+        if (domainSettingsScrollView == null) {  // The domain settings are not displayed.
+            // Store the domain settings status in the bundle.
+            savedInstanceState.putBoolean(DOMAIN_SETTINGS_DISPLAYED, false);
+            savedInstanceState.putInt(DOMAIN_SETTINGS_DATABASE_ID, -1);
+            savedInstanceState.putInt(DOMAIN_SETTINGS_SCROLL_Y, 0);
+        } else {  // The domain settings are displayed.
             // Save any changes that have been made to the domain settings.
             saveDomainSettings(coordinatorLayout, resources);
 
-            // Store `DomainSettingsDisplayed`.
-            outState.putBoolean("domain_settings_displayed", true);
-            outState.putInt("domain_settings_database_id", DomainSettingsFragment.databaseId);
-        } else {  // `DomainSettingsFragment` is not displayed.
-            outState.putBoolean("domain_settings_displayed", false);
-            outState.putInt("domain_settings_database_id", -1);
+            // Get the domain settings scroll Y.
+            int domainSettingsScrollY = domainSettingsScrollView.getScrollY();
+
+            // Store the domain settings status in the bundle.
+            savedInstanceState.putBoolean(DOMAIN_SETTINGS_DISPLAYED, true);
+            savedInstanceState.putInt(DOMAIN_SETTINGS_DATABASE_ID, DomainSettingsFragment.databaseId);
+            savedInstanceState.putInt(DOMAIN_SETTINGS_SCROLL_Y, domainSettingsScrollY);
         }
 
-        super.onSaveInstanceState(outState);
+        // Check to see if the domains listview exists.
+        if (domainsListView != null) {
+            // Get the domains listview position.
+            int domainsListViewPosition = domainsListView.getFirstVisiblePosition();
+
+            // Store the listview position in the bundle.
+            savedInstanceState.putInt(LISTVIEW_POSITION, domainsListViewPosition);
+        }
     }
 
     // Control what the navigation bar back button does.
@@ -623,7 +661,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             fragmentManager.executePendingTransactions();
 
             // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
-            populateDomainsListView(-1);
+            populateDomainsListView(-1, domainsListViewPosition);
 
             // Show the add domain floating action button.
             addDomainFAB.show();
@@ -666,20 +704,25 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Display the newly created domain.
         if (twoPanedMode) {  // The device in in two-paned mode.
-            populateDomainsListView(currentDomainDatabaseId);
+            populateDomainsListView(currentDomainDatabaseId, 0);
         } else {  // The device is in single-paned mode.
             // Hide the add domain floating action button.
             addDomainFAB.hide();
 
-            // Show and enable `deleteMenuItem`.
+            // Show and enable the delete menu item.
             DomainsActivity.deleteMenuItem.setVisible(true);
 
-            // Add the current domain database ID to the arguments bundle.
+            // Create an arguments bundle.
             Bundle argumentsBundle = new Bundle();
-            argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
 
-            // Add and arguments bundle to the domain setting fragment.
+            // Add the domain settings to the arguments bundle.  The scroll Y should always be `0` on a new domain.
+            argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
+            argumentsBundle.putInt(DomainSettingsFragment.SCROLL_Y, 0);
+
+            // Instantiate a new domain settings fragment.
             DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+
+            // Add the arguments bundle to the domain setting fragment.
             domainSettingsFragment.setArguments(argumentsBundle);
 
             // Display the domain settings fragment.
@@ -690,18 +733,18 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     public void saveDomainSettings(View view, Resources resources) {
         // Get handles for the domain settings.
         EditText domainNameEditText = view.findViewById(R.id.domain_settings_name_edittext);
-        Switch javaScriptSwitch = view.findViewById(R.id.javascript_switch);
-        Switch firstPartyCookiesSwitch = view.findViewById(R.id.first_party_cookies_switch);
-        Switch thirdPartyCookiesSwitch = view.findViewById(R.id.third_party_cookies_switch);
-        Switch domStorageSwitch = view.findViewById(R.id.dom_storage_switch);
-        Switch formDataSwitch = view.findViewById(R.id.form_data_switch);  // Form data can be removed once the minimum API >= 26.
-        Switch easyListSwitch = view.findViewById(R.id.easylist_switch);
-        Switch easyPrivacySwitch = view.findViewById(R.id.easyprivacy_switch);
-        Switch fanboysAnnoyanceSwitch = view.findViewById(R.id.fanboys_annoyance_list_switch);
-        Switch fanboysSocialBlockingSwitch = view.findViewById(R.id.fanboys_social_blocking_list_switch);
-        Switch ultraListSwitch = view.findViewById(R.id.ultralist_switch);
-        Switch ultraPrivacySwitch = view.findViewById(R.id.ultraprivacy_switch);
-        Switch blockAllThirdPartyRequestsSwitch = view.findViewById(R.id.block_all_third_party_requests_switch);
+        SwitchCompat javaScriptSwitch = view.findViewById(R.id.javascript_switch);
+        SwitchCompat firstPartyCookiesSwitch = view.findViewById(R.id.first_party_cookies_switch);
+        SwitchCompat thirdPartyCookiesSwitch = view.findViewById(R.id.third_party_cookies_switch);
+        SwitchCompat domStorageSwitch = view.findViewById(R.id.dom_storage_switch);
+        SwitchCompat formDataSwitch = view.findViewById(R.id.form_data_switch);  // Form data can be removed once the minimum API >= 26.
+        SwitchCompat easyListSwitch = view.findViewById(R.id.easylist_switch);
+        SwitchCompat easyPrivacySwitch = view.findViewById(R.id.easyprivacy_switch);
+        SwitchCompat fanboysAnnoyanceSwitch = view.findViewById(R.id.fanboys_annoyance_list_switch);
+        SwitchCompat fanboysSocialBlockingSwitch = view.findViewById(R.id.fanboys_social_blocking_list_switch);
+        SwitchCompat ultraListSwitch = view.findViewById(R.id.ultralist_switch);
+        SwitchCompat ultraPrivacySwitch = view.findViewById(R.id.ultraprivacy_switch);
+        SwitchCompat blockAllThirdPartyRequestsSwitch = view.findViewById(R.id.block_all_third_party_requests_switch);
         Spinner userAgentSpinner = view.findViewById(R.id.user_agent_spinner);
         EditText customUserAgentEditText = view.findViewById(R.id.custom_user_agent_edittext);
         Spinner fontSizeSpinner = view.findViewById(R.id.font_size_spinner);
@@ -710,9 +753,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Spinner webViewThemeSpinner = view.findViewById(R.id.webview_theme_spinner);
         Spinner wideViewportSpinner = view.findViewById(R.id.wide_viewport_spinner);
         Spinner displayWebpageImagesSpinner = view.findViewById(R.id.display_webpage_images_spinner);
-        Switch pinnedSslCertificateSwitch = view.findViewById(R.id.pinned_ssl_certificate_switch);
+        SwitchCompat pinnedSslCertificateSwitch = view.findViewById(R.id.pinned_ssl_certificate_switch);
         RadioButton currentWebsiteCertificateRadioButton = view.findViewById(R.id.current_website_certificate_radiobutton);
-        Switch pinnedIpAddressesSwitch = view.findViewById(R.id.pinned_ip_addresses_switch);
+        SwitchCompat pinnedIpAddressesSwitch = view.findViewById(R.id.pinned_ip_addresses_switch);
         RadioButton currentIpAddressesRadioButton = view.findViewById(R.id.current_ip_addresses_radiobutton);
 
         // Extract the data for the domain settings.
@@ -789,7 +832,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         }
     }
 
-    private void populateDomainsListView(final int highlightedDomainDatabaseId) {
+    private void populateDomainsListView(final int highlightedDomainDatabaseId, int domainsListViewPosition) {
         // get a handle for the current `domains_listview`.
         domainsListView = findViewById(R.id.domains_listview);
 
@@ -815,6 +858,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Update the list view.
         domainsListView.setAdapter(domainsCursorAdapter);
+
+        // Restore the scroll position.
+        domainsListView.setSelection(domainsListViewPosition);
 
         // Display the domain settings in the second pane if operating in two pane mode and the database contains at least one domain.
         if (DomainsActivity.twoPanedMode && (domainsCursor.getCount() > 0)) {  // Two-paned mode is enabled and there is at least one domain.
@@ -842,12 +888,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             domainsCursor.moveToPosition(highlightedDomainPosition);
             currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
 
-            // Store the database ID in the arguments bundle.
+            // Create an arguments bundle.
             Bundle argumentsBundle = new Bundle();
-            argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
 
-            // Add and arguments bundle to the domain settings fragment.
+            // Store the domain settings in the arguments bundle.
+            argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
+            argumentsBundle.putInt(DomainSettingsFragment.SCROLL_Y, domainSettingsScrollY);
+
+            // Instantiate a new domain settings fragment.
             DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+
+            // Add the arguments bundle to the domain settings fragment.
             domainSettingsFragment.setArguments(argumentsBundle);
 
             // Display the domain settings fragment.
