@@ -1,0 +1,14 @@
+• Androids relativ neues Tag/Nacht-Theme wurde implementiert.
+• Wechsel zu WebViews neuem eingebautem Nachtmodus (Theme).
+• Privacy Browsers Status wird nun gespeichert und wiederhergestellt, wenn der Browser im Hintergrund vom Betriebssystem neu gestartet wird.
+• Content-Disposition-Header wird für Dateinamen von Downloads verwendet.
+• Fehler beim Upload von Dateien bei einigen Internet-Seiten behoben.
+• Suchmaschine Mojeek hinzugefügt und Qwant und Searx aus der Liste der Suchmaschinen entfernt.
+• Fehler behoben, durch den die Webseiten-Aktualisierung durch Wischen manchmal ausgeführt wurde, auch wenn sie eigentlich deaktiviert war.
+• Kontext-Menüs wurden neu sortiert.
+• Eigene HTTP-Kopfzeilen (custom headers) werden für von Webview geladene Links genutzt.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte französische Übersetzung von Kévin LE FLOHIC.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

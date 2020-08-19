@@ -1,0 +1,14 @@
+• Implement Android’s relatively new Day/Night theme.
+• Switch to using WebView’s relatively new built-in dark theme.
+• Save and restore the state if Privacy Browser is restarted in the background by the OS.
+• Use the Content-Disposition header to get file names for downloads.
+• Fix uploading files to some sites.
+• Add Mojeek and remove Qwant and Searx from the list of search engines.
+• Fix a bug that sometimes caused swipe-to-refresh to operate even when disabled.
+• Reorder the context menus.
+• Apply custom headers to links loaded from the WebView.
+• Updated French translation provided by Kévin LE FLOHIC.
+• Updated German translation provided by Bernhard G. Keller.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León.

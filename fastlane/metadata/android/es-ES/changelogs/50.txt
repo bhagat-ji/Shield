@@ -1,0 +1,14 @@
+• Implementar el relativamente nuevo tema Día/Noche de Android.
+• Cambiar para usar el relativamente nuevo tema oscuro incorporado de Webview.
+• Guardar y restaurar el estado si Navegador Privado es reiniciado en segundo plano por el sistema operativo.
+• Usar el encabezado de Disposición de Contenidos para obtener los nombres de los archivos para las descargas.
+• Arreglar la subida de archivos a algunos sitios web.
+• Añadir Mojeek y eliminar Qwant y Searx de la lista de motores de búsqueda.
+• Arreglar un error que a veces provocaba que "arrastrar para actualizar" funcionara incluso cuando estaba desactivado.
+• Reordernar los menús contextuales.
+• Aplicar cabeceras personalizadas a los enlaces cargados desde WebView.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al francés proporcionada por Kévin LE FLOHIC.
+• Actualizada la traducción al alemán proporcionada por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.
