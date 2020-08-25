@@ -239,9 +239,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private TabLayout tabLayout;
     private ViewPager webViewPager;
 
-    // Define the class variables.
-    private String newIntentUrl;
-
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxy()`, and `applyDomainSettings()`.
     private NestedScrollWebView currentWebView;
@@ -454,8 +451,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Replace the intent that started the app with this one.
         setIntent(intent);
 
-        // Process the intent here if Privacy Browser is fully initialized.  If the process has been killed by the system while sitting in the background, this will be handled in `initializeWebView()`.
-        if (ultraPrivacy != null) {
+        // Check to see if the app is being restarted.
+        if (savedStateArrayList == null || savedStateArrayList.size() == 0) {  // The activity is running for the first time.
             // Get the information from the intent.
             String intentAction = intent.getAction();
             Uri intentUriData = intent.getData();
@@ -472,7 +469,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 String url;
 
                 // If the intent action is a web search, perform the search.
-                if (isWebSearch) {
+                if (isWebSearch) {  // The intent is a web search.
                     // Create an encoded URL string.
                     String encodedUrlString;
 
@@ -490,21 +487,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     url = intentUriData.toString();
                 }
 
-                // Check to see if the app is in the process of restarting
-                if (savedStateArrayList == null) {  // The app is not in the process of being restarted.  Process the new intent.
-                    // Add a new tab if specified in the preferences.
-                    if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
-                        // Set the loading new intent flag.
-                        loadingNewIntent = true;
+                // Add a new tab if specified in the preferences.
+                if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                    // Set the loading new intent flag.
+                    loadingNewIntent = true;
 
-                        // Add a new tab.
-                        addNewTab(url, true);
-                    } else {  // Load the URL in the current tab.
-                        // Make it so.
-                        loadUrl(currentWebView, url);
-                    }
-                } else {  // The app is being restarted.  Store the URL, which will be processed in `finishedPopulatingBlocklists()`.
-                    newIntentUrl = url;
+                    // Add a new tab.
+                    addNewTab(url, true);
+                } else {  // Load the URL in the current tab.
+                    // Make it so.
+                    loadUrl(currentWebView, url);
                 }
 
                 // Get a handle for the drawer layout.
@@ -3382,7 +3374,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         tab.select();
                     };
 
-                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.  TODO.  Switch to a post command.
+                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.
                     selectTabHandler.postDelayed(selectTabRunnable, 150);
                 }
             }
@@ -4783,10 +4775,42 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 webViewPager.setCurrentItem(savedTabPosition);
             }
 
-            // Process the new intent if it exists.
-            if (newIntentUrl != null) {
+            // Get the intent that started the app.
+            Intent intent = getIntent();
+
+            // Get the information from the intent.
+            String intentAction = intent.getAction();
+            Uri intentUriData = intent.getData();
+
+            // Determine if this is a web search.
+            boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
+
+            // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
+            if (intentUriData != null || isWebSearch) {
                 // Get the shared preferences.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                // Create a URL string.
+                String url;
+
+                // If the intent action is a web search, perform the search.
+                if (isWebSearch) {  // The intent is a web search.
+                    // Create an encoded URL string.
+                    String encodedUrlString;
+
+                    // Sanitize the search input and convert it to a search.
+                    try {
+                        encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                    } catch (UnsupportedEncodingException exception) {
+                        encodedUrlString = "";
+                    }
+
+                    // Add the base search URL.
+                    url = searchURL + encodedUrlString;
+                } else {  // The intent should contain a URL.
+                    // Set the intent data as the url.
+                    url = intentUriData.toString();
+                }
 
                 // Add a new tab if specified in the preferences.
                 if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
@@ -4794,14 +4818,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     loadingNewIntent = true;
 
                     // Add a new tab.
-                    addNewTab(newIntentUrl, true);
+                    addNewTab(url, true);
                 } else {  // Load the URL in the current tab.
                     // Make it so.
-                    loadUrl(currentWebView, newIntentUrl);
+                    loadUrl(currentWebView, url);
                 }
-
-                // Reset the new intent URL.
-                newIntentUrl = null;
             }
         }
     }
@@ -5124,7 +5145,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else {
                 urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparent, null));
             }
-        } else {  // The fragment has not been populated.  Try again in 100 milliseconds.  //TODO try to replace this with a post command.
+        } else {  // The fragment has not been populated.  Try again in 100 milliseconds.
             // Create a handler to set the current WebView.
             Handler setCurrentWebViewHandler = new Handler();
 
@@ -5494,19 +5515,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get the custom view from the tab.
                     View tabView = tab.getCustomView();
 
-                    // Remove the incorrect warning below that the current tab view might be null.
-                    assert tabView != null;
+                    // Only populate the title text view if the tab view has been fully populated.
+                    if (tabView != null) {
+                        // Get the title text view from the tab.
+                        TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
 
-                    // Get the title text view from the tab.
-                    TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
-
-                    // Set the title according to the URL.
-                    if (title.equals("about:blank")) {
-                        // Set the title to indicate a new tab.
-                        tabTitleTextView.setText(R.string.new_tab);
-                    } else {
-                        // Set the title as the tab text.
-                        tabTitleTextView.setText(title);
+                        // Set the title according to the URL.
+                        if (title.equals("about:blank")) {
+                            // Set the title to indicate a new tab.
+                            tabTitleTextView.setText(R.string.new_tab);
+                        } else {
+                            // Set the title as the tab text.
+                            tabTitleTextView.setText(title);
+                        }
                     }
                 }
             }
