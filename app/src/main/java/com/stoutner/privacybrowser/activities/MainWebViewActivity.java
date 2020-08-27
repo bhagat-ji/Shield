@@ -46,6 +46,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -177,7 +178,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveWebpageListener, StoragePermissionDialog.StoragePermissionDialogListener,
         UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
-    // The executor service handles background tasks.  It is accessed from `ViewSourceActivity`.  TODO.  Change the number of threads, or create a single thread executor.
+    // The executor service handles background tasks.  It is accessed from `ViewSourceActivity`.
     public static ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
@@ -238,6 +239,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private AppBarLayout appBarLayout;
     private TabLayout tabLayout;
     private ViewPager webViewPager;
+
+    // Define the class variables.
+    @SuppressWarnings("rawtypes")
+    AsyncTask populateBlocklists;
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxy()`, and `applyDomainSettings()`.
@@ -440,7 +445,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         applyAppSettings();
 
         // Populate the blocklists.
-        new PopulateBlocklists(this, this).execute();
+        populateBlocklists = new PopulateBlocklists(this, this).execute();
     }
 
     @Override
@@ -728,6 +733,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Close the bookmarks database if it exists.
         if (bookmarksDatabaseHelper != null) {
             bookmarksDatabaseHelper.close();
+        }
+
+        // Stop populating the blocklists if the AsyncTask is running in the background.
+        if (populateBlocklists != null) {
+            populateBlocklists.cancel(true);
         }
 
         // Run the default commands.
@@ -3374,7 +3384,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         tab.select();
                     };
 
-                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.
+                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.  TODO.
                     selectTabHandler.postDelayed(selectTabRunnable, 150);
                 }
             }
@@ -3940,8 +3950,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
+            String webViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
             boolean wideViewport = sharedPreferences.getBoolean("wide_viewport", true);
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
+
+            // Get the WebView theme entry values string array.
+            String[] webViewThemeEntryValuesStringArray = getResources().getStringArray(R.array.webview_theme_entry_values);
 
             // Get a handle for the cookie manager.
             CookieManager cookieManager = CookieManager.getInstance();
@@ -4141,16 +4155,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Set the WebView theme.
                     switch (webViewThemeInt) {
                         case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                            // // Ge the current system theme status.
-                            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                            // Set the WebView theme according to the current system theme status.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
+                            // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
+                            if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
                                 // Turn off the WebView dark mode.
                                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
-                            } else {  // The system is in night mode.
+                            } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
                                 // Turn on the WebView dark mode.
                                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                            } else {  // The system default theme is selected.
+                                // Get the current system theme status.
+                                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                                // Set the WebView theme according to the current system theme status.
+                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
+                                    // Turn off the WebView dark mode.
+                                    WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                                } else {  // The system is in night mode.
+                                    // Turn on the WebView dark mode.
+                                    WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+                                }
                             }
                             break;
 
@@ -4219,7 +4242,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, sharedPreferences.getBoolean("ultralist", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
-                String webViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
 
                 // Apply the default first-party cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
@@ -4282,9 +4304,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Get the user agent string from the user agent data array
                         nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                 }
-
-                // Get the WebView theme entry values string array.
-                String[] webViewThemeEntryValuesStringArray = getResources().getStringArray(R.array.webview_theme_entry_values);
 
                 // Apply the WebView theme if supported by the installed WebView.
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {

@@ -88,6 +88,11 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
 
     @Override
     protected ArrayList<ArrayList<List<String[]>>> doInBackground(Void... none) {
+        // Exit the AsyncTask if the app has been restarted.
+        if (isCancelled()) {
+            return null;
+        }
+
         // Get a handle for the context.
         Context context = contextWeakReference.get();
 
@@ -105,12 +110,23 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
             // Populate EasyList.
             ArrayList<List<String[]>> easyList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/easylist.txt");
 
+            // Exit the AsyncTask if the app has been restarted.
+            if (isCancelled()) {
+                return null;
+            }
+
 
             // Update the progress.
             publishProgress(context.getString(R.string.loading_easyprivacy));
 
             // Populate EasyPrivacy.
             ArrayList<List<String[]>> easyPrivacy = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/easyprivacy.txt");
+
+            // Exit the AsyncTask if the app has been restarted.
+            if (isCancelled()) {
+                return null;
+            }
+
 
 
             // Update the progress.
@@ -119,12 +135,24 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
             // Populate Fanboy's Annoyance List.
             ArrayList<List<String[]>> fanboysAnnoyanceList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/fanboy-annoyance.txt");
 
+            // Exit the AsyncTask if the app has been restarted.
+            if (isCancelled()) {
+                return null;
+            }
+
+
 
             // Update the progress.
             publishProgress(context.getString(R.string.loading_fanboys_social_blocking_list));
 
             // Populate Fanboy's Social Blocking List.
             ArrayList<List<String[]>> fanboysSocialList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/fanboy-social.txt");
+
+            // Exit the AsyncTask if the app has been restarted.
+            if (isCancelled()) {
+                return null;
+            }
+
 
 
             // Update the progress.
@@ -133,11 +161,24 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
             // Populate UltraList.
             ArrayList<List<String[]>> ultraList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/ultralist.txt");
 
+            // Exit the AsyncTask if the app has been restarted.
+            if (isCancelled()) {
+                return null;
+            }
+
+
+
             // Update the progress.
             publishProgress(context.getString(R.string.loading_ultraprivacy));
 
             // Populate UltraPrivacy.
             ArrayList<List<String[]>> ultraPrivacy = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/ultraprivacy.txt");
+
+            // Exit the AsyncTask if the app has been restarted.
+            if (isCancelled()) {
+                return null;
+            }
+
 
 
             // Populate the combined array list.

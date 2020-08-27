@@ -175,6 +175,9 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         Spinner appBarSpinner = findViewById(R.id.spinner);
         appBarSpinner.setAdapter(spinnerCursorAdapter);
 
+        // Get a handle for the context.
+        Context context = this;
+
         // Handle clicks on the spinner dropdown.
         appBarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -182,7 +185,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                 switch ((int) id) {
                     case 0:  // All requests.
                         // Get an adapter for all the request.
-                        ArrayAdapter<String[]> allResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), allResourceRequests);
+                        ArrayAdapter<String[]> allResourceRequestsArrayAdapter = new RequestsArrayAdapter(context, allResourceRequests);
 
                         // Display the adapter in the list view.
                         requestsListView.setAdapter(allResourceRequestsArrayAdapter);
@@ -190,7 +193,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
                     case 1:  // Default requests.
                         // Get an adapter for the default requests.
-                        ArrayAdapter<String[]> defaultResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), defaultResourceRequests);
+                        ArrayAdapter<String[]> defaultResourceRequestsArrayAdapter = new RequestsArrayAdapter(context, defaultResourceRequests);
 
                         // Display the adapter in the list view.
                         requestsListView.setAdapter(defaultResourceRequestsArrayAdapter);
@@ -198,7 +201,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
                     case 2:  // Allowed requests.
                         // Get an adapter for the allowed requests.
-                        ArrayAdapter<String[]> allowedResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), allowedResourceRequests);
+                        ArrayAdapter<String[]> allowedResourceRequestsArrayAdapter = new RequestsArrayAdapter(context, allowedResourceRequests);
 
                         // Display the adapter in the list view.
                         requestsListView.setAdapter(allowedResourceRequestsArrayAdapter);
@@ -206,7 +209,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
                     case 3:  // Third-party requests.
                         // Get an adapter for the third-party requests.
-                        ArrayAdapter<String[]> thirdPartyResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), thirdPartyResourceRequests);
+                        ArrayAdapter<String[]> thirdPartyResourceRequestsArrayAdapter = new RequestsArrayAdapter(context, thirdPartyResourceRequests);
 
                         //Display the adapter in the list view.
                         requestsListView.setAdapter(thirdPartyResourceRequestsArrayAdapter);
@@ -214,7 +217,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
                     case 4:  // Blocked requests.
                         // Get an adapter fo the blocked requests.
-                        ArrayAdapter<String[]> blockedResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), blockedResourceRequests);
+                        ArrayAdapter<String[]> blockedResourceRequestsArrayAdapter = new RequestsArrayAdapter(context, blockedResourceRequests);
 
                         // Display the adapter in the list view.
                         requestsListView.setAdapter(blockedResourceRequestsArrayAdapter);
@@ -229,7 +232,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         });
 
         // Create an array adapter with the list of the resource requests.
-        ArrayAdapter<String[]> resourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), allResourceRequests);
+        ArrayAdapter<String[]> resourceRequestsArrayAdapter = new RequestsArrayAdapter(context, allResourceRequests);
 
         // Populate the list view with the resource requests adapter.
         requestsListView.setAdapter(resourceRequestsArrayAdapter);

@@ -90,10 +90,10 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 dispositionTextView.setText(requestAllowed);
 
                 // Set the background color.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_700_50));
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_100));
+                } else {
+                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_700_50));
                 }
                 break;
 
@@ -105,10 +105,10 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 dispositionTextView.setText(requestThirdParty);
 
                 // Set the background color.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_700_50));
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_100));
+                } else {
+                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_700_50));
                 }
                 break;
 
@@ -121,25 +121,16 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 dispositionTextView.setText(requestBlocked);
 
                 // Set the background color.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_700_40));
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_100));
+                } else {
+                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_700_40));
                 }
                 break;
         }
 
         // Set the URL text.
         urlTextView.setText(entryStringArray[1]);
-
-        // Set the text color.  For some unexplained reason, `android:textColor="?android:textColorPrimary"` doesn't work in the layout file.  Probably some bug relating to array adapters.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-            dispositionTextView.setTextColor(context.getResources().getColor(R.color.gray_200));
-            urlTextView.setTextColor(context.getResources().getColor(R.color.gray_200));
-        } else {
-            dispositionTextView.setTextColor(context.getResources().getColor(R.color.black));
-            urlTextView.setTextColor(context.getResources().getColor(R.color.black));
-        }
 
         // Return the modified view.
         return view;
