@@ -1,0 +1,2 @@
+• Corregir un error que provocaba que los nuevos intentos (enlaces de otras aplicaciones) no se cargaran si Navegador Privado había sido "matado" por el SO en segundo plano.
+• Corregir un error que causaba que la aplicación se iniciara incorrectamente si el tema de la aplicación estaba configurado al contrario del tema del sistema operativo.

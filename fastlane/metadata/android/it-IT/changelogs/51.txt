@@ -1,0 +1,2 @@
+• Correzione di un baco che impediva il caricamento di link da altre applicazioni se Privacy Browser era stato chiuso dal sistema operativo in background.
+• Correzione di un baco che impediva alla app di inizializzarsi correttamente quando il tema della app era impostato all'opposto di quello del sistema operativo.

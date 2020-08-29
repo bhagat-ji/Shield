@@ -1,0 +1,2 @@
+• Fehler behoben, durch den neue Intents (Aufrufe aus anderen Apps) nicht ausgeführt wurden, wenn Privacy Browser vom Betriebssystem im Hintergrund geschlossen wurde.
+• Fehler behoben, durch den die App nicht korrekt initialisiert wurde, wenn das App-Theme gegenteilig zum Betriebsystem-Theme eingestellt wurde.
