@@ -524,9 +524,9 @@ public class ImportExportDatabaseHelper {
                         // SQL escape the proxy custom URL string.
                         proxyCustomUrl = DatabaseUtils.sqlEscapeString(proxyCustomUrl);
 
-                        // Populate the preferences table with the current proxy values.
+                        // Populate the preferences table with the current proxy values. The proxy custom URL does not need to be surrounded by `'` because it was SLQ escaped above.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY + " = '" + proxy + "'");
-                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_URL + " = '" + proxyCustomUrl + "'");
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_URL + " = " + proxyCustomUrl);
 
                     // Upgrade from schema version 9.
                     case 9:
