@@ -103,7 +103,7 @@ public class PinnedMismatchDialog extends DialogFragment {
         return pinnedMismatchDialog;
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull

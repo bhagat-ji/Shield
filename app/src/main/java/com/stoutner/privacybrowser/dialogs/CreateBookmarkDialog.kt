@@ -41,13 +41,18 @@ import com.stoutner.privacybrowser.R
 
 import java.io.ByteArrayOutputStream
 
+// Declare the class constants.
+private const val URL_STRING = "url_string"
+private const val TITLE = "title"
+private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
+
 class CreateBookmarkDialog: DialogFragment() {
     // The public interface is used to send information back to the parent activity.
     interface CreateBookmarkListener {
         fun onCreateBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
     }
 
-    // The create bookmark listener is initialized in `onAttach()` and used in `onCreateDialog()`.
+    // Declare the class variables
     private lateinit var createBookmarkListener: CreateBookmarkListener
 
     override fun onAttach(context: Context) {
@@ -61,7 +66,7 @@ class CreateBookmarkDialog: DialogFragment() {
     companion object {
         // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
         @JvmStatic
-        fun createBookmark(urlString: String, titleString: String, favoriteIconBitmap: Bitmap): CreateBookmarkDialog {
+        fun createBookmark(urlString: String, title: String, favoriteIconBitmap: Bitmap): CreateBookmarkDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
 
@@ -75,9 +80,9 @@ class CreateBookmarkDialog: DialogFragment() {
             val argumentsBundle = Bundle()
 
             // Store the variables in the bundle.
-            argumentsBundle.putString("url_string", urlString)
-            argumentsBundle.putString("title_string", titleString)
-            argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray)
+            argumentsBundle.putString(URL_STRING, urlString)
+            argumentsBundle.putString(TITLE, title)
+            argumentsBundle.putByteArray(FAVORITE_ICON_BYTE_ARRAY, favoriteIconByteArray)
 
             // Create a new instance of the dialog.
             val createBookmarkDialog = CreateBookmarkDialog()
@@ -90,16 +95,16 @@ class CreateBookmarkDialog: DialogFragment() {
         }
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
         val arguments = requireArguments()
 
         // Get the contents of the arguments.
-        val urlString = arguments.getString("url_string")
-        val titleString = arguments.getString("title_string")
-        val favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array")!!
+        val urlString = arguments.getString(URL_STRING)
+        val title = arguments.getString(TITLE)
+        val favoriteIconByteArray = arguments.getByteArray(FAVORITE_ICON_BYTE_ARRAY)!!
 
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
@@ -136,7 +141,7 @@ class CreateBookmarkDialog: DialogFragment() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         // Get the screenshot preference.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
+        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -151,7 +156,7 @@ class CreateBookmarkDialog: DialogFragment() {
         val createBookmarkUrlEditText = alertDialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)!!
 
         // Set the initial texts for the edit texts.
-        createBookmarkNameEditText.setText(titleString)
+        createBookmarkNameEditText.setText(title)
         createBookmarkUrlEditText.setText(urlString)
 
         // Allow the enter key on the keyboard to create the bookmark from the create bookmark name edit text.

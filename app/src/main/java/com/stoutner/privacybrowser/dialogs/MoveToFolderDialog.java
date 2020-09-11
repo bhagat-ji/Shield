@@ -74,7 +74,7 @@ public class MoveToFolderDialog extends DialogFragment {
         moveToFolderListener = (MoveToFolderListener) context;
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull

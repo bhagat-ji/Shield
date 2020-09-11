@@ -668,6 +668,9 @@
         <string name="display_webpage_images">Display webpage images</string>
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 
+    <!-- Non-translatable preference keys. -->
+    <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
+
     <!-- Non-translatable preference default values. -->
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>

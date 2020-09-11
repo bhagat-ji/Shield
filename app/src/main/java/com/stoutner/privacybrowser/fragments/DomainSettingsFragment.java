@@ -307,7 +307,7 @@ public class DomainSettingsFragment extends Fragment {
         final ForegroundColorSpan redColorSpan;
         final ForegroundColorSpan blueColorSpan;
 
-        // Set the color spans according to the theme.  The deprecated `resources` must be used until the minimum API >= 23.
+        // Set the color spans according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
             redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_900));
             blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.violet_500));

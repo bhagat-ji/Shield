@@ -40,13 +40,16 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 
+// Declare the class constants.
+private const val URL_STRING = "url_string"
+
 class AddDomainDialog: DialogFragment() {
     // The public interface is used to send information back to the parent activity.
     interface AddDomainListener {
         fun onAddDomain(dialogFragment: DialogFragment)
     }
 
-    // The add domain listener is initialized in `onAttach()` and used in `onCreateDialog()`.
+    // Declare the class variables
     private lateinit var addDomainListener: AddDomainListener
 
     override fun onAttach(context: Context) {
@@ -65,7 +68,7 @@ class AddDomainDialog: DialogFragment() {
             val argumentsBundle = Bundle()
 
             // Store the URL in the bundle.
-            argumentsBundle.putString("url_string", urlString)
+            argumentsBundle.putString(URL_STRING, urlString)
 
             // Create a new instance of the dialog.
             val addDomainDialog = AddDomainDialog()
@@ -78,14 +81,14 @@ class AddDomainDialog: DialogFragment() {
         }
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
         val arguments = requireArguments()
 
         // Get the URL from the bundle.
-        val urlString = arguments.getString("url_string")
+        val urlString = arguments.getString(URL_STRING)
 
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -115,7 +118,7 @@ class AddDomainDialog: DialogFragment() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         // Get the screenshot preference.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
+        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

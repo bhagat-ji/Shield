@@ -77,7 +77,7 @@ public class ViewRequestDialog extends DialogFragment {
 
     @Override
     @NonNull
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Remove the incorrect lint warning that `getInt()` might be null.

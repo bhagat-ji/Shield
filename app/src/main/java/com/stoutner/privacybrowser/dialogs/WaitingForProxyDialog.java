@@ -35,7 +35,7 @@ import androidx.preference.PreferenceManager;
 import com.stoutner.privacybrowser.R;
 
 public class WaitingForProxyDialog extends DialogFragment {
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     @Override
     @NonNull

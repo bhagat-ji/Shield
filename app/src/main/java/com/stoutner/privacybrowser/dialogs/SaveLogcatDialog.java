@@ -70,7 +70,7 @@ public class SaveLogcatDialog extends DialogFragment {
         saveLogcatListener = (SaveLogcatListener) context;
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using null as the parent view group when inflating the alert dialog.
+    // `@SuppressLint("InflateParams")` removes the warning about using null as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     @Override
     @NonNull

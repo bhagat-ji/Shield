@@ -42,13 +42,16 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import java.io.ByteArrayOutputStream
 
+// Declare the class constants.
+private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
+
 class CreateBookmarkFolderDialog: DialogFragment() {
     // The public interface is used to send information back to the parent activity.
     interface CreateBookmarkFolderListener {
         fun onCreateBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
     }
 
-    // The create bookmark folder listener is initialized in `onAttach()` and used in `onCreateDialog()`.
+    // Declare the class variables.
     private lateinit var createBookmarkFolderListener: CreateBookmarkFolderListener
 
     override fun onAttach(context: Context) {
@@ -76,7 +79,7 @@ class CreateBookmarkFolderDialog: DialogFragment() {
             val argumentsBundle = Bundle()
 
             // Store the favorite icon in the bundle.
-            argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray)
+            argumentsBundle.putByteArray(FAVORITE_ICON_BYTE_ARRAY, favoriteIconByteArray)
 
             // Create a new instance of the dialog.
             val createBookmarkFolderDialog = CreateBookmarkFolderDialog()
@@ -89,14 +92,14 @@ class CreateBookmarkFolderDialog: DialogFragment() {
         }
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
         val arguments = requireArguments()
 
         // Get the favorite icon byte array.
-        val favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array")!!
+        val favoriteIconByteArray = arguments.getByteArray(FAVORITE_ICON_BYTE_ARRAY)!!
 
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
@@ -126,7 +129,7 @@ class CreateBookmarkFolderDialog: DialogFragment() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         // Get the screenshot preference.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
+        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

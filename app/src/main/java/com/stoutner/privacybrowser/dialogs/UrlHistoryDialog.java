@@ -88,7 +88,7 @@ public class UrlHistoryDialog extends DialogFragment{
 
     @Override
     @NonNull
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.

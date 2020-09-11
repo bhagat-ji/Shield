@@ -50,8 +50,13 @@ import com.stoutner.privacybrowser.R
 
 import java.io.ByteArrayOutputStream
 
+// Declare the class constants.
+private const val SHORTCUT_NAME = "shortcut_name"
+private const val URL_STRING = "url_string"
+private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
+
 class CreateHomeScreenShortcutDialog: DialogFragment() {
-    // Define the class variables.
+    // Declare the class views.
     private lateinit var shortcutNameEditText: EditText
     private lateinit var urlEditText: EditText
     private lateinit var openWithPrivacyBrowserRadioButton: RadioButton
@@ -73,9 +78,9 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
             val argumentsBundle = Bundle()
 
             // Store the variables in the bundle.
-            argumentsBundle.putString("shortcut_name", shortcutName)
-            argumentsBundle.putString("url_string", urlString)
-            argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray)
+            argumentsBundle.putString(SHORTCUT_NAME, shortcutName)
+            argumentsBundle.putString(URL_STRING, urlString)
+            argumentsBundle.putByteArray(FAVORITE_ICON_BYTE_ARRAY, favoriteIconByteArray)
 
             // Create a new instance of the dialog.
             val createHomeScreenShortcutDialog = CreateHomeScreenShortcutDialog()
@@ -88,18 +93,16 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
         }
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
         val arguments = requireArguments()
 
-        // Get the strings from the arguments.
-        val initialShortcutName = arguments.getString("shortcut_name")
-        val initialUrlString = arguments.getString("url_string")
-
-        // Get the favorite icon byte array.
-        val favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array")!!
+        // Get the variables from the arguments.
+        val initialShortcutName = arguments.getString(SHORTCUT_NAME)
+        val initialUrlString = arguments.getString(URL_STRING)
+        val favoriteIconByteArray = arguments.getByteArray(FAVORITE_ICON_BYTE_ARRAY)!!
 
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
@@ -133,7 +136,7 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         // Get the screenshot preference.
-        val allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false)
+        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
