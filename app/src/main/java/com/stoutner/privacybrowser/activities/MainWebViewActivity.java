@@ -235,11 +235,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private int savedTabPosition;
     private String savedProxyMode;
 
-    // Define the class views.
-    private AppBarLayout appBarLayout;
-    private TabLayout tabLayout;
-    private ViewPager webViewPager;
-
     // Define the class variables.
     @SuppressWarnings("rawtypes")
     AsyncTask populateBlocklists;
@@ -338,6 +333,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private String saveWebpageUrl;
     private String saveWebpageFilePath;
 
+    // Declare the class views.
+    private DrawerLayout drawerLayout;
+    private AppBarLayout appBarLayout;
+    private TabLayout tabLayout;
+    private ViewPager webViewPager;
+
     @Override
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint("ClickableViewAccessibility")
@@ -401,7 +402,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         setContentView(R.layout.main_framelayout);
 
         // Get handles for the views.
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        drawerLayout = findViewById(R.id.drawerlayout);
         appBarLayout = findViewById(R.id.appbar_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         tabLayout = findViewById(R.id.tablayout);
@@ -504,9 +505,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     loadUrl(currentWebView, url);
                 }
 
-                // Get a handle for the drawer layout.
-                DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-
                 // Close the navigation drawer if it is open.
                 if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
@@ -574,9 +572,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Update the bookmarks drawer if returning from the Bookmarks activity.
         if (restartFromBookmarksActivity) {
-            // Get a handle for the drawer layout.
-            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-
             // Close the bookmarks drawer.
             drawerLayout.closeDrawer(GravityCompat.END);
 
@@ -1132,9 +1127,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.bookmarks:
-                // Get a handle for the drawer layout.
-                DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-
                 // Open the bookmarks drawer.
                 drawerLayout.openDrawer(GravityCompat.END);
 
@@ -2111,9 +2103,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
         }
 
-        // Get a handle for the drawer layout.
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-
         // Close the navigation drawer.
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -2649,26 +2638,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
-    // Override `onBackPressed` to handle the navigation drawer and and the WebViews.
+    // Override `onBackPressed()` to handle the navigation drawer and and the WebViews.
     @Override
     public void onBackPressed() {
-        // Get a handle for the drawer layout.
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-
+        // Check the different options for processing `back`.
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
             // Close the navigation drawer.
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (drawerLayout.isDrawerVisible(GravityCompat.END)){  // The bookmarks drawer is open.
-            if (currentBookmarksFolder.isEmpty()) {  // The home folder is displayed.
-                // close the bookmarks drawer.
-                drawerLayout.closeDrawer(GravityCompat.END);
-            } else {  // A subfolder is displayed.
-                // Place the former parent folder in `currentFolder`.
-                currentBookmarksFolder = bookmarksDatabaseHelper.getParentFolderName(currentBookmarksFolder);
-
-                // Load the new folder.
-                loadBookmarksFolder();
-            }
+            // close the bookmarks drawer.
+            drawerLayout.closeDrawer(GravityCompat.END);
         } else if (displayingFullScreenVideo) {  // A full screen video is shown.
             // Get a handle for the layouts.
             FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
@@ -3333,7 +3312,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
         // Get handles for views that need to be modified.
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         NavigationView navigationView = findViewById(R.id.navigationview);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
@@ -5074,6 +5052,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         System.exit(0);
     }
 
+    public void bookmarksBack(View view) {
+        if (currentBookmarksFolder.isEmpty()) {  // The home folder is displayed.
+            // close the bookmarks drawer.
+            drawerLayout.closeDrawer(GravityCompat.END);
+        } else {  // A subfolder is displayed.
+            // Place the former parent folder in `currentFolder`.
+            currentBookmarksFolder = bookmarksDatabaseHelper.getParentFolderName(currentBookmarksFolder);
+
+            // Load the new folder.
+            loadBookmarksFolder();
+        }
+    }
+
     private void setCurrentWebView(int pageNumber) {
         // Get handles for the URL views.
         RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
@@ -5227,7 +5218,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get handles for the activity views.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
         ActionBar actionBar = appCompatDelegate.getSupportActionBar();
         LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);

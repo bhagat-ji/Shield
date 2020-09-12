@@ -816,7 +816,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, @NonNull Bitmap favoriteIconBitmap) {
         // Get the dialog from the dialog fragment.
         Dialog dialog = dialogFragment.getDialog();
 

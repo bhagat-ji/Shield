@@ -92,6 +92,7 @@
                             android:layout_marginEnd="4dp"
                             android:text="@string/zero_of_zero" />
 
+                        <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
                             android:id="@+id/find_previous"
                             android:src="@drawable/previous"
@@ -100,10 +101,12 @@
                             android:layout_marginStart="4dp"
                             android:layout_marginEnd="4dp"
                             android:layout_gravity="center_vertical"
-                            android:tint="?attr/findOnPageIconTintColor"
+                            android:background="?attr/selectableItemBackground"
                             android:contentDescription="@string/previous"
-                            android:onClick="findPreviousOnPage" />
+                            android:onClick="findPreviousOnPage"
+                            app:tint="?attr/findOnPageIconTintColor" />
 
+                        <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
                             android:id="@+id/find_next"
                             android:src="@drawable/next"
@@ -112,10 +115,12 @@
                             android:layout_marginStart="4dp"
                             android:layout_marginEnd="4dp"
                             android:layout_gravity="center_vertical"
-                            android:tint="?attr/findOnPageIconTintColor"
+                            android:background="?attr/selectableItemBackground"
                             android:contentDescription="@string/next"
-                            android:onClick="findNextOnPage" />
+                            android:onClick="findNextOnPage"
+                            app:tint="?attr/findOnPageIconTintColor" />
 
+                        <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
                             android:id="@+id/close_find"
                             android:src="@drawable/close_day"
@@ -124,9 +129,10 @@
                             android:layout_marginStart="4dp"
                             android:layout_marginEnd="8dp"
                             android:layout_gravity="center_vertical"
-                            android:tint="?attr/findOnPageIconTintColor"
+                            android:background="?attr/selectableItemBackground"
                             android:contentDescription="@string/close"
-                            android:onClick="closeFindOnPage" />
+                            android:onClick="closeFindOnPage"
+                            app:tint="?attr/findOnPageIconTintColor" />
                     </LinearLayout>
 
                     <!-- The tab linear layout.  It sets the background to the right of the add tab button.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
@@ -146,10 +152,10 @@
                             android:paddingStart="10dp"
                             android:paddingEnd="10dp"
                             android:src="@drawable/close_day"
-                            android:tint="?attr/addTabIconTintColor"
                             android:background="?attr/selectableItemBackground"
                             android:onClick="closeTab"
-                            android:contentDescription="@string/close_tab" />
+                            android:contentDescription="@string/close_tab"
+                            app:tint="?attr/addTabIconTintColor" />
 
                         <com.google.android.material.tabs.TabLayout
                             android:id="@+id/tablayout"
@@ -167,10 +173,10 @@
                             android:paddingStart="10dp"
                             android:paddingEnd="10dp"
                             android:src="@drawable/add"
-                            android:tint="?attr/addTabIconTintColor"
                             android:background="?attr/selectableItemBackground"
                             android:onClick="addTab"
-                            android:contentDescription="@string/add_tab" />
+                            android:contentDescription="@string/add_tab"
+                            app:tint="?attr/addTabIconTintColor" />
                     </LinearLayout>
                 </com.google.android.material.appbar.AppBarLayout>
 
