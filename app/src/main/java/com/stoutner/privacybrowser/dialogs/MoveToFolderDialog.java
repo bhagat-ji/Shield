@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
@@ -74,7 +75,7 @@ public class MoveToFolderDialog extends DialogFragment {
         moveToFolderListener = (MoveToFolderListener) context;
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
@@ -84,6 +85,16 @@ public class MoveToFolderDialog extends DialogFragment {
 
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog);
+
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        // Set the icon according to the theme.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+            dialogBuilder.setIcon(R.drawable.move_to_folder_blue_day);
+        } else {
+            dialogBuilder.setIcon(R.drawable.move_to_folder_blue_night);
+        }
 
         // Set the title.
         dialogBuilder.setTitle(R.string.move_to_folder);
