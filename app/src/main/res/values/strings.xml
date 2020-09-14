@@ -607,13 +607,15 @@
         <string name="hide_app_bar_summary">Hide the app bar that contains the URL.</string>
     <string name="clear_everything">Clear everything</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Clears cookies, DOM storage, form data, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
+        <string name="clear_everything_summary">Clears cookies, DOM storage, form data, the logcat, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
         <string name="clear_cookies_preference">Clear cookies</string>
         <string name="clear_cookies_summary">Clears first and third-party cookies.</string>
         <string name="clear_dom_storage_preference">Clear DOM storage</string>
         <string name="clear_dom_storage_summary">Clears DOM storage.</string>
         <string name="clear_form_data_preference">Clear form data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Clears form data.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_logcat_preference">Clear logcat</string>
+        <string name="clear_logcat_summary">Clears the logcat.</string>
         <string name="clear_cache">Clear cache</string>
         <string name="clear_cache_summary">Clears WebView’s cache.</string>
     <string name="general">General</string>
@@ -670,6 +672,7 @@
 
     <!-- Non-translatable preference keys. -->
     <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
+    <string name="clear_logcat_key" translatable="false">clear_logcat</string>
 
     <!-- Non-translatable preference default values. -->
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>

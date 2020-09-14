@@ -363,7 +363,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get the screenshot preference.
         String appTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
 
         // Get the theme entry values string array.
         String[] appThemeEntryValuesStringArray = getResources().getStringArray(R.array.app_theme_entry_values);
@@ -4960,6 +4960,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 deleteWebDataJournalProcess.waitFor();
             } catch (Exception exception) {
                 // Do nothing if an error is thrown.
+            }
+        }
+
+        // Clear the logcat.
+        if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
+            try {
+                // Clear the logcat.  `-c` clears the logcat.  `-b all` clears all the buffers (instead of just crash, main, and system).
+                Process process = Runtime.getRuntime().exec("logcat -b all -c");
+
+                // Wait for the process to finish.
+                process.waitFor();
+            } catch (IOException|InterruptedException exception) {
+                // Do nothing.
             }
         }
 

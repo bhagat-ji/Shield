@@ -81,7 +81,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference customUserAgentPreference = findPreference("custom_user_agent");
         Preference incognitoModePreference = findPreference("incognito_mode");
         Preference doNotTrackPreference = findPreference("do_not_track");
-        Preference allowScreenshotsPreference = findPreference("allow_screenshots");
+        Preference allowScreenshotsPreference = findPreference(getString(R.string.allow_screenshots_key));
         Preference easyListPreference = findPreference("easylist");
         Preference easyPrivacyPreference = findPreference("easyprivacy");
         Preference fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
@@ -102,6 +102,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference clearCookiesPreference = findPreference("clear_cookies");
         Preference clearDomStoragePreference = findPreference("clear_dom_storage");
         Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
+        Preference clearLogcatPreference = findPreference(getString(R.string.clear_logcat_key));
         Preference clearCachePreference = findPreference("clear_cache");
         Preference homepagePreference = findPreference("homepage");
         Preference downloadLocationPreference = findPreference("download_location");
@@ -147,6 +148,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert clearCookiesPreference != null;
         assert clearDomStoragePreference != null;
         assert clearFormDataPreference != null;
+        assert clearLogcatPreference != null;
         assert clearCachePreference != null;
         assert homepagePreference != null;
         assert downloadLocationPreference != null;
@@ -293,10 +295,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         proxyCustomUrlPreference.setEnabled(proxyString.equals("Custom"));
 
 
-        // Set the status of the Clear and Exit preferences.
+        // Set the status of the clear and exit preferences.
         clearCookiesPreference.setEnabled(!clearEverything);
         clearDomStoragePreference.setEnabled(!clearEverything);
         clearFormDataPreference.setEnabled(!clearEverything);  // The form data line can be removed once the minimum API is >= 26.
+        clearLogcatPreference.setEnabled(!clearEverything);
         clearCachePreference.setEnabled(!clearEverything);
 
 
@@ -510,17 +513,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the allow screenshots icon.
-        if (savedPreferences.getBoolean("allow_screenshots", false)) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_night);
-            } else {
+        if (savedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_day);
+            } else {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_night);
             }
         } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_day);
+            } else {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_night);
             }
         }
 
@@ -817,6 +820,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             } else {
                 clearFormDataPreference.setIcon(R.drawable.form_data_warning);
             }
+        }
+
+        // Set the clear logcat preference icon.
+        if (clearEverything || savedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                clearLogcatPreference.setIcon(R.drawable.bug_cleared_day);
+            } else {
+                clearLogcatPreference.setIcon(R.drawable.bug_cleared_night);
+            }
+        } else {
+            clearLogcatPreference.setIcon(R.drawable.bug_warning);
         }
 
         // Set the clear cache preference icon.
@@ -1187,17 +1201,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "allow_screenshots":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("allow_screenshots", false)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_night);
-                        } else {
+                    if (sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_day);
+                        } else {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_night);
                         }
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_day);
+                        } else {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_night);
                         }
                     }
 
@@ -1597,16 +1611,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     break;
 
                 case "clear_everything":
-                    // Store the new `clear_everything` status
+                    // Store the new clear everything status
                     boolean newClearEverythingBoolean = sharedPreferences.getBoolean("clear_everything", true);
 
-                    // Update the status of the `Clear and Exit` preferences.
+                    // Update the status of the clear and exit preferences.
                     clearCookiesPreference.setEnabled(!newClearEverythingBoolean);
                     clearDomStoragePreference.setEnabled(!newClearEverythingBoolean);
                     clearFormDataPreference.setEnabled(!newClearEverythingBoolean);  // This line can be removed once the minimum API >= 26.
+                    clearLogcatPreference.setEnabled(!newClearEverythingBoolean);
                     clearCachePreference.setEnabled(!newClearEverythingBoolean);
 
-                    // Update the `clearEverythingPreference` icon.
+                    // Update the clear everything preference icon.
                     if (newClearEverythingBoolean) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_night);
@@ -1617,7 +1632,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
                     }
 
-                    // Update the `clearCookiesPreference` icon.
+                    // Update the clear cookies preference icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cookies", true)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
@@ -1628,7 +1643,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         clearCookiesPreference.setIcon(R.drawable.cookies_warning);
                     }
 
-                    // Update the `clearDomStoragePreference` icon.
+                    // Update the clear dom storage preference icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_dom_storage", true)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
@@ -1652,7 +1667,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         }
                     }
 
-                    // Update the `clearCachePreference` icon.
+                    // Update the clear logcat preference icon.
+                    if (newClearEverythingBoolean || sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            clearLogcatPreference.setIcon(R.drawable.bug_cleared_day);
+                        } else {
+                            clearLogcatPreference.setIcon(R.drawable.bug_cleared_night);
+                        }
+                    } else {
+                        clearLogcatPreference.setIcon(R.drawable.cache_warning);
+                    }
+
+                    // Update the clear cache preference icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cache", true)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                             clearCachePreference.setIcon(R.drawable.cache_cleared_night);
@@ -1701,6 +1727,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         }
                     } else {
                         clearFormDataPreference.setIcon(R.drawable.form_data_warning);
+                    }
+                    break;
+
+                case "clear_logcat":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            clearLogcatPreference.setIcon(R.drawable.bug_cleared_day);
+                        } else {
+                            clearLogcatPreference.setIcon(R.drawable.bug_cleared_night);
+                        }
+                    } else {
+                        clearLogcatPreference.setIcon(R.drawable.bug_warning);
                     }
                     break;
 

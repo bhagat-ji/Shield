@@ -242,6 +242,12 @@
             android:defaultValue="true" />
 
         <SwitchPreference
+            android:key="clear_logcat"
+            android:title="@string/clear_logcat_preference"
+            android:summary="@string/clear_logcat_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
             android:key="clear_cache"
             android:title="@string/clear_cache"
             android:summary="@string/clear_cache_summary"
