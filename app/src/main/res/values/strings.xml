@@ -427,6 +427,15 @@
     <string name="orbot">Orbot:</string>
     <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
+    <string name="memory_usage">Memory Usage</string>
+    <string name="app_consumed_memory">App Consumed Memory:</string>
+    <string name="app_available_memory">App Available Memory:</string>
+    <string name="app_total_memory">App Total Memory:</string>
+    <string name="app_maximum_memory">App Maximum Memory:</string>
+    <string name="system_consumed_memory">System Consumed Memory:</string>
+    <string name="system_available_memory">System Available Memory:</string>
+    <string name="system_total_memory">System Total Memory:</string>
+    <string name="mebibyte">MiB</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>

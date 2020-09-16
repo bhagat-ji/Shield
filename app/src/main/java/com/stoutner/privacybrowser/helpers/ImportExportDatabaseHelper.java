@@ -36,13 +36,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ImportExportDatabaseHelper {
+    // Declare the public constants.
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 11;
+    // Declare the class constants.
+    private static final int SCHEMA_VERSION = 12;
     private static final String PREFERENCES_TABLE = "preferences";
 
-    // The preferences constants.
+    // Declare the preferences constants.
     private static final String _ID = "_id";
     private static final String JAVASCRIPT = "javascript";
     private static final String FIRST_PARTY_COOKIES = "first_party_cookies";
@@ -74,6 +76,7 @@ public class ImportExportDatabaseHelper {
     private static final String CLEAR_COOKIES = "clear_cookies";
     private static final String CLEAR_DOM_STORAGE = "clear_dom_storage";
     private static final String CLEAR_FORM_DATA = "clear_form_data";
+    private static final String CLEAR_LOGCAT = "clear_logcat";
     private static final String CLEAR_CACHE = "clear_cache";
     private static final String HOMEPAGE = "homepage";
     private static final String DOWNLOAD_LOCATION = "download_location";
@@ -230,6 +233,7 @@ public class ImportExportDatabaseHelper {
                     CLEAR_COOKIES + " BOOLEAN, " +
                     CLEAR_DOM_STORAGE + " BOOLEAN, " +
                     CLEAR_FORM_DATA + " BOOLEAN, " +
+                    CLEAR_LOGCAT + " BOOLEAN, " +
                     CLEAR_CACHE + " BOOLEAN, " +
                     HOMEPAGE + " TEXT, " +
                     DOWNLOAD_LOCATION + " TEXT, " +
@@ -282,6 +286,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean(CLEAR_COOKIES, true));
             preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean(CLEAR_DOM_STORAGE, true));
             preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean(CLEAR_FORM_DATA, true));  // Clear form data can be removed once the minimum API >= 26.
+            preferencesContentValues.put(CLEAR_LOGCAT, sharedPreferences.getBoolean(CLEAR_LOGCAT, true));
             preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true));
             preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
             preferencesContentValues.put(DOWNLOAD_LOCATION, sharedPreferences.getString(DOWNLOAD_LOCATION, context.getString(R.string.download_location_default_value)));
@@ -371,11 +376,11 @@ public class ImportExportDatabaseHelper {
             // Upgrade the database if needed.
             if (importDatabaseVersion < SCHEMA_VERSION) {
                 switch (importDatabaseVersion){
-                    // Upgrade from schema version 1.
+                    // Upgrade from schema version 1, Privacy Browser 2.13.
                     case 1:
                         // Previously this upgrade added `download_with_external_app` to the Preferences table.  But that is now removed in schema version 10.
 
-                    // Upgrade from schema version 2.
+                    // Upgrade from schema version 2, Privacy Browser 2.14.
                     case 2:
                         // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME COLUMN` can be used.  https://www.sqlite.org/lang_altertable.html  https://www.sqlite.org/changes.html
                         // https://developer.android.com/reference/android/database/sqlite/package-summary
@@ -402,13 +407,13 @@ public class ImportExportDatabaseHelper {
                         // Populate the preferences table with the current font size value.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = '" + fontSize + "'");
 
-                    // Upgrade from schema version 3.
+                    // Upgrade from schema version 3, Privacy Browser 2.15.
                     case 3:
                         // Add the Pinned IP Addresses columns to the domains table.
                         importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.PINNED_IP_ADDRESSES + " BOOLEAN");
                         importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.IP_ADDRESSES + " TEXT");
 
-                    // Upgrade from schema version 4.
+                    // Upgrade from schema version 4, Privacy Browser 2.16.
                     case 4:
                         // Add the hide and scroll app bar columns to the preferences table.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + HIDE_APP_BAR + " BOOLEAN");
@@ -431,7 +436,7 @@ public class ImportExportDatabaseHelper {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + SCROLL_APP_BAR + " = " + 0);
                         }
 
-                    // Upgrade from schema version 5.
+                    // Upgrade from schema version 5, Privacy Browser 2.17.
                     case 5:
                         // Add the open intents in new tab column to the preferences table.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + OPEN_INTENTS_IN_NEW_TAB + " BOOLEAN");
@@ -446,7 +451,7 @@ public class ImportExportDatabaseHelper {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + OPEN_INTENTS_IN_NEW_TAB + " = " + 0);
                         }
 
-                    // Upgrade from schema version 6.
+                    // Upgrade from schema version 6, Privacy Browser 3.0.
                     case 6:
                         // Add the wide viewport column to the domains table.
                         importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.WIDE_VIEWPORT + " INTEGER");
@@ -491,7 +496,7 @@ public class ImportExportDatabaseHelper {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + WIDE_VIEWPORT + " = " + 0);
                         }
 
-                    // Upgrade from schema version 7.
+                    // Upgrade from schema version 7, Privacy Browser 3.1.
                     case 7:
                         // Add the UltraList column to the domains table.
                         importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.ULTRALIST + " BOOLEAN");
@@ -511,7 +516,7 @@ public class ImportExportDatabaseHelper {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + ULTRALIST + " = " + 0);
                         }
 
-                    // Upgrade from schema version 8.
+                    // Upgrade from schema version 8, Privacy Browser 3.2.
                     case 8:
                         // Add the new proxy columns to the preferences table.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + PROXY + " TEXT");
@@ -528,7 +533,7 @@ public class ImportExportDatabaseHelper {
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY + " = '" + proxy + "'");
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_URL + " = " + proxyCustomUrl);
 
-                    // Upgrade from schema version 9.
+                    // Upgrade from schema version 9, Privacy Browser 3.3.
                     case 9:
                         // Add the download location columns to the preferences table.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_LOCATION + " TEXT");
@@ -542,7 +547,7 @@ public class ImportExportDatabaseHelper {
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_LOCATION + " = '" + downloadLocation + "'");
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_CUSTOM_LOCATION + " = '" + downloadCustomLocation + "'");
 
-                    // Upgrade from schema version 10.
+                    // Upgrade from schema version 10, Privacy Browser 3.4.
                     case 10:
                         // Add the app theme column to the preferences table.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + APP_THEME + " TEXT");
@@ -579,6 +584,21 @@ public class ImportExportDatabaseHelper {
 
                         // Set the WebView theme in the preferences table to be the default.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + WEBVIEW_THEME + " = " + "'" + webViewThemeDefaultValue + "'");
+
+                    // Upgrade from schema version 11, Privacy Browser 3.5.
+                    case 11:
+                        // Add the clear logcat column to the preferences table.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + CLEAR_LOGCAT + " BOOLEAN");
+
+                        // Get the current clear logcat value.
+                        boolean clearLogcat = sharedPreferences.getBoolean(CLEAR_LOGCAT, true);
+
+                        // Populate the preference table with the current clear logcat value.
+                        if (clearLogcat) {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + CLEAR_LOGCAT + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + CLEAR_LOGCAT + " = " + 0);
+                        }
                 }
             }
 
@@ -726,6 +746,7 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_DOM_STORAGE)) == 1)
                     // Clear form data can be removed once the minimum API >= 26.
                     .putBoolean(CLEAR_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_FORM_DATA)) == 1)
+                    .putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_LOGCAT)) == 1)
                     .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
                     .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
                     .putString(DOWNLOAD_LOCATION, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DOWNLOAD_LOCATION)))

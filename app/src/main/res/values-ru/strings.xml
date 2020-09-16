@@ -547,13 +547,16 @@
         <string name="hide_app_bar">Скрыть панель приложения</string>
         <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
     <string name="clear_everything">Очистить все</string>
-        <string name="clear_everything_summary">Очищает файлы cookie, DOM-хранилище, данные формы и кэш WebView. Затем вручную удаляются все каталоги "app_webview" и "cache".</string>
+        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
+        <string name="clear_everything_summary">Очищает файлы cookie, DOM-хранилище, данные форм, logcat и кэш WebView. После этого вручную удаляет каталоги "app_webview" и "cache".</string>
         <string name="clear_cookies_preference">Очистить файлы cookie</string>
         <string name="clear_cookies_summary">Очистить первичные и сторонние файлы cookie.</string>
         <string name="clear_dom_storage_preference">Очистить DOM-хранилище</string>
         <string name="clear_dom_storage_summary">Очищает DOM-хранилище.</string>
-        <string name="clear_form_data_preference">Очистка данных формы</string>
-        <string name="clear_form_data_summary">Очищает данные формы.</string>
+        <string name="clear_form_data_preference">Очистка данных формы</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_form_data_summary">Очищает данные формы.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_logcat_preference">Очистить logcat</string>
+        <string name="clear_logcat_summary">Очищает logcat.</string>
         <string name="clear_cache">Очистить кэш</string>
         <string name="clear_cache_summary">Очищает кэш WebView.</string>
     <string name="general">Общее</string>

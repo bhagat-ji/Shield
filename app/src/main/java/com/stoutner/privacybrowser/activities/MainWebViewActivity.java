@@ -5032,7 +5032,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Clear the back/forward history for this WebView.
                 nestedScrollWebView.clearHistory();
 
-                // Destroy the internal state of `mainWebView`.
+                // Destroy the internal state of the WebView.
                 nestedScrollWebView.destroy();
             }
         }

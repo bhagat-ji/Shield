@@ -1,12 +1,12 @@
-• Implement Android’s relatively new Day/Night theme.
-• Switch to using WebView relatively new built-in dark theme.
-• Save and restore the state if Privacy Browser is restarted in the background by the OS.
-• Use the Content-Disposition header to get file names for downloads.
-• Fix uploading files to some sites.
-• Add Mojeek and remove Qwant and Searx from the list of search engines.
-• Fix a bug that sometimes caused swipe-to-refresh to operate even when disabled.
-• Reorder the context menus.
-• Apply custom headers to links loaded from the WebView.
+• Implémentaton relativement récente du thème Jour / Nuit d'Android.
+• Ajout d'un bouton permettant d'utiliser le nouveau thème sombre intégré de WebView.
+• Enregistrement et restauration de l'état de Privacy Browser si celui-ci est redémarré en arrière-plan par le système d'exploitation.
+• Utilisation de l'en-tête Content-Disposition pour obtenir les noms des fichiers à télécharger.
+• Correction de l'importation de fichiers sur certains sites.
+• Ajout de Mojeek et suppression de Qwant et Searx dans la liste des moteurs de recherche.
+• Correction d'un bug qui faisait parfois fonctionner la fonction balayage pour actualiser même lorsque celle-ci était désactivée.
+• Réorganisation des menus contextuels.
+• Application d'en-têtes personnalisées aux liens chargés à partir de WebView.
 • Traduction française mise à jour fournie par Kévin LE FLOHIC.
 • Traduction allemande mise à jour fournie par Bernhard G. Keller.
 • Traduction italienne mise à jour fournie par Francesco Buratti.

@@ -1,2 +1,2 @@
-• Fix a bug that caused new intents (links from other apps) to not load if Privacy Browser had been killed by the OS in the background.
-• Fix a bug that caused the app to initialize incorrectly if the app theme was set to the opposite of the OS theme.
+• Correction d'un bug qui empêchait de nouveaux intents (liens en provenance d'autres applications) de se charger si Privacy Browser avait été tué par le système d'exploitation en arrière-plan.
+• Correction d'un bug qui entraînait une initialisation incorrecte de l'application si le thème de l'application était défini à l'opposé du thème du système d'exploitation.

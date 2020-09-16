@@ -557,13 +557,15 @@
         <string name="hide_app_bar_summary" tools:ignore="Typos">Versteckt die App-Leiste, die die URL enthält.</string>
     <string name="clear_everything">Alles löschen</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Löscht Cookies, DOM Storage, Formular-Daten und Cache, sowie “app_webview” and “cache”-Ordner.</string>
+        <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, Formular-Daten, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
         <string name="clear_cookies_preference">Cookies löschen</string>
         <string name="clear_cookies_summary">Löscht Cookies und Drittanbieter-Cookies.</string>
         <string name="clear_dom_storage_preference">DOM Storage löschen</string>
         <string name="clear_dom_storage_summary">Löscht DOM storage (aka Web Storage oder Supercookies).</string>
         <string name="clear_form_data_preference">Formulardaten löschen</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Löscht in Formulare eingegebene Daten.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_logcat_preference">Logcat leeren</string>
+        <string name="clear_logcat_summary">Leert das Logcat Systemlogbuch.</string>
         <string name="clear_cache">Cache löschen</string>
         <string name="clear_cache_summary">Löscht den WebView-Cache.</string>
     <string name="general">Allgemein</string>

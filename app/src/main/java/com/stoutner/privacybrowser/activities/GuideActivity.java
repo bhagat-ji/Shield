@@ -81,6 +81,9 @@ public class GuideActivity extends AppCompatActivity {
         // Set the view pager adapter.
         aboutViewPager.setAdapter(new GuidePagerAdapter(getSupportFragmentManager(), getApplicationContext()));
 
+        // Keep all the tabs in memory.
+        aboutViewPager.setOffscreenPageLimit(10);
+
         // Link the tab layout to the view pager.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }

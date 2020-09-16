@@ -20,6 +20,8 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -27,6 +29,7 @@ import android.content.pm.Signature;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -51,21 +54,49 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 
 public class AboutTabFragment extends Fragment {
-    // Define the class variables.
+    // Declare the class constants.
+    final static String TAB_NUMBER = "tab_number";
+    final static String BLOCKLIST_VERSIONS = "blocklist_versions";
+    final long MEBIBYTE = 1048576;
+
+    // Declare the class variables.
+    private boolean updateMemoryUsageBoolean = true;
     private int tabNumber;
     private String[] blocklistVersions;
     private View tabLayout;
+    private String appConsumedMemoryLabel;
+    private String appAvailableMemoryLabel;
+    private String appTotalMemoryLabel;
+    private String appMaximumMemoryLabel;
+    private String systemConsumedMemoryLabel;
+    private String systemAvailableMemoryLabel;
+    private String systemTotalMemoryLabel;
+    private Runtime runtime;
+    private ActivityManager activityManager;
+    private ActivityManager.MemoryInfo memoryInfo;
+    private NumberFormat numberFormat;
+    private ForegroundColorSpan blueColorSpan;
+
+    // Declare the class views.
+    private TextView appConsumedMemoryTextView;
+    private TextView appAvailableMemoryTextView;
+    private TextView appTotalMemoryTextView;
+    private TextView appMaximumMemoryTextView;
+    private TextView systemConsumedMemoryTextView;
+    private TextView systemAvailableMemoryTextView;
+    private TextView systemTotalMemoryTextView;
 
     public static AboutTabFragment createTab(int tabNumber, String[] blocklistVersions) {
         // Create a bundle.
         Bundle argumentsBundle = new Bundle();
 
         // Store the tab number in the bundle.
-        argumentsBundle.putInt("tab_number", tabNumber);
-        argumentsBundle.putStringArray("blocklist_versions", blocklistVersions);
+        argumentsBundle.putInt(TAB_NUMBER, tabNumber);
+        argumentsBundle.putStringArray(BLOCKLIST_VERSIONS, blocklistVersions);
 
         // Create a new instance of the tab fragment.
         AboutTabFragment aboutTabFragment = new AboutTabFragment();
@@ -89,8 +120,8 @@ public class AboutTabFragment extends Fragment {
         assert arguments != null;
 
         // Store the arguments in class variables.
-        tabNumber = getArguments().getInt("tab_number");
-        blocklistVersions = getArguments().getStringArray("blocklist_versions");
+        tabNumber = getArguments().getInt(TAB_NUMBER);
+        blocklistVersions = getArguments().getStringArray(BLOCKLIST_VERSIONS);
     }
 
     @Override
@@ -123,6 +154,13 @@ public class AboutTabFragment extends Fragment {
             TextView orbotTextView = tabLayout.findViewById(R.id.orbot);
             TextView i2pTextView = tabLayout.findViewById(R.id.i2p);
             TextView openKeychainTextView = tabLayout.findViewById(R.id.open_keychain);
+            appConsumedMemoryTextView = tabLayout.findViewById(R.id.app_consumed_memory);
+            appAvailableMemoryTextView = tabLayout.findViewById(R.id.app_available_memory);
+            appTotalMemoryTextView = tabLayout.findViewById(R.id.app_total_memory);
+            appMaximumMemoryTextView = tabLayout.findViewById(R.id.app_maximum_memory);
+            systemConsumedMemoryTextView = tabLayout.findViewById(R.id.system_consumed_memory);
+            systemAvailableMemoryTextView = tabLayout.findViewById(R.id.system_available_memory);
+            systemTotalMemoryTextView = tabLayout.findViewById(R.id.system_total_memory);
             TextView easyListTextView = tabLayout.findViewById(R.id.easylist);
             TextView easyPrivacyTextView = tabLayout.findViewById(R.id.easyprivacy);
             TextView fanboyAnnoyanceTextView = tabLayout.findViewById(R.id.fanboy_annoyance);
@@ -147,6 +185,13 @@ public class AboutTabFragment extends Fragment {
             String androidLabel = getString(R.string.android) + "  ";
             String buildLabel = getString(R.string.build) + "  ";
             String webViewVersionLabel = getString(R.string.webview_version) + "  ";
+            appConsumedMemoryLabel = getString(R.string.app_consumed_memory) + "  ";
+            appAvailableMemoryLabel = getString(R.string.app_available_memory) + "  ";
+            appTotalMemoryLabel = getString(R.string.app_total_memory) + "  ";
+            appMaximumMemoryLabel = getString(R.string.app_maximum_memory) + "  ";
+            systemConsumedMemoryLabel = getString(R.string.system_consumed_memory) + "  ";
+            systemAvailableMemoryLabel = getString(R.string.system_available_memory) + "  ";
+            systemTotalMemoryLabel = getString(R.string.system_total_memory) + "  ";
             String easyListLabel = getString(R.string.easylist_label) + "  ";
             String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
             String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
@@ -206,7 +251,7 @@ public class AboutTabFragment extends Fragment {
                 openKeychain = "";
             }
 
-            // Create a `SpannableStringBuilder` for the hardware and software `TextViews` that needs multiple colors of text.
+            // Create a spannable string builder for the hardware and software text views that needs multiple colors of text.
             SpannableStringBuilder brandStringBuilder = new SpannableStringBuilder(brandLabel + brand);
             SpannableStringBuilder manufacturerStringBuilder = new SpannableStringBuilder(manufacturerLabel + manufacturer);
             SpannableStringBuilder modelStringBuilder = new SpannableStringBuilder(modelLabel + model);
@@ -222,14 +267,11 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder ultraListStringBuilder = new SpannableStringBuilder(ultraListLabel + blocklistVersions[4]);
             SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[5]);
 
-            // Define the blue color span variable.
-            ForegroundColorSpan blueColorSpan;
-
             // Set the blue color span according to the theme.  The deprecated `getResources()` must be used until the minimum API >= 23.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            } else {
+                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
             }
 
             // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
@@ -399,6 +441,34 @@ public class AboutTabFragment extends Fragment {
                 } catch (CertificateException e) {
                     // Do nothing if there is a certificate error.
                 }
+
+                // Get a handle for the runtime.
+                runtime = Runtime.getRuntime();
+
+                // Get a handle for the activity.
+                Activity activity = getActivity();
+
+                // Remove the incorrect lint warning below that the activity might be null.
+                assert activity != null;
+
+                // Get a handle for the activity manager.
+                activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+
+                // Remove the incorrect lint warning below that the activity manager might be null.
+                assert activityManager != null;
+
+                // Instantiate a memory info variable.
+                memoryInfo = new ActivityManager.MemoryInfo();
+
+                // Define a number format.
+                numberFormat = NumberFormat.getInstance();
+
+                // Set the minimum and maximum number of fraction digits.
+                numberFormat.setMinimumFractionDigits(2);
+                numberFormat.setMaximumFractionDigits(2);
+
+                // Update the memory usage.
+                updateMemoryUsage(getActivity());
             } catch (PackageManager.NameNotFoundException e) {
                 // Do nothing if `PackageManager` says Privacy Browser isn't installed.
             }
@@ -481,6 +551,24 @@ public class AboutTabFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        // Run the default commands.
+        super.onPause();
+
+        // Pause the updating of the memory usage.
+        updateMemoryUsageBoolean = false;
+    }
+
+    @Override
+    public void onResume() {
+        // Run the default commands.
+        super.onResume();
+
+        // Resume the updating of the memory usage.
+        updateMemoryUsageBoolean = true;
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState);
@@ -489,6 +577,87 @@ public class AboutTabFragment extends Fragment {
         if (tabLayout != null) {
             savedInstanceState.putInt("scroll_x", tabLayout.getScrollX());
             savedInstanceState.putInt("scroll_y", tabLayout.getScrollY());
+        }
+    }
+
+    public void updateMemoryUsage(Activity activity) {
+        try {
+            // Update the memory usage if enabled.
+            if (updateMemoryUsageBoolean) {
+                // Populate the memory info variable.
+                activityManager.getMemoryInfo(memoryInfo);
+
+                // Get the app memory information.
+                long appAvailableMemoryLong = runtime.freeMemory();
+                long appTotalMemoryLong = runtime.totalMemory();
+                long appMaximumMemoryLong = runtime.maxMemory();
+
+                // Calculate the app consumed memory.
+                long appConsumedMemoryLong = appTotalMemoryLong - appAvailableMemoryLong;
+
+                // Get the system memory information.
+                long systemTotalMemoryLong = memoryInfo.totalMem;
+                long systemAvailableMemoryLong = memoryInfo.availMem;
+
+                // Calculate the system consumed memory.
+                long systemConsumedMemoryLong = systemTotalMemoryLong - systemAvailableMemoryLong;
+
+                // Convert the memory information into mebibytes.
+                float appConsumedMemoryFloat = (float) appConsumedMemoryLong / MEBIBYTE;
+                float appAvailableMemoryFloat = (float) appAvailableMemoryLong / MEBIBYTE;
+                float appTotalMemoryFloat = (float) appTotalMemoryLong / MEBIBYTE;
+                float appMaximumMemoryFloat = (float) appMaximumMemoryLong / MEBIBYTE;
+                float systemConsumedMemoryFloat = (float) systemConsumedMemoryLong / MEBIBYTE;
+                float systemAvailableMemoryFloat = (float) systemAvailableMemoryLong / MEBIBYTE;
+                float systemTotalMemoryFloat = (float) systemTotalMemoryLong / MEBIBYTE;
+
+                // Get the mebibyte string.
+                String mebibyte = getString(R.string.mebibyte);
+
+                // Calculate the mebibyte length.
+                int mebibyteLength = mebibyte.length();
+
+                // Create spannable string builders.
+                SpannableStringBuilder appConsumedMemoryStringBuilder = new SpannableStringBuilder(appConsumedMemoryLabel + numberFormat.format(appConsumedMemoryFloat) + " " + mebibyte);
+                SpannableStringBuilder appAvailableMemoryStringBuilder = new SpannableStringBuilder(appAvailableMemoryLabel + numberFormat.format(appAvailableMemoryFloat) + " " + mebibyte);
+                SpannableStringBuilder appTotalMemoryStringBuilder = new SpannableStringBuilder(appTotalMemoryLabel + numberFormat.format(appTotalMemoryFloat) + " " + mebibyte);
+                SpannableStringBuilder appMaximumMemoryStringBuilder = new SpannableStringBuilder(appMaximumMemoryLabel + numberFormat.format(appMaximumMemoryFloat) + " " + mebibyte);
+                SpannableStringBuilder systemConsumedMemoryStringBuilder = new SpannableStringBuilder(systemConsumedMemoryLabel + numberFormat.format(systemConsumedMemoryFloat) + " " + mebibyte);
+                SpannableStringBuilder systemAvailableMemoryStringBuilder = new SpannableStringBuilder(systemAvailableMemoryLabel + numberFormat.format(systemAvailableMemoryFloat) + " " + mebibyte);
+                SpannableStringBuilder systemTotalMemoryStringBuilder = new SpannableStringBuilder(systemTotalMemoryLabel + numberFormat.format(systemTotalMemoryFloat) + " " + mebibyte);
+
+                // Setup the spans to display the memory information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+                appConsumedMemoryStringBuilder.setSpan(blueColorSpan, appConsumedMemoryLabel.length(), appConsumedMemoryStringBuilder.length() - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                appAvailableMemoryStringBuilder.setSpan(blueColorSpan, appAvailableMemoryLabel.length(), appAvailableMemoryStringBuilder.length() - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                appTotalMemoryStringBuilder.setSpan(blueColorSpan, appTotalMemoryLabel.length(), appTotalMemoryStringBuilder.length() - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                appMaximumMemoryStringBuilder.setSpan(blueColorSpan, appMaximumMemoryLabel.length(), appMaximumMemoryStringBuilder.length() - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                systemConsumedMemoryStringBuilder.setSpan(blueColorSpan, systemConsumedMemoryLabel.length(), systemConsumedMemoryStringBuilder.length() - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                systemAvailableMemoryStringBuilder.setSpan(blueColorSpan, systemAvailableMemoryLabel.length(), systemAvailableMemoryStringBuilder.length() - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                systemTotalMemoryStringBuilder.setSpan(blueColorSpan, systemTotalMemoryLabel.length(), systemTotalMemoryStringBuilder.length() - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Display the string in the text boxes.
+                appConsumedMemoryTextView.setText(appConsumedMemoryStringBuilder);
+                appAvailableMemoryTextView.setText(appAvailableMemoryStringBuilder);
+                appTotalMemoryTextView.setText(appTotalMemoryStringBuilder);
+                appMaximumMemoryTextView.setText(appMaximumMemoryStringBuilder);
+                systemConsumedMemoryTextView.setText(systemConsumedMemoryStringBuilder);
+                systemAvailableMemoryTextView.setText(systemAvailableMemoryStringBuilder);
+                systemTotalMemoryTextView.setText(systemTotalMemoryStringBuilder);
+            }
+
+            // Schedule another memory update if the activity has not been destroyed.
+            if (!activity.isDestroyed()) {
+                // Create a handler to update the memory usage.
+                Handler updateMemoryUsageHandler = new Handler();
+
+                // Create a runnable to update the memory usage.
+                Runnable updateMemoryUsageRunnable = () -> updateMemoryUsage(activity);
+
+                // Update the memory usage after 1000 milliseconds
+                updateMemoryUsageHandler.postDelayed(updateMemoryUsageRunnable, 1000);
+            }
+        } catch (Exception exception) {
+            // Do nothing.
         }
     }
 }

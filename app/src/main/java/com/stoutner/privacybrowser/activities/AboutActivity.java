@@ -84,6 +84,9 @@ public class AboutActivity extends AppCompatActivity {
         //  Setup the ViewPager.
         aboutViewPager.setAdapter(new AboutPagerAdapter(getSupportFragmentManager(), getApplicationContext(), blocklistVersions));
 
+        // Keep all the tabs in memory.  This prevents the memory usage updater from running multiple times.
+        aboutViewPager.setOffscreenPageLimit(10);
+
         // Connect the tab layout to the view pager.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }

@@ -554,7 +554,7 @@
         <string name="hide_app_bar_summary">Masquer la barre d\'applications contenant l\'URL.</string>
     <string name="clear_everything">Tout effacer</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Efface les cookies, le stockage DOM, les données de formulaire et le cache de WebView.
+        <string name="clear_everything_summary">Efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache de WebView.
             Supprime ensuite manuellement les répertoires entiers «app_webview» et «cache».</string>
         <string name="clear_cookies_preference">Effacer les cookies</string>
         <string name="clear_cookies_summary">Efface l\'ensemble des cookies internes et tiers</string>
@@ -562,6 +562,8 @@
         <string name="clear_dom_storage_summary">Efface le stockage du DOM.</string>
         <string name="clear_form_data_preference">Effacer les données de formulaire</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Efface les données de formulaire.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_logcat_preference">Vider logcat</string>
+        <string name="clear_logcat_summary">Vide le logcat.</string>
         <string name="clear_cache">Effacer cache</string>
         <string name="clear_cache_summary">Efface le cache WebView.</string>
     <string name="general">General</string>
