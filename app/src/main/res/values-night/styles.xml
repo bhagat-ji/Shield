@@ -53,7 +53,10 @@
         <item name="editIcon">@drawable/edit_night</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_night</item>
         <item name="saveIcon">@drawable/save_night</item>
+        <item name="saveImageIcon">@drawable/images_options_night</item>
+        <item name="saveTextIcon">@drawable/save_text_night</item>
         <item name="selectAllIcon">@drawable/select_all_night</item>
+        <item name="shareIcon">@drawable/share_night</item>
         <item name="sortIcon">@drawable/sort_night</item>
     </style>
 

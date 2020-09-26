@@ -154,14 +154,12 @@
         <string name="swipe_to_refresh_options_menu">Потянуть для обновления</string>
         <string name="wide_viewport">Широкий вид просмотра</string>
         <string name="display_images">Показывать изображения</string>
+        <string name="dark_webview">Темный WebView</string>
         <string name="font_size">Размер шрифта</string>
         <string name="find_on_page">Найти на странице</string>
         <string name="print">Печать</string>
             <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
         <string name="save">Сохранить</string>
-            <string name="save_url">Сохранить URL</string>
-            <string name="save_as_archive">Сохранить как архив</string>
-            <string name="save_as_image">Сохранить как изображение</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
@@ -185,23 +183,23 @@
     <string name="previous">Предыдущий</string>
     <string name="next">Следующий</string>
 
-    <!-- Save. -->
-    <string name="file_name">Имя файла</string>
+    <!-- Save Dialogs. -->
+    <string name="save_url">Сохранить URL</string>
     <string name="save_archive">Сохранить архив</string>
     <string name="save_image">Сохранить изображение</string>
+    <string name="save_logcat">Сохранить logcat</string>
+    <string name="file_name">Имя файла</string>
     <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="file">Файл</string>
     <string name="bytes">байтов</string>
     <string name="unknown_size">неизвестный размер</string>
     <string name="invalid_url">неправильный URL</string>
     <string name="ok">OK</string>
     <string name="saving_file">Сохранение файла:</string>
-    <string name="saving_image">Сохранение изображения…</string>
     <string name="file_saved">Файл сохранен:</string>
-    <string name="image_saved">Изображение сохранено.</string>
     <string name="error_saving_file">Ошибка сохранения файла:</string>
-    <string name="error_saving_image">Ошибка сохранения изображения:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Заголовки запроса</string>
@@ -373,10 +371,6 @@
     <string name="copy_string">Копировать</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat скопирован.</string>
     <string name="clear">Очистить</string>
-    <string name="save_logcat">Сохранить logcat</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="file_saved_successfully">Файл успешно сохранен.</string>
-    <string name="save_failed">Сохранить не удалось:</string>
 
     <!-- Guide. -->
     <string name="overview">Обзор</string>
@@ -415,6 +409,15 @@
     <string name="orbot">Orbot:</string>
     <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
+    <string name="memory_usage">Использование памяти</string>
+    <string name="app_consumed_memory">Потребляемая приложением память:</string>
+    <string name="app_available_memory">Доступная приложению память:</string>
+    <string name="app_total_memory">Общая память приложения:</string>
+    <string name="app_maximum_memory">Максимальная память приложения:</string>
+    <string name="system_consumed_memory">Потребляемая системой память:</string>
+    <string name="system_available_memory">Доступная системе память:</string>
+    <string name="system_total_memory">Общая память системы:</string>
+    <string name="mebibyte">МиБ</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>

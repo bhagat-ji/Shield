@@ -52,8 +52,11 @@
     <attr name="homepageIcon" format="reference" />
     <attr name="moveToFolderIcon" format="reference" />
     <attr name="saveIcon" format="reference" />
+    <attr name="saveImageIcon" format="reference" />
+    <attr name="saveTextIcon" format="reference" />
     <attr name="searchIcon" format="reference" />
     <attr name="selectAllIcon" format="reference" />
+    <attr name="shareIcon" format="reference" />
     <attr name="sortIcon" format="reference" />
     <attr name="userAgentIcon" format="reference" />
 </resources>

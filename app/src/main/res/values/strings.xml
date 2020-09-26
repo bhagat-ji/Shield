@@ -167,9 +167,6 @@
         <string name="print">Print</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
         <string name="save">Save</string>
-            <string name="save_url">Save URL</string>
-            <string name="save_as_archive">Save as Archive</string>
-            <string name="save_as_image">Save as Image</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
     <string name="share">Share</string>
@@ -194,24 +191,28 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
 
-    <!-- Save. -->
+    <!-- Save Dialogs. -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
-    <string name="file_name">File name</string>
+    <string name="save_url">Save URL</string>
     <string name="save_archive">Save Archive</string>
+    <string name="save_text">Save Text</string>
     <string name="save_image">Save Image</string>
+    <string name="save_logcat">Save Logcat</string>
+    <string name="file_name">File name</string>
     <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
+    <string name="privacy_browser_version_png">Privacy Browser Version.png</string>
     <string name="file">File</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">unknown size</string>
     <string name="invalid_url">invalid URL</string>
     <string name="ok">OK</string>
     <string name="saving_file">Saving file:</string>
-    <string name="saving_image">Saving image…</string>
+    <string name="processing_image">Processing image… :</string>
     <string name="file_saved">File saved:</string>
-    <string name="image_saved">Image saved.</string>
     <string name="error_saving_file">Error saving file:</string>
-    <string name="error_saving_image">Error saving image:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Request Headers</string>
@@ -383,10 +384,6 @@
     <string name="copy_string">Copy</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat copied.</string>
     <string name="clear">Clear</string>
-    <string name="save_logcat">Save logcat</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="file_saved_successfully">File saved successfully.</string>
-    <string name="save_failed">Save failed:</string>
 
     <!-- Guide. -->
     <string name="overview">Overview</string>
@@ -454,6 +451,8 @@
     <string name="licenses">Licenses</string>
     <string name="contributors">Contributors</string>
     <string name="links">Links</string>
+    <string name="version_info_copied">Version info copied.</string>
+    <string name="email">Email</string>  <!-- This is a verb. -->
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>

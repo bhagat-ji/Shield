@@ -27,12 +27,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.fragments.AboutTabFragment;
+import com.stoutner.privacybrowser.fragments.AboutVersionFragment;
+import com.stoutner.privacybrowser.fragments.AboutWebViewFragment;
+
+import java.util.LinkedList;
 
 public class AboutPagerAdapter extends FragmentPagerAdapter {
     // Define the class variables.
     private Context context;
     private String[] blocklistVersions;
+    private LinkedList<Fragment> aboutFragmentList = new LinkedList<>();
 
     public AboutPagerAdapter(FragmentManager fragmentManager, Context context, String[] blocklistVersions) {
         // Run the default commands.
@@ -83,6 +87,21 @@ public class AboutPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     // Setup each tab.
     public Fragment getItem(int tabNumber) {
-        return AboutTabFragment.createTab(tabNumber, blocklistVersions);
+        // Create the tab fragment and add it to the list.
+        if (tabNumber == 0){
+            // Add the version tab to the list.
+            aboutFragmentList.add(AboutVersionFragment.createTab(blocklistVersions));
+        } else {
+            // Add the WebView tab to the list.
+            aboutFragmentList.add(AboutWebViewFragment.createTab(tabNumber));
+        }
+
+        // Return the tab number fragment.
+        return aboutFragmentList.get(tabNumber);
+    }
+
+    public Fragment getTabFragment(int tabNumber) {
+        // Return the tab fragment.
+        return aboutFragmentList.get(tabNumber);
     }
 }

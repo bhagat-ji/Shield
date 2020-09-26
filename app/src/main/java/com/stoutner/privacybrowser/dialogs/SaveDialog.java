@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,10 +29,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -46,56 +46,54 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-import com.stoutner.privacybrowser.asynctasks.GetUrlSize;
 import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
 
 import java.io.File;
 
 public class SaveDialog extends DialogFragment {
-    // Define the save webpage listener.
-    private SaveWebpageListener saveWebpageListener;
+    // Declare the save listener.
+    private SaveListener saveListener;
 
     // The public interface is used to send information back to the parent activity.
-    public interface SaveWebpageListener {
-        void onSaveWebpage(int saveType, DialogFragment dialogFragment);
+    public interface SaveListener {
+        void onSave(int saveType, DialogFragment dialogFragment);
     }
 
-    // Define the get URL size AsyncTask.  This allows previous instances of the task to be cancelled if a new one is run.
-    private AsyncTask getUrlSize;
+    // Declare the class constants.
+    public static final int SAVE_LOGCAT = 0;
+    public static final int SAVE_ABOUT_VERSION_TEXT = 1;
+    public static final int SAVE_ABOUT_VERSION_IMAGE = 2;
+    private static final String SAVE_TYPE = "save_type";
+
+    // Declare the class variables.
+    String fileName;
 
     @Override
     public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for the save webpage listener from the launching context.
-        saveWebpageListener = (SaveWebpageListener) context;
+        // Get a handle for save listener from the launching context.
+        saveListener = (SaveListener) context;
     }
 
-    public static SaveDialog saveUrl(int saveType, String urlString, String fileSizeString, String contentDispositionFileNameString, String userAgentString, boolean cookiesEnabled) {
+    public static SaveDialog save(int saveType) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
         // Store the arguments in the bundle.
-        argumentsBundle.putInt("save_type", saveType);
-        argumentsBundle.putString("url_string", urlString);
-        argumentsBundle.putString("file_size_string", fileSizeString);
-        argumentsBundle.putString("content_disposition_file_name_string", contentDispositionFileNameString);
-        argumentsBundle.putString("user_agent_string", userAgentString);
-        argumentsBundle.putBoolean("cookies_enabled", cookiesEnabled);
+        argumentsBundle.putInt(SAVE_TYPE, saveType);
 
-        // Create a new instance of the save webpage dialog.
-        SaveDialog saveWebpageDialog = new SaveDialog();
+        // Create a new instance of the save dialog.
+        SaveDialog saveDialog = new SaveDialog();
 
-        // Add the arguments bundle to the new dialog.
-        saveWebpageDialog.setArguments(argumentsBundle);
+        // Add the arguments bundle to the dialog.
+        saveDialog.setArguments(argumentsBundle);
 
         // Return the new dialog.
-        return saveWebpageDialog;
+        return saveDialog;
     }
 
     // `@SuppressLint("InflateParams")` removes the warning about using null as the parent view group when inflating the alert dialog.
@@ -110,12 +108,7 @@ public class SaveDialog extends DialogFragment {
         assert arguments != null;
 
         // Get the arguments from the bundle.
-        int saveType = arguments.getInt("save_type");
-        String urlString = arguments.getString("url_string");
-        String fileSizeString = arguments.getString("file_size_string");
-        String contentDispositionFileNameString = arguments.getString("content_disposition_file_name_string");
-        String userAgentString = arguments.getString("user_agent_string");
-        boolean cookiesEnabled = arguments.getBoolean("cookies_enabled");
+        int saveType = arguments.getInt(SAVE_TYPE);
 
         // Get a handle for the activity and the context.
         Activity activity = requireActivity();
@@ -127,51 +120,42 @@ public class SaveDialog extends DialogFragment {
         // Get the current theme status.
         int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        // Set the icon according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // The night theme is enabled.
-            // Set the icon according to the save type.
-            switch (saveType) {
-                case StoragePermissionDialog.SAVE_URL:
-                    dialogBuilder.setIcon(R.drawable.copy_enabled_night);
-                    break;
-
-                case StoragePermissionDialog.SAVE_AS_ARCHIVE:
-                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_night);
-                    break;
-
-                case StoragePermissionDialog.SAVE_AS_IMAGE:
-                    dialogBuilder.setIcon(R.drawable.images_enabled_night);
-                    break;
-            }
-        } else {  // The day theme is enabled.
-            // Set the icon according to the save type.
-            switch (saveType) {
-                case StoragePermissionDialog.SAVE_URL:
-                    dialogBuilder.setIcon(R.drawable.copy_enabled_day);
-                    break;
-
-                case StoragePermissionDialog.SAVE_AS_ARCHIVE:
-                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_day);
-                    break;
-
-                case StoragePermissionDialog.SAVE_AS_IMAGE:
-                    dialogBuilder.setIcon(R.drawable.images_enabled_day);
-                    break;
-            }
-        }
-
-        // Set the title according to the type.
+        // Set the title and icon according to the type.
         switch (saveType) {
-            case StoragePermissionDialog.SAVE_URL:
-                dialogBuilder.setTitle(R.string.save);
+            case SAVE_LOGCAT:
+                // Set the title.
+                dialogBuilder.setTitle(R.string.save_logcat);
+
+                // Set the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    dialogBuilder.setIcon(R.drawable.save_dialog_day);
+                } else {
+                    dialogBuilder.setIcon(R.drawable.save_dialog_night);
+                }
                 break;
 
-            case StoragePermissionDialog.SAVE_AS_ARCHIVE:
-                dialogBuilder.setTitle(R.string.save_archive);
+            case SAVE_ABOUT_VERSION_TEXT:
+                // Set the title.
+                dialogBuilder.setTitle(R.string.save_text);
+
+                // Set the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    dialogBuilder.setIcon(R.drawable.save_text_blue_day);
+                } else {
+                    dialogBuilder.setIcon(R.drawable.save_text_blue_night);
+                }
                 break;
 
-            case StoragePermissionDialog.SAVE_AS_IMAGE:
+            case SAVE_ABOUT_VERSION_IMAGE:
+                // Set the title.
                 dialogBuilder.setTitle(R.string.save_image);
+
+                // Set the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    dialogBuilder.setIcon(R.drawable.images_enabled_day);
+                } else {
+                    dialogBuilder.setIcon(R.drawable.images_enabled_night);
+                }
                 break;
         }
 
@@ -184,20 +168,20 @@ public class SaveDialog extends DialogFragment {
         // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the dialog fragment to the parent activity.
-            saveWebpageListener.onSaveWebpage(saveType, this);
+            saveListener.onSave(saveType, this);
         });
 
         // Create an alert dialog from the builder.
         AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the incorrect lint warning below that the window might be null.
+        // Remove the incorrect lint warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
 
         // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         // Get the screenshot preference.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -208,67 +192,17 @@ public class SaveDialog extends DialogFragment {
         alertDialog.show();
 
         // Get handles for the layout items.
-        EditText urlEditText = alertDialog.findViewById(R.id.url_edittext);
         EditText fileNameEditText = alertDialog.findViewById(R.id.file_name_edittext);
         Button browseButton = alertDialog.findViewById(R.id.browse_button);
-        TextView fileSizeTextView = alertDialog.findViewById(R.id.file_size_textview);
         TextView fileExistsWarningTextView = alertDialog.findViewById(R.id.file_exists_warning_textview);
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        // Remove the incorrect warnings that the views might be null.
-        assert urlEditText != null;
+        // Remove the incorrect lint warnings below that the views might be null.
         assert fileNameEditText != null;
         assert browseButton != null;
-        assert fileSizeTextView != null;
         assert fileExistsWarningTextView != null;
         assert storagePermissionTextView != null;
-
-        // Set the file size text view.
-        fileSizeTextView.setText(fileSizeString);
-
-        // Modify the layout based on the save type.
-        if (saveType == StoragePermissionDialog.SAVE_URL) {  // A URL is being saved.
-            // Populate the URL edit text.  This must be done before the text change listener is created below so that the file size isn't requested again.
-            urlEditText.setText(urlString);
-
-            // Update the file size and the status of the save button when the URL changes.
-            urlEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    // Do nothing.
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    // Do nothing.
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    // Cancel the get URL size AsyncTask if it is running.
-                    if ((getUrlSize != null)) {
-                        getUrlSize.cancel(true);
-                    }
-
-                    // Get the current URL to save.
-                    String urlToSave = urlEditText.getText().toString();
-
-                    // Wipe the file size text view.
-                    fileSizeTextView.setText("");
-
-                    // Get the file size for the current URL.
-                    getUrlSize = new GetUrlSize(context, alertDialog, userAgentString, cookiesEnabled).execute(urlToSave);
-
-                    // Enable the save button if the URL and file name are populated.
-                    saveButton.setEnabled(!urlToSave.isEmpty() && !fileNameEditText.getText().toString().isEmpty());
-                }
-            });
-        } else {  // An archive or an image is being saved.
-            // Hide the URL edit text and the file size text view.
-            urlEditText.setVisibility(View.GONE);
-            fileSizeTextView.setVisibility(View.GONE);
-        }
 
         // Update the status of the save button when the file name changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {
@@ -299,52 +233,42 @@ public class SaveDialog extends DialogFragment {
                     fileExistsWarningTextView.setVisibility(View.GONE);
                 }
 
-                // Enable the save button based on the save type.
-                if (saveType == StoragePermissionDialog.SAVE_URL) {  // A URL is being saved.
-                    // Enable the save button if the file name and the URL is populated.
-                    saveButton.setEnabled(!fileNameString.isEmpty() && !urlEditText.getText().toString().isEmpty());
-                } else {  // An archive or an image is being saved.
-                    // Enable the save button if the file name is populated.
-                    saveButton.setEnabled(!fileNameString.isEmpty());
-                }
+                // Enable the save button if the file name is populated.
+                saveButton.setEnabled(!fileNameString.isEmpty());
             }
         });
 
-        // Create a file name string.
-        String fileName = "";
-
         // Set the file name according to the type.
         switch (saveType) {
-            case StoragePermissionDialog.SAVE_URL:
-                // Use the file name from the content disposition.
-                fileName = contentDispositionFileNameString;
+            case SAVE_LOGCAT:
+                // Use a file name ending in `.txt`.
+                fileName = getString(R.string.privacy_browser_logcat_txt);
                 break;
 
-            case StoragePermissionDialog.SAVE_AS_ARCHIVE:
-                // Use an archive name ending in `.mht`.
-                fileName = getString(R.string.webpage_mht);
+            case SAVE_ABOUT_VERSION_TEXT:
+                // Use a file name ending in `.txt`.
+                fileName = getString(R.string.privacy_browser_version_txt);
                 break;
 
-            case StoragePermissionDialog.SAVE_AS_IMAGE:
+            case SAVE_ABOUT_VERSION_IMAGE:
                 // Use a file name ending in `.png`.
-                fileName = getString(R.string.webpage_png);
+                fileName = getString(R.string.privacy_browser_version_png);
                 break;
         }
-
-        // Save the file name as the default file name.  This must be final to be used in the lambda below.
-        final String defaultFileName = fileName;
 
         // Instantiate the download location helper.
         DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
 
         // Get the default file path.
-        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + defaultFileName;
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + fileName;
 
-        // Populate the file name edit text.
+        // Display the default file path.
         fileNameEditText.setText(defaultFilePath);
 
-        // Move the cursor to the end of the default file path.
-        fileNameEditText.setSelection(defaultFilePath.length());
+        // Hide the storage permission text view if the permission has already been granted.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            storagePermissionTextView.setVisibility(View.GONE);
+        }
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {
@@ -354,8 +278,8 @@ public class SaveDialog extends DialogFragment {
             // Set the intent MIME type to include all files so that everything is visible.
             browseIntent.setType("*/*");
 
-            // Set the initial file name according to the type.
-            browseIntent.putExtra(Intent.EXTRA_TITLE, defaultFileName);
+            // Set the initial file name.
+            browseIntent.putExtra(Intent.EXTRA_TITLE, fileName);
 
             // Set the initial directory if the minimum API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
@@ -365,14 +289,9 @@ public class SaveDialog extends DialogFragment {
             // Request a file that can be opened.
             browseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
-            // Start the file picker.  This must be started under `activity` so that the request code is returned correctly.
-            activity.startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_SAVE_WEBPAGE_REQUEST_CODE);
+            // Launch the file picker.  There is only one `startActivityForResult()`, so the request code is simply set to 0, but it must be run under `activity` so the request code is correct.
+            activity.startActivityForResult(browseIntent, 0);
         });
-
-        // Hide the storage permission text view if the permission has already been granted.
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            storagePermissionTextView.setVisibility(View.GONE);
-        }
 
         // Return the alert dialog.
         return alertDialog;

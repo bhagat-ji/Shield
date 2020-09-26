@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,70 +29,71 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.core.content.FileProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.ref.WeakReference;
 
-public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
+public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
     // Declare the weak references.
     private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
-    private WeakReference<NestedScrollWebView> nestedScrollWebViewWeakReference;
+    private WeakReference<LinearLayout> aboutVersionLinearLayoutWeakReference;
 
     // Declare the class constants.
     private final String SUCCESS = "Success";
 
     // Declare the class variables.
     private Snackbar savingImageSnackbar;
-    private Bitmap webpageBitmap;
+    private Bitmap aboutVersionBitmap;
     private String filePathString;
 
     // The public constructor.
-    public SaveWebpageImage(Context context, Activity activity, String filePathString, NestedScrollWebView nestedScrollWebView) {
+    public SaveAboutVersionImage(Context context, Activity activity, String filePathString, LinearLayout aboutVersionLinearLayout) {
         // Populate the weak references.
         contextWeakReference = new WeakReference<>(context);
         activityWeakReference = new WeakReference<>(activity);
-        nestedScrollWebViewWeakReference = new WeakReference<>(nestedScrollWebView);
+        aboutVersionLinearLayoutWeakReference = new WeakReference<>(aboutVersionLinearLayout);
 
-        // Populate the class variables.
+        // Store the class variables.
         this.filePathString = filePathString;
     }
 
     // `onPreExecute()` operates on the UI thread.
     @Override
     protected void onPreExecute() {
-        // Get handles for the activity and the nested scroll WebView.
+        // Get handles for the activity and the linear layout.
         Activity activity = activityWeakReference.get();
-        NestedScrollWebView nestedScrollWebView = nestedScrollWebViewWeakReference.get();
+        LinearLayout aboutVersionLinearLayout = aboutVersionLinearLayoutWeakReference.get();
 
-        // Abort if the activity or the nested scroll WebView is gone.
-        if ((activity == null) || activity.isFinishing() || nestedScrollWebView == null) {
+        // Abort if the activity or the linear layout is gone.
+        if ((activity == null) || activity.isFinishing() || aboutVersionLinearLayout == null) {
             return;
         }
 
         // Create a saving image snackbar.
-        savingImageSnackbar = Snackbar.make(nestedScrollWebView, activity.getString(R.string.processing_image) + "  " + filePathString, Snackbar.LENGTH_INDEFINITE);
+        savingImageSnackbar = Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.processing_image) + "  " + filePathString, Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving image snackbar.
         savingImageSnackbar.show();
 
-        // Create a webpage bitmap.  Once the Minimum API >= 26 Bitmap.Config.RBGA_F16 can be used instead of ARGB_8888.  The nested scroll WebView commands must be run on the UI thread.
-        webpageBitmap = Bitmap.createBitmap(nestedScrollWebView.getHorizontalScrollRange(), nestedScrollWebView.getVerticalScrollRange(), Bitmap.Config.ARGB_8888);
+        // Create the about version bitmap.  This can be replaced by PixelCopy once the minimum API >= 26.
+        // Once the Minimum API >= 26 Bitmap.Config.RBGA_F16 can be used instead of ARGB_8888.  The linear layout commands must be run on the UI thread.
+        aboutVersionBitmap = Bitmap.createBitmap(aboutVersionLinearLayout.getWidth(), aboutVersionLinearLayout.getHeight(), Bitmap.Config.ARGB_8888);
 
         // Create a canvas.
-        Canvas webpageCanvas = new Canvas(webpageBitmap);
+        Canvas aboutVersionCanvas = new Canvas(aboutVersionBitmap);
 
-        // Draw the current webpage onto the bitmap.  The nested scroll WebView commands must be run on the UI thread.
-        nestedScrollWebView.draw(webpageCanvas);
+        // Draw the current about version onto the bitmap.  The linear layout commands must be run on the UI thread.
+        aboutVersionLinearLayout.draw(aboutVersionCanvas);
     }
 
     @Override
@@ -101,15 +102,15 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
         Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
-        if ((activity == null) || activity.isFinishing()) {
+        if (((activity == null) || activity.isFinishing())) {
             return "";
         }
 
-        // Create a webpage PNG byte array output stream.
-        ByteArrayOutputStream webpageByteArrayOutputStream = new ByteArrayOutputStream();
+        // Create an about version PNG byte array output stream.
+        ByteArrayOutputStream aboutVersionByteArrayOutputStream = new ByteArrayOutputStream();
 
         // Convert the bitmap to a PNG.  `0` is for lossless compression (the only option for a PNG).  This compression takes a long time.  Once the minimum API >= 30 this could be replaced with WEBP_LOSSLESS.
-        webpageBitmap.compress(Bitmap.CompressFormat.PNG, 0, webpageByteArrayOutputStream);
+        aboutVersionBitmap.compress(Bitmap.CompressFormat.PNG, 0, aboutVersionByteArrayOutputStream);
 
         // Get a file for the image.
         File imageFile = new File(filePathString);
@@ -128,7 +129,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
             FileOutputStream imageFileOutputStream = new FileOutputStream(imageFile);
 
             // Write the webpage image to the image file.
-            webpageByteArrayOutputStream.writeTo(imageFileOutputStream);
+            aboutVersionByteArrayOutputStream.writeTo(imageFileOutputStream);
 
             // Create a media scanner intent, which adds items like pictures to Android's recent file list.
             Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -143,7 +144,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
             fileCreationDisposition = exception.toString();
         }
 
-        // Return the file creation disposition string.
+        // return the file creation disposition string.
         return fileCreationDisposition;
     }
 
@@ -153,7 +154,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
         // Get handles for the weak references.
         Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
-        NestedScrollWebView nestedScrollWebView = nestedScrollWebViewWeakReference.get();
+        LinearLayout aboutVersionLinearLayout = aboutVersionLinearLayoutWeakReference.get();
 
         // Abort if the activity is gone.
         if ((activity == null) || activity.isFinishing()) {
@@ -166,7 +167,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
         // Display a file creation disposition snackbar.
         if (fileCreationDisposition.equals(SUCCESS)) {
             // Create a file saved snackbar.
-            Snackbar imageSavedSnackbar = Snackbar.make(nestedScrollWebView, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_SHORT);
+            Snackbar imageSavedSnackbar = Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_SHORT);
 
             // Add an open action.
             imageSavedSnackbar.setAction(R.string.open, (View view) -> {
@@ -202,8 +203,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
             // Show the image saved snackbar.
             imageSavedSnackbar.show();
         } else {
-            // Display the file saving error.
-            Snackbar.make(nestedScrollWebView, activity.getString(R.string.error_saving_file) + "  " + fileCreationDisposition, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.error_saving_file) + "  " + fileCreationDisposition, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 }

@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,7 +49,7 @@ import java.net.URL;
 import java.text.NumberFormat;
 
 public class SaveUrl extends AsyncTask<String, Long, String> {
-    // Define a weak references for the calling context and activity.
+    // Define a weak references.
     private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
 
@@ -248,7 +247,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         // Check to see if a download percentage has been calculated.
         if (downloadPercentage[0] < 0) {  // There is no download percentage.  The negative number represents the raw downloaded kilobytes.
             // Calculate the number of bytes downloaded.  When the `downloadPercentage` is negative, it is actually the raw number of kilobytes downloaded.
-            long numberOfBytesDownloaded = 0 - downloadPercentage[0];
+            long numberOfBytesDownloaded = - downloadPercentage[0];
 
             // Format the number of bytes downloaded.
             String formattedNumberOfBytesDownloaded = NumberFormat.getInstance().format(numberOfBytesDownloaded);
@@ -286,11 +285,11 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
             // Add an open action if the file is not an APK on API >= 26 (that scenario requires the REQUEST_INSTALL_PACKAGES permission).
             if (!(Build.VERSION.SDK_INT >= 26 && filePathString.endsWith(".apk"))) {
-                fileSavedSnackbar.setAction(R.string.open, (View v) -> {
+                fileSavedSnackbar.setAction(R.string.open, (View view) -> {
                     // Get a file for the file path string.
                     File file = new File(filePathString);
 
-                    // Define a file URI variable
+                    // Declare a file URI variable.
                     Uri fileUri;
 
                     // Get the URI for the file according to the Android version.
@@ -316,14 +315,8 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                     // Allow the app to read the file URI.
                     openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    // Try the intent.
-                    try {
-                        // Show the chooser.
-                        activity.startActivity(openIntent);
-                    } catch (ActivityNotFoundException exception) {  // There are no apps available to open the URL.
-                        // Show a snackbar with the error.
-                        Snackbar.make(noSwipeViewPager, activity.getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
-                    }
+                    // Show the chooser.
+                    activity.startActivity(Intent.createChooser(openIntent, context.getString(R.string.open)));
                 });
             }
 

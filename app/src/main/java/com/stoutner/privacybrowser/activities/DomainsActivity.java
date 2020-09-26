@@ -330,12 +330,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         // Get the ID of the menu item that was selected.
-        int menuItemID = menuItem.getItemId();
+        int menuItemId = menuItem.getItemId();
 
         // Get a handle for the fragment manager.
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        switch (menuItemID) {
+        switch (menuItemId) {
             case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
                 if (twoPanedMode) {  // The device is in two-paned mode.
                     // Save the current domain settings if the domain settings fragment is displayed.

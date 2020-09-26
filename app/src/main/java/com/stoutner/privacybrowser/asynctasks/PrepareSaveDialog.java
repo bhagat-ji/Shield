@@ -29,7 +29,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.dialogs.SaveDialog;
+import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 import java.lang.ref.WeakReference;
@@ -172,7 +172,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
         }
 
         // Instantiate the save dialog.
-        DialogFragment saveDialogFragment = SaveDialog.saveUrl(saveType, urlString, fileStringArray[0], fileStringArray[1], userAgent, cookiesEnabled);
+        DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(saveType, urlString, fileStringArray[0], fileStringArray[1], userAgent, cookiesEnabled);
 
         // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
         saveDialogFragment.show(fragmentManager, activity.getString(R.string.save_dialog));

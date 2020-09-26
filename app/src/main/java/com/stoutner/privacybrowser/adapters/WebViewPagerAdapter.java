@@ -136,6 +136,7 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
     }
 
     public WebViewTabFragment getPageFragment(int pageNumber) {
+        // Return the page fragment.
         return webViewFragmentsList.get(pageNumber);
     }
 }

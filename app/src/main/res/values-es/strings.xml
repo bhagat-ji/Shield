@@ -157,14 +157,12 @@
         <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>
         <string name="wide_viewport">Vista amplia</string>
         <string name="display_images">Mostrar imágenes</string>
+        <string name="dark_webview">WebView oscuro</string>
         <string name="font_size">Tamaño de fuente</string>
         <string name="find_on_page">Buscar en página</string>
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
         <string name="save">Guardar</string>
-            <string name="save_url">Guardar URL</string>
-            <string name="save_as_archive">Guardar como archivo</string>
-            <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
@@ -188,23 +186,23 @@
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
 
-    <!-- Save. -->
-    <string name="file_name">Nombre de archivo</string>
+    <!-- Save Dialogs. -->
+    <string name="save_url">Guardar URL</string>
     <string name="save_archive">Guardar archivo</string>
     <string name="save_image">Guardar imagen</string>
+    <string name="save_logcat">Guardar logcat</string>
+    <string name="file_name">Nombre de archivo</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
     <string name="file">Archivo</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="invalid_url">URL inválida</string>
     <string name="ok">OK</string>
     <string name="saving_file">Guardando archivo:</string>
-    <string name="saving_image">Guardando imagen…</string>
     <string name="file_saved">Archivo guardado:</string>
-    <string name="image_saved">Imagen guardada.</string>
     <string name="error_saving_file">Error guardando archivo:</string>
-    <string name="error_saving_image">Error guardando imagen:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Cabeceras de solicitud</string>
@@ -379,10 +377,6 @@
     <string name="copy_string">Copiar</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat copiado.</string>
     <string name="clear">Borrar</string>
-    <string name="save_logcat">Guardar logcat</string>
-    <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
-    <string name="file_saved_successfully">Archivo guardado con éxito.</string>
-    <string name="save_failed">Error al guardar:</string>
 
     <!-- Guide. -->
     <string name="overview">Visión general</string>
@@ -421,6 +415,15 @@
     <string name="orbot">Orbot:</string>
     <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
+    <string name="memory_usage">Uso de memoria</string>
+    <string name="app_consumed_memory">Memoria conumida de la app:</string>
+    <string name="app_available_memory">Memoria disponible de la app:</string>
+    <string name="app_total_memory">Memoria total de la app:</string>
+    <string name="app_maximum_memory">Memoria máxima de la app:</string>
+    <string name="system_consumed_memory">Memoria consumida del sistema:</string>
+    <string name="system_available_memory">Memoria disponible del sistema:</string>
+    <string name="system_total_memory">Memoria total del sistema:</string>
+    <string name="mebibyte">MiB</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Lista molesta de Fanboy:</string>

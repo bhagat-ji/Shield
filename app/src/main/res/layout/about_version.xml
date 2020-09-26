@@ -25,11 +25,14 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent" >
 
+    <!-- The background needs to be specified here so that it appears if about version is saved as an image. -->
     <LinearLayout
+        android:id="@+id/about_version_linearlayout"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:padding="16dp" >
+        android:padding="16dp"
+        android:background="?android:attr/colorBackground" >
 
         <!-- The `RelativeLayout` contains the header. -->
         <RelativeLayout
@@ -81,6 +84,7 @@
 
             <!-- Hardware. -->
             <TextView
+                android:id="@+id/hardware"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/hardware"
@@ -126,6 +130,7 @@
 
             <!-- Software. -->
             <TextView
+                android:id="@+id/software"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/software"
@@ -184,6 +189,7 @@
 
             <!-- Memory usage. -->
             <TextView
+                android:id="@+id/memory_usage"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/memory_usage"
@@ -236,6 +242,7 @@
 
             <!-- Blocklists. -->
             <TextView
+                android:id="@+id/blocklists"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/blocklists"
@@ -282,6 +289,7 @@
 
             <!-- Package Signature. -->
             <TextView
+                android:id="@+id/package_signature"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/package_signature"

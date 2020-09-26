@@ -53,7 +53,10 @@
         <item name="editIcon">@drawable/edit_day</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_day</item>
         <item name="saveIcon">@drawable/save_day</item>
+        <item name="saveImageIcon">@drawable/images_options_day</item>
+        <item name="saveTextIcon">@drawable/save_text_day</item>
         <item name="selectAllIcon">@drawable/select_all_day</item>
+        <item name="shareIcon">@drawable/share_day</item>
         <item name="sortIcon">@drawable/sort_day</item>
     </style>
 

@@ -157,14 +157,12 @@
         <string name="swipe_to_refresh_options_menu">Swipe per aggiornare</string>
         <string name="wide_viewport">Finestra grande</string>
         <string name="display_images">Mostra immagini</string>
+        <string name="dark_webview">Dark WebView</string>
         <string name="font_size">Dimensione font</string>
         <string name="find_on_page">Cerca nella pagina</string>
         <string name="print">Stampa</string>
             <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
         <string name="save">Salva</string>
-            <string name="save_url">Salva URL</string>
-            <string name="save_as_archive">Salva come Archivio</string>
-            <string name="save_as_image">Salva come Immagine</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
     <string name="share">Condividi</string>
@@ -188,23 +186,23 @@
     <string name="previous">Precedente</string>
     <string name="next">Successivo</string>
 
-    <!-- Save. -->
-    <string name="file_name">Nome File</string>
+    <!-- Save Dialogs. -->
+    <string name="save_url">Salva URL</string>
     <string name="save_archive">Salva Archivio</string>
     <string name="save_image">Salva Immagine</string>
+    <string name="save_logcat">Salva il log</string>
+    <string name="file_name">Nome File</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="file">File</string>
     <string name="bytes">byte</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="invalid_url">URL non valida</string>
     <string name="ok">OK</string>
     <string name="saving_file">Salvataggio file:</string>
-    <string name="saving_image">Salvataggio immagine…</string>
     <string name="file_saved">File salvato:</string>
-    <string name="image_saved">Immagine salvata.</string>
     <string name="error_saving_file">Errore salvataggio file:</string>
-    <string name="error_saving_image">Errore nel salvare l\'immagine:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Richiesta Intestazioni</string>
@@ -378,10 +376,6 @@
     <string name="copy_string">Copia</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat copiato.</string>
     <string name="clear">Cancella</string>
-    <string name="save_logcat">Salva il log</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="file_saved_successfully">File salvato.</string>
-    <string name="save_failed">Errore di salvataggio:</string>
 
     <!-- Guide. -->
     <string name="overview">Descrizione</string>
@@ -420,6 +414,15 @@
     <string name="orbot">Orbot:</string>
     <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
+    <string name="memory_usage">Utilizzo della Memoria</string>
+    <string name="app_consumed_memory">Memoria utilizzata dalla App:</string>
+    <string name="app_available_memory">Memoria disponibile App:</string>
+    <string name="app_total_memory">Memoria totale App:</string>
+    <string name="app_maximum_memory">Memoria massima App:</string>
+    <string name="system_consumed_memory">Memoria di sistema utilizzata:</string>
+    <string name="system_available_memory">Memoria di sistema disponibile:</string>
+    <string name="system_total_memory">Memoria totale del sistema:</string>
+    <string name="mebibyte">MiB</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
