@@ -5411,7 +5411,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // Get the file name from the content disposition.
-            String fileNameString = PrepareSaveDialog.getFileNameFromContentDisposition(this, contentDisposition, downloadUrl);
+            String fileNameString = PrepareSaveDialog.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
 
             // Instantiate the save dialog.
             DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,

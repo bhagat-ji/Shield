@@ -24,6 +24,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
+import android.webkit.MimeTypeMap;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
@@ -124,11 +125,18 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
                     formattedFileSize = context.getString(R.string.invalid_url);
 
                     // Set the file name according to the URL.
-                    fileNameString = getFileNameFromUrl(context, urlString);
+                    fileNameString = getFileNameFromUrl(context, urlString, null);
                 } else {  // The response code is not an error message.
-                    // Get the content length and disposition headers.
+                    // Get the headers.
                     String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
                     String contentDispositionString = httpUrlConnection.getHeaderField("Content-Disposition");
+                    String contentTypeString = httpUrlConnection.getContentType();
+
+                    // Remove anything after the MIME type in the content type string.
+                    if (contentTypeString.contains(";")) {
+                        // Remove everything beginning with the `;`.
+                        contentTypeString = contentTypeString.substring(0, contentTypeString.indexOf(";"));
+                    }
 
                     // Only process the content length string if it isn't null.
                     if (contentLengthString != null) {
@@ -140,7 +148,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
                     }
 
                     // Get the file name string from the content disposition.
-                    fileNameString = getFileNameFromContentDisposition(context, contentDispositionString, urlString);
+                    fileNameString = getFileNameFromHeaders(context, contentDispositionString, contentTypeString, urlString);
                 }
             } finally {
                 // Disconnect the HTTP URL connection.
@@ -151,7 +159,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
             formattedFileSize = context.getString(R.string.invalid_url);
 
             // Set the file name according to the URL.
-            fileNameString = getFileNameFromUrl(context, urlString);
+            fileNameString = getFileNameFromUrl(context, urlString, null);
         }
 
         // Return the formatted file size and name as a string array.
@@ -180,7 +188,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
 
     // Content dispositions can contain other text besides the file name, and they can be in any order.
     // Elements are separated by semicolons.  Sometimes the file names are contained in quotes.
-    public static String getFileNameFromContentDisposition(Context context, String contentDispositionString, String urlString) {
+    public static String getFileNameFromHeaders(Context context, String contentDispositionString, String contentTypeString, String urlString) {
         // Define a file name string.
         String fileNameString;
 
@@ -208,20 +216,20 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
                     // Remove the last character.
                     fileNameString = fileNameString.substring(0, fileNameString.length() - 1);
                 }
-            } else {  // The content disposition does not contain a filename.
+            } else {  // The headers contain no useful information.
                 // Get the file name string from the URL.
-                fileNameString = getFileNameFromUrl(context, urlString);
+                fileNameString = getFileNameFromUrl(context, urlString, contentTypeString);
             }
         } else {  // The content disposition is null.
             // Get the file name string from the URL.
-            fileNameString = getFileNameFromUrl(context, urlString);
+            fileNameString = getFileNameFromUrl(context, urlString, contentTypeString);
         }
 
         // Return the file name string.
         return fileNameString;
     }
 
-    private static String getFileNameFromUrl(Context context, String urlString) {
+    private static String getFileNameFromUrl(Context context, String urlString, String contentTypeString) {
         // Convert the URL string to a URI.
         Uri uri = Uri.parse(urlString);
 
@@ -231,6 +239,11 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
         // Use a default file name if the last path segment is null.
         if (lastPathSegment == null) {
             lastPathSegment = context.getString(R.string.file);
+
+            if (MimeTypeMap.getSingleton().hasMimeType(contentTypeString)) {  // The content type contains a MIME type.
+                // Add the file extension that matches the MIME type.
+                lastPathSegment = lastPathSegment + "." + MimeTypeMap.getSingleton().getExtensionFromMimeType(contentTypeString);
+            }
         }
 
         // Return the last path segment as the file name.
