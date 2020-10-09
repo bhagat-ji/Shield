@@ -41,6 +41,7 @@
         android:layout_width="100dp"
         android:gravity="center_vertical"
         android:text="@string/new_tab"
+        android:textColor="?android:textColorPrimary"
         android:maxLines="2"
         android:ellipsize="end" />
 </LinearLayout>

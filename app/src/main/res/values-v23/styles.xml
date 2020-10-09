@@ -36,7 +36,7 @@
         <item name="redTextColor">@color/red_a700</item>
 
         <!-- Tints. -->
-        <item name="addTabIconTintColor">@color/gray_700</item>
+        <item name="addTabIconTintColor">@color/gray_925</item>
         <item name="domainSettingsIconTintColor">@color/blue_800</item>
         <item name="fabIconTintColor">@color/white</item>
         <item name="findOnPageIconTintColor">@color/blue_800</item>

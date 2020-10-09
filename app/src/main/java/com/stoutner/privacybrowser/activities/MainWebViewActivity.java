@@ -6291,7 +6291,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Clear the cache and history if Incognito Mode is enabled.
+                // Clear the cache, history, and logcat if Incognito Mode is enabled.
                 if (incognitoModeEnabled) {
                     // Clear the cache.  `true` includes disk files.
                     nestedScrollWebView.clearCache(true);
@@ -6311,8 +6311,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Delete the secondary `Service Worker` cache directory.
                         // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
                         Runtime.getRuntime().exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
-                    } catch (IOException e) {
+                    } catch (IOException exception) {
                         // Do nothing if an error is thrown.
+                    }
+
+                    // Clear the logcat.
+                    try {
+                        // Clear the logcat.  `-c` clears the logcat.  `-b all` clears all the buffers (instead of just crash, main, and system).
+                        Runtime.getRuntime().exec("logcat -b all -c");
+                    } catch (IOException exception) {
+                        // Do nothing.
                     }
                 }
 
