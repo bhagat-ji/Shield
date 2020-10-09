@@ -14,6 +14,6 @@
 
     <!-- A hard coded color must be used until API >= 21.  Then `@color` or `?attr/colorControlNormal` may be used. -->
     <path
-        android:fillColor="#FF616161"
+        android:fillColor="#FF202020"
         android:pathData="M4,4C2.9,4 2.01,4.9 2.01,6L2,18C2,19.1 2.9,20 4,20L20,20C21.1,20 22,19.1 22,18L22,8C22,6.9 21.1,6 20,6L12,6L10,4L4,4zM13.75,7.83L18.75,12.83L13.75,17.83L12.34,16.421L14.92,13.83L5.25,13.83L5.25,11.83L14.92,11.83L12.34,9.24L13.75,7.83z" />
 </vector>

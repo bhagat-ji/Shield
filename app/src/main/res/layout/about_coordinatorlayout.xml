@@ -31,11 +31,13 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
+        <!-- The app bar theme must be specified here because the activity uses a `NoActionBar` theme. -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/about_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:background="?android:attr/colorBackground" >
+            android:background="?android:attr/colorBackground"
+            android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" >
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/about_toolbar"

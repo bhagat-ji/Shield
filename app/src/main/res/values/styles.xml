@@ -44,12 +44,11 @@
         <!-- Drawables. -->
         <item name="listSelectorDrawable">@drawable/list_selector_day</item>
 
-        <!-- Icons. -->
+        <!-- Options Icons. -->
         <item name="aboutIcon">@drawable/about_day</item>
         <item name="closeIcon">@drawable/close_day</item>
         <item name="copyIcon">@drawable/copy_day</item>
         <item name="deleteIcon">@drawable/delete_day</item>
-        <item name="domainsIcon">@drawable/domains_day</item>
         <item name="editIcon">@drawable/edit_day</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_day</item>
         <item name="saveIcon">@drawable/save_day</item>
@@ -58,6 +57,12 @@
         <item name="selectAllIcon">@drawable/select_all_day</item>
         <item name="shareIcon">@drawable/share_day</item>
         <item name="sortIcon">@drawable/sort_day</item>
+
+        <!-- Dialog Icons. -->
+        <item name="aboutBlueIcon">@drawable/about_blue_day</item>
+        <item name="domainsBlueIcon">@drawable/domains_day</item>
+        <item name="fontSizeBlueIcon">@drawable/font_size_day</item>
+        <item name="lockBlueIcon">@drawable/lock_day</item>
     </style>
 
     <style name="PrivacyBrowserSettings" parent="Theme.AppCompat.DayNight" >

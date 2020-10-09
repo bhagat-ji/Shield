@@ -85,15 +85,8 @@ class FontSizeDialog: DialogFragment() {
         // Use a builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
         // Set the icon according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            dialogBuilder.setIcon(R.drawable.font_size_day)
-        } else {
-            dialogBuilder.setIcon(R.drawable.font_size_night)
-        }
+        dialogBuilder.setIconAttribute(R.attr.fontSizeBlueIcon)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.font_size)

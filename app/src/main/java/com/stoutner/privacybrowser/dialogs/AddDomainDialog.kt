@@ -94,7 +94,7 @@ class AddDomainDialog: DialogFragment() {
         val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the icon according to the theme.
-        dialogBuilder.setIconAttribute(R.attr.domainsIcon)
+        dialogBuilder.setIconAttribute(R.attr.domainsBlueIcon)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.add_domain)

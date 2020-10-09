@@ -108,16 +108,8 @@ class HttpAuthenticationDialog: DialogFragment() {
             // Use an alert dialog builder to create the alert dialog.
             val dialogBuilder = AlertDialog.Builder(requireActivity(), R.style.PrivacyBrowserAlertDialog)
 
-            // Get the current theme status.
-            val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
             // Set the icon according to the theme.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                dialogBuilder.setIcon(R.drawable.lock_day)
-            } else {
-
-                dialogBuilder.setIcon(R.drawable.lock_night)
-            }
+            dialogBuilder.setIconAttribute(R.attr.lockBlueIcon)
 
             // Set the title.
             dialogBuilder.setTitle(R.string.http_authentication)
@@ -179,6 +171,9 @@ class HttpAuthenticationDialog: DialogFragment() {
             // Initialize the host label and the spannable string builder.
             val hostLabel = getString(R.string.host) + "  "
             val hostStringBuilder = SpannableStringBuilder(hostLabel + httpAuthHost)
+
+            // Get the current theme status.
+            val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
             // Create a blue foreground color span.
             val blueColorSpan: ForegroundColorSpan

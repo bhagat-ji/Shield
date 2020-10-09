@@ -39,13 +39,12 @@
     <!-- Drawables.  -->
     <attr name="listSelectorDrawable" format="reference" />
 
-    <!-- Icons. -->
+    <!-- Options Icons. -->
     <attr name="aboutIcon" format="reference" />
     <attr name="appThemeIcon" format="reference" />
     <attr name="closeIcon" format="reference" />
     <attr name="copyIcon" format="reference" />
     <attr name="deleteIcon" format="reference" />
-    <attr name="domainsIcon" format="reference" />
     <attr name="downloadIcon" format="reference" />
     <attr name="editIcon" format="reference" />
     <attr name="fontSizeIcon" format="reference" />
@@ -59,4 +58,10 @@
     <attr name="shareIcon" format="reference" />
     <attr name="sortIcon" format="reference" />
     <attr name="userAgentIcon" format="reference" />
+
+    <!-- Dialog Icons. -->
+    <attr name="aboutBlueIcon" format="reference" />
+    <attr name="domainsBlueIcon" format="reference" />
+    <attr name="fontSizeBlueIcon" format="reference" />
+    <attr name="lockBlueIcon" format="reference" />
 </resources>

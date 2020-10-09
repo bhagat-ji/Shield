@@ -48,10 +48,12 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true" >
 
+                <!-- The app bar theme must be specified here because the activity uses a `NoActionBar` theme.  The background is set programmatically based on the proxy status. -->
                 <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/appbar_layout"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" >
+                    android:layout_width="match_parent"
+                    android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" >
 
                     <!-- The toolbar.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
                     <androidx.appcompat.widget.Toolbar
