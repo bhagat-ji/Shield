@@ -65,6 +65,10 @@
         <item name="lockBlueIcon">@drawable/lock_day</item>
     </style>
 
+    <style name="PrivacyBrowserAppBar" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" >
+        <item name="android:textColorHighlight">@color/blue_200</item>
+    </style>
+
     <style name="PrivacyBrowserSettings" parent="Theme.AppCompat.DayNight" >
         <!-- Colors. -->
         <item name="colorAccent">@color/blue_700</item>

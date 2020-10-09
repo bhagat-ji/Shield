@@ -53,7 +53,7 @@
                     android:id="@+id/appbar_layout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" >
+                    android:theme="@style/PrivacyBrowserAppBar" >
 
                     <!-- The toolbar.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
                     <androidx.appcompat.widget.Toolbar

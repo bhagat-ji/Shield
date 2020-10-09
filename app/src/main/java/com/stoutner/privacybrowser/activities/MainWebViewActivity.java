@@ -4845,6 +4845,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void closeCurrentTab() {
+        // Pause the current WebView.
+        currentWebView.onPause();
+
+        // Pause the current WebView JavaScript timers.
+        currentWebView.pauseTimers();
+
         // Get the current tab number.
         int currentTabNumber = tabLayout.getSelectedTabPosition();
 

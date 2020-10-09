@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:background="?android:attr/colorBackground"
-            android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" >
+            android:theme="@style/PrivacyBrowserAppBar" >
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/import_export_toolbar"
