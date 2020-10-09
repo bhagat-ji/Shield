@@ -196,6 +196,8 @@
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
     <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
+    <string name="privacy_browser_version_txt">Versión de Navegador Privado.txt</string>
+    <string name="privacy_browser_version_png">Versiótoutnern de Navegador Privado.png</string>
     <string name="file">Archivo</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">Tamaño desconocido</string>

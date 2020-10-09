@@ -158,6 +158,7 @@
         <string name="swipe_to_refresh_options_menu">Glisser pour actualiser</string>
         <string name="wide_viewport">Fenêtre large</string>
         <string name="display_images">Afficher les images</string>
+        <string name="dark_webview">WebView sombre</string>
         <string name="font_size">Police</string>
         <string name="find_on_page">Chercher sur la page</string>
         <string name="print">Imprimer</string>
@@ -189,18 +190,22 @@
     <!-- Save Dialogs. -->
     <string name="save_url">Enregistrer l\'URL</string>
     <string name="save_archive">Enregistrer l\'archive</string>
+    <string name="save_text">Sauvegarder le texte</string>
     <string name="save_image">Sauvegarder en tant qu\'image</string>
     <string name="save_logcat">Sauvegarder le journal système</string>
     <string name="file_name">Nom du fichier</string>
     <string name="webpage_mht">PageWeb.mht</string>
     <string name="webpage_png">PageWeb.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
+    <string name="privacy_browser_version_png">Privacy Browser Version.png</string>
     <string name="file">Fichier</string>
     <string name="bytes">octets</string>
     <string name="unknown_size">taille inconnue</string>
     <string name="invalid_url">URL invalide</string>
     <string name="ok">OK</string>
     <string name="saving_file">Enregistrement du fichier:</string>
+    <string name="processing_image">Traitement de l\'image… :</string>
     <string name="file_saved">Fichier enregistré:</string>
     <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier:</string>
 
@@ -414,6 +419,15 @@
             <string name="orbot">Orbot :</string>
             <string name="i2p">I2P :</string>
             <string name="openkeychain">OpenKeychain :</string>
+        <string name="memory_usage">Utilisation de la mémoire</string>
+            <string name="app_consumed_memory">Mémoire consommée par l\'application :</string>
+            <string name="app_available_memory">Mémoire disponible de l\'application :</string>
+            <string name="app_total_memory">Mémoire totale de l\'application :</string>
+            <string name="app_maximum_memory">Mémoire maximale de l\'application :</string>
+            <string name="system_consumed_memory">Mémoire consommée par le système :</string>
+            <string name="system_available_memory">Mémoire système disponible :</string>
+            <string name="system_total_memory">Mémoire totale du système :</string>
+            <string name="mebibyte">Mio</string>
             <string name="easylist_label">EasyList :</string>
             <string name="easyprivacy_label">EasyPrivacy :</string>
             <string name="fanboy_annoyance_label">Fanboy’s Annoyance List :</string>
@@ -426,6 +440,7 @@
             <string name="certificate_version">Version du certificat :</string>
             <string name="serial_number">Numéro de série :</string>
             <string name="signature_algorithm">Algorithme de chiffrement :</string>
+        <string name="version_info_copied">Informations de version copiées.</string>
     <string name="permissions">Permissions</string>
     <string name="privacy_policy">Politique de confidentialité</string>
     <string name="changelog">Journal des changements</string>

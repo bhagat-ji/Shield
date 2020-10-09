@@ -145,8 +145,8 @@
 
                 <data android:host="*" />
 
-                <!-- This pattern matches any file that starts with a `/`, has at least one character, followed by any number of other characters, terminating with `.mht`. -->
-                <data android:pathPattern="/.*\.mht" />
+                <!-- In the path pattern syntax, `.*` is a wildcard.  Hence, this matches any file path that ends in `.mht`.  <https://developer.android.com/guide/topics/manifest/data-element#path>  -->
+                <data android:pathPattern=".*.mht" />
                 <data android:mimeType="*/*" />
             </intent-filter>
 

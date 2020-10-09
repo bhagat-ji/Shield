@@ -4757,6 +4757,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the intent that started the app.
             Intent intent = getIntent();
 
+            // Reset the intent.  This prevents a duplicate tab from being created on restart.
+            setIntent(new Intent());
+
             // Get the information from the intent.
             String intentAction = intent.getAction();
             Uri intentUriData = intent.getData();
@@ -6451,6 +6454,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Get the intent that started the app.
             Intent launchingIntent = getIntent();
+
+            // Reset the intent.  This prevents a duplicate tab from being created on restart.
+            setIntent(new Intent());
 
             // Get the information from the intent.
             String launchingIntentAction = launchingIntent.getAction();
