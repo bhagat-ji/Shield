@@ -361,7 +361,6 @@
     <string name="file_exists_warning">Le fichier existe déjà. Si vous continuez, il sera écrasé.</string>
     <string name="openkeychain_required">Le chiffrement OpenPGP nécessite l\'installation d\'OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Le fichier non-chiffré devra être importé dans un deuxième temps, après son déchiffrement.</string>
-    <string name="settings_pbs">Settings.pbs</string>
     <string name="file_location">Emplacement du fichier</string>
     <string name="browse">Parcourir</string>
     <string name="export">Exporter</string>

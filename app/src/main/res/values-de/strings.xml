@@ -364,7 +364,6 @@
     <string name="file_exists_warning">Die Datei existiert bereits. Wenn Sie fortfahren, wird sie überschrieben.</string>
     <string name="openkeychain_required">Für die OpenPGP-Verschlüsselung muss OpenKeychain installiert sein.</string>
     <string name="openkeychain_import_instructions">Die unverschlüsselte Datei muss in einem weiteren Schritt importiert werden, nachdem sie entschlüsselt wurde.</string>
-    <string name="settings_pbs">Einstellungen.pbs</string>
     <string name="file_location">Datei-Ordner</string>
     <string name="browse">durchsuchen</string>
     <string name="export">exportieren</string>

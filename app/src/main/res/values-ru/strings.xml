@@ -357,7 +357,6 @@
     <string name="file_exists_warning">Файл уже существует. Если вы продолжите, он будет перезаписан.</string>
     <string name="openkeychain_required">Для использования шифрования OpenPGP необходимо приложение OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Незашифрованный файл должен быть импортирован на отдельном шаге после его дешифрования.</string>
-    <string name="settings_pbs">Настройки.pbs</string>
     <string name="file_location">Расположение файла</string>
     <string name="browse">Обзор</string>
     <string name="export">Экспорт</string>

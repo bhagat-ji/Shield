@@ -361,7 +361,6 @@
     <string name="file_exists_warning">El archivo ya existe. Si procede, se sobrescribirá.</string>
     <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
     <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
-    <string name="settings_pbs">Configuración.pbs</string>
     <string name="file_location">Ubicación del archivo</string>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>

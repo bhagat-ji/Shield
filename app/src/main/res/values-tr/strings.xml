@@ -333,7 +333,6 @@
     <string name="kitkat_password_encryption_message">Android KitKat sürümünde parola şifrelemesi çalışmaz.</string>
     <string name="openkeychain_required">OpenPGP şifrelemesinin çalışması için OpenKeychain yüklü olmalıdır.</string>
     <string name="openkeychain_import_instructions">Şifresi çözüldükten sonra, şifrelenmemiş dosya ayrı bir adımda içeri aktarılmak zorundadır.</string>
-    <string name="settings_pbs">Ayarlar.pbs</string>
     <string name="file_location">Dosya Konumu</string>
     <string name="browse">Gözat</string>
     <string name="export">Dışarı aktar</string>

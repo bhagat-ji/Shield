@@ -58,6 +58,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
@@ -191,7 +192,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
 
         // Get the default file path.
-        String defaultFilePath = downloadLocationHelper.getDownloadLocation(this) + "/" + getString(R.string.settings_pbs);
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(this) + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs";
 
         // Set the other default file paths.
         String defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
@@ -668,9 +669,9 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             // Set the initial export file name according to the encryption type.
             if (encryptionSpinner.getSelectedItemPosition() == NO_ENCRYPTION) {  // No encryption is selected.
-                exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings_pbs));
+                exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
             } else {  // Password encryption is selected.
-                exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings_pbs) + ".aes");
+                exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs.aes");
             }
 
             // Set the initial directory if the minimum API >= 26.
@@ -809,7 +810,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             case OPENPGP_EXPORT_RESULT_CODE:
                 // Get the temporary unencrypted export file.
-                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
+                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
 
                 // Delete the temporary unencrypted export file if it exists.
                 if (temporaryUnencryptedExportFile.exists()) {
@@ -833,7 +834,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
         // Get the export and temporary unencrypted export files.
         File exportFile = new File(exportFileString);
-        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
+        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
 
         // Create an export status string.
         String exportStatus;
@@ -1012,7 +1013,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             case PASSWORD_ENCRYPTION:
                 // Use a private temporary import location.
-                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
+                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
 
                 try {
                     // Create an encrypted import file input stream.
