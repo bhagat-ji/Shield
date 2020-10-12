@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
@@ -62,7 +63,7 @@ public class SaveWebpageDialog extends DialogFragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface SaveWebpageListener {
-        void onSaveWebpage(int saveType, DialogFragment dialogFragment);
+        void onSaveWebpage(int saveType, String originalUrlString, DialogFragment dialogFragment);
     }
 
     // Define the get URL size AsyncTask.  This allows previous instances of the task to be cancelled if a new one is run.
@@ -185,7 +186,7 @@ public class SaveWebpageDialog extends DialogFragment {
         // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the dialog fragment to the parent activity.
-            saveWebpageListener.onSaveWebpage(saveType, this);
+            saveWebpageListener.onSaveWebpage(saveType, urlString, this);
         });
 
         // Create an alert dialog from the builder.
@@ -232,8 +233,23 @@ public class SaveWebpageDialog extends DialogFragment {
 
         // Modify the layout based on the save type.
         if (saveType == StoragePermissionDialog.SAVE_URL) {  // A URL is being saved.
-            // Populate the URL edit text.  This must be done before the text change listener is created below so that the file size isn't requested again.
-            urlEditText.setText(urlString);
+            // Remove the incorrect lint error below that the URL string might be null.
+            assert urlString != null;
+
+            // Populate the URL edit text according to the type.  This must be done before the text change listener is created below so that the file size isn't requested again.
+            if (urlString.startsWith("data:")) {  // The URL contains the entire data of an image.
+                // Get a substring of the data URL with the first 100 characters.  Otherwise, the user interface will freeze while trying to layout the edit text.
+                String urlSubstring = urlString.substring(0, 100) + "…";
+
+                // Populate the URL edit text with the truncated URL.
+                urlEditText.setText(urlSubstring);
+
+                // Disable the editing of the URL edit text.
+                urlEditText.setInputType(InputType.TYPE_NULL);
+            } else {  // The URL contains a reference to the location of the data.
+                // Populate the URL edit text with the full URL.
+                urlEditText.setText(urlString);
+            }
 
             // Update the file size and the status of the save button when the URL changes.
             urlEditText.addTextChangedListener(new TextWatcher() {

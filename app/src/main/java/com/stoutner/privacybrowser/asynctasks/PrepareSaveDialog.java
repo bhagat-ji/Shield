@@ -79,87 +79,106 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
         // Get the URL string.
         urlString = urlToSave[0];
 
-        // Define the file name string.
+        // Define the strings.
+        String formattedFileSize;
         String fileNameString;
 
-        // Initialize the formatted file size string.
-        String formattedFileSize = context.getString(R.string.unknown_size);
+        // Populate the file size and name strings.
+        if (urlString.startsWith("data:")) {  // The URL contains the entire data of an image.
+            // Remove `data:` from the beginning of the URL.
+            String urlWithoutData = urlString.substring(5);
 
-        // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch exceptions.
-        try {
-            // Convert the URL string to a URL.
-            URL url = new URL(urlString);
+            // Get the URL MIME type, which end with a `;`.
+            String urlMimeType = urlWithoutData.substring(0, urlWithoutData.indexOf(";"));
 
-            // Instantiate the proxy helper.
-            ProxyHelper proxyHelper = new ProxyHelper();
+            // Get the Base64 data, which begins after a `,`.
+            String base64DataString = urlWithoutData.substring(urlWithoutData.indexOf(",") + 1);
 
-            // Get the current proxy.
-            Proxy proxy = proxyHelper.getCurrentProxy(context);
+            // Calculate the file size of the data URL.  Each Base64 character represents 6 bits.
+            formattedFileSize = NumberFormat.getInstance().format(base64DataString.length() * 3 / 4) + " " + context.getString(R.string.bytes);
 
-            // Open a connection to the URL.  No data is actually sent at this point.
-            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
+            // Set the file name according to the MIME type.
+            fileNameString = context.getString(R.string.file) + "." + MimeTypeMap.getSingleton().getExtensionFromMimeType(urlMimeType);
+        } else {  // The URL refers to the location of the data.
+            // Initialize the formatted file size string.
+            formattedFileSize = context.getString(R.string.unknown_size);
 
-            // Add the user agent to the header property.
-            httpUrlConnection.setRequestProperty("User-Agent", userAgent);
-
-            // Add the cookies if they are enabled.
-            if (cookiesEnabled) {
-                // Get the cookies for the current domain.
-                String cookiesString = CookieManager.getInstance().getCookie(url.toString());
-
-                // only add the cookies if they are not null.
-                if (cookiesString != null) {
-                    // Add the cookies to the header property.
-                    httpUrlConnection.setRequestProperty("Cookie", cookiesString);
-                }
-            }
-
-            // The actual network request is in a `try` bracket so that `disconnect()` is run in the `finally` section even if an error is encountered in the main block.
+            // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch exceptions.
             try {
-                // Get the status code.  This initiates a network connection.
-                int responseCode = httpUrlConnection.getResponseCode();
+                // Convert the URL string to a URL.
+                URL url = new URL(urlString);
 
-                // Check the response code.
-                if (responseCode >= 400) {  // The response code is an error message.
-                    // Set the formatted file size to indicate a bad URL.
-                    formattedFileSize = context.getString(R.string.invalid_url);
+                // Instantiate the proxy helper.
+                ProxyHelper proxyHelper = new ProxyHelper();
 
-                    // Set the file name according to the URL.
-                    fileNameString = getFileNameFromUrl(context, urlString, null);
-                } else {  // The response code is not an error message.
-                    // Get the headers.
-                    String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
-                    String contentDispositionString = httpUrlConnection.getHeaderField("Content-Disposition");
-                    String contentTypeString = httpUrlConnection.getContentType();
+                // Get the current proxy.
+                Proxy proxy = proxyHelper.getCurrentProxy(context);
 
-                    // Remove anything after the MIME type in the content type string.
-                    if (contentTypeString.contains(";")) {
-                        // Remove everything beginning with the `;`.
-                        contentTypeString = contentTypeString.substring(0, contentTypeString.indexOf(";"));
+                // Open a connection to the URL.  No data is actually sent at this point.
+                HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
+
+                // Add the user agent to the header property.
+                httpUrlConnection.setRequestProperty("User-Agent", userAgent);
+
+                // Add the cookies if they are enabled.
+                if (cookiesEnabled) {
+                    // Get the cookies for the current domain.
+                    String cookiesString = CookieManager.getInstance().getCookie(url.toString());
+
+                    // only add the cookies if they are not null.
+                    if (cookiesString != null) {
+                        // Add the cookies to the header property.
+                        httpUrlConnection.setRequestProperty("Cookie", cookiesString);
                     }
-
-                    // Only process the content length string if it isn't null.
-                    if (contentLengthString != null) {
-                        // Convert the content length string to a long.
-                        long fileSize = Long.parseLong(contentLengthString);
-
-                        // Format the file size.
-                        formattedFileSize = NumberFormat.getInstance().format(fileSize) + " " + context.getString(R.string.bytes);
-                    }
-
-                    // Get the file name string from the content disposition.
-                    fileNameString = getFileNameFromHeaders(context, contentDispositionString, contentTypeString, urlString);
                 }
-            } finally {
-                // Disconnect the HTTP URL connection.
-                httpUrlConnection.disconnect();
-            }
-        } catch (Exception exception) {
-            // Set the formatted file size to indicate a bad URL.
-            formattedFileSize = context.getString(R.string.invalid_url);
 
-            // Set the file name according to the URL.
-            fileNameString = getFileNameFromUrl(context, urlString, null);
+                // The actual network request is in a `try` bracket so that `disconnect()` is run in the `finally` section even if an error is encountered in the main block.
+                try {
+                    // Get the status code.  This initiates a network connection.
+                    int responseCode = httpUrlConnection.getResponseCode();
+
+                    // Check the response code.
+                    if (responseCode >= 400) {  // The response code is an error message.
+                        // Set the formatted file size to indicate a bad URL.
+                        formattedFileSize = context.getString(R.string.invalid_url);
+
+                        // Set the file name according to the URL.
+                        fileNameString = getFileNameFromUrl(context, urlString, null);
+                    } else {  // The response code is not an error message.
+                        // Get the headers.
+                        String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
+                        String contentDispositionString = httpUrlConnection.getHeaderField("Content-Disposition");
+                        String contentTypeString = httpUrlConnection.getContentType();
+
+                        // Remove anything after the MIME type in the content type string.
+                        if (contentTypeString.contains(";")) {
+                            // Remove everything beginning with the `;`.
+                            contentTypeString = contentTypeString.substring(0, contentTypeString.indexOf(";"));
+                        }
+
+                        // Only process the content length string if it isn't null.
+                        if (contentLengthString != null) {
+                            // Convert the content length string to a long.
+                            long fileSize = Long.parseLong(contentLengthString);
+
+                            // Format the file size.
+                            formattedFileSize = NumberFormat.getInstance().format(fileSize) + " " + context.getString(R.string.bytes);
+                        }
+
+                        // Get the file name string from the content disposition.
+                        fileNameString = getFileNameFromHeaders(context, contentDispositionString, contentTypeString, urlString);
+                    }
+                } finally {
+                    // Disconnect the HTTP URL connection.
+                    httpUrlConnection.disconnect();
+                }
+            } catch (Exception exception) {
+                // Set the formatted file size to indicate a bad URL.
+                formattedFileSize = context.getString(R.string.invalid_url);
+
+                // Set the file name according to the URL.
+                fileNameString = getFileNameFromUrl(context, urlString, null);
+            }
         }
 
         // Return the formatted file size and name as a string array.

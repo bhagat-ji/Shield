@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Base64;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
@@ -109,120 +110,134 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         // Define a save disposition string.
         String saveDisposition = SUCCESS;
 
-        // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch `IOExceptions`.
         try {
-            // Get the URL from the calling activity.
-            URL url = new URL(urlToSave[0]);
+            // Get the file.
+            File file = new File(filePathString);
 
-            // Instantiate the proxy helper.
-            ProxyHelper proxyHelper = new ProxyHelper();
-
-            // Get the current proxy.
-            Proxy proxy = proxyHelper.getCurrentProxy(context);
-
-            // Open a connection to the URL.  No data is actually sent at this point.
-            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
-
-            // Add the user agent to the header property.
-            httpUrlConnection.setRequestProperty("User-Agent", userAgent);
-
-            // Add the cookies if they are enabled.
-            if (cookiesEnabled) {
-                // Get the cookies for the current domain.
-                String cookiesString = CookieManager.getInstance().getCookie(url.toString());
-
-                // Only add the cookies if they are not null.
-                if (cookiesString != null) {
-                    // Add the cookies to the header property.
-                    httpUrlConnection.setRequestProperty("Cookie", cookiesString);
-                }
+            // Delete the file if it exists.
+            if (file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                file.delete();
             }
 
-            // The actual network request is in a `try` bracket so that `disconnect()` is run in the `finally` section even if an error is encountered in the main block.
-            try {
-                // Get the content length header, which causes the connection to the server to be made.
-                String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
+            // Create a new file.
+            //noinspection ResultOfMethodCallIgnored
+            file.createNewFile();
 
-                // Define the file size long.
-                long fileSize;
+            // Create an output file stream.
+            OutputStream fileOutputStream = new FileOutputStream(file);
 
-                // Make sure the content length isn't null.
-                if (contentLengthString != null) {  // The content length isn't null.
-                    // Convert the content length to an long.
-                    fileSize = Long.parseLong(contentLengthString);
-                } else {  // The content length is null.
-                    // Set the file size to be `-1`.
-                    fileSize = -1;
-                }
+            // Save the URL.
+            if (urlToSave[0].startsWith("data:")) {  // The URL contains the entire data of an image.
+                // Get the Base64 data, which begins after a `,`.
+                String base64DataString = urlToSave[0].substring(urlToSave[0].indexOf(",") + 1);
 
-                // Get the response body stream.
-                InputStream inputStream = new BufferedInputStream(httpUrlConnection.getInputStream());
+                // Decode the Base64 string to a byte array.
+                byte[] base64DecodedDataByteArray = Base64.decode(base64DataString, Base64.DEFAULT);
 
-                // Get the file.
-                File file = new File(filePathString);
+                // Write the Base64 byte array to the file output stream.
+                fileOutputStream.write(base64DecodedDataByteArray);
 
-                // Delete the file if it exists.
-                if (file.exists()) {
-                    //noinspection ResultOfMethodCallIgnored
-                    file.delete();
-                }
+                // Close the file output stream.
+                fileOutputStream.close();
+            } else {  // The URL points to the data location on the internet.
+                // Get the URL from the calling activity.
+                URL url = new URL(urlToSave[0]);
 
-                // Create a new file.
-                //noinspection ResultOfMethodCallIgnored
-                file.createNewFile();
+                // Instantiate the proxy helper.
+                ProxyHelper proxyHelper = new ProxyHelper();
 
-                // Create an output file stream.
-                OutputStream outputStream = new FileOutputStream(file);
+                // Get the current proxy.
+                Proxy proxy = proxyHelper.getCurrentProxy(context);
 
-                // Initialize the conversion buffer byte array.
-                byte[] conversionBufferByteArray = new byte[1024];
+                // Open a connection to the URL.  No data is actually sent at this point.
+                HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
 
-                // Initialize the downloaded kilobytes counter.
-                long downloadedKilobytesCounter = 0;
+                // Add the user agent to the header property.
+                httpUrlConnection.setRequestProperty("User-Agent", userAgent);
 
-                // Define the buffer length variable.
-                int bufferLength;
+                // Add the cookies if they are enabled.
+                if (cookiesEnabled) {
+                    // Get the cookies for the current domain.
+                    String cookiesString = CookieManager.getInstance().getCookie(url.toString());
 
-                // Attempt to read data from the input stream and store it in the output stream.  Also store the amount of data read in the buffer length variable.
-                while ((bufferLength = inputStream.read(conversionBufferByteArray)) > 0) {  // Proceed while the amount of data stored in the buffer in > 0.
-                    // Write the contents of the conversion buffer to the output stream.
-                    outputStream.write(conversionBufferByteArray, 0, bufferLength);
-
-                    // Update the file download progress snackbar.
-                    if (fileSize == -1) {  // The file size is unknown.
-                        // Negatively update the downloaded kilobytes counter.
-                        downloadedKilobytesCounter = downloadedKilobytesCounter - bufferLength;
-
-                        publishProgress(downloadedKilobytesCounter);
-                    } else {  // The file size is known.
-                        // Update the downloaded kilobytes counter.
-                        downloadedKilobytesCounter = downloadedKilobytesCounter + bufferLength;
-
-                        // Calculate the download percentage.
-                        long downloadPercentage = (downloadedKilobytesCounter * 100) / fileSize;
-
-                        // Update the download percentage.
-                        publishProgress(downloadPercentage);
+                    // Only add the cookies if they are not null.
+                    if (cookiesString != null) {
+                        // Add the cookies to the header property.
+                        httpUrlConnection.setRequestProperty("Cookie", cookiesString);
                     }
                 }
 
-                // Close the input stream.
-                inputStream.close();
+                // The actual network request is in a `try` bracket so that `disconnect()` is run in the `finally` section even if an error is encountered in the main block.
+                try {
+                    // Get the content length header, which causes the connection to the server to be made.
+                    String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
 
-                // Close the output stream.
-                outputStream.close();
+                    // Define the file size long.
+                    long fileSize;
 
-                // Create a media scanner intent, which adds items like pictures to Android's recent file list.
-                Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    // Make sure the content length isn't null.
+                    if (contentLengthString != null) {  // The content length isn't null.
+                        // Convert the content length to an long.
+                        fileSize = Long.parseLong(contentLengthString);
+                    } else {  // The content length is null.
+                        // Set the file size to be `-1`.
+                        fileSize = -1;
+                    }
 
-                // Add the URI to the media scanner intent.
-                mediaScannerIntent.setData(Uri.fromFile(file));
+                    // Get the response body stream.
+                    InputStream inputStream = new BufferedInputStream(httpUrlConnection.getInputStream());
 
-                // Make it so.
-                activity.sendBroadcast(mediaScannerIntent);
-            } finally {
-                // Disconnect the HTTP URL connection.
-                httpUrlConnection.disconnect();
+                    // Initialize the conversion buffer byte array.
+                    byte[] conversionBufferByteArray = new byte[1024];
+
+                    // Initialize the downloaded kilobytes counter.
+                    long downloadedKilobytesCounter = 0;
+
+                    // Define the buffer length variable.
+                    int bufferLength;
+
+                    // Attempt to read data from the input stream and store it in the output stream.  Also store the amount of data read in the buffer length variable.
+                    while ((bufferLength = inputStream.read(conversionBufferByteArray)) > 0) {  // Proceed while the amount of data stored in the buffer in > 0.
+                        // Write the contents of the conversion buffer to the file output stream.
+                        fileOutputStream.write(conversionBufferByteArray, 0, bufferLength);
+
+                        // Update the file download progress snackbar.
+                        if (fileSize == -1) {  // The file size is unknown.
+                            // Negatively update the downloaded kilobytes counter.
+                            downloadedKilobytesCounter = downloadedKilobytesCounter - bufferLength;
+
+                            publishProgress(downloadedKilobytesCounter);
+                        } else {  // The file size is known.
+                            // Update the downloaded kilobytes counter.
+                            downloadedKilobytesCounter = downloadedKilobytesCounter + bufferLength;
+
+                            // Calculate the download percentage.
+                            long downloadPercentage = (downloadedKilobytesCounter * 100) / fileSize;
+
+                            // Update the download percentage.
+                            publishProgress(downloadPercentage);
+                        }
+                    }
+
+                    // Close the input stream.
+                    inputStream.close();
+
+                    // Close the file output stream.
+                    fileOutputStream.close();
+
+                    // Create a media scanner intent, which adds items like pictures to Android's recent file list.
+                    Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+
+                    // Add the URI to the media scanner intent.
+                    mediaScannerIntent.setData(Uri.fromFile(file));
+
+                    // Make it so.
+                    activity.sendBroadcast(mediaScannerIntent);
+                } finally {
+                    // Disconnect the HTTP URL connection.
+                    httpUrlConnection.disconnect();
+                }
             }
         } catch (Exception exception) {
             // Store the error in the save disposition string.

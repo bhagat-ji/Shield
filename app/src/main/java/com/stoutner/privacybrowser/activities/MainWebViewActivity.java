@@ -2143,7 +2143,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        // Store the hit test result.
+        // Get the hit test result.
         final WebView.HitTestResult hitTestResult = currentWebView.getHitTestResult();
 
         // Define the URL strings.
@@ -2231,8 +2231,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the image URL.
                 imageUrl = hitTestResult.getExtra();
 
-                // Set the image URL as the title of the context menu.
-                menu.setHeaderTitle(imageUrl);
+                // Remove the incorrect lint warning below that the image URL might be null.
+                assert imageUrl != null;
+
+                // Set the context menu title.
+                if (imageUrl.startsWith("data:")) {  // The image data is contained in within the URL, making it exceedingly long.
+                    // Truncate the image URL before making it the title.
+                    menu.setHeaderTitle(imageUrl.substring(0, 100));
+                } else {  // The image URL does not contain the full image data.
+                    // Set the image URL as the title of the context menu.
+                    menu.setHeaderTitle(imageUrl);
+                }
 
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
@@ -3031,7 +3040,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveWebpage(int saveType, DialogFragment dialogFragment) {
+    public void onSaveWebpage(int saveType, String originalUrlString, DialogFragment dialogFragment) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
 
@@ -3042,8 +3051,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         EditText urlEditText = dialog.findViewById(R.id.url_edittext);
         EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
-        // Get the strings from the edit texts.
-        saveWebpageUrl = urlEditText.getText().toString();
+        // Store the URL.
+        if ((originalUrlString != null) && originalUrlString.startsWith("data:")) {
+            // Save the original URL.
+            saveWebpageUrl = originalUrlString;
+        } else {
+            // Get the URL from the edit text, which may have been modified.
+            saveWebpageUrl = urlEditText.getText().toString();
+        }
+
+        // Get the file path from the edit text.
         saveWebpageFilePath = fileNameEditText.getText().toString();
 
         // Check to see if the storage permission is needed.
@@ -3057,7 +3074,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 case StoragePermissionDialog.SAVE_ARCHIVE:
                     // Save the webpage archive.
-                    saveWebpageArchive();
+                    saveWebpageArchive(saveWebpageFilePath);
                     break;
 
                 case StoragePermissionDialog.SAVE_IMAGE:
@@ -3065,6 +3082,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     new SaveWebpageImage(this, this, saveWebpageFilePath, currentWebView).execute();
                     break;
             }
+
+            // Reset the strings.
+            saveWebpageUrl = "";
+            saveWebpageFilePath = "";
         } else {  // The storage permission has not been granted.
             // Get the external private directory file.
             File externalPrivateDirectoryFile = getExternalFilesDir(null);
@@ -3086,7 +3107,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     case StoragePermissionDialog.SAVE_ARCHIVE:
                         // Save the webpage archive.
-                        saveWebpageArchive();
+                        saveWebpageArchive(saveWebpageFilePath);
                         break;
 
                     case StoragePermissionDialog.SAVE_IMAGE:
@@ -3094,6 +3115,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         new SaveWebpageImage(this, this, saveWebpageFilePath, currentWebView).execute();
                         break;
                 }
+
+                // Reset the strings.
+                saveWebpageUrl = "";
+                saveWebpageFilePath = "";
             } else {  // The file path is in a public directory.
                 // Check if the user has previously denied the storage permission.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
@@ -3131,9 +3156,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Display an error snackbar.
                         Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
                     }
-
-                    // Reset the open file path.
-                    openFilePath = "";
                     break;
 
                 case StoragePermissionDialog.SAVE_URL:
@@ -3145,24 +3167,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Display an error snackbar.
                         Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
                     }
-
-                    // Reset the save strings.
-                    saveWebpageUrl = "";
-                    saveWebpageFilePath = "";
                     break;
 
                 case StoragePermissionDialog.SAVE_ARCHIVE:
                     // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
                         // Save the webpage archive.
-                        saveWebpageArchive();
+                        saveWebpageArchive(saveWebpageFilePath);
                     } else {  // The storage permission was not granted.
                         // Display an error snackbar.
                         Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
                     }
-
-                    // Reset the save webpage file path.
-                    saveWebpageFilePath = "";
                     break;
 
                 case StoragePermissionDialog.SAVE_IMAGE:
@@ -3174,11 +3189,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Display an error snackbar.
                         Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
                     }
-
-                    // Reset the save webpage file path.
-                    saveWebpageFilePath = "";
                     break;
             }
+
+            // Reset the strings.
+            openFilePath = "";
+            saveWebpageUrl = "";
+            saveWebpageFilePath = "";
         }
     }
 
@@ -4866,17 +4883,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         appBarLayout.setExpanded(true);
     }
 
-    private void saveWebpageArchive() {
+    private void saveWebpageArchive(String filePath) {
         // Save the webpage archive.
-        currentWebView.saveWebArchive(saveWebpageFilePath);
+        currentWebView.saveWebArchive(filePath);
 
         // Display a snackbar.
-        Snackbar saveWebpageArchiveSnackbar = Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + saveWebpageFilePath, Snackbar.LENGTH_SHORT);
+        Snackbar saveWebpageArchiveSnackbar = Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + filePath, Snackbar.LENGTH_SHORT);
 
         // Add an open option to the snackbar.
         saveWebpageArchiveSnackbar.setAction(R.string.open, (View view) -> {
             // Get a file for the file name string.
-            File file = new File(saveWebpageFilePath);
+            File file = new File(filePath);
 
             // Declare a file URI variable.
             Uri fileUri;
@@ -4906,9 +4923,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Show the snackbar.
         saveWebpageArchiveSnackbar.show();
-
-        // Reset the save Webpage file path.
-        saveWebpageFilePath = "";
     }
 
     private void clearAndExit() {
