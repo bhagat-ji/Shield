@@ -319,18 +319,26 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                // Instantiate the common variables.
-                int selectedBookmarkPosition;
+                // Declare the common variables.
                 int selectedBookmarkNewPosition;
                 final SparseBooleanArray selectedBookmarksPositionsSparseBooleanArray;
+
+                // Initialize the selected bookmark position.
+                int selectedBookmarkPosition = 0;
 
                 switch (item.getItemId()) {
                     case R.id.move_bookmark_up:
                         // Get the array of checked bookmark positions.
                         selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
 
-                        // Store the position of the selected bookmark.  Only one bookmark is selected when `move_bookmark_up` is enabled.
-                        selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
+                        // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
+                        for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
+                            // Check to see if the value for the bookmark is true, meaning it is currently selected.
+                            if (selectedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
+                                // Only one bookmark should have a value of `true` when move bookmark up is enabled.
+                                selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(i);
+                            }
+                        }
 
                         // Calculate the new position of the selected bookmark.
                         selectedBookmarkNewPosition = selectedBookmarkPosition - 1;
@@ -375,8 +383,14 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Get the array of checked bookmark positions.
                         selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
 
-                        // Store the position of the selected bookmark.  Only one bookmark is selected when `move_bookmark_down` is enabled.
-                        selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
+                        // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
+                        for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
+                            // Check to see if the value for the bookmark is true, meaning it is currently selected.
+                            if (selectedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
+                                // Only one bookmark should have a value of `true` when move bookmark down is enabled.
+                                selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(i);
+                            }
+                        }
 
                         // Calculate the new position of the selected bookmark.
                         selectedBookmarkNewPosition = selectedBookmarkPosition + 1;
@@ -430,8 +444,14 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Get the array of checked bookmark positions.
                         selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
 
-                        // Get the position of the selected bookmark.  Only one bookmark is selected when `edit_bookmark_down` is enabled.
-                        selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
+                        // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
+                        for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
+                            // Check to see if the value for the bookmark is true, meaning it is currently selected.
+                            if (selectedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
+                                // Only one bookmark should have a value of `true` when move edit bookmark is enabled.
+                                selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(i);
+                            }
+                        }
 
                         // Move the `Cursor` to the selected position and find out if it is a folder.
                         bookmarksCursor.moveToPosition(selectedBookmarkPosition);
