@@ -68,16 +68,13 @@ public class GetHostIpAddresses extends AsyncTask<String, Void, String> {
 
             // Add each IP address to the string builder.
             for (InetAddress inetAddress : inetAddressesArray) {
-                if (ipAddresses.length() == 0) {  // This is the first IP address.
-                    // Add the IP address to the string builder.
-                    ipAddresses.append(inetAddress.getHostAddress());
-                } else {  // This is not the first IP address.
-                    // Add a line break to the string builder first.
+                // Add a line break to the string builder if this is not the first IP address.
+                if (ipAddresses.length() > 0) {
                     ipAddresses.append("\n");
-
-                    // Add the IP address to the string builder.
-                    ipAddresses.append(inetAddress.getHostAddress());
                 }
+
+                // Add the IP address to the string builder.
+                ipAddresses.append(inetAddress.getHostAddress());
             }
         } catch (UnknownHostException exception) {
             // Do nothing.
@@ -103,8 +100,8 @@ public class GetHostIpAddresses extends AsyncTask<String, Void, String> {
         // Store the IP addresses.
         nestedScrollWebView.setCurrentIpAddresses(ipAddresses);
 
-        // Checked for pinned mismatches if the WebView is not loading a URL, pinned information is not ignored, and there is pinned information.
-        if ((nestedScrollWebView.getProgress() == 100) && !nestedScrollWebView.ignorePinnedDomainInformation() && (nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses())) {
+        // Checked for pinned mismatches if there is pinned information and it is not ignored.
+        if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && !nestedScrollWebView.ignorePinnedDomainInformation()) {
             CheckPinnedMismatchHelper.checkPinnedMismatch(fragmentManager, nestedScrollWebView);
         }
     }

@@ -614,8 +614,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         ignorePinnedDomainInformation = status;
     }
 
-    // The syntax looks better as written, even if it is always inverted.
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean ignorePinnedDomainInformation() {
         // Return the status of the ignore pinned domain information tracker.
         return ignorePinnedDomainInformation;

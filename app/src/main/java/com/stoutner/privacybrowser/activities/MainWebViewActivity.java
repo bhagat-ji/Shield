@@ -148,7 +148,6 @@ import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
 import com.stoutner.privacybrowser.helpers.AdHelper;
 import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
-import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.FileNameHelper;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
@@ -546,7 +545,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Reapply the domain settings if the URL is not null, which can happen if an empty tab is active when returning from settings.
                     if (nestedScrollWebView.getUrl() != null) {
-                        applyDomainSettings(nestedScrollWebView, nestedScrollWebView.getUrl(), false, true);
+                        applyDomainSettings(nestedScrollWebView, nestedScrollWebView.getUrl(), false, true, false);
                     }
                 }
             }
@@ -1942,7 +1941,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
 
                     // Apply the domain settings.
-                    applyDomainSettings(currentWebView, previousUrl, false, false);
+                    applyDomainSettings(currentWebView, previousUrl, false, false, false);
 
                     // Load the previous website in the history.
                     currentWebView.goBack();
@@ -1958,7 +1957,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     String nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() + 1).getUrl();
 
                     // Apply the domain settings.
-                    applyDomainSettings(currentWebView, nextUrl, false, false);
+                    applyDomainSettings(currentWebView, nextUrl, false, false, false);
 
                     // Load the next website in the history.
                     currentWebView.goForward();
@@ -2720,7 +2719,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
 
             // Apply the domain settings.
-            applyDomainSettings(currentWebView, previousUrl, false, false);
+            applyDomainSettings(currentWebView, previousUrl, false, false, false);
 
             // Go back.
             currentWebView.goBack();
@@ -2906,11 +2905,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Sanitize the URL.
         url = sanitizeUrl(url);
 
-        // Apply the domain settings.
-        applyDomainSettings(nestedScrollWebView, url, true, false);
-
-        // Load the URL.
-        nestedScrollWebView.loadUrl(url, customHeaders);
+        // Apply the domain settings and load the URL.
+        applyDomainSettings(nestedScrollWebView, url, true, false, true);
     }
 
     public void findPreviousOnPage(View view) {
@@ -2993,7 +2989,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         openFilePath = fileNameEditText.getText().toString();
 
         // Apply the domain settings.  This resets the favorite icon and removes any domain settings.
-        applyDomainSettings(currentWebView, "file://" + openFilePath, true, false);
+        applyDomainSettings(currentWebView, "file://" + openFilePath, true, false, false);
 
         // Check to see if the storage permission is needed.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
@@ -3769,7 +3765,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void navigateHistory(String url, int steps) {
         // Apply the domain settings.
-        applyDomainSettings(currentWebView, url, false, false);
+        applyDomainSettings(currentWebView, url, false, false, false);
 
         // Load the history entry.
         currentWebView.goBackOrForward(steps);
@@ -3784,7 +3780,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
 
         // Apply the domain settings.
-        applyDomainSettings(currentWebView, previousUrl, false, false);
+        applyDomainSettings(currentWebView, previousUrl, false, false, false);
 
         // Go back.
         currentWebView.goBack();
@@ -3792,7 +3788,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     @SuppressLint("SetJavaScriptEnabled")
-    private void applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetTab, boolean reloadWebsite) {
+    private void applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetTab, boolean reloadWebsite, boolean loadUrl) {
         // Store the current URL.
         nestedScrollWebView.setCurrentUrl(url);
 
@@ -4310,6 +4306,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Reload the website if returning from the Domains activity.
         if (reloadWebsite) {
             nestedScrollWebView.reload();
+        }
+
+        // Load the URL if directed.  This makes sure that the domain settings are properly loaded before the URL.  By using `loadUrl()`, instead of `loadUrlFromBase()`, the Referer header will never be sent.
+        if (loadUrl) {
+            nestedScrollWebView.loadUrl(url, customHeaders);
         }
     }
 
@@ -5737,11 +5738,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Handle the URL according to the type.
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
-                    // Apply the domain settings for the new URL.  This doesn't do anything if the domain has not changed.
-                    applyDomainSettings(nestedScrollWebView, url, true, false);
-
                     // Load the URL.  By using `loadUrl()`, instead of `loadUrlFromBase()`, the Referer header will never be sent.
-                    nestedScrollWebView.loadUrl(url, customHeaders);
+                    loadUrl(nestedScrollWebView, url);
 
                     // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
                     // Custom headers cannot be added if false is returned and the WebView handles the loading of the URL.
@@ -6331,12 +6329,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the current page position.
                 int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
-                // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
-                if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && nestedScrollWebView.hasCurrentIpAddresses() &&
-                        !nestedScrollWebView.ignorePinnedDomainInformation()) {
-                    CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
-                }
-
                 // Get the current URL from the nested scroll WebView.  This is more accurate than using the URL passed into the method, which is sometimes not the final one.
                 String currentUrl = nestedScrollWebView.getUrl();
 
@@ -6359,7 +6351,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         inputMethodManager.showSoftInput(urlEditText, 0);
 
                         // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(nestedScrollWebView, "", true, false);
+                        applyDomainSettings(nestedScrollWebView, "", true, false, false);
 
                         // Only populate the title text view if the tab has been fully created.
                         if (tab != null) {
