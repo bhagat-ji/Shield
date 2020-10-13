@@ -2992,6 +2992,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the file path string.
         openFilePath = fileNameEditText.getText().toString();
 
+        // Apply the domain settings.  This resets the favorite icon and removes any domain settings.
+        applyDomainSettings(currentWebView, "file://" + openFilePath, true, false);
+
         // Check to see if the storage permission is needed.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Open the file.
