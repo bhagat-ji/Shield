@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -53,7 +52,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NavUtils;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -175,8 +173,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         final Toolbar toolbar = findViewById(R.id.bookmarks_toolbar);
         setSupportActionBar(toolbar);
 
-        // Get a handle for the activity, the app bar, and the ListView.
-        final Activity bookmarksActivity = this;
+        // Get handles for the views.
         appBar = getSupportActionBar();
         bookmarksListView = findViewById(R.id.bookmarks_listview);
 
@@ -196,10 +193,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Set a listener so that tapping a list item loads the URL or folder.
         bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
             // Convert the id from long to int to match the format of the bookmarks database.
-            int databaseID = (int) id;
+            int databaseId = (int) id;
 
-            // Get the bookmark cursor for this ID and move it to the first row.
-            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseID);
+            // Get the bookmark cursor for this ID.
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseId);
+
+            // Move the cursor to the first entry.
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
@@ -210,23 +209,14 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 // Load the new folder.
                 loadFolder();
             } else {  // The selected bookmark is not a folder.
-                // Get the bookmark URL and assign it to `formattedUrlString`.
-                MainWebViewActivity.urlToLoadOnRestart = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+                // Instantiate the edit bookmark dialog.
+                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId, favoriteIconBitmap);
 
-                // Set `MainWebViewActivity` to load the new URL on restart.
-                MainWebViewActivity.loadUrlOnRestart = true;
-
-                // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
-                MainWebViewActivity.currentBookmarksFolder = currentFolder;
-
-                // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
-                MainWebViewActivity.restartFromBookmarksActivity = true;
-
-                // Return to `MainWebViewActivity`.
-                NavUtils.navigateUpFromSameTask(bookmarksActivity);
+                // Make it so.
+                editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
             }
 
-            // Close the `Cursor`.
+            // Close the cursor.
             bookmarkCursor.close();
         });
 
@@ -456,8 +446,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             }
                         }
 
-                        // Move the `Cursor` to the selected position and find out if it is a folder.
+                        // Move the cursor to the selected position.
                         bookmarksCursor.moveToPosition(selectedBookmarkPosition);
+
+                        // Find out if this bookmark is a folder.
                         boolean isFolder = (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
                         // Get the selected bookmark database ID.
@@ -468,12 +460,16 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             // Save the current folder name, which is used in `onSaveBookmarkFolder()`.
                             oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-                            // Show the edit bookmark folder dialog.
+                            // Instantiate the edit bookmark folder dialog.
                             DialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, favoriteIconBitmap);
+
+                            // Make it so.
                             editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
                         } else {
-                            // Show the edit bookmark dialog.
+                            // Instantiate the edit bookmark dialog.
                             DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId, favoriteIconBitmap);
+
+                            // Make it so.
                             editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
                         }
                         break;

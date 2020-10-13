@@ -189,10 +189,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The WebView pager adapter is accessed from `HttpAuthenticationDialog`, `PinnedMismatchDialog`, and `SslCertificateErrorDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
     public static WebViewPagerAdapter webViewPagerAdapter;
 
-    // The load URL on restart variables are public static so they can be accessed from `BookmarksActivity`.  They are used in `onRestart()`.
-    public static boolean loadUrlOnRestart;
-    public static String urlToLoadOnRestart;
-
     // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksActivity;
 
@@ -554,15 +550,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
             }
-        }
-
-        // Load the URL on restart (used when loading a bookmark).
-        if (loadUrlOnRestart) {
-            // Load the specified URL.
-            loadUrl(currentWebView, urlToLoadOnRestart);
-
-            // Reset the load on restart tracker.
-            loadUrlOnRestart = false;
         }
 
         // Update the bookmarks drawer if returning from the Bookmarks activity.
@@ -3346,11 +3333,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled by creating a new tab.
                 if (tabLayout.getSelectedTabPosition() != position) {
-                    // Create a handler to select the tab.
-                    Handler selectTabHandler = new Handler();
-
-                    // Create a runnable to select the tab.
-                    Runnable selectTabRunnable = () -> {
+                    // Wait until the new tab has been created.
+                    tabLayout.post(() -> {
                         // Get a handle for the tab.
                         TabLayout.Tab tab = tabLayout.getTabAt(position);
 
@@ -3359,10 +3343,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Select the tab.
                         tab.select();
-                    };
-
-                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.  TODO.
-                    selectTabHandler.postDelayed(selectTabRunnable, 150);
+                    });
                 }
             }
 
