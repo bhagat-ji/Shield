@@ -426,61 +426,64 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Calculate the number of selected bookmarks.
                 int numberOfSelectedBookmarks = bookmarksListView.getCheckedItemCount();
 
-                // Update the action mode subtitle according to the number of selected bookmarks.
-                mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
+                // Only run the commands if at least one bookmark is selected.  Otherwise, a context menu with 0 selected bookmarks is briefly displayed.
+                if (numberOfSelectedBookmarks > 0) {
+                    // Update the action mode subtitle according to the number of selected bookmarks.
+                    mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
 
-                // Update the visibility of the the select all menu.
-                if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {  // All of the bookmarks are checked.
-                    // Hide the select all menu item.
-                    selectAllMenuItem.setVisible(false);
-                } else {  // Not all of the bookmarks are checked.
-                    // Show the select all menu item.
-                    selectAllMenuItem.setVisible(true);
-                }
+                    // Update the visibility of the the select all menu.
+                    if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {  // All of the bookmarks are checked.
+                        // Hide the select all menu item.
+                        selectAllMenuItem.setVisible(false);
+                    } else {  // Not all of the bookmarks are checked.
+                        // Show the select all menu item.
+                        selectAllMenuItem.setVisible(true);
+                    }
 
-                // Convert the database ID to an int.
-                int databaseId = (int) id;
+                    // Convert the database ID to an int.
+                    int databaseId = (int) id;
 
-                // If a folder was selected, also select all the contents.
-                if (checked && bookmarksDatabaseHelper.isFolder(databaseId)) {
-                    selectAllBookmarksInFolder(databaseId);
-                }
+                    // If a folder was selected, also select all the contents.
+                    if (checked && bookmarksDatabaseHelper.isFolder(databaseId)) {
+                        selectAllBookmarksInFolder(databaseId);
+                    }
 
-                // Do not allow a bookmark to be deselected if the folder is selected.
-                if (!checked) {
-                    // Get the folder name.
-                    String folderName = bookmarksDatabaseHelper.getParentFolderName((int) id);
+                    // Do not allow a bookmark to be deselected if the folder is selected.
+                    if (!checked) {
+                        // Get the folder name.
+                        String folderName = bookmarksDatabaseHelper.getParentFolderName((int) id);
 
-                    // If the bookmark is not in the root folder, check to see if the folder is selected.
-                    if (!folderName.isEmpty()) {
-                        // Get the database ID of the folder.
-                        int folderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderName);
+                        // If the bookmark is not in the root folder, check to see if the folder is selected.
+                        if (!folderName.isEmpty()) {
+                            // Get the database ID of the folder.
+                            int folderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderName);
 
-                        // Move the bookmarks cursor to the first position.
-                        bookmarksCursor.moveToFirst();
+                            // Move the bookmarks cursor to the first position.
+                            bookmarksCursor.moveToFirst();
 
-                        // Initialize the folder position variable.
-                        int folderPosition = -1;
+                            // Initialize the folder position variable.
+                            int folderPosition = -1;
 
-                        // Get the position of the folder in the bookmarks cursor.
-                        while ((folderPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
-                            // Check if the folder database ID matches the bookmark database ID.
-                            if (folderDatabaseId == bookmarksCursor.getInt((bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID)))) {
-                                // Get the folder position.
-                                folderPosition = bookmarksCursor.getPosition();
+                            // Get the position of the folder in the bookmarks cursor.
+                            while ((folderPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
+                                // Check if the folder database ID matches the bookmark database ID.
+                                if (folderDatabaseId == bookmarksCursor.getInt((bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID)))) {
+                                    // Get the folder position.
+                                    folderPosition = bookmarksCursor.getPosition();
 
-                                // Check if the folder is selected.
-                                if (bookmarksListView.isItemChecked(folderPosition)) {
-                                    // Reselect the bookmark.
-                                    bookmarksListView.setItemChecked(position, true);
+                                    // Check if the folder is selected.
+                                    if (bookmarksListView.isItemChecked(folderPosition)) {
+                                        // Reselect the bookmark.
+                                        bookmarksListView.setItemChecked(position, true);
 
-                                    // Display a snackbar explaining why the bookmark cannot be deselected.
-                                    Snackbar.make(bookmarksListView, R.string.cannot_deselect_bookmark, Snackbar.LENGTH_LONG).show();
+                                        // Display a snackbar explaining why the bookmark cannot be deselected.
+                                        Snackbar.make(bookmarksListView, R.string.cannot_deselect_bookmark, Snackbar.LENGTH_LONG).show();
+                                    }
                                 }
-                            }
 
-                            // Increment the bookmarks cursor.
-                            bookmarksCursor.moveToNext();
+                                // Increment the bookmarks cursor.
+                                bookmarksCursor.moveToNext();
+                            }
                         }
                     }
                 }
@@ -852,7 +855,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, @NonNull Bitmap favoriteIconBitmap) {
         // Get the dialog from the dialog fragment.
         Dialog dialog = dialogFragment.getDialog();
 

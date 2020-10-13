@@ -287,33 +287,36 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 // Get the number of selected bookmarks.
                 int numberOfSelectedBookmarks = bookmarksListView.getCheckedItemCount();
 
-                // Adjust the ActionMode and the menu according to the number of selected bookmarks.
-                if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
-                    // List the number of selected bookmarks in the subtitle.
-                    mode.setSubtitle(getString(R.string.selected) + "  1");
+                // Only process commands if at least one bookmark is selected.  Otherwise, a context menu with 0 selected bookmarks is briefly displayed.
+                if (numberOfSelectedBookmarks > 0) {
+                    // Adjust the ActionMode and the menu according to the number of selected bookmarks.
+                    if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
+                        // List the number of selected bookmarks in the subtitle.
+                        mode.setSubtitle(getString(R.string.selected) + "  1");
 
-                    // Show the `Move Up`, `Move Down`, and  `Edit` options.
-                    moveBookmarkUpMenuItem.setVisible(true);
-                    moveBookmarkDownMenuItem.setVisible(true);
-                    editBookmarkMenuItem.setVisible(true);
+                        // Show the `Move Up`, `Move Down`, and  `Edit` options.
+                        moveBookmarkUpMenuItem.setVisible(true);
+                        moveBookmarkDownMenuItem.setVisible(true);
+                        editBookmarkMenuItem.setVisible(true);
 
-                    // Update the enabled status of the move icons.
-                    updateMoveIcons();
-                } else {  // More than one bookmark is selected.
-                    // List the number of selected bookmarks in the subtitle.
-                    mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
+                        // Update the enabled status of the move icons.
+                        updateMoveIcons();
+                    } else {  // More than one bookmark is selected.
+                        // List the number of selected bookmarks in the subtitle.
+                        mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
 
-                    // Hide non-applicable `MenuItems`.
-                    moveBookmarkUpMenuItem.setVisible(false);
-                    moveBookmarkDownMenuItem.setVisible(false);
-                    editBookmarkMenuItem.setVisible(false);
-                }
+                        // Hide non-applicable `MenuItems`.
+                        moveBookmarkUpMenuItem.setVisible(false);
+                        moveBookmarkDownMenuItem.setVisible(false);
+                        editBookmarkMenuItem.setVisible(false);
+                    }
 
-                // Do not show the select all menu item if all the bookmarks are already checked.
-                if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {
-                    selectAllBookmarksMenuItem.setVisible(false);
-                } else {
-                    selectAllBookmarksMenuItem.setVisible(true);
+                    // Do not show the select all menu item if all the bookmarks are already checked.
+                    if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {
+                        selectAllBookmarksMenuItem.setVisible(false);
+                    } else {
+                        selectAllBookmarksMenuItem.setVisible(true);
+                    }
                 }
             }
 
