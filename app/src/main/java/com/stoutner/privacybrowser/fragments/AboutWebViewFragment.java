@@ -19,15 +19,23 @@
 
 package com.stoutner.privacybrowser.fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewAssetLoader;
+import androidx.webkit.WebViewFeature;
 
 import com.stoutner.privacybrowser.R;
 
@@ -39,7 +47,7 @@ public class AboutWebViewFragment extends Fragment {
     private int tabNumber;
 
     // Declare the class views.
-    private View aboutWebViewLayout;
+    private View webViewLayout;
 
     public static AboutWebViewFragment createTab(int tabNumber) {
         // Create an arguments bundle.
@@ -69,90 +77,102 @@ public class AboutWebViewFragment extends Fragment {
         // Remove the incorrect lint warning below that arguments might be null.
         assert arguments != null;
 
-        // Store the arguments in class variables.
+        // Store the tab number in a class variable.
         tabNumber = arguments.getInt(TAB_NUMBER);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
+        webViewLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
+
+        // Get a handle for tab WebView.
+        WebView tabWebView = (WebView) webViewLayout;
+
+        // Get a handle for the context.
+        Context context = getContext();
+
+        // Remove the incorrect lint warning below that the context might be null.
+        assert context != null;
+
+        // Create a WebView asset loader.
+        final WebViewAssetLoader webViewAssetLoader = new WebViewAssetLoader.Builder().addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(context)).build();
+
+        // Set a WebView client.
+        tabWebView.setWebViewClient(new WebViewClient() {
+            // `shouldOverrideUrlLoading` allows the sending of external links back to the main Privacy Browser WebView.  The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // Create an intent to view the URL.
+                Intent urlIntent = new Intent(Intent.ACTION_VIEW);
+
+                // Add the URL to the intent.
+                urlIntent.setData(Uri.parse(url));
+
+                // Make it so.
+                startActivity(urlIntent);
+                return true;
+            }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView webView, String url) {
+                // Have the WebView asset loader process the request.  This allows the loading of SVG files, which otherwise is prevented by the CORS policy.
+                return webViewAssetLoader.shouldInterceptRequest(Uri.parse(url));
+            }
+        });
+
         // Get the current theme status.
         int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        // Inflate the layout.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-        aboutWebViewLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
+        // Check to see if the app is in night mode.
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES && WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {  // The app is in night mode.
+            // Apply the dark WebView theme.
+            WebSettingsCompat.setForceDark(tabWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+        }
 
-        // Get a handle for tab WebView.
-        WebView tabWebView = (WebView) aboutWebViewLayout;
+        // Load the indicated tab.  The tab numbers start at 0, with the WebView tabs starting at 1.
+        switch (tabNumber) {
+            case 1:
+                // Load the Permissions tab.
+                tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/about_permissions.html");
+                break;
 
-        // Load the tabs according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The light theme is applied.
-            switch (tabNumber) {
-                case 1:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_permissions_light.html");
-                    break;
+            case 2:
+                // Load the Privacy Policy tab.
+                tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/about_privacy_policy.html");
+                break;
 
-                case 2:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_privacy_policy_light.html");
-                    break;
+            case 3:
+                // Load the Changelog tab.
+                tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/about_changelog.html");
+                break;
 
-                case 3:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_changelog_light.html");
-                    break;
+            case 4:
+                // Load the Licenses tab.
+                tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/about_licenses.html");
+                break;
 
-                case 4:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_licenses_light.html");
-                    break;
+            case 5:
+                // Load the Contributors tab.
+                tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/about_contributors.html");
+                break;
 
-                case 5:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_contributors_light.html");
-                    break;
-
-                case 6:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_links_light.html");
-                    break;
-            }
-        } else {  // The dark theme is applied.
-            // Set the background color.  The deprecated `.getColor()` must be used until the minimum API >= 23.
-            tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
-
-            // Tab numbers start at 0, with the WebView tabs starting at 1.
-            switch (tabNumber) {
-                case 1:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_permissions_dark.html");
-                    break;
-
-                case 2:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_privacy_policy_dark.html");
-                    break;
-
-                case 3:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_changelog_dark.html");
-                    break;
-
-                case 4:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_licenses_dark.html");
-                    break;
-
-                case 5:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_contributors_dark.html");
-                    break;
-
-                case 6:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_links_dark.html");
-                    break;
-            }
+            case 6:
+                // Load the Links tab.
+                tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/about_links.html");
+                break;
         }
 
         // Scroll the tab if the saved instance state is not null.
         if (savedInstanceState != null) {
-            aboutWebViewLayout.post(() -> {
-                aboutWebViewLayout.setScrollX(savedInstanceState.getInt("scroll_x"));
-                aboutWebViewLayout.setScrollY(savedInstanceState.getInt("scroll_y"));
+            tabWebView.post(() -> {
+                tabWebView.setScrollX(savedInstanceState.getInt("scroll_x"));
+                tabWebView.setScrollY(savedInstanceState.getInt("scroll_y"));
             });
         }
 
-        // Return the tab layout.
-        return aboutWebViewLayout;
+        // Return the formatted WebView layout.
+        return webViewLayout;
     }
 
     @Override
@@ -160,10 +180,14 @@ public class AboutWebViewFragment extends Fragment {
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState);
 
+
+        // Get a handle for the tab WebView.  A class variable cannot be used because it gets out of sync when restarting.
+        WebView tabWebView = (WebView) webViewLayout;
+
         // Save the scroll positions if the layout is not null, which can happen if a tab is not currently selected.
-        if (aboutWebViewLayout != null) {
-            savedInstanceState.putInt("scroll_x", aboutWebViewLayout.getScrollX());
-            savedInstanceState.putInt("scroll_y", aboutWebViewLayout.getScrollY());
+        if (tabWebView != null) {
+            savedInstanceState.putInt("scroll_x", tabWebView.getScrollX());
+            savedInstanceState.putInt("scroll_y", tabWebView.getScrollY());
         }
     }
 }

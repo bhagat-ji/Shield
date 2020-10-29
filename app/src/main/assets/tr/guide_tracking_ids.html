@@ -1,0 +1,44 @@
+<!--
+  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/theme.css">
+
+        <!-- Setting the color scheme instructs the WebView to respect `prefers-color-scheme` @media CSS. -->
+        <meta name="color-scheme" content="light dark">
+    </head>
+
+    <body>
+        <h3><svg class="header"><use href="../shared_images/location_off.svg#icon"/></svg> Takip Etme</h3>
+
+        <p>Birkaç yıl önce, W3C (World Wide Web Konsorsiyumu), tarayıcıların web sunucularına izlenmesini istemediklerini bildirmek için bir mekanizma yarattı.
+            Bu mekanizma, web isteklerini içeren bir başlık <a href="https://en.wikipedia.org/wiki/Do_Not_Track">DNT (Do Not Track) </a> ekleyerek çalışır.</p>
+
+        <p>Fakat DNT(Takip Etme) başlığı, gerçekten herhangi bir gizlilik sağlamaz, çünkü çoğu web sunucusu bunu görmezden gelir.
+            Örneğin, Yahoo, Google, Microsoft ve Facebook, en azından bazı DNT başlıklarını yok sayar.</p>
+
+
+        <h3><svg class="header"><use href="../shared_images/link_off.svg#icon"/></svg> URL Modifikasyonu</h3>
+
+        <p>Privacy Browser, <a href="https://support.google.com/analytics/answer/1033867">Google Analytics</a>'ten <code>?utm_</code> ve <a href="https://fbclid.com/">Facebook</a>'tan
+            <code>?fbclick=</code> gibi URL'deki takip id kısımlarını kaldırır. URL modifikasyonu, herhangi bir soruna yol açması halinde ayarlardan kapatılabilir.</p>
+    </body>
+</html>

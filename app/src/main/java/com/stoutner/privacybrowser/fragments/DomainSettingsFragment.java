@@ -304,16 +304,16 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Create the foreground color spans.
-        final ForegroundColorSpan redColorSpan;
         final ForegroundColorSpan blueColorSpan;
+        final ForegroundColorSpan redColorSpan;
 
         // Set the color spans according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_900));
-            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.violet_500));
-        } else {
-            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
+        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
             blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_700));
+            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
+        } else {
+            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.violet_700));
+            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_900));
         }
 
         // Set the domain name from the the database cursor.
@@ -421,11 +421,7 @@ public class DomainSettingsFragment extends Fragment {
                 }
             } else {  // First-party cookies are disabled.
                 // Set the status of third-party cookies.
-                if (thirdPartyCookiesInt == 1) {
-                    thirdPartyCookiesSwitch.setChecked(true);
-                } else {
-                    thirdPartyCookiesSwitch.setChecked(false);
-                }
+                thirdPartyCookiesSwitch.setChecked(thirdPartyCookiesInt == 1);
 
                 // Disable the third-party cookies switch.
                 thirdPartyCookiesSwitch.setEnabled(false);
@@ -467,11 +463,7 @@ public class DomainSettingsFragment extends Fragment {
             domStorageSwitch.setEnabled(false);
 
             // Set the checked status of DOM storage.
-            if (domStorageInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
-                domStorageSwitch.setChecked(true);
-            } else {  // Both JavaScript and DOM storage are disabled.
-                domStorageSwitch.setChecked(false);
-            }
+            domStorageSwitch.setChecked(domStorageInt == 1);
 
             // Set the icon according to the theme.
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
@@ -606,14 +598,8 @@ public class DomainSettingsFragment extends Fragment {
             // Disable Fanboy's Social Blocking List switch.
             fanboysSocialBlockingListSwitch.setEnabled(false);
 
-            // Handle the status of Fanboy's Social Blocking List.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-            if (fanboysSocialBlockingListInt == 1) {  // Fanboy's Social Blocking List is on.
-                // Turn on Fanboy's Social Blocking List switch.
-                fanboysSocialBlockingListSwitch.setChecked(true);
-            } else {  // Fanboy's Social Blocking List is off.
-                // Turn off Fanboy's Social Blocking List switch.
-                fanboysSocialBlockingListSwitch.setChecked(false);
-            }
+            // Set the status of Fanboy's Social Blocking List.
+            fanboysSocialBlockingListSwitch.setChecked(fanboysSocialBlockingListInt == 1);
 
             // Set the icon according to the theme.
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {

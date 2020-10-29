@@ -319,7 +319,7 @@ public class AboutVersionFragment extends Fragment {
         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
         } else {
-            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
+            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_700));
         }
 
         // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
@@ -544,81 +544,76 @@ public class AboutVersionFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
+        // Remove the incorrect lint warning below that the activity might be null.
+        assert getActivity() != null;
+
         // Get the ID of the menu item that was selected.
         int menuItemId = menuItem.getItemId();
 
-        // Remove the warning below that `getActivity()` might be null.
-        assert getActivity() != null;
-
         // Run the appropriate commands.
-        switch (menuItemId) {
-            case R.id.copy:
-                // Get the about version string.
-                String aboutVersionString = getAboutVersionString();
+        if (menuItemId == R.id.copy) {  // Copy.
+            // Get the about version string.
+            String aboutVersionString = getAboutVersionString();
 
-                // Get a handle for the clipboard manager.
-                ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            // Get a handle for the clipboard manager.
+            ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
-                // Remove the incorrect lint error below that the clipboard manager might be null.
-                assert clipboardManager != null;
+            // Remove the incorrect lint error below that the clipboard manager might be null.
+            assert clipboardManager != null;
 
-                // Save the about version string in a clip data.
-                ClipData aboutVersionClipData = ClipData.newPlainText(getString(R.string.about), aboutVersionString);
+            // Save the about version string in a clip data.
+            ClipData aboutVersionClipData = ClipData.newPlainText(getString(R.string.about), aboutVersionString);
 
-                // Place the clip data on the clipboard.
-                clipboardManager.setPrimaryClip(aboutVersionClipData);
+            // Place the clip data on the clipboard.
+            clipboardManager.setPrimaryClip(aboutVersionClipData);
 
-                // Display a snackbar.
-                Snackbar.make(aboutVersionLayout, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show();
+            // Display a snackbar.
+            Snackbar.make(aboutVersionLayout, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show();
 
-                // Consume the event.
-                return true;
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.share) {  // Share.
+            // Get the about version string.
+            String aboutString = getAboutVersionString();
 
-            case R.id.share:
-                // Get the about version string.
-                String aboutString = getAboutVersionString();
+            // Create an email intent.
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
-                // Create an email intent.
-                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            // Add the about version string to the intent.
+            emailIntent.putExtra(Intent.EXTRA_TEXT, aboutString);
 
-                // Add the about version string to the intent.
-                emailIntent.putExtra(Intent.EXTRA_TEXT, aboutString);
+            // Set the MIME type.
+            emailIntent.setType("text/plain");
 
-                // Set the MIME type.
-                emailIntent.setType("text/plain");
+            // Set the intent to open in a new task.
+            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                // Set the intent to open in a new task.
-                emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // Make it so.
+            startActivity(Intent.createChooser(emailIntent, getString(R.string.share)));
 
-                // Make it so.
-                startActivity(Intent.createChooser(emailIntent, getString(R.string.share)));
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.save_text) {  // Save text.
+            // Instantiate the save alert dialog.
+            DialogFragment saveTextDialogFragment = SaveDialog.save(SaveDialog.SAVE_ABOUT_VERSION_TEXT);
 
-                // Consume the event.
-                return true;
+            // Show the save alert dialog.
+            saveTextDialogFragment.show(getActivity().getSupportFragmentManager(), getString(R.string.save_dialog));
 
-            case R.id.save_text:
-                // Instantiate the save alert dialog.
-                DialogFragment saveTextDialogFragment = SaveDialog.save(SaveDialog.SAVE_ABOUT_VERSION_TEXT);
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.save_image) {  // Save image.
+            // Instantiate the save alert dialog.
+            DialogFragment saveImageDialogFragment = SaveDialog.save(SaveDialog.SAVE_ABOUT_VERSION_IMAGE);
 
-                // Show the save alert dialog.
-                saveTextDialogFragment.show(getActivity().getSupportFragmentManager(), getString(R.string.save_dialog));
+            // Show the save alert dialog.
+            saveImageDialogFragment.show(getActivity().getSupportFragmentManager(), getString(R.string.save_dialog));
 
-                // Consume the event.
-                return true;
-
-            case R.id.save_image:
-                // Instantiate the save alert dialog.
-                DialogFragment saveImageDialogFragment = SaveDialog.save(SaveDialog.SAVE_ABOUT_VERSION_IMAGE);
-
-                // Show the save alert dialog.
-                saveImageDialogFragment.show(getActivity().getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                // Consume the event.
-                return true;
-
-            default:
-                // Don't consume the event.
-                return super.onOptionsItemSelected(menuItem);
+            // Consume the event.
+            return true;
+        } else {  // The home button was selected.
+            // Return the parent class.
+            return super.onOptionsItemSelected(menuItem);
         }
     }
 

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.stoutner.privacybrowser.dialogs
 
 import android.annotation.SuppressLint
@@ -184,7 +185,7 @@ class HttpAuthenticationDialog: DialogFragment() {
                 ForegroundColorSpan(resources.getColor(R.color.blue_700))
             } else {
                 @Suppress("DEPRECATION")
-                ForegroundColorSpan(resources.getColor(R.color.violet_500))
+                ForegroundColorSpan(resources.getColor(R.color.violet_700))
             }
 
             // Setup the span to display the host name in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.

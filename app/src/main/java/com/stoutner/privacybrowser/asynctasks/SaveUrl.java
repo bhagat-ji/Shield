@@ -51,16 +51,16 @@ import java.text.NumberFormat;
 
 public class SaveUrl extends AsyncTask<String, Long, String> {
     // Define a weak references.
-    private WeakReference<Context> contextWeakReference;
-    private WeakReference<Activity> activityWeakReference;
+    private final WeakReference<Context> contextWeakReference;
+    private final WeakReference<Activity> activityWeakReference;
 
     // Define a success string constant.
     private final String SUCCESS = "Success";
 
     // Define the class variables.
-    private String filePathString;
-    private String userAgent;
-    private boolean cookiesEnabled;
+    private final String filePathString;
+    private final String userAgent;
+    private final boolean cookiesEnabled;
     private Snackbar savingFileSnackbar;
 
     // The public constructor.
@@ -225,20 +225,20 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
                     // Close the file output stream.
                     fileOutputStream.close();
-
-                    // Create a media scanner intent, which adds items like pictures to Android's recent file list.
-                    Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-
-                    // Add the URI to the media scanner intent.
-                    mediaScannerIntent.setData(Uri.fromFile(file));
-
-                    // Make it so.
-                    activity.sendBroadcast(mediaScannerIntent);
                 } finally {
                     // Disconnect the HTTP URL connection.
                     httpUrlConnection.disconnect();
                 }
             }
+
+            // Create a media scanner intent, which adds items like pictures to Android's recent file list.
+            Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+
+            // Add the URI to the media scanner intent.
+            mediaScannerIntent.setData(Uri.fromFile(file));
+
+            // Make it so.
+            activity.sendBroadcast(mediaScannerIntent);
         } catch (Exception exception) {
             // Store the error in the save disposition string.
             saveDisposition = exception.toString();

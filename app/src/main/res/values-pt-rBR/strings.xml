@@ -188,18 +188,22 @@
     <!-- Save Dialogs. -->
     <string name="save_url">Salvar URL</string>
     <string name="save_archive">Salvar Arquivo</string>
+    <string name="save_text">Salvar Texto</string>
     <string name="save_image">Salvar Imagem</string>
     <string name="save_logcat">Salvar logcat</string>
     <string name="file_name">Nome do Arquivo</string>
     <string name="webpage_mht">Pagina_Web.mht</string>
     <string name="webpage_png">Pagina_Web.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="privacy_browser_version_txt">Privacy Browser Versão.txt</string>
+    <string name="privacy_browser_version_png">Privacy Browser Versão.png</string>
     <string name="file">Arquivo</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">tamanho desconhecido</string>
     <string name="invalid_url">URL inválida</string>
     <string name="ok">OK</string>
     <string name="saving_file">Salvando file:</string>
+    <string name="processing_image">Processando imagem… :</string>
     <string name="file_saved">Arquivo Salvo:</string>
     <string name="error_saving_file">Erro ao salvar o arquivo:</string>
 
@@ -432,6 +436,7 @@
             <string name="certificate_version">Versão do certificado:</string>
             <string name="serial_number">Número de série:</string>
             <string name="signature_algorithm">Algoritmo de Assinatura:</string>
+        <string name="version_info_copied">Informações de versão copiada.</string>
     <string name="permissions">Permissões</string>
     <string name="privacy_policy">Política de Privacidade</string>
     <string name="changelog">Changelog</string>

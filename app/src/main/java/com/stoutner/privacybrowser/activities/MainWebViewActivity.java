@@ -1059,960 +1059,699 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    // Remove Android Studio's warning about the dangers of enabling JavaScript.  We know.  Oh, how we know.
-    @SuppressLint("SetJavaScriptEnabled")
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Get the selected menu item ID.
-        int menuItemId = menuItem.getItemId();
-
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get a handle for the cookie manager.
         CookieManager cookieManager = CookieManager.getInstance();
 
-        // Run the commands that correlate to the selected menu item.
-        switch (menuItemId) {
-            case R.id.toggle_javascript:
-                // Toggle the JavaScript status.
-                currentWebView.getSettings().setJavaScriptEnabled(!currentWebView.getSettings().getJavaScriptEnabled());
-
-                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
-                updatePrivacyIcons(true);
-
-                // Display a `Snackbar`.
-                if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScrip is enabled.
-                    Snackbar.make(webViewPager, R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
-                } else if (cookieManager.acceptCookie()) {  // JavaScript is disabled, but first-party cookies are enabled.
-                    Snackbar.make(webViewPager, R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
-                } else {  // Privacy mode.
-                    Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
-                }
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.refresh:
-                if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
-                    // Reload the current WebView.
-                    currentWebView.reload();
-                } else {  // The stop button was pushed.
-                    // Stop the loading of the WebView.
-                    currentWebView.stopLoading();
-                }
-
-                // Consume the event.
-                return true;
-
-            case R.id.bookmarks:
-                // Open the bookmarks drawer.
-                drawerLayout.openDrawer(GravityCompat.END);
-
-                // Consume the event.
-                return true;
-
-            case R.id.toggle_first_party_cookies:
-                // Switch the first-party cookie status.
-                cookieManager.setAcceptCookie(!cookieManager.acceptCookie());
-
-                // Store the first-party cookie status.
-                currentWebView.setAcceptFirstPartyCookies(cookieManager.acceptCookie());
-
-                // Update the menu checkbox.
-                menuItem.setChecked(cookieManager.acceptCookie());
-
-                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
-                updatePrivacyIcons(true);
-
-                // Display a snackbar.
-                if (cookieManager.acceptCookie()) {  // First-party cookies are enabled.
-                    Snackbar.make(webViewPager, R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
-                } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is still enabled.
-                    Snackbar.make(webViewPager, R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
-                } else {  // Privacy mode.
-                    Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
-                }
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.toggle_third_party_cookies:
-                if (Build.VERSION.SDK_INT >= 21) {
-                    // Switch the status of thirdPartyCookiesEnabled.
-                    cookieManager.setAcceptThirdPartyCookies(currentWebView, !cookieManager.acceptThirdPartyCookies(currentWebView));
-
-                    // Update the menu checkbox.
-                    menuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
-
-                    // Display a snackbar.
-                    if (cookieManager.acceptThirdPartyCookies(currentWebView)) {
-                        Snackbar.make(webViewPager, R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(webViewPager, R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    // Reload the current WebView.
-                    currentWebView.reload();
-                } // Else do nothing because SDK < 21.
-
-                // Consume the event.
-                return true;
-
-            case R.id.toggle_dom_storage:
-                // Toggle the status of domStorageEnabled.
-                currentWebView.getSettings().setDomStorageEnabled(!currentWebView.getSettings().getDomStorageEnabled());
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
-
-                // Update the privacy icon.  `true` refreshes the app bar icons.
-                updatePrivacyIcons(true);
-
-                // Display a snackbar.
-                if (currentWebView.getSettings().getDomStorageEnabled()) {
-                    Snackbar.make(webViewPager, R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(webViewPager, R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
-                }
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            // Form data can be removed once the minimum API >= 26.
-            case R.id.toggle_save_form_data:
-                // Switch the status of saveFormDataEnabled.
-                currentWebView.getSettings().setSaveFormData(!currentWebView.getSettings().getSaveFormData());
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.getSettings().getSaveFormData());
-
-                // Display a snackbar.
-                if (currentWebView.getSettings().getSaveFormData()) {
-                    Snackbar.make(webViewPager, R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(webViewPager, R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
-                }
-
-                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
-                updatePrivacyIcons(true);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.clear_cookies:
-                Snackbar.make(webViewPager, R.string.cookies_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, v -> {
-                            // Do nothing because everything will be handled by `onDismissed()` below.
-                        })
-                        .addCallback(new Snackbar.Callback() {
-                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
-                            @Override
-                            public void onDismissed(Snackbar snackbar, int event) {
-                                if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
-                                    // Delete the cookies, which command varies by SDK.
-                                    if (Build.VERSION.SDK_INT < 21) {
-                                        cookieManager.removeAllCookie();
-                                    } else {
-                                        cookieManager.removeAllCookies(null);
-                                    }
-                                }
-                            }
-                        })
-                        .show();
-
-                // Consume the event.
-                return true;
-
-            case R.id.clear_dom_storage:
-                Snackbar.make(webViewPager, R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, v -> {
-                            // Do nothing because everything will be handled by `onDismissed()` below.
-                        })
-                        .addCallback(new Snackbar.Callback() {
-                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
-                            @Override
-                            public void onDismissed(Snackbar snackbar, int event) {
-                                if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
-                                    // Delete the DOM Storage.
-                                    WebStorage webStorage = WebStorage.getInstance();
-                                    webStorage.deleteAllData();
-
-                                    // Initialize a handler to manually delete the DOM storage files and directories.
-                                    Handler deleteDomStorageHandler = new Handler();
-
-                                    // Setup a runnable to manually delete the DOM storage files and directories.
-                                    Runnable deleteDomStorageRunnable = () -> {
-                                        try {
-                                            // Get a handle for the runtime.
-                                            Runtime runtime = Runtime.getRuntime();
-
-                                            // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,
-                                            // which links to `/data/data/com.stoutner.privacybrowser.standard`.
-                                            String privateDataDirectoryString = getApplicationInfo().dataDir;
-
-                                            // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                                            Process deleteLocalStorageProcess = runtime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
-
-                                            // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                                            Process deleteIndexProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                                            Process deleteQuotaManagerProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                                            Process deleteQuotaManagerJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                                            Process deleteDatabasesProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-
-                                            // Wait for the processes to finish.
-                                            deleteLocalStorageProcess.waitFor();
-                                            deleteIndexProcess.waitFor();
-                                            deleteQuotaManagerProcess.waitFor();
-                                            deleteQuotaManagerJournalProcess.waitFor();
-                                            deleteDatabasesProcess.waitFor();
-                                        } catch (Exception exception) {
-                                            // Do nothing if an error is thrown.
-                                        }
-                                    };
-
-                                    // Manually delete the DOM storage files after 200 milliseconds.
-                                    deleteDomStorageHandler.postDelayed(deleteDomStorageRunnable, 200);
-                                }
-                            }
-                        })
-                        .show();
-
-                // Consume the event.
-                return true;
-
-            // Form data can be remove once the minimum API >= 26.
-            case R.id.clear_form_data:
-                Snackbar.make(webViewPager, R.string.form_data_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, v -> {
-                            // Do nothing because everything will be handled by `onDismissed()` below.
-                        })
-                        .addCallback(new Snackbar.Callback() {
-                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
-                            @Override
-                            public void onDismissed(Snackbar snackbar, int event) {
-                                if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
-                                    // Delete the form data.
-                                    WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(getApplicationContext());
-                                    mainWebViewDatabase.clearFormData();
-                                }
-                            }
-                        })
-                        .show();
-
-                // Consume the event.
-                return true;
-
-            case R.id.easylist:
-                // Toggle the EasyList status.
-                currentWebView.enableBlocklist(NestedScrollWebView.EASYLIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.easyprivacy:
-                // Toggle the EasyPrivacy status.
-                currentWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.fanboys_annoyance_list:
-                // Toggle Fanboy's Annoyance List status.
-                currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
-
-                // Update the staus of Fanboy's Social Blocking List.
-                MenuItem fanboysSocialBlockingListMenuItem = optionsMenu.findItem(R.id.fanboys_social_blocking_list);
-                fanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.fanboys_social_blocking_list:
-                // Toggle Fanboy's Social Blocking List status.
-                currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.ultralist:
-                // Toggle the UltraList status.
-                currentWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.ultraprivacy:
-                // Toggle the UltraPrivacy status.
-                currentWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.block_all_third_party_requests:
-                //Toggle the third-party requests blocker status.
-                currentWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, !currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.proxy_none:
-                // Update the proxy mode.
-                proxyMode = ProxyHelper.NONE;
-
-                // Apply the proxy mode.
-                applyProxy(true);
-
-                // Consume the event.
-                return true;
-
-            case R.id.proxy_tor:
-                // Update the proxy mode.
-                proxyMode = ProxyHelper.TOR;
-
-                // Apply the proxy mode.
-                applyProxy(true);
-
-                // Consume the event.
-                return true;
-
-            case R.id.proxy_i2p:
-                // Update the proxy mode.
-                proxyMode = ProxyHelper.I2P;
-
-                // Apply the proxy mode.
-                applyProxy(true);
-
-                // Consume the event.
-                return true;
-
-            case R.id.proxy_custom:
-                // Update the proxy mode.
-                proxyMode = ProxyHelper.CUSTOM;
-
-                // Apply the proxy mode.
-                applyProxy(true);
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_privacy_browser:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[0]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_webview_default:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString("");
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_firefox_on_android:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[2]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_chrome_on_android:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[3]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_safari_on_ios:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[4]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_firefox_on_linux:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[5]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_chromium_on_linux:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[6]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_firefox_on_windows:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[7]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_chrome_on_windows:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[8]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_edge_on_windows:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[9]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_internet_explorer_on_windows:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[10]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_safari_on_macos:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[11]);
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.user_agent_custom:
-                // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
-
-                // Reload the current WebView.
-                currentWebView.reload();
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size:
-                // Instantiate the font size dialog.
-                DialogFragment fontSizeDialogFragment = FontSizeDialog.displayDialog(currentWebView.getSettings().getTextZoom());
-
-                // Show the font size dialog.
-                fontSizeDialogFragment.show(getSupportFragmentManager(), getString(R.string.font_size));
-
-                // Consume the event.
-                return true;
-
-            case R.id.swipe_to_refresh:
-                // Toggle the stored status of swipe to refresh.
-                currentWebView.setSwipeToRefresh(!currentWebView.getSwipeToRefresh());
-
-                // Get a handle for the swipe refresh layout.
-                SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-
-                // Update the swipe refresh layout.
-                if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
-                    // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                    swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
-                } else {  // Swipe to refresh is disabled.
-                    // Disable the swipe refresh layout.
-                    swipeRefreshLayout.setEnabled(false);
-                }
-
-                // Consume the event.
-                return true;
-
-            case R.id.wide_viewport:
-                // Toggle the viewport.
-                currentWebView.getSettings().setUseWideViewPort(!currentWebView.getSettings().getUseWideViewPort());
-
-                // Consume the event.
-                return true;
-
-            case R.id.display_images:
-                if (currentWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
-                    // Disable loading of images.
-                    currentWebView.getSettings().setLoadsImagesAutomatically(false);
-
-                    // Reload the website to remove existing images.
-                    currentWebView.reload();
-                } else {  // Images are not currently loaded automatically.
-                    // Enable loading of images.  Missing images will be loaded without the need for a reload.
-                    currentWebView.getSettings().setLoadsImagesAutomatically(true);
-                }
-
-                // Consume the event.
-                return true;
-
-            case R.id.dark_webview:
-                // Check to see if dark WebView is supported by this WebView.
-                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-                    // Toggle the dark WebView setting.
-                    if (WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON) {  // Dark WebView is currently enabled.
-                        // Turn off dark WebView.
-                        WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
-                    } else {  // Dark WebView is currently disabled.
-                        // turn on dark WebView.
-                        WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
-                    }
-                }
-
-                // Consume the event.
-                return true;
-
-            case R.id.find_on_page:
-                // Get a handle for the views.
-                Toolbar toolbar = findViewById(R.id.toolbar);
-                LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
-                EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
-
-                // Set the minimum height of the find on page linear layout to match the toolbar.
-                findOnPageLinearLayout.setMinimumHeight(toolbar.getHeight());
-
-                // Hide the toolbar.
-                toolbar.setVisibility(View.GONE);
-
-                // Show the find on page linear layout.
-                findOnPageLinearLayout.setVisibility(View.VISIBLE);
-
-                // Display the keyboard.  The app must wait 200 ms before running the command to work around a bug in Android.
-                // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
-                findOnPageEditText.postDelayed(() -> {
-                    // Set the focus on `findOnPageEditText`.
-                    findOnPageEditText.requestFocus();
-
-                    // Get a handle for the input method manager.
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                    // Remove the lint warning below that the input method manager might be null.
-                    assert inputMethodManager != null;
-
-                    // Display the keyboard.  `0` sets no input flags.
-                    inputMethodManager.showSoftInput(findOnPageEditText, 0);
-                }, 200);
-
-                // Consume the event.
-                return true;
-
-            case R.id.print:
-                // Get a print manager instance.
-                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-
-                // Remove the lint error below that print manager might be null.
-                assert printManager != null;
-
-                // Create a print document adapter from the current WebView.
-                PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
-
-                // Print the document.
-                printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
-
-                // Consume the event.
-                return true;
-
-            case R.id.save_url:
-                // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
-
-                // Consume the event.
-                return true;
-
-            case R.id.save_archive:
-                // Instantiate the save dialog.
-                DialogFragment saveArchiveFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_ARCHIVE, null, null, getString(R.string.webpage_mht), null,
-                        false);
-
-                // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-                saveArchiveFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                // Consume the event.
-                return true;
-
-            case R.id.save_image:
-                // Instantiate the save dialog.
-                DialogFragment saveImageFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_IMAGE, null, null, getString(R.string.webpage_png), null,
-                        false);
-
-                // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-                saveImageFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                // Consume the event.
-                return true;
-
-            case R.id.add_to_homescreen:
-                // Instantiate the create home screen shortcut dialog.
-                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), currentWebView.getUrl(),
-                        currentWebView.getFavoriteOrDefaultIcon());
-
-                // Show the create home screen shortcut dialog.
-                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
-
-                // Consume the event.
-                return true;
-
-            case R.id.view_source:
-                // Create an intent to launch the view source activity.
-                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
-
-                // Add the variables to the intent.
-                viewSourceIntent.putExtra("user_agent", currentWebView.getSettings().getUserAgentString());
-                viewSourceIntent.putExtra("current_url", currentWebView.getUrl());
-
-                // Make it so.
-                startActivity(viewSourceIntent);
-
-                // Consume the event.
-                return true;
-
-            case R.id.share_url:
-                // Setup the share string.
-                String shareString = currentWebView.getTitle() + " – " + currentWebView.getUrl();
-
-                // Create the share intent.
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-                // Add the share string to the intent.
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
-
-                // Set the MIME type.
-                shareIntent.setType("text/plain");
-
-                // Set the intent to open in a new task.
-                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                // Make it so.
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
-
-                // Consume the event.
-                return true;
-
-            case R.id.open_with_app:
-                // Open the URL with an outside app.
-                openWithApp(currentWebView.getUrl());
-
-                // Consume the event.
-                return true;
-
-            case R.id.open_with_browser:
-                // Open the URL with an outside browser.
-                openWithBrowser(currentWebView.getUrl());
-
-                // Consume the event.
-                return true;
-
-            case R.id.add_or_edit_domain:
-                if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
-                    // Reapply the domain settings on returning to `MainWebViewActivity`.
-                    reapplyDomainSettingsOnRestart = true;
-
-                    // Create an intent to launch the domains activity.
-                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
-
-                    // Add the extra information to the intent.
-                    domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
-                    domainsIntent.putExtra("close_on_back", true);
-                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
-
-                    // Get the current certificate.
-                    SslCertificate sslCertificate = currentWebView.getCertificate();
-
-                    // Check to see if the SSL certificate is populated.
-                    if (sslCertificate != null) {
-                        // Extract the certificate to strings.
-                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
-                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
-                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
-                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
-                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
-                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
-                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
-                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
-
-                        // Add the certificate to the intent.
-                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                        domainsIntent.putExtra("ssl_start_date", startDateLong);
-                        domainsIntent.putExtra("ssl_end_date", endDateLong);
-                    }
-
-                    // Check to see if the current IP addresses have been received.
-                    if (currentWebView.hasCurrentIpAddresses()) {
-                        // Add the current IP addresses to the intent.
-                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
-                    }
-
-                    // Make it so.
-                    startActivity(domainsIntent);
-                } else {  // Add a new domain.
-                    // Apply the new domain settings on returning to `MainWebViewActivity`.
-                    reapplyDomainSettingsOnRestart = true;
-
-                    // Get the current domain
-                    Uri currentUri = Uri.parse(currentWebView.getUrl());
-                    String currentDomain = currentUri.getHost();
-
-                    // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-                    DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
-
-                    // Create the domain and store the database ID.
-                    int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
-
-                    // Create an intent to launch the domains activity.
-                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
-
-                    // Add the extra information to the intent.
-                    domainsIntent.putExtra("load_domain", newDomainDatabaseId);
-                    domainsIntent.putExtra("close_on_back", true);
-                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
-
-                    // Get the current certificate.
-                    SslCertificate sslCertificate = currentWebView.getCertificate();
-
-                    // Check to see if the SSL certificate is populated.
-                    if (sslCertificate != null) {
-                        // Extract the certificate to strings.
-                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
-                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
-                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
-                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
-                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
-                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
-                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
-                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
-
-                        // Add the certificate to the intent.
-                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                        domainsIntent.putExtra("ssl_start_date", startDateLong);
-                        domainsIntent.putExtra("ssl_end_date", endDateLong);
-                    }
-
-                    // Check to see if the current IP addresses have been received.
-                    if (currentWebView.hasCurrentIpAddresses()) {
-                        // Add the current IP addresses to the intent.
-                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
-                    }
-
-                    // Make it so.
-                    startActivity(domainsIntent);
-                }
-
-                // Consume the event.
-                return true;
-
-            case R.id.ad_consent:
-                // Instantiate the ad consent dialog.
-                DialogFragment adConsentDialogFragment = new AdConsentDialog();
-
-                // Display the ad consent dialog.
-                adConsentDialogFragment.show(getSupportFragmentManager(), getString(R.string.ad_consent));
-
-                // Consume the event.
-                return true;
-
-            default:
-                // Don't consume the event.
-                return super.onOptionsItemSelected(menuItem);
-        }
-    }
-
-    // removeAllCookies is deprecated, but it is required for API < 21.
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        // Get the menu item ID.
+        // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
-        // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // Run the commands that correlate to the selected menu item.
+        if (menuItemId == R.id.toggle_javascript) {  // JavaScript.
+            // Toggle the JavaScript status.
+            currentWebView.getSettings().setJavaScriptEnabled(!currentWebView.getSettings().getJavaScriptEnabled());
 
-        // Run the commands that correspond to the selected menu item.
-        switch (menuItemId) {
-            case R.id.clear_and_exit:
-                // Clear and exit Privacy Browser.
-                clearAndExit();
-                break;
+            // Update the privacy icon.
+            updatePrivacyIcons(true);
 
-            case R.id.home:
-                // Load the homepage.
-                loadUrl(currentWebView, sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
-                break;
+            // Display a `Snackbar`.
+            if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScrip is enabled.
+                Snackbar.make(webViewPager, R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
+            } else if (cookieManager.acceptCookie()) {  // JavaScript is disabled, but first-party cookies are enabled.
+                Snackbar.make(webViewPager, R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
+            } else {  // Privacy mode.
+                Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+            }
 
-            case R.id.back:
-                if (currentWebView.canGoBack()) {
-                    // Get the current web back forward list.
-                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+            // Reload the current WebView.
+            currentWebView.reload();
 
-                    // Get the previous entry URL.
-                    String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.refresh) {  // Refresh.
+            // Run the command that correlates to the current status of the menu item.
+            if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
+                // Reload the current WebView.
+                currentWebView.reload();
+            } else {  // The stop button was pushed.
+                // Stop the loading of the WebView.
+                currentWebView.stopLoading();
+            }
 
-                    // Apply the domain settings.
-                    applyDomainSettings(currentWebView, previousUrl, false, false, false);
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.bookmarks) {  // Bookmarks.
+            // Open the bookmarks drawer.
+            drawerLayout.openDrawer(GravityCompat.END);
 
-                    // Load the previous website in the history.
-                    currentWebView.goBack();
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.toggle_first_party_cookies) {  // First-party cookies.
+            // Switch the first-party cookie status.
+            cookieManager.setAcceptCookie(!cookieManager.acceptCookie());
+
+            // Store the first-party cookie status.
+            currentWebView.setAcceptFirstPartyCookies(cookieManager.acceptCookie());
+
+            // Update the menu checkbox.
+            menuItem.setChecked(cookieManager.acceptCookie());
+
+            // Update the privacy icon.
+            updatePrivacyIcons(true);
+
+            // Display a snackbar.
+            if (cookieManager.acceptCookie()) {  // First-party cookies are enabled.
+                Snackbar.make(webViewPager, R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+            } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is still enabled.
+                Snackbar.make(webViewPager, R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+            } else {  // Privacy mode.
+                Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+            }
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.toggle_third_party_cookies) {  // Third-party cookies.
+            // Only act if the API >= 21.  Otherwise, there are no third-party cookie controls.
+            if (Build.VERSION.SDK_INT >= 21) {
+                // Toggle the status of thirdPartyCookiesEnabled.
+                cookieManager.setAcceptThirdPartyCookies(currentWebView, !cookieManager.acceptThirdPartyCookies(currentWebView));
+
+                // Update the menu checkbox.
+                menuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
+
+                // Display a snackbar.
+                if (cookieManager.acceptThirdPartyCookies(currentWebView)) {
+                    Snackbar.make(webViewPager, R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(webViewPager, R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                 }
-                break;
 
-            case R.id.forward:
-                if (currentWebView.canGoForward()) {
-                    // Get the current web back forward list.
-                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+                // Reload the current WebView.
+                currentWebView.reload();
+            }
 
-                    // Get the next entry URL.
-                    String nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() + 1).getUrl();
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.toggle_dom_storage) {  // DOM storage.
+            // Toggle the status of domStorageEnabled.
+            currentWebView.getSettings().setDomStorageEnabled(!currentWebView.getSettings().getDomStorageEnabled());
 
-                    // Apply the domain settings.
-                    applyDomainSettings(currentWebView, nextUrl, false, false, false);
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
 
-                    // Load the next website in the history.
-                    currentWebView.goForward();
+            // Update the privacy icon.
+            updatePrivacyIcons(true);
+
+            // Display a snackbar.
+            if (currentWebView.getSettings().getDomStorageEnabled()) {
+                Snackbar.make(webViewPager, R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(webViewPager, R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
+            }
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.toggle_save_form_data) {  // Form data.  This can be removed once the minimum API >= 26.
+            // Switch the status of saveFormDataEnabled.
+            currentWebView.getSettings().setSaveFormData(!currentWebView.getSettings().getSaveFormData());
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.getSettings().getSaveFormData());
+
+            // Display a snackbar.
+            if (currentWebView.getSettings().getSaveFormData()) {
+                Snackbar.make(webViewPager, R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(webViewPager, R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
+            }
+
+            // Update the privacy icon.
+            updatePrivacyIcons(true);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.clear_cookies) {  // Clear cookies.
+            // Create a snackbar.
+            Snackbar.make(webViewPager, R.string.cookies_deleted, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.undo, v -> {
+                        // Do nothing because everything will be handled by `onDismissed()` below.
+                    })
+                    .addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
+                                // Delete the cookies, which command varies by SDK.
+                                if (Build.VERSION.SDK_INT < 21) {
+                                    cookieManager.removeAllCookie();
+                                } else {
+                                    cookieManager.removeAllCookies(null);
+                                }
+                            }
+                        }
+                    })
+                    .show();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.clear_dom_storage) {  // Clear DOM storage.
+            // Create a snackbar.
+            Snackbar.make(webViewPager, R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.undo, v -> {
+                        // Do nothing because everything will be handled by `onDismissed()` below.
+                    })
+                    .addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
+                                // Delete the DOM Storage.
+                                WebStorage webStorage = WebStorage.getInstance();
+                                webStorage.deleteAllData();
+
+                                // Initialize a handler to manually delete the DOM storage files and directories.
+                                Handler deleteDomStorageHandler = new Handler();
+
+                                // Setup a runnable to manually delete the DOM storage files and directories.
+                                Runnable deleteDomStorageRunnable = () -> {
+                                    try {
+                                        // Get a handle for the runtime.
+                                        Runtime runtime = Runtime.getRuntime();
+
+                                        // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,
+                                        // which links to `/data/data/com.stoutner.privacybrowser.standard`.
+                                        String privateDataDirectoryString = getApplicationInfo().dataDir;
+
+                                        // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                                        Process deleteLocalStorageProcess = runtime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+
+                                        // Multiple commands must be used because `Runtime.exec()` does not like `*`.
+                                        Process deleteIndexProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                        Process deleteQuotaManagerProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                                        Process deleteQuotaManagerJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                                        Process deleteDatabasesProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+
+                                        // Wait for the processes to finish.
+                                        deleteLocalStorageProcess.waitFor();
+                                        deleteIndexProcess.waitFor();
+                                        deleteQuotaManagerProcess.waitFor();
+                                        deleteQuotaManagerJournalProcess.waitFor();
+                                        deleteDatabasesProcess.waitFor();
+                                    } catch (Exception exception) {
+                                        // Do nothing if an error is thrown.
+                                    }
+                                };
+
+                                // Manually delete the DOM storage files after 200 milliseconds.
+                                deleteDomStorageHandler.postDelayed(deleteDomStorageRunnable, 200);
+                            }
+                        }
+                    })
+                    .show();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.clear_form_data) {  // Clear form data.  This can be remove once the minimum API >= 26.
+            // Create a snackbar.
+            Snackbar.make(webViewPager, R.string.form_data_deleted, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.undo, v -> {
+                        // Do nothing because everything will be handled by `onDismissed()` below.
+                    })
+                    .addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
+                                // Get a handle for the webView database.
+                                WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(getApplicationContext());
+
+                                // Delete the form data.
+                                webViewDatabase.clearFormData();
+                            }
+                        }
+                    })
+                    .show();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.easylist) {  // EasyList.
+            // Toggle the EasyList status.
+            currentWebView.enableBlocklist(NestedScrollWebView.EASYLIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.easyprivacy) {  // EasyPrivacy.
+            // Toggle the EasyPrivacy status.
+            currentWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.fanboys_annoyance_list) {  // Fanboy's Annoyance List.
+            // Toggle Fanboy's Annoyance List status.
+            currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+
+            // Get a handle for the Fanboy's Social Block List menu item.
+            MenuItem fanboysSocialBlockingListMenuItem = optionsMenu.findItem(R.id.fanboys_social_blocking_list);
+
+            // Update the staus of Fanboy's Social Blocking List.
+            fanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.fanboys_social_blocking_list) {  // Fanboy's Social Blocking List.
+            // Toggle Fanboy's Social Blocking List status.
+            currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.ultralist) {  // UltraList.
+            // Toggle the UltraList status.
+            currentWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.ultraprivacy) {  // UltraPrivacy.
+            // Toggle the UltraPrivacy status.
+            currentWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.block_all_third_party_requests) {  // Block all third-party requests.
+            //Toggle the third-party requests blocker status.
+            currentWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, !currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+
+            // Update the menu checkbox.
+            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.proxy_none) {  // Proxy - None.
+            // Update the proxy mode.
+            proxyMode = ProxyHelper.NONE;
+
+            // Apply the proxy mode.
+            applyProxy(true);
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.proxy_tor) {  // Proxy - Tor.
+            // Update the proxy mode.
+            proxyMode = ProxyHelper.TOR;
+
+            // Apply the proxy mode.
+            applyProxy(true);
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.proxy_i2p) {  // Proxy - I2P.
+            // Update the proxy mode.
+            proxyMode = ProxyHelper.I2P;
+
+            // Apply the proxy mode.
+            applyProxy(true);
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.proxy_custom) {  // Proxy - Custom.
+            // Update the proxy mode.
+            proxyMode = ProxyHelper.CUSTOM;
+
+            // Apply the proxy mode.
+            applyProxy(true);
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_privacy_browser) {  // User Agent - Privacy Browser.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[0]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_webview_default) {  // User Agent - WebView Default.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString("");
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_firefox_on_android) {  // User Agent - Firefox on Android.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[2]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_chrome_on_android) {  // User Agent - Chrome on Android.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[3]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_safari_on_ios) {  // User Agent - Safari on iOS.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[4]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_firefox_on_linux) {  // User Agent - Firefox on Linux.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[5]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_chromium_on_linux) {  // User Agent - Chromium on Linux.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[6]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_firefox_on_windows) {  // User Agent - Firefox on Windows.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[7]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_chrome_on_windows) {  // User Agent - Chrome on Windows.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[8]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_edge_on_windows) {  // User Agent - Edge on Windows.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[9]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_internet_explorer_on_windows) {  // User Agent - Internet Explorer on Windows.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[10]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_safari_on_macos) {  // User Agent - Safari on macOS.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[11]);
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.user_agent_custom) {  // User Agent - Custom.
+            // Update the user agent.
+            currentWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+
+            // Reload the current WebView.
+            currentWebView.reload();
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.font_size) {  // Font size.
+            // Instantiate the font size dialog.
+            DialogFragment fontSizeDialogFragment = FontSizeDialog.displayDialog(currentWebView.getSettings().getTextZoom());
+
+            // Show the font size dialog.
+            fontSizeDialogFragment.show(getSupportFragmentManager(), getString(R.string.font_size));
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.swipe_to_refresh) {  // Swipe to refresh.
+            // Toggle the stored status of swipe to refresh.
+            currentWebView.setSwipeToRefresh(!currentWebView.getSwipeToRefresh());
+
+            // Get a handle for the swipe refresh layout.
+            SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
+            // Update the swipe refresh layout.
+            if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
+                // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+            } else {  // Swipe to refresh is disabled.
+                // Disable the swipe refresh layout.
+                swipeRefreshLayout.setEnabled(false);
+            }
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.wide_viewport) {  // Wide viewport.
+            // Toggle the viewport.
+            currentWebView.getSettings().setUseWideViewPort(!currentWebView.getSettings().getUseWideViewPort());
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.display_images) {  // Display images.
+            // Toggle the displaying of images.
+            if (currentWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
+                // Disable loading of images.
+                currentWebView.getSettings().setLoadsImagesAutomatically(false);
+
+                // Reload the website to remove existing images.
+                currentWebView.reload();
+            } else {  // Images are not currently loaded automatically.
+                // Enable loading of images.  Missing images will be loaded without the need for a reload.
+                currentWebView.getSettings().setLoadsImagesAutomatically(true);
+            }
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.dark_webview) {  // Dark WebView.
+            // Check to see if dark WebView is supported by this WebView.
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                // Toggle the dark WebView setting.
+                if (WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON) {  // Dark WebView is currently enabled.
+                    // Turn off dark WebView.
+                    WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
+                } else {  // Dark WebView is currently disabled.
+                    // Turn on dark WebView.
+                    WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                 }
-                break;
+            }
 
-            case R.id.history:
-                // Instantiate the URL history dialog.
-                DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(currentWebView.getWebViewFragmentId());
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.find_on_page) {  // Find on page.
+            // Get a handle for the views.
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+            EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
 
-                // Show the URL history dialog.
-                urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
-                break;
+            // Set the minimum height of the find on page linear layout to match the toolbar.
+            findOnPageLinearLayout.setMinimumHeight(toolbar.getHeight());
 
-            case R.id.open:
-                // Instantiate the open file dialog.
-                DialogFragment openDialogFragment = new OpenDialog();
+            // Hide the toolbar.
+            toolbar.setVisibility(View.GONE);
 
-                // Show the open file dialog.
-                openDialogFragment.show(getSupportFragmentManager(), getString(R.string.open));
-                break;
+            // Show the find on page linear layout.
+            findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
-            case R.id.requests:
-                // Populate the resource requests.
-                RequestsActivity.resourceRequests = currentWebView.getResourceRequests();
+            // Display the keyboard.  The app must wait 200 ms before running the command to work around a bug in Android.
+            // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
+            findOnPageEditText.postDelayed(() -> {
+                // Set the focus on the find on page edit text.
+                findOnPageEditText.requestFocus();
 
-                // Create an intent to launch the Requests activity.
-                Intent requestsIntent = new Intent(this, RequestsActivity.class);
+                // Get a handle for the input method manager.
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                // Add the block third-party requests status to the intent.
-                requestsIntent.putExtra("block_all_third_party_requests", currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+                // Remove the lint warning below that the input method manager might be null.
+                assert inputMethodManager != null;
 
-                // Make it so.
-                startActivity(requestsIntent);
-                break;
+                // Display the keyboard.  `0` sets no input flags.
+                inputMethodManager.showSoftInput(findOnPageEditText, 0);
+            }, 200);
 
-            case R.id.downloads:
-                // Launch the system Download Manager.
-                Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.print) {  // Print.
+            // Get a print manager instance.
+            PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
 
-                // Launch as a new task so that Download Manager and Privacy Browser show as separate windows in the recent tasks list.
-                downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // Remove the lint error below that print manager might be null.
+            assert printManager != null;
 
-                // Make it so.
-                startActivity(downloadManagerIntent);
-                break;
+            // Create a print document adapter from the current WebView.
+            PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
 
-            case R.id.domains:
-                // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
+            // Print the document.
+            printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.save_url) {  // Save URL.
+            // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+            new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                    currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.save_archive) {  // Save archive.
+            // Instantiate the save dialog.
+            DialogFragment saveArchiveFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_ARCHIVE, null, null, getString(R.string.webpage_mht), null,
+                    false);
+
+            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+            saveArchiveFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.save_image) {  // Save image.
+            // Instantiate the save dialog.
+            DialogFragment saveImageFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_IMAGE, null, null, getString(R.string.webpage_png), null,
+                    false);
+
+            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+            saveImageFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.add_to_homescreen) {  // Add to homescreen.
+            // Instantiate the create home screen shortcut dialog.
+            DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), currentWebView.getUrl(),
+                    currentWebView.getFavoriteOrDefaultIcon());
+
+            // Show the create home screen shortcut dialog.
+            createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.view_source) {  // View source.
+            // Create an intent to launch the view source activity.
+            Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
+
+            // Add the variables to the intent.
+            viewSourceIntent.putExtra("user_agent", currentWebView.getSettings().getUserAgentString());
+            viewSourceIntent.putExtra("current_url", currentWebView.getUrl());
+
+            // Make it so.
+            startActivity(viewSourceIntent);
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.share_url) {  // Share URL.
+            // Setup the share string.
+            String shareString = currentWebView.getTitle() + " – " + currentWebView.getUrl();
+
+            // Create the share intent.
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+            // Add the share string to the intent.
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+
+            // Set the MIME type.
+            shareIntent.setType("text/plain");
+
+            // Set the intent to open in a new task.
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Make it so.
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.open_with_app) {  // Open with app.
+            // Open the URL with an outside app.
+            openWithApp(currentWebView.getUrl());
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.open_with_browser) {  // Open with browser.
+            // Open the URL with an outside browser.
+            openWithBrowser(currentWebView.getUrl());
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.add_or_edit_domain) {  // Add or edit domain.
+            // Check if domain settings currently exist.
+            if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
+                // Reapply the domain settings on returning to `MainWebViewActivity`.
                 reapplyDomainSettingsOnRestart = true;
 
-                // Launch the domains activity.
+                // Create an intent to launch the domains activity.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
                 // Add the extra information to the intent.
+                domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
+                domainsIntent.putExtra("close_on_back", true);
                 domainsIntent.putExtra("current_url", currentWebView.getUrl());
 
                 // Get the current certificate.
@@ -2049,52 +1788,245 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Make it so.
                 startActivity(domainsIntent);
-                break;
-
-            case R.id.settings:
-                // Set the flag to reapply app settings on restart when returning from Settings.
-                reapplyAppSettingsOnRestart = true;
-
-                // Set the flag to reapply the domain settings on restart when returning from Settings.
+            } else {  // Add a new domain.
+                // Apply the new domain settings on returning to `MainWebViewActivity`.
                 reapplyDomainSettingsOnRestart = true;
 
-                // Launch the settings activity.
-                Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingsIntent);
-                break;
+                // Get the current domain
+                Uri currentUri = Uri.parse(currentWebView.getUrl());
+                String currentDomain = currentUri.getHost();
 
-            case R.id.import_export:
-                // Launch the import/export activity.
-                Intent importExportIntent = new Intent (this, ImportExportActivity.class);
-                startActivity(importExportIntent);
-                break;
+                // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+                DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
-            case R.id.logcat:
-                // Launch the logcat activity.
-                Intent logcatIntent = new Intent(this, LogcatActivity.class);
-                startActivity(logcatIntent);
-                break;
+                // Create the domain and store the database ID.
+                int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
 
-            case R.id.guide:
-                // Launch `GuideActivity`.
-                Intent guideIntent = new Intent(this, GuideActivity.class);
-                startActivity(guideIntent);
-                break;
+                // Create an intent to launch the domains activity.
+                Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
-            case R.id.about:
-                // Create an intent to launch the about activity.
-                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                // Add the extra information to the intent.
+                domainsIntent.putExtra("load_domain", newDomainDatabaseId);
+                domainsIntent.putExtra("close_on_back", true);
+                domainsIntent.putExtra("current_url", currentWebView.getUrl());
 
-                // Create a string array for the blocklist versions.
-                String[] blocklistVersions = new String[] {easyList.get(0).get(0)[0], easyPrivacy.get(0).get(0)[0], fanboysAnnoyanceList.get(0).get(0)[0], fanboysSocialList.get(0).get(0)[0],
-                        ultraList.get(0).get(0)[0], ultraPrivacy.get(0).get(0)[0]};
+                // Get the current certificate.
+                SslCertificate sslCertificate = currentWebView.getCertificate();
 
-                // Add the blocklist versions to the intent.
-                aboutIntent.putExtra("blocklist_versions", blocklistVersions);
+                // Check to see if the SSL certificate is populated.
+                if (sslCertificate != null) {
+                    // Extract the certificate to strings.
+                    String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                    String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                    String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                    String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                    String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                    String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                    long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                    long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                    // Add the certificate to the intent.
+                    domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                    domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                    domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                    domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                    domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                    domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                    domainsIntent.putExtra("ssl_start_date", startDateLong);
+                    domainsIntent.putExtra("ssl_end_date", endDateLong);
+                }
+
+                // Check to see if the current IP addresses have been received.
+                if (currentWebView.hasCurrentIpAddresses()) {
+                    // Add the current IP addresses to the intent.
+                    domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                }
 
                 // Make it so.
-                startActivity(aboutIntent);
-                break;
+                startActivity(domainsIntent);
+            }
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.ad_consent) {  // Ad consent.
+            // Instantiate the ad consent dialog.
+            DialogFragment adConsentDialogFragment = new AdConsentDialog();
+
+            // Display the ad consent dialog.
+            adConsentDialogFragment.show(getSupportFragmentManager(), getString(R.string.ad_consent));
+
+            // Consume the event.
+            return true;
+        } else {  // There is no match with the options menu.  Pass the event up to the parent method.
+            // Don't consume the event.
+            return super.onOptionsItemSelected(menuItem);
+        }
+    }
+
+    // removeAllCookies is deprecated, but it is required for API < 21.
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the menu item ID.
+        int menuItemId = menuItem.getItemId();
+
+        // Run the commands that correspond to the selected menu item.
+        if (menuItemId == R.id.clear_and_exit) {  // Clear and exit.
+            // Clear and exit Privacy Browser.
+            clearAndExit();
+        } else if (menuItemId == R.id.home) {  // Home.
+            // Load the homepage.
+            loadUrl(currentWebView, sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+        } else if (menuItemId == R.id.back) {  // Back.
+            // Check if the WebView can go back.
+            if (currentWebView.canGoBack()) {
+                // Get the current web back forward list.
+                WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+                // Get the previous entry URL.
+                String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
+                // Apply the domain settings.
+                applyDomainSettings(currentWebView, previousUrl, false, false, false);
+
+                // Load the previous website in the history.
+                currentWebView.goBack();
+            }
+        } else if (menuItemId == R.id.forward) {  // Forward.
+            // Check if the WebView can go forward.
+            if (currentWebView.canGoForward()) {
+                // Get the current web back forward list.
+                WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+                // Get the next entry URL.
+                String nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() + 1).getUrl();
+
+                // Apply the domain settings.
+                applyDomainSettings(currentWebView, nextUrl, false, false, false);
+
+                // Load the next website in the history.
+                currentWebView.goForward();
+            }
+        } else if (menuItemId == R.id.history) {  // History.
+            // Instantiate the URL history dialog.
+            DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(currentWebView.getWebViewFragmentId());
+
+            // Show the URL history dialog.
+            urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
+        } else if (menuItemId == R.id.open) {  // Open.
+            // Instantiate the open file dialog.
+            DialogFragment openDialogFragment = new OpenDialog();
+
+            // Show the open file dialog.
+            openDialogFragment.show(getSupportFragmentManager(), getString(R.string.open));
+        } else if (menuItemId == R.id.requests) {  // Requests.
+            // Populate the resource requests.
+            RequestsActivity.resourceRequests = currentWebView.getResourceRequests();
+
+            // Create an intent to launch the Requests activity.
+            Intent requestsIntent = new Intent(this, RequestsActivity.class);
+
+            // Add the block third-party requests status to the intent.
+            requestsIntent.putExtra("block_all_third_party_requests", currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+
+            // Make it so.
+            startActivity(requestsIntent);
+        } else if (menuItemId == R.id.downloads) {  // Downloads.
+            // Launch the system Download Manager.
+            Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+
+            // Launch as a new task so that Download Manager and Privacy Browser show as separate windows in the recent tasks list.
+            downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Make it so.
+            startActivity(downloadManagerIntent);
+        } else if (menuItemId == R.id.domains) {  // Domains.
+            // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
+            reapplyDomainSettingsOnRestart = true;
+
+            // Launch the domains activity.
+            Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+            // Add the extra information to the intent.
+            domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+            // Get the current certificate.
+            SslCertificate sslCertificate = currentWebView.getCertificate();
+
+            // Check to see if the SSL certificate is populated.
+            if (sslCertificate != null) {
+                // Extract the certificate to strings.
+                String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                // Add the certificate to the intent.
+                domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                domainsIntent.putExtra("ssl_start_date", startDateLong);
+                domainsIntent.putExtra("ssl_end_date", endDateLong);
+            }
+
+            // Check to see if the current IP addresses have been received.
+            if (currentWebView.hasCurrentIpAddresses()) {
+                // Add the current IP addresses to the intent.
+                domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+            }
+
+            // Make it so.
+            startActivity(domainsIntent);
+        } else if (menuItemId == R.id.settings) {  // Settings.
+            // Set the flag to reapply app settings on restart when returning from Settings.
+            reapplyAppSettingsOnRestart = true;
+
+            // Set the flag to reapply the domain settings on restart when returning from Settings.
+            reapplyDomainSettingsOnRestart = true;
+
+            // Launch the settings activity.
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+        } else if (menuItemId == R.id.import_export) { // Import/Export.
+            // Create an intent to launch the import/export activity.
+            Intent importExportIntent = new Intent(this, ImportExportActivity.class);
+
+            // Make it so.
+            startActivity(importExportIntent);
+        } else if (menuItemId == R.id.logcat) {  // Logcat.
+            // Create an intent to launch the logcat activity.
+            Intent logcatIntent = new Intent(this, LogcatActivity.class);
+
+            // Make it so.
+            startActivity(logcatIntent);
+        } else if (menuItemId == R.id.guide) {  // Guide.
+            // Create an intent to launch the guide activity.
+            Intent guideIntent = new Intent(this, GuideActivity.class);
+
+            // Make it so.
+            startActivity(guideIntent);
+        } else if (menuItemId == R.id.about) {  // About
+            // Create an intent to launch the about activity.
+            Intent aboutIntent = new Intent(this, AboutActivity.class);
+
+            // Create a string array for the blocklist versions.
+            String[] blocklistVersions = new String[]{easyList.get(0).get(0)[0], easyPrivacy.get(0).get(0)[0], fanboysAnnoyanceList.get(0).get(0)[0], fanboysSocialList.get(0).get(0)[0],
+                    ultraList.get(0).get(0)[0], ultraPrivacy.get(0).get(0)[0]};
+
+            // Add the blocklist versions to the intent.
+            aboutIntent.putExtra("blocklist_versions", blocklistVersions);
+
+            // Make it so.
+            startActivity(aboutIntent);
         }
 
         // Close the navigation drawer.
@@ -2560,13 +2492,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
+        // Remove the incorrect lint warning below that the dialog fragment might be null.
+        assert dialogFragment != null;
+
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
 
         // Remove the incorrect lint warning below that the dialog might be null.
         assert dialog != null;
 
-        // Get handles for the views from `dialogFragment`.
+        // Get handles for the views from the dialog.
         EditText editFolderNameEditText = dialog.findViewById(R.id.edit_folder_name_edittext);
         RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
         RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_default_icon_radiobutton);
@@ -2951,6 +2886,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onApplyNewFontSize(DialogFragment dialogFragment) {
+        // Remove the incorrect lint warning below that the dialog fragment might be null.
+        assert dialogFragment != null;
+
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
 
@@ -6208,22 +6146,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Reset the requests counters.
                 nestedScrollWebView.resetRequestsCounters();
 
-                // Hide the keyboard.
-                inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.getWindowToken(), 0);
-
                 // Get the current page position.
                 int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
-                // Update the URL text bar if the page is currently selected.
-                if (tabLayout.getSelectedTabPosition() == currentPagePosition) {
-                    // Clear the focus from the URL edit text.
-                    urlEditText.clearFocus();
-
+                // Update the URL text bar if the page is currently selected and the URL edit text is not currently being edited.
+                if ((tabLayout.getSelectedTabPosition() == currentPagePosition) && !urlEditText.hasFocus()) {
                     // Display the formatted URL text.
                     urlEditText.setText(url);
 
                     // Apply text highlighting to `urlTextBox`.
                     highlightUrlText();
+
+                    // Hide the keyboard.
+                    inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.getWindowToken(), 0);
                 }
 
                 // Reset the list of host IP addresses.
@@ -6483,6 +6418,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else if (launchingIntentUriData != null){  // The intent contains a URL.
                 // Store the URL.
                 urlToLoadString = launchingIntentUriData.toString();
+
+                // Reset the intent.  This prevents a duplicate tab from being created on a subsequent restart if loading an link from a new intent on restart.
+                // For example, this prevents a duplicate tab if a link is loaded from the Guide after changing the theme in the guide and then changing the theme again in the main activity.
+                setIntent(new Intent());
             } else if (!url.equals("")) {  // The activity has been restarted.
                 // Load the saved URL.
                 urlToLoadString = url;

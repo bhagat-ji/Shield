@@ -30,8 +30,8 @@
         <!-- Colors.  -->
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
         <item name="android:textColorHighlight">@color/violet_700</item>
-        <item name="blueTextColor">@color/violet_500</item>
-        <item name="blueTitleTextColor">@color/violet_700</item>
+        <item name="blueTextColor">@color/violet_700</item>
+        <item name="blueTitleTextColor">@color/violet_500</item>
         <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_night</item>
         <item name="buttonTextColorSelector">@color/button_text_color_selector_night</item>
         <item name="colorAccent">@color/violet_500</item>

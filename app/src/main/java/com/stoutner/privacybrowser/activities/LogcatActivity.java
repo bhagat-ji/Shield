@@ -177,56 +177,52 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
         int menuItemId = menuItem.getItemId();
 
         // Run the commands that correlate to the selected menu item.
-        switch (menuItemId) {
-            case R.id.copy:
-                // Get a handle for the clipboard manager.
-                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        if (menuItemId == R.id.copy) {  // Copy was selected.
+            // Get a handle for the clipboard manager.
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-                // Remove the incorrect lint error below that the clipboard manager might be null.
-                assert clipboardManager != null;
+            // Remove the incorrect lint error below that the clipboard manager might be null.
+            assert clipboardManager != null;
 
-                // Save the logcat in a clip data.
-                ClipData logcatClipData = ClipData.newPlainText(getString(R.string.logcat), logcatTextView.getText());
+            // Save the logcat in a clip data.
+            ClipData logcatClipData = ClipData.newPlainText(getString(R.string.logcat), logcatTextView.getText());
 
-                // Place the clip data on the clipboard.
-                clipboardManager.setPrimaryClip(logcatClipData);
+            // Place the clip data on the clipboard.
+            clipboardManager.setPrimaryClip(logcatClipData);
 
-                // Display a snackbar.
-                Snackbar.make(logcatTextView, R.string.logcat_copied, Snackbar.LENGTH_SHORT).show();
+            // Display a snackbar.
+            Snackbar.make(logcatTextView, R.string.logcat_copied, Snackbar.LENGTH_SHORT).show();
 
-                // Consume the event.
-                return true;
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.save) {  // Save was selected.
+            // Instantiate the save alert dialog.
+            DialogFragment saveDialogFragment = SaveDialog.save(SaveDialog.SAVE_LOGCAT);
 
-            case R.id.save:
-                // Instantiate the save alert dialog.
-                DialogFragment saveDialogFragment = SaveDialog.save(SaveDialog.SAVE_LOGCAT);
+            // Show the save alert dialog.
+            saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_logcat));
 
-                // Show the save alert dialog.
-                saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_logcat));
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.clear) {  // Clear was selected.
+            try {
+                // Clear the logcat.  `-c` clears the logcat.  `-b all` clears all the buffers (instead of just crash, main, and system).
+                Process process = Runtime.getRuntime().exec("logcat -b all -c");
 
-                // Consume the event.
-                return true;
+                // Wait for the process to finish.
+                process.waitFor();
 
-            case R.id.clear:
-                try {
-                    // Clear the logcat.  `-c` clears the logcat.  `-b all` clears all the buffers (instead of just crash, main, and system).
-                    Process process = Runtime.getRuntime().exec("logcat -b all -c");
+                // Reload the logcat.
+                new GetLogcat(this, 0).execute();
+            } catch (IOException | InterruptedException exception) {
+                // Do nothing.
+            }
 
-                    // Wait for the process to finish.
-                    process.waitFor();
-
-                    // Reload the logcat.
-                    new GetLogcat(this, 0).execute();
-                } catch (IOException|InterruptedException exception) {
-                    // Do nothing.
-                }
-
-                // Consume the event.
-                return true;
-
-            default:
-                // Don't consume the event.
-                return super.onOptionsItemSelected(menuItem);
+            // Consume the event.
+            return true;
+        } else {  // The home button was pushed.
+            // Do not consume the event.  The system will process the home command.
+            return super.onOptionsItemSelected(menuItem);
         }
     }
 

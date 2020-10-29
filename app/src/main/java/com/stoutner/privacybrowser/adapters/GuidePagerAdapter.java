@@ -27,11 +27,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.fragments.GuideTabFragment;
+import com.stoutner.privacybrowser.fragments.GuideWebViewFragment;
 
 public class GuidePagerAdapter extends FragmentPagerAdapter {
     // Define the class variables.
-    private Context context;
+    private final Context context;
 
     // The default constructor.
     public GuidePagerAdapter(FragmentManager fragmentManager, Context context) {
@@ -88,6 +88,6 @@ public class GuidePagerAdapter extends FragmentPagerAdapter {
     @NonNull
     // Setup each tab.
     public Fragment getItem(int tabNumber) {
-        return GuideTabFragment.createTab(tabNumber);
+        return GuideWebViewFragment.createTab(tabNumber);
     }
 }

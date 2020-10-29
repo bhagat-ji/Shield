@@ -268,7 +268,7 @@ public class SslCertificateErrorDialog extends DialogFragment {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
         } else {
-            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_500));
+            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.violet_700));
             redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
         }
 
@@ -373,8 +373,8 @@ public class SslCertificateErrorDialog extends DialogFragment {
     // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `SpannableStringBuilder` contains the results.
     private static class GetIpAddresses extends AsyncTask<String, Void, SpannableStringBuilder> {
         // The weak references are used to determine if the activity or the alert dialog have disappeared while the AsyncTask is running.
-        private WeakReference<Activity> activityWeakReference;
-        private WeakReference<AlertDialog> alertDialogWeakReference;
+        private final WeakReference<Activity> activityWeakReference;
+        private final WeakReference<AlertDialog> alertDialogWeakReference;
 
         GetIpAddresses(Activity activity, AlertDialog alertDialog) {
             // Populate the weak references.

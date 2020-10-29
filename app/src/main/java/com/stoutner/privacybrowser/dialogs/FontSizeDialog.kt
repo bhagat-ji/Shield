@@ -16,13 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.stoutner.privacybrowser.dialogs
 
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
+
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View

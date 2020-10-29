@@ -34,9 +34,9 @@ import java.util.LinkedList;
 
 public class AboutPagerAdapter extends FragmentPagerAdapter {
     // Define the class variables.
-    private Context context;
-    private String[] blocklistVersions;
-    private LinkedList<Fragment> aboutFragmentList = new LinkedList<>();
+    private final Context context;
+    private final String[] blocklistVersions;
+    private final LinkedList<Fragment> aboutFragmentList = new LinkedList<>();
 
     public AboutPagerAdapter(FragmentManager fragmentManager, Context context, String[] blocklistVersions) {
         // Run the default commands.
