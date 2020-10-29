@@ -326,7 +326,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Declare the class views.
     private DrawerLayout drawerLayout;
     private AppBarLayout appBarLayout;
+    private Toolbar toolbar;
+    private LinearLayout findOnPageLinearLayout;
+    private LinearLayout tabsLinearLayout;
     private TabLayout tabLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager webViewPager;
 
     @Override
@@ -394,8 +398,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get handles for the views.
         drawerLayout = findViewById(R.id.drawerlayout);
         appBarLayout = findViewById(R.id.appbar_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+        findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+        tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
         tabLayout = findViewById(R.id.tablayout);
+        swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         webViewPager = findViewById(R.id.webviewpager);
 
         // Get a handle for the app compat delegate.
@@ -3583,10 +3590,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get handles for the views that need to be modified.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         ActionBar actionBar = appCompatDelegate.getSupportActionBar();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
-        LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
         // Remove the incorrect lint warning below that the action bar might be null.
         assert actionBar != null;
@@ -5270,8 +5273,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Hide the action bar.
                             actionBar.hide();
 
-                            // If the app bar is not being scrolled, the swipe refresh layout needs to be adjusted.
-                            if (!scrollAppBar) {
+                            // Check to see if the app bar is normally scrolled.
+                            if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
+                                // Get the swipe refresh layout parameters.
+                                CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+
+                                // Remove the off-screen scrolling layout.
+                                swipeRefreshLayoutParams.setBehavior(null);
+                            } else {  // The app bar is not scrolled when it is displayed.
                                 // Remove the padding from the top of the swipe refresh layout.
                                 swipeRefreshLayout.setPadding(0, 0, 0, 0);
 
@@ -5302,8 +5311,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Show the action bar.
                             actionBar.show();
 
-                            // If the app bar is not being scrolled, the swipe refresh layout needs to be adjusted.
-                            if (!scrollAppBar) {
+                            // Check to see if the app bar is normally scrolled.
+                            if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
+                                // Get the swipe refresh layout parameters.
+                                CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+
+                                // Add the off-screen scrolling layout.
+                                swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+                            } else {  // The app bar is not scrolled when it is displayed.
                                 // The swipe refresh layout must be manually moved below the app bar layout.
                                 swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
 
