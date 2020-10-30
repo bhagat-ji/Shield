@@ -37,6 +37,7 @@ a {
   }
 }
 
+
 /* Headers. */
 h3 {
   color: #0D47A1;  /* Blue 900 */
@@ -47,6 +48,7 @@ h3 {
     color: #8AB4F8;  /* Violet 500 */
   }
 }
+
 
 /* Red bold text */
 strong.red {
@@ -59,16 +61,19 @@ strong.red {
   }
 }
 
+
 /* Blue bold text */
 strong.blue {
   color: #1565C0;  /* Blue 800. */
 }
+
 
 /* List items. */
 item {
   color: #1565C0;  /* Blue 800. */
   font-weight: bold;
 }
+
 
 /* Header images do not allow the icon to be themed. */
 img.header {
@@ -91,6 +96,22 @@ svg.header {
   }
 }
 
+
+/* Links SVGs allow the icon to be themed. */
+svg.links {
+  vertical-align: middle;
+  height: 32;
+  width: 32;
+  fill: #0D47A1;  /* Blue 900 */
+}
+
+@media (prefers-color-scheme: dark) {
+  svg.header {
+    fill: #8AB4F8;  /* Violet 500 */
+  }
+}
+
+
 /* Left aligned images do not allow the icon to be themed. */
 img.left {
   float: left;
@@ -112,11 +133,6 @@ svg.left {
   }
 }
 
-/* Inline images. */
-img.inline {
-  height: 16;
-  width: 16;
-}
 
 /* SVG icons. */
 svg.icon {
@@ -131,6 +147,14 @@ svg.icon {
     fill: #FFFFFF;  /* White */
   }
 }
+
+
+/* Inline images. */
+img.inline {
+  height: 16;
+  width: 16;
+}
+
 
 /* Centered screenshot images.  An image must be a block to be centered. */
 img.center {
