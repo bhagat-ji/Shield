@@ -133,6 +133,15 @@
                 <data android:mimeType="text/*" />
             </intent-filter>
 
+            <!-- Process intents for text strings.  Sometimes URLs are presented this way. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
             <!-- Process intents for MHT archives. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

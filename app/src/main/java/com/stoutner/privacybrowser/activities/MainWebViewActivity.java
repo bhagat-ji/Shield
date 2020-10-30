@@ -454,17 +454,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Replace the intent that started the app with this one.
         setIntent(intent);
 
-        // Check to see if the app is being restarted.
-        if (savedStateArrayList == null || savedStateArrayList.size() == 0) {  // The activity is running for the first time.
+        // Check to see if the app is being restarted from a saved state.
+        if (savedStateArrayList == null || savedStateArrayList.size() == 0) {  // The activity is not being restarted from a saved state.
             // Get the information from the intent.
             String intentAction = intent.getAction();
             Uri intentUriData = intent.getData();
+            String intentStringExtra = intent.getStringExtra(Intent.EXTRA_TEXT);
 
             // Determine if this is a web search.
             boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
 
             // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
-            if (intentUriData != null || isWebSearch) {
+            if (intentUriData != null || intentStringExtra != null || isWebSearch) {
                 // Get the shared preferences.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -485,9 +486,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Add the base search URL.
                     url = searchURL + encodedUrlString;
-                } else {  // The intent should contain a URL.
+                } else if (intentUriData != null) {  // The intent contains a URL formatted as a URI.
                     // Set the intent data as the URL.
                     url = intentUriData.toString();
+                } else {  // The intent contains a string, which might be a URL.
+                    // Set the intent string as the URL.
+                    url = intentStringExtra;
                 }
 
                 // Add a new tab if specified in the preferences.
@@ -4661,7 +4665,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraList = combinedBlocklists.get(4);
         ultraPrivacy = combinedBlocklists.get(5);
 
-        // Check to see if the activity has been restarted.
+        // Check to see if the activity has been restarted with a saved state.
         if ((savedStateArrayList == null) || (savedStateArrayList.size() == 0)) {  // The activity has not been restarted or it was restarted on start to force the night theme.
             // Add the first tab.
             addNewTab("", true);
@@ -4706,12 +4710,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the information from the intent.
             String intentAction = intent.getAction();
             Uri intentUriData = intent.getData();
+            String intentStringExtra = intent.getStringExtra(Intent.EXTRA_TEXT);
 
             // Determine if this is a web search.
             boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
 
             // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
-            if (intentUriData != null || isWebSearch) {
+            if (intentUriData != null || intentStringExtra != null || isWebSearch) {
                 // Get the shared preferences.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -4732,9 +4737,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Add the base search URL.
                     url = searchURL + encodedUrlString;
-                } else {  // The intent should contain a URL.
-                    // Set the intent data as the url.
+                } else if (intentUriData != null) {  // The intent contains a URL formatted as a URI.
+                    // Set the intent data as the URL.
                     url = intentUriData.toString();
+                } else {  // The intent contains a string, which might be a URL.
+                    // Set the intent string as the URL.
+                    url = intentStringExtra;
                 }
 
                 // Add a new tab if specified in the preferences.
@@ -6415,6 +6423,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the information from the intent.
             String launchingIntentAction = launchingIntent.getAction();
             Uri launchingIntentUriData = launchingIntent.getData();
+            String launchingIntentStringExtra = launchingIntent.getStringExtra(Intent.EXTRA_TEXT);
 
             // Parse the launching intent URL.
             if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {  // The intent contains a search string.
@@ -6430,13 +6439,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Store the web search as the URL to load.
                 urlToLoadString = searchURL + encodedUrlString;
-            } else if (launchingIntentUriData != null){  // The intent contains a URL.
-                // Store the URL.
+            } else if (launchingIntentUriData != null) {  // The launching intent contains a URL formatted as a URI.
+                // Store the URI as a URL.
                 urlToLoadString = launchingIntentUriData.toString();
-
-                // Reset the intent.  This prevents a duplicate tab from being created on a subsequent restart if loading an link from a new intent on restart.
-                // For example, this prevents a duplicate tab if a link is loaded from the Guide after changing the theme in the guide and then changing the theme again in the main activity.
-                setIntent(new Intent());
+            } else if (launchingIntentStringExtra != null) {  // The launching intent contains text that might be a URL.
+                // Store the URL.
+                urlToLoadString = launchingIntentStringExtra;
             } else if (!url.equals("")) {  // The activity has been restarted.
                 // Load the saved URL.
                 urlToLoadString = url;
@@ -6451,6 +6459,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else {  // Load the URL.
                 loadUrl(nestedScrollWebView, urlToLoadString);
             }
+
+            // Reset the intent.  This prevents a duplicate tab from being created on a subsequent restart if loading an link from a new intent on restart.
+            // For example, this prevents a duplicate tab if a link is loaded from the Guide after changing the theme in the guide and then changing the theme again in the main activity.
+            setIntent(new Intent());
         } else {  // This is not the first tab.
             // Load the URL.
             loadUrl(nestedScrollWebView, url);
