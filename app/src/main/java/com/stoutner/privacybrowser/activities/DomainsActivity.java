@@ -335,83 +335,93 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Get a handle for the fragment manager.
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        switch (menuItemId) {
-            case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
-                if (twoPanedMode) {  // The device is in two-paned mode.
-                    // Save the current domain settings if the domain settings fragment is displayed.
-                    if (findViewById(R.id.domain_settings_scrollview) != null) {
-                        saveDomainSettings(coordinatorLayout, resources);
-                    }
-
-                    // Dismiss the undo delete `SnackBar` if it is shown.
-                    if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
-                        // Set the close flag.
-                        closeActivityAfterDismissingSnackbar = true;
-
-                        // Dismiss the snackbar.
-                        undoDeleteSnackbar.dismiss();
-                    } else {
-                        // Go home.
-                        NavUtils.navigateUpFromSameTask(this);
-                    }
-                } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
-                    // Save the current domain settings.
+        // Run the command according to the selected menu item.
+        if (menuItemId == android.R.id.home) {  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
+            // Check if the device is in two-paned mode.
+            if (twoPanedMode) {  // The device is in two-paned mode.
+                // Save the current domain settings if the domain settings fragment is displayed.
+                if (findViewById(R.id.domain_settings_scrollview) != null) {
                     saveDomainSettings(coordinatorLayout, resources);
+                }
 
+                // Dismiss the undo delete snackbar if it is shown.
+                if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
+                    // Set the close flag.
+                    closeActivityAfterDismissingSnackbar = true;
+
+                    // Dismiss the snackbar.
+                    undoDeleteSnackbar.dismiss();
+                } else {
                     // Go home.
                     NavUtils.navigateUpFromSameTask(this);
-                } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and the domain settings fragment is displayed.
-                    // Save the current domain settings.
-                    saveDomainSettings(coordinatorLayout, resources);
-
-                    // Display the domains list fragment.
-                    DomainsListFragment domainsListFragment = new DomainsListFragment();
-                    fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
-                    fragmentManager.executePendingTransactions();
-
-                    // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
-                    populateDomainsListView(-1, domainsListViewPosition);
-
-                    // Show the add domain floating action button.
-                    addDomainFAB.show();
-
-                    // Hide the delete menu item.
-                    deleteMenuItem.setVisible(false);
-                } else {  // The device is in single-paned mode and `DomainsListFragment` is displayed.
-                    // Dismiss the undo delete `SnackBar` if it is shown.
-                    if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
-                        // Set the close flag.
-                        closeActivityAfterDismissingSnackbar = true;
-
-                        // Dismiss the snackbar.
-                        undoDeleteSnackbar.dismiss();
-                    } else {
-                        // Go home.
-                        NavUtils.navigateUpFromSameTask(this);
-                    }
                 }
-                break;
+            } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
+                // Save the current domain settings.
+                saveDomainSettings(coordinatorLayout, resources);
 
-            case R.id.delete_domain:
+                // Go home.
+                NavUtils.navigateUpFromSameTask(this);
+            } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and the domain settings fragment is displayed.
+                // Save the current domain settings.
+                saveDomainSettings(coordinatorLayout, resources);
+
+                // Display the domains list fragment.
+                DomainsListFragment domainsListFragment = new DomainsListFragment();
+                fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
+                fragmentManager.executePendingTransactions();
+
+                // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
+                populateDomainsListView(-1, domainsListViewPosition);
+
+                // Show the add domain floating action button.
+                addDomainFAB.show();
+
+                // Hide the delete menu item.
+                deleteMenuItem.setVisible(false);
+            } else {  // The device is in single-paned mode and domains list fragment is displayed.
+                // Dismiss the undo delete `SnackBar` if it is shown.
+                if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
+                    // Set the close flag.
+                    closeActivityAfterDismissingSnackbar = true;
+
+                    // Dismiss the snackbar.
+                    undoDeleteSnackbar.dismiss();
+                } else {
+                    // Go home.
+                    NavUtils.navigateUpFromSameTask(this);
+                }
+            }
+        } else if (menuItemId == R.id.delete_domain) {  // Delete.
+            // Get a handle for the activity.
+            Activity activity = this;
+
+            // Check to see if the domain settings were loaded directly for editing of this app in single-paned mode.
+            if (closeOnBack && !twoPanedMode) {  // The activity should delete the domain settings and exit straight to the the main WebView activity.
+                // Delete the selected domain.
+                domainsDatabaseHelper.deleteDomain(currentDomainDatabaseId);
+
+                // Go home.
+                NavUtils.navigateUpFromSameTask(activity);
+            } else {  // A snackbar should be shown before deleting the domain settings.
                 // Reset close-on-back, which otherwise can cause errors if the system attempts to save settings for a domain that no longer exists.
                 closeOnBack = false;
 
-                // Store a copy of `currentDomainDatabaseId` because it could change while the `Snackbar` is displayed.
+                // Store a copy of the current domain database ID because it could change while the snackbar is displayed.
                 final int databaseIdToDelete = currentDomainDatabaseId;
 
                 // Update the fragments and menu items.
                 if (twoPanedMode) {  // Two-paned mode.
-                    // Store the deleted domain position, which is needed if `Undo` is selected in the `Snackbar`.
+                    // Store the deleted domain position, which is needed if undo is selected in the snackbar.
                     deletedDomainPosition = domainsListView.getCheckedItemPosition();
 
-                    // Disable the options `MenuItems`.
+                    // Disable the options menu items.
                     deleteMenuItem.setEnabled(false);
                     deleteMenuItem.setIcon(R.drawable.delete_disabled);
 
                     // Remove the domain settings fragment.
                     fragmentManager.beginTransaction().remove(Objects.requireNonNull(fragmentManager.findFragmentById(R.id.domain_settings_fragment_container))).commit();
                 } else {  // Single-paned mode.
-                    // Display `DomainsListFragment`.
+                    // Display the domains list fragment.
                     DomainsListFragment domainsListFragment = new DomainsListFragment();
                     fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
                     fragmentManager.executePendingTransactions();
@@ -423,34 +433,35 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     deleteMenuItem.setVisible(false);
                 }
 
-                // Get a `Cursor` that does not show the domain to be deleted.
+                // Get a cursor that does not show the domain to be deleted.
                 Cursor domainsPendingDeleteCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomainExcept(databaseIdToDelete);
 
-                // Setup `domainsPendingDeleteCursorAdapter` with `this` context.  `false` disables `autoRequery`.
+                // Setup the domains pending delete cursor adapter.
                 CursorAdapter domainsPendingDeleteCursorAdapter = new CursorAdapter(this, domainsPendingDeleteCursor, false) {
                     @Override
                     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                        // Inflate the individual item layout.  `false` does not attach it to the root.
+                        // Inflate the individual item layout.
                         return getLayoutInflater().inflate(R.layout.domain_name_linearlayout, parent, false);
                     }
 
                     @Override
                     public void bindView(View view, Context context, Cursor cursor) {
-                        // Set the domain name.
+                        // Get the domain name string.
                         String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+
+                        // Get a handle for the domain name text view.
                         TextView domainNameTextView = view.findViewById(R.id.domain_name_textview);
+
+                        // Display the domain name.
                         domainNameTextView.setText(domainNameString);
                     }
                 };
 
-                // Update the handle for the current `domains_listview`.
+                // Update the handle for the current domains list view.
                 domainsListView = findViewById(R.id.domains_listview);
 
-                // Update the `ListView`.
+                // Update the list view.
                 domainsListView.setAdapter(domainsPendingDeleteCursorAdapter);
-
-                // Get a handle for the activity.
-                Activity activity = this;
 
                 // Display a snackbar.
                 undoDeleteSnackbar = Snackbar.make(domainsListView, R.string.domain_deleted, Snackbar.LENGTH_LONG)
@@ -477,22 +488,26 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                                     // Display the correct fragments.
                                     if (twoPanedMode) {  // The device in in two-paned mode.
-                                        // Get a `Cursor` with the current contents of the domains database.
+                                        // Get a cursor with the current contents of the domains database.
                                         Cursor undoDeleteDomainsCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
 
-                                        // Setup `domainsCursorAdapter` with `this` context.  `false` disables `autoRequery`.
+                                        // Setup the domains cursor adapter.
                                         CursorAdapter undoDeleteDomainsCursorAdapter = new CursorAdapter(getApplicationContext(), undoDeleteDomainsCursor, false) {
                                             @Override
                                             public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                                                // Inflate the individual item layout.  `false` does not attach it to the root.
+                                                // Inflate the individual item layout.
                                                 return getLayoutInflater().inflate(R.layout.domain_name_linearlayout, parent, false);
                                             }
 
                                             @Override
                                             public void bindView(View view, Context context, Cursor cursor) {
-                                                // Set the domain name.
+                                                /// Get the domain name string.
                                                 String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+
+                                                // Get a handle for the domain name text view.
                                                 TextView domainNameTextView = view.findViewById(R.id.domain_name_textview);
+
+                                                // Display the domain name.
                                                 domainNameTextView.setText(domainNameString);
                                             }
                                         };
@@ -578,7 +593,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                 // Show the Snackbar.
                 undoDeleteSnackbar.show();
-                break;
+            }
         }
 
         // Consume the event.
