@@ -18,8 +18,15 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- Allow HTTP traffic and disable HSTS, which has no benefit for Privacy Browser (because unspecified links default to HTTPS) but has negative fingerprinting implications. -->
-<network-security-config
-    xmlns:tools="http://schemas.android.com/tools">
-    <base-config cleartextTrafficPermitted="true" hstsEnforced="false" tools:ignore="InsecureBaseConfiguration" />
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+    <!-- Allow HTTP traffic and disable HSTS, which has no benefit for Privacy Browser (because unspecified links default to HTTPS) but has negative fingerprinting implications. -->
+    <base-config cleartextTrafficPermitted="true" hstsEnforced="false" tools:ignore="InsecureBaseConfiguration">
+        <trust-anchors>
+            <!-- Trust system certificate authorities. -->
+            <certificates src="system" />
+
+            <!-- Trust user certificate authorities. -->
+            <certificates src="user" tools:ignore="AcceptsUserCertificates" />
+        </trust-anchors>
+    </base-config>
 </network-security-config>
