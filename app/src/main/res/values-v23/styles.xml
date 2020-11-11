@@ -46,6 +46,9 @@
         <!-- Drawables. -->
         <item name="listSelectorDrawable">@drawable/list_selector_day</item>
 
+        <!-- Main App Bar Icons. -->
+        <item name="bookmarksAppBarIcon">@drawable/bookmarks_day</item>
+
         <!-- Options Icons. -->
         <item name="aboutIcon">@drawable/about_day</item>
         <item name="closeIcon">@drawable/close_day</item>

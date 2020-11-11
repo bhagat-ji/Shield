@@ -648,7 +648,7 @@
         <string name="scroll_app_bar">Scroll the app bar</string>
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
-        <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for toggling cookies and DOM storage.</string>
+        <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for opening the bookmarks drawer and toggling cookies.</string>
         <string name="app_theme">App theme</string>
         <string-array name="app_theme_entries">
             <item>System default</item>
@@ -679,19 +679,20 @@
     <!-- Non-translatable preference keys. -->
     <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
+    <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
 
     <!-- Non-translatable preference default values. -->
-    <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
-    <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
-    <string name="search_default_value" translatable="false">https://www.startpage.com/do/search?query=</string>
-    <string name="search_custom_url_default_value" translatable="false" />
-    <string name="proxy_default_value" translatable="false">None</string>
-    <string name="proxy_custom_url_default_value" translatable="false">http://localhost:8118</string>
-    <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
-    <string name="download_location_default_value" translatable="false">Auto</string>
-    <string name="download_custom_location_default_value" translatable="false" />
-    <string name="font_size_default_value" translatable="false">100</string>
     <string name="app_theme_default_value" translatable="false">System default</string>
+    <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
+    <string name="download_custom_location_default_value" translatable="false" />
+    <string name="download_location_default_value" translatable="false">Auto</string>
+    <string name="font_size_default_value" translatable="false">100</string>
+    <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
+    <string name="proxy_custom_url_default_value" translatable="false">http://localhost:8118</string>
+    <string name="proxy_default_value" translatable="false">None</string>
+    <string name="search_custom_url_default_value" translatable="false" />
+    <string name="search_default_value" translatable="false">https://www.startpage.com/do/search?query=</string>
+    <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="webview_theme_default_value" translatable="false">System default</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->

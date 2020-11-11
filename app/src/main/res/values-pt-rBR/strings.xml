@@ -586,7 +586,6 @@
         <string name="scroll_app_bar">Role a barra de aplicativos</string>
         <string name="scroll_app_bar_summary">Role a barra de aplicativos para fora da parte superior da tela quando o WebView rola para baixo.</string>
         <string name="display_additional_app_bar_icons">Exibir ícones adicionais da barra de aplicativos</string>
-        <string name="display_additional_app_bar_icons_summary">Exibe ícones na barra de aplicativos para atualizar o WebView e, se houver espaço, para alternar cookies e armazenamento DOM.</string>
         <string name="app_theme">Tema do  aplicativo</string>
         <string-array name="app_theme_entries">
             <item>Padrão do Sitema</item>

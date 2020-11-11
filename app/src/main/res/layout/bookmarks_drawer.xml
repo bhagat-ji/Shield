@@ -78,8 +78,9 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="155dp"
-        android:src="@drawable/bookmarks"
-        android:tint="?attr/fabIconTintColor" />
+        android:src="@drawable/bookmarks_day"
+        android:tint="?attr/fabIconTintColor"
+        android:contentDescription="@string/bookmarks" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/create_bookmark_folder_fab"
@@ -89,7 +90,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="85dp"
         android:src="@drawable/create_folder"
-        android:tint="?attr/fabIconTintColor" />
+        android:tint="?attr/fabIconTintColor"
+        android:contentDescription="@string/create_folder" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/create_bookmark_fab"
@@ -98,5 +100,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/create_bookmark"
-        android:tint="?attr/fabIconTintColor" />
+        android:tint="?attr/fabIconTintColor"
+        android:contentDescription="@string/create_bookmark" />
 </FrameLayout>

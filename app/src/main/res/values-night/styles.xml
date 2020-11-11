@@ -44,6 +44,9 @@
         <!-- Drawables. -->
         <item name="listSelectorDrawable">@drawable/list_selector_night</item>
 
+        <!-- Main App Bar Icons. -->
+        <item name="bookmarksAppBarIcon">@drawable/bookmarks_night</item>
+
         <!-- Options Icons. -->
         <item name="aboutIcon">@drawable/about_night</item>
         <item name="closeIcon">@drawable/close_night</item>

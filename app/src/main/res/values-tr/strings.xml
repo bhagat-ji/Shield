@@ -515,7 +515,6 @@
         <string name="scroll_app_bar">Uygulama çubuğunu kaydır</string>
         <string name="scroll_app_bar_summary">WebView aşağı kaydırıldığında, ekranın üst kısmından uygulama çubuğunu kaydırır.</string>
         <string name="display_additional_app_bar_icons">Ek uygulama çubuğu simgelerini göster</string>
-        <string name="display_additional_app_bar_icons_summary">WebView\'ı yenilemek, yer varsa çerezleri ve DOM depolamayı değiştirmek için simgeleri uygulama çubuğunda gösterir.</string>
         <string name="wide_viewport_preference">Geniş ekran</string>
         <string name="wide_viewport_summary">Geniş ekran kullanmak, bazı web sayfalarının düzenini masaüstü versiyonları gibi yapar.</string>
         <string name="display_webpage_images">Web sayfasının görsellerini göster</string>

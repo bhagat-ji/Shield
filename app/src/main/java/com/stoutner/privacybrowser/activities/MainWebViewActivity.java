@@ -743,9 +743,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         updatePrivacyIcons(false);
 
         // Get handles for the menu items.
+        MenuItem bookmarksMenuItem = menu.findItem(R.id.bookmarks);
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
         MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
-        MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
@@ -771,18 +771,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the dark theme and app bar preferences..
-        boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+        // Get the dark theme and app bar preferences.
+        boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
 
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {
-            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            bookmarksMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else { //Do not display the additional icons.
-            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            bookmarksMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         // Replace Refresh with Stop if a URL is already loading.
@@ -797,9 +797,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set the icon according to the current theme status.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    refreshMenuItem.setIcon(R.drawable.close_day);
+                    refreshMenuItem.setIcon(R.drawable.close_blue_day);
                 } else {
-                    refreshMenuItem.setIcon(R.drawable.close_night);
+                    refreshMenuItem.setIcon(R.drawable.close_blue_night);
                 }
             }
         }
@@ -4392,7 +4392,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get handles for the menu items.
             MenuItem privacyMenuItem = optionsMenu.findItem(R.id.toggle_javascript);
             MenuItem firstPartyCookiesMenuItem = optionsMenu.findItem(R.id.toggle_first_party_cookies);
-            MenuItem domStorageMenuItem = optionsMenu.findItem(R.id.toggle_dom_storage);
             MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
 
             // Update the privacy icon.
@@ -4418,28 +4417,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
 
-            // Update the DOM storage icon.
-            if (currentWebView.getSettings().getJavaScriptEnabled() && currentWebView.getSettings().getDomStorageEnabled()) {  // Both JavaScript and DOM storage are enabled.
-                domStorageMenuItem.setIcon(R.drawable.dom_storage_enabled);
-            } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled but DOM storage is disabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_day);
-                } else {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_night);
-                }
-            } else {  // JavaScript is disabled, so DOM storage is ghosted.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_day);
-                } else {
-                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_night);
-                }
-            }
-
             // Update the refresh icon.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
-            } else {
-                refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
+            if (refreshMenuItem.getTitle() == getString(R.string.refresh)) {  // The refresh icon is displayed.
+                // Set the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
+                } else {
+                    refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
+                }
+            } else {  // The stop icon is displayed.
+                // Set the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    refreshMenuItem.setIcon(R.drawable.close_blue_day);
+                } else {
+                    refreshMenuItem.setIcon(R.drawable.close_blue_night);
+                }
             }
 
             // `invalidateOptionsMenu()` calls `onPrepareOptionsMenu()` and redraws the icons in the app bar.
@@ -6202,7 +6194,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     refreshMenuItem.setTitle(R.string.stop);
 
                     // Get the app bar and theme preferences.
-                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
 
                     // If the icon is displayed in the AppBar, set it according to the theme.
                     if (displayAdditionalAppBarIcons) {
@@ -6211,9 +6203,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Set the stop icon according to the theme.
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                            refreshMenuItem.setIcon(R.drawable.close_day);
+                            refreshMenuItem.setIcon(R.drawable.close_blue_day);
                         } else {
-                            refreshMenuItem.setIcon(R.drawable.close_night);
+                            refreshMenuItem.setIcon(R.drawable.close_blue_night);
                         }
                     }
                 }
@@ -6235,7 +6227,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     refreshMenuItem.setTitle(R.string.refresh);
 
                     // Get the app bar and theme preferences.
-                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
 
                     // If the icon is displayed in the app bar, reset it according to the theme.
                     if (displayAdditionalAppBarIcons) {

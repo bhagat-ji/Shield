@@ -39,6 +39,9 @@
     <!-- Drawables.  -->
     <attr name="listSelectorDrawable" format="reference" />
 
+    <!-- Main App Bar Icons. -->
+    <attr name="bookmarksAppBarIcon" format="reference" />
+
     <!-- Options Icons. -->
     <attr name="aboutIcon" format="reference" />
     <attr name="appThemeIcon" format="reference" />

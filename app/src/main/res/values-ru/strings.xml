@@ -584,7 +584,6 @@
         <string name="scroll_app_bar">Прокручивать панель приложения</string>
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
-        <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
         <string name="app_theme">Тема приложения</string>
         <string-array name="app_theme_entries">
             <item>По умолчанию</item>
