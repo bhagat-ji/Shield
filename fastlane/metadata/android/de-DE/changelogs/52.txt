@@ -1,0 +1,23 @@
+• Fix eines Bugs beim gepufferten Abspielen von Audio nach dem Schließen eines Tabs.
+• Möglichkeit, unter Android 7 (API 24) und neuer benutzerdfinierten Zertifikatsstellen zu vertrauen.
+• Möglichkeit, data:-URLs zu speichern.
+• Möglichkeit, ein optionales App-Leisten-Icon zum Öffnen der Lesezeichen-Leiste anzuzeigen.
+• Nutzung einer Quelltext-Datei sowohl für Tag- und Nacht-Seiten von Hilfe and "Über Privacy Browser".
+• Fix eines Bugs beim Importieren der Einstellungen von Versionen vor 3.3.
+• Fix eines Bugs, durch den Custom Headers nach dem Öffnen eines Links innerhalb von Webview nicht angewandt wurden.
+• Möglichkeit, Lesezeichen per einmaligem Tippen zu bearbeiten.
+• Fix eines Bugs, durch den beim Bearbeiten eines Lesezeichens manchmal ein Falsches ausgewählt wurde.
+• Anzeige der Speicherauslastung in "Über Privacy Browser" > Version.
+• Optionen zum Speichern, Kopieren und Senden per email unter "Über Privacy Browser" > Version.
+• Der Content-Type wird zur Einschätzung bei unbekannten Dateiendungen verwendet.
+• Löschen von Logcat nach jedem Laden einer Seite im Incognito-Modus.
+• Löschen von Logcat beim Bereinigen und Schließen.
+• Fix eines Bugs, durch den gepinnte SSL-Zertifikate manchmal gegen das Zertifikat der vorhergehenden Website geprüft wurden.
+• Mastodon-Eintrag zu "Über Privacy Browser" > Links hinzugefügt.
+• Diverse kleinere Verbesserungen für das Nutzer Erlebnis und der grafischen Oberfläche umgesetzt.
+• Teilweise Übersetzung in brasilianisches Portugiesisch von Thiago Nazareno Conceição Silva de Jesus.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte französische Übersetzung von Kévin LE FLOHIC.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

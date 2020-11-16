@@ -590,6 +590,8 @@
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>
         <string name="scroll_app_bar_summary">Permette lo scorrere della barra dell\'applicazione dalla parte alta dello schermo quando si effettua lo scrolling.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
+        <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento della pagina e, se lo spazio è disponibile,
+            per aprire i preferiti e per abilitare o disabilitare i cookie.</string>
         <string name="app_theme">Tema Applicazione</string>
         <string-array name="app_theme_entries">
             <item>Predefinito</item>

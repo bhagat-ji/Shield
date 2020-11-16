@@ -1,0 +1,23 @@
+• Arreglar la reproducción de audio con buffer después de cerrar una pestaña.
+• Confiar en las autoridades de certificación de usuarios de Android 7 (API 24) o más reciente.
+• Permitir guardar los datos: URLs.
+• Añadir un icono adicional de la barra de aplicaciones para abrir el cajón de marcadores.
+• Usar un archivo de orígen tanto para las páginas de Día y Noche en Guía y Acerca de.
+• Arreglar un problema importando la configuración de versiones anteriores a la 3.3.
+• Arreglar las cabeceras personalizadas que no se aplican a enlaces cargados desde el interior de WebView.
+• Hacer que un solo toque en la actividad de los marcadores edite el marcador.
+• Arreglar un problema con la edición de marcadores seleccionando algunas veces el equivocado.
+• Mostrar el uso de memoria en Acerca de > Versión.
+• Añadir las opciones para guardar, copiar y enviar por email Acerca de > Versión.
+• Usar Content-Type para adivinar una extensión de archivo desconocida.
+• Borrar el logcat después de que cada página cargue en el Modo Incógnito.
+• Borrar el logcat en Borrar y Salir.
+• Arreglar un error que provocaba que los certificados SSL anclados fueran comprobados a veces con el certificado de la página web anterior.
+• Añadir una entrada de Mastodon en Acerca de > Enlaces.
+• Hacer varias mejoras mínimas en la experiencia de usuario y en la interfaz gráfica.
+• Traducción parcial del portugués brasileño proporcionada por Thiago Nazareno Conceição Silva de Jesus.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al francés proporcionada por Kévin LE FLOHIC.
+• Actualizada la traducción al alemán proporcionada por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

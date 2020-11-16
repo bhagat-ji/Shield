@@ -25,7 +25,7 @@
     <string name="privacy_browser">Navegador Privado</string>
     <string name="short_name">Privado</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
-    <!-- <string name="android_asset_path">pt-br</string> -->
+    <string name="android_asset_path">pt-rBR</string>
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Modo Privado</string>
@@ -404,7 +404,7 @@
             <string name="model">Modelo:</string>
             <string name="device">Dispositivo:</string>
             <string name="bootloader">Bootloader:</string>
-            <string name="radio">Radio:</string>
+            <string name="radio">Rádio:</string>
         <string name="software">Software</string>
             <string name="android">Android:</string>
             <string name="api">API</string>
@@ -566,10 +566,12 @@
         <string name="clear_dom_storage_summary">Limpa o armazenamento DOM.</string>
         <string name="clear_form_data_preference">Limpar dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Limpa os dados do formulário.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_logcat_preference">Limpar Logcat</string>
+        <string name="clear_logcat_summary">Limpar os Logcats.</string>
         <string name="clear_cache">Limpar cache</string>
         <string name="clear_cache_summary">Limpa o cache do WebView.</string>
     <string name="general">Geral</string>
-        <string name="homepage">Pagina inicial</string>
+        <string name="homepage">Página inicial</string>
         <string name="download_location">Localização de Download</string>
         <string-array name="download_location_entries">
             <item>Automático</item>
@@ -586,6 +588,7 @@
         <string name="scroll_app_bar">Role a barra de aplicativos</string>
         <string name="scroll_app_bar_summary">Role a barra de aplicativos para fora da parte superior da tela quando o WebView rola para baixo.</string>
         <string name="display_additional_app_bar_icons">Exibir ícones adicionais da barra de aplicativos</string>
+        <string name="display_additional_app_bar_icons_summary">Exibe ícones na barra de aplicativos para atualizar o WebView e, se houver espaço, para abrir o menu de favoritos e alternar os cookies.</string>
         <string name="app_theme">Tema do  aplicativo</string>
         <string-array name="app_theme_entries">
             <item>Padrão do Sitema</item>

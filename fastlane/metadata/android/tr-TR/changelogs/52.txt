@@ -1,0 +1,23 @@
+• Fix buffered audio playing after a tab is closed.
+• Trust user certificate authorities on Android 7 (API 24) and newer.
+• Allow saving of data: URLs.
+• Add an additional app bar icon to open the bookmarks drawer.
+• Use one source file for both Day and Night pages in Guide and About.
+• Fix a problem importing settings from versions prior to 3.3.
+• Fix custom headers not being applied to links loaded from inside the WebView.
+• Make single-taps in the bookmarks activity edit the bookmark.
+• Fix a problem with editing bookmarks sometimes selecting the wrong one.
+• Display the memory usage in About > Version.
+• Add the options to save, copy, and email About > Version.
+• Use Content-Type to guess an unknown file extension.
+• Clear the logcat after every page loads in Incognito Mode.
+• Clear the logcat on Clear and Exit.
+• Fix a bug that caused pinned SSL certificates to sometimes be checked against the previous website certificate.
+• Add a Mastodon entry to About > Links.
+• Make various minor improvements to the user experience and graphical interface.
+• Partial Brazilian Portuguese translation provided by Thiago Nazareno Conceição Silva de Jesus.
+• Updated French translation provided by Kévin LE FLOHIC.
+• Almanca çevirisi güncellendi. (Çevirmen Bernhard G. Keller.)
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

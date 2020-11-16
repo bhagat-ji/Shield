@@ -22,15 +22,8 @@
 
 <resources>
     <!-- Activities. -->
-    <string name="privacy_browser">Privacy Browser Free</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
-    <string name="open_with_privacy_browser">Open with Privacy Browser Free.</string>
 
     <!-- Ad Consent. -->
-    <string name="ad_consent_text">Privacy Browser Free displays a banner ad on the bottom of the screen.
-        These ads come from Google’s set of commonly used providers and are configured to be non-personalized.
-        \n\nThe standard version of Privacy Browser does not contain app ads.</string>
-    <string name="close_browser">Close Browser</string>
-    <string name="accept_ads">Accept Ads</string>
 </resources>

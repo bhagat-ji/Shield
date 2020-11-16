@@ -597,12 +597,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the nested scroll WebView from the tab fragment.
                 NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
-                // Resume the nested scroll WebView JavaScript timers.
-                nestedScrollWebView.resumeTimers();
-
                 // Resume the nested scroll WebView.
                 nestedScrollWebView.onResume();
             }
+        }
+
+        // Resume the nested scroll WebView JavaScript timers.  This is a global command that resumes JavaScript timers on all WebViews.
+        if (currentWebView != null) {
+            currentWebView.resumeTimers();
         }
 
         // Reapply the proxy settings if the system is using a proxy.  This redisplays the appropriate alert dialog.
@@ -648,10 +650,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Pause the nested scroll WebView.
                 nestedScrollWebView.onPause();
-
-                // Pause the nested scroll WebView JavaScript timers.
-                nestedScrollWebView.pauseTimers();
             }
+        }
+
+        // Pause the WebView JavaScript timers.  This is a global command that pauses JavaScript on all WebViews.
+        if (currentWebView != null) {
+            currentWebView.pauseTimers();
         }
 
         // Pause the ad or it will continue to consume resources in the background on the free flavor.
@@ -4788,11 +4792,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void closeCurrentTab() {
-        // Pause the current WebView.
+        // Pause the current WebView.  This prevents buffered audio from playing after the tab is closed.
         currentWebView.onPause();
-
-        // Pause the current WebView JavaScript timers.
-        currentWebView.pauseTimers();
 
         // Get the current tab number.
         int currentTabNumber = tabLayout.getSelectedTabPosition();

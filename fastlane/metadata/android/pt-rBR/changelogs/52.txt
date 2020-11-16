@@ -1,0 +1,23 @@
+• Correção da reprodução do áudio em buffer após o fechamento de uma guia.
+• Confiar nas autoridades de certificação do usuário no Android 7 (API 24) e mais recente.
+• Permitir salvar dados: URLs.
+• Adicione um ícone de barra de aplicativo adicional para abrir o menu de favoritos.
+• Use um arquivo de origem para as páginas Dia e Noite em Guia e Sobre.
+• Corrija um problema de importação de configurações de versões anteriores a 3.3.
+• Corrige cabeçalhos personalizados que não estão sendo aplicados a links carregados de dentro do WebView.
+• Faça um único toque na atividade dos favoritos para editar o favorito.
+• Corrija um problema com a edição de favoritos quando selecionar o favorito errado.
+• Exibir o uso de memória em Sobre > Versão.
+• Adicione as opções para salvar, copiar e enviar por e-mail Sobre > Versão.
+• Use Content-Type para identificar uma extensão de arquivo desconhecida.
+• Limpar o logcat depois que cada página carrega no modo de navegação anônima.
+• Limpar o logcat em Limpar e Sair.
+• Corrigir um bug que fazia com que os certificados SSL fixados às vezes fossem verificados em relação ao certificado do site anterior.
+• Adicione uma entrada Mastodon em Sobre > Links.
+• Faça vários menores melhorias to a user experiência e gráfica interface.
+• Tradução do português brasileiro fornecida por Thiago Nazareno Conceição Silva de Jesus.
+• Updated French translation provided by Kévin LE FLOHIC.
+• Updated German translation provided by Bernhard G. Keller.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León.

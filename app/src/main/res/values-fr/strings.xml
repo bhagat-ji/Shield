@@ -591,6 +591,8 @@
         <string name="scroll_app_bar">Défilement barre d\'applications</string>
         <string name="scroll_app_bar_summary">Faites défiler la barre d\'applications en haut de l\'écran lorsque WebView défile vers le bas.</string>
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>
+        <string name="display_additional_app_bar_icons_summary">Afficher les icônes dans la barre des applications pour actualiser WebView et, s\'il y a de la place,
+            pour ouvrir les signets et la gestion des cookies.</string>
         <string name="app_theme">Thème de l\'application</string>
         <string-array name="app_theme_entries">
             <item>Par défaut</item>

@@ -33,7 +33,7 @@ import java.util.LinkedList;
 
 public class WebViewPagerAdapter extends FragmentPagerAdapter {
     // The WebView fragments list contains all the WebViews.
-    private LinkedList<WebViewTabFragment> webViewFragmentsList = new LinkedList<>();
+    private final LinkedList<WebViewTabFragment> webViewFragmentsList = new LinkedList<>();
 
     // Define the constructor.
     public WebViewPagerAdapter(FragmentManager fragmentManager) {

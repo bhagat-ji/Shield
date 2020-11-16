@@ -1,0 +1,23 @@
+• Sistemazione della riproduzione audio nel buffer dopo la chiusura di una scheda.
+• Accettazione delle autorità dei certificati degli utenti su Android 7 (API 24) e successivi.
+• Permesso di salvataggio deglidata: URL.
+• Aggiunta di una icona addizionale nella barra della app per aprire la scheda dei preferiti.
+• Utilizzo di un file sorgente unicosia per la modalità normale che per quella notturna per le pagine della Guida e delle informazioni.
+• Correzione di un problema nell'importazione delle impostazioni per le versioni precedenti alla 3.3.
+• Sistemazione delle intestazioni personalizzate che non erano applicate ai collegamenti caricati internamente a WebView.
+• Ora i singoli tocchi nella pagina dei preferiti editano i preferiti.
+• Correzione di un problema durante l'editing dei preferiti per cui a volte veniva selezionato un collegamento errato.
+• Visualizzazione dell'utilizzo della memoria nella pagina delle informazioni > Versione.
+• Aggiunta dell'opzione per salvare, copiare e inviare via email la pagina delle informazioni > Versione.
+• Utilizzo di Content-Type per ipotizzare le estensioni sconosciute dei file.
+• Pulizia del logcat dopo il caricamento di ogni pagine in modalità Incognito.
+• Pulizia del logcat quando si clicca Elimina dati ed esci.
+• Correzione di un baco che faceva in modo che i certificati SSL appuntati a volte venivano verificati rispetto ai certificati dei siti aperti in precedenza.
+• Aggiunta della voce relativa a Mastodon nella pagina delle informazioni > Link.
+• Implementazione diversi miglioramenti minori per l'experienza dell'utente e nell'interfaccia grafica.
+• Traduzione parziale in Portoghese Brasiliano fornita da Thiago Nazareno Conceição Silva de Jesus.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Francese fornita da Kévin LE FLOHIC.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

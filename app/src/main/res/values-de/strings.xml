@@ -593,6 +593,8 @@
         <string name="scroll_app_bar">App-Leiste scrollen</string>
         <string name="scroll_app_bar_summary">Scrollt die App-Leiste mit der URL nach oben, wenn die Webseite gescrollt wird.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
+        <string name="display_additional_app_bar_icons_summary">Icons zum Neu-Laden von WebView und - so genug Platz zur Verfügung steht -
+            zum Öffnen der Lesezeichen und zum Umschalten von Cookies in der App-Leiste anzeigen.</string>
         <string name="app_theme">Erscheinungsbild</string>
         <string-array name="app_theme_entries">
             <item>System-Einstellung</item>

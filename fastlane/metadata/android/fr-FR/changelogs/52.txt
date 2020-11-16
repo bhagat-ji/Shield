@@ -1,0 +1,23 @@
+• Correction de la lecture audio en mémoire tampon après la fermeture d'un onglet.
+• Confiance aux autorités de certification de l'utilisateur sur Android 7 (API 24) et suivants.
+• Autorisation de l'enregistrement des URLs de type data:.
+• Ajout d'une icône de barre d'application supplémentaire pour ouvrir la bandeau des favoris.
+• Utilisation d'un fichier source pour les pages Jour et Nuit dans les vues "Guide" et "À propos".
+• Résolution d'un problème d'importation des paramètres pour les versions antérieures à 3.3.
+• Correction des en-têtes personnalisées qui n'étaient pas appliquées aux liens chargés depuis WebView.
+• Un appui simple sur l'activité des favoris permet de modifier le favori.
+• Résolution d'un problème de modification des favoris en sélectionnant parfois le mauvais favoris.
+• Affichage de l'utilisation de la mémoire dans "À propos", onglet "Version".
+• Ajout des options enregistrer, copier et envoyer par e-mail dans "À propos", onglet "Version".
+• Usage de Content-Type pour deviner une extension de fichier inconnue.
+• Effacement de logcat après le chargement de chaque page en mode navigation privée.
+• Effacement de logcat lors de l'appui sur le bouton "Nettoyer et quitter".
+• Correction d'un bug qui faisait que les certificats SSL épinglés étaient parfois vérifiés par rapport au certificat du site Web précédent.
+• Ajout d'une entrée Mastodon dans "À propos", onlglet "Liens".
+• Application de diverses améliorations mineures liées à l'expérience utilisateur ainsi qu'à l'interface graphique.
+• Traduction partielle en Portugais Brésilien fournie par Thiago Nazareno Conceição Silva de Jesus.
+• Traduction française mise à jour fournie par Kévin LE FLOHIC.
+• Traduction allemande mise à jour fournie par Bernhard G. Keller.
+• Traduction italienne mise à jour fournie par Francesco Buratti.
+• Traduction russe mise à jour.
+• Traduction espagnole mise à jour fournie par Jose A. León.
