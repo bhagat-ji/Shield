@@ -1714,8 +1714,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
 
             // Add the variables to the intent.
-            viewSourceIntent.putExtra("user_agent", currentWebView.getSettings().getUserAgentString());
-            viewSourceIntent.putExtra("current_url", currentWebView.getUrl());
+            viewSourceIntent.putExtra(ViewSourceActivityKt.CURRENT_URL, currentWebView.getUrl());
+            viewSourceIntent.putExtra(ViewSourceActivityKt.USER_AGENT, currentWebView.getSettings().getUserAgentString());
 
             // Make it so.
             startActivity(viewSourceIntent);

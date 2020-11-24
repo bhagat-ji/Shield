@@ -678,6 +678,7 @@
 
     <!-- Non-translatable preference keys. -->
     <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
+    <string name="do_not_track_key" translatable="false">do_not_track</string>
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
 

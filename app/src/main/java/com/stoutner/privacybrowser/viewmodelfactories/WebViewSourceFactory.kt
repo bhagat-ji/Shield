@@ -19,14 +19,13 @@
 
 package com.stoutner.privacybrowser.viewmodelfactories
 
-import androidx.annotation.Nullable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 
-class WebViewSourceFactory (@Nullable private val urlString: String, private val userAgent: String, private val doNotTrack: Boolean, private val localeString: String, private val proxy: Proxy,
+class WebViewSourceFactory (private val urlString: String, private val userAgent: String, private val doNotTrack: Boolean, private val localeString: String, private val proxy: Proxy,
                             private val executorService: ExecutorService): ViewModelProvider.Factory {
     // Override the create function in order to add the provided arguments.
     override fun <T: ViewModel?> create(modelClass: Class<T>): T {
