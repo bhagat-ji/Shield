@@ -332,6 +332,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private TabLayout tabLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager webViewPager;
+    private NavigationView navigationView;
+
+    // Declare the class menus.
+    private Menu navigationMenu;
+
+    // Declare the class menu items.
+    private MenuItem navigationRequestsMenuItem;
 
     @Override
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
@@ -404,6 +411,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         tabLayout = findViewById(R.id.tablayout);
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         webViewPager = findViewById(R.id.webviewpager);
+        navigationView = findViewById(R.id.navigationview);
+
+        // Get handles for the class menus.
+        navigationMenu = navigationView.getMenu();
+
+        // Get a handle for the navigation requests menu item.
+        navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
 
         // Get a handle for the app compat delegate.
         AppCompatDelegate appCompatDelegate = getDelegate();
@@ -3250,8 +3264,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
         // Get handles for views that need to be modified.
-        NavigationView navigationView = findViewById(R.id.navigationview);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
@@ -3261,12 +3273,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Listen for touches on the navigation menu.
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Get handles for the navigation menu and the back and forward menu items.
-        Menu navigationMenu = navigationView.getMenu();
+        // Get handles for the navigation menu items.
         MenuItem navigationBackMenuItem = navigationMenu.findItem(R.id.back);
         MenuItem navigationForwardMenuItem = navigationMenu.findItem(R.id.forward);
         MenuItem navigationHistoryMenuItem = navigationMenu.findItem(R.id.history);
-        MenuItem navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
 
         // Update the web view pager every time a tab is modified.
         webViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -5788,15 +5798,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Sanitize the URL.
                 url = sanitizeUrl(url);
-
-                // Get a handle for the navigation view.
-                NavigationView navigationView = findViewById(R.id.navigationview);
-
-                // Get a handle for the navigation menu.
-                Menu navigationMenu = navigationView.getMenu();
-
-                // Get a handle for the navigation requests menu item.
-                MenuItem navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
 
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
