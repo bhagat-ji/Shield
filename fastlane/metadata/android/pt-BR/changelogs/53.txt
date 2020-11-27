@@ -1,0 +1,1 @@
+• Corrigido o erro que gerava Ver Fonte ao travar.

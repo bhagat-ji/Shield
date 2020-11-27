@@ -1,0 +1,1 @@
+• Fix eines Bugs, der die Quelltext-Anzeige zum Absturz brachte.
