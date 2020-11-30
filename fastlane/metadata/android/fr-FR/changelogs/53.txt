@@ -1,1 +1,1 @@
-• Fix a bug that caused View Source to crash.
+• Correction d'un bug qui faisait planter la vue "Voir Source".
