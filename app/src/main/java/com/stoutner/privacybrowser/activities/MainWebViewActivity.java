@@ -239,9 +239,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The search URL is set in `applyAppSettings()` and used in `onNewIntent()`, `loadUrlFromTextBox()`, `initializeApp()`, and `initializeWebView()`.
     private String searchURL;
 
-    // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()`, `updatePrivacyIcons()`, and `initializeWebView()`.
-    private Menu optionsMenu;
-
     // The blocklists are populated in `finishedPopulatingBlocklists()` and accessed from `initializeWebView()`.
     private ArrayList<List<String[]>> easyList;
     private ArrayList<List<String[]>> easyPrivacy;
@@ -332,13 +329,58 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private TabLayout tabLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager webViewPager;
-    private NavigationView navigationView;
 
     // Declare the class menus.
-    private Menu navigationMenu;
+    private Menu optionsMenu;
 
     // Declare the class menu items.
+    private MenuItem navigationBackMenuItem;
+    private MenuItem navigationForwardMenuItem;
+    private MenuItem navigationHistoryMenuItem;
     private MenuItem navigationRequestsMenuItem;
+    private MenuItem optionsPrivacyMenuItem;
+    private MenuItem optionsRefreshMenuItem;
+    private MenuItem optionsFirstPartyCookiesMenuItem;
+    private MenuItem optionsThirdPartyCookiesMenuItem;
+    private MenuItem optionsDomStorageMenuItem;
+    private MenuItem optionsSaveFormDataMenuItem;
+    private MenuItem optionsClearDataMenuItem;
+    private MenuItem optionsClearCookiesMenuItem;
+    private MenuItem optionsClearDomStorageMenuItem;
+    private MenuItem optionsClearFormDataMenuItem;
+    private MenuItem optionsBlocklistsMenuItem;
+    private MenuItem optionsEasyListMenuItem;
+    private MenuItem optionsEasyPrivacyMenuItem;
+    private MenuItem optionsFanboysAnnoyanceListMenuItem;
+    private MenuItem optionsFanboysSocialBlockingListMenuItem;
+    private MenuItem optionsUltraListMenuItem;
+    private MenuItem optionsUltraPrivacyMenuItem;
+    private MenuItem optionsBlockAllThirdPartyRequestsMenuItem;
+    private MenuItem optionsProxyMenuItem;
+    private MenuItem optionsProxyNoneMenuItem;
+    private MenuItem optionsProxyTorMenuItem;
+    private MenuItem optionsProxyI2pMenuItem;
+    private MenuItem optionsProxyCustomMenuItem;
+    private MenuItem optionsUserAgentMenuItem;
+    private MenuItem optionsUserAgentPrivacyBrowserMenuItem;
+    private MenuItem optionsUserAgentWebViewDefaultMenuItem;
+    private MenuItem optionsUserAgentFirefoxOnAndroidMenuItem;
+    private MenuItem optionsUserAgentChromeOnAndroidMenuItem;
+    private MenuItem optionsUserAgentSafariOnIosMenuItem;
+    private MenuItem optionsUserAgentFirefoxOnLinuxMenuItem;
+    private MenuItem optionsUserAgentChromiumOnLinuxMenuItem;
+    private MenuItem optionsUserAgentFirefoxOnWindowsMenuItem;
+    private MenuItem optionsUserAgentChromeOnWindowsMenuItem;
+    private MenuItem optionsUserAgentEdgeOnWindowsMenuItem;
+    private MenuItem optionsUserAgentInternetExplorerOnWindowsMenuItem;
+    private MenuItem optionsUserAgentSafariOnMacosMenuItem;
+    private MenuItem optionsUserAgentCustomMenuItem;
+    private MenuItem optionsSwipeToRefreshMenuItem;
+    private MenuItem optionsWideViewportMenuItem;
+    private MenuItem optionsDisplayImagesMenuItem;
+    private MenuItem optionsDarkWebViewMenuItem;
+    private MenuItem optionsFontSizeMenuItem;
+    private MenuItem optionsAddOrEditDomainMenuItem;
 
     @Override
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
@@ -411,13 +453,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         tabLayout = findViewById(R.id.tablayout);
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         webViewPager = findViewById(R.id.webviewpager);
-        navigationView = findViewById(R.id.navigationview);
 
-        // Get handles for the class menus.
-        navigationMenu = navigationView.getMenu();
+        // Get a handle for the navigation view.
+        NavigationView navigationView = findViewById(R.id.navigationview);
 
-        // Get a handle for the navigation requests menu item.
+        // Get a handle for the navigation menu.
+        Menu navigationMenu = navigationView.getMenu();
+
+        // Get handles for the navigation menu items.
+        navigationBackMenuItem = navigationMenu.findItem(R.id.back);
+        navigationForwardMenuItem = navigationMenu.findItem(R.id.forward);
+        navigationHistoryMenuItem = navigationMenu.findItem(R.id.history);
         navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
+
+        // Listen for touches on the navigation menu.
+        navigationView.setNavigationItemSelectedListener(this);
 
         // Get a handle for the app compat delegate.
         AppCompatDelegate appCompatDelegate = getDelegate();
@@ -760,28 +810,67 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
         updatePrivacyIcons(false);
 
-        // Get handles for the menu items.
+        // Get handles for the class menu items.
+        optionsPrivacyMenuItem = menu.findItem(R.id.javascript);
+        optionsRefreshMenuItem = menu.findItem(R.id.refresh);
+        optionsFirstPartyCookiesMenuItem = menu.findItem(R.id.first_party_cookies);
+        optionsThirdPartyCookiesMenuItem = menu.findItem(R.id.third_party_cookies);
+        optionsDomStorageMenuItem = menu.findItem(R.id.dom_storage);
+        optionsSaveFormDataMenuItem = menu.findItem(R.id.save_form_data);  // Form data can be removed once the minimum API >= 26.
+        optionsClearDataMenuItem = menu.findItem(R.id.clear_data);
+        optionsClearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
+        optionsClearDomStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
+        optionsClearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
+        optionsBlocklistsMenuItem = menu.findItem(R.id.blocklists);
+        optionsEasyListMenuItem = menu.findItem(R.id.easylist);
+        optionsEasyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
+        optionsFanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
+        optionsFanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
+        optionsUltraListMenuItem = menu.findItem(R.id.ultralist);
+        optionsUltraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
+        optionsBlockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
+        optionsProxyMenuItem = menu.findItem(R.id.proxy);
+        optionsProxyNoneMenuItem = menu.findItem(R.id.proxy_none);
+        optionsProxyTorMenuItem = menu.findItem(R.id.proxy_tor);
+        optionsProxyI2pMenuItem = menu.findItem(R.id.proxy_i2p);
+        optionsProxyCustomMenuItem = menu.findItem(R.id.proxy_custom);
+        optionsUserAgentMenuItem = menu.findItem(R.id.user_agent);
+        optionsUserAgentPrivacyBrowserMenuItem = menu.findItem(R.id.user_agent_privacy_browser);
+        optionsUserAgentWebViewDefaultMenuItem = menu.findItem(R.id.user_agent_webview_default);
+        optionsUserAgentFirefoxOnAndroidMenuItem = menu.findItem(R.id.user_agent_firefox_on_android);
+        optionsUserAgentChromeOnAndroidMenuItem = menu.findItem(R.id.user_agent_chrome_on_android);
+        optionsUserAgentSafariOnIosMenuItem = menu.findItem(R.id.user_agent_safari_on_ios);
+        optionsUserAgentFirefoxOnLinuxMenuItem = menu.findItem(R.id.user_agent_firefox_on_linux);
+        optionsUserAgentChromiumOnLinuxMenuItem = menu.findItem(R.id.user_agent_chromium_on_linux);
+        optionsUserAgentFirefoxOnWindowsMenuItem = menu.findItem(R.id.user_agent_firefox_on_windows);
+        optionsUserAgentChromeOnWindowsMenuItem = menu.findItem(R.id.user_agent_chrome_on_windows);
+        optionsUserAgentEdgeOnWindowsMenuItem = menu.findItem(R.id.user_agent_edge_on_windows);
+        optionsUserAgentInternetExplorerOnWindowsMenuItem = menu.findItem(R.id.user_agent_internet_explorer_on_windows);
+        optionsUserAgentSafariOnMacosMenuItem = menu.findItem(R.id.user_agent_safari_on_macos);
+        optionsUserAgentCustomMenuItem = menu.findItem(R.id.user_agent_custom);
+        optionsSwipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
+        optionsWideViewportMenuItem = menu.findItem(R.id.wide_viewport);
+        optionsDisplayImagesMenuItem = menu.findItem(R.id.display_images);
+        optionsDarkWebViewMenuItem = menu.findItem(R.id.dark_webview);
+        optionsFontSizeMenuItem = menu.findItem(R.id.font_size);
+        optionsAddOrEditDomainMenuItem = menu.findItem(R.id.add_or_edit_domain);
+
+        // Get handles for the method menu items.
         MenuItem bookmarksMenuItem = menu.findItem(R.id.bookmarks);
-        MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
-        MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
-        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
-        MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
-        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
-        MenuItem darkWebViewMenuItem = menu.findItem(R.id.dark_webview);
         MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Only display third-party cookies if API >= 21
-        toggleThirdPartyCookiesMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
+        optionsThirdPartyCookiesMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
 
         // Only display the form data menu items if the API < 26.
-        toggleSaveFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
-        clearFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
+        optionsSaveFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
+        optionsClearFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
 
         // Disable the clear form data menu item if the API >= 26 so that the status of the main Clear Data is calculated correctly.
-        clearFormDataMenuItem.setEnabled(Build.VERSION.SDK_INT < 26);
+        optionsClearFormDataMenuItem.setEnabled(Build.VERSION.SDK_INT < 26);
 
         // Only display the dark WebView menu item if API >= 21.
-        darkWebViewMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
+        optionsDarkWebViewMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
 
         // Only show Ad Consent if this is the free flavor.
         adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
@@ -794,19 +883,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {
-            refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            optionsRefreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             bookmarksMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            optionsFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else { //Do not display the additional icons.
-            refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            optionsRefreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             bookmarksMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            optionsFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         // Replace Refresh with Stop if a URL is already loading.
         if (currentWebView != null && currentWebView.getProgress() != 100) {
             // Set the title.
-            refreshMenuItem.setTitle(R.string.stop);
+            optionsRefreshMenuItem.setTitle(R.string.stop);
 
             // Set the icon if it is displayed in the app bar.
             if (displayAdditionalAppBarIcons) {
@@ -815,9 +904,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set the icon according to the current theme status.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    refreshMenuItem.setIcon(R.drawable.close_blue_day);
+                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_day);
                 } else {
-                    refreshMenuItem.setIcon(R.drawable.close_blue_night);
+                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_night);
                 }
             }
         }
@@ -828,32 +917,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Get handles for the menu items.
-        MenuItem addOrEditDomain = menu.findItem(R.id.add_or_edit_domain);
-        MenuItem firstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
-        MenuItem thirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
-        MenuItem domStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
-        MenuItem saveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
-        MenuItem clearDataMenuItem = menu.findItem(R.id.clear_data);
-        MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
-        MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
-        MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
-        MenuItem blocklistsMenuItem = menu.findItem(R.id.blocklists);
-        MenuItem easyListMenuItem = menu.findItem(R.id.easylist);
-        MenuItem easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
-        MenuItem fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
-        MenuItem fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
-        MenuItem ultraListMenuItem = menu.findItem(R.id.ultralist);
-        MenuItem ultraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
-        MenuItem blockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
-        MenuItem proxyMenuItem = menu.findItem(R.id.proxy);
-        MenuItem userAgentMenuItem = menu.findItem(R.id.user_agent);
-        MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
-        MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
-        MenuItem wideViewportMenuItem = menu.findItem(R.id.wide_viewport);
-        MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
-        MenuItem darkWebViewMenuItem = menu.findItem(R.id.dark_webview);
-
         // Get a handle for the cookie manager.
         CookieManager cookieManager = CookieManager.getInstance();
 
@@ -865,9 +928,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (currentWebView != null) {
             // Set the add or edit domain text.
             if (currentWebView.getDomainSettingsApplied()) {
-                addOrEditDomain.setTitle(R.string.edit_domain_settings);
+                optionsAddOrEditDomainMenuItem.setTitle(R.string.edit_domain_settings);
             } else {
-                addOrEditDomain.setTitle(R.string.add_domain_settings);
+                optionsAddOrEditDomainMenuItem.setTitle(R.string.add_domain_settings);
             }
 
             // Get the current user agent from the WebView.
@@ -877,52 +940,52 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             fontSize = currentWebView.getSettings().getTextZoom();
 
             // Set the status of the menu item checkboxes.
-            domStorageMenuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
-            saveFormDataMenuItem.setChecked(currentWebView.getSettings().getSaveFormData());  // Form data can be removed once the minimum API >= 26.
-            easyListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
-            easyPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
-            fanboysAnnoyanceListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
-            fanboysSocialBlockingListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
-            ultraListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
-            ultraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
-            blockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
-            swipeToRefreshMenuItem.setChecked(currentWebView.getSwipeToRefresh());
-            wideViewportMenuItem.setChecked(currentWebView.getSettings().getUseWideViewPort());
-            displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
+            optionsDomStorageMenuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
+            optionsSaveFormDataMenuItem.setChecked(currentWebView.getSettings().getSaveFormData());  // Form data can be removed once the minimum API >= 26.
+            optionsEasyListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
+            optionsEasyPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
+            optionsFanboysAnnoyanceListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+            optionsFanboysSocialBlockingListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
+            optionsUltraListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+            optionsUltraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
+            optionsBlockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+            optionsSwipeToRefreshMenuItem.setChecked(currentWebView.getSwipeToRefresh());
+            optionsWideViewportMenuItem.setChecked(currentWebView.getSettings().getUseWideViewPort());
+            optionsDisplayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
 
             // Initialize the display names for the blocklists with the number of blocked requests.
-            blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-            easyListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASYLIST) + " - " + getString(R.string.easylist));
-            easyPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASYPRIVACY) + " - " + getString(R.string.easyprivacy));
-            fanboysAnnoyanceListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " + getString(R.string.fanboys_annoyance_list));
-            fanboysSocialBlockingListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " + getString(R.string.fanboys_social_blocking_list));
-            ultraListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRALIST) + " - " + getString(R.string.ultralist));
-            ultraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRAPRIVACY) + " - " + getString(R.string.ultraprivacy));
-            blockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
+            optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+            optionsEasyListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASYLIST) + " - " + getString(R.string.easylist));
+            optionsEasyPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASYPRIVACY) + " - " + getString(R.string.easyprivacy));
+            optionsFanboysAnnoyanceListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " + getString(R.string.fanboys_annoyance_list));
+            optionsFanboysSocialBlockingListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " + getString(R.string.fanboys_social_blocking_list));
+            optionsUltraListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRALIST) + " - " + getString(R.string.ultralist));
+            optionsUltraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRAPRIVACY) + " - " + getString(R.string.ultraprivacy));
+            optionsBlockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
 
             // Only modify third-party cookies if the API >= 21.
             if (Build.VERSION.SDK_INT >= 21) {
                 // Set the status of the third-party cookies checkbox.
-                thirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
+                optionsThirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
 
                 // Enable third-party cookies if first-party cookies are enabled.
-                thirdPartyCookiesMenuItem.setEnabled(cookieManager.acceptCookie());
+                optionsThirdPartyCookiesMenuItem.setEnabled(cookieManager.acceptCookie());
             }
 
             // Enable DOM Storage if JavaScript is enabled.
-            domStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
+            optionsDomStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
 
             // Set the checkbox status for dark WebView if the WebView supports it.
             if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-                darkWebViewMenuItem.setChecked(WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON);
+                optionsDarkWebViewMenuItem.setChecked(WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON);
             }
         }
 
         // Set the checked status of the first party cookies menu item.
-        firstPartyCookiesMenuItem.setChecked(cookieManager.acceptCookie());
+        optionsFirstPartyCookiesMenuItem.setChecked(cookieManager.acceptCookie());
 
         // Enable Clear Cookies if there are any.
-        clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
+        optionsClearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
 
         // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`, which links to `/data/data/com.stoutner.privacybrowser.standard`.
         String privateDataDirectoryString = getApplicationInfo().dataDir;
@@ -944,7 +1007,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Enable Clear DOM Storage if there is any.
-        clearDOMStorageMenuItem.setEnabled(localStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0);
+        optionsClearDomStorageMenuItem.setEnabled(localStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0);
 
         // Enable Clear Form Data is there is any.  This can be removed once the minimum API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
@@ -952,133 +1015,133 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
 
             // Enable the clear form data menu item if there is anything to clear.
-            clearFormDataMenuItem.setEnabled(webViewDatabase.hasFormData());
+            optionsClearFormDataMenuItem.setEnabled(webViewDatabase.hasFormData());
         }
 
         // Enable Clear Data if any of the submenu items are enabled.
-        clearDataMenuItem.setEnabled(clearCookiesMenuItem.isEnabled() || clearDOMStorageMenuItem.isEnabled() || clearFormDataMenuItem.isEnabled());
+        optionsClearDataMenuItem.setEnabled(optionsClearCookiesMenuItem.isEnabled() || optionsClearDomStorageMenuItem.isEnabled() || optionsClearFormDataMenuItem.isEnabled());
 
         // Disable Fanboy's Social Blocking List menu item if Fanboy's Annoyance List is checked.
-        fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListMenuItem.isChecked());
+        optionsFanboysSocialBlockingListMenuItem.setEnabled(!optionsFanboysAnnoyanceListMenuItem.isChecked());
 
         // Set the proxy title and check the applied proxy.
         switch (proxyMode) {
             case ProxyHelper.NONE:
                 // Set the proxy title.
-                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_none));
+                optionsProxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_none));
 
                 // Check the proxy None radio button.
-                menu.findItem(R.id.proxy_none).setChecked(true);
+                optionsProxyNoneMenuItem.setChecked(true);
                 break;
 
             case ProxyHelper.TOR:
                 // Set the proxy title.
-                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_tor));
+                optionsProxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_tor));
 
                 // Check the proxy Tor radio button.
-                menu.findItem(R.id.proxy_tor).setChecked(true);
+                optionsProxyTorMenuItem.setChecked(true);
                 break;
 
             case ProxyHelper.I2P:
                 // Set the proxy title.
-                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_i2p));
+                optionsProxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_i2p));
 
                 // Check the proxy I2P radio button.
-                menu.findItem(R.id.proxy_i2p).setChecked(true);
+                optionsProxyI2pMenuItem.setChecked(true);
                 break;
 
             case ProxyHelper.CUSTOM:
                 // Set the proxy title.
-                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_custom));
+                optionsProxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_custom));
 
                 // Check the proxy Custom radio button.
-                menu.findItem(R.id.proxy_custom).setChecked(true);
+                optionsProxyCustomMenuItem.setChecked(true);
                 break;
         }
 
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_privacy_browser));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_privacy_browser));
 
             // Select the Privacy Browser radio box.
-            menu.findItem(R.id.user_agent_privacy_browser).setChecked(true);
+            optionsUserAgentPrivacyBrowserMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(webViewDefaultUserAgent)) {  // WebView Default.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_webview_default));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_webview_default));
 
             // Select the WebView Default radio box.
-            menu.findItem(R.id.user_agent_webview_default).setChecked(true);
+            optionsUserAgentWebViewDefaultMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[2])) {  // Firefox on Android.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_android));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_android));
 
             // Select the Firefox on Android radio box.
-            menu.findItem(R.id.user_agent_firefox_on_android).setChecked(true);
+            optionsUserAgentFirefoxOnAndroidMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[3])) {  // Chrome on Android.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chrome_on_android));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chrome_on_android));
 
             // Select the Chrome on Android radio box.
-            menu.findItem(R.id.user_agent_chrome_on_android).setChecked(true);
+            optionsUserAgentChromeOnAndroidMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[4])) {  // Safari on iOS.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_safari_on_ios));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_safari_on_ios));
 
             // Select the Safari on iOS radio box.
-            menu.findItem(R.id.user_agent_safari_on_ios).setChecked(true);
+            optionsUserAgentSafariOnIosMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[5])) {  // Firefox on Linux.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_linux));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_linux));
 
             // Select the Firefox on Linux radio box.
-            menu.findItem(R.id.user_agent_firefox_on_linux).setChecked(true);
+            optionsUserAgentFirefoxOnLinuxMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[6])) {  // Chromium on Linux.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chromium_on_linux));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chromium_on_linux));
 
             // Select the Chromium on Linux radio box.
-            menu.findItem(R.id.user_agent_chromium_on_linux).setChecked(true);
+            optionsUserAgentChromiumOnLinuxMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[7])) {  // Firefox on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_windows));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_windows));
 
             // Select the Firefox on Windows radio box.
-            menu.findItem(R.id.user_agent_firefox_on_windows).setChecked(true);
+            optionsUserAgentFirefoxOnWindowsMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[8])) {  // Chrome on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chrome_on_windows));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chrome_on_windows));
 
             // Select the Chrome on Windows radio box.
-            menu.findItem(R.id.user_agent_chrome_on_windows).setChecked(true);
+            optionsUserAgentChromeOnWindowsMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[9])) {  // Edge on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_edge_on_windows));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_edge_on_windows));
 
             // Select the Edge on Windows radio box.
-            menu.findItem(R.id.user_agent_edge_on_windows).setChecked(true);
+            optionsUserAgentEdgeOnWindowsMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[10])) {  // Internet Explorer on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_internet_explorer_on_windows));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_internet_explorer_on_windows));
 
             // Select the Internet on Windows radio box.
-            menu.findItem(R.id.user_agent_internet_explorer_on_windows).setChecked(true);
+            optionsUserAgentInternetExplorerOnWindowsMenuItem.setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[11])) {  // Safari on macOS.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_safari_on_macos));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_safari_on_macos));
 
             // Select the Safari on macOS radio box.
-            menu.findItem(R.id.user_agent_safari_on_macos).setChecked(true);
+            optionsUserAgentSafariOnMacosMenuItem.setChecked(true);
         } else {  // Custom user agent.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_custom));
+            optionsUserAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_custom));
 
             // Select the Custom radio box.
-            menu.findItem(R.id.user_agent_custom).setChecked(true);
+            optionsUserAgentCustomMenuItem.setChecked(true);
         }
 
         // Set the font size title.
-        fontSizeMenuItem.setTitle(getString(R.string.font_size) + " - " + fontSize + "%");
+        optionsFontSizeMenuItem.setTitle(getString(R.string.font_size) + " - " + fontSize + "%");
 
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
@@ -1099,7 +1162,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         int menuItemId = menuItem.getItemId();
 
         // Run the commands that correlate to the selected menu item.
-        if (menuItemId == R.id.toggle_javascript) {  // JavaScript.
+        if (menuItemId == R.id.javascript) {  // JavaScript.
             // Toggle the JavaScript status.
             currentWebView.getSettings().setJavaScriptEnabled(!currentWebView.getSettings().getJavaScriptEnabled());
 
@@ -1138,7 +1201,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
-        } else if (menuItemId == R.id.toggle_first_party_cookies) {  // First-party cookies.
+        } else if (menuItemId == R.id.first_party_cookies) {  // First-party cookies.
             // Switch the first-party cookie status.
             cookieManager.setAcceptCookie(!cookieManager.acceptCookie());
 
@@ -1165,7 +1228,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
-        } else if (menuItemId == R.id.toggle_third_party_cookies) {  // Third-party cookies.
+        } else if (menuItemId == R.id.third_party_cookies) {  // Third-party cookies.
             // Only act if the API >= 21.  Otherwise, there are no third-party cookie controls.
             if (Build.VERSION.SDK_INT >= 21) {
                 // Toggle the status of thirdPartyCookiesEnabled.
@@ -1187,7 +1250,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
-        } else if (menuItemId == R.id.toggle_dom_storage) {  // DOM storage.
+        } else if (menuItemId == R.id.dom_storage) {  // DOM storage.
             // Toggle the status of domStorageEnabled.
             currentWebView.getSettings().setDomStorageEnabled(!currentWebView.getSettings().getDomStorageEnabled());
 
@@ -1209,7 +1272,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
-        } else if (menuItemId == R.id.toggle_save_form_data) {  // Form data.  This can be removed once the minimum API >= 26.
+        } else if (menuItemId == R.id.save_form_data) {  // Form data.  This can be removed once the minimum API >= 26.
             // Switch the status of saveFormDataEnabled.
             currentWebView.getSettings().setSaveFormData(!currentWebView.getSettings().getSaveFormData());
 
@@ -1363,11 +1426,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Update the menu checkbox.
             menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
 
-            // Get a handle for the Fanboy's Social Block List menu item.
-            MenuItem fanboysSocialBlockingListMenuItem = optionsMenu.findItem(R.id.fanboys_social_blocking_list);
-
             // Update the staus of Fanboy's Social Blocking List.
-            fanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+            optionsFanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -3270,14 +3330,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
         EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
 
-        // Listen for touches on the navigation menu.
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Get handles for the navigation menu items.
-        MenuItem navigationBackMenuItem = navigationMenu.findItem(R.id.back);
-        MenuItem navigationForwardMenuItem = navigationMenu.findItem(R.id.forward);
-        MenuItem navigationHistoryMenuItem = navigationMenu.findItem(R.id.history);
-
         // Update the web view pager every time a tab is modified.
         webViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -4403,18 +4455,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
         // Only update the privacy icons if the options menu and the current WebView have already been populated.
         if ((optionsMenu != null) && (currentWebView != null)) {
-            // Get handles for the menu items.
-            MenuItem privacyMenuItem = optionsMenu.findItem(R.id.toggle_javascript);
-            MenuItem firstPartyCookiesMenuItem = optionsMenu.findItem(R.id.toggle_first_party_cookies);
-            MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
-
             // Update the privacy icon.
             if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled.
-                privacyMenuItem.setIcon(R.drawable.javascript_enabled);
+                optionsPrivacyMenuItem.setIcon(R.drawable.javascript_enabled);
             } else if (currentWebView.getAcceptFirstPartyCookies()) {  // JavaScript is disabled but cookies are enabled.
-                privacyMenuItem.setIcon(R.drawable.warning);
+                optionsPrivacyMenuItem.setIcon(R.drawable.warning);
             } else {  // All the dangerous features are disabled.
-                privacyMenuItem.setIcon(R.drawable.privacy_mode);
+                optionsPrivacyMenuItem.setIcon(R.drawable.privacy_mode);
             }
 
             // Get the current theme status.
@@ -4422,29 +4469,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Update the first-party cookies icon.
             if (currentWebView.getAcceptFirstPartyCookies()) {  // First-party cookies are enabled.
-                firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
+                optionsFirstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
             } else {  // First-party cookies are disabled.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_day);
+                    optionsFirstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_day);
                 } else {
-                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
+                    optionsFirstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
                 }
             }
 
             // Update the refresh icon.
-            if (refreshMenuItem.getTitle() == getString(R.string.refresh)) {  // The refresh icon is displayed.
+            if (optionsRefreshMenuItem.getTitle() == getString(R.string.refresh)) {  // The refresh icon is displayed.
                 // Set the icon according to the theme.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
+                    optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
                 } else {
-                    refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
+                    optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
                 }
             } else {  // The stop icon is displayed.
                 // Set the icon according to the theme.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    refreshMenuItem.setIcon(R.drawable.close_blue_day);
+                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_day);
                 } else {
-                    refreshMenuItem.setIcon(R.drawable.close_blue_night);
+                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_night);
                 }
             }
 
@@ -5865,8 +5912,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                             // Update the options menu if it has been populated.
                             if (optionsMenu != null) {
-                                optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                optionsMenu.findItem(R.id.block_all_third_party_requests).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " +
+                                optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                optionsBlockAllThirdPartyRequestsMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " +
                                         getString(R.string.block_all_third_party_requests));
                             }
                         });
@@ -5899,8 +5946,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.ultralist).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRALIST) + " - " + getString(R.string.ultralist));
+                                    optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsUltraListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRALIST) + " - " + getString(R.string.ultralist));
                                 }
                             });
                         }
@@ -5940,8 +5987,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.ultraprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRAPRIVACY) + " - " + getString(R.string.ultraprivacy));
+                                    optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsUltraPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRAPRIVACY) + " - " + getString(R.string.ultraprivacy));
                                 }
                             });
                         }
@@ -5981,8 +6028,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.easylist).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASYLIST) + " - " + getString(R.string.easylist));
+                                    optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsEasyListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASYLIST) + " - " + getString(R.string.easylist));
                                 }
                             });
                         }
@@ -6019,8 +6066,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.easyprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASYPRIVACY) + " - " + getString(R.string.easyprivacy));
+                                    optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsEasyPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASYPRIVACY) + " - " + getString(R.string.easyprivacy));
                                 }
                             });
                         }
@@ -6057,8 +6104,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.fanboys_annoyance_list).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " +
+                                    optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsFanboysAnnoyanceListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " +
                                             getString(R.string.fanboys_annoyance_list));
                                 }
                             });
@@ -6094,8 +6141,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.fanboys_social_blocking_list).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " +
+                                    optionsBlocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsFanboysSocialBlockingListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " +
                                             getString(R.string.fanboys_social_blocking_list));
                                 }
                             });
@@ -6189,11 +6236,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)
                 if (optionsMenu != null) {
-                    // Get a handle for the refresh menu item.
-                    MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
-
                     // Set the title.
-                    refreshMenuItem.setTitle(R.string.stop);
+                    optionsRefreshMenuItem.setTitle(R.string.stop);
 
                     // Get the app bar and theme preferences.
                     boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
@@ -6205,9 +6249,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Set the stop icon according to the theme.
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                            refreshMenuItem.setIcon(R.drawable.close_blue_day);
+                            optionsRefreshMenuItem.setIcon(R.drawable.close_blue_day);
                         } else {
-                            refreshMenuItem.setIcon(R.drawable.close_blue_night);
+                            optionsRefreshMenuItem.setIcon(R.drawable.close_blue_night);
                         }
                     }
                 }
@@ -6222,11 +6266,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Update the Refresh menu item if the options menu has been created.
                 if (optionsMenu != null) {
-                    // Get a handle for the refresh menu item.
-                    MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
-
                     // Reset the Refresh title.
-                    refreshMenuItem.setTitle(R.string.refresh);
+                    optionsRefreshMenuItem.setTitle(R.string.refresh);
 
                     // Get the app bar and theme preferences.
                     boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
@@ -6238,9 +6279,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Set the icon according to the theme.
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
+                            optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
                         } else {
-                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
+                            optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
                         }
                     }
                 }

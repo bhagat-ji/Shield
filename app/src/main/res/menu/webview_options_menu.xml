@@ -25,7 +25,7 @@
     tools:context=".activities.MainWebViewActivity" >
 
     <item
-        android:id="@+id/toggle_javascript"
+        android:id="@+id/javascript"
         android:title="@string/javascript"
         android:orderInCategory="100"
         android:icon="@drawable/privacy_mode"
@@ -46,7 +46,7 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/toggle_first_party_cookies"
+        android:id="@+id/first_party_cookies"
         android:title="@string/first_party_cookies"
         android:orderInCategory="400"
         android:checkable="true"
@@ -54,21 +54,21 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/toggle_third_party_cookies"
+        android:id="@+id/third_party_cookies"
         android:title="@string/third_party_cookies"
         android:orderInCategory="500"
         android:checkable="true"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/toggle_dom_storage"
+        android:id="@+id/dom_storage"
         android:title="@string/dom_storage"
         android:orderInCategory="600"
         android:checkable="true"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/toggle_save_form_data"
+        android:id="@+id/save_form_data"
         android:title="@string/form_data"
         android:orderInCategory="700"
         android:checkable="true"

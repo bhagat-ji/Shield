@@ -108,7 +108,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private boolean acceptFirstPartyCookies;
 
     // Track the resource requests.
-    private List<String[]> resourceRequests = Collections.synchronizedList(new ArrayList<>());  // Using a synchronized list makes adding resource requests thread safe.
+    private final List<String[]> resourceRequests = Collections.synchronizedList(new ArrayList<>());  // Using a synchronized list makes adding resource requests thread safe.
     private boolean easyListEnabled;
     private boolean easyPrivacyEnabled;
     private boolean fanboysAnnoyanceListEnabled;
@@ -157,7 +157,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private String waitingForProxyUrlString = "";
 
     // The nested scrolling child helper is used throughout the class.
-    private NestedScrollingChildHelper nestedScrollingChildHelper;
+    private final NestedScrollingChildHelper nestedScrollingChildHelper;
 
     // The previous Y position needs to be tracked between motion events.
     private int previousYPosition;
@@ -694,9 +694,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        // Initialize a tracker to return if this motion event is handled.
-        boolean motionEventHandled;
-
         // Run the commands for the given motion event action.
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -705,9 +702,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
                 // Save the current Y position.  Action down will not be called again until a new motion starts.
                 previousYPosition = (int) motionEvent.getY();
-
-                // Run the default commands.
-                motionEventHandled = super.onTouchEvent(motionEvent);
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -750,25 +744,19 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                     // Store the current Y position for use in the next action move.
                     previousYPosition = previousYPosition - scrollDeltaY;
                 }
-
-                // Run the default commands.
-                motionEventHandled = super.onTouchEvent(motionEvent);
                 break;
 
 
             default:
                 // Stop nested scrolling.
                 stopNestedScroll();
-
-                // Run the default commands.
-                motionEventHandled = super.onTouchEvent(motionEvent);
         }
 
         // Perform a click.  This is required by the Android accessibility guidelines.
         performClick();
 
-        // Return the status of the motion event.
-        return motionEventHandled;
+        // Run the default commands and return the result.
+        return super.onTouchEvent(motionEvent);
     }
 
     public Bundle saveNestedScrollWebViewState() {
