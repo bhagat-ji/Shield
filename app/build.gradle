@@ -94,6 +94,6 @@ dependencies {
     // Include the Google material library.
     implementation 'com.google.android.material:material:1.2.1'
 
-    // Only compile Firebase ads for the free flavor.
-    freeImplementation 'com.google.firebase:firebase-ads:19.6.0'
+    // Only compile AdMob ads for the free flavor.
+    freeImplementation 'com.google.android.gms:play-services-ads:19.6.0'
 }

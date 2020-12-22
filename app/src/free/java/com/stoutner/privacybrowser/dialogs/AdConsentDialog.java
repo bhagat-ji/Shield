@@ -87,8 +87,8 @@ public class AdConsentDialog extends DialogFragment {
             // Update the ad consent database.
             adConsentDatabaseHelper.updateAdConsent(true);
 
-            // Load an ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` on the minimum API >= 23.
-            AdHelper.loadAd(getActivity().findViewById(R.id.adview), getActivity().getApplicationContext(), getString(R.string.ad_unit_id));
+            // Load an ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
+            AdHelper.loadAd(getActivity().findViewById(R.id.adview), getActivity().getApplicationContext(), getActivity(), getString(R.string.ad_unit_id));
         });
 
         // Create an alert dialog from the alert dialog builder.

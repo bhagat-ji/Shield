@@ -321,14 +321,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private String saveWebpageFilePath;
 
     // Declare the class views.
+    private FrameLayout rootFrameLayout;
     private DrawerLayout drawerLayout;
+    private RelativeLayout mainContentRelativeLayout;
     private AppBarLayout appBarLayout;
     private Toolbar toolbar;
+    private ActionBar actionBar;
     private LinearLayout findOnPageLinearLayout;
     private LinearLayout tabsLinearLayout;
     private TabLayout tabLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager webViewPager;
+    private FrameLayout fullScreenVideoFrameLayout;
 
     // Declare the class menus.
     private Menu optionsMenu;
@@ -445,7 +449,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         setContentView(R.layout.main_framelayout);
 
         // Get handles for the views.
+        rootFrameLayout = findViewById(R.id.root_framelayout);
         drawerLayout = findViewById(R.id.drawerlayout);
+        mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
         appBarLayout = findViewById(R.id.appbar_layout);
         toolbar = findViewById(R.id.toolbar);
         findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
@@ -453,6 +459,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         tabLayout = findViewById(R.id.tablayout);
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         webViewPager = findViewById(R.id.webviewpager);
+        fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
 
         // Get a handle for the navigation view.
         NavigationView navigationView = findViewById(R.id.navigationview);
@@ -476,9 +483,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         appCompatDelegate.setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.
-        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
+        actionBar = appCompatDelegate.getSupportActionBar();
 
-        // This is needed to get rid of the Android Studio warning that the action bar might be null.
+        // Remove the incorrect lint warning below that the action bar might be null.
         assert actionBar != null;
 
         // Add the custom layout, which shows the URL text bar.
@@ -678,9 +685,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Reapply any system UI flags and the ad in the free flavor.
         if (displayingFullScreenVideo || inFullScreenBrowsingMode) {  // The system is displaying a website or a video in full screen mode.
-            // Get a handle for the root frame layouts.
-            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-
             /* Hide the system bars.
              * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
              * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
@@ -690,8 +694,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         } else if (BuildConfig.FLAVOR.contentEquals("free")) {  // The system in not in full screen mode.
+            // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+            View adView = findViewById(R.id.adview);
+
             // Resume the ad.
-            AdHelper.resumeAd(findViewById(R.id.adview));
+            AdHelper.resumeAd(adView);
         }
     }
 
@@ -724,8 +731,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Pause the ad or it will continue to consume resources in the background on the free flavor.
         if (BuildConfig.FLAVOR.contentEquals("free")) {
+            // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+            View adView = findViewById(R.id.adview);
+
             // Pause the ad.
-            AdHelper.pauseAd(findViewById(R.id.adview));
+            AdHelper.pauseAd(adView);
         }
     }
 
@@ -807,9 +817,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Store a handle for the options menu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons()`.
         optionsMenu = menu;
 
-        // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
-        updatePrivacyIcons(false);
-
         // Get handles for the class menu items.
         optionsPrivacyMenuItem = menu.findItem(R.id.javascript);
         optionsRefreshMenuItem = menu.findItem(R.id.refresh);
@@ -858,6 +865,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get handles for the method menu items.
         MenuItem bookmarksMenuItem = menu.findItem(R.id.bookmarks);
         MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
+
+        // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
+        updatePrivacyIcons(false);
 
         // Only display third-party cookies if API >= 21
         optionsThirdPartyCookiesMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
@@ -2139,8 +2149,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Reload the ad for the free flavor if not in full screen mode.
         if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
+            // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+            View adView = findViewById(R.id.adview);
+
             // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+            // `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
+            AdHelper.loadAd(adView, getApplicationContext(), this, getString(R.string.ad_unit_id));
         }
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:
@@ -2681,11 +2695,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // close the bookmarks drawer.
             drawerLayout.closeDrawer(GravityCompat.END);
         } else if (displayingFullScreenVideo) {  // A full screen video is shown.
-            // Get a handle for the layouts.
-            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-            RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
-            FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
-
             // Re-enable the screen timeout.
             fullScreenVideoFrameLayout.setKeepScreenOn(false);
 
@@ -2708,7 +2717,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
                 // Hide the banner ad in the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    AdHelper.hideAd(findViewById(R.id.adview));
+                    // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                    View adView = findViewById(R.id.adview);
+
+                    // Hide the banner ad.
+                    AdHelper.hideAd(adView);
                 }
 
                 /* Hide the system bars.
@@ -2732,8 +2745,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Reload the ad for the free flavor if not in full screen mode.
             if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
-                // Reload the ad.
-                AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+                // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                View adView = findViewById(R.id.adview);
+
+                // Reload the ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
+                AdHelper.loadAd(adView, getApplicationContext(), this, getString(R.string.ad_unit_id));
             }
         } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
             // Get the current web back forward list.
@@ -3654,16 +3670,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             searchURL = searchString;
         }
 
-        // Get a handle for the app compat delegate.
-        AppCompatDelegate appCompatDelegate = getDelegate();
-
-        // Get handles for the views that need to be modified.
-        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
-
-        // Remove the incorrect lint warning below that the action bar might be null.
-        assert actionBar != null;
-
         // Apply the proxy.
         applyProxy(false);
 
@@ -3741,7 +3747,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Hide the banner ad in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
-                AdHelper.hideAd(findViewById(R.id.adview));
+                // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                View adView = findViewById(R.id.adview);
+
+                // Hide the banner ad.
+                AdHelper.hideAd(adView);
             }
 
             /* Hide the system bars.
@@ -3764,8 +3774,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Show the banner ad in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
+                // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                View adView = findViewById(R.id.adview);
+
                 // Initialize the ads.  If this isn't the first run, `loadAd()` will be automatically called instead.
-                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getSupportFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+                // `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
+                AdHelper.initializeAds(adView, getApplicationContext(), this, getSupportFragmentManager(), getString(R.string.ad_unit_id));
             }
 
             // Remove the `SYSTEM_UI` flags from the root frame layout.
@@ -5260,19 +5274,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         }
 
-        // Get a handle for the app compat delegate.
-        AppCompatDelegate appCompatDelegate = getDelegate();
-
         // Get handles for the activity views.
-        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-        RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
-        ActionBar actionBar = appCompatDelegate.getSupportActionBar();
-        LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-
-        // Remove the incorrect lint warning below that the action bar might be null.
-        assert actionBar != null;
 
         // Get a handle for the activity
         Activity activity = this;
@@ -5349,7 +5352,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Hide the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            AdHelper.hideAd(findViewById(R.id.adview));
+                            // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                            View adView = findViewById(R.id.adview);
+
+                            // Hide the banner ad.
+                            AdHelper.hideAd(adView);
                         }
 
                         /* Hide the system bars.
@@ -5387,8 +5394,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Show the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            // Reload the ad.
-                            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+                            // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                            View adView = findViewById(R.id.adview);
+
+                            // Reload the ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
+                            AdHelper.loadAd(adView, getApplicationContext(), activity, getString(R.string.ad_unit_id));
                         }
 
                         // Remove the `SYSTEM_UI` flags from the root frame layout.
@@ -5603,16 +5613,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Enter full screen video.
             @Override
             public void onShowCustomView(View video, CustomViewCallback callback) {
-                // Get a handle for the full screen video frame layout.
-                FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
-
                 // Set the full screen video flag.
                 displayingFullScreenVideo = true;
 
                 // Pause the ad if this is the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
+                    // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                    View adView = findViewById(R.id.adview);
+
                     // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                    AdHelper.pauseAd(findViewById(R.id.adview));
+                    AdHelper.pauseAd(adView);
                 }
 
                 // Hide the keyboard.
@@ -5646,9 +5656,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Exit full screen video.
             @Override
             public void onHideCustomView() {
-                // Get a handle for the full screen video frame layout.
-                FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
-
                 // Re-enable the screen timeout.
                 fullScreenVideoFrameLayout.setKeepScreenOn(false);
 
@@ -5680,7 +5687,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Hide the banner ad in the free flavor.
                     if (BuildConfig.FLAVOR.contentEquals("free")) {
-                        AdHelper.hideAd(findViewById(R.id.adview));
+                        // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                        View adView = findViewById(R.id.adview);
+
+                        // Hide the banner ad.
+                        AdHelper.hideAd(adView);
                     }
 
                     /* Hide the system bars.
@@ -5698,8 +5709,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the ad for the free flavor if not in full screen mode.
                 if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
-                    // Reload the ad.
-                    AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+                    // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                    View adView = findViewById(R.id.adview);
+
+                    // Reload the ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
+                    AdHelper.loadAd(adView, getApplicationContext(), activity, getString(R.string.ad_unit_id));
                 }
             }
 
