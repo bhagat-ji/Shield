@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -71,14 +71,8 @@ import java.util.ArrayList;
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
 
-    // `currentFolder` is public static so it can be accessed from `MoveToFolderDialog` and `BookmarksDatabaseViewActivity`.
-    // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
-    // and `loadFolder()`.
+    // `currentFolder` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.
     public static String currentFolder;
-
-    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
-    // and `updateMoveIcons()`.
-    public static long[] checkedItemIds;
 
     // `restartFromBookmarksDatabaseViewActivity` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksDatabaseViewActivity;
@@ -420,11 +414,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Update the enabled status of the move icons.
                     updateMoveIcons();
                 } else if (menuItemId == R.id.move_to_folder) {  // Move to folder.
-                    // Store the checked item IDs for use by the alert dialog.
-                    checkedItemIds = bookmarksListView.getCheckedItemIds();
-
                     // Instantiate the move to folder alert dialog.
-                    DialogFragment moveToFolderDialog = new MoveToFolderDialog();
+                    DialogFragment moveToFolderDialog = MoveToFolderDialog.moveBookmarks(currentFolder, bookmarksListView.getCheckedItemIds());
 
                     // Show the move to folder alert dialog.
                     moveToFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.move_to_folder));
@@ -870,7 +861,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, @NonNull Bitmap favoriteIconBitmap) {
         // Get the dialog from the dialog fragment.
         Dialog dialog = dialogFragment.getDialog();
 

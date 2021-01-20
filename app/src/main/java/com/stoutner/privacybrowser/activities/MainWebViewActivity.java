@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -649,11 +649,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         updatePrivacyIcons(true);
     }
 
-    // `onResume()` runs after `onStart()`, which runs after `onCreate()` and `onRestart()`.
+    // `onStart()` runs after `onCreate()` or `onRestart()`.  This is used instead of `onResume()` so the commands aren't called every time the screen is partially hidden.
     @Override
-    public void onResume() {
+    public void onStart() {
         // Run the default commands.
-        super.onResume();
+        super.onStart();
 
         // Resume any WebViews.
         for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
@@ -702,10 +702,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
+    // `onStop()` runs after `onPause()`.  It is used instead of `onPause()` so the commands are not called every time the screen is partially hidden.
     @Override
-    public void onPause() {
+    public void onStop() {
         // Run the default commands.
-        super.onPause();
+        super.onStop();
 
         for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
             // Get the WebView tab fragment.
@@ -2594,7 +2595,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, @NonNull Bitmap favoriteIconBitmap) {
         // Remove the incorrect lint warning below that the dialog fragment might be null.
         assert dialogFragment != null;
 

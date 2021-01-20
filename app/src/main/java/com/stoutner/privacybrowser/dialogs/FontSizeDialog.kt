@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -39,14 +39,14 @@ import com.stoutner.privacybrowser.R
 // Declare the class constants.
 private const val FONT_SIZE = "font_size"
 
-class FontSizeDialog: DialogFragment() {
+class FontSizeDialog : DialogFragment() {
+    // Declare the class variables.
+    private lateinit var updateFontSizeListener: UpdateFontSizeListener
+
     // The public interface is used to send information back to the parent activity.
     interface UpdateFontSizeListener {
         fun onApplyNewFontSize(dialogFragment: DialogFragment?)
     }
-
-    // Declare the class variables.
-    private lateinit var updateFontSizeListener: UpdateFontSizeListener
 
     override fun onAttach(context: Context) {
         // Run the default commands.
@@ -57,7 +57,7 @@ class FontSizeDialog: DialogFragment() {
     }
 
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
+        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
         fun displayDialog(fontSize: Int): FontSizeDialog {
             // Create an arguments bundle.

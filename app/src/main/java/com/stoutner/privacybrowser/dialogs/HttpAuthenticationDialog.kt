@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -47,7 +47,7 @@ private const val HOST = "host"
 private const val REALM = "realm"
 private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
 
-class HttpAuthenticationDialog: DialogFragment() {
+class HttpAuthenticationDialog : DialogFragment() {
     // Define the class variables.
     private var dismissDialog: Boolean = false
 
@@ -56,7 +56,7 @@ class HttpAuthenticationDialog: DialogFragment() {
     private lateinit var passwordEditText: EditText
 
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
+        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
         fun displayDialog(host: String, realm: String, webViewFragmentId: Long): HttpAuthenticationDialog {
             // Create an arguments bundle.

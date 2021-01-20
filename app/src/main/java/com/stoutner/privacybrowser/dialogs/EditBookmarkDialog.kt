@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -50,12 +50,7 @@ import java.io.ByteArrayOutputStream
 private const val DATABASE_ID = "database_id"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
-class EditBookmarkDialog: DialogFragment() {
-    // The public interface is used to send information back to the parent activity.
-    interface EditBookmarkListener {
-        fun onSaveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap)
-    }
-
+class EditBookmarkDialog : DialogFragment() {
     // Declare the class variables.
     private lateinit var editBookmarkListener: EditBookmarkListener
 
@@ -64,6 +59,11 @@ class EditBookmarkDialog: DialogFragment() {
     private lateinit var urlEditText: EditText
     private lateinit var newIconRadioButton: RadioButton
     private lateinit var saveButton: Button
+
+    // The public interface is used to send information back to the parent activity.
+    interface EditBookmarkListener {
+        fun onSaveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap)
+    }
 
     override fun onAttach(context: Context) {
         // Run the default commands.
@@ -74,7 +74,7 @@ class EditBookmarkDialog: DialogFragment() {
     }
 
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
+        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
         fun bookmarkDatabaseId(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkDialog {
             // Create a favorite icon byte array output stream.

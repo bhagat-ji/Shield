@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -100,6 +100,9 @@ public class AboutActivity extends AppCompatActivity implements SaveDialog.SaveL
 
         // Store the blocklist versions.
         String[] blocklistVersions = launchingIntent.getStringArrayExtra("blocklist_versions");
+
+        // Remove the incorrect lint warning below that the blocklist versions might be null.
+        assert blocklistVersions != null;
 
         // Set the content view.
         setContentView(R.layout.about_coordinatorlayout);

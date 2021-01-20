@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,7 +29,7 @@ import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 
-class AboutViewSourceDialog: DialogFragment() {
+class AboutViewSourceDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
         val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)

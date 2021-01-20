@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -43,14 +43,14 @@ import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 // Declare the class constants.
 private const val URL_STRING = "url_string"
 
-class AddDomainDialog: DialogFragment() {
+class AddDomainDialog : DialogFragment() {
+    // Declare the class variables
+    private lateinit var addDomainListener: AddDomainListener
+
     // The public interface is used to send information back to the parent activity.
     interface AddDomainListener {
         fun onAddDomain(dialogFragment: DialogFragment)
     }
-
-    // Declare the class variables
-    private lateinit var addDomainListener: AddDomainListener
 
     override fun onAttach(context: Context) {
         // Run the default commands.
@@ -61,7 +61,7 @@ class AddDomainDialog: DialogFragment() {
     }
 
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
+        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
         fun addDomain(urlString: String): AddDomainDialog {
             // Create an arguments bundle.
@@ -102,10 +102,10 @@ class AddDomainDialog: DialogFragment() {
         // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
         dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.add_domain_dialog, null))
 
-        // Set a listener on the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
+        // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)
 
-        // Set a listener on the add button.
+        // Set the add button listener.
         dialogBuilder.setPositiveButton(R.string.add) { _: DialogInterface, _: Int ->
             // Return the dialog fragment to the parent activity on add.
             addDomainListener.onAddDomain(this)

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -55,14 +55,14 @@ private const val SHORTCUT_NAME = "shortcut_name"
 private const val URL_STRING = "url_string"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
-class CreateHomeScreenShortcutDialog: DialogFragment() {
+class CreateHomeScreenShortcutDialog : DialogFragment() {
     // Declare the class views.
     private lateinit var shortcutNameEditText: EditText
     private lateinit var urlEditText: EditText
     private lateinit var openWithPrivacyBrowserRadioButton: RadioButton
 
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
+        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
         fun createDialog(shortcutName: String, urlString: String, favoriteIconBitmap: Bitmap): CreateHomeScreenShortcutDialog {
             // Create a favorite icon byte array output stream.

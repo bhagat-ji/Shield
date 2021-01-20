@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -46,14 +46,14 @@ private const val URL_STRING = "url_string"
 private const val TITLE = "title"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
-class CreateBookmarkDialog: DialogFragment() {
+class CreateBookmarkDialog : DialogFragment() {
+    // Declare the class variables
+    private lateinit var createBookmarkListener: CreateBookmarkListener
+
     // The public interface is used to send information back to the parent activity.
     interface CreateBookmarkListener {
         fun onCreateBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
     }
-
-    // Declare the class variables
-    private lateinit var createBookmarkListener: CreateBookmarkListener
 
     override fun onAttach(context: Context) {
         // Run the default commands.
@@ -64,7 +64,7 @@ class CreateBookmarkDialog: DialogFragment() {
     }
 
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
+        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
         fun createBookmark(urlString: String, title: String, favoriteIconBitmap: Bitmap): CreateBookmarkDialog {
             // Create a favorite icon byte array output stream.
