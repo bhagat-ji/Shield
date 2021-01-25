@@ -4870,9 +4870,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (webViewPagerAdapter.deletePage(currentTabNumber, webViewPager)) {
             setCurrentWebView(currentTabNumber);
         }
-
-        // Expand the app bar if it is currently collapsed.
-        appBarLayout.setExpanded(true);
     }
 
     private void saveWebpageArchive(String filePath) {
