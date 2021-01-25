@@ -326,6 +326,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private RelativeLayout mainContentRelativeLayout;
     private AppBarLayout appBarLayout;
     private Toolbar toolbar;
+    private RelativeLayout urlRelativeLayout;
+    private EditText urlEditText;
     private ActionBar actionBar;
     private LinearLayout findOnPageLinearLayout;
     private LinearLayout tabsLinearLayout;
@@ -491,6 +493,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Add the custom layout, which shows the URL text bar.
         actionBar.setCustomView(R.layout.url_app_bar);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        // Get handles for the views in the URL app bar.
+        urlRelativeLayout = findViewById(R.id.url_relativelayout);
+        urlEditText = findViewById(R.id.url_edittext);
 
         // Create the hamburger icon at the start of the AppBar.
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
@@ -1659,13 +1665,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Toggle the stored status of swipe to refresh.
             currentWebView.setSwipeToRefresh(!currentWebView.getSwipeToRefresh());
 
-            // Get a handle for the swipe refresh layout.
-            SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-
             // Update the swipe refresh layout.
             if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
                 // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
             } else {  // Swipe to refresh is disabled.
                 // Disable the swipe refresh layout.
                 swipeRefreshLayout.setEnabled(false);
@@ -2873,9 +2876,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void loadUrlFromTextBox() {
-        // Get a handle for the URL edit text.
-        EditText urlEditText = findViewById(R.id.url_edittext);
-
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
         String unformattedUrlString = urlEditText.getText().toString().trim();
 
@@ -3078,7 +3078,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         assert dialog != null;
 
         // Get a handle for the edit texts.
-        EditText urlEditText = dialog.findViewById(R.id.url_edittext);
+        EditText dialogUrlEditText = dialog.findViewById(R.id.url_edittext);
         EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
         // Store the URL.
@@ -3087,7 +3087,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             saveWebpageUrl = originalUrlString;
         } else {
             // Get the URL from the edit text, which may have been modified.
-            saveWebpageUrl = urlEditText.getText().toString();
+            saveWebpageUrl = dialogUrlEditText.getText().toString();
         }
 
         // Get the file path from the edit text.
@@ -3249,9 +3249,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else {
             redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
         }
-
-        // Get handles for the URL views.
-        EditText urlEditText = findViewById(R.id.url_edittext);
 
         // Remove the formatting from the URL edit text when the user is editing the text.
         urlEditText.setOnFocusChangeListener((View v, boolean hasFocus) -> {
@@ -3943,10 +3940,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get a handle for the cookie manager.
             CookieManager cookieManager = CookieManager.getInstance();
 
-            // Get handles for the views.
-            RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
-            SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-
             // Initialize the user agent array adapter and string array.
             ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
             String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
@@ -4110,7 +4103,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Update the swipe refresh layout.
                         if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
                             // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                            swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                            swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
                         } else {  // Swipe to refresh is disabled.
                             // Disable the swipe refresh layout.
                             swipeRefreshLayout.setEnabled(false);
@@ -4122,7 +4115,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         nestedScrollWebView.setSwipeToRefresh(true);
 
                         // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                        swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                        swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
                         break;
 
                     case DomainsDatabaseHelper.DISABLED:
@@ -4249,7 +4242,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Update the swipe refresh layout.
                 if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
                     // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                    swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                    swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
                 } else {  // Swipe to refresh is disabled.
                     // Disable the swipe refresh layout.
                     swipeRefreshLayout.setEnabled(false);
@@ -4318,7 +4311,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the loading of webpage images.
                 nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
-                // Set a transparent background on URL edit text.
+                // Set a transparent background on the URL relative layout.
                 urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparent, null));
             }
 
@@ -4518,9 +4511,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void highlightUrlText() {
-        // Get a handle for the URL edit text.
-        EditText urlEditText = findViewById(R.id.url_edittext);
-
         // Only highlight the URL text if the box is not currently selected.
         if (!urlEditText.hasFocus()) {
             // Get the URL string.
@@ -5128,11 +5118,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void setCurrentWebView(int pageNumber) {
-        // Get handles for the URL views.
-        RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
-        EditText urlEditText = findViewById(R.id.url_edittext);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-
         // Stop the swipe to refresh indicator if it is running
         swipeRefreshLayout.setRefreshing(false);
 
@@ -5140,17 +5125,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(pageNumber);
 
         // Get the fragment view.
-        View fragmentView = webViewTabFragment.getView();
+        View webViewFragmentView = webViewTabFragment.getView();
 
         // Set the current WebView if the fragment view is not null.
-        if (fragmentView != null) {  // The fragment has been populated.
+        if (webViewFragmentView != null) {  // The fragment has been populated.
             // Store the current WebView.
-            currentWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+            currentWebView = webViewFragmentView.findViewById(R.id.nestedscroll_webview);
 
             // Update the status of swipe to refresh.
             if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
                 // Enable the swipe refresh layout if the WebView is scrolled all the way to the top.  It is updated every time the scroll changes.
-                swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
             } else {  // Swipe to refresh is disabled.
                 // Disable the swipe refresh layout.
                 swipeRefreshLayout.setEnabled(false);
@@ -5274,9 +5259,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
         }
-
-        // Get handles for the activity views.
-        EditText urlEditText = findViewById(R.id.url_edittext);
 
         // Get a handle for the activity
         Activity activity = this;
