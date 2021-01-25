@@ -4824,6 +4824,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void addNewTab(String url, boolean moveToTab) {
+        // Clear the focus from the URL edit text, so that it will be populated with the information from the new tab.
+        urlEditText.clearFocus();
+
         // Get the new page number.  The page numbers are 0 indexed, so the new page number will match the current count.
         int newTabNumber = tabLayout.getTabCount();
 
