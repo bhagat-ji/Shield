@@ -3595,6 +3595,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
+                // Reset the drawer icon when the drawer is closed.  Otherwise, it is an arrow if the drawer is open when the app is restarted.
+                actionBarDrawerToggle.syncState();
             }
 
             @Override
