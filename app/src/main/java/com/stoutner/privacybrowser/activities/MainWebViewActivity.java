@@ -4854,16 +4854,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void closeCurrentTab() {
-        // Pause the current WebView.  This prevents buffered audio from playing after the tab is closed.
-        currentWebView.onPause();
-
         // Get the current tab number.
         int currentTabNumber = tabLayout.getSelectedTabPosition();
 
         // Delete the current tab.
         tabLayout.removeTabAt(currentTabNumber);
 
-        // Delete the current page.  If the selected page number did not change during the delete, it will return true, meaning that the current WebView must be reset.
+        // Delete the current page.  If the selected page number did not change during the delete (because the newly selected tab has has same number as the previously deleted tab), it will return true,
+        // meaning that the current WebView must be reset.  Otherwise it will happen automatically as the selected tab number changes.
         if (webViewPagerAdapter.deletePage(currentTabNumber, webViewPager)) {
             setCurrentWebView(currentTabNumber);
         }
@@ -5022,13 +5020,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the WebView tab fragment.
                 WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-                // Get the fragment view.
-                View fragmentView = webViewTabFragment.getView();
+                // Get the WebView fragment view.
+                View webViewFragmentView = webViewTabFragment.getView();
 
                 // Only clear the cache if the WebView exists.
-                if (fragmentView != null) {
+                if (webViewFragmentView != null) {
                     // Get the nested scroll WebView from the tab fragment.
-                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+                    NestedScrollWebView nestedScrollWebView = webViewFragmentView.findViewById(R.id.nestedscroll_webview);
 
                     // Clear the cache for this WebView.
                     nestedScrollWebView.clearCache(true);

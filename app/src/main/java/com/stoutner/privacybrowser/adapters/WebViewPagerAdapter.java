@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.adapters;
 
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,7 +28,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.util.LinkedList;
 
@@ -125,13 +128,32 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
     }
 
     public boolean deletePage(int pageNumber, ViewPager webViewPager) {
+        // Get the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = webViewFragmentsList.get(pageNumber);
+
+        // Get the WebView frame layout.
+        FrameLayout webViewFrameLayout = (FrameLayout) webViewTabFragment.getView();
+
+        // Get a handle for the nested scroll WebView.
+        NestedScrollWebView nestedScrollWebView = webViewFrameLayout.findViewById(R.id.nestedscroll_webview);
+
+        // Pause the current WebView.
+        nestedScrollWebView.onPause();
+
+        // Remove all the views from the frame layout.
+        webViewFrameLayout.removeAllViews();
+
+        // Destroy the current WebView.
+        nestedScrollWebView.destroy();
+
         // Delete the page.
         webViewFragmentsList.remove(pageNumber);
 
         // Update the view pager.
         notifyDataSetChanged();
 
-        // Return true if the selected page number did not change after the delete.  This will cause the calling method to reset the current WebView to the new contents of this page number.
+        // Return true if the selected page number did not change after the delete (because the newly selected tab has has same number as the previously deleted tab).
+        // This will cause the calling method to reset the current WebView to the new contents of this page number.
         return (webViewPager.getCurrentItem() == pageNumber);
     }
 
