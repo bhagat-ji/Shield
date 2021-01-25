@@ -5055,19 +5055,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the WebView tab fragment.
             WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-            // Get the fragment view.
-            View fragmentView = webViewTabFragment.getView();
+            // Get the WebView frame layout.
+            FrameLayout webViewFrameLayout = (FrameLayout) webViewTabFragment.getView();
 
             // Only wipe out the WebView if it exists.
-            if (fragmentView != null) {
+            if (webViewFrameLayout != null) {
                 // Get the nested scroll WebView from the tab fragment.
-                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+                NestedScrollWebView nestedScrollWebView = webViewFrameLayout.findViewById(R.id.nestedscroll_webview);
 
                 // Clear SSL certificate preferences for this WebView.
                 nestedScrollWebView.clearSslPreferences();
 
                 // Clear the back/forward history for this WebView.
                 nestedScrollWebView.clearHistory();
+
+                // Remove all the views from the frame layout.
+                webViewFrameLayout.removeAllViews();
 
                 // Destroy the internal state of the WebView.
                 nestedScrollWebView.destroy();
