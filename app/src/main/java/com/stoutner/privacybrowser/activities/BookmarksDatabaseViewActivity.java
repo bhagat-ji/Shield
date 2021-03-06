@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -431,14 +431,8 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                     // Update the action mode subtitle according to the number of selected bookmarks.
                     mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
 
-                    // Update the visibility of the the select all menu.
-                    if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {  // All of the bookmarks are checked.
-                        // Hide the select all menu item.
-                        selectAllMenuItem.setVisible(false);
-                    } else {  // Not all of the bookmarks are checked.
-                        // Show the select all menu item.
-                        selectAllMenuItem.setVisible(true);
-                    }
+                    // Only show the select all menu item if all of the bookmarks are not already selected.
+                    selectAllMenuItem.setVisible(bookmarksListView.getCheckedItemCount() != bookmarksListView.getCount());
 
                     // Convert the database ID to an int.
                     int databaseId = (int) id;
@@ -490,106 +484,106 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             }
 
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.select_all:
-                        // Get the total number of bookmarks.
-                        int numberOfBookmarks = bookmarksListView.getCount();
+            public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
+                // Get a the menu item ID.
+                int menuItemId = menuItem.getItemId();
 
-                        // Select them all.
-                        for (int i = 0; i < numberOfBookmarks; i++) {
-                            bookmarksListView.setItemChecked(i, true);
-                        }
-                        break;
+                // Run the command that corresponds to the selected menu item.
+                if (menuItemId == R.id.select_all) {  // Select all the bookmarks.
+                    // Get the total number of bookmarks.
+                    int numberOfBookmarks = bookmarksListView.getCount();
 
-                    case R.id.delete:
-                        // Set the deleting bookmarks flag, which prevents the delete menu item from being enabled until the current process finishes.
-                        deletingBookmarks = true;
+                    // Select them all.
+                    for (int i = 0; i < numberOfBookmarks; i++) {
+                        bookmarksListView.setItemChecked(i, true);
+                    }
+                } else if (menuItemId == R.id.delete) {  // Delete the selected bookmarks.
+                    // Set the deleting bookmarks flag, which prevents the delete menu item from being enabled until the current process finishes.
+                    deletingBookmarks = true;
 
-                        // Get an array of the selected row IDs.
-                        long[] selectedBookmarksIdsLongArray = bookmarksListView.getCheckedItemIds();
+                    // Get an array of the selected row IDs.
+                    long[] selectedBookmarksIdsLongArray = bookmarksListView.getCheckedItemIds();
 
-                        // Get an array of checked bookmarks.  `.clone()` makes a copy that won't change if the list view is reloaded, which is needed for re-selecting the bookmarks on undelete.
-                        SparseBooleanArray selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions().clone();
+                    // Get an array of checked bookmarks.  `.clone()` makes a copy that won't change if the list view is reloaded, which is needed for re-selecting the bookmarks on undelete.
+                    SparseBooleanArray selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions().clone();
 
-                        // Update the bookmarks cursor with the current contents of the bookmarks database except for the specified database IDs.
-                        switch (currentFolderDatabaseId) {
-                            // Get a cursor with all the folders.
-                            case ALL_FOLDERS_DATABASE_ID:
-                                if (sortByDisplayOrder) {
-                                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray);
-                                } else {
-                                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksExcept(selectedBookmarksIdsLongArray);
-                                }
-                                break;
+                    // Update the bookmarks cursor with the current contents of the bookmarks database except for the specified database IDs.
+                    switch (currentFolderDatabaseId) {
+                        // Get a cursor with all the folders.
+                        case ALL_FOLDERS_DATABASE_ID:
+                            if (sortByDisplayOrder) {
+                                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray);
+                            } else {
+                                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksExcept(selectedBookmarksIdsLongArray);
+                            }
+                            break;
 
-                            // Get a cursor for the home folder.
-                            case HOME_FOLDER_DATABASE_ID:
-                                if (sortByDisplayOrder) {
-                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, "");
-                                } else {
-                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, "");
-                                }
-                                break;
+                        // Get a cursor for the home folder.
+                        case HOME_FOLDER_DATABASE_ID:
+                            if (sortByDisplayOrder) {
+                                bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, "");
+                            } else {
+                                bookmarksCursor = bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, "");
+                            }
+                            break;
 
-                            // Display the selected folder.
-                            default:
-                                // Get a cursor for the selected folder.
-                                if (sortByDisplayOrder) {
-                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolderName);
-                                } else {
-                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, currentFolderName);
-                                }
-                        }
+                        // Display the selected folder.
+                        default:
+                            // Get a cursor for the selected folder.
+                            if (sortByDisplayOrder) {
+                                bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolderName);
+                            } else {
+                                bookmarksCursor = bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, currentFolderName);
+                            }
+                    }
 
-                        // Update the list view.
-                        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+                    // Update the list view.
+                    bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
-                        // Create a Snackbar with the number of deleted bookmarks.
-                        bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_databaseview_coordinatorlayout),
-                                getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length, Snackbar.LENGTH_LONG)
-                                .setAction(R.string.undo, view -> {
-                                    // Do nothing because everything will be handled by `onDismissed()` below.
-                                })
-                                .addCallback(new Snackbar.Callback() {
-                                    @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
-                                    @Override
-                                    public void onDismissed(Snackbar snackbar, int event) {
-                                        if (event == Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The user pushed the undo button.
-                                            // Update the bookmarks list view with the current contents of the bookmarks database, including the "deleted bookmarks.
-                                            updateBookmarksListView();
+                    // Create a Snackbar with the number of deleted bookmarks.
+                    bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_databaseview_coordinatorlayout),
+                            getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.undo, view -> {
+                                // Do nothing because everything will be handled by `onDismissed()` below.
+                            })
+                            .addCallback(new Snackbar.Callback() {
+                                @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                    if (event == Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The user pushed the undo button.
+                                        // Update the bookmarks list view with the current contents of the bookmarks database, including the "deleted bookmarks.
+                                        updateBookmarksListView();
 
-                                            // Re-select the previously selected bookmarks.
-                                            for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
-                                                bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
-                                            }
-                                        } else {  // The Snackbar was dismissed without the undo button being pushed.
-                                            // Delete each selected bookmark.
-                                            for (long databaseIdLong : selectedBookmarksIdsLongArray) {
-                                                // Convert `databaseIdLong` to an int.
-                                                int databaseIdInt = (int) databaseIdLong;
-
-                                                // Delete the selected bookmark.
-                                                bookmarksDatabaseHelper.deleteBookmark(databaseIdInt);
-                                            }
+                                        // Re-select the previously selected bookmarks.
+                                        for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
+                                            bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
                                         }
+                                    } else {  // The Snackbar was dismissed without the undo button being pushed.
+                                        // Delete each selected bookmark.
+                                        for (long databaseIdLong : selectedBookmarksIdsLongArray) {
+                                            // Convert `databaseIdLong` to an int.
+                                            int databaseIdInt = (int) databaseIdLong;
 
-                                        // Reset the deleting bookmarks flag.
-                                        deletingBookmarks = false;
-
-                                        // Enable the delete menu item.
-                                        deleteMenuItem.setEnabled(true);
-
-                                        // Close the activity if back has been pressed.
-                                        if (closeActivityAfterDismissingSnackbar) {
-                                            onBackPressed();
+                                            // Delete the selected bookmark.
+                                            bookmarksDatabaseHelper.deleteBookmark(databaseIdInt);
                                         }
                                     }
-                                });
 
-                        // Show the Snackbar.
-                        bookmarksDeletedSnackbar.show();
-                        break;
+                                    // Reset the deleting bookmarks flag.
+                                    deletingBookmarks = false;
+
+                                    // Enable the delete menu item.
+                                    deleteMenuItem.setEnabled(true);
+
+                                    // Close the activity if back has been pressed.
+                                    if (closeActivityAfterDismissingSnackbar) {
+                                        onBackPressed();
+                                    }
+                                }
+                            });
+
+                    // Show the Snackbar.
+                    bookmarksDeletedSnackbar.show();
                 }
 
                 // Consume the click.
@@ -629,53 +623,51 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Get the ID of the menu item that was selected.
+        // Get the menu item ID.
         int menuItemId = menuItem.getItemId();
 
         // Run the command that corresponds to the selected menu item.
-        switch (menuItemId) {
-            case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
-                // Exit the activity.
-                onBackPressed();
-                break;
+        if (menuItemId == android.R.id.home) {  // Go Home.  The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
+            // Exit the activity.
+            onBackPressed();
+        } else if (menuItemId == R.id.sort) {  // Toggle the sort mode.
+            // Update the sort by display order tracker.
+            sortByDisplayOrder = !sortByDisplayOrder;
 
-            case R.id.sort:
-                // Update the sort by display order tracker.
-                sortByDisplayOrder = !sortByDisplayOrder;
+            // Get a handle for the bookmarks list view.
+            ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
 
-                // Get a handle for the bookmarks list view.
-                ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
+            // Get the current theme status.
+            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-                // Get the current theme status.
-                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                // Update the icon and display a snackbar.
-                if (sortByDisplayOrder) {  // Sort by display order.
-                    // Update the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                        menuItem.setIcon(R.drawable.sort_selected_day);
-                    } else {
-                        menuItem.setIcon(R.drawable.sort_selected_night);
-                    }
-
-                    // Display a Snackbar indicating the current sort type.
-                    Snackbar.make(bookmarksListView, R.string.sorted_by_display_order, Snackbar.LENGTH_SHORT).show();
-                } else {  // Sort by database id.
-                    // Update the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                        menuItem.setIcon(R.drawable.sort_day);
-                    } else {
-                        menuItem.setIcon(R.drawable.sort_night);
-                    }
-
-                    // Display a Snackbar indicating the current sort type.
-                    Snackbar.make(bookmarksListView, R.string.sorted_by_database_id, Snackbar.LENGTH_SHORT).show();
+            // Update the icon and display a snackbar.
+            if (sortByDisplayOrder) {  // Sort by display order.
+                // Update the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    menuItem.setIcon(R.drawable.sort_selected_day);
+                } else {
+                    menuItem.setIcon(R.drawable.sort_selected_night);
                 }
 
-                // Update the list view.
-                updateBookmarksListView();
-                break;
+                // Display a Snackbar indicating the current sort type.
+                Snackbar.make(bookmarksListView, R.string.sorted_by_display_order, Snackbar.LENGTH_SHORT).show();
+            } else {  // Sort by database id.
+                // Update the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    menuItem.setIcon(R.drawable.sort_day);
+                } else {
+                    menuItem.setIcon(R.drawable.sort_night);
+                }
+
+                // Display a Snackbar indicating the current sort type.
+                Snackbar.make(bookmarksListView, R.string.sorted_by_database_id, Snackbar.LENGTH_SHORT).show();
+            }
+
+            // Update the list view.
+            updateBookmarksListView();
         }
+
+        // Consume the event.
         return true;
     }
 
@@ -811,15 +803,15 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         assert dialog != null;
 
         // Get handles for the views from dialog fragment.
-        RadioButton currentBookmarkIconRadioButton = dialog.findViewById(R.id.edit_bookmark_current_icon_radiobutton);
-        EditText editBookmarkNameEditText = dialog.findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = dialog.findViewById(R.id.edit_bookmark_url_edittext);
-        Spinner folderSpinner = dialog.findViewById(R.id.edit_bookmark_folder_spinner);
-        EditText displayOrderEditText = dialog.findViewById(R.id.edit_bookmark_display_order_edittext);
+        RadioButton currentIconRadioButton = dialog.findViewById(R.id.current_icon_radiobutton);
+        EditText bookmarkNameEditText = dialog.findViewById(R.id.bookmark_name_edittext);
+        EditText bookmarkUrlEditText = dialog.findViewById(R.id.bookmark_url_edittext);
+        Spinner folderSpinner = dialog.findViewById(R.id.bookmark_folder_spinner);
+        EditText displayOrderEditText = dialog.findViewById(R.id.bookmark_display_order_edittext);
 
         // Extract the bookmark information.
-        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
-        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
+        String bookmarkNameString = bookmarkNameEditText.getText().toString();
+        String bookmarkUrlString = bookmarkUrlEditText.getText().toString();
         int folderDatabaseId = (int) folderSpinner.getSelectedItemId();
         int displayOrderInt = Integer.parseInt(displayOrderEditText.getText().toString());
 
@@ -834,7 +826,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         }
 
         // Update the bookmark.
-        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
+        if (currentIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderNameString, displayOrderInt);
         } else {  // Update the bookmark using the `WebView` favorite icon.
             // Create a favorite icon byte array output stream.
@@ -863,15 +855,15 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         assert dialog != null;
 
         // Get handles for the views from dialog fragment.
-        RadioButton currentBookmarkIconRadioButton = dialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.edit_folder_default_icon_imageview);
-        EditText editBookmarkNameEditText = dialog.findViewById(R.id.edit_folder_name_edittext);
-        Spinner parentFolderSpinner = dialog.findViewById(R.id.edit_folder_parent_folder_spinner);
-        EditText displayOrderEditText = dialog.findViewById(R.id.edit_folder_display_order_edittext);
+        RadioButton currentIconRadioButton = dialog.findViewById(R.id.current_icon_radiobutton);
+        RadioButton defaultIconRadioButton = dialog.findViewById(R.id.default_icon_radiobutton);
+        ImageView defaultIconImageView = dialog.findViewById(R.id.default_icon_imageview);
+        EditText folderNameEditText = dialog.findViewById(R.id.folder_name_edittext);
+        Spinner parentFolderSpinner = dialog.findViewById(R.id.parent_folder_spinner);
+        EditText displayOrderEditText = dialog.findViewById(R.id.display_order_edittext);
 
         // Extract the folder information.
-        String newFolderNameString = editBookmarkNameEditText.getText().toString();
+        String newFolderNameString = folderNameEditText.getText().toString();
         int parentFolderDatabaseId = (int) parentFolderSpinner.getSelectedItemId();
         int displayOrderInt = Integer.parseInt(displayOrderEditText.getText().toString());
 
@@ -886,16 +878,16 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         }
 
         // Update the folder.
-        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the folder without changing the favorite icon.
+        if (currentIconRadioButton.isChecked()) {  // Update the folder without changing the favorite icon.
             bookmarksDatabaseHelper.updateFolder(selectedBookmarkDatabaseId, oldFolderNameString, newFolderNameString, parentFolderNameString, displayOrderInt);
         } else {  // Update the folder and the icon.
             // Create the new folder icon Bitmap.
             Bitmap folderIconBitmap;
 
             // Populate the new folder icon bitmap.
-            if (defaultFolderIconRadioButton.isChecked()) {
+            if (defaultIconRadioButton.isChecked()) {
                 // Get the default folder icon drawable.
-                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+                Drawable folderIconDrawable = defaultIconImageView.getDrawable();
 
                 // Convert the folder icon drawable to a bitmap drawable.
                 BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;

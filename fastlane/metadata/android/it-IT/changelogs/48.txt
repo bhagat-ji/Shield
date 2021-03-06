@@ -7,7 +7,7 @@
 • Aggiunta di una voce nel menù delle opzioni dei Segnalibri in modo che siano accessibili attraverso l'interfaccia gestuale di Android 10.
 • Modifica dell'ordine del menù delle opzioni per evitare la creazione accidentale di impostazioni dei domini.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Francese fornita da Kévin LE FLOHIC.
+• Aggiornamento della traduzione Francese fornita da Kévin L.
 • Aggiornamento della traduzione in Russo.
 • Aggiornamento della traduzione Spagnola fornita da Jose A. León.
 • Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

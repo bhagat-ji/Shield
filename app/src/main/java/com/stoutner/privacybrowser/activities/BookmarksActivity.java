@@ -309,7 +309,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 // Initialize the selected bookmark position.
                 int selectedBookmarkPosition = 0;
 
-                // Get a handle for the menu item ID.
+                // Get the menu item ID.
                 int menuItemId = menuItem.getItemId();
 
                 // Run the commands according to the selected action item.
@@ -760,20 +760,20 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         assert dialog != null;
 
         // Get handles for the views in the dialog fragment.
-        EditText createFolderNameEditText = dialog.findViewById(R.id.create_folder_name_edittext);
-        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.create_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = dialog.findViewById(R.id.create_folder_default_icon);
+        EditText folderNameEditText = dialog.findViewById(R.id.folder_name_edittext);
+        RadioButton defaultIconRadioButton = dialog.findViewById(R.id.default_icon_radiobutton);
+        ImageView defaultIconImageView = dialog.findViewById(R.id.default_icon_imageview);
 
         // Get new folder name string.
-        String folderNameString = createFolderNameEditText.getText().toString();
+        String folderNameString = folderNameEditText.getText().toString();
 
         // Create a folder icon bitmap.
         Bitmap folderIconBitmap;
 
         // Set the folder icon bitmap according to the dialog.
-        if (defaultFolderIconRadioButton.isChecked()) {  // Use the default folder icon.
+        if (defaultIconRadioButton.isChecked()) {  // Use the default folder icon.
             // Get the default folder icon drawable.
-            Drawable folderIconDrawable = folderIconImageView.getDrawable();
+            Drawable folderIconDrawable = defaultIconImageView.getDrawable();
 
             // Convert the folder icon drawable to a bitmap drawable.
             BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
@@ -806,7 +806,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Update the bookmarks cursor with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
-        // Update the `ListView`.
+        // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
         // Scroll to the new folder.
@@ -821,17 +821,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Remove the incorrect lint warning below that the dialog might be null.
         assert dialog != null;
 
-        // Get handles for the views from `dialogFragment`.
-        EditText editBookmarkNameEditText = dialog.findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = dialog.findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = dialog.findViewById(R.id.edit_bookmark_current_icon_radiobutton);
+        // Get handles for the views from the dialog fragment.
+        EditText bookmarkNameEditText = dialog.findViewById(R.id.bookmark_name_edittext);
+        EditText bookmarkUrlEditText = dialog.findViewById(R.id.bookmark_url_edittext);
+        RadioButton currentIconRadioButton = dialog.findViewById(R.id.current_icon_radiobutton);
 
         // Store the bookmark strings.
-        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
-        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
+        String bookmarkNameString = bookmarkNameEditText.getText().toString();
+        String bookmarkUrlString = bookmarkUrlEditText.getText().toString();
 
         // Update the bookmark.
-        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
+        if (currentIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
         } else {  // Update the bookmark using the WebView favorite icon.
             // Create a favorite icon byte array output stream.
@@ -868,11 +868,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Remove the incorrect lint warning below that the dialog might be null.
         assert dialog != null;
 
-        // Get handles for the views from `dialogFragment`.
-        RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.edit_folder_default_icon_imageview);
-        EditText editFolderNameEditText = dialog.findViewById(R.id.edit_folder_name_edittext);
+        // Get handles for the views from the dialog fragment.
+        RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.default_icon_radiobutton);
+        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.default_icon_imageview);
+        EditText editFolderNameEditText = dialog.findViewById(R.id.folder_name_edittext);
 
         // Get the new folder name.
         String newFolderNameString = editFolderNameEditText.getText().toString();

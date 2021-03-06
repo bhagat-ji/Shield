@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017-2020 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -161,7 +161,7 @@
         <string name="font_size">Tamaño de fuente</string>
         <string name="find_on_page">Buscar en página</string>
         <string name="print">Imprimir</string>
-            <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
+            <string name="privacy_browser_webpage">Página web de Navegador Privado</string>
         <string name="save">Guardar</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="view_source">Ver la fuente</string>
@@ -235,7 +235,7 @@
     <string name="current_bookmark_icon">Icono de favorito actual</string>
     <string name="current_folder_icon">Icono de carpeta actual</string>
     <string name="default_folder_icon">Icono de carpeta por defecto</string>
-    <string name="web_page_favorite_icon">Icono favorito de página Web</string>
+    <string name="webpage_favorite_icon">Icono favorito de página Web</string>
     <string name="bookmark_name">Nombre de favorito</string>
     <string name="folder_name">Nombre de carpeta</string>
     <string name="bookmark_url">Favorito URL</string>

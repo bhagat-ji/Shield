@@ -11,7 +11,7 @@
 • Deshabilitar HSTS.
 • Actualizar la Fuente de Vista para utilizar los encabezados Sec-Fetch.
 • Subir la API de destino a 29 (Android 10).
-• Traducción al francés por Kévin LE FLOHIC.
+• Traducción al francés por Kévin L.
 • Actualizada la traducción al español proporcionada por Jose A. León.
 • Actualizada la traducción al alemán por Bernhard G. Keller.
 • Actualizada la traducción al italiano proporcionada por Francesco Buratti.

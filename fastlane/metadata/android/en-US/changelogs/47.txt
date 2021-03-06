@@ -11,7 +11,7 @@
 • Disable HSTS.
 • Update View Source to use the Sec-Fetch headers.
 • Bump the target API to 29 (Android 10).
-• French translation by Kévin LE FLOHIC.
+• French translation by Kévin L.
 • Updated German translation provided by Bernhard G. Keller.
 • Updated Italian translation provided by Francesco Buratti.
 • Updated Russian translation.

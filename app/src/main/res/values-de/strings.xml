@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2019-2020 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -165,7 +165,7 @@
         <string name="font_size">Schriftgröße</string>
         <string name="find_on_page">Auf Seite finden</string>
         <string name="print">Drucken</string>
-            <string name="privacy_browser_web_page">Privacy Browser-Website</string>
+            <string name="privacy_browser_webpage">Privacy Browser-Website</string>
         <string name="save">Speichern</string>
         <string name="view_source">Quelltext anzeigen</string>
         <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
@@ -238,7 +238,7 @@
     <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>
     <string name="current_folder_icon">Aktuelles Ordnersymbol</string>
     <string name="default_folder_icon">Standard-Ordnersymbol</string>
-    <string name="web_page_favorite_icon">Icon der Website</string>
+    <string name="webpage_favorite_icon">Icon der Website</string>
     <string name="bookmark_name">Name des Lesezeichens</string>
     <string name="folder_name">Name des Ordners</string>
     <string name="bookmark_url">URL für das Lesezeichen</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -158,7 +158,7 @@
         <string name="font_size">Размер шрифта</string>
         <string name="find_on_page">Найти на странице</string>
         <string name="print">Печать</string>
-            <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
+            <string name="privacy_browser_webpage">Privacy Browser веб-страница</string>
         <string name="save">Сохранить</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
@@ -231,7 +231,7 @@
     <string name="current_bookmark_icon">Текущий значок закладки</string>
     <string name="current_folder_icon">Текущий значок папки</string>
     <string name="default_folder_icon">Значок папки по умолчанию</string>
-    <string name="web_page_favorite_icon">Значок избранной веб-страницы</string>
+    <string name="webpage_favorite_icon">Значок избранной веб-страницы</string>
     <string name="bookmark_name">Имя закладки</string>
     <string name="folder_name">Имя папки</string>
     <string name="bookmark_url">URL-адрес закладки</string>

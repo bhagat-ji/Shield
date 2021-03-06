@@ -1,8 +1,8 @@
-Privacy Browser has two primary goals.
+The only way to prevent data from being abused is to prevent it from being collected in the first place. Privacy Browser has two primary goals.
 
-1. Minimize the amount of information that is sent to the internet.
+1. Minimize the data that is sent to the internet.
 
-2. Minimize the amount of information that is stored on the device.
+2. Minimize the data that is stored on the device.
 
 Most browsers silently give websites massive amounts of information that allows them to track you and compromise your privacy. Websites and ad networks use technologies like JavaScript, cookies, DOM storage, user agents, and many other things to uniquely identify each user and track them between visits and across the web.
 

@@ -7,7 +7,7 @@
 • Eintrag im Lesezeichen-Menü hinzugefügt, damit dieser mittels Wischgesten von Android 10 erreicht werden kann.
 • Reihenfolge des Optionen-Menüs geändert, um ein versehentliches Erstellen von Domain-Einstellungen zu verhindern.
 • Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
-• Aktualisierte französische Übersetzung von Kévin LE FLOHIC.
+• Aktualisierte französische Übersetzung von Kévin L.
 • Aktualisierte italienische Übersetzung von Francesco Buratti.
 • Aktualisierte russische Übersetzung.
 • Aktualisierte spanische Übersetzung von Jose A. León.

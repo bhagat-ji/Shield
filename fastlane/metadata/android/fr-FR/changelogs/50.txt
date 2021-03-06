@@ -7,7 +7,7 @@
 • Correction d'un bug qui faisait parfois fonctionner la fonction balayage pour actualiser même lorsque celle-ci était désactivée.
 • Réorganisation des menus contextuels.
 • Application d'en-têtes personnalisées aux liens chargés à partir de WebView.
-• Traduction française mise à jour fournie par Kévin LE FLOHIC.
+• Traduction française mise à jour fournie par Kévin L.
 • Traduction allemande mise à jour fournie par Bernhard G. Keller.
 • Traduction italienne mise à jour fournie par Francesco Buratti.
 • Traduction russe mise à jour.

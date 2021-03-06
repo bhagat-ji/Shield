@@ -1756,7 +1756,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
 
             // Print the document.
-            printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+            printManager.print(getString(R.string.privacy_browser_webpage), printDocumentAdapter, null);
 
             // Consume the event.
             return true;
@@ -2544,20 +2544,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         assert dialog != null;
 
         // Get handles for the views in the dialog fragment.
-        EditText createFolderNameEditText = dialog.findViewById(R.id.create_folder_name_edittext);
-        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.create_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = dialog.findViewById(R.id.create_folder_default_icon);
+        EditText folderNameEditText = dialog.findViewById(R.id.folder_name_edittext);
+        RadioButton defaultIconRadioButton = dialog.findViewById(R.id.default_icon_radiobutton);
+        ImageView defaultIconImageView = dialog.findViewById(R.id.default_icon_imageview);
 
         // Get new folder name string.
-        String folderNameString = createFolderNameEditText.getText().toString();
+        String folderNameString = folderNameEditText.getText().toString();
 
         // Create a folder icon bitmap.
         Bitmap folderIconBitmap;
 
         // Set the folder icon bitmap according to the dialog.
-        if (defaultFolderIconRadioButton.isChecked()) {  // Use the default folder icon.
+        if (defaultIconRadioButton.isChecked()) {  // Use the default folder icon.
             // Get the default folder icon drawable.
-            Drawable folderIconDrawable = folderIconImageView.getDrawable();
+            Drawable folderIconDrawable = defaultIconImageView.getDrawable();
 
             // Convert the folder icon drawable to a bitmap drawable.
             BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
@@ -2609,10 +2609,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         assert dialog != null;
 
         // Get handles for the views from the dialog.
-        EditText editFolderNameEditText = dialog.findViewById(R.id.edit_folder_name_edittext);
-        RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.edit_folder_default_icon_imageview);
+        RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.default_icon_radiobutton);
+        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.default_icon_imageview);
+        EditText editFolderNameEditText = dialog.findViewById(R.id.folder_name_edittext);
 
         // Get the new folder name.
         String newFolderNameString = editFolderNameEditText.getText().toString();
@@ -2652,7 +2652,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Update the folder icon in the database.
             bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderIconByteArray);
         } else {  // The folder icon and the name have changed.
-            // Get the new folder icon `Bitmap`.
+            // Get the new folder icon bitmap.
             Bitmap folderIconBitmap;
             if (defaultFolderIconRadioButton.isChecked()) {
                 // Get the default folder icon drawable.

@@ -59,10 +59,10 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
     private lateinit var editBookmarkFolderDatabaseViewListener: EditBookmarkFolderDatabaseViewListener
 
     // Declare the class views.
-    private lateinit var nameEditText: EditText
-    private lateinit var folderSpinner: Spinner
-    private lateinit var displayOrderEditText: EditText
     private lateinit var currentIconRadioButton: RadioButton
+    private lateinit var nameEditText: EditText
+    private lateinit var parentFolderSpinner: Spinner
+    private lateinit var displayOrderEditText: EditText
     private lateinit var saveButton: Button
 
     // The public interface is used to send information back to the parent activity.
@@ -166,15 +166,19 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         // The alert dialog must be shown before items in the layout can be modified.
         alertDialog.show()
 
-        // Get handles for the layout items.
-        val databaseIdTextView = alertDialog.findViewById<TextView>(R.id.edit_folder_database_id_textview)!!
-        val iconRadioGroup = alertDialog.findViewById<RadioGroup>(R.id.edit_folder_icon_radiogroup)!!
-        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_folder_current_icon_imageview)!!
-        val newFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_folder_webpage_favorite_icon_imageview)!!
-        currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton)!!
-        nameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext)!!
-        folderSpinner = alertDialog.findViewById(R.id.edit_folder_parent_folder_spinner)!!
-        displayOrderEditText = alertDialog.findViewById(R.id.edit_folder_display_order_edittext)!!
+        // Get handles for the views in the alert dialog.
+        val databaseIdTextView = alertDialog.findViewById<TextView>(R.id.folder_database_id_textview)!!
+        val currentIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.current_icon_linearlayout)!!
+        currentIconRadioButton = alertDialog.findViewById(R.id.current_icon_radiobutton)!!
+        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.current_icon_imageview)!!
+        val defaultIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.default_icon_linearlayout)!!
+        val defaultIconRadioButton = alertDialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)!!
+        val webpageFavoriteIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.webpage_favorite_icon_linearlayout)!!
+        val webpageFavoriteIconRadioButton = alertDialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)!!
+        val webpageFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)!!
+        nameEditText = alertDialog.findViewById(R.id.folder_name_edittext)!!
+        parentFolderSpinner = alertDialog.findViewById(R.id.parent_folder_spinner)!!
+        displayOrderEditText = alertDialog.findViewById(R.id.display_order_edittext)!!
         saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Store the current folder values.
@@ -194,8 +198,8 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         // Populate the current icon image view.
         currentIconImageView.setImageBitmap(currentIconBitmap)
 
-        // Populate the new favorite icon image view.
-        newFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
+        // Populate the webpage favorite icon image view.
+        webpageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
 
         // Populate the folder name edit text.
         nameEditText.setText(currentFolderName)
@@ -248,8 +252,8 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         // Set the folders cursor adapter drop drown view resource.
         foldersCursorAdapter.setDropDownViewResource(R.layout.databaseview_spinner_dropdown_items)
 
-        // Set the adapter for the folder `Spinner`.
-        folderSpinner.adapter = foldersCursorAdapter
+        // Set the parent folder spinner adapter.
+        parentFolderSpinner.adapter = foldersCursorAdapter
 
         // Select the current folder in the spinner if the bookmark isn't in the "Home Folder".
         if (parentFolder != "") {
@@ -273,11 +277,11 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
             } while (parentFolderPosition == 0 && i < foldersCursorAdapter.count)
 
             // Select the parent folder in the spinner.
-            folderSpinner.setSelection(parentFolderPosition)
+            parentFolderSpinner.setSelection(parentFolderPosition)
         }
 
         // Store the current folder database ID.
-        val currentParentFolderDatabaseId = folderSpinner.selectedItemId.toInt()
+        val currentParentFolderDatabaseId = parentFolderSpinner.selectedItemId.toInt()
 
         // Populate the display order edit text.
         displayOrderEditText.setText(folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)).toString())
@@ -285,8 +289,46 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         // Initially disable the edit button.
         saveButton.isEnabled = false
 
-        // Update the save button if the icon selection changes.
-        iconRadioGroup.setOnCheckedChangeListener { _: RadioGroup?, _: Int ->
+        // Set the radio button listeners.  These perform a click on the linear layout, which contains the necessary logic.
+        currentIconRadioButton.setOnClickListener { currentIconLinearLayout.performClick() }
+        defaultIconRadioButton.setOnClickListener { defaultIconLinearLayout.performClick() }
+        webpageFavoriteIconRadioButton.setOnClickListener { webpageFavoriteIconLinearLayout.performClick() }
+
+        // Set the current icon linear layout click listener.
+        currentIconLinearLayout.setOnClickListener {
+            // Check the current icon radio button.
+            currentIconRadioButton.isChecked = true
+
+            // Uncheck the other radio buttons.
+            defaultIconRadioButton.isChecked = false
+            webpageFavoriteIconRadioButton.isChecked = false
+
+            // Update the save button.
+            updateSaveButton(bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder)
+        }
+
+        // Set the default icon linear layout click listener.
+        defaultIconLinearLayout.setOnClickListener {
+            // Check the default icon radio button.
+            defaultIconRadioButton.isChecked = true
+
+            // Uncheck the other radio buttons.
+            currentIconRadioButton.isChecked = false
+            webpageFavoriteIconRadioButton.isChecked = false
+
+            // Update the save button.
+            updateSaveButton(bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder)
+        }
+
+        // Set the webpage favorite icon linear layout click listener.
+        webpageFavoriteIconLinearLayout.setOnClickListener {
+            // Check the webpage favorite icon radio button.
+            webpageFavoriteIconRadioButton.isChecked = true
+
+            // Uncheck the other radio buttons.
+            currentIconRadioButton.isChecked = false
+            defaultIconRadioButton.isChecked = false
+
             // Update the save button.
             updateSaveButton(bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder)
         }
@@ -307,8 +349,8 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
             }
         })
 
-        // Update the save button if the folder changes.
-        folderSpinner.onItemSelectedListener = object: OnItemSelectedListener {
+        // Update the save button if the parent folder changes.
+        parentFolderSpinner.onItemSelectedListener = object: OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                 // Update the save button.
                 updateSaveButton(bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder)
@@ -376,7 +418,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
     private fun updateSaveButton(bookmarksDatabaseHelper: BookmarksDatabaseHelper, currentFolderName: String, currentParentFolderDatabaseId: Int, currentDisplayOrder: Int) {
         // Get the values from the views.
         val newFolderName = nameEditText.text.toString()
-        val newParentFolderDatabaseId = folderSpinner.selectedItemId.toInt()
+        val newParentFolderDatabaseId = parentFolderSpinner.selectedItemId.toInt()
         val newDisplayOrder = displayOrderEditText.text.toString()
 
         // Get a cursor for the new folder name if it exists.

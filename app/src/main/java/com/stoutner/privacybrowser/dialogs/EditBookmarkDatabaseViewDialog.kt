@@ -39,8 +39,8 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 
@@ -65,7 +65,7 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
     private lateinit var editBookmarkDatabaseViewListener: EditBookmarkDatabaseViewListener
 
     // Declare the class views.
-    private lateinit var newIconRadioButton: RadioButton
+    private lateinit var webpageFavoriteIconRadioButton: RadioButton
     private lateinit var nameEditText: EditText
     private lateinit var urlEditText: EditText
     private lateinit var folderSpinner: Spinner
@@ -174,15 +174,17 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         alertDialog.show()
 
         // Get handles for the layout items.
-        val databaseIdTextView = alertDialog.findViewById<TextView>(R.id.edit_bookmark_database_id_textview)!!
-        val iconRadioGroup = alertDialog.findViewById<RadioGroup>(R.id.edit_bookmark_icon_radiogroup)!!
-        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_bookmark_current_icon)!!
-        val newFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_bookmark_webpage_favorite_icon)!!
-        newIconRadioButton = alertDialog.findViewById(R.id.edit_bookmark_webpage_favorite_icon_radiobutton)!!
-        nameEditText = alertDialog.findViewById(R.id.edit_bookmark_name_edittext)!!
-        urlEditText = alertDialog.findViewById(R.id.edit_bookmark_url_edittext)!!
-        folderSpinner = alertDialog.findViewById(R.id.edit_bookmark_folder_spinner)!!
-        displayOrderEditText = alertDialog.findViewById(R.id.edit_bookmark_display_order_edittext)!!
+        val databaseIdTextView = alertDialog.findViewById<TextView>(R.id.bookmark_database_id_textview)!!
+        val currentIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.current_icon_linearlayout)!!
+        val currentIconRadioButton = alertDialog.findViewById<RadioButton>(R.id.current_icon_radiobutton)!!
+        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.current_icon_imageview)!!
+        val webpageFavoriteIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.webpage_favorite_icon_linearlayout)!!
+        webpageFavoriteIconRadioButton = alertDialog.findViewById(R.id.webpage_favorite_icon_radiobutton)!!
+        val webpageFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)!!
+        nameEditText = alertDialog.findViewById(R.id.bookmark_name_edittext)!!
+        urlEditText = alertDialog.findViewById(R.id.bookmark_url_edittext)!!
+        folderSpinner = alertDialog.findViewById(R.id.bookmark_folder_spinner)!!
+        displayOrderEditText = alertDialog.findViewById(R.id.bookmark_display_order_edittext)!!
         saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Store the current bookmark values.
@@ -202,8 +204,8 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         // Display the current icon bitmap.
         currentIconImageView.setImageBitmap(currentIconBitmap)
 
-        // Set the new favorite icon bitmap.
-        newFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
+        // Set the webpage favorite icon bitmap.
+        webpageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
 
         // Populate the bookmark name and URL edit texts.
         nameEditText.setText(currentBookmarkName)
@@ -294,8 +296,30 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         // Initially disable the save button.
         saveButton.isEnabled = false
 
-        // Update the save button if the icon selection changes.
-        iconRadioGroup.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
+        // Set the radio button listeners.  These perform a click on the linear layout, which contains the necessary logic.
+        currentIconRadioButton.setOnClickListener { currentIconLinearLayout.performClick() }
+        webpageFavoriteIconRadioButton.setOnClickListener { webpageFavoriteIconLinearLayout.performClick() }
+
+        // Set the current icon linear layout click listener.
+        currentIconLinearLayout.setOnClickListener {
+            // Check the current icon radio button.
+            currentIconRadioButton.isChecked = true
+
+            // Uncheck the webpage favorite icon radio button.
+            webpageFavoriteIconRadioButton.isChecked = false
+
+            // Update the save button.
+            updateSaveButton(currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder)
+        }
+
+        // Set the webpage favorite icon linear layout click listener.
+        webpageFavoriteIconLinearLayout.setOnClickListener {
+            // Check the webpage favorite icon radio button.
+            webpageFavoriteIconRadioButton.isChecked = true
+
+            // Uncheck the current icon radio button.
+            currentIconRadioButton.isChecked = false
+
             // Update the save button.
             updateSaveButton(currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder)
         }
@@ -426,7 +450,7 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         val newDisplayOrder = displayOrderEditText.text.toString()
 
         // Has the favorite icon changed?
-        val iconChanged = newIconRadioButton.isChecked
+        val iconChanged = webpageFavoriteIconRadioButton.isChecked
 
         // Has the name changed?
         val nameChanged = (newName != currentBookmarkName)

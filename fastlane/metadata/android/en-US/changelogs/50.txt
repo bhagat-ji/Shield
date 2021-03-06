@@ -7,7 +7,7 @@
 • Fix a bug that sometimes caused swipe-to-refresh to operate even when disabled.
 • Reorder the context menus.
 • Apply custom headers to links loaded from the WebView.
-• Updated French translation provided by Kévin LE FLOHIC.
+• Updated French translation provided by Kévin L.
 • Updated German translation provided by Bernhard G. Keller.
 • Updated Italian translation provided by Francesco Buratti.
 • Updated Russian translation.

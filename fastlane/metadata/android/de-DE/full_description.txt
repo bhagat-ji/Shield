@@ -1,8 +1,8 @@
-Privacy Browser verfolgt zwei grundsätzliche Ziele:
+Die einzige Möglichkeit, den Missbrauch von Daten zu verhindern, ist in erster Linie das Verhindern der Sammlung dieser Daten. Privacy Browser verfolgt dabei zwei grundsätzliche Ziele:
 
-1. Die ins Internet gesendete Menge an Daten zu minimieren.
+1. Das Minimieren der Daten, die ins Internet gesendet werden.
 
-2. Die auf dem Gerät gespeicherte Menge an Daten zu minimieren.
+2. Das Minimieren von auf dem Gerät gespeicherten Daten.
 
 Die meisten Browser plaudern still und heimlich jede Menge Informationen an Websiten aus, welche genutzt werden können, um deren Benutzer zu verfolgen und deren Privatsphäre zu kompromittieren. Webseiten und Werbenetzwerke nutzen Technologien wie JavaScript, Cookies, DOM-Speicher, User-Agents und andere, um jeden einzelnen Browser-Benutzer eindeutig zu identifizieren und ihn zwischen seinen Besuchen und sogar quer durch das Internet zu verfolgen.
 

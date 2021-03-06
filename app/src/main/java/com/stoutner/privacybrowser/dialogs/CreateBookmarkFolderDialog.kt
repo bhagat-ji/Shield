@@ -33,8 +33,10 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.appcompat.app.AlertDialog
+import android.widget.LinearLayout
+import android.widget.RadioButton
 
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -117,7 +119,7 @@ class CreateBookmarkFolderDialog : DialogFragment() {
         // Set a listener on the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)
 
-        // Set a listener on the create button.
+        // Set the create button listener.
         dialogBuilder.setPositiveButton(R.string.create) { _: DialogInterface, _: Int ->
             // Return the dialog fragment to the parent activity on create.
             createBookmarkFolderListener.onCreateBookmarkFolder(this, favoriteIconBitmap)
@@ -144,15 +146,41 @@ class CreateBookmarkFolderDialog : DialogFragment() {
         alertDialog.show()
 
         // Get handles for the views in the dialog.
-        val webPageIconImageView = alertDialog.findViewById<ImageView>(R.id.create_folder_web_page_icon)!!
-        val folderNameEditText = alertDialog.findViewById<EditText>(R.id.create_folder_name_edittext)!!
+        val defaultIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.default_icon_linearlayout)!!
+        val defaultIconRadioButton = alertDialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)!!
+        val webpageFavoriteIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.webpage_favorite_icon_linearlayout)!!
+        val webpageFavoriteIconRadioButton = alertDialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)!!
+        val webpageFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)!!
+        val folderNameEditText = alertDialog.findViewById<EditText>(R.id.folder_name_edittext)!!
         val createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Display the current favorite icon.
-        webPageIconImageView.setImageBitmap(favoriteIconBitmap)
+        webpageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
 
         // Initially disable the create button.
         createButton.isEnabled = false
+
+        // Set the radio button listeners.  These perform a click on the linear layout, which contains the necessary logic.
+        defaultIconRadioButton.setOnClickListener { defaultIconLinearLayout.performClick() }
+        webpageFavoriteIconRadioButton.setOnClickListener { webpageFavoriteIconLinearLayout.performClick() }
+
+        // Set the default icon linear layout click listener.
+        defaultIconLinearLayout.setOnClickListener {
+            // Check the default icon radio button.
+            defaultIconRadioButton.isChecked = true
+
+            // Uncheck the webpage favorite icon radio button.
+            webpageFavoriteIconRadioButton.isChecked = false
+        }
+
+        // Set the webpage favorite icon linear layout click listener.
+        webpageFavoriteIconLinearLayout.setOnClickListener {
+            // Check the webpage favorite icon radio button.
+            webpageFavoriteIconRadioButton.isChecked = true
+
+            // Uncheck the default icon radio button.
+            defaultIconRadioButton.isChecked = false
+        }
 
         // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         val bookmarksDatabaseHelper = BookmarksDatabaseHelper(context, null, null, 0)

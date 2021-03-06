@@ -8,7 +8,7 @@
 • Kontext-Menüs wurden neu sortiert.
 • Eigene HTTP-Kopfzeilen (custom headers) werden für von Webview geladene Links genutzt.
 • Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
-• Aktualisierte französische Übersetzung von Kévin LE FLOHIC.
+• Aktualisierte französische Übersetzung von Kévin L.
 • Aktualisierte italienische Übersetzung von Francesco Buratti.
 • Aktualisierte russische Übersetzung.
 • Aktualisierte spanische Übersetzung von Jose A. León.

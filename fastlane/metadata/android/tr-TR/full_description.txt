@@ -1,8 +1,8 @@
-﻿Privacy Browser'ın iki ana amacı vardır.
+﻿The only way to prevent data from being abused is to prevent it from being collected in the first place. Privacy Browser'ın iki ana amacı vardır.
 
-1. İnternete gönderilen bilgi miktarını en aza indirmek.
+1. Minimize the data that is sent to the internet.
 
-2. Cihazda depolanan bilgi miktarını en aza indirmek.
+2. Minimize the data that is stored on the device.
 
 Çoğu tarayıcı, gizliliğinizi tehlikeye atacak ve sizi izlemelerine izin verecek büyük miktarda bilgiyi web sitelerine verir. Web siteleri ve reklam ağları, her kullanıcıyı özel bir şekilde tanımlamak ve web genelinde ve ziyaretleri sırasında izlemek için JavaScript, çerezler, DOM depolama, kullanıcı aracıları ve diğer birçok teknolojileri kullanır.
 

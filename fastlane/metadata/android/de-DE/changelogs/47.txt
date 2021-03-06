@@ -11,7 +11,7 @@
 • HSTS deaktiviert.
 • Quelltext-Anzeige nutzt nun Sec-Fetch-Header.
 • Ziel-API auf 29 (Android 10) angehoben.
-• Französische Übersetzung durch Kévin LE FLOHIC.
+• Französische Übersetzung durch Kévin L.
 • Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
 • Aktualisierte italienische Übersetzung von Francesco Buratti.
 • Aktualisierte russische Übersetzung.

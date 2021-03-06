@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2020 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -160,7 +160,7 @@
             <string name="font_size">Tamanho da Fonte</string>
             <string name="find_on_page">Procurar</string>
         <string name="print">Imprimir</string>
-            <string name="privacy_browser_web_page">Página da Web do Privacy Browser</string>
+            <string name="privacy_browser_webpage">Página da Web do Privacy Browser</string>
         <string name="save">Salvar</string>
         <string name="add_to_home_screen">Adicionar à tela inicial</string>
         <string name="view_source">Ver fonte</string>
@@ -233,7 +233,7 @@
     <string name="current_bookmark_icon">Ícone de favorito atual</string>
     <string name="current_folder_icon">Ícone da pasta atual</string>
     <string name="default_folder_icon">Ícone de pasta padrão</string>
-    <string name="web_page_favorite_icon">Ícone favorito da página da web</string>
+    <string name="webpage_favorite_icon">Ícone favorito da página da web</string>
     <string name="bookmark_name">Nome do marcador</string>
     <string name="folder_name">Nome da pasta</string>
     <string name="bookmark_url">URL do favorito</string>

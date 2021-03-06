@@ -11,7 +11,7 @@
 • Désactivation d'HSTS.
 • Mise à jour de Voir Source pour utiliser les en-têtes Sec-Fetch.
 • Passage de l'API cible à 29 (Android 10).
-• Traduction française par Kévin LE FLOHIC.
+• Traduction française par Kévin L.
 • MAJ traduction en Allemand effectuée par Bernhard G. Keller.
 • MAJ traduction en Italien effectuée par Francesco Buratti.
 • MAJ traduction en Russe.

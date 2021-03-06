@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -165,7 +165,7 @@
         <string name="font_size">Font Size</string>
         <string name="find_on_page">Find on Page</string>
         <string name="print">Print</string>
-            <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
+            <string name="privacy_browser_webpage">Privacy Browser Webpage</string>
         <string name="save">Save</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
@@ -240,7 +240,7 @@
     <string name="current_bookmark_icon">Current bookmark icon</string>
     <string name="current_folder_icon">Current folder icon</string>
     <string name="default_folder_icon">Default folder icon</string>
-    <string name="web_page_favorite_icon">Web page favorite icon</string>
+    <string name="webpage_favorite_icon">Webpage favorite icon</string>
     <string name="bookmark_name">Bookmark name</string>
     <string name="folder_name">Folder name</string>
     <string name="bookmark_url">Bookmark URL</string>

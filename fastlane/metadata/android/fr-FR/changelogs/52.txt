@@ -16,7 +16,7 @@
 • Ajout d'une entrée Mastodon dans "À propos", onlglet "Liens".
 • Application de diverses améliorations mineures liées à l'expérience utilisateur ainsi qu'à l'interface graphique.
 • Traduction partielle en Portugais Brésilien fournie par Thiago Nazareno Conceição Silva de Jesus.
-• Traduction française mise à jour fournie par Kévin LE FLOHIC.
+• Traduction française mise à jour fournie par Kévin L.
 • Traduction allemande mise à jour fournie par Bernhard G. Keller.
 • Traduction italienne mise à jour fournie par Francesco Buratti.
 • Traduction russe mise à jour.

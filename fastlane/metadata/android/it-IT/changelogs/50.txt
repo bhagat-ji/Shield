@@ -8,7 +8,7 @@
 • Riordino dei menu contestuali.
 • Applicazione di intestazioni personalizzate ai collegamenti caricati da Webview.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Francese fornita da Kévin LE FLOHIC.
+• Aggiornamento della traduzione Francese fornita da Kévin L.
 • Aggiornamento della traduzione in Russo.
 • Aggiornamento della traduzione Spagnola fornita da Jose A. León.
 • Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

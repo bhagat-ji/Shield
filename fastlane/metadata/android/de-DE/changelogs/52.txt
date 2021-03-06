@@ -17,7 +17,7 @@
 • Diverse kleinere Verbesserungen für das Nutzer Erlebnis und der grafischen Oberfläche umgesetzt.
 • Teilweise Übersetzung in brasilianisches Portugiesisch von Thiago Nazareno Conceição Silva de Jesus.
 • Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
-• Aktualisierte französische Übersetzung von Kévin LE FLOHIC.
+• Aktualisierte französische Übersetzung von Kévin L.
 • Aktualisierte italienische Übersetzung von Francesco Buratti.
 • Aktualisierte russische Übersetzung.
 • Aktualisierte spanische Übersetzung von Jose A. León.

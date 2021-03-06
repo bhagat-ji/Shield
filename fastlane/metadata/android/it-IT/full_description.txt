@@ -1,8 +1,8 @@
-Privacy Browser ha due obiettivi primari.
+L'unico modo per evitare che i dati vengano utilizzati in modo improprio è innanzitutto quello di impedire che essi siano raccolti. Privacy Browser ha due obiettivi primari.
 
-1. Minimizzzare la quantità di informazioni inviate verso  internet.
+1. Minimizzare la quantità di dati inviati attraverso internet.
 
-2. Minimizzare la quantità di informazioni salvate sul dispositivo.
+2. Minimizzare la quantità di dati memorizzati sul dispositivo.
 
 La maggioranza dei browser fornisce silenziosamente ai siti web un'enorme quantità di informazioni per permettere loro di tracciare l'utente e compromettere la sua privacy. I siti web e le reti pubblicitarie utilizzano diverse tecnologie, come JavaScript, i cookie, il DOM storage, gli user agent e molte altre, con lo scopo di identificare in modo univoco ogni utente e di tracciare la sua navigazione attraverso la rete.
 

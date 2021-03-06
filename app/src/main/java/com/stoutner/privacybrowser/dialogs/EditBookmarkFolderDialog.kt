@@ -34,8 +34,8 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RadioButton
-import android.widget.RadioGroup
 
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -133,7 +133,7 @@ class EditBookmarkFolderDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_folder)
 
-        // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
+        // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
         dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.edit_bookmark_folder_dialog, null))
 
         // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
@@ -163,11 +163,15 @@ class EditBookmarkFolderDialog : DialogFragment() {
         alertDialog.show()
 
         // Get handles for the views in the alert dialog.
-        val iconRadioGroup = alertDialog.findViewById<RadioGroup>(R.id.edit_folder_icon_radio_group)!!
-        currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton)!!
-        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_folder_current_icon_imageview)!!
-        val webPageFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.edit_folder_web_page_favorite_icon_imageview)!!
-        folderNameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext)!!
+        val currentIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.current_icon_linearlayout)!!
+        currentIconRadioButton = alertDialog.findViewById(R.id.current_icon_radiobutton)!!
+        val currentIconImageView = alertDialog.findViewById<ImageView>(R.id.current_icon_imageview)!!
+        val defaultIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.default_icon_linearlayout)!!
+        val defaultIconRadioButton = alertDialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)!!
+        val webpageFavoriteIconLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.webpage_favorite_icon_linearlayout)!!
+        val webpageFavoriteIconRadioButton = alertDialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)!!
+        val webpageFavoriteIconImageView = alertDialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)!!
+        folderNameEditText = alertDialog.findViewById(R.id.folder_name_edittext)!!
         saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Get the current favorite icon byte array from the cursor.
@@ -179,8 +183,8 @@ class EditBookmarkFolderDialog : DialogFragment() {
         // Display the current icon bitmap.
         currentIconImageView.setImageBitmap(currentIconBitmap)
 
-        // Set the new favorite icon bitmap.
-        webPageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
+        // Set the webpage favorite icon bitmap.
+        webpageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
 
         // Get the current folder name.
         currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME))
@@ -190,6 +194,50 @@ class EditBookmarkFolderDialog : DialogFragment() {
 
         // Initially disable the save button.
         saveButton.isEnabled = false
+
+        // Set the radio button listeners.  These perform a click on the linear layout, which contains the necessary logic.
+        currentIconRadioButton.setOnClickListener { currentIconLinearLayout.performClick() }
+        defaultIconRadioButton.setOnClickListener { defaultIconLinearLayout.performClick() }
+        webpageFavoriteIconRadioButton.setOnClickListener { webpageFavoriteIconLinearLayout.performClick() }
+
+        // Set the current icon linear layout click listener.
+        currentIconLinearLayout.setOnClickListener {
+            // Check the current icon radio button.
+            currentIconRadioButton.isChecked = true
+
+            // Uncheck the other radio buttons.
+            defaultIconRadioButton.isChecked = false
+            webpageFavoriteIconRadioButton.isChecked = false
+
+            // Update the save button.
+            updateSaveButton()
+        }
+
+        // Set the default icon linear layout click listener.
+        defaultIconLinearLayout.setOnClickListener {
+            // Check the default icon radio button.
+            defaultIconRadioButton.isChecked = true
+
+            // Uncheck the other radio buttons.
+            currentIconRadioButton.isChecked = false
+            webpageFavoriteIconRadioButton.isChecked = false
+
+            // Update the save button.
+            updateSaveButton()
+        }
+
+        // Set the webpage favorite icon linear layout click listener.
+        webpageFavoriteIconLinearLayout.setOnClickListener {
+            // Check the webpage favorite icon radio button.
+            webpageFavoriteIconRadioButton.isChecked = true
+
+            // Uncheck the other radio buttons.
+            currentIconRadioButton.isChecked = false
+            defaultIconRadioButton.isChecked = false
+
+            // Update the save button.
+            updateSaveButton()
+        }
 
         // Update the status of the save button when the folder name is changed.
         folderNameEditText.addTextChangedListener(object: TextWatcher {
@@ -206,12 +254,6 @@ class EditBookmarkFolderDialog : DialogFragment() {
                 updateSaveButton()
             }
         })
-
-        // Update the status of the save button when the icon is changed.
-        iconRadioGroup.setOnCheckedChangeListener { _: RadioGroup?, _: Int ->
-            // Update the save button.
-            updateSaveButton()
-        }
 
         // Allow the enter key on the keyboard to save the bookmark from the edit bookmark name edit text.
         folderNameEditText.setOnKeyListener { _: View?, keyCode: Int, event: KeyEvent ->

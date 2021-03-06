@@ -16,7 +16,7 @@
 • Adicione uma entrada Mastodon em Sobre > Links.
 • Faça vários menores melhorias to a user experiência e gráfica interface.
 • Tradução do português brasileiro fornecida por Thiago Nazareno Conceição Silva de Jesus.
-• Tradução francesa atualizada fornecida por Kévin LE FLOHIC.
+• Tradução francesa atualizada fornecida por Kévin L.
 • Tradução alemã atualizada fornecida por Bernhard G. Keller.
 • Tradução italiana atualizada fornecida por Francesco Buratti.
 • Tradução russa atualizada.

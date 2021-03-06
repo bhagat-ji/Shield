@@ -17,7 +17,7 @@
 • Hacer varias mejoras mínimas en la experiencia de usuario y en la interfaz gráfica.
 • Traducción parcial del portugués brasileño proporcionada por Thiago Nazareno Conceição Silva de Jesus.
 • Actualizada la traducción al español proporcionada por Jose A. León.
-• Actualizada la traducción al francés proporcionada por Kévin LE FLOHIC.
+• Actualizada la traducción al francés proporcionada por Kévin L.
 • Actualizada la traducción al alemán proporcionada por Bernhard G. Keller.
 • Actualizada la traducción al italiano proporcionada por Francesco Buratti.
 • Actualizada la traducción al ruso.

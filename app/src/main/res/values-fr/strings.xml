@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2019-2020 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -162,7 +162,7 @@
         <string name="font_size">Police</string>
         <string name="find_on_page">Chercher sur la page</string>
         <string name="print">Imprimer</string>
-            <string name="privacy_browser_web_page">Site Web de Privacy Browser</string>
+            <string name="privacy_browser_webpage">Site Web de Privacy Browser</string>
         <string name="save">Sauvegarder</string>
         <string name="add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
         <string name="view_source">Voir Source</string>
@@ -235,7 +235,7 @@
     <string name="current_bookmark_icon">Icone actuelle</string>
     <string name="current_folder_icon">Icone actuelle</string>
     <string name="default_folder_icon">Icone par défaut</string>
-    <string name="web_page_favorite_icon">Icone de la page web courante</string>
+    <string name="webpage_favorite_icon">Icone de la page web courante</string>
     <string name="bookmark_name">Nom du favori</string>
     <string name="folder_name">Nom du dossier</string>
     <string name="bookmark_url">Ajouter aux favoris</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017-2020 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -161,7 +161,7 @@
         <string name="font_size">Dimensione font</string>
         <string name="find_on_page">Cerca nella pagina</string>
         <string name="print">Stampa</string>
-            <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
+            <string name="privacy_browser_webpage">Pagina web di Privacy Browser</string>
         <string name="save">Salva</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
@@ -234,7 +234,7 @@
     <string name="current_bookmark_icon">Icona Segnalibro</string>
     <string name="current_folder_icon">Icona Cartella</string>
     <string name="default_folder_icon">Icona predefinita cartella</string>
-    <string name="web_page_favorite_icon">Icona preferita pagina web</string>
+    <string name="webpage_favorite_icon">Icona preferita pagina web</string>
     <string name="bookmark_name">Nome Segnalibro</string>
     <string name="folder_name">Nome Cartella</string>
     <string name="bookmark_url">URL Segnalibro</string>

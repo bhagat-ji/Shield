@@ -7,7 +7,7 @@
 • Añadir una Entrada del menú de opciones de marcadores para que se pueda acceder a ella con la interfaz de gestos de Android 10.
 • Cambiar el orden del menú de opciones para prevenir la creación accidental de configuraciones de dominio.
 • Actualizada la traducción al español proporcionada por Jose A. León.
-• Actualizada la traducción al francés proporcionada por Kévin LE FLOHIC.
+• Actualizada la traducción al francés proporcionada por Kévin L.
 • Actualizada la traducción al alemán proporcionada por Bernhard G. Keller.
 • Actualizada la traducción al italiano proporcionada por Francesco Buratti.
 • Actualizada la traducción al ruso.

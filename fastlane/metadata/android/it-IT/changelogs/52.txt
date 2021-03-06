@@ -17,7 +17,7 @@
 • Implementazione diversi miglioramenti minori per l'experienza dell'utente e nell'interfaccia grafica.
 • Traduzione parziale in Portoghese Brasiliano fornita da Thiago Nazareno Conceição Silva de Jesus.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Francese fornita da Kévin LE FLOHIC.
+• Aggiornamento della traduzione Francese fornita da Kévin L.
 • Aggiornamento della traduzione in Russo.
 • Aggiornamento della traduzione Spagnola fornita da Jose A. León.
 • Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

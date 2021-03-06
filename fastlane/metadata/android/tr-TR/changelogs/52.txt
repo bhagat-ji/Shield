@@ -16,7 +16,7 @@
 • Add a Mastodon entry to About > Links.
 • Make various minor improvements to the user experience and graphical interface.
 • Partial Brazilian Portuguese translation provided by Thiago Nazareno Conceição Silva de Jesus.
-• Updated French translation provided by Kévin LE FLOHIC.
+• Updated French translation provided by Kévin L.
 • Almanca çevirisi güncellendi. (Çevirmen Bernhard G. Keller.)
 • İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
 • Rusça çevirisi güncellendi.

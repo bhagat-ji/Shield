@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -156,7 +156,7 @@
         <string name="font_size">Yazı Tipi Boyutu</string>
         <string name="find_on_page">Sayfada bul</string>
         <string name="print">Yazdır</string>
-            <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
+            <string name="privacy_browser_webpage">Privacy Browser Web Sayfası</string>
         <string name="save">Kaydet</string>
         <string name="add_to_home_screen">Ana ekrana ekle</string>
         <string name="view_source">Kaynağı görüntüle</string>
@@ -214,7 +214,7 @@
     <string name="current_bookmark_icon">Geçerli yer imi simgesi</string>
     <string name="current_folder_icon">Geçerli klasör simgesi</string>
     <string name="default_folder_icon">Varsayılan klasör simgesi</string>
-    <string name="web_page_favorite_icon">Web sayfa site simgesi</string>
+    <string name="webpage_favorite_icon">Web sayfa site simgesi</string>
     <string name="bookmark_name">Yer imi adı</string>
     <string name="folder_name">Klasör adı</string>
     <string name="bookmark_url">Yer imi URL\'si</string>
