@@ -5428,6 +5428,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the file name from the content disposition.
             String fileNameString = PrepareSaveDialog.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
 
+            // Prevent the dialog from displaying if the app window is not visible.
+            // The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
+            while (!activity.getWindow().isActive()) {
+                try {
+                    // The window is not active.  Wait 1 second.
+                    wait(1000);
+                } catch (InterruptedException e) {
+                    // Do nothing.
+                }
+            }
+
             // Instantiate the save dialog.
             DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
                     nestedScrollWebView.getAcceptFirstPartyCookies());
@@ -6428,6 +6439,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
                     // Store the SSL error handler.
                     nestedScrollWebView.setSslErrorHandler(handler);
+
+                    // Prevent the dialog from displaying if the app window is not visible.
+                    // The SSL error handler continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
+                    while (!activity.getWindow().isActive()) {
+                        try {
+                            // The window is not active.  Wait 1 second.
+                            wait(1000);
+                        } catch (InterruptedException e) {
+                            // Do nothing.
+                        }
+                    }
 
                     // Instantiate an SSL certificate error alert dialog.
                     DialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error, nestedScrollWebView.getWebViewFragmentId());
