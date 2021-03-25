@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -37,7 +37,7 @@ import java.lang.ref.WeakReference;
 public class GetLogcat extends AsyncTask<Void, Void, String> {
     // Define the class variables.
     private final WeakReference<Activity> activityWeakReference;
-    private int scrollViewYPositionInt;
+    private final int scrollViewYPositionInt;
 
     // The public constructor.
     public GetLogcat(Activity activity, int scrollViewYPositionInt) {

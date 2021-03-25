@@ -113,7 +113,6 @@
 
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Navigationspanel</string>
-    <string name="navigation">Navigation</string>
     <string name="clear_and_exit">Leeren und verlassen</string>
     <string name="home">Startseite</string>
     <string name="back">Zurück</string>
@@ -192,12 +191,10 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">URL speichern</string>
-    <string name="save_archive">Archiv speichern</string>
     <string name="save_text">Text speichern</string>
     <string name="save_image">Grafik speichern</string>
     <string name="save_logcat">Logcat speichern</string>
     <string name="file_name">Dateiname</string>
-    <string name="webpage_mht">Webseite.mht</string>
     <string name="webpage_png">Webseite.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
@@ -206,7 +203,6 @@
     <string name="bytes">Bytes</string>
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="invalid_url">Ungültige URL</string>
-    <string name="ok">OK</string>
     <string name="saving_file">Speichere Datei:</string>
     <string name="processing_image">Bild wird bearbeitet… :</string>
     <string name="file_saved">Datei gespeichert:</string>
@@ -360,8 +356,6 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Passwort-Verschlüsselung ist mit Android KitKat nicht möglich.</string>
-    <string name="file_does_not_exist">Die Datei existiert nicht.</string>
-    <string name="file_exists_warning">Die Datei existiert bereits. Wenn Sie fortfahren, wird sie überschrieben.</string>
     <string name="openkeychain_required">Für die OpenPGP-Verschlüsselung muss OpenKeychain installiert sein.</string>
     <string name="openkeychain_import_instructions">Die unverschlüsselte Datei muss in einem weiteren Schritt importiert werden, nachdem sie entschlüsselt wurde.</string>
     <string name="file_location">Datei-Ordner</string>
@@ -372,11 +366,6 @@
     <string name="export_successful">Export erfolgreich.</string>
     <string name="export_failed">Export fehlgeschlagen:</string>
     <string name="import_failed">Import fehlgeschlagen:</string>
-    <string name="storage_permission">Speicher-Berechtigung</string>
-    <string name="storage_permission_message">Privacy Browser benötigt die Speicher-Berechtigung, um auf öffentliche Ordner zuzugreifen.
-        Wenn diese verweigert wird, können die Ordner der Anwendung trotzdem verwendet werden.</string>
-    <string name="storage_permission_explanation">Der Zugriff auf Dateien in öffentlichen Ordnern benötigt die Speicher-Berechtigung. Andernfalls können nur die Ordner der App verwendet werden.</string>
-    <string name="cannot_use_location">Dieser Ordner kann nicht genutzt werden, da die Speicher-Berechtigung nicht erteilt wurde.</string>
 
     <!-- Logcat. -->
     <string name="copy_string">kopieren</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
@@ -577,14 +566,6 @@
         <string name="clear_cache_summary">Löscht den WebView-Cache.</string>
     <string name="general">Allgemein</string>
         <string name="homepage">Startseite</string>
-        <string name="download_location">Speicher-Ort für Downloads</string>
-        <string-array name="download_location_entries">
-            <item>Automatisch</item>
-            <item>App-Ordner</item>
-            <item>Öffentlicher Ordner</item>
-            <item>Benutzerdefiniert</item>
-        </string-array>
-        <string name="download_custom_location">Benutzerdefinierter Ordner für Downloads</string>
         <string name="font_size_preference">Schriftgröße</string>
         <string name="open_intents_in_new_tab">Intents in neuem Tab öffnen</string>
         <string name="open_intents_in_new_tab_summary">Intents sind Links, die von anderen Apps übergeben werden.</string>

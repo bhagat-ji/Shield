@@ -19,33 +19,25 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
-import com.stoutner.privacybrowser.helpers.DownloadLocationHelper
-
-import java.io.File
 
 class OpenDialog : DialogFragment() {
     // Define the open listener.
@@ -115,9 +107,10 @@ class OpenDialog : DialogFragment() {
         // Get handles for the layout items.
         val fileNameEditText = alertDialog.findViewById<EditText>(R.id.file_name_edittext)!!
         val browseButton = alertDialog.findViewById<Button>(R.id.browse_button)!!
-        val fileDoesNotExistTextView = alertDialog.findViewById<TextView>(R.id.file_does_not_exist_textview)!!
-        val storagePermissionTextView = alertDialog.findViewById<TextView>(R.id.storage_permission_textview)!!
         val openButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        // Initially disable the open button.
+        openButton.isEnabled = false
 
         // Update the status of the open button when the file name changes.
         fileNameEditText.addTextChangedListener(object : TextWatcher {
@@ -133,47 +126,18 @@ class OpenDialog : DialogFragment() {
                 // Get the current file name.
                 val fileNameString = fileNameEditText.text.toString()
 
-                // Convert the file name string to a file.
-                val file = File(fileNameString)
-
-                // Check to see if the file exists.
-                if (file.exists()) {  // The file exists.
-                    // Hide the notification that the file does not exist.
-                    fileDoesNotExistTextView.visibility = View.GONE
-
-                    // Enable the open button.
-                    openButton.isEnabled = true
-                } else {  // The file does not exist.
-                    // Show the notification that the file does not exist.
-                    fileDoesNotExistTextView.visibility = View.VISIBLE
-
-                    // Disable the open button.
-                    openButton.isEnabled = false
-                }
+                // Enable the open button if the file name is populated.
+                openButton.isEnabled = fileNameString.isNotEmpty()
             }
         })
-
-        // Instantiate the download location helper.
-        val downloadLocationHelper = DownloadLocationHelper()
-
-        // Get the default file path.
-        val defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/"
-
-        // Display the default file path.
-        fileNameEditText.setText(defaultFilePath)
-
-        // Move the cursor to the end of the default file path.
-        fileNameEditText.setSelection(defaultFilePath.length)
-
-        // Hide the storage permission text view if the permission has already been granted.
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            storagePermissionTextView.visibility = View.GONE
-        }
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener {
             // Create the file picker intent.
             val browseIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+
+            // Only display files that can be opened.
+            browseIntent.addCategory(Intent.CATEGORY_OPENABLE)
 
             // Set the intent MIME type to include all files so that everything is visible.
             browseIntent.type = "*/*"

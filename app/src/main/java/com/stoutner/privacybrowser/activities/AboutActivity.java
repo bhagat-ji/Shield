@@ -19,31 +19,20 @@
 
 package com.stoutner.privacybrowser.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -54,27 +43,20 @@ import com.stoutner.privacybrowser.adapters.AboutPagerAdapter;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.asynctasks.SaveAboutVersionImage;
 import com.stoutner.privacybrowser.dialogs.SaveDialog;
-import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.fragments.AboutVersionFragment;
-import com.stoutner.privacybrowser.helpers.FileNameHelper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
-public class AboutActivity extends AppCompatActivity implements SaveDialog.SaveListener, StoragePermissionDialog.StoragePermissionDialogListener {
+public class AboutActivity extends AppCompatActivity implements SaveDialog.SaveListener {
     // Declare the class variables.
-    private String filePathString;
     private AboutPagerAdapter aboutPagerAdapter;
-
-    // Declare the class views.
-    private LinearLayout aboutVersionLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,138 +119,11 @@ public class AboutActivity extends AppCompatActivity implements SaveDialog.SaveL
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }
 
-    @Override
-    public void onSave(int saveType, DialogFragment dialogFragment) {
-        // Get a handle for the dialog.
-        Dialog dialog = dialogFragment.getDialog();
-
-        // Remove the lint warning below that the dialog might be null.
-        assert dialog != null;
-
-        // Get a handle for the file name edit text.
-        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
-
-        // Get the file path string.
-        filePathString = fileNameEditText.getText().toString();
-
-        // Get a handle for the about version linear layout.
-        aboutVersionLinearLayout = findViewById(R.id.about_version_linearlayout);
-
-        // check to see if the storage permission is needed.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Save the file according to the type.
-            switch (saveType) {
-                case SaveDialog.SAVE_ABOUT_VERSION_TEXT:
-                    // Save the about version text.
-                    saveAsText(filePathString);
-                    break;
-
-                case SaveDialog.SAVE_ABOUT_VERSION_IMAGE:
-                    // Save the about version image.
-                    new SaveAboutVersionImage(this, this, filePathString, aboutVersionLinearLayout).execute();
-                    break;
-            }
-
-            // Reset the file path string.
-            filePathString = "";
-        } else {  // The storage permission has not been granted.
-            // Get the external private directory file.
-            File externalPrivateDirectoryFile = getExternalFilesDir(null);
-
-            // Remove the incorrect lint error below that the file might be null.
-            assert externalPrivateDirectoryFile != null;
-
-            // Get the external private directory string.
-            String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
-
-            // Check to see if the file path is in the external private directory.
-            if (filePathString.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
-                // Save the webpage according to the type.
-                switch (saveType) {
-                    case SaveDialog.SAVE_ABOUT_VERSION_TEXT:
-                        // Save the about version text.
-                        saveAsText(filePathString);
-                        break;
-
-                    case SaveDialog.SAVE_ABOUT_VERSION_IMAGE:
-                        // Save the about version image.
-                        new SaveAboutVersionImage(this, this, filePathString, aboutVersionLinearLayout).execute();
-                        break;
-                }
-
-                // Reset the file path string.
-                filePathString = "";
-            } else {  // The file path is in a public directory.
-                // Check if the user has previously denied the storage permission.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Declare a storage permission dialog fragment.
-                    DialogFragment storagePermissionDialogFragment;
-
-                    // Instantiate the storage permission alert dialog according to the type.
-                    if (saveType == SaveDialog.SAVE_ABOUT_VERSION_TEXT) {
-                        storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(StoragePermissionDialog.SAVE_TEXT);
-                    } else {
-                        storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(StoragePermissionDialog.SAVE_IMAGE);
-                    }
-
-                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
-                    storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
-                } else {  // Show the permission request directly.
-                    switch (saveType) {
-                        case SaveDialog.SAVE_ABOUT_VERSION_TEXT:
-                            // Request the write external storage permission.  The text will be saved when it finishes.
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, StoragePermissionDialog.SAVE_TEXT);
-                            break;
-
-                        case SaveDialog.SAVE_ABOUT_VERSION_IMAGE:
-                            // Request the write external storage permission.  The image will be saved when it finishes.
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, StoragePermissionDialog.SAVE_IMAGE);
-                            break;
-                    }
-
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onCloseStoragePermissionDialog(int requestType) {
-        // Request the write external storage permission according to the request type.  About version will be saved when it finishes.
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestType);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        //Only process the results if they exist (this method is triggered when a dialog is presented the first time for an app, but no grant results are included).
-        if (grantResults.length > 0) {
-            // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
-                switch (requestCode) {
-                    case StoragePermissionDialog.SAVE_TEXT:
-                        // Save the about version text.
-                        saveAsText(filePathString);
-                        break;
-
-                    case StoragePermissionDialog.SAVE_IMAGE:
-                        // Save the about version image.
-                        new SaveAboutVersionImage(this, this, filePathString, aboutVersionLinearLayout).execute();
-                        break;
-                }
-            } else{  // the storage permission was not granted.
-                // Display an error snackbar.
-                Snackbar.make(aboutVersionLinearLayout, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-            }
-
-            // Reset the file path string.
-            filePathString = "";
-        }
-    }
-
     // The activity result is called after browsing for a file in the save alert dialog.
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
         // Run the default commands.
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, returnedIntent);
 
         // Only do something if the user didn't press back from the file picker.
         if (resultCode == Activity.RESULT_OK) {
@@ -285,116 +140,94 @@ public class AboutActivity extends AppCompatActivity implements SaveDialog.SaveL
 
                 // Get a handle for the dialog view.
                 EditText fileNameEditText = saveDialog.findViewById(R.id.file_name_edittext);
-                TextView fileExistsWarningTextView = saveDialog.findViewById(R.id.file_exists_warning_textview);
 
                 // Get the file name URI from the intent.
-                Uri fileNameUri = data.getData();
+                Uri fileNameUri = returnedIntent.getData();
 
-                // Process the file name URI if it is not null.
-                if (fileNameUri != null) {
-                    // Instantiate a file name helper.
-                    FileNameHelper fileNameHelper = new FileNameHelper();
+                // Get the file name string from the URI.
+                String fileNameString = fileNameUri.toString();
 
-                    // Convert the file name URI to a file name path.
-                    String fileNamePath = fileNameHelper.convertUriToFileNamePath(fileNameUri);
+                // Set the file name text.
+                fileNameEditText.setText(fileNameString);
 
-                    // Set the file name path as the text of the file nam edit text.
-                    fileNameEditText.setText(fileNamePath);
-
-                    // Move the cursor to the end of the file name edit text.
-                    fileNameEditText.setSelection(fileNamePath.length());
-
-                    // Hid ethe file exists warning.
-                    fileExistsWarningTextView.setVisibility(View.GONE);
-                }
+                // Move the cursor to the end of the file name edit text.
+                fileNameEditText.setSelection(fileNameString.length());
             }
         }
     }
 
-    private void saveAsText(String fileNameString) {
-        try {
-            // Get a handle for the about about version fragment.
-            AboutVersionFragment aboutVersionFragment = (AboutVersionFragment) aboutPagerAdapter.getTabFragment(0);
+    @Override
+    public void onSave(int saveType, DialogFragment dialogFragment) {
+        // Get a handle for the dialog.
+        Dialog dialog = dialogFragment.getDialog();
 
-            // Get the about version text.
-            String aboutVersionString = aboutVersionFragment.getAboutVersionString();
+        // Remove the lint warning below that the dialog might be null.
+        assert dialog != null;
 
-            // Create an input stream with the contents of about version.
-            InputStream aboutVersionInputStream = new ByteArrayInputStream(aboutVersionString.getBytes(StandardCharsets.UTF_8));
+        // Get a handle for the file name edit text.
+        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
-            // Create an about version buffered reader.
-            BufferedReader aboutVersionBufferedReader = new BufferedReader(new InputStreamReader(aboutVersionInputStream));
+        // Get the file name string.
+        String fileNameString = fileNameEditText.getText().toString();
 
-            // Create a file from the file name string.
-            File saveFile = new File(fileNameString);
+        // Get a handle for the about version linear layout.
+        LinearLayout aboutVersionLinearLayout = findViewById(R.id.about_version_linearlayout);
 
-            // Delete the file if it already exists.
-            if (saveFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                saveFile.delete();
-            }
+        // Save the file according to the type.
+        switch (saveType) {
+            case SaveDialog.SAVE_ABOUT_VERSION_TEXT:
+                try {
+                    // Get a handle for the about version fragment.
+                    AboutVersionFragment aboutVersionFragment = (AboutVersionFragment) aboutPagerAdapter.getTabFragment(0);
 
-            // Create a file buffered writer.
-            BufferedWriter fileBufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile)));
+                    // Get the about version text.
+                    String aboutVersionString = aboutVersionFragment.getAboutVersionString();
 
-            // Create a transfer string.
-            String transferString;
+                    // Create an input stream with the contents of about version.
+                    InputStream aboutVersionInputStream = new ByteArrayInputStream(aboutVersionString.getBytes(StandardCharsets.UTF_8));
 
-            // Use the transfer string to copy the about version text from the buffered reader to the buffered writer.
-            while ((transferString = aboutVersionBufferedReader.readLine()) != null) {
-                // Append the line to the buffered writer.
-                fileBufferedWriter.append(transferString);
+                    // Create an about version buffered reader.
+                    BufferedReader aboutVersionBufferedReader = new BufferedReader(new InputStreamReader(aboutVersionInputStream));
 
-                // Append a line break.
-                fileBufferedWriter.append("\n");
-            }
+                    // Open an output stream.
+                    OutputStream outputStream = getContentResolver().openOutputStream(Uri.parse(fileNameString));
 
-            // Close the buffered reader and writer.
-            aboutVersionBufferedReader.close();
-            fileBufferedWriter.close();
+                    // Create a file buffered writer.
+                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
 
-            // Add the file to the list of recent files.  This doesn't currently work, but maybe it will someday.
-            MediaScannerConnection.scanFile(this, new String[] {fileNameString}, new String[] {"text/plain"}, null);
+                    // Create a transfer string.
+                    String transferString;
 
-            // Create an about version saved snackbar.
-            Snackbar aboutVersionSavedSnackbar = Snackbar.make(aboutVersionLinearLayout, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT);
+                    // Use the transfer string to copy the about version text from the buffered reader to the buffered writer.
+                    while ((transferString = aboutVersionBufferedReader.readLine()) != null) {
+                        // Append the line to the buffered writer.
+                        bufferedWriter.append(transferString);
 
-            // Add an open option to the snackbar.
-            aboutVersionSavedSnackbar.setAction(R.string.open, (View view) -> {
-                // Get a file for the file name string.
-                File file = new File(fileNameString);
+                        // Append a line break.
+                        bufferedWriter.append("\n");
+                    }
 
-                // Declare a file URI variable.
-                Uri fileUri;
+                    // Flush the buffered writer.
+                    bufferedWriter.flush();
 
-                // Get the URI for the file according to the Android version.
-                if (Build.VERSION.SDK_INT >= 24) {  // Use a file provider.
-                    fileUri = FileProvider.getUriForFile(this, getString(R.string.file_provider), file);
-                } else {  // Get the raw file path URI.
-                    fileUri = Uri.fromFile(file);
+                    // Close the inputs and outputs.
+                    aboutVersionBufferedReader.close();
+                    aboutVersionInputStream.close();
+                    bufferedWriter.close();
+                    outputStream.close();
+
+                    // Display a snackbar with the saved about version information.
+                    Snackbar.make(aboutVersionLinearLayout, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
+                } catch (Exception exception) {
+                    // Display a snackbar with the error message.
+                    Snackbar.make(aboutVersionLinearLayout, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
                 }
+                break;
 
-                // Get a handle for the content resolver.
-                ContentResolver contentResolver = getContentResolver();
-
-                // Create an open intent with `ACTION_VIEW`.
-                Intent openIntent = new Intent(Intent.ACTION_VIEW);
-
-                // Set the URI and the MIME type.
-                openIntent.setDataAndType(fileUri, contentResolver.getType(fileUri));
-
-                // Allow the app to read the file URI.
-                openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                // Show the chooser.
-                startActivity(Intent.createChooser(openIntent, getString(R.string.open)));
-            });
-
-            // Show the about version saved snackbar.
-            aboutVersionSavedSnackbar.show();
-        } catch (Exception exception) {
-            // Display a snackbar with the error message.
-            Snackbar.make(aboutVersionLinearLayout, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
+            case SaveDialog.SAVE_ABOUT_VERSION_IMAGE:
+                // Save the about version image.
+                new SaveAboutVersionImage(this, fileNameString, aboutVersionLinearLayout).execute();
+                break;
         }
     }
 }

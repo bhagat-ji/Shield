@@ -110,7 +110,6 @@
 
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Panneau de navigation</string>
-    <string name="navigation">Navigation</string>
     <string name="clear_and_exit">Nettoyer et quitter</string>
     <string name="home">Accueil</string>
     <string name="back">Précédent</string>
@@ -189,12 +188,10 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">Enregistrer l\'URL</string>
-    <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_text">Sauvegarder le texte</string>
     <string name="save_image">Sauvegarder en tant qu\'image</string>
     <string name="save_logcat">Sauvegarder le journal système</string>
     <string name="file_name">Nom du fichier</string>
-    <string name="webpage_mht">PageWeb.mht</string>
     <string name="webpage_png">PageWeb.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
@@ -203,7 +200,6 @@
     <string name="bytes">octets</string>
     <string name="unknown_size">taille inconnue</string>
     <string name="invalid_url">URL invalide</string>
-    <string name="ok">OK</string>
     <string name="saving_file">Enregistrement du fichier:</string>
     <string name="processing_image">Traitement de l\'image… :</string>
     <string name="file_saved">Fichier enregistré:</string>
@@ -357,8 +353,6 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Le chiffrement par mot de passe ne fonctionne pas sous Android KitKat.</string>
-    <string name="file_does_not_exist">Le fichier n\'existe pas.</string>
-    <string name="file_exists_warning">Le fichier existe déjà. Si vous continuez, il sera écrasé.</string>
     <string name="openkeychain_required">Le chiffrement OpenPGP nécessite l\'installation d\'OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Le fichier non-chiffré devra être importé dans un deuxième temps, après son déchiffrement.</string>
     <string name="file_location">Emplacement du fichier</string>
@@ -369,12 +363,6 @@
     <string name="export_successful">Export effectué.</string>
     <string name="export_failed">L\'export a échoué :</string>
     <string name="import_failed">L\'import a échoué :</string>
-    <string name="storage_permission">Permission de stockage</string>
-    <string name="storage_permission_message">Privacy Browser nécessite les droits d\'accès au stockage pour accéder aux dossiers publics.
-        Si cela est refusé, les dossiers internes à l\'application peut néanmoins être utilisé.</string>
-    <string name="storage_permission_explanation">Accéder à des fichiers dans des dossiers publics nécessite des droits de lecture/écriture.
-        Autrement, seuls les dossiers internes à l\'application ne pourront être utilisés.</string>
-    <string name="cannot_use_location">Ce dossier ne peut pas être utilisé car les droits d\'accès au stockage n\'ont pas été autorisés.</string>
 
     <!-- Logcat. -->
     <string name="copy_string">Copie</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
@@ -575,14 +563,6 @@
         <string name="clear_cache_summary">Efface le cache WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Page d\'accueil</string>
-        <string name="download_location">Emplacement de téléchargement</string>
-        <string-array name="download_location_entries">
-            <item>Automatique</item>
-            <item>Dossier de l\'application</item>
-            <item>Dossier publique</item>
-            <item>Personnalisé</item>
-        </string-array>
-        <string name="download_custom_location">Emplacement personnalisé de téléchargement</string>
         <string name="font_size_preference">Zoom</string>
         <string name="open_intents_in_new_tab">Intentions dans un nouvel onglet</string>
         <string name="open_intents_in_new_tab_summary">Les intentions sont des liens envoyés à partir d\'autres applications.</string>

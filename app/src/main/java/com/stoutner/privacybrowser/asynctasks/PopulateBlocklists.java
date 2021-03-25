@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019,2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -44,11 +44,11 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
     }
 
     // Define a populate blocklists listener.
-    private PopulateBlocklistsListener populateBlocklistsListener;
+    private final PopulateBlocklistsListener populateBlocklistsListener;
 
     // Define weak references for the activity and context.
-    private WeakReference<Context> contextWeakReference;
-    private WeakReference<Activity> activityWeakReference;
+    private final WeakReference<Context> contextWeakReference;
+    private final WeakReference<Activity> activityWeakReference;
 
     // The public constructor.
     public PopulateBlocklists(Context context, Activity activity) {

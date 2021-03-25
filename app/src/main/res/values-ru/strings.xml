@@ -106,7 +106,6 @@
 
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Навигационная панель</string>
-    <string name="navigation">Навигация</string>
     <string name="clear_and_exit">Очистить и выйти</string>
     <string name="home">Домой</string>
     <string name="back">Назад</string>
@@ -185,12 +184,10 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">Сохранить URL</string>
-    <string name="save_archive">Сохранить архив</string>
     <string name="save_text">Сохранить текст</string>
     <string name="save_image">Сохранить изображение</string>
     <string name="save_logcat">Сохранить logcat</string>
     <string name="file_name">Имя файла</string>
-    <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="privacy_browser_version_txt">Версия Privacy Browser.txt</string>
@@ -199,7 +196,6 @@
     <string name="bytes">байтов</string>
     <string name="unknown_size">неизвестный размер</string>
     <string name="invalid_url">неправильный URL</string>
-    <string name="ok">OK</string>
     <string name="saving_file">Сохранение файла:</string>
     <string name="processing_image">Обработка изображения… :</string>
     <string name="file_saved">Файл сохранен:</string>
@@ -353,8 +349,6 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Шифрование паролем не работает на Android KitKat.</string>
-    <string name="file_does_not_exist">Файл не существует.</string>
-    <string name="file_exists_warning">Файл уже существует. Если вы продолжите, он будет перезаписан.</string>
     <string name="openkeychain_required">Для использования шифрования OpenPGP необходимо приложение OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Незашифрованный файл должен быть импортирован на отдельном шаге после его дешифрования.</string>
     <string name="file_location">Расположение файла</string>
@@ -365,10 +359,6 @@
     <string name="export_successful">Экспорт выполнен.</string>
     <string name="export_failed">Сбой при экспорте:</string>
     <string name="import_failed">Сбой при импорте:</string>
-    <string name="storage_permission">Доступ к хранилищу</string>
-    <string name="storage_permission_message">Privacy Browser необходимо разрешение на доступ к внешним папкам. Если доступ предоставлен не будет, можно использовать локальную папку приложения.</string>
-    <string name="storage_permission_explanation">Для доступа к файлам во внешних папках требуется соответствующее разрешение. В противном случае будут работать только локальные папки.</string>
-    <string name="cannot_use_location">Это расположение использовано быть не может, поскольку разрешение на хранение предоставлено не было.</string>
 
     <!-- Logcat. -->
     <string name="copy_string">Копировать</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
@@ -568,14 +558,6 @@
         <string name="clear_cache_summary">Очищает кэш WebView.</string>
     <string name="general">Общее</string>
         <string name="homepage">Домашняя страница</string>
-        <string name="download_location">Место скачивания</string>
-        <string-array name="download_location_entries">
-            <item>Авто</item>
-            <item>Каталог приложения</item>
-            <item>Общий каталог</item>
-            <item>Пользовательский</item>
-        </string-array>
-        <string name="download_custom_location">Загружать в пользовательское расположение</string>
         <string name="font_size_preference">Размер шрифта</string>
         <string name="open_intents_in_new_tab">Открывать цели в новой вкладке</string>
         <string name="open_intents_in_new_tab_summary">Цели - это ссылки, отправленные из других приложений.</string>

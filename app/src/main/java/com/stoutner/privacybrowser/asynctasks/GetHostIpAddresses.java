@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019,2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -102,7 +102,7 @@ public class GetHostIpAddresses extends AsyncTask<String, Void, String> {
 
         // Checked for pinned mismatches if there is pinned information and it is not ignored.
         if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && !nestedScrollWebView.ignorePinnedDomainInformation()) {
-            CheckPinnedMismatchHelper.checkPinnedMismatch(fragmentManager, nestedScrollWebView);
+            CheckPinnedMismatchHelper.checkPinnedMismatch(activity, fragmentManager, nestedScrollWebView);
         }
     }
 }

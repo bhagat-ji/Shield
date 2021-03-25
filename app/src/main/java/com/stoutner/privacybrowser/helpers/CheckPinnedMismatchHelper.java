@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019,2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.helpers;
 
+import android.app.Activity;
 import android.net.http.SslCertificate;
 
 import androidx.fragment.app.DialogFragment;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class CheckPinnedMismatchHelper {
-    public static void checkPinnedMismatch(FragmentManager fragmentManager, NestedScrollWebView nestedScrollWebView) {
+    public static void checkPinnedMismatch(Activity activity, FragmentManager fragmentManager, NestedScrollWebView nestedScrollWebView) {
         // Initialize the current SSL certificate variables.
         String currentWebsiteIssuedToCName = "";
         String currentWebsiteIssuedToOName = "";
@@ -119,6 +120,17 @@ public class CheckPinnedMismatchHelper {
                 !currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) || !currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) ||
                 !currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) || !currentWebsiteSslStartDateString.equals(pinnedSslStartDateString) ||
                 !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
+
+            // Prevent the dialog from displaying if the app window is not visible.
+            // The check pinned mismatch helper continues to function even when the app is paused.  Attempting to display a dialog in that state leads to a crash.
+            while (!activity.getWindow().isActive()) {
+                try {
+                    // The window is not active.  Wait 1 second.
+                    activity.wait(1000);
+                } catch (InterruptedException e) {
+                    // Do nothing.
+                }
+            }
 
             // Get a handle for the pinned mismatch alert dialog.
             DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(nestedScrollWebView.getWebViewFragmentId());

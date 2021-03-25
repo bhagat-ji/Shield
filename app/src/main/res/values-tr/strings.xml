@@ -106,7 +106,6 @@
 
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Gezinti Menüsü</string>
-    <string name="navigation">Gezinti</string>
     <string name="clear_and_exit">Temizle ve Çık</string>
     <string name="home">Anasayfa</string>
     <string name="back">Geri</string>
@@ -187,7 +186,6 @@
     <string name="webpage_png">Websayfası.png</string>
     <string name="unknown_size">Bilinmeyen boyut</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="ok">OK</string>
 
     <!-- View Source. -->
     <string name="request_headers">İstek Başlıkları</string>
@@ -341,10 +339,6 @@
     <string name="export_successful">Dışa aktarım başarılı</string>
     <string name="export_failed">Dışa aktarım başarısız:</string>
     <string name="import_failed">İçe aktarım başarısız:</string>
-    <string name="storage_permission">Depolama İzni</string>
-    <string name="storage_permission_message">Privacy Browser, genel dizinlere erişmek için depolama iznine ihtiyaç duymaktadır. Reddedildiği takdirde, uygulamanın dizinleri hala kullanılabilir.</string>
-    <string name="storage_permission_explanation">Genel dizinlerdeki dosyalara erişim icin depolama izni gerekmektedir. Aksi takdirde, sadece uygulamanın dizinleri çalışacaktır.</string>
-    <string name="cannot_use_location">Depolama izni verilmediği için bu konum kullanılamaz.</string>
 
     <!-- Logcat. -->
     <string name="copy_string">Kopyala</string>  <!-- `copy` is a reserved word and should not be used as the name. -->

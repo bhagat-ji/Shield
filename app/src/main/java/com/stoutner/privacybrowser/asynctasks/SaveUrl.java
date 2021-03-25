@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,18 +20,11 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Base64;
-import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.MimeTypeMap;
-
-import androidx.core.content.FileProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.stoutner.privacybrowser.R;
@@ -39,8 +32,6 @@ import com.stoutner.privacybrowser.helpers.ProxyHelper;
 import com.stoutner.privacybrowser.views.NoSwipeViewPager;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
@@ -111,21 +102,8 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         String saveDisposition = SUCCESS;
 
         try {
-            // Get the file.
-            File file = new File(filePathString);
-
-            // Delete the file if it exists.
-            if (file.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                file.delete();
-            }
-
-            // Create a new file.
-            //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();
-
-            // Create an output file stream.
-            OutputStream fileOutputStream = new FileOutputStream(file);
+            // Open an output stream.
+            OutputStream outputStream = activity.getContentResolver().openOutputStream(Uri.parse(filePathString));
 
             // Save the URL.
             if (urlToSave[0].startsWith("data:")) {  // The URL contains the entire data of an image.
@@ -135,11 +113,8 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                 // Decode the Base64 string to a byte array.
                 byte[] base64DecodedDataByteArray = Base64.decode(base64DataString, Base64.DEFAULT);
 
-                // Write the Base64 byte array to the file output stream.
-                fileOutputStream.write(base64DecodedDataByteArray);
-
-                // Close the file output stream.
-                fileOutputStream.close();
+                // Write the Base64 byte array to the output stream.
+                outputStream.write(base64DecodedDataByteArray);
             } else {  // The URL points to the data location on the internet.
                 // Get the URL from the calling activity.
                 URL url = new URL(urlToSave[0]);
@@ -200,7 +175,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                     // Attempt to read data from the input stream and store it in the output stream.  Also store the amount of data read in the buffer length variable.
                     while ((bufferLength = inputStream.read(conversionBufferByteArray)) > 0) {  // Proceed while the amount of data stored in the buffer in > 0.
                         // Write the contents of the conversion buffer to the file output stream.
-                        fileOutputStream.write(conversionBufferByteArray, 0, bufferLength);
+                        outputStream.write(conversionBufferByteArray, 0, bufferLength);
 
                         // Update the file download progress snackbar.
                         if (fileSize == -1) {  // The file size is unknown.
@@ -222,23 +197,17 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
                     // Close the input stream.
                     inputStream.close();
-
-                    // Close the file output stream.
-                    fileOutputStream.close();
                 } finally {
                     // Disconnect the HTTP URL connection.
                     httpUrlConnection.disconnect();
                 }
             }
 
-            // Create a media scanner intent, which adds items like pictures to Android's recent file list.
-            Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            // Flush the output stream.
+            outputStream.flush();
 
-            // Add the URI to the media scanner intent.
-            mediaScannerIntent.setData(Uri.fromFile(file));
-
-            // Make it so.
-            activity.sendBroadcast(mediaScannerIntent);
+            // Close the output stream.
+            outputStream.close();
         } catch (Exception exception) {
             // Store the error in the save disposition string.
             saveDisposition = exception.toString();
@@ -279,7 +248,6 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
     @Override
     protected void onPostExecute(String saveDisposition) {
         // Get handles for the context and activity.
-        Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
@@ -295,48 +263,8 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
         // Display a save disposition snackbar.
         if (saveDisposition.equals(SUCCESS)) {
-            // Create a file saved snackbar.
-            Snackbar fileSavedSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_LONG);
-
-            // Add an open action if the file is not an APK on API >= 26 (that scenario requires the REQUEST_INSTALL_PACKAGES permission).
-            if (!(Build.VERSION.SDK_INT >= 26 && filePathString.endsWith(".apk"))) {
-                fileSavedSnackbar.setAction(R.string.open, (View view) -> {
-                    // Get a file for the file path string.
-                    File file = new File(filePathString);
-
-                    // Declare a file URI variable.
-                    Uri fileUri;
-
-                    // Get the URI for the file according to the Android version.
-                    if (Build.VERSION.SDK_INT >= 24) {  // Use a file provider.
-                        fileUri = FileProvider.getUriForFile(context, activity.getString(R.string.file_provider), file);
-                    } else {  // Get the raw file path URI.
-                        fileUri = Uri.fromFile(file);
-                    }
-
-                    // Get a handle for the content resolver.
-                    ContentResolver contentResolver = context.getContentResolver();
-
-                    // Create an open intent with `ACTION_VIEW`.
-                    Intent openIntent = new Intent(Intent.ACTION_VIEW);
-
-                    // Set the URI and the MIME type.
-                    if (filePathString.endsWith("apk") || filePathString.endsWith("APK")) {  // Force detection of APKs.
-                        openIntent.setDataAndType(fileUri, MimeTypeMap.getSingleton().getMimeTypeFromExtension("apk"));
-                    } else {  // Autodetect the MIME type.
-                        openIntent.setDataAndType(fileUri, contentResolver.getType(fileUri));
-                    }
-
-                    // Allow the app to read the file URI.
-                    openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                    // Show the chooser.
-                    activity.startActivity(Intent.createChooser(openIntent, context.getString(R.string.open)));
-                });
-            }
-
-            // Show the file saved snackbar.
-            fileSavedSnackbar.show();
+            // Display the file saved snackbar.
+            Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_LONG).show();
         } else {
             // Display the file saving error.
             Snackbar.make(noSwipeViewPager, activity.getString(R.string.error_saving_file) + "  " + saveDisposition, Snackbar.LENGTH_INDEFINITE).show();

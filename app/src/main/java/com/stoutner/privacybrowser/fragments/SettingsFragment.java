@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,6 +29,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
@@ -41,7 +42,6 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -105,8 +105,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference clearLogcatPreference = findPreference(getString(R.string.clear_logcat_key));
         Preference clearCachePreference = findPreference("clear_cache");
         Preference homepagePreference = findPreference("homepage");
-        Preference downloadLocationPreference = findPreference("download_location");
-        Preference downloadCustomLocationPreference = findPreference("download_custom_location");
         Preference fontSizePreference = findPreference("font_size");
         Preference openIntentsInNewTabPreference = findPreference("open_intents_in_new_tab");
         Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
@@ -151,8 +149,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert clearLogcatPreference != null;
         assert clearCachePreference != null;
         assert homepagePreference != null;
-        assert downloadLocationPreference != null;
-        assert downloadCustomLocationPreference != null;
         assert fontSizePreference != null;
         assert openIntentsInNewTabPreference != null;
         assert swipeToRefreshPreference != null;
@@ -171,7 +167,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         String userAgentName = savedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
         String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
         String proxyString = savedPreferences.getString("proxy", getString(R.string.proxy_default_value));
-        String downloadLocationString = savedPreferences.getString("download_location", getString(R.string.download_location_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
         boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
@@ -305,29 +300,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the homepage URL as the summary text for the homepage preference.
         homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
-
-
-        // Get the download location string arrays.
-        String[] downloadLocationEntriesStringArray = resources.getStringArray(R.array.download_location_entries);
-        String[] downloadLocationEntryValuesStringArray = resources.getStringArray(R.array.download_location_entry_values);
-
-        // Instantiate the download location helper.
-        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
-
-        // Check to see if a download custom location is selected.
-        if (downloadLocationString.equals(downloadLocationEntryValuesStringArray[3])) {  // A download custom location is selected.
-            // Set the download location summary text to be `Custom`.
-            downloadLocationPreference.setSummary(downloadLocationEntriesStringArray[3]);
-        } else {  // A custom download location is not selected.
-            // Set the download location summary text to be the download location.
-            downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
-
-            // Disable the download custom location preference.
-            downloadCustomLocationPreference.setEnabled(false);
-        }
-
-        // Set the summary text for the download custom location (the default is `"`).
-        downloadCustomLocationPreference.setSummary(savedPreferences.getString("download_custom_location", getString(R.string.download_custom_location_default_value)));
 
 
         // Set the font size as the summary text for the preference.
@@ -844,21 +816,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             clearCachePreference.setIcon(R.drawable.cache_warning);
         }
 
-        // Set the download custom location icon.
-        if (downloadCustomLocationPreference.isEnabled()) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_night);
-            } else {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_day);
-            }
-        } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_night);
-            } else {
-                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_day);
-            }
-        }
-
         // Set the open intents in new tab preference icon.
         if (savedPreferences.getBoolean("open_intents_in_new_tab", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
@@ -1225,7 +1182,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     allowScreenshotsRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                     // Create a handler to restart the activity.
-                    Handler allowScreenshotsRestartHandler = new Handler();
+                    Handler allowScreenshotsRestartHandler = new Handler(Looper.getMainLooper());
 
                     // Create a runnable to restart the activity.
                     Runnable allowScreenshotsRestartRunnable = () -> {
@@ -1759,46 +1716,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "homepage":
                     // Set the new homepage URL as the summary text for the Homepage preference.
                     homepagePreference.setSummary(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
-                    break;
-
-                case "download_location":
-                    // Get the new download location.
-                    String newDownloadLocationString = sharedPreferences.getString("download_location", getString(R.string.download_location_default_value));
-
-                    // Check to see if a download custom location is selected.
-                    if (newDownloadLocationString.equals(downloadLocationEntryValuesStringArray[3])) {  // A download custom location is selected.
-                        // Set the download location summary text to be `Custom`.
-                        downloadLocationPreference.setSummary(downloadLocationEntriesStringArray[3]);
-
-                        // Enable the download custom location preference.
-                        downloadCustomLocationPreference.setEnabled(true);
-                    } else {  // A download custom location is not selected.
-                        // Set the download location summary text to be the download location.
-                        downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
-
-                        // Disable the download custom location.
-                        downloadCustomLocationPreference.setEnabled(newDownloadLocationString.equals(downloadLocationEntryValuesStringArray[3]));
-                    }
-
-                    // Update the download custom location icon.
-                    if (downloadCustomLocationPreference.isEnabled()) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_night);
-                        } else {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_day);
-                        }
-                    } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_night);
-                        } else {
-                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_day);
-                        }
-                    }
-                    break;
-
-                case "download_custom_location":
-                    // Set the new download custom location as the summary text for the preference.
-                    downloadCustomLocationPreference.setSummary(sharedPreferences.getString("download_custom_location", getString(R.string.download_custom_location_default_value)));
                     break;
 
                 case "font_size":

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,25 +19,19 @@
 
 package com.stoutner.privacybrowser.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -47,9 +41,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -57,27 +48,21 @@ import com.google.android.material.snackbar.Snackbar;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.asynctasks.GetLogcat;
-import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.SaveDialog;
-import com.stoutner.privacybrowser.helpers.FileNameHelper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
-public class LogcatActivity extends AppCompatActivity implements SaveDialog.SaveListener, StoragePermissionDialog.StoragePermissionDialogListener {
+public class LogcatActivity extends AppCompatActivity implements SaveDialog.SaveListener {
     // Declare the class constants.
     private final String SCROLLVIEW_POSITION = "scrollview_position";
-
-    // Declare the class variables.
-    private String filePathString;
 
     // Define the class views.
     private TextView logcatTextView;
@@ -104,8 +89,11 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
         // Set the content view.
         setContentView(R.layout.logcat_coordinatorlayout);
 
-        // Set the toolbar as the action bar.
+        // Get handles for the views.
         Toolbar toolbar = findViewById(R.id.logcat_toolbar);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.logcat_swiperefreshlayout);
+
+        // Set the toolbar as the action bar.
         setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.
@@ -121,7 +109,6 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
         logcatTextView = findViewById(R.id.logcat_textview);
 
         // Implement swipe to refresh.
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.logcat_swiperefreshlayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Get the current logcat.
             new GetLogcat(this, 0).execute();
@@ -241,78 +228,11 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
         savedInstanceState.putInt(SCROLLVIEW_POSITION, scrollViewYPositionInt);
     }
 
-    @Override
-    public void onSave(int saveType, DialogFragment dialogFragment) {
-        // Get a handle for the dialog.
-        Dialog dialog = dialogFragment.getDialog();
-
-        // Remove the lint warning below that the dialog might be null.
-        assert dialog != null;
-
-        // Get a handle for the file name edit text.
-        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
-
-        // Get the file path string.
-        filePathString = fileNameEditText.getText().toString();
-
-        // Check to see if the storage permission is needed.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Save the logcat.
-            saveLogcat(filePathString);
-        } else {  // The storage permission has not been granted.
-            // Get the external private directory file.
-            File externalPrivateDirectoryFile = getExternalFilesDir(null);
-
-            // Remove the incorrect lint error below that the file might be null.
-            assert externalPrivateDirectoryFile != null;
-
-            // Get the external private directory string.
-            String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
-
-            // Check to see if the file path is in the external private directory.
-            if (filePathString.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
-                // Save the logcat.
-                saveLogcat(filePathString);
-            } else {  // The file path is in a public directory.
-                // Check if the user has previously denied the storage permission.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Instantiate the storage permission alert dialog.  The type is specified as `0` because it currently isn't used for this activity.
-                    DialogFragment storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(0);
-
-                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
-                    storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
-                } else {  // Show the permission request directly.
-                    // Request the write external storage permission.  The logcat will be saved when it finishes.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onCloseStoragePermissionDialog(int requestType) {
-        // Request the write external storage permission.  The logcat will be saved when it finishes.
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Check to see if the storage permission was granted.  If the dialog was canceled the grant result will be empty.
-        if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-            // Save the logcat.
-            saveLogcat(filePathString);
-        } else {  // The storage permission was not granted.
-            // Display an error snackbar.
-            Snackbar.make(logcatTextView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-        }
-    }
-
     // The activity result is called after browsing for a file in the save alert dialog.
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
         // Run the default commands.
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, returnedIntent);
 
         // Only do something if the user didn't press back from the file picker.
         if (resultCode == Activity.RESULT_OK) {
@@ -327,35 +247,38 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
                 // Remove the lint warning below that the save dialog might be null.
                 assert saveDialog != null;
 
-                // Get a handle for the dialog views.
+                // Get a handle for the file name edit text.
                 EditText fileNameEditText = saveDialog.findViewById(R.id.file_name_edittext);
-                TextView fileExistsWarningTextView = saveDialog.findViewById(R.id.file_exists_warning_textview);
 
                 // Get the file name URI from the intent.
-                Uri fileNameUri = data.getData();
+                Uri fileNameUri = returnedIntent.getData();
 
-                // Process the file name URI if it is not null.
-                if (fileNameUri != null) {
-                    // Instantiate a file name helper.
-                    FileNameHelper fileNameHelper = new FileNameHelper();
+                // Get the file name string from the URI.
+                String fileNameString = fileNameUri.toString();
 
-                    // Convert the file name URI to a file name path.
-                    String fileNamePath = fileNameHelper.convertUriToFileNamePath(fileNameUri);
+                // Set the file name text.
+                fileNameEditText.setText(fileNameString);
 
-                    // Set the file name path as the text of the file name edit text.
-                    fileNameEditText.setText(fileNamePath);
-
-                    // Move the cursor to the end of the file name edit text.
-                    fileNameEditText.setSelection(fileNamePath.length());
-
-                    // Hide the file exists warning.
-                    fileExistsWarningTextView.setVisibility(View.GONE);
-                }
+                // Move the cursor to the end of the file name edit text.
+                fileNameEditText.setSelection(fileNameString.length());
             }
         }
     }
 
-    private void saveLogcat(String fileNameString) {
+    @Override
+    public void onSave(int saveType, DialogFragment dialogFragment) {
+        // Get a handle for the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the lint warning below that the dialog might be null.
+        assert dialog != null;
+
+        // Get a handle for the file name edit text.
+        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
+
+        // Get the file path string.
+        String fileNameString = fileNameEditText.getText().toString();
+
         try {
             // Get the logcat as a string.
             String logcatString = logcatTextView.getText().toString();
@@ -366,17 +289,11 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
             // Create a logcat buffered reader.
             BufferedReader logcatBufferedReader = new BufferedReader(new InputStreamReader(logcatInputStream));
 
-            // Create a file from the file name string.
-            File saveFile = new File(fileNameString);
-
-            // Delete the file if it already exists.
-            if (saveFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                saveFile.delete();
-            }
+            // Open an output stream.
+            OutputStream outputStream = getContentResolver().openOutputStream(Uri.parse(fileNameString));
 
             // Create a file buffered writer.
-            BufferedWriter fileBufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile)));
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
 
             // Create a transfer string.
             String transferString;
@@ -384,55 +301,23 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
             // Use the transfer string to copy the logcat from the buffered reader to the buffered writer.
             while ((transferString = logcatBufferedReader.readLine()) != null) {
                 // Append the line to the buffered writer.
-                fileBufferedWriter.append(transferString);
+                bufferedWriter.append(transferString);
 
                 // Append a line break.
-                fileBufferedWriter.append("\n");
+                bufferedWriter.append("\n");
             }
 
-            // Close the buffered reader and writer.
+            // Flush the buffered writer.
+            bufferedWriter.flush();
+
+            // Close the inputs and outputs.
             logcatBufferedReader.close();
-            fileBufferedWriter.close();
+            logcatInputStream.close();
+            bufferedWriter.close();
+            outputStream.close();
 
-            // Add the file to the list of recent files.  This doesn't currently work, but maybe it will someday.
-            MediaScannerConnection.scanFile(this, new String[] {fileNameString}, new String[] {"text/plain"}, null);
-
-            // Create a logcat saved snackbar.
-            Snackbar logcatSavedSnackbar = Snackbar.make(logcatTextView, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT);
-
-            // Add an open action to the snackbar.
-            logcatSavedSnackbar.setAction(R.string.open, (View view) -> {
-                // Get a file for the file name string.
-                File file = new File(fileNameString);
-
-                // Declare a file URI variable.
-                Uri fileUri;
-
-                // Get the URI for the file according to the Android version.
-                if (Build.VERSION.SDK_INT >= 24) {  // Use a file provider.
-                    fileUri = FileProvider.getUriForFile(this, getString(R.string.file_provider), file);
-                } else {  // Get the raw file path URI.
-                    fileUri = Uri.fromFile(file);
-                }
-
-                // Get a handle for the content resolver.
-                ContentResolver contentResolver = getContentResolver();
-
-                // Create an open intent with `ACTION_VIEW`.
-                Intent openIntent = new Intent(Intent.ACTION_VIEW);
-
-                // Set the URI and the MIME type.
-                openIntent.setDataAndType(fileUri, contentResolver.getType(fileUri));
-
-                // Allow the app to read the file URI.
-                openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                // Show the chooser.
-                startActivity(Intent.createChooser(openIntent, getString(R.string.open)));
-            });
-
-            // Show the logcat saved snackbar.
-            logcatSavedSnackbar.show();
+            // Display a snackbar with the saved logcat information.
+            Snackbar.make(logcatTextView, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
         } catch (Exception exception) {
             // Display a snackbar with the error message.
             Snackbar.make(logcatTextView, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();

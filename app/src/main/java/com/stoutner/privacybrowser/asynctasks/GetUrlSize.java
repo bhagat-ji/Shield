@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -37,12 +37,12 @@ import java.text.NumberFormat;
 
 public class GetUrlSize extends AsyncTask<String, Void, String> {
     // Define weak references for the calling context and alert dialog.
-    private WeakReference<Context> contextWeakReference;
-    private WeakReference<AlertDialog> alertDialogWeakReference;
+    private final WeakReference<Context> contextWeakReference;
+    private final WeakReference<AlertDialog> alertDialogWeakReference;
 
     // Define the class variables.
-    private String userAgent;
-    private boolean cookiesEnabled;
+    private final String userAgent;
+    private final boolean cookiesEnabled;
 
     // The public constructor.
     public GetUrlSize(Context context, AlertDialog alertDialog, String userAgent, boolean cookiesEnabled) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -348,16 +348,11 @@
                         android:title="@string/save_url"
                         android:orderInCategory="1201"
                         app:showAsAction="never" />
-                    <item
-                        android:id="@+id/save_archive"
-                        android:title="@string/save_archive"
-                        android:orderInCategory="1202"
-                        app:showAsAction="never" />
 
                     <item
                         android:id="@+id/save_image"
                         android:title="@string/save_image"
-                        android:orderInCategory="1203"
+                        android:orderInCategory="1202"
                         app:showAsAction="never" />
                 </menu>
             </item>

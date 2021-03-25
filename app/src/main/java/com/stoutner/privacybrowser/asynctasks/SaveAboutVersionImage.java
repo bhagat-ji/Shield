@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,33 +20,24 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.view.View;
 import android.widget.LinearLayout;
-
-import androidx.core.content.FileProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import com.stoutner.privacybrowser.R;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
     // Declare the weak references.
-    private WeakReference<Context> contextWeakReference;
-    private WeakReference<Activity> activityWeakReference;
-    private WeakReference<LinearLayout> aboutVersionLinearLayoutWeakReference;
+    private final WeakReference<Activity> activityWeakReference;
+    private final WeakReference<LinearLayout> aboutVersionLinearLayoutWeakReference;
 
     // Declare the class constants.
     private final String SUCCESS = "Success";
@@ -54,17 +45,16 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
     // Declare the class variables.
     private Snackbar savingImageSnackbar;
     private Bitmap aboutVersionBitmap;
-    private String filePathString;
+    private final String fileNameString;
 
     // The public constructor.
-    public SaveAboutVersionImage(Context context, Activity activity, String filePathString, LinearLayout aboutVersionLinearLayout) {
+    public SaveAboutVersionImage(Activity activity, String fileNameString, LinearLayout aboutVersionLinearLayout) {
         // Populate the weak references.
-        contextWeakReference = new WeakReference<>(context);
         activityWeakReference = new WeakReference<>(activity);
         aboutVersionLinearLayoutWeakReference = new WeakReference<>(aboutVersionLinearLayout);
 
         // Store the class variables.
-        this.filePathString = filePathString;
+        this.fileNameString = fileNameString;
     }
 
     // `onPreExecute()` operates on the UI thread.
@@ -80,7 +70,7 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
         }
 
         // Create a saving image snackbar.
-        savingImageSnackbar = Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.processing_image) + "  " + filePathString, Snackbar.LENGTH_INDEFINITE);
+        savingImageSnackbar = Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.processing_image) + "  " + fileNameString, Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving image snackbar.
         savingImageSnackbar.show();
@@ -112,33 +102,21 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
         // Convert the bitmap to a PNG.  `0` is for lossless compression (the only option for a PNG).  This compression takes a long time.  Once the minimum API >= 30 this could be replaced with WEBP_LOSSLESS.
         aboutVersionBitmap.compress(Bitmap.CompressFormat.PNG, 0, aboutVersionByteArrayOutputStream);
 
-        // Get a file for the image.
-        File imageFile = new File(filePathString);
-
-        // Delete the current file if it exists.
-        if (imageFile.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            imageFile.delete();
-        }
-
         // Create a file creation disposition string.
         String fileCreationDisposition = SUCCESS;
 
         try {
-            // Create an image file output stream.
-            FileOutputStream imageFileOutputStream = new FileOutputStream(imageFile);
+            // Open an output stream.
+            OutputStream outputStream = activity.getContentResolver().openOutputStream(Uri.parse(fileNameString));
 
             // Write the webpage image to the image file.
-            aboutVersionByteArrayOutputStream.writeTo(imageFileOutputStream);
+            aboutVersionByteArrayOutputStream.writeTo(outputStream);
 
-            // Create a media scanner intent, which adds items like pictures to Android's recent file list.
-            Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            // Flush the output stream.
+            outputStream.flush();
 
-            // Add the URI to the media scanner intent.
-            mediaScannerIntent.setData(Uri.fromFile(imageFile));
-
-            // Make it so.
-            activity.sendBroadcast(mediaScannerIntent);
+            // Close the output stream.
+            outputStream.close();
         } catch (Exception exception) {
             // Store the error in the file creation disposition string.
             fileCreationDisposition = exception.toString();
@@ -152,7 +130,6 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String fileCreationDisposition) {
         // Get handles for the weak references.
-        Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
         LinearLayout aboutVersionLinearLayout = aboutVersionLinearLayoutWeakReference.get();
 
@@ -167,41 +144,7 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
         // Display a file creation disposition snackbar.
         if (fileCreationDisposition.equals(SUCCESS)) {
             // Create a file saved snackbar.
-            Snackbar imageSavedSnackbar = Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_SHORT);
-
-            // Add an open action.
-            imageSavedSnackbar.setAction(R.string.open, (View view) -> {
-                // Get a file for the file path string.
-                File file = new File(filePathString);
-
-                // Declare a file URI variable.
-                Uri fileUri;
-
-                // Get the URI for the file according to the Android version.
-                if (Build.VERSION.SDK_INT >= 24) {  // Use a file provider.
-                    fileUri = FileProvider.getUriForFile(context, activity.getString(R.string.file_provider), file);
-                } else {  // Get the raw file path URI.
-                    fileUri = Uri.fromFile(file);
-                }
-
-                // Get a handle for the content resolver.
-                ContentResolver contentResolver = context.getContentResolver();
-
-                // Create an open intent with `ACTION_VIEW`.
-                Intent openIntent = new Intent(Intent.ACTION_VIEW);
-
-                // Autodetect the MIME type.
-                openIntent.setDataAndType(fileUri, contentResolver.getType(fileUri));
-
-                // Allow the app to read the file URI.
-                openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                // Show the chooser.
-                activity.startActivity(Intent.createChooser(openIntent, context.getString(R.string.open)));
-            });
-
-            // Show the image saved snackbar.
-            imageSavedSnackbar.show();
+            Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.error_saving_file) + "  " + fileCreationDisposition, Snackbar.LENGTH_INDEFINITE).show();
         }

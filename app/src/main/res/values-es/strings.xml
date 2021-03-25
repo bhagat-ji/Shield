@@ -109,7 +109,6 @@
 
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Caja de navegación</string>
-    <string name="navigation">Navegación</string>
     <string name="clear_and_exit">Borrar y salir</string>
     <string name="home">Inicio</string>
     <string name="back">Atrás</string>
@@ -188,12 +187,10 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">Guardar URL</string>
-    <string name="save_archive">Guardar archivo</string>
     <string name="save_text">Guardar texto</string>
     <string name="save_image">Guardar imagen</string>
     <string name="save_logcat">Guardar logcat</string>
     <string name="file_name">Nombre de archivo</string>
-    <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
     <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
     <string name="privacy_browser_version_txt">Versión de Navegador Privado.txt</string>
@@ -202,7 +199,6 @@
     <string name="bytes">bytes</string>
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="invalid_url">URL inválida</string>
-    <string name="ok">OK</string>
     <string name="saving_file">Guardando archivo:</string>
     <string name="processing_image">Procesando imagen… :</string>
     <string name="file_saved">Archivo guardado:</string>
@@ -357,8 +353,6 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">El cifrado de contraseñas no funciona en Android KitKat.</string>
-    <string name="file_does_not_exist">El archivo no existe.</string>
-    <string name="file_exists_warning">El archivo ya existe. Si procede, se sobrescribirá.</string>
     <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
     <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
     <string name="file_location">Ubicación del archivo</string>
@@ -369,12 +363,6 @@
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:</string>
     <string name="import_failed">Importación fallida:</string>
-    <string name="storage_permission">Permiso de almacenamiento</string>
-    <string name="storage_permission_message">Navegador Privado necesita el permiso de almacenamiento para acceder a los directorios públicos.
-        Si se deniega, los directorios de la aplicación pueden seguir utilizándose.</string>
-    <string name="storage_permission_explanation">El acceso a los archivos en directorios públicos requiere el permiso de almacenamiento.
-        De lo contrario, sólo funcionarán los directorios de aplicaciones.</string>
-    <string name="cannot_use_location">Esta ubicación no se puede utilizar porque no se ha concedido el permiso de almacenamiento.</string>
 
     <!-- Logcat. -->
     <string name="copy_string">Copiar</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
@@ -575,14 +563,6 @@
         <string name="clear_cache_summary">Borra la caché de WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
-        <string name="download_location">Lugar de descarga</string>
-        <string-array name="download_location_entries">
-            <item>Auto</item>
-            <item>Directorio de aplicaciones</item>
-            <item>Directorio público</item>
-            <item>Personalizado</item>
-        </string-array>
-        <string name="download_custom_location">Lugar personalizado de descarga</string>
         <string name="font_size_preference">Tamaño de fuente</string>
         <string name="open_intents_in_new_tab">Abrir contenido en nueva pestaña</string>
         <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>

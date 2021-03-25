@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -41,14 +41,14 @@ import java.text.NumberFormat;
 
 public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
     // Define weak references.
-    private WeakReference<Activity> activityWeakReference;
-    private WeakReference<Context> contextWeakReference;
-    private WeakReference<FragmentManager> fragmentManagerWeakReference;
+    private final WeakReference<Activity> activityWeakReference;
+    private final WeakReference<Context> contextWeakReference;
+    private final WeakReference<FragmentManager> fragmentManagerWeakReference;
 
     // Define the class variables.
-    private int saveType;
-    private String userAgent;
-    private boolean cookiesEnabled;
+    private final int saveType;
+    private final String userAgent;
+    private final boolean cookiesEnabled;
     private String urlString;
 
     // The public constructor.
@@ -196,6 +196,17 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
         if (activity == null || activity.isFinishing()) {
             // Exit.
             return;
+        }
+
+        // Prevent the dialog from displaying if the app window is not visible.
+        // The asynctask continues to function even when the app is paused.  Attempting to display a dialog in that state leads to a crash.
+        while (!activity.getWindow().isActive()) {
+            try {
+                // The window is not active.  Wait 1 second.
+                wait(1000);
+            } catch (InterruptedException e) {
+                // Do nothing.
+            }
         }
 
         // Instantiate the save dialog.

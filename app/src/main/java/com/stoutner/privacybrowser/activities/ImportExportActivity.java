@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,19 +19,15 @@
 
 package com.stoutner.privacybrowser.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -50,24 +46,21 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.DialogFragment;
+import androidx.multidex.BuildConfig;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
-import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
-import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
-import com.stoutner.privacybrowser.helpers.FileNameHelper;
 import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -79,7 +72,7 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class ImportExportActivity extends AppCompatActivity implements StoragePermissionDialog.StoragePermissionDialogListener {
+public class ImportExportActivity extends AppCompatActivity {
     // Define the encryption constants.
     private final int NO_ENCRYPTION = 0;
     private final int PASSWORD_ENCRYPTION = 1;
@@ -87,35 +80,37 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
     // Define the activity result constants.
     private final int BROWSE_RESULT_CODE = 0;
-    private final int OPENPGP_EXPORT_RESULT_CODE = 1;
+    private final int OPENPGP_IMPORT_RESULT_CODE = 1;
+    private final int OPENPGP_EXPORT_RESULT_CODE = 2;
 
     // Define the saved instance state constants.
-    private final String PASSWORD_ENCRYPTED_TEXTINPUTLAYOUT_VISIBILITY = "password_encrypted_textinputlayout_visibility";
+    private final String ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY = "encryption_password_textinputlayout_visibility";
     private final String KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY = "kitkat_password_encrypted_textview_visibility";
     private final String OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY = "open_keychain_required_textview_visibility";
     private final String FILE_LOCATION_CARD_VIEW = "file_location_card_view";
     private final String FILE_NAME_LINEARLAYOUT_VISIBILITY = "file_name_linearlayout_visibility";
-    private final String FILE_DOES_NOT_EXIST_TEXTVIEW_VISIBILITY = "file_does_not_exist_textview_visibility";
-    private final String FILE_EXISTS_WARNING_TEXTVIEW_VISIBILITY = "file_exists_warning_textview_visibility";
     private final String OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY = "open_keychain_import_instructions_textview_visibility";
     private final String IMPORT_EXPORT_BUTTON_VISIBILITY = "import_export_button_visibility";
     private final String FILE_NAME_TEXT = "file_name_text";
     private final String IMPORT_EXPORT_BUTTON_TEXT = "import_export_button_text";
 
     // Define the class views.
-    TextInputLayout passwordEncryptionTextInputLayout;
+    Spinner encryptionSpinner;
+    TextInputLayout encryptionPasswordTextInputLayout;
+    EditText encryptionPasswordEditText;
     TextView kitKatPasswordEncryptionTextView;
     TextView openKeychainRequiredTextView;
     CardView fileLocationCardView;
+    RadioButton importRadioButton;
     LinearLayout fileNameLinearLayout;
     EditText fileNameEditText;
-    TextView fileDoesNotExistTextView;
-    TextView fileExistsWarningTextView;
     TextView openKeychainImportInstructionsTextView;
     Button importExportButton;
 
     // Define the class variables.
     private boolean openKeychainInstalled;
+    private File temporaryPgpEncryptedImportFile;
+    private File temporaryPreEncryptedExportFile;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -163,21 +158,18 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         }
 
         // Get handles for the views that need to be modified.
-        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
-        passwordEncryptionTextInputLayout = findViewById(R.id.password_encryption_textinputlayout);
-        EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
+        encryptionSpinner = findViewById(R.id.encryption_spinner);
+        encryptionPasswordTextInputLayout = findViewById(R.id.encryption_password_textinputlayout);
+        encryptionPasswordEditText = findViewById(R.id.encryption_password_edittext);
         kitKatPasswordEncryptionTextView = findViewById(R.id.kitkat_password_encryption_textview);
         openKeychainRequiredTextView = findViewById(R.id.openkeychain_required_textview);
         fileLocationCardView = findViewById(R.id.file_location_cardview);
-        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
+        importRadioButton = findViewById(R.id.import_radiobutton);
         RadioButton exportRadioButton = findViewById(R.id.export_radiobutton);
         fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
         fileNameEditText = findViewById(R.id.file_name_edittext);
-        fileDoesNotExistTextView = findViewById(R.id.file_does_not_exist_textview);
-        fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
         openKeychainImportInstructionsTextView = findViewById(R.id.openkeychain_import_instructions_textview);
         importExportButton = findViewById(R.id.import_export_button);
-        TextView storagePermissionTextView = findViewById(R.id.import_export_storage_permission_textview);
 
         // Create an array adapter for the spinner.
         ArrayAdapter<CharSequence> encryptionArrayAdapter = ArrayAdapter.createFromResource(this, R.array.encryption_type, R.layout.spinner_item);
@@ -188,24 +180,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         // Set the array adapter for the spinner.
         encryptionSpinner.setAdapter(encryptionArrayAdapter);
 
-        // Instantiate the download location helper.
-        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
-
-        // Get the default file path.
-        String defaultFilePath = downloadLocationHelper.getDownloadLocation(this) + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs";
-
-        // Set the other default file paths.
-        String defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
-        String defaultPgpFilePath = defaultFilePath + ".pgp";
-
-        // Set the default file path.
-        fileNameEditText.setText(defaultFilePath);
-
-        // Hide the storage permission text view if the permission has already been granted.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            storagePermissionTextView.setVisibility(View.GONE);
-        }
-
         // Update the UI when the spinner changes.
         encryptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -213,7 +187,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                 switch (position) {
                     case NO_ENCRYPTION:
                         // Hide the unneeded layout items.
-                        passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+                        encryptionPasswordTextInputLayout.setVisibility(View.GONE);
                         kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
                         openKeychainRequiredTextView.setVisibility(View.GONE);
                         openKeychainImportInstructionsTextView.setVisibility(View.GONE);
@@ -231,8 +205,8 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                             importExportButton.setText(R.string.import_button);
                         }
 
-                        // Reset the default file path.
-                        fileNameEditText.setText(defaultFilePath);
+                        // Enable the import/export button if the file name is populated.
+                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
                         break;
 
                     case PASSWORD_ENCRYPTION:
@@ -249,7 +223,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                             openKeychainImportInstructionsTextView.setVisibility(View.GONE);
 
                             // Show the password encryption layout items.
-                            passwordEncryptionTextInputLayout.setVisibility(View.VISIBLE);
+                            encryptionPasswordTextInputLayout.setVisibility(View.VISIBLE);
 
                             // Show the file location card.
                             fileLocationCardView.setVisibility(View.VISIBLE);
@@ -264,21 +238,18 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                                 importExportButton.setText(R.string.import_button);
                             }
 
-                            // Update the default file path.
-                            fileNameEditText.setText(defaultPasswordEncryptionFilePath);
+                            // Enable the import/button if both the password and the file name are populated.
+                            importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
                         }
                         break;
 
                     case OPENPGP_ENCRYPTION:
                         // Hide the password encryption layout items.
-                        passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+                        encryptionPasswordTextInputLayout.setVisibility(View.GONE);
                         kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
 
                         // Updated items based on the installation status of OpenKeychain.
                         if (openKeychainInstalled) {  // OpenKeychain is installed.
-                            // Update the default file path.
-                            fileNameEditText.setText(defaultPgpFilePath);
-
                             // Show the file location card.
                             fileLocationCardView.setVisibility(View.VISIBLE);
 
@@ -289,10 +260,16 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
                                 // Set the text of the import button to be `Decrypt`.
                                 importExportButton.setText(R.string.decrypt);
+
+                                // Enable the import button if the file name is populated.
+                                importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
                             } else if (exportRadioButton.isChecked()) {
                                 // Hide the file name linear layout and the OpenKeychain import instructions.
                                 fileNameLinearLayout.setVisibility(View.GONE);
                                 openKeychainImportInstructionsTextView.setVisibility(View.GONE);
+
+                                // Enable the export button.
+                                importExportButton.setEnabled(true);
                             }
                         } else {  // OpenKeychain is not installed.
                             // Show the OpenPGP required layout item.
@@ -325,20 +302,8 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Get the current file name.
-                String fileNameString = fileNameEditText.getText().toString();
-
-                // Convert the file name string to a file.
-                File file = new File(fileNameString);
-
-                // Update the import/export button.
-                if (importRadioButton.isChecked()) {  // The import radio button is checked.
-                    // Enable the import button if the file and the password exists.
-                    importExportButton.setEnabled(file.exists() && !encryptionPasswordEditText.getText().toString().isEmpty());
-                } else if (exportRadioButton.isChecked()) {  // The export radio button is checked.
-                    // Enable the export button if the file string and the password exists.
-                    importExportButton.setEnabled(!fileNameString.isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
-                }
+                // Enable the import/export button if both the file string and the password are populated.
+                importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
             }
         });
 
@@ -356,123 +321,13 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Get the current file name.
-                String fileNameString = fileNameEditText.getText().toString();
-
-                // Convert the file name string to a file.
-                File file = new File(fileNameString);
-
                 // Adjust the UI according to the encryption spinner position.
-                switch (encryptionSpinner.getSelectedItemPosition()) {
-                    case NO_ENCRYPTION:
-                        // Determine if import or export is checked.
-                        if (exportRadioButton.isChecked()) {  // The export radio button is checked.
-                            // Hide the file does not exist text view.
-                            fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                            // Display a warning if the file already exists.
-                            if (file.exists()) {
-                                fileExistsWarningTextView.setVisibility(View.VISIBLE);
-                            } else {
-                                fileExistsWarningTextView.setVisibility(View.GONE);
-                            }
-
-                            // Enable the export button if the file name is populated.
-                            importExportButton.setEnabled(!fileNameString.isEmpty());
-                        } else if (importRadioButton.isChecked()) {  // The import radio button is checked.
-                            // Hide the file exists warning text view.
-                            fileExistsWarningTextView.setVisibility(View.GONE);
-
-                            // Check if the file exists.
-                            if (file.exists()) {  // The file exists.
-                                // Hide the notification that the file does not exist.
-                                fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                                // Enable the import button.
-                                importExportButton.setEnabled(true);
-                            } else {  // The file does not exist.
-                                // Show a notification that the file does not exist.
-                                fileDoesNotExistTextView.setVisibility(View.VISIBLE);
-
-                                // Disable the import button.
-                                importExportButton.setEnabled(false);
-                            }
-                        } else {  // Neither radio button is checked.
-                            // Hide the file notification text views.
-                            fileExistsWarningTextView.setVisibility(View.GONE);
-                            fileDoesNotExistTextView.setVisibility(View.GONE);
-                        }
-                        break;
-
-                    case PASSWORD_ENCRYPTION:
-                        // Determine if import or export is checked.
-                        if (exportRadioButton.isChecked()) {  // The export radio button is checked.
-                            // Hide the notification that the file does not exist.
-                            fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                            // Display a warning if the file already exists.
-                            if (file.exists()) {
-                                fileExistsWarningTextView.setVisibility(View.VISIBLE);
-                            } else {
-                                fileExistsWarningTextView.setVisibility(View.GONE);
-                            }
-
-                            // Enable the export button if the file name and the password are populated.
-                            importExportButton.setEnabled(!fileNameString.isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
-                        } else if (importRadioButton.isChecked()) {  // The import radio button is checked.
-                            // Hide the file exists warning text view.
-                            fileExistsWarningTextView.setVisibility(View.GONE);
-
-                            // Check if the file exists.
-                            if (file.exists()) {  // The file exists.
-                                // Hide the notification that the file does not exist.
-                                fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                                // Enable the import button if the password is populated.
-                                importExportButton.setEnabled(!encryptionPasswordEditText.getText().toString().isEmpty());
-                            } else {  // The file does not exist.
-                                // Show a notification that the file does not exist.
-                                fileDoesNotExistTextView.setVisibility(View.VISIBLE);
-
-                                // Disable the import button.
-                                importExportButton.setEnabled(false);
-                            }
-                        } else {  // Neither radio button is checked.
-                            // Hide the file notification text views.
-                            fileExistsWarningTextView.setVisibility(View.GONE);
-                            fileDoesNotExistTextView.setVisibility(View.GONE);
-                        }
-                        break;
-
-                    case OPENPGP_ENCRYPTION:
-                        // Hide the file exists warning text view.
-                        fileExistsWarningTextView.setVisibility(View.GONE);
-
-                        if (importRadioButton.isChecked()) {  // The import radio button is checked.
-                            if (file.exists()) {  // The file exists.
-                                // Hide the notification that the file does not exist.
-                                fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                                // Enable the import button if OpenKeychain is installed.
-                                importExportButton.setEnabled(openKeychainInstalled);
-                            } else {  // The file does not exist.
-                                // Show the notification that the file does not exist.
-                                fileDoesNotExistTextView.setVisibility(View.VISIBLE);
-
-                                // Disable the import button.
-                                importExportButton.setEnabled(false);
-                            }
-                        } else if (exportRadioButton.isChecked()){  // The export radio button is checked.
-                            // Hide the notification that the file does not exist.
-                            fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                            // Enable the export button.
-                            importExportButton.setEnabled(true);
-                        } else {  // Neither radio button is checked.
-                            // Hide the notification that the file does not exist.
-                            fileDoesNotExistTextView.setVisibility(View.GONE);
-                        }
-                        break;
+                if (encryptionSpinner.getSelectedItemPosition() == PASSWORD_ENCRYPTION) {
+                    // Enable the import/export button if both the file name and the password are populated.
+                    importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                } else {
+                    // Enable the export button if the file name is populated.
+                    importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
                 }
             }
         });
@@ -480,23 +335,19 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         // Check to see if the activity has been restarted.
         if (savedInstanceState == null) {  // The app has not been restarted.
             // Initially hide the unneeded views.
-            passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+            encryptionPasswordTextInputLayout.setVisibility(View.GONE);
             kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
             openKeychainRequiredTextView.setVisibility(View.GONE);
             fileNameLinearLayout.setVisibility(View.GONE);
-            fileDoesNotExistTextView.setVisibility(View.GONE);
-            fileExistsWarningTextView.setVisibility(View.GONE);
             openKeychainImportInstructionsTextView.setVisibility(View.GONE);
             importExportButton.setVisibility(View.GONE);
         } else {  // The app has been restarted.
             // Restore the visibility of the views.
-            passwordEncryptionTextInputLayout.setVisibility(savedInstanceState.getInt(PASSWORD_ENCRYPTED_TEXTINPUTLAYOUT_VISIBILITY));
+            encryptionPasswordTextInputLayout.setVisibility(savedInstanceState.getInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY));
             kitKatPasswordEncryptionTextView.setVisibility(savedInstanceState.getInt(KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY));
             openKeychainRequiredTextView.setVisibility(savedInstanceState.getInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY));
             fileLocationCardView.setVisibility(savedInstanceState.getInt(FILE_LOCATION_CARD_VIEW));
             fileNameLinearLayout.setVisibility(savedInstanceState.getInt(FILE_NAME_LINEARLAYOUT_VISIBILITY));
-            fileDoesNotExistTextView.setVisibility(savedInstanceState.getInt(FILE_DOES_NOT_EXIST_TEXTVIEW_VISIBILITY));
-            fileExistsWarningTextView.setVisibility(savedInstanceState.getInt(FILE_EXISTS_WARNING_TEXTVIEW_VISIBILITY));
             openKeychainImportInstructionsTextView.setVisibility(savedInstanceState.getInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY));
             importExportButton.setVisibility(savedInstanceState.getInt(IMPORT_EXPORT_BUTTON_VISIBILITY));
 
@@ -512,13 +363,11 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         super.onSaveInstanceState(savedInstanceState);
 
         // Save the visibility of the views.
-        savedInstanceState.putInt(PASSWORD_ENCRYPTED_TEXTINPUTLAYOUT_VISIBILITY, passwordEncryptionTextInputLayout.getVisibility());
+        savedInstanceState.putInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY, encryptionPasswordTextInputLayout.getVisibility());
         savedInstanceState.putInt(KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY, kitKatPasswordEncryptionTextView.getVisibility());
         savedInstanceState.putInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY, openKeychainRequiredTextView.getVisibility());
         savedInstanceState.putInt(FILE_LOCATION_CARD_VIEW, fileLocationCardView.getVisibility());
         savedInstanceState.putInt(FILE_NAME_LINEARLAYOUT_VISIBILITY, fileNameLinearLayout.getVisibility());
-        savedInstanceState.putInt(FILE_DOES_NOT_EXIST_TEXTVIEW_VISIBILITY, fileDoesNotExistTextView.getVisibility());
-        savedInstanceState.putInt(FILE_EXISTS_WARNING_TEXTVIEW_VISIBILITY, fileExistsWarningTextView.getVisibility());
         savedInstanceState.putInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY, openKeychainImportInstructionsTextView.getVisibility());
         savedInstanceState.putInt(IMPORT_EXPORT_BUTTON_VISIBILITY, importExportButton.getVisibility());
 
@@ -528,16 +377,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
     }
 
     public void onClickRadioButton(View view) {
-        // Get handles for the views.
-        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
-        LinearLayout fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
-        EditText passwordEncryptionEditText = findViewById(R.id.password_encryption_edittext);
-        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
-        TextView fileDoesNotExistTextView = findViewById(R.id.file_does_not_exist_textview);
-        TextView fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
-        TextView openKeychainImportInstructionTextView = findViewById(R.id.openkeychain_import_instructions_textview);
-        Button importExportButton = findViewById(R.id.import_export_button);
-
         // Get the current file name.
         String fileNameString = fileNameEditText.getText().toString();
 
@@ -545,103 +384,74 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         File file = new File(fileNameString);
 
         // Check to see if import or export was selected.
-        switch (view.getId()) {
-            case R.id.import_radiobutton:
-                // Check to see if OpenPGP encryption is selected.
-                if (encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) {  // OpenPGP encryption selected.
-                    // Show the OpenKeychain import instructions.
-                    openKeychainImportInstructionTextView.setVisibility(View.VISIBLE);
+        if (view.getId() == R.id.import_radiobutton) {  // The import radio button is selected.
+            // Check to see if OpenPGP encryption is selected.
+            if (encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) {  // OpenPGP encryption selected.
+                // Show the OpenKeychain import instructions.
+                openKeychainImportInstructionsTextView.setVisibility(View.VISIBLE);
 
-                    // Set the text on the import/export button to be `Decrypt`.
-                    importExportButton.setText(R.string.decrypt);
-                } else {  // OpenPGP encryption not selected.
-                    // Hide the OpenKeychain import instructions.
-                    openKeychainImportInstructionTextView.setVisibility(View.GONE);
-
-                    // Set the text on the import/export button to be `Import`.
-                    importExportButton.setText(R.string.import_button);
-                }
-
-                // Hide the file exists warning text view.
-                fileExistsWarningTextView.setVisibility(View.GONE);
-
-                // Display the file name views.
-                fileNameLinearLayout.setVisibility(View.VISIBLE);
-                importExportButton.setVisibility(View.VISIBLE);
-
-                // Check to see if the file exists.
-                if (file.exists()) {  // The file exists.
-                    // Hide the notification that the file does not exist.
-                    fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                    // Check to see if password encryption is selected.
-                    if (encryptionSpinner.getSelectedItemPosition() == PASSWORD_ENCRYPTION) {  // Password encryption is selected.
-                        // Enable the import button if the encryption password is populated.
-                        importExportButton.setEnabled(!passwordEncryptionEditText.getText().toString().isEmpty());
-                    } else {  // Password encryption is not selected.
-                        // Enable the import/decrypt button.
-                        importExportButton.setEnabled(true);
-                    }
-                } else {  // The file does not exist.
-                    // Show the notification that the file does not exist.
-                    fileDoesNotExistTextView.setVisibility(View.VISIBLE);
-
-                    // Disable the import/decrypt button.
-                    importExportButton.setEnabled(false);
-                }
-                break;
-
-            case R.id.export_radiobutton:
+                // Set the text on the import/export button to be `Decrypt`.
+                importExportButton.setText(R.string.decrypt);
+            } else {  // OpenPGP encryption not selected.
                 // Hide the OpenKeychain import instructions.
-                openKeychainImportInstructionTextView.setVisibility(View.GONE);
+                openKeychainImportInstructionsTextView.setVisibility(View.GONE);
 
-                // Set the text on the import/export button to be `Export`.
-                importExportButton.setText(R.string.export);
+                // Set the text on the import/export button to be `Import`.
+                importExportButton.setText(R.string.import_button);
+            }
 
-                // Show the import/export button.
-                importExportButton.setVisibility(View.VISIBLE);
+            // Display the file name views.
+            fileNameLinearLayout.setVisibility(View.VISIBLE);
+            importExportButton.setVisibility(View.VISIBLE);
 
-                // Check to see if OpenPGP encryption is selected.
-                if (encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) {  // OpenPGP encryption is selected.
-                    // Hide the file name views.
-                    fileNameLinearLayout.setVisibility(View.GONE);
-                    fileDoesNotExistTextView.setVisibility(View.GONE);
-                    fileExistsWarningTextView.setVisibility(View.GONE);
-
-                    // Enable the export button.
+            // Check to see if the file exists.
+            if (file.exists()) {  // The file exists.
+                // Check to see if password encryption is selected.
+                if (encryptionSpinner.getSelectedItemPosition() == PASSWORD_ENCRYPTION) {  // Password encryption is selected.
+                    // Enable the import button if the encryption password is populated.
+                    importExportButton.setEnabled(!encryptionPasswordEditText.getText().toString().isEmpty());
+                } else {  // Password encryption is not selected.
+                    // Enable the import/decrypt button.
                     importExportButton.setEnabled(true);
-                } else {  // OpenPGP encryption is not selected.
-                    // Show the file name view.
-                    fileNameLinearLayout.setVisibility(View.VISIBLE);
-
-                    // Hide the notification that the file name does not exist.
-                    fileDoesNotExistTextView.setVisibility(View.GONE);
-
-                    // Display a warning if the file already exists.
-                    if (file.exists()) {
-                        fileExistsWarningTextView.setVisibility(View.VISIBLE);
-                    } else {
-                        fileExistsWarningTextView.setVisibility(View.GONE);
-                    }
-
-                    // Check the encryption type.
-                    if (encryptionSpinner.getSelectedItemPosition() == NO_ENCRYPTION) {  // No encryption is selected.
-                        // Enable the export button if the file name is populated.
-                        importExportButton.setEnabled(!fileNameString.isEmpty());
-                    } else {  // Password encryption is selected.
-                        // Enable the export button if the file name and the password are populated.
-                        importExportButton.setEnabled(!fileNameString.isEmpty() && !passwordEncryptionEditText.getText().toString().isEmpty());
-                    }
                 }
-                break;
+            } else {  // The file does not exist.
+                // Disable the import/decrypt button.
+                importExportButton.setEnabled(false);
+            }
+        } else {  // The export radio button is selected.
+            // Hide the OpenKeychain import instructions.
+            openKeychainImportInstructionsTextView.setVisibility(View.GONE);
+
+            // Set the text on the import/export button to be `Export`.
+            importExportButton.setText(R.string.export);
+
+            // Show the import/export button.
+            importExportButton.setVisibility(View.VISIBLE);
+
+            // Check to see if OpenPGP encryption is selected.
+            if (encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) {  // OpenPGP encryption is selected.
+                // Hide the file name views.
+                fileNameLinearLayout.setVisibility(View.GONE);
+
+                // Enable the export button.
+                importExportButton.setEnabled(true);
+            } else {  // OpenPGP encryption is not selected.
+                // Show the file name view.
+                fileNameLinearLayout.setVisibility(View.VISIBLE);
+
+                // Check the encryption type.
+                if (encryptionSpinner.getSelectedItemPosition() == NO_ENCRYPTION) {  // No encryption is selected.
+                    // Enable the export button if the file name is populated.
+                    importExportButton.setEnabled(!fileNameString.isEmpty());
+                } else {  // Password encryption is selected.
+                    // Enable the export button if the file name and the password are populated.
+                    importExportButton.setEnabled(!fileNameString.isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                }
+            }
         }
     }
 
     public void browse(View view) {
-        // Get a handle for the views.
-        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
-        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
-
         // Check to see if import or export is selected.
         if (importRadioButton.isChecked()) {  // Import is selected.
             // Create the file picker intent.
@@ -649,11 +459,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             // Set the intent MIME type to include all files so that everything is visible.
             importBrowseIntent.setType("*/*");
-
-            // Set the initial directory if the minimum API >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
-                importBrowseIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
-            }
 
             // Request a file that can be opened.
             importBrowseIntent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -674,11 +479,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                 exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs.aes");
             }
 
-            // Set the initial directory if the minimum API >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
-                exportBrowseIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
-            }
-
             // Request a file that can be opened.
             exportBrowseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
@@ -687,485 +487,465 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         }
     }
 
-    public void importExport(View view) {
-        // Get a handle for the views.
-        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
-        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
-        RadioButton exportRadioButton = findViewById(R.id.export_radiobutton);
-
-        // Check to see if the storage permission is needed.
-        if ((encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) && exportRadioButton.isChecked()) {  // Permission not needed to export via OpenKeychain.
-            // Export the settings.
-            exportSettings();
-        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Check to see if import or export is selected.
-            if (importRadioButton.isChecked()) {  // Import is selected.
-                // Import the settings.
-                importSettings();
-            } else {  // Export is selected.
-                // Export the settings.
-                exportSettings();
-            }
-        } else {  // The storage permission has not been granted.
-            // Get a handle for the file name EditText.
-            EditText fileNameEditText = findViewById(R.id.file_name_edittext);
-
-            // Get the file name string.
-            String fileNameString = fileNameEditText.getText().toString();
-
-            // Get the external private directory `File`.
-            File externalPrivateDirectoryFile = getExternalFilesDir(null);
-
-            // Remove the incorrect lint error below that the file might be null.
-            assert externalPrivateDirectoryFile != null;
-
-            // Get the external private directory string.
-            String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
-
-            // Check to see if the file path is in the external private directory.
-            if (fileNameString.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
-                // Check to see if import or export is selected.
-                if (importRadioButton.isChecked()) {  // Import is selected.
-                    // Import the settings.
-                    importSettings();
-                } else {  // Export is selected.
-                    // Export the settings.
-                    exportSettings();
-                }
-            } else {  // The file path is in a public directory.
-                // Check if the user has previously denied the storage permission.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Instantiate the storage permission alert dialog.
-                    DialogFragment storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(0);
-
-                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
-                    storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
-                } else {  // Show the permission request directly.
-                    // Request the storage permission.  The export will be run when it finishes.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                }
-            }
-        }
-    }
-
     @Override
-    public void onCloseStoragePermissionDialog(int type) {
-        // Request the write external storage permission.  The import/export will be run when it finishes.
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Get a handle for the import radiobutton.
-        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
-
-        // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-        if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-            // Run the import or export methods according to which radio button is selected.
-            if (importRadioButton.isChecked()) {  // Import is selected.
-                // Import the settings.
-                importSettings();
-            } else {  // Export is selected.
-                // Export the settings.
-                exportSettings();
-            }
-        } else {  // The storage permission was not granted.
-            // Display an error snackbar.
-            Snackbar.make(importRadioButton, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
         // Run the default commands.
-        super.onActivityResult(requestCode, resultCode, intent);
+        super.onActivityResult(requestCode, resultCode, returnedIntent);
 
         switch (requestCode) {
             case (BROWSE_RESULT_CODE):
-                // Don't do anything if the user pressed back from the file picker.
+                // Only do something if the user didn't press back from the file picker.
                 if (resultCode == Activity.RESULT_OK) {
-                    // Get a handle for the views.
-                    EditText fileNameEditText = findViewById(R.id.file_name_edittext);
-                    TextView fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
-
-                    // Instantiate the file name helper.
-                    FileNameHelper fileNameHelper = new FileNameHelper();
-
                     // Get the file path URI from the intent.
-                    Uri filePathUri = intent.getData();
+                    Uri fileNameUri = returnedIntent.getData();
 
-                    // Use the file path from the intent if it exists.
-                    if (filePathUri != null) {
-                        // Convert the file name URI to a file name path.
-                        String fileNamePath = fileNameHelper.convertUriToFileNamePath(filePathUri);
+                    // Get the file name string from the URI.
+                    String fileNameString = fileNameUri.toString();
 
-                        // Set the file name path as the text of the file name edit text.
-                        fileNameEditText.setText(fileNamePath);
+                    // Set the file name name text.
+                    fileNameEditText.setText(fileNameString);
 
-                        // Hide the file exists warning text view, because the file picker will have just created a file if export was selected.
-                        fileExistsWarningTextView.setVisibility(View.GONE);
-                    }
+                    // Move the cursor to the end of the file name edit text.
+                    fileNameEditText.setSelection(fileNameString.length());
+                }
+                break;
+
+            case OPENPGP_IMPORT_RESULT_CODE:
+                // Delete the temporary PGP encrypted import file.
+                if (temporaryPgpEncryptedImportFile.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    temporaryPgpEncryptedImportFile.delete();
                 }
                 break;
 
             case OPENPGP_EXPORT_RESULT_CODE:
-                // Get the temporary unencrypted export file.
-                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
-
-                // Delete the temporary unencrypted export file if it exists.
-                if (temporaryUnencryptedExportFile.exists()) {
+                // Delete the temporary pre-encrypted export file if it exists.
+                if (temporaryPreEncryptedExportFile.exists()) {
                     //noinspection ResultOfMethodCallIgnored
-                    temporaryUnencryptedExportFile.delete();
+                    temporaryPreEncryptedExportFile.delete();
                 }
                 break;
         }
     }
 
-    private void exportSettings() {
-        // Get a handle for the views.
-        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
-        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
-
+    public void importExport(View view) {
         // Instantiate the import export database helper.
         ImportExportDatabaseHelper importExportDatabaseHelper = new ImportExportDatabaseHelper();
 
-        // Get the export file string.
-        String exportFileString = fileNameEditText.getText().toString();
+        // Check to see if import or export is selected.
+        if (importRadioButton.isChecked()) {  // Import is selected.
+            // Initialize the import status string
+            String importStatus = "";
 
-        // Get the export and temporary unencrypted export files.
-        File exportFile = new File(exportFileString);
-        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
+            // Get the file name string.
+            String fileNameString = fileNameEditText.getText().toString();
 
-        // Create an export status string.
-        String exportStatus;
+            // Import according to the encryption type.
+            switch (encryptionSpinner.getSelectedItemPosition()) {
+                case NO_ENCRYPTION:
+                    try {
+                        // Get an input stream for the file name.
+                        InputStream inputStream = getContentResolver().openInputStream(Uri.parse(fileNameString));
 
-        // Export according to the encryption type.
-        switch (encryptionSpinner.getSelectedItemPosition()) {
-            case NO_ENCRYPTION:
-                // Export the unencrypted file.
-                exportStatus = importExportDatabaseHelper.exportUnencrypted(exportFile, this);
+                        // Import the unencrypted file.
+                        importStatus = importExportDatabaseHelper.importUnencrypted(inputStream, this);
+                    } catch (FileNotFoundException exception) {
+                        // Update the import status.
+                        importStatus = exception.toString();
+                    }
 
-                // Show a disposition snackbar.
-                if (exportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
-                    Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exportStatus, Snackbar.LENGTH_INDEFINITE).show();
-                }
-                break;
+                    // Restart Privacy Browser if successful.
+                    if (importStatus.equals(ImportExportDatabaseHelper.IMPORT_SUCCESSFUL)) {
+                        restartPrivacyBrowser();
+                    }
+                    break;
 
-            case PASSWORD_ENCRYPTION:
-                // Create an unencrypted export in a private directory.
-                exportStatus = importExportDatabaseHelper.exportUnencrypted(temporaryUnencryptedExportFile, this);
+                case PASSWORD_ENCRYPTION:
+                    try {
+                        // Get the encryption password.
+                        String encryptionPasswordString = encryptionPasswordEditText.getText().toString();
 
-                try {
-                    // Create an unencrypted export file input stream.
-                    FileInputStream unencryptedExportFileInputStream = new FileInputStream(temporaryUnencryptedExportFile);
+                        // Get an input stream for the file name.
+                        InputStream inputStream = getContentResolver().openInputStream(Uri.parse(fileNameString));
 
-                    // Delete the encrypted export file if it exists.
-                    if (exportFile.exists()) {
+                        // Get the salt from the beginning of the import file.
+                        byte[] saltByteArray = new byte[32];
                         //noinspection ResultOfMethodCallIgnored
-                        exportFile.delete();
-                    }
+                        inputStream.read(saltByteArray);
 
-                    // Create an encrypted export file output stream.
-                    FileOutputStream encryptedExportFileOutputStream = new FileOutputStream(exportFile);
+                        // Get the initialization vector from the import file.
+                        byte[] initializationVector = new byte[12];
+                        //noinspection ResultOfMethodCallIgnored
+                        inputStream.read(initializationVector);
 
-                    // Get a handle for the encryption password EditText.
-                    EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
+                        // Convert the encryption password to a byte array.
+                        byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
 
-                    // Get the encryption password.
-                    String encryptionPasswordString = encryptionPasswordEditText.getText().toString();
+                        // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
+                        byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
+                        System.arraycopy(encryptionPasswordByteArray, 0, encryptionPasswordWithSaltByteArray, 0, encryptionPasswordByteArray.length);
+                        System.arraycopy(saltByteArray, 0, encryptionPasswordWithSaltByteArray, encryptionPasswordByteArray.length, saltByteArray.length);
 
-                    // Initialize a secure random number generator.
-                    SecureRandom secureRandom = new SecureRandom();
+                        // Get a SHA-512 message digest.
+                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
 
-                    // Get a 256 bit (32 byte) random salt.
-                    byte[] saltByteArray = new byte[32];
-                    secureRandom.nextBytes(saltByteArray);
+                        // Hash the salted encryption password.  Otherwise, any characters after the 32nd character in the password are ignored.
+                        byte[] hashedEncryptionPasswordWithSaltByteArray = messageDigest.digest(encryptionPasswordWithSaltByteArray);
 
-                    // Convert the encryption password to a byte array.
-                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
+                        // Truncate the encryption password byte array to 256 bits (32 bytes).
+                        byte[] truncatedHashedEncryptionPasswordWithSaltByteArray = Arrays.copyOf(hashedEncryptionPasswordWithSaltByteArray, 32);
 
-                    // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
-                    byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
-                    System.arraycopy(encryptionPasswordByteArray, 0, encryptionPasswordWithSaltByteArray, 0, encryptionPasswordByteArray.length);
-                    System.arraycopy(saltByteArray, 0, encryptionPasswordWithSaltByteArray, encryptionPasswordByteArray.length, saltByteArray.length);
+                        // Create an AES secret key from the encryption password byte array.
+                        SecretKeySpec secretKey = new SecretKeySpec(truncatedHashedEncryptionPasswordWithSaltByteArray, "AES");
 
-                    // Get a SHA-512 message digest.
-                    MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+                        // Get a Advanced Encryption Standard, Galois/Counter Mode, No Padding cipher instance. Galois/Counter mode protects against modification of the ciphertext.  It doesn't use padding.
+                        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
-                    // Hash the salted encryption password.  Otherwise, any characters after the 32nd character in the password are ignored.
-                    byte[] hashedEncryptionPasswordWithSaltByteArray = messageDigest.digest(encryptionPasswordWithSaltByteArray);
+                        // Set the GCM tag length to be 128 bits (the maximum) and apply the initialization vector.
+                        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, initializationVector);
 
-                    // Truncate the encryption password byte array to 256 bits (32 bytes).
-                    byte[] truncatedHashedEncryptionPasswordWithSaltByteArray = Arrays.copyOf(hashedEncryptionPasswordWithSaltByteArray, 32);
+                        // Initialize the cipher.
+                        cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
 
-                    // Create an AES secret key from the encryption password byte array.
-                    SecretKeySpec secretKey = new SecretKeySpec(truncatedHashedEncryptionPasswordWithSaltByteArray, "AES");
+                        // Create a cipher input stream.
+                        CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
 
-                    // Generate a random 12 byte initialization vector.  According to NIST, a 12 byte initialization vector is more secure than a 16 byte one.
-                    byte[] initializationVector = new byte[12];
-                    secureRandom.nextBytes(initializationVector);
+                        // Initialize variables to store data as it is moved from the cipher input stream to the unencrypted import file output stream.  Move 128 bits (16 bytes) at a time.
+                        int numberOfBytesRead;
+                        byte[] decryptedBytes = new byte[16];
 
-                    // Get a Advanced Encryption Standard, Galois/Counter Mode, No Padding cipher instance. Galois/Counter mode protects against modification of the ciphertext.  It doesn't use padding.
-                    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
-                    // Set the GCM tag length to be 128 bits (the maximum) and apply the initialization vector.
-                    GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, initializationVector);
+                        // Create a private temporary unencrypted import file.
+                        File temporaryUnencryptedImportFile = File.createTempFile("temporary_unencrypted_import_file", null, getApplicationContext().getCacheDir());
 
-                    // Initialize the cipher.
-                    cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
+                        // Create an temporary unencrypted import file output stream.
+                        FileOutputStream temporaryUnencryptedImportFileOutputStream = new FileOutputStream(temporaryUnencryptedImportFile);
 
-                    // Add the salt and the initialization vector to the export file.
-                    encryptedExportFileOutputStream.write(saltByteArray);
-                    encryptedExportFileOutputStream.write(initializationVector);
 
-                    // Create a cipher output stream.
-                    CipherOutputStream cipherOutputStream = new CipherOutputStream(encryptedExportFileOutputStream, cipher);
+                        // Read up to 128 bits (16 bytes) of data from the cipher input stream.  `-1` will be returned when the end fo the file is reached.
+                        while ((numberOfBytesRead = cipherInputStream.read(decryptedBytes)) != -1) {
+                            // Write the data to the temporary unencrypted import file output stream.
+                            temporaryUnencryptedImportFileOutputStream.write(decryptedBytes, 0, numberOfBytesRead);
+                        }
 
-                    // Initialize variables to store data as it is moved from the unencrypted export file input stream to the cipher output stream.  Move 128 bits (16 bytes) at a time.
-                    int numberOfBytesRead;
-                    byte[] encryptedBytes = new byte[16];
 
-                    // Read up to 128 bits (16 bytes) of data from the unencrypted export file stream.  `-1` will be returned when the end of the file is reached.
-                    while ((numberOfBytesRead = unencryptedExportFileInputStream.read(encryptedBytes)) != -1) {
-                        // Write the data to the cipher output stream.
-                        cipherOutputStream.write(encryptedBytes, 0, numberOfBytesRead);
-                    }
+                        // Flush the temporary unencrypted import file output stream.
+                        temporaryUnencryptedImportFileOutputStream.flush();
 
-                    // Close the streams.
-                    cipherOutputStream.flush();
-                    cipherOutputStream.close();
-                    encryptedExportFileOutputStream.close();
-                    unencryptedExportFileInputStream.close();
+                        // Close the streams.
+                        temporaryUnencryptedImportFileOutputStream.close();
+                        cipherInputStream.close();
+                        inputStream.close();
 
-                    // Wipe the encryption data from memory.
-                    //noinspection UnusedAssignment
-                    encryptionPasswordString = "";
-                    Arrays.fill(saltByteArray, (byte) 0);
-                    Arrays.fill(encryptionPasswordByteArray, (byte) 0);
-                    Arrays.fill(encryptionPasswordWithSaltByteArray, (byte) 0);
-                    Arrays.fill(hashedEncryptionPasswordWithSaltByteArray, (byte) 0);
-                    Arrays.fill(truncatedHashedEncryptionPasswordWithSaltByteArray, (byte) 0);
-                    Arrays.fill(initializationVector, (byte) 0);
-                    Arrays.fill(encryptedBytes, (byte) 0);
+                        // Wipe the encryption data from memory.
+                        //noinspection UnusedAssignment
+                        encryptionPasswordString = "";
+                        Arrays.fill(saltByteArray, (byte) 0);
+                        Arrays.fill(initializationVector, (byte) 0);
+                        Arrays.fill(encryptionPasswordByteArray, (byte) 0);
+                        Arrays.fill(encryptionPasswordWithSaltByteArray, (byte) 0);
+                        Arrays.fill(hashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                        Arrays.fill(truncatedHashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                        Arrays.fill(decryptedBytes, (byte) 0);
 
-                    // Delete the temporary unencrypted export file.
-                    //noinspection ResultOfMethodCallIgnored
-                    temporaryUnencryptedExportFile.delete();
-                } catch (Exception exception) {
-                    exportStatus = exception.toString();
-                }
+                        // Create a temporary unencrypted import file input stream.
+                        FileInputStream temporaryUnencryptedImportFileInputStream = new FileInputStream(temporaryUnencryptedImportFile);
 
-                // Show a disposition snackbar.
-                if (exportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
-                    Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exportStatus, Snackbar.LENGTH_INDEFINITE).show();
-                }
-                break;
+                        // Import the temporary unencrypted import file.
+                        importStatus = importExportDatabaseHelper.importUnencrypted(temporaryUnencryptedImportFileInputStream, this);
 
-            case OPENPGP_ENCRYPTION:
-                // Create an unencrypted export in the private location.
-                importExportDatabaseHelper.exportUnencrypted(temporaryUnencryptedExportFile, this);
+                        // Close the temporary unencrypted import file input stream.
+                        temporaryUnencryptedImportFileInputStream.close();
 
-                // Create an encryption intent for OpenKeychain.
-                Intent openKeychainEncryptIntent = new Intent("org.sufficientlysecure.keychain.action.ENCRYPT_DATA");
-
-                // Include the temporary unencrypted export file URI.
-                openKeychainEncryptIntent.setData(FileProvider.getUriForFile(this, getString(R.string.file_provider), temporaryUnencryptedExportFile));
-
-                // Allow OpenKeychain to read the file URI.
-                openKeychainEncryptIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                // Send the intent to the OpenKeychain package.
-                openKeychainEncryptIntent.setPackage("org.sufficientlysecure.keychain");
-
-                // Make it so.
-                startActivityForResult(openKeychainEncryptIntent, OPENPGP_EXPORT_RESULT_CODE);
-                break;
-        }
-
-        // Add the file to the list of recent files.  This doesn't currently work, but maybe it will someday.
-        MediaScannerConnection.scanFile(this, new String[] {exportFileString}, new String[] {"application/x-sqlite3"}, null);
-    }
-
-    private void importSettings() {
-        // Get a handle for the views.
-        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
-        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
-
-        // Instantiate the import export database helper.
-        ImportExportDatabaseHelper importExportDatabaseHelper = new ImportExportDatabaseHelper();
-
-        // Get the import file.
-        File importFile = new File(fileNameEditText.getText().toString());
-
-        // Initialize the import status string
-        String importStatus = "";
-
-        // Import according to the encryption type.
-        switch (encryptionSpinner.getSelectedItemPosition()) {
-            case NO_ENCRYPTION:
-                // Import the unencrypted file.
-                importStatus = importExportDatabaseHelper.importUnencrypted(importFile, this);
-                break;
-
-            case PASSWORD_ENCRYPTION:
-                // Use a private temporary import location.
-                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
-
-                try {
-                    // Create an encrypted import file input stream.
-                    FileInputStream encryptedImportFileInputStream = new FileInputStream(importFile);
-
-                    // Delete the temporary import file if it exists.
-                    if (temporaryUnencryptedImportFile.exists()) {
+                        // Delete the temporary unencrypted import file.
                         //noinspection ResultOfMethodCallIgnored
                         temporaryUnencryptedImportFile.delete();
+
+                        // Restart Privacy Browser if successful.
+                        if (importStatus.equals(ImportExportDatabaseHelper.IMPORT_SUCCESSFUL)) {
+                            restartPrivacyBrowser();
+                        }
+                    } catch (Exception exception) {
+                        // Update the import status.
+                        importStatus = exception.toString();
                     }
+                    break;
 
-                    // Create an unencrypted import file output stream.
-                    FileOutputStream unencryptedImportFileOutputStream = new FileOutputStream(temporaryUnencryptedImportFile);
+                case OPENPGP_ENCRYPTION:
+                    try {
+                        // Set the temporary PGP encrypted import file.
+                        temporaryPgpEncryptedImportFile = File.createTempFile("temporary_pgp_encrypted_import_file", null, getApplicationContext().getCacheDir());
 
-                    // Get a handle for the encryption password EditText.
-                    EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
+                        // Create a temporary PGP encrypted import file output stream.
+                        FileOutputStream temporaryPgpEncryptedImportFileOutputStream = new FileOutputStream(temporaryPgpEncryptedImportFile);
 
-                    // Get the encryption password.
-                    String encryptionPasswordString = encryptionPasswordEditText.getText().toString();
+                        // Get an input stream for the file name.
+                        InputStream inputStream = getContentResolver().openInputStream(Uri.parse(fileNameString));
 
-                    // Get the salt from the beginning of the import file.
-                    byte[] saltByteArray = new byte[32];
-                    //noinspection ResultOfMethodCallIgnored
-                    encryptedImportFileInputStream.read(saltByteArray);
+                        // Create a transfer byte array.
+                        byte[] transferByteArray = new byte[1024];
 
-                    // Get the initialization vector from the import file.
-                    byte[] initializationVector = new byte[12];
-                    //noinspection ResultOfMethodCallIgnored
-                    encryptedImportFileInputStream.read(initializationVector);
+                        // Create an integer to track the number of bytes read.
+                        int bytesRead;
 
-                    // Convert the encryption password to a byte array.
-                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
+                        // Copy the input stream to the temporary PGP encrypted import file.
+                        while ((bytesRead = inputStream.read(transferByteArray)) > 0) {
+                            temporaryPgpEncryptedImportFileOutputStream.write(transferByteArray, 0, bytesRead);
+                        }
 
-                    // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
-                    byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
-                    System.arraycopy(encryptionPasswordByteArray, 0, encryptionPasswordWithSaltByteArray, 0, encryptionPasswordByteArray.length);
-                    System.arraycopy(saltByteArray, 0, encryptionPasswordWithSaltByteArray, encryptionPasswordByteArray.length, saltByteArray.length);
+                        // Flush the temporary PGP encrypted import file output stream.
+                        temporaryPgpEncryptedImportFileOutputStream.flush();
 
-                    // Get a SHA-512 message digest.
-                    MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+                        // Close the streams.
+                        inputStream.close();
+                        temporaryPgpEncryptedImportFileOutputStream.flush();
 
-                    // Hash the salted encryption password.  Otherwise, any characters after the 32nd character in the password are ignored.
-                    byte[] hashedEncryptionPasswordWithSaltByteArray = messageDigest.digest(encryptionPasswordWithSaltByteArray);
 
-                    // Truncate the encryption password byte array to 256 bits (32 bytes).
-                    byte[] truncatedHashedEncryptionPasswordWithSaltByteArray = Arrays.copyOf(hashedEncryptionPasswordWithSaltByteArray, 32);
+                        // Create an decryption intent for OpenKeychain.
+                        Intent openKeychainDecryptIntent = new Intent("org.sufficientlysecure.keychain.action.DECRYPT_DATA");
 
-                    // Create an AES secret key from the encryption password byte array.
-                    SecretKeySpec secretKey = new SecretKeySpec(truncatedHashedEncryptionPasswordWithSaltByteArray, "AES");
+                        // Include the URI to be decrypted.
+                        openKeychainDecryptIntent.setData(FileProvider.getUriForFile(this, getString(R.string.file_provider), temporaryPgpEncryptedImportFile));
 
-                    // Get a Advanced Encryption Standard, Galois/Counter Mode, No Padding cipher instance. Galois/Counter mode protects against modification of the ciphertext.  It doesn't use padding.
-                    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+                        // Allow OpenKeychain to read the file URI.
+                        openKeychainDecryptIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    // Set the GCM tag length to be 128 bits (the maximum) and apply the initialization vector.
-                    GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, initializationVector);
+                        // Send the intent to the OpenKeychain package.
+                        openKeychainDecryptIntent.setPackage("org.sufficientlysecure.keychain");
 
-                    // Initialize the cipher.
-                    cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
+                        // Make it so.
+                        startActivityForResult(openKeychainDecryptIntent, OPENPGP_IMPORT_RESULT_CODE);
 
-                    // Create a cipher input stream.
-                    CipherInputStream cipherInputStream = new CipherInputStream(encryptedImportFileInputStream, cipher);
-
-                    // Initialize variables to store data as it is moved from the cipher input stream to the unencrypted import file output stream.  Move 128 bits (16 bytes) at a time.
-                    int numberOfBytesRead;
-                    byte[] decryptedBytes = new byte[16];
-
-                    // Read up to 128 bits (16 bytes) of data from the cipher input stream.  `-1` will be returned when the end fo the file is reached.
-                    while ((numberOfBytesRead = cipherInputStream.read(decryptedBytes)) != -1) {
-                        // Write the data to the unencrypted import file output stream.
-                        unencryptedImportFileOutputStream.write(decryptedBytes, 0, numberOfBytesRead);
+                        // Update the import status.
+                        importStatus = ImportExportDatabaseHelper.IMPORT_SUCCESSFUL;
+                    } catch (Exception exception) {
+                        // Update the import status.
+                        importStatus = exception.toString();
                     }
+                    break;
+            }
 
-                    // Close the streams.
-                    unencryptedImportFileOutputStream.flush();
-                    unencryptedImportFileOutputStream.close();
-                    cipherInputStream.close();
-                    encryptedImportFileInputStream.close();
+            // Respond to the import status.
+            if (!importStatus.equals(ImportExportDatabaseHelper.IMPORT_SUCCESSFUL)) {
+                // Display a snack bar with the import error.
+                Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + importStatus, Snackbar.LENGTH_INDEFINITE).show();
+            }
+        } else {  // Export is selected.
+            // Export according to the encryption type.
+            switch (encryptionSpinner.getSelectedItemPosition()) {
+                case NO_ENCRYPTION:
+                    // Get the file name string.
+                    String noEncryptionFileNameString = fileNameEditText.getText().toString();
 
-                    // Wipe the encryption data from memory.
-                    //noinspection UnusedAssignment
-                    encryptionPasswordString = "";
-                    Arrays.fill(saltByteArray, (byte) 0);
-                    Arrays.fill(initializationVector, (byte) 0);
-                    Arrays.fill(encryptionPasswordByteArray, (byte) 0);
-                    Arrays.fill(encryptionPasswordWithSaltByteArray, (byte) 0);
-                    Arrays.fill(hashedEncryptionPasswordWithSaltByteArray, (byte) 0);
-                    Arrays.fill(truncatedHashedEncryptionPasswordWithSaltByteArray, (byte) 0);
-                    Arrays.fill(decryptedBytes, (byte) 0);
+                    try {
+                        // Get the export file output stream.
+                        OutputStream exportFileOutputStream = getContentResolver().openOutputStream(Uri.parse(noEncryptionFileNameString));
 
-                    // Import the unencrypted database from the private location.
-                    importStatus = importExportDatabaseHelper.importUnencrypted(temporaryUnencryptedImportFile, this);
+                        // Export the unencrypted file.
+                        String noEncryptionExportStatus = importExportDatabaseHelper.exportUnencrypted(exportFileOutputStream, this);
 
-                    // Delete the temporary unencrypted import file.
-                    //noinspection ResultOfMethodCallIgnored
-                    temporaryUnencryptedImportFile.delete();
-                } catch (Exception exception) {
-                    importStatus = exception.toString();
-                }
-                break;
+                        // Display an export disposition snackbar.
+                        if (noEncryptionExportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
+                            Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + noEncryptionExportStatus, Snackbar.LENGTH_INDEFINITE).show();
+                        }
+                    } catch (FileNotFoundException fileNotFoundException) {
+                        // Display a snackbar with the exception.
+                        Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + fileNotFoundException, Snackbar.LENGTH_INDEFINITE).show();
+                    }
+                    break;
 
-            case OPENPGP_ENCRYPTION:
-                try {
-                    // Create an decryption intent for OpenKeychain.
-                    Intent openKeychainDecryptIntent = new Intent("org.sufficientlysecure.keychain.action.DECRYPT_DATA");
+                case PASSWORD_ENCRYPTION:
+                    try {
+                        // Create a temporary unencrypted export file.
+                        File temporaryUnencryptedExportFile = File.createTempFile("temporary_unencrypted_export_file", null, getApplicationContext().getCacheDir());
 
-                    // Include the URI to be decrypted.
-                    openKeychainDecryptIntent.setData(FileProvider.getUriForFile(this, getString(R.string.file_provider), importFile));
+                        // Create a temporary unencrypted export output stream.
+                        FileOutputStream temporaryUnencryptedExportOutputStream = new FileOutputStream(temporaryUnencryptedExportFile);
 
-                    // Allow OpenKeychain to read the file URI.
-                    openKeychainDecryptIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        // Populate the temporary unencrypted export.
+                        String passwordEncryptionExportStatus = importExportDatabaseHelper.exportUnencrypted(temporaryUnencryptedExportOutputStream, this);
 
-                    // Send the intent to the OpenKeychain package.
-                    openKeychainDecryptIntent.setPackage("org.sufficientlysecure.keychain");
+                        // Close the temporary unencrypted export output stream.
+                        temporaryUnencryptedExportOutputStream.close();
 
-                    // Make it so.
-                    startActivity(openKeychainDecryptIntent);
-                } catch (IllegalArgumentException exception) {  // The file import location is not valid.
-                    // Display a snack bar with the import error.
-                    Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
-                }
-                break;
+                        // Create an unencrypted export file input stream.
+                        FileInputStream unencryptedExportFileInputStream = new FileInputStream(temporaryUnencryptedExportFile);
+
+                        // Get the encryption password.
+                        String encryptionPasswordString = encryptionPasswordEditText.getText().toString();
+
+                        // Initialize a secure random number generator.
+                        SecureRandom secureRandom = new SecureRandom();
+
+                        // Get a 256 bit (32 byte) random salt.
+                        byte[] saltByteArray = new byte[32];
+                        secureRandom.nextBytes(saltByteArray);
+
+                        // Convert the encryption password to a byte array.
+                        byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
+
+                        // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
+                        byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
+                        System.arraycopy(encryptionPasswordByteArray, 0, encryptionPasswordWithSaltByteArray, 0, encryptionPasswordByteArray.length);
+                        System.arraycopy(saltByteArray, 0, encryptionPasswordWithSaltByteArray, encryptionPasswordByteArray.length, saltByteArray.length);
+
+                        // Get a SHA-512 message digest.
+                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+
+                        // Hash the salted encryption password.  Otherwise, any characters after the 32nd character in the password are ignored.
+                        byte[] hashedEncryptionPasswordWithSaltByteArray = messageDigest.digest(encryptionPasswordWithSaltByteArray);
+
+                        // Truncate the encryption password byte array to 256 bits (32 bytes).
+                        byte[] truncatedHashedEncryptionPasswordWithSaltByteArray = Arrays.copyOf(hashedEncryptionPasswordWithSaltByteArray, 32);
+
+                        // Create an AES secret key from the encryption password byte array.
+                        SecretKeySpec secretKey = new SecretKeySpec(truncatedHashedEncryptionPasswordWithSaltByteArray, "AES");
+
+                        // Generate a random 12 byte initialization vector.  According to NIST, a 12 byte initialization vector is more secure than a 16 byte one.
+                        byte[] initializationVector = new byte[12];
+                        secureRandom.nextBytes(initializationVector);
+
+                        // Get a Advanced Encryption Standard, Galois/Counter Mode, No Padding cipher instance. Galois/Counter mode protects against modification of the ciphertext.  It doesn't use padding.
+                        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+
+                        // Set the GCM tag length to be 128 bits (the maximum) and apply the initialization vector.
+                        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, initializationVector);
+
+                        // Initialize the cipher.
+                        cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
+
+                        // Get the file name string.
+                        String passwordEncryptionFileNameString = fileNameEditText.getText().toString();
+
+                        // Get the export file output stream.
+                        OutputStream exportFileOutputStream = getContentResolver().openOutputStream(Uri.parse(passwordEncryptionFileNameString));
+
+                        // Add the salt and the initialization vector to the export file output stream.
+                        exportFileOutputStream.write(saltByteArray);
+                        exportFileOutputStream.write(initializationVector);
+
+                        // Create a cipher output stream.
+                        CipherOutputStream cipherOutputStream = new CipherOutputStream(exportFileOutputStream, cipher);
+
+                        // Initialize variables to store data as it is moved from the unencrypted export file input stream to the cipher output stream.  Move 128 bits (16 bytes) at a time.
+                        int numberOfBytesRead;
+                        byte[] encryptedBytes = new byte[16];
+
+                        // Read up to 128 bits (16 bytes) of data from the unencrypted export file stream.  `-1` will be returned when the end of the file is reached.
+                        while ((numberOfBytesRead = unencryptedExportFileInputStream.read(encryptedBytes)) != -1) {
+                            // Write the data to the cipher output stream.
+                            cipherOutputStream.write(encryptedBytes, 0, numberOfBytesRead);
+                        }
+
+                        // Close the streams.
+                        cipherOutputStream.flush();
+                        cipherOutputStream.close();
+                        exportFileOutputStream.close();
+                        unencryptedExportFileInputStream.close();
+
+                        // Wipe the encryption data from memory.
+                        //noinspection UnusedAssignment
+                        encryptionPasswordString = "";
+                        Arrays.fill(saltByteArray, (byte) 0);
+                        Arrays.fill(encryptionPasswordByteArray, (byte) 0);
+                        Arrays.fill(encryptionPasswordWithSaltByteArray, (byte) 0);
+                        Arrays.fill(hashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                        Arrays.fill(truncatedHashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                        Arrays.fill(initializationVector, (byte) 0);
+                        Arrays.fill(encryptedBytes, (byte) 0);
+
+                        // Delete the temporary unencrypted export file.
+                        //noinspection ResultOfMethodCallIgnored
+                        temporaryUnencryptedExportFile.delete();
+
+                        // Display an export disposition snackbar.
+                        if (passwordEncryptionExportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
+                            Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + passwordEncryptionExportStatus, Snackbar.LENGTH_INDEFINITE).show();
+                        }
+                    } catch (Exception exception) {
+                        // Display a snackbar with the exception.
+                        Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                    }
+                    break;
+
+                case OPENPGP_ENCRYPTION:
+                    try {
+                        // Set the temporary pre-encrypted export file.
+                        temporaryPreEncryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
+
+                        // Delete the temporary pre-encrypted export file if it already exists.
+                        if (temporaryPreEncryptedExportFile.exists()) {
+                            //noinspection ResultOfMethodCallIgnored
+                            temporaryPreEncryptedExportFile.delete();
+                        }
+
+                        // Create a temporary pre-encrypted export output stream.
+                        FileOutputStream temporaryPreEncryptedExportOutputStream = new FileOutputStream(temporaryPreEncryptedExportFile);
+
+                        // Populate the temporary pre-encrypted export file.
+                        String openpgpEncryptionExportStatus = importExportDatabaseHelper.exportUnencrypted(temporaryPreEncryptedExportOutputStream, this);
+
+                        // Flush the temporary pre-encryption export output stream.
+                        temporaryPreEncryptedExportOutputStream.flush();
+
+                        // Close the temporary pre-encryption export output stream.
+                        temporaryPreEncryptedExportOutputStream.close();
+
+                        // Display an export error snackbar if the temporary pre-encrypted export failed.
+                        if (!openpgpEncryptionExportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
+                            Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + openpgpEncryptionExportStatus, Snackbar.LENGTH_INDEFINITE).show();
+                        }
+
+                        // Create an encryption intent for OpenKeychain.
+                        Intent openKeychainEncryptIntent = new Intent("org.sufficientlysecure.keychain.action.ENCRYPT_DATA");
+
+                        // Include the temporary unencrypted export file URI.
+                        openKeychainEncryptIntent.setData(FileProvider.getUriForFile(this, getString(R.string.file_provider), temporaryPreEncryptedExportFile));
+
+                        // Allow OpenKeychain to read the file URI.
+                        openKeychainEncryptIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                        // Send the intent to the OpenKeychain package.
+                        openKeychainEncryptIntent.setPackage("org.sufficientlysecure.keychain");
+
+                        // Make it so.
+                        startActivityForResult(openKeychainEncryptIntent, OPENPGP_EXPORT_RESULT_CODE);
+                    } catch (Exception exception) {
+                        // Display a snackbar with the exception.
+                        Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                    }
+                    break;
+            }
         }
+    }
 
-        // Respond to the import disposition.
-        if (importStatus.equals(ImportExportDatabaseHelper.IMPORT_SUCCESSFUL)) {  // The import was successful.
-            // Create an intent to restart Privacy Browser.
-            Intent restartIntent = getParentActivityIntent();
+    private void restartPrivacyBrowser() {
+        // Create an intent to restart Privacy Browser.
+        Intent restartIntent = getParentActivityIntent();
 
-            // Assert that the intent is not null to remove the lint error below.
-            assert restartIntent != null;
+        // Assert that the intent is not null to remove the lint error below.
+        assert restartIntent != null;
 
-            // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
-            restartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
+        restartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-            // Create a restart handler.
-            Handler restartHandler = new Handler();
+        // Create a restart handler.
+        Handler restartHandler = new Handler();
 
-            // Create a restart runnable.
-            Runnable restartRunnable =  () -> {
-                // Restart Privacy Browser.
-                startActivity(restartIntent);
+        // Create a restart runnable.
+        Runnable restartRunnable =  () -> {
+            // Restart Privacy Browser.
+            startActivity(restartIntent);
 
-                // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
-                System.exit(0);
-            };
+            // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
+            System.exit(0);
+        };
 
-            // Restart Privacy Browser after 150 milliseconds to allow enough time for the preferences to be saved.
-            restartHandler.postDelayed(restartRunnable, 150);
-
-        } else if (!(encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION)){  // The import was not successful.
-            // Display a snack bar with the import error.
-            Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + importStatus, Snackbar.LENGTH_INDEFINITE).show();
-        }
+        // Restart Privacy Browser after 150 milliseconds to allow enough time for the preferences to be saved.
+        restartHandler.postDelayed(restartRunnable, 150);
     }
 }

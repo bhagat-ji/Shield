@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -41,7 +41,7 @@ public class ImportExportDatabaseHelper {
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
     // Declare the class constants.
-    private static final int SCHEMA_VERSION = 12;
+    private static final int SCHEMA_VERSION = 13;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // Declare the preferences constants.
@@ -79,8 +79,6 @@ public class ImportExportDatabaseHelper {
     private static final String CLEAR_LOGCAT = "clear_logcat";
     private static final String CLEAR_CACHE = "clear_cache";
     private static final String HOMEPAGE = "homepage";
-    private static final String DOWNLOAD_LOCATION = "download_location";
-    private static final String DOWNLOAD_CUSTOM_LOCATION = "download_custom_location";
     private static final String FONT_SIZE = "font_size";
     private static final String OPEN_INTENTS_IN_NEW_TAB = "open_intents_in_new_tab";
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
@@ -91,273 +89,27 @@ public class ImportExportDatabaseHelper {
     private static final String WIDE_VIEWPORT = "wide_viewport";
     private static final String DISPLAY_WEBPAGE_IMAGES = "display_webpage_images";
 
-    public String exportUnencrypted(File exportFile, Context context) {
+    public String importUnencrypted(InputStream importFileInputStream, Context context){
         try {
-            // Delete the current file if it exists.
-            if (exportFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                exportFile.delete();
-            }
+            // Create a temporary import file.
+            File temporaryImportFile = File.createTempFile("temporary_import_file", null, context.getCacheDir());
 
-            // Create the export database.
-            SQLiteDatabase exportDatabase = SQLiteDatabase.openOrCreateDatabase(exportFile, null);
+            // Create a temporary file output stream.
+            FileOutputStream temporaryImportFileOutputStream = new FileOutputStream(temporaryImportFile);
 
-            // Set the export database version number.
-            exportDatabase.setVersion(SCHEMA_VERSION);
-
-            // Create the export database domains table.
-            exportDatabase.execSQL(DomainsDatabaseHelper.CREATE_DOMAINS_TABLE);
-
-
-            // Create the export database bookmarks table.
-            exportDatabase.execSQL(BookmarksDatabaseHelper.CREATE_BOOKMARKS_TABLE);
-
-            // Open the bookmarks database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-            BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(context, null, null, 0);
-
-            // Get a full bookmarks cursor.
-            Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarks();
-
-            // Move to the first bookmark.
-            bookmarksCursor.moveToFirst();
-
-            // Copy the data from the bookmarks cursor into the export database.
-            for (int i = 0; i < bookmarksCursor.getCount(); i++) {
-                // Extract the record from the cursor and store the data in a ContentValues.
-                ContentValues bookmarksContentValues = new ContentValues();
-                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, bookmarksCursor.getBlob(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON)));
-
-                // Insert the record into the export database.
-                exportDatabase.insert(BookmarksDatabaseHelper.BOOKMARKS_TABLE, null, bookmarksContentValues);
-
-                // Advance to the next record.
-                bookmarksCursor.moveToNext();
-            }
-
-            // Close the bookmarks database.
-            bookmarksCursor.close();
-            bookmarksDatabaseHelper.close();
-
-
-            // Open the domains database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
-
-            // Get a full domains database cursor.
-            Cursor domainsCursor = domainsDatabaseHelper.getCompleteCursorOrderedByDomain();
-
-            // Move to the first domain.
-            domainsCursor.moveToFirst();
-
-            // Copy the data from the domains cursor into the export database.
-            for (int i = 0; i < domainsCursor.getCount(); i++) {
-                // Extract the record from the cursor and store the data in a ContentValues.
-                ContentValues domainsContentValues = new ContentValues();
-                domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
-                domainsContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
-                domainsContentValues.put(DomainsDatabaseHelper.USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
-                domainsContentValues.put(DomainsDatabaseHelper.FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH)));
-                domainsContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME)));
-                domainsContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT)));
-                domainsContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES)));
-                domainsContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
-                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES)));
-
-                // Insert the record into the export database.
-                exportDatabase.insert(DomainsDatabaseHelper.DOMAINS_TABLE, null, domainsContentValues);
-
-                // Advance to the next record.
-                domainsCursor.moveToNext();
-            }
-
-            // Close the domains database.
-            domainsCursor.close();
-            domainsDatabaseHelper.close();
-
-
-            // Prepare the preferences table SQL creation string.
-            String CREATE_PREFERENCES_TABLE = "CREATE TABLE " + PREFERENCES_TABLE + " (" +
-                    _ID + " INTEGER PRIMARY KEY, " +
-                    JAVASCRIPT + " BOOLEAN, " +
-                    FIRST_PARTY_COOKIES + " BOOLEAN, " +
-                    THIRD_PARTY_COOKIES + " BOOLEAN, " +
-                    DOM_STORAGE + " BOOLEAN, " +
-                    SAVE_FORM_DATA + " BOOLEAN, " +
-                    USER_AGENT + " TEXT, " +
-                    CUSTOM_USER_AGENT + " TEXT, " +
-                    INCOGNITO_MODE + " BOOLEAN, " +
-                    DO_NOT_TRACK + " BOOLEAN, " +
-                    ALLOW_SCREENSHOTS + " BOOLEAN, " +
-                    EASYLIST + " BOOLEAN, " +
-                    EASYPRIVACY + " BOOLEAN, " +
-                    FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
-                    FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
-                    ULTRALIST + " BOOLEAN, " +
-                    ULTRAPRIVACY + " BOOLEAN, " +
-                    BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
-                    GOOGLE_ANALYTICS + " BOOLEAN, " +
-                    FACEBOOK_CLICK_IDS + " BOOLEAN, " +
-                    TWITTER_AMP_REDIRECTS + " BOOLEAN, " +
-                    SEARCH + " TEXT, " +
-                    SEARCH_CUSTOM_URL + " TEXT, " +
-                    PROXY + " TEXT, " +
-                    PROXY_CUSTOM_URL + " TEXT, " +
-                    FULL_SCREEN_BROWSING_MODE + " BOOLEAN, " +
-                    HIDE_APP_BAR + " BOOLEAN, " +
-                    CLEAR_EVERYTHING + " BOOLEAN, " +
-                    CLEAR_COOKIES + " BOOLEAN, " +
-                    CLEAR_DOM_STORAGE + " BOOLEAN, " +
-                    CLEAR_FORM_DATA + " BOOLEAN, " +
-                    CLEAR_LOGCAT + " BOOLEAN, " +
-                    CLEAR_CACHE + " BOOLEAN, " +
-                    HOMEPAGE + " TEXT, " +
-                    DOWNLOAD_LOCATION + " TEXT, " +
-                    DOWNLOAD_CUSTOM_LOCATION + " TEXT, " +
-                    FONT_SIZE + " TEXT, " +
-                    OPEN_INTENTS_IN_NEW_TAB + " BOOLEAN, " +
-                    SWIPE_TO_REFRESH + " BOOLEAN, " +
-                    SCROLL_APP_BAR + " BOOLEAN, " +
-                    DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
-                    APP_THEME + " TEXT, " +
-                    WEBVIEW_THEME + " TEXT, " +
-                    WIDE_VIEWPORT + " BOOLEAN, " +
-                    DISPLAY_WEBPAGE_IMAGES + " BOOLEAN)";
-
-            // Create the export database preferences table.
-            exportDatabase.execSQL(CREATE_PREFERENCES_TABLE);
-
-            // Get a handle for the shared preference.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-            // Create a ContentValues with the preferences information.
-            ContentValues preferencesContentValues = new ContentValues();
-            preferencesContentValues.put(JAVASCRIPT, sharedPreferences.getBoolean(JAVASCRIPT, false));
-            preferencesContentValues.put(FIRST_PARTY_COOKIES, sharedPreferences.getBoolean(FIRST_PARTY_COOKIES, false));
-            preferencesContentValues.put(THIRD_PARTY_COOKIES, sharedPreferences.getBoolean(THIRD_PARTY_COOKIES, false));
-            preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean(DOM_STORAGE, false));
-            preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean(SAVE_FORM_DATA, false));  // Save form data can be removed once the minimum API >= 26.
-            preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)));
-            preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)));
-            preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false));
-            preferencesContentValues.put(DO_NOT_TRACK, sharedPreferences.getBoolean(DO_NOT_TRACK, false));
-            preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false));
-            preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true));
-            preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true));
-            preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean(FANBOYS_ANNOYANCE_LIST, true));
-            preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, true));
-            preferencesContentValues.put(ULTRALIST, sharedPreferences.getBoolean(ULTRALIST, true));
-            preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true));
-            preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, false));
-            preferencesContentValues.put(GOOGLE_ANALYTICS, sharedPreferences.getBoolean(GOOGLE_ANALYTICS, true));
-            preferencesContentValues.put(FACEBOOK_CLICK_IDS, sharedPreferences.getBoolean(FACEBOOK_CLICK_IDS, true));
-            preferencesContentValues.put(TWITTER_AMP_REDIRECTS, sharedPreferences.getBoolean(TWITTER_AMP_REDIRECTS, true));
-            preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)));
-            preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString(SEARCH_CUSTOM_URL, context.getString(R.string.search_custom_url_default_value)));
-            preferencesContentValues.put(PROXY, sharedPreferences.getString(PROXY, context.getString(R.string.proxy_default_value)));
-            preferencesContentValues.put(PROXY_CUSTOM_URL, sharedPreferences.getString(PROXY_CUSTOM_URL, context.getString(R.string.proxy_custom_url_default_value)));
-            preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean(FULL_SCREEN_BROWSING_MODE, false));
-            preferencesContentValues.put(HIDE_APP_BAR, sharedPreferences.getBoolean(HIDE_APP_BAR, true));
-            preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true));
-            preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean(CLEAR_COOKIES, true));
-            preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean(CLEAR_DOM_STORAGE, true));
-            preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean(CLEAR_FORM_DATA, true));  // Clear form data can be removed once the minimum API >= 26.
-            preferencesContentValues.put(CLEAR_LOGCAT, sharedPreferences.getBoolean(CLEAR_LOGCAT, true));
-            preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true));
-            preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
-            preferencesContentValues.put(DOWNLOAD_LOCATION, sharedPreferences.getString(DOWNLOAD_LOCATION, context.getString(R.string.download_location_default_value)));
-            preferencesContentValues.put(DOWNLOAD_CUSTOM_LOCATION, sharedPreferences.getString(DOWNLOAD_CUSTOM_LOCATION, context.getString(R.string.download_custom_location_default_value)));
-            preferencesContentValues.put(FONT_SIZE, sharedPreferences.getString(FONT_SIZE, context.getString(R.string.font_size_default_value)));
-            preferencesContentValues.put(OPEN_INTENTS_IN_NEW_TAB, sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true));
-            preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
-            preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
-            preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
-            preferencesContentValues.put(APP_THEME, sharedPreferences.getString(APP_THEME, context.getString(R.string.app_theme_default_value)));
-            preferencesContentValues.put(WEBVIEW_THEME, sharedPreferences.getString(WEBVIEW_THEME, context.getString(R.string.webview_theme_default_value)));
-            preferencesContentValues.put(WIDE_VIEWPORT, sharedPreferences.getBoolean(WIDE_VIEWPORT, true));
-            preferencesContentValues.put(DISPLAY_WEBPAGE_IMAGES, sharedPreferences.getBoolean(DISPLAY_WEBPAGE_IMAGES, true));
-
-            // Insert the preferences into the export database.
-            exportDatabase.insert(PREFERENCES_TABLE, null, preferencesContentValues);
-
-            // Close the export database.
-            exportDatabase.close();
-
-            // Convert the database file to a string.
-            String exportFileString = exportFile.toString();
-
-            // Create strings for the temporary database files.
-            String journalFileString = exportFileString + "-journal";
-
-            // Get `Files` for the temporary database files.
-            File journalFile = new File(journalFileString);
-
-            // Delete the Journal file if it exists.
-            if (journalFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                journalFile.delete();
-            }
-
-            // Export successful.
-            return EXPORT_SUCCESSFUL;
-        } catch (Exception exception) {
-            // Return the export error.
-            return exception.toString();
-        }
-    }
-
-    public String importUnencrypted(File importFile, Context context){
-        try {
-            // Create a temporary import file string.
-            String temporaryImportFileString = context.getCacheDir() + "/" + "temporary_import_file";
-
-            // Get a handle for a temporary import file.
-            File temporaryImportFile = new File(temporaryImportFileString);
-
-            // Delete the temporary import file if it already exists.
-            if (temporaryImportFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                temporaryImportFile.delete();
-            }
-
-            // Create input and output streams.
-            InputStream importFileInputStream = new FileInputStream(importFile);
-            OutputStream temporaryImportFileOutputStream = new FileOutputStream(temporaryImportFile);
-
-            // Create a byte array.
+            // Create a transfer byte array.
             byte[] transferByteArray = new byte[1024];
 
             // Create an integer to track the number of bytes read.
             int bytesRead;
 
-            // Copy the import file to the temporary import file.  Once the minimum API >= 26 `Files.copy` can be used instead.
+            // Copy the import file to the temporary import file.
             while ((bytesRead = importFileInputStream.read(transferByteArray)) > 0) {
                 temporaryImportFileOutputStream.write(transferByteArray, 0, bytesRead);
             }
+
+            // Flush the temporary import file output stream.
+            temporaryImportFileOutputStream.flush();
 
             // Close the file streams.
             importFileInputStream.close();
@@ -368,14 +120,14 @@ public class ImportExportDatabaseHelper {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
             // Open the import database.  Once the minimum API >= 27 the file can be opened directly without using the string.
-            SQLiteDatabase importDatabase = SQLiteDatabase.openDatabase(temporaryImportFileString, null, SQLiteDatabase.OPEN_READWRITE);
+            SQLiteDatabase importDatabase = SQLiteDatabase.openDatabase(temporaryImportFile.toString(), null, SQLiteDatabase.OPEN_READWRITE);
 
             // Get the database version.
             int importDatabaseVersion = importDatabase.getVersion();
 
             // Upgrade the database if needed.
             if (importDatabaseVersion < SCHEMA_VERSION) {
-                switch (importDatabaseVersion){
+                switch (importDatabaseVersion) {
                     // Upgrade from schema version 1, Privacy Browser 2.13.
                     case 1:
                         // Previously this upgrade added `download_with_external_app` to the Preferences table.  But that is now removed in schema version 10.
@@ -535,17 +287,7 @@ public class ImportExportDatabaseHelper {
 
                     // Upgrade from schema version 9, Privacy Browser 3.3.
                     case 9:
-                        // Add the download location columns to the preferences table.
-                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_LOCATION + " TEXT");
-                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_CUSTOM_LOCATION + " TEXT");
-
-                        // Get the current download location values.
-                        String downloadLocation = sharedPreferences.getString(DOWNLOAD_LOCATION, context.getString(R.string.download_location_default_value));
-                        String downloadCustomLocation = sharedPreferences.getString(DOWNLOAD_CUSTOM_LOCATION, context.getString(R.string.download_custom_location_default_value));
-
-                        // Populate the preferences table with the current download location values.
-                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_LOCATION + " = '" + downloadLocation + "'");
-                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_CUSTOM_LOCATION + " = '" + downloadCustomLocation + "'");
+                        // Previously this upgrade added `download_location` and `download_custom_location` to the Preferences table.  But they are now removed in schema version 13.
 
                     // Upgrade from schema version 10, Privacy Browser 3.4.
                     case 10:
@@ -599,6 +341,10 @@ public class ImportExportDatabaseHelper {
                         } else {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + CLEAR_LOGCAT + " = " + 0);
                         }
+
+                    // Upgrade from schema version 12, Privacy Browser 3.6.
+                    case 12:
+                        // Do nothing.  `download_location` and `download_custom_location` were removed from the preferences table.
                 }
             }
 
@@ -749,8 +495,6 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_LOGCAT)) == 1)
                     .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
                     .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
-                    .putString(DOWNLOAD_LOCATION, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DOWNLOAD_LOCATION)))
-                    .putString(DOWNLOAD_CUSTOM_LOCATION, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DOWNLOAD_CUSTOM_LOCATION)))
                     .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(FONT_SIZE)))
                     .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(OPEN_INTENTS_IN_NEW_TAB)) == 1)
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
@@ -765,46 +509,258 @@ public class ImportExportDatabaseHelper {
             // Close the preferences cursor.
             importPreferencesCursor.close();
 
-
             // Close the import database.
             importDatabase.close();
 
-            // Create strings for the temporary database files.
-            String shmFileString = temporaryImportFileString + "-shm";
-            String walFileString = temporaryImportFileString + "-wal";
-            String journalFileString = temporaryImportFileString + "-journal";
-
-            // Get `Files` for the temporary database files.
-            File shmFile = new File(shmFileString);
-            File walFile = new File(walFileString);
-            File journalFile = new File(journalFileString);
-
-            // Delete the Shared Memory file if it exists.
-            if (shmFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                shmFile.delete();
-            }
-
-            // Delete the Write Ahead Log file if it exists.
-            if (walFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                walFile.delete();
-            }
-
-            // Delete the Journal file if it exists.
-            if (journalFile.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                journalFile.delete();
-            }
-
-            // Delete the temporary import file.
-            //noinspection ResultOfMethodCallIgnored
-            temporaryImportFile.delete();
+            // Delete the temporary import file database, journal, and other related auxiliary files.
+            SQLiteDatabase.deleteDatabase(temporaryImportFile);
 
             // Import successful.
             return IMPORT_SUCCESSFUL;
         } catch (Exception exception) {
             // Return the import error.
+            return exception.toString();
+        }
+    }
+
+    public String exportUnencrypted(OutputStream exportFileOutputStream, Context context) {
+        try {
+            // Create a temporary export file.
+            File temporaryExportFile = File.createTempFile("temporary_export_file", null, context.getCacheDir());
+
+            // Create the temporary export database.
+            SQLiteDatabase temporaryExportDatabase = SQLiteDatabase.openOrCreateDatabase(temporaryExportFile, null);
+
+            // Set the temporary export database version number.
+            temporaryExportDatabase.setVersion(SCHEMA_VERSION);
+
+
+            // Create the temporary export database bookmarks table.
+            temporaryExportDatabase.execSQL(BookmarksDatabaseHelper.CREATE_BOOKMARKS_TABLE);
+
+            // Open the bookmarks database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+            BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(context, null, null, 0);
+
+            // Get a full bookmarks cursor.
+            Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarks();
+
+            // Move to the first bookmark.
+            bookmarksCursor.moveToFirst();
+
+            // Copy the data from the bookmarks cursor into the export database.
+            for (int i = 0; i < bookmarksCursor.getCount(); i++) {
+                // Extract the record from the cursor and store the data in a ContentValues.
+                ContentValues bookmarksContentValues = new ContentValues();
+                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, bookmarksCursor.getBlob(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON)));
+
+                // Insert the record into the temporary export database.
+                temporaryExportDatabase.insert(BookmarksDatabaseHelper.BOOKMARKS_TABLE, null, bookmarksContentValues);
+
+                // Advance to the next record.
+                bookmarksCursor.moveToNext();
+            }
+
+            // Close the bookmarks database.
+            bookmarksCursor.close();
+            bookmarksDatabaseHelper.close();
+
+
+            // Create the temporary export database domains table.
+            temporaryExportDatabase.execSQL(DomainsDatabaseHelper.CREATE_DOMAINS_TABLE);
+
+            // Open the domains database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
+
+            // Get a full domains database cursor.
+            Cursor domainsCursor = domainsDatabaseHelper.getCompleteCursorOrderedByDomain();
+
+            // Move to the first domain.
+            domainsCursor.moveToFirst();
+
+            // Copy the data from the domains cursor into the export database.
+            for (int i = 0; i < domainsCursor.getCount(); i++) {
+                // Extract the record from the cursor and store the data in a ContentValues.
+                ContentValues domainsContentValues = new ContentValues();
+                domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
+                domainsContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
+                domainsContentValues.put(DomainsDatabaseHelper.USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
+                domainsContentValues.put(DomainsDatabaseHelper.FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH)));
+                domainsContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME)));
+                domainsContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT)));
+                domainsContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
+                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES)));
+
+                // Insert the record into the temporary export database.
+                temporaryExportDatabase.insert(DomainsDatabaseHelper.DOMAINS_TABLE, null, domainsContentValues);
+
+                // Advance to the next record.
+                domainsCursor.moveToNext();
+            }
+
+            // Close the domains database.
+            domainsCursor.close();
+            domainsDatabaseHelper.close();
+
+
+            // Prepare the preferences table SQL creation string.
+            String CREATE_PREFERENCES_TABLE = "CREATE TABLE " + PREFERENCES_TABLE + " (" +
+                    _ID + " INTEGER PRIMARY KEY, " +
+                    JAVASCRIPT + " BOOLEAN, " +
+                    FIRST_PARTY_COOKIES + " BOOLEAN, " +
+                    THIRD_PARTY_COOKIES + " BOOLEAN, " +
+                    DOM_STORAGE + " BOOLEAN, " +
+                    SAVE_FORM_DATA + " BOOLEAN, " +
+                    USER_AGENT + " TEXT, " +
+                    CUSTOM_USER_AGENT + " TEXT, " +
+                    INCOGNITO_MODE + " BOOLEAN, " +
+                    DO_NOT_TRACK + " BOOLEAN, " +
+                    ALLOW_SCREENSHOTS + " BOOLEAN, " +
+                    EASYLIST + " BOOLEAN, " +
+                    EASYPRIVACY + " BOOLEAN, " +
+                    FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
+                    FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
+                    ULTRALIST + " BOOLEAN, " +
+                    ULTRAPRIVACY + " BOOLEAN, " +
+                    BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
+                    GOOGLE_ANALYTICS + " BOOLEAN, " +
+                    FACEBOOK_CLICK_IDS + " BOOLEAN, " +
+                    TWITTER_AMP_REDIRECTS + " BOOLEAN, " +
+                    SEARCH + " TEXT, " +
+                    SEARCH_CUSTOM_URL + " TEXT, " +
+                    PROXY + " TEXT, " +
+                    PROXY_CUSTOM_URL + " TEXT, " +
+                    FULL_SCREEN_BROWSING_MODE + " BOOLEAN, " +
+                    HIDE_APP_BAR + " BOOLEAN, " +
+                    CLEAR_EVERYTHING + " BOOLEAN, " +
+                    CLEAR_COOKIES + " BOOLEAN, " +
+                    CLEAR_DOM_STORAGE + " BOOLEAN, " +
+                    CLEAR_FORM_DATA + " BOOLEAN, " +
+                    CLEAR_LOGCAT + " BOOLEAN, " +
+                    CLEAR_CACHE + " BOOLEAN, " +
+                    HOMEPAGE + " TEXT, " +
+                    FONT_SIZE + " TEXT, " +
+                    OPEN_INTENTS_IN_NEW_TAB + " BOOLEAN, " +
+                    SWIPE_TO_REFRESH + " BOOLEAN, " +
+                    SCROLL_APP_BAR + " BOOLEAN, " +
+                    DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
+                    APP_THEME + " TEXT, " +
+                    WEBVIEW_THEME + " TEXT, " +
+                    WIDE_VIEWPORT + " BOOLEAN, " +
+                    DISPLAY_WEBPAGE_IMAGES + " BOOLEAN)";
+
+            // Create the temporary export database preferences table.
+            temporaryExportDatabase.execSQL(CREATE_PREFERENCES_TABLE);
+
+            // Get a handle for the shared preference.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+            // Create a ContentValues with the preferences information.
+            ContentValues preferencesContentValues = new ContentValues();
+            preferencesContentValues.put(JAVASCRIPT, sharedPreferences.getBoolean(JAVASCRIPT, false));
+            preferencesContentValues.put(FIRST_PARTY_COOKIES, sharedPreferences.getBoolean(FIRST_PARTY_COOKIES, false));
+            preferencesContentValues.put(THIRD_PARTY_COOKIES, sharedPreferences.getBoolean(THIRD_PARTY_COOKIES, false));
+            preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean(DOM_STORAGE, false));
+            preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean(SAVE_FORM_DATA, false));  // Save form data can be removed once the minimum API >= 26.
+            preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)));
+            preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)));
+            preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false));
+            preferencesContentValues.put(DO_NOT_TRACK, sharedPreferences.getBoolean(DO_NOT_TRACK, false));
+            preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false));
+            preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true));
+            preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true));
+            preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean(FANBOYS_ANNOYANCE_LIST, true));
+            preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, true));
+            preferencesContentValues.put(ULTRALIST, sharedPreferences.getBoolean(ULTRALIST, true));
+            preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true));
+            preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, false));
+            preferencesContentValues.put(GOOGLE_ANALYTICS, sharedPreferences.getBoolean(GOOGLE_ANALYTICS, true));
+            preferencesContentValues.put(FACEBOOK_CLICK_IDS, sharedPreferences.getBoolean(FACEBOOK_CLICK_IDS, true));
+            preferencesContentValues.put(TWITTER_AMP_REDIRECTS, sharedPreferences.getBoolean(TWITTER_AMP_REDIRECTS, true));
+            preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)));
+            preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString(SEARCH_CUSTOM_URL, context.getString(R.string.search_custom_url_default_value)));
+            preferencesContentValues.put(PROXY, sharedPreferences.getString(PROXY, context.getString(R.string.proxy_default_value)));
+            preferencesContentValues.put(PROXY_CUSTOM_URL, sharedPreferences.getString(PROXY_CUSTOM_URL, context.getString(R.string.proxy_custom_url_default_value)));
+            preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean(FULL_SCREEN_BROWSING_MODE, false));
+            preferencesContentValues.put(HIDE_APP_BAR, sharedPreferences.getBoolean(HIDE_APP_BAR, true));
+            preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true));
+            preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean(CLEAR_COOKIES, true));
+            preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean(CLEAR_DOM_STORAGE, true));
+            preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean(CLEAR_FORM_DATA, true));  // Clear form data can be removed once the minimum API >= 26.
+            preferencesContentValues.put(CLEAR_LOGCAT, sharedPreferences.getBoolean(CLEAR_LOGCAT, true));
+            preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true));
+            preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
+            preferencesContentValues.put(FONT_SIZE, sharedPreferences.getString(FONT_SIZE, context.getString(R.string.font_size_default_value)));
+            preferencesContentValues.put(OPEN_INTENTS_IN_NEW_TAB, sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true));
+            preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
+            preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
+            preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
+            preferencesContentValues.put(APP_THEME, sharedPreferences.getString(APP_THEME, context.getString(R.string.app_theme_default_value)));
+            preferencesContentValues.put(WEBVIEW_THEME, sharedPreferences.getString(WEBVIEW_THEME, context.getString(R.string.webview_theme_default_value)));
+            preferencesContentValues.put(WIDE_VIEWPORT, sharedPreferences.getBoolean(WIDE_VIEWPORT, true));
+            preferencesContentValues.put(DISPLAY_WEBPAGE_IMAGES, sharedPreferences.getBoolean(DISPLAY_WEBPAGE_IMAGES, true));
+
+            // Insert the preferences into the temporary export database.
+            temporaryExportDatabase.insert(PREFERENCES_TABLE, null, preferencesContentValues);
+
+            // Close the temporary export database.
+            temporaryExportDatabase.close();
+
+
+            // Create the temporary export file input stream.
+            FileInputStream temporaryExportFileInputStream = new FileInputStream(temporaryExportFile);
+
+            // Create a byte array.
+            byte[] transferByteArray = new byte[1024];
+
+            // Create an integer to track the number of bytes read.
+            int bytesRead;
+
+            // Copy the temporary export file to the export file output stream.
+            while ((bytesRead = temporaryExportFileInputStream.read(transferByteArray)) > 0) {
+                exportFileOutputStream.write(transferByteArray, 0, bytesRead);
+            }
+
+            // Flush the export file output stream.
+            exportFileOutputStream.flush();
+
+            // Close the file streams.
+            temporaryExportFileInputStream.close();
+            exportFileOutputStream.close();
+
+            // Delete the temporary export file database, journal, and other related auxiliary files.
+            SQLiteDatabase.deleteDatabase(temporaryExportFile);
+
+            // Export successful.
+            return EXPORT_SUCCESSFUL;
+        } catch (Exception exception) {
+            // Return the export error.
             return exception.toString();
         }
     }

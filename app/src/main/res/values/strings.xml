@@ -113,7 +113,6 @@
 
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Navigation Drawer</string>
-    <string name="navigation">Navigation</string>
     <string name="clear_and_exit">Clear and Exit</string>
     <string name="home">Home</string>
     <string name="back">Back</string>
@@ -194,12 +193,10 @@
     <!-- Save Dialogs. -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
     <string name="save_url">Save URL</string>
-    <string name="save_archive">Save Archive</string>
     <string name="save_text">Save Text</string>
     <string name="save_image">Save Image</string>
     <string name="save_logcat">Save Logcat</string>
     <string name="file_name">File name</string>
-    <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
@@ -208,7 +205,6 @@
     <string name="bytes">bytes</string>
     <string name="unknown_size">unknown size</string>
     <string name="invalid_url">invalid URL</string>
-    <string name="ok">OK</string>
     <string name="saving_file">Saving file:</string>
     <string name="processing_image">Processing image… :</string>
     <string name="file_saved">File saved:</string>
@@ -362,8 +358,6 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Password encryption does not work on Android KitKat.</string>
-    <string name="file_does_not_exist">The file does not exist.</string>
-    <string name="file_exists_warning">The file already exists.  If you proceed it will be overwritten.</string>
     <string name="openkeychain_required">OpenPGP encryption requires that OpenKeychain be installed.</string>
     <string name="openkeychain_import_instructions">The unencrypted file will have to be imported in a separate step after it is decrypted.</string>
     <string name="file_location">File Location</string>
@@ -374,10 +368,6 @@
     <string name="export_successful">Export successful.</string>
     <string name="export_failed">Export failed:</string>
     <string name="import_failed">Import failed:</string>
-    <string name="storage_permission">Storage Permission</string>
-    <string name="storage_permission_message">Privacy Browser needs the storage permission to access public directories. If it is denied, the app’s directories can still be used.</string>
-    <string name="storage_permission_explanation">Accessing files in public directories requires the storage permission. Otherwise, only app directories will work.</string>
-    <string name="cannot_use_location">This location cannot be used because the storage permission has not been granted.</string>
 
     <!-- Logcat. -->
     <string name="copy_string">Copy</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
@@ -626,20 +616,6 @@
         <string name="clear_cache_summary">Clears WebView’s cache.</string>
     <string name="general">General</string>
         <string name="homepage">Homepage</string>
-        <string name="download_location">Download location</string>
-        <string-array name="download_location_entries">
-            <item>Auto</item>
-            <item>App directory</item>
-            <item>Public directory</item>
-            <item>Custom</item>
-        </string-array>
-        <string-array name="download_location_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
-            <item>Auto</item>
-            <item>App</item>
-            <item>Public</item>
-            <item>Custom</item>
-        </string-array>
-        <string name="download_custom_location">Download custom location</string>
         <string name="font_size_preference">Font size</string>
         <string name="open_intents_in_new_tab">Open intents in new tab</string>
         <string name="open_intents_in_new_tab_summary">Intents are links sent from other apps.</string>
@@ -685,8 +661,6 @@
     <!-- Non-translatable preference default values. -->
     <string name="app_theme_default_value" translatable="false">System default</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
-    <string name="download_custom_location_default_value" translatable="false" />
-    <string name="download_location_default_value" translatable="false">Auto</string>
     <string name="font_size_default_value" translatable="false">100</string>
     <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
     <string name="proxy_custom_url_default_value" translatable="false">http://localhost:8118</string>

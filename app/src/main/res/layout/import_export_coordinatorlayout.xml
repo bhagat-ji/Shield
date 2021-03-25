@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -92,13 +92,13 @@
 
                         <!-- The encryption password. -->
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/password_encryption_textinputlayout"
+                            android:id="@+id/encryption_password_textinputlayout"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             app:passwordToggleEnabled="true" >
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/password_encryption_edittext"
+                                android:id="@+id/encryption_password_edittext"
                                 android:layout_height="wrap_content"
                                 android:layout_width="match_parent"
                                 android:hint="@string/password"
@@ -211,27 +211,6 @@
                                 android:onClick="browse" />
                         </LinearLayout>
 
-                        <!-- File notices. -->
-                        <TextView
-                            android:id="@+id/file_does_not_exist_textview"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="5dp"
-                            android:text="@string/file_does_not_exist"
-                            android:textColor="?attr/redTextColor"
-                            android:textAlignment="center" />
-
-                        <TextView
-                            android:id="@+id/file_exists_warning_textview"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="5dp"
-                            android:text="@string/file_exists_warning"
-                            android:textColor="?attr/redTextColor"
-                            android:textAlignment="center" />
-
                         <!-- OpenKeychain import instructions -->
                         <TextView
                             android:id="@+id/openkeychain_import_instructions_textview"
@@ -255,17 +234,6 @@
                             android:textColor="?attr/buttonTextColorSelector" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:id="@+id/import_export_storage_permission_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:text="@string/storage_permission_explanation"
-                    android:textAlignment="center" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

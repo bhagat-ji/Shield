@@ -109,7 +109,6 @@
 
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Menù di navigazione</string>
-    <string name="navigation">Navigazione</string>
     <string name="clear_and_exit">Elimina dati ed esci</string>
     <string name="home">Home</string>
     <string name="back">Indietro</string>
@@ -188,12 +187,10 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">Salva URL</string>
-    <string name="save_archive">Salva Archivio</string>
     <string name="save_text">Salva Testo</string>
     <string name="save_image">Salva Immagine</string>
     <string name="save_logcat">Salva il log</string>
     <string name="file_name">Nome File</string>
-    <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="privacy_browser_version_txt">Versione di Privacy Browser.txt</string>
@@ -202,7 +199,6 @@
     <string name="bytes">byte</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="invalid_url">URL non valida</string>
-    <string name="ok">OK</string>
     <string name="saving_file">Salvataggio file:</string>
     <string name="processing_image">Creazione immagine… :</string>
     <string name="file_saved">File salvato:</string>
@@ -356,8 +352,6 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">La cifratura delle Password non funziona su Android KitKat.</string>
-    <string name="file_does_not_exist">Il file non esiste.</string>
-    <string name="file_exists_warning">Il file è già esistente. Se si decide di procedere sarà sovrascritto.</string>
     <string name="openkeychain_required">La cifratura OpenPGP richiede l\'installazione di OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Il file non cifrato deve essere importato in un secondo momento dopo che è stato decriptato.</string>
     <string name="file_location">Posizione del File</string>
@@ -368,12 +362,6 @@
     <string name="export_successful">Esportazione riuscita</string>
     <string name="export_failed">Esportazione fallita:</string>
     <string name="import_failed">Importazione fallita:</string>
-    <string name="storage_permission">Permesso di accesso alla memoria</string>
-    <string name="storage_permission_message">Privacy Browser necessita del permesso di accesso alla memoria per poter accedere alle cartelle pubbliche.
-        Se questo permesso è negato possono comunque essere utilizzate le cartelle dell\'applicazione.</string>
-    <string name="storage_permission_explanation">L\'accesso ai file posti in cartelle pubbliche richiede il permesso di accesso alla memoria,
-        altrimenti saranno accessibili solo le cartelle dell\'applicazione.</string>
-    <string name="cannot_use_location">Questa posizione non può essere utilizzata perché non è stato concesso il permesso di scrittura in memoria.</string>
 
     <!-- Logcat. -->
     <string name="copy_string">Copia</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
@@ -574,14 +562,6 @@
         <string name="clear_cache_summary">Cancella solo la cache di WebView.</string>
     <string name="general">Generale</string>
         <string name="homepage">Homepage</string>
-        <string name="download_location">Posizione dei Download</string>
-        <string-array name="download_location_entries">
-            <item>Automatico</item>
-            <item>Cartella della App</item>
-            <item>Cartella Pubblica</item>
-            <item>Personalizzata</item>
-        </string-array>
-        <string name="download_custom_location">Posizione personalizzata dei Download</string>
         <string name="font_size_preference">Dimensione font</string>
         <string name="open_intents_in_new_tab">Apri gli intenti in una nuova scheda</string>
         <string name="open_intents_in_new_tab_summary">Gli intenti sono link inviati da altre app.</string>

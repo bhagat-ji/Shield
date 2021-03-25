@@ -19,32 +19,22 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.view.View
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
-import android.text.TextWatcher
-import android.text.Editable
-
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
-
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.DownloadLocationHelper
-
-import java.io.File
 
 // Declare the class constants.
 private const val SAVE_TYPE = "save_type"
@@ -176,9 +166,10 @@ class SaveDialog : DialogFragment() {
         // Get handles for the layout items.
         val fileNameEditText = alertDialog.findViewById<EditText>(R.id.file_name_edittext)!!
         val browseButton = alertDialog.findViewById<Button>(R.id.browse_button)!!
-        val fileExistsWarningTextView = alertDialog.findViewById<TextView>(R.id.file_exists_warning_textview)!!
-        val storagePermissionTextView = alertDialog.findViewById<TextView>(R.id.storage_permission_textview)!!
         val saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        // Initially disable the save button.
+        saveButton.isEnabled = false
 
         // Update the status of the save button when the file name changes.
         fileNameEditText.addTextChangedListener(object : TextWatcher {
@@ -194,18 +185,6 @@ class SaveDialog : DialogFragment() {
                 // Get the current file name.
                 val fileNameString = fileNameEditText.text.toString()
 
-                // Convert the file name string to a file.
-                val file = File(fileNameString)
-
-                // Check to see if the file exists.
-                if (file.exists()) {
-                    // Show the file exists warning.
-                    fileExistsWarningTextView.visibility = View.VISIBLE
-                } else {
-                    // Hide the file exists warning.
-                    fileExistsWarningTextView.visibility = View.GONE
-                }
-
                 // Enable the save button if the file name is populated.
                 saveButton.isEnabled = fileNameString.isNotEmpty()
             }
@@ -216,20 +195,6 @@ class SaveDialog : DialogFragment() {
             SAVE_LOGCAT -> fileName = getString(R.string.privacy_browser_logcat_txt)
             SAVE_ABOUT_VERSION_TEXT -> fileName = getString(R.string.privacy_browser_version_txt)
             SAVE_ABOUT_VERSION_IMAGE -> fileName = getString(R.string.privacy_browser_version_png)
-        }
-
-        // Instantiate the download location helper.
-        val downloadLocationHelper = DownloadLocationHelper()
-
-        // Get the default file path.
-        val defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + fileName
-
-        // Display the default file path.
-        fileNameEditText.setText(defaultFilePath)
-
-        // Hide the storage permission text view if the permission has already been granted.
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            storagePermissionTextView.visibility = View.GONE
         }
 
         // Handle clicks on the browse button.
@@ -246,7 +211,7 @@ class SaveDialog : DialogFragment() {
             // Request a file that can be opened.
             browseIntent.addCategory(Intent.CATEGORY_OPENABLE)
 
-            // Launch the file picker.  There is only one `startActivityForResult()`, so the request code is simply set to 0, but it must be run under `activity` so the request code is correct.
+            // Launch the file picker.  There is only one `startActivityForResult()`, so the request code is simply set to 0, but it must be run under `activity` so the response is processed correctly.
             requireActivity().startActivityForResult(browseIntent, 0)
         }
 
