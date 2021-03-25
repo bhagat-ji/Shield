@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -35,23 +35,12 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
         <p>Требуется для добавления ярлыков веб-сайтов на главный экран.</p>
 
-        <h3>Чтение хранилища</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission#READ_EXTERNAL_STORAGE">android.permission.READ_EXTERNAL_STORAGE</a></p>
-        <p>Требуется для импорта настроек из общих папок.
-            В Android Marshmallow (API 23) и более поздних версиях, если это разрешение получено не будет, Privacy Browser может импортировать настройки из папок приложения.</p>
-
-        <h3>Запись хранилища</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE">android.permission.WRITE_EXTERNAL_STORAGE</a></p>
-        <p>Требуется для экспорта настроек и загрузки файлов в общие папки.
-            В Android Marshmallow (API 23) и более поздних версиях, если это разрешение получено не будет, Privacy Browser может экспортировать настройки и хранить загрузки в папках приложения.</p>
-
         <br/>
         <hr/>
         <br/>
 
-        <p>Кроме того, Privacy Browser Free отображает объявления из сети Google AdMob с использованием бэкенда Firebase.
-            Для бесплатной версии Firebase добавляет следующие разрешения, даже если они не перечислены в
-            <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">файле манифеста</a> исходного кода.</p>
+        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network. For the free flavor, AdMob adds the following permissions even though they are not listed in the source code
+            <a href="https://gitweb.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">manifest file</a>.</p>
 
         <h3>Просмотр сетевых подключений</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
@@ -62,12 +51,9 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Позволяет рекламе предотвращать переход процессора в режим сна и экран от выключения. Результаты тестировании не свидетельствуют о том, что реклама на самом деле это делает.</p>
 
-        <h3>Play Install Referrer API</h3>
-        <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
-        <p>Позволяет сторонним приложениям сообщать о запуске инсталляции из рекламы в Privacy Browser Free.</p>
-
-        <h3>Получение данных из интернета</h3>
-        <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>
-        <p>Позволяет Google отправлять информацию непосредственно в AdView без необходимости сначала получать запрос (обмен сообщениями между облаком и устройством).</p>
+        <h3>Run at startup</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#RECEIVE_BOOT_COMPLETED">android.permission.RECEIVE_BOOT_COMPLETED</a></p>
+        <p>Lets AdMob start when the phone boots even if you don't open Privacy Browser Free. This is a concerning permission because it can allow Google to spy on you.
+            I would either like to find a different ad provider or drop the Free flavor of Privacy Browser entirely.</p>
     </body>
 </html>
