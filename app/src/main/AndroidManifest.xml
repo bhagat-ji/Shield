@@ -35,6 +35,16 @@
     <!-- Support Chromebooks that don't have a touch screen. -->
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
+    <!-- List the apps that Privacy Browser needs to query to see if they are installed. -->
+    <queries>
+        <!-- I2P. -->
+        <package android:name="net.i2p.android.router" />
+
+        <!-- Orbot. -->
+        <package android:name="org.torproject.android" />
+
+        <!-- For some reason, OpenKeychain is visible without having to be listed in the quaries. -->
+    </queries>
 
     <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set. -->
     <application
