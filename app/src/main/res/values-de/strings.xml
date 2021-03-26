@@ -518,6 +518,7 @@
     <string name="search">Suche</string>
         <string-array name="search_entries">
             <item>Startpage</item>
+            <item>Metager</item>
             <item>Mojeek</item>
             <item>DuckDuckGo - JavaScript deaktiviert</item>
             <item>DuckDuckGo - JavaScript aktiviert</item>
