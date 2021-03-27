@@ -204,8 +204,8 @@
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="invalid_url">Ungültige URL</string>
     <string name="saving_file">Speichere Datei:</string>
-    <string name="processing_image">Bild wird bearbeitet… :</string>
     <string name="file_saved">Datei gespeichert:</string>
+    <string name="processing_image">Bild wird bearbeitet… :</string>
     <string name="error_saving_file">Fehler beim Speichern der Datei:</string>
 
     <!-- View Source. -->

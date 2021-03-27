@@ -201,8 +201,8 @@
     <string name="unknown_size">taille inconnue</string>
     <string name="invalid_url">URL invalide</string>
     <string name="saving_file">Enregistrement du fichier:</string>
-    <string name="processing_image">Traitement de l\'image… :</string>
     <string name="file_saved">Fichier enregistré:</string>
+    <string name="processing_image">Traitement de l\'image… :</string>
     <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier:</string>
 
     <!-- View Source. -->

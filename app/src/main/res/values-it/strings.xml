@@ -200,8 +200,8 @@
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="invalid_url">URL non valida</string>
     <string name="saving_file">Salvataggio file:</string>
-    <string name="processing_image">Creazione immagine… :</string>
     <string name="file_saved">File salvato:</string>
+    <string name="processing_image">Creazione immagine… :</string>
     <string name="error_saving_file">Errore salvataggio file:</string>
 
     <!-- View Source. -->

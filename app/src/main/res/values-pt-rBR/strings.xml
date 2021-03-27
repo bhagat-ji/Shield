@@ -199,8 +199,8 @@
     <string name="unknown_size">tamanho desconhecido</string>
     <string name="invalid_url">URL inválida</string>
     <string name="saving_file">Salvando file:</string>
-    <string name="processing_image">Processando imagem… :</string>
     <string name="file_saved">Arquivo Salvo:</string>
+    <string name="processing_image">Processando imagem… :</string>
     <string name="error_saving_file">Erro ao salvar o arquivo:</string>
 
     <!-- View Source. -->

@@ -53,6 +53,9 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
     private final String userAgent;
     private final boolean cookiesEnabled;
     private Snackbar savingFileSnackbar;
+    private long fileSize;
+    private String formattedFileSize;
+    private String urlString = "";
 
     // The public constructor.
     public SaveUrl(Context context, Activity activity, String filePathString, String userAgent, boolean cookiesEnabled) {
@@ -81,7 +84,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         NoSwipeViewPager noSwipeViewPager = activity.findViewById(R.id.webviewpager);
 
         // Create a saving file snackbar.
-        savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file) + "  0% - " + filePathString, Snackbar.LENGTH_INDEFINITE);
+        savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file) + "  0%  -  " + urlString, Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving file snackbar.
         savingFileSnackbar.show();
@@ -101,14 +104,17 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         // Define a save disposition string.
         String saveDisposition = SUCCESS;
 
+        // Get the URL string.
+        urlString = urlToSave[0];
+
         try {
             // Open an output stream.
             OutputStream outputStream = activity.getContentResolver().openOutputStream(Uri.parse(filePathString));
 
             // Save the URL.
-            if (urlToSave[0].startsWith("data:")) {  // The URL contains the entire data of an image.
+            if (urlString.startsWith("data:")) {  // The URL contains the entire data of an image.
                 // Get the Base64 data, which begins after a `,`.
-                String base64DataString = urlToSave[0].substring(urlToSave[0].indexOf(",") + 1);
+                String base64DataString = urlString.substring(urlString.indexOf(",") + 1);
 
                 // Decode the Base64 string to a byte array.
                 byte[] base64DecodedDataByteArray = Base64.decode(base64DataString, Base64.DEFAULT);
@@ -117,7 +123,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                 outputStream.write(base64DecodedDataByteArray);
             } else {  // The URL points to the data location on the internet.
                 // Get the URL from the calling activity.
-                URL url = new URL(urlToSave[0]);
+                URL url = new URL(urlString);
 
                 // Instantiate the proxy helper.
                 ProxyHelper proxyHelper = new ProxyHelper();
@@ -148,13 +154,13 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                     // Get the content length header, which causes the connection to the server to be made.
                     String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
 
-                    // Define the file size long.
-                    long fileSize;
-
                     // Make sure the content length isn't null.
                     if (contentLengthString != null) {  // The content length isn't null.
                         // Convert the content length to an long.
                         fileSize = Long.parseLong(contentLengthString);
+
+                        // Format the file size for display.
+                        formattedFileSize = NumberFormat.getInstance().format(fileSize);
                     } else {  // The content length is null.
                         // Set the file size to be `-1`.
                         fileSize = -1;
@@ -177,22 +183,11 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                         // Write the contents of the conversion buffer to the file output stream.
                         outputStream.write(conversionBufferByteArray, 0, bufferLength);
 
+                        // Update the downloaded kilobytes counter.
+                        downloadedKilobytesCounter = downloadedKilobytesCounter + bufferLength;
+
                         // Update the file download progress snackbar.
-                        if (fileSize == -1) {  // The file size is unknown.
-                            // Negatively update the downloaded kilobytes counter.
-                            downloadedKilobytesCounter = downloadedKilobytesCounter - bufferLength;
-
-                            publishProgress(downloadedKilobytesCounter);
-                        } else {  // The file size is known.
-                            // Update the downloaded kilobytes counter.
-                            downloadedKilobytesCounter = downloadedKilobytesCounter + bufferLength;
-
-                            // Calculate the download percentage.
-                            long downloadPercentage = (downloadedKilobytesCounter * 100) / fileSize;
-
-                            // Update the download percentage.
-                            publishProgress(downloadPercentage);
-                        }
+                        publishProgress(downloadedKilobytesCounter);
                     }
 
                     // Close the input stream.
@@ -219,7 +214,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
     // `onProgressUpdate()` operates on the UI thread.
     @Override
-    protected void onProgressUpdate(Long... downloadPercentage) {
+    protected void onProgressUpdate(Long... numberOfBytesDownloaded) {
         // Get a handle for the activity.
         Activity activity = activityWeakReference.get();
 
@@ -228,19 +223,20 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
             return;
         }
 
-        // Check to see if a download percentage has been calculated.
-        if (downloadPercentage[0] < 0) {  // There is no download percentage.  The negative number represents the raw downloaded kilobytes.
-            // Calculate the number of bytes downloaded.  When the `downloadPercentage` is negative, it is actually the raw number of kilobytes downloaded.
-            long numberOfBytesDownloaded = - downloadPercentage[0];
+        // Format the number of bytes downloaded.
+        String formattedNumberOfBytesDownloaded = NumberFormat.getInstance().format(numberOfBytesDownloaded[0]);
 
-            // Format the number of bytes downloaded.
-            String formattedNumberOfBytesDownloaded = NumberFormat.getInstance().format(numberOfBytesDownloaded);
+        // Check to see if the file size is known.
+        if (fileSize == -1) {  // The size of the download file is not known.
+            // Update the snackbar.
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + "  -  " + urlString);
+        } else {  // The size of the download file is known.
+            // Calculate the download percentage.
+            long downloadPercentage = (numberOfBytesDownloaded[0] * 100) / fileSize;
 
             // Update the snackbar.
-            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + " - " + filePathString);
-        } else {  // There is a download percentage.
-            // Update the snackbar.
-            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + downloadPercentage[0] + "% - " + filePathString);
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + downloadPercentage + "%  -  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + " / " + formattedFileSize + " " +
+                    activity.getString(R.string.bytes) + "  -  " + urlString);
         }
     }
 
@@ -264,7 +260,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         // Display a save disposition snackbar.
         if (saveDisposition.equals(SUCCESS)) {
             // Display the file saved snackbar.
-            Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + urlString, Snackbar.LENGTH_LONG).show();
         } else {
             // Display the file saving error.
             Snackbar.make(noSwipeViewPager, activity.getString(R.string.error_saving_file) + "  " + saveDisposition, Snackbar.LENGTH_INDEFINITE).show();

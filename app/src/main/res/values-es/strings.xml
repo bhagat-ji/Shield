@@ -200,8 +200,8 @@
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="invalid_url">URL inválida</string>
     <string name="saving_file">Guardando archivo:</string>
-    <string name="processing_image">Procesando imagen… :</string>
     <string name="file_saved">Archivo guardado:</string>
+    <string name="processing_image">Procesando imagen… :</string>
     <string name="error_saving_file">Error guardando archivo:</string>
 
     <!-- View Source. -->

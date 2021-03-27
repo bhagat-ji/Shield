@@ -70,7 +70,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
         }
 
         // Create a saving image snackbar.
-        savingImageSnackbar = Snackbar.make(nestedScrollWebView, activity.getString(R.string.processing_image) + "  " + filePathString, Snackbar.LENGTH_INDEFINITE);
+        savingImageSnackbar = Snackbar.make(nestedScrollWebView, activity.getString(R.string.processing_image) + "  " + nestedScrollWebView.getCurrentUrl(), Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving image snackbar.
         savingImageSnackbar.show();
@@ -136,8 +136,8 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
 
         // Display a file creation disposition snackbar.
         if (fileCreationDisposition.equals(SUCCESS)) {
-            // Display the file saved snackbar.
-            Snackbar.make(nestedScrollWebView, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_SHORT).show();
+            // Display the image saved snackbar.
+            Snackbar.make(nestedScrollWebView, activity.getString(R.string.image_saved) + "  " + nestedScrollWebView.getCurrentUrl(), Snackbar.LENGTH_SHORT).show();
         } else {
             // Display the file saving error.
             Snackbar.make(nestedScrollWebView, activity.getString(R.string.error_saving_file) + "  " + fileCreationDisposition, Snackbar.LENGTH_INDEFINITE).show();

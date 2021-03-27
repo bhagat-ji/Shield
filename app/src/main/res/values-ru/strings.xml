@@ -197,8 +197,8 @@
     <string name="unknown_size">неизвестный размер</string>
     <string name="invalid_url">неправильный URL</string>
     <string name="saving_file">Сохранение файла:</string>
-    <string name="processing_image">Обработка изображения… :</string>
     <string name="file_saved">Файл сохранен:</string>
+    <string name="processing_image">Обработка изображения… :</string>
     <string name="error_saving_file">Ошибка сохранения файла:</string>
 
     <!-- View Source. -->

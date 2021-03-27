@@ -206,8 +206,9 @@
     <string name="unknown_size">unknown size</string>
     <string name="invalid_url">invalid URL</string>
     <string name="saving_file">Saving file:</string>
-    <string name="processing_image">Processing image… :</string>
     <string name="file_saved">File saved:</string>
+    <string name="processing_image">Processing image… :</string>
+    <string name="image_saved">Image saved:</string>
     <string name="error_saving_file">Error saving file:</string>
 
     <!-- View Source. -->
