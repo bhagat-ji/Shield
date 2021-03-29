@@ -45,8 +45,8 @@
         <hr/>
         <br/>
 
-        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network. For the free flavor, AdMob adds the following permissions even though they are not listed in the source code
-            <a href="https://gitweb.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">manifest file</a>.</p>
+        <p>Zusätzlich zeigt die kostenlose Variante des Privacy Browsers Werbung aus Google’s AdMob-Netzwerk an. In diesem Fall fügt AdMob die folgenden Berechtigungen hinzu, auch wenn diese nicht in der
+            <a href="https://gitweb.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">Manifest-Datei</a> des Quelltexts von Privacy Browser enthalten sind:</p>
 
         <h3>Netzwerk-Verbindungen anzeigen</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
@@ -57,9 +57,10 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Erlaubt den Werbeanzeigen, das Gerät nicht in den Schlaf-Modus zu versetzen und das Display nicht zu dimmen. In Stoutners Tests konnte dieses Verhalten nicht festgestellt werden.</p>
 
-        <h3>Run at startup</h3>
+        <h3>Ausführung nach Systemstart</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#RECEIVE_BOOT_COMPLETED">android.permission.RECEIVE_BOOT_COMPLETED</a></p>
-        <p>Lets AdMob start when the phone boots even if you don't open Privacy Browser Free. This is a concerning permission because it can allow Google to spy on you.
-            I would either like to find a different ad provider or drop the free flavor of Privacy Browser entirely.</p>
+        <p>Lässt AdMob nach dem Boot-Vorgang des Telefons starten, selbst wenn Privacy Browsers nicht gestartet wird.
+            Dies ist eine bedenkliche Berechtigung, da sie Google erlaubt, den Benutzer auszuspähen.
+            Es bestehen daher Überlegungen, einen anderen Werbungs-Dienstleister zu nutzen oder die kostenlose Variante von Privacy Browser gänzlich einzustellen.</p>
     </body>
 </html>

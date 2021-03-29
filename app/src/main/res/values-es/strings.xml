@@ -3,7 +3,7 @@
 <!--
   Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2020 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2021 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -202,6 +202,7 @@
     <string name="saving_file">Guardando archivo:</string>
     <string name="file_saved">Archivo guardado:</string>
     <string name="processing_image">Procesando imagen… :</string>
+    <string name="image_saved">Imagen guardada:</string>
     <string name="error_saving_file">Error guardando archivo:</string>
 
     <!-- View Source. -->

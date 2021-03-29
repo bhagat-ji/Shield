@@ -39,8 +39,9 @@
         <hr/>
         <br/>
 
-        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network. For the free flavor, AdMob adds the following permissions even though they are not listed in the source code
-            <a href="https://gitweb.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">manifest file</a>.</p>
+        <p>Кроме того, в Privacy Browser Free отображается реклама из сети Google AdMob.
+            Для бесплатного варианта браузера, AdMob добавляет следующие разрешения, даже если они не перечислены в файле исходного кода
+            <a href="https://gitweb.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">манифеста</a>.</p>
 
         <h3>Просмотр сетевых подключений</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
@@ -51,9 +52,10 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Позволяет рекламе предотвращать переход процессора в режим сна и экран от выключения. Результаты тестировании не свидетельствуют о том, что реклама на самом деле это делает.</p>
 
-        <h3>Run at startup</h3>
+        <h3>Запуск при загрузке</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#RECEIVE_BOOT_COMPLETED">android.permission.RECEIVE_BOOT_COMPLETED</a></p>
-        <p>Lets AdMob start when the phone boots even if you don't open Privacy Browser Free. This is a concerning permission because it can allow Google to spy on you.
-            I would either like to find a different ad provider or drop the free flavor of Privacy Browser entirely.</p>
+        <p>Обеспечивает запуск AdMob при загрузке телефона, даже если вы не открываете Privacy Browser Free.
+            Это разрешение вызывает беспокойство, поскольку Google может шпионить за вами.
+            Я хотел бы либо найти другого рекламного провайдера или полностью отказаться от бесплатного варианта Privacy Browser.</p>
     </body>
 </html>

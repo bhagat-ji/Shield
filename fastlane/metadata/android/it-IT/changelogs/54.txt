@@ -1,0 +1,17 @@
+• Re-design dell'accesso ai file per funzionare con la scoped storage e lo Storage Access Framework. Questo permette alla target API di essere aggiornata alla 30 ed elimina la necessità di avere le autorizzazioni molto pericolose READ_EXTERNAL_STORAGE e WRITE_EXTERNAL_STORAGE. Sfortunatamente, a causa di un baco di Android WebView, questo rimuove anche temporaneamente la possibilità di salvare un archivio web.
+• Aggiornamento della scheda Informazioni > Autorizzazioni.
+• Miglioramento della capacità descrittiva della snackbar di salvataggio della URL.
+• Aggiunta di Metager alla lista dei motori di ricerca.
+• Sistemazione del rilevamento I2P.
+• Sistemazione dell'allineamento delle icone e dei pulsanti nelle finestre di dialogo.
+• Aggiornamento della barra delle URL quando si cambia scheda anche se è in fase di editing.
+• Aggiunta la possibilità di mostrare la password nella finestra di dialogo di autenticazione HTTP.
+• Sistemazione di diversi e rari crash.
+• Sistemazione dell'icona hamburger che si trasformava in freccia quando il menù a cassetto era aperto mentre la app era riavviata.
+• Miglioramento della velocità di apertura del menù delle opzioni.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione in Portoghese Brasiliano fornita da Thiago Nazareno Conceição Silva de Jesus.
+• Aggiornamento della traduzione Francese fornita da Kévin L.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

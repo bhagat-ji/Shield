@@ -1,0 +1,17 @@
+• Rediseñar el acceso a los archivos para que funcione con el almacenamiento de alcance y el marco de acceso al almacenamiento. Esto permite que la API de destino se eleve a 30 y elimina la necesidad de los peligrosos permisos READ_EXTERNAL_STORAGE y WRITE_EXTERNAL_STORAGE. Desafortunadamente, debido a un error en el WebView de Android, esto también elimina temporalmente la capacidad de guardar un archivo web.
+• Actualizar Acerca de > Permisos.
+• Mejorar el carácter descriptivo de la barra de snack de URLs guardas.
+• Añadir Metager a la lista de motores de búsqueda.
+• Corregir la detección de I2P.
+• Arreglar la alineación de los iconos y botones de radio en los diálogos.
+• Actualizar la barra de URL al cambiar de pestaña aunque se esté editando.
+• Permitir la visualización de la contraseña en el diálogo de autenticación HTTP.
+• Corregir un número de raras caídas.
+• Arreglar que el icono de hamburguesa se convierta en una flecha si el cajón está abierto al reiniciar la aplicación.
+• Acelerar la apertura del menú de opciones.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la tracuddión al portugués brasileño proporcionada por Thiago Nazareno Conceição Silva de Jesus.
+• Actualizada la traducción al francés proporcionada por Kévin L.
+• Actualizada la traducción al alemán proporcionada por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

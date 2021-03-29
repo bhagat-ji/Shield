@@ -1,0 +1,17 @@
+• Redesign file access to work with scoped storage and the Storage Access Framework. This allows the target API to be bumped to 30 and removes the need for the dangerous READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE permissions. Unfortunately, due to a bug in Android’s WebView, this also temporarily removes the ability to save a web archive.
+• Update About > Permissions.
+• Improve the descriptiveness of the save URL snackbar.
+• Add Metager to the list of search engines.
+• Fix I2P detection.
+• Fix the alignment of icons and radio buttons in the dialogs.
+• Update the URL bar when switching tabs even if it is being edited.
+• Allow displaying of the password in the HTTP authentication dialog.
+• Fix a number of rare crashes.
+• Fix the hamburger icon turning into an arrow if the drawer is open when the app is restarted.
+• Speed up the opening of the options menu.
+• Updated Brazilian Portuguese translation provided by Thiago Nazareno Conceição Silva de Jesus.
+• Tradução francesa atualizada fornecida por Kévin L.
+• Tradução alemã atualizada fornecida por Bernhard G. Keller.
+• Tradução italiana atualizada fornecida por Francesco Buratti.
+• Tradução russa atualizada.
+• Tradução em espanhol atualizada fornecida por Jose A. León.

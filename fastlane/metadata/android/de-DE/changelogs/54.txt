@@ -1,0 +1,17 @@
+• Datei-Zugriff geändert, um "Scoped Storage" und das "Storage Access Framework" nutzen zu können. Dies erlaubt, die Ziel-API auf 30 zu erhöhen und ermöglicht, die gefährlichen Berechtigungen READ_EXTERNAL_STORAGE und WRITE_EXTERNAL_STORAGE zu vermeiden. Leider verhindert dies aufgrund eines Fehlers in Androids WebView vorübergehend das Speichern von Web-Archiven.
+• Über > Berechtigungen geändert.
+• Informationsleiste beim Speichern von Dateien (URLs) informativer gestaltet.
+• Metager zur Liste der Suchmaschinen hinzugefügt.
+• I2P-Erkennung korrigiert.
+• Ausrichtung von Icons und Optionsfeldern in Dialogen korrigiert.
+• Adress-Leiste wird beim Wechseln von Tabs aktualisiert, wenn diese geändert wurde.
+• Anzeige des Passworts im HTTP-Authentifizierungs-Dialog ermöglich.
+• Einige selten auftretende Abstürze behoben.
+• Fehler behoben, durch den das Hamburger-Menü zu einem Pfeil wurde, wenn das Navigations-Menü beim Neustart der App geöffnet war.
+• Öffnen des Options-Menüs beschleunigt.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte Brasilianisch Portugiesische Übersetzung von Thiago Nazareno Conceição Silva de Jesus.
+• Aktualisierte französische Übersetzung von Kévin L.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

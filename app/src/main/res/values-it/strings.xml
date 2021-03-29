@@ -3,7 +3,7 @@
 <!--
   Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2020 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2021 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -202,6 +202,7 @@
     <string name="saving_file">Salvataggio file:</string>
     <string name="file_saved">File salvato:</string>
     <string name="processing_image">Creazione immagine… :</string>
+    <string name="image_saved">Immagine salvata:</string>
     <string name="error_saving_file">Errore salvataggio file:</string>
 
     <!-- View Source. -->
