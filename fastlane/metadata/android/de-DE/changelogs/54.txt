@@ -10,7 +10,7 @@
 • Fehler behoben, durch den das Hamburger-Menü zu einem Pfeil wurde, wenn das Navigations-Menü beim Neustart der App geöffnet war.
 • Öffnen des Options-Menüs beschleunigt.
 • Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
-• Aktualisierte Brasilianisch Portugiesische Übersetzung von Thiago Nazareno Conceição Silva de Jesus.
+• Aktualisierte brasilianisch-portugiesische Übersetzung von Thiago Nazareno Conceição Silva de Jesus.
 • Aktualisierte französische Übersetzung von Kévin L.
 • Aktualisierte italienische Übersetzung von Francesco Buratti.
 • Aktualisierte russische Übersetzung.

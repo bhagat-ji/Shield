@@ -53,7 +53,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 import java.io.ByteArrayOutputStream
 import java.lang.StringBuilder
 
-// Declare the class constants.
+// Define the class constants.
 private const val CURRENT_FOLDER = "current_folder"
 private const val SELECTED_BOOKMARKS_LONG_ARRAY = "selected_bookmarks_long_array"
 
@@ -125,7 +125,7 @@ class MoveToFolderDialog : DialogFragment() {
         dialogBuilder.setTitle(R.string.move_to_folder)
 
         // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.move_to_folder_dialog, null))
+        dialogBuilder.setView(layoutInflater.inflate(R.layout.move_to_folder_dialog, null))
 
         // Set the listener for the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

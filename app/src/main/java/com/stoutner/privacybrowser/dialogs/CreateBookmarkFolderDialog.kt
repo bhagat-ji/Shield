@@ -45,7 +45,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import java.io.ByteArrayOutputStream
 
-// Declare the class constants.
+// Define the class constants.
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class CreateBookmarkFolderDialog : DialogFragment() {
@@ -114,7 +114,7 @@ class CreateBookmarkFolderDialog : DialogFragment() {
         dialogBuilder.setTitle(R.string.create_folder)
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.create_bookmark_folder_dialog, null))
+        dialogBuilder.setView(layoutInflater.inflate(R.layout.create_bookmark_folder_dialog, null))
 
         // Set a listener on the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

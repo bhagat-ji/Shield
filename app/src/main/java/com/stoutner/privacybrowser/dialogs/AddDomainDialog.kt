@@ -40,7 +40,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 
-// Declare the class constants.
+// Define the class constants.
 private const val URL_STRING = "url_string"
 
 class AddDomainDialog : DialogFragment() {
@@ -100,7 +100,7 @@ class AddDomainDialog : DialogFragment() {
         dialogBuilder.setTitle(R.string.add_domain)
 
         // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.add_domain_dialog, null))
+        dialogBuilder.setView(layoutInflater.inflate(R.layout.add_domain_dialog, null))
 
         // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

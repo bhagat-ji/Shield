@@ -50,7 +50,7 @@ import com.stoutner.privacybrowser.R
 
 import java.io.ByteArrayOutputStream
 
-// Declare the class constants.
+// Define the class constants.
 private const val SHORTCUT_NAME = "shortcut_name"
 private const val URL_STRING = "url_string"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
@@ -118,7 +118,7 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
         dialogBuilder.setIcon(favoriteIconDrawable)
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null))
+        dialogBuilder.setView(layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null))
 
         // Set a listener on the close button.  Using null closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

@@ -43,7 +43,7 @@ import com.stoutner.privacybrowser.adapters.PinnedMismatchPagerAdapter
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
-// Declare the class constants.
+// Define the class constants.
 private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
 
 class PinnedMismatchDialog : DialogFragment() {
@@ -140,7 +140,7 @@ class PinnedMismatchDialog : DialogFragment() {
         dialogBuilder.setTitle(R.string.pinned_mismatch)
 
         // Set the layout.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.pinned_mismatch_linearlayout, null))
+        dialogBuilder.setView(layoutInflater.inflate(R.layout.pinned_mismatch_linearlayout, null))
 
         // Set the update button listener.
         dialogBuilder.setNeutralButton(R.string.update) { _: DialogInterface?, _: Int ->

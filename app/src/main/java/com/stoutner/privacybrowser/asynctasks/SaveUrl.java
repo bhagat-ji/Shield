@@ -198,9 +198,6 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                 }
             }
 
-            // Flush the output stream.
-            outputStream.flush();
-
             // Close the output stream.
             outputStream.close();
         } catch (Exception exception) {

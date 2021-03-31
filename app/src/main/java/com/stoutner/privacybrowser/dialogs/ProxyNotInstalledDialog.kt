@@ -31,7 +31,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 
-// Declare the class constants.
+// Define the class constants.
 private const val PROXY_MODE = "proxy_mode"
 
 class ProxyNotInstalledDialog : DialogFragment() {

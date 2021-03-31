@@ -42,7 +42,7 @@ import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
-// Declare the class constants.
+// Define the class constants.
 private const val HOST = "host"
 private const val REALM = "realm"
 private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
@@ -51,7 +51,7 @@ class HttpAuthenticationDialog : DialogFragment() {
     // Define the class variables.
     private var dismissDialog: Boolean = false
 
-    // Define the class views.
+    // Declare the class views.
     private lateinit var usernameEditText: EditText
     private lateinit var passwordEditText: EditText
 
@@ -115,10 +115,7 @@ class HttpAuthenticationDialog : DialogFragment() {
             // Set the title.
             dialogBuilder.setTitle(R.string.http_authentication)
 
-            // Get the activity's layout inflater.
-            val layoutInflater = requireActivity().layoutInflater
-
-            // Set the layout.  The parent view is `null` because it will be assigned by the alert dialog.
+            // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
             dialogBuilder.setView(layoutInflater.inflate(R.layout.http_authentication_dialog, null))
 
             // Set the close button listener.

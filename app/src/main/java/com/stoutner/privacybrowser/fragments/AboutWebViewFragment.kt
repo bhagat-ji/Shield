@@ -38,11 +38,11 @@ import androidx.webkit.WebViewFeature
 
 import com.stoutner.privacybrowser.R
 
-// Declare the class constants.
+// Define the class constants.
 private const val TAB_NUMBER = "tab_number"
 
 class AboutWebViewFragment : Fragment() {
-    // Declare the class variables.
+    // Define the class variables.
     private var tabNumber = 0
 
     // Declare the class views.

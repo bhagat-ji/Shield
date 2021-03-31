@@ -112,9 +112,6 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
             // Write the webpage image to the image file.
             aboutVersionByteArrayOutputStream.writeTo(outputStream);
 
-            // Flush the output stream.
-            outputStream.flush();
-
             // Close the output stream.
             outputStream.close();
         } catch (Exception exception) {

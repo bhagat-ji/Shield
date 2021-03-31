@@ -15,7 +15,7 @@
 • Fix eines Bugs, durch den gepinnte SSL-Zertifikate manchmal gegen das Zertifikat der vorhergehenden Website geprüft wurden.
 • Mastodon-Eintrag zu "Über Privacy Browser" > Links hinzugefügt.
 • Diverse kleinere Verbesserungen für das Nutzer Erlebnis und der grafischen Oberfläche umgesetzt.
-• Teilweise Übersetzung in brasilianisches Portugiesisch von Thiago Nazareno Conceição Silva de Jesus.
+• Teilweise Übersetzung in brasilianisch-portugiesische von Thiago Nazareno Conceição Silva de Jesus.
 • Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
 • Aktualisierte französische Übersetzung von Kévin L.
 • Aktualisierte italienische Übersetzung von Francesco Buratti.

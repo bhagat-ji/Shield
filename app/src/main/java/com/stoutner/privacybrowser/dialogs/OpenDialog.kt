@@ -76,7 +76,7 @@ class OpenDialog : DialogFragment() {
         dialogBuilder.setTitle(R.string.open)
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.open_dialog, null))
+        dialogBuilder.setView(layoutInflater.inflate(R.layout.open_dialog, null))
 
         // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

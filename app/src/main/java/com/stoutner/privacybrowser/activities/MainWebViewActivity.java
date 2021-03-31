@@ -94,6 +94,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -1765,6 +1766,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
+        } else if (menuItemId == R.id.save_archive) {
+            /*  TODO.
+            try {
+                // Create an MHT file.
+                File mhtFile = File.createTempFile("mht_file", ".mht", getCacheDir());
+
+                // Populate the MHT file.
+                currentWebView.saveWebArchive(mhtFile.toString());
+
+                // Check the file length.
+                Log.i("MHT", "MHT file size:  " + mhtFile.length());
+            } catch (Exception exception){
+                Log.i("MHT", "MHT exception:  " + exception.toString());
+            }
+
+             */
+
+            return true;
         } else if (menuItemId == R.id.add_to_homescreen) {  // Add to homescreen.
             // Instantiate the create home screen shortcut dialog.
             DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), currentWebView.getUrl(),
@@ -3008,28 +3027,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveWebpage(int saveType, String originalUrlString, DialogFragment dialogFragment) {
+    public void onSaveWebpage(int saveType, @Nullable String originalUrlString, DialogFragment dialogFragment) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
 
         // Remove the incorrect lint warning below that the dialog might be null.
         assert dialog != null;
 
-        // Get a handle for the edit texts.
-        EditText dialogUrlEditText = dialog.findViewById(R.id.url_edittext);
+        // Get a handle for the file name edit text.
         EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
-
-        // Define the save webpage URL.
-        String saveWebpageUrl;
-
-        // Store the URL.
-        if ((originalUrlString != null) && originalUrlString.startsWith("data:")) {
-            // Save the original URL.
-            saveWebpageUrl = originalUrlString;
-        } else {
-            // Get the URL from the edit text, which may have been modified.
-            saveWebpageUrl = dialogUrlEditText.getText().toString();
-        }
 
         // Get the file path from the edit text.
         String saveWebpageFilePath = fileNameEditText.getText().toString();
@@ -3037,6 +3043,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         //Save the webpage according to the save type.
         switch (saveType) {
             case SaveWebpageDialog.SAVE_URL:
+                // Get a handle for the dialog URL edit text.
+                EditText dialogUrlEditText = dialog.findViewById(R.id.url_edittext);
+
+                // Define the save webpage URL.
+                String saveWebpageUrl;
+
+                // Store the URL.
+                if ((originalUrlString != null) && originalUrlString.startsWith("data:")) {
+                    // Save the original URL.
+                    saveWebpageUrl = originalUrlString;
+                } else {
+                    // Get the URL from the edit text, which may have been modified.
+                    saveWebpageUrl = dialogUrlEditText.getText().toString();
+                }
+
                 // Save the URL.
                 new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
                 break;
@@ -3607,7 +3628,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void navigateHistory(String url, int steps) {
+    public void navigateHistory(@NonNull String url, int steps) {
         // Apply the domain settings.
         applyDomainSettings(currentWebView, url, false, false, false);
 

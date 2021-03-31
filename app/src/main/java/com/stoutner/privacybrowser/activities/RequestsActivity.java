@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -263,15 +263,15 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
     }
 
     @Override
-    public void onPrevious(int id) {
+    public void onPrevious(int currentId) {
         // Show the previous dialog.
-        launchViewRequestDialog(id -1);
+        launchViewRequestDialog(currentId -1);
     }
 
     @Override
-    public void onNext(int id) {
+    public void onNext(int currentId) {
         // Show the next dialog.
-        launchViewRequestDialog(id + 1);
+        launchViewRequestDialog(currentId + 1);
     }
 
     private void launchViewRequestDialog(int id) {
