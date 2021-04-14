@@ -188,6 +188,7 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">Enregistrer l\'URL</string>
+    <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_text">Sauvegarder le texte</string>
     <string name="save_image">Sauvegarder en tant qu\'image</string>
     <string name="save_logcat">Sauvegarder le journal système</string>
@@ -200,10 +201,11 @@
     <string name="bytes">octets</string>
     <string name="unknown_size">taille inconnue</string>
     <string name="invalid_url">URL invalide</string>
-    <string name="saving_file">Enregistrement du fichier:</string>
-    <string name="file_saved">Fichier enregistré:</string>
+    <string name="saving_file">Enregistrement du fichier :</string>
+    <string name="file_saved">Fichier enregistré :</string>
     <string name="processing_image">Traitement de l\'image… :</string>
-    <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier:</string>
+    <string name="image_saved">Image sauvegardée :</string>
+    <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier :</string>
 
     <!-- View Source. -->
     <string name="request_headers">En-tête de la requête</string>

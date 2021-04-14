@@ -82,6 +82,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -150,7 +151,11 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -1756,6 +1761,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
+        } else if (menuItemId == R.id.save_archive) {
+            // Instantiate the save dialog.  TODO.  Replace the hard coded file name.
+            DialogFragment saveArchiveFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_ARCHIVE, null, null, "Webpage.mht", null,
+                    false);
+
+            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+            saveArchiveFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+
+            return true;
         } else if (menuItemId == R.id.save_image) {  // Save image.
             // Instantiate the save dialog.
             DialogFragment saveImageFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_IMAGE, null, null, getString(R.string.webpage_png), null,
@@ -1765,24 +1779,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             saveImageFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
 
             // Consume the event.
-            return true;
-        } else if (menuItemId == R.id.save_archive) {
-            /*  TODO.
-            try {
-                // Create an MHT file.
-                File mhtFile = File.createTempFile("mht_file", ".mht", getCacheDir());
-
-                // Populate the MHT file.
-                currentWebView.saveWebArchive(mhtFile.toString());
-
-                // Check the file length.
-                Log.i("MHT", "MHT file size:  " + mhtFile.length());
-            } catch (Exception exception){
-                Log.i("MHT", "MHT exception:  " + exception.toString());
-            }
-
-             */
-
             return true;
         } else if (menuItemId == R.id.add_to_homescreen) {  // Add to homescreen.
             // Instantiate the create home screen shortcut dialog.
@@ -3013,8 +3009,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the incorrect lint warning below that the dialog might be null.
         assert dialog != null;
 
-        // Get a handle for the file name edit text.
+        // Get handles for the views.
         EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
+        CheckBox mhtCheckBox = dialog.findViewById(R.id.mht_checkbox);
 
         // Get the file path string.
         String openFilePath = fileNameEditText.getText().toString();
@@ -3022,8 +3019,46 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Apply the domain settings.  This resets the favorite icon and removes any domain settings.
         applyDomainSettings(currentWebView, openFilePath, true, false, false);
 
-        // Open the file.
-        currentWebView.loadUrl(openFilePath);
+        // Open the file according to the type.
+        if (mhtCheckBox.isChecked()) {  // Force opening of an MHT file.
+            try {
+                // Get the MHT file input stream.
+                InputStream mhtFileInputStream = getContentResolver().openInputStream(Uri.parse(openFilePath));
+
+                // Create a temporary MHT file.
+                File temporaryMhtFile = File.createTempFile("temporary_mht_file", ".mht", getCacheDir());
+
+                // Get a file output stream for the temporary MHT file.
+                FileOutputStream temporaryMhtFileOutputStream = new FileOutputStream(temporaryMhtFile);
+
+                // Create a transfer byte array.
+                byte[] transferByteArray = new byte[1024];
+
+                // Create an integer to track the number of bytes read.
+                int bytesRead;
+
+                // Copy the temporary MHT file input stream to the MHT output stream.
+                while ((bytesRead = mhtFileInputStream.read(transferByteArray)) > 0) {
+                    temporaryMhtFileOutputStream.write(transferByteArray, 0, bytesRead);
+                }
+
+                // Flush the temporary MHT file output stream.
+                temporaryMhtFileOutputStream.flush();
+
+                // Close the streams.
+                temporaryMhtFileOutputStream.close();
+                mhtFileInputStream.close();
+
+                // Load the temporary MHT file.
+                currentWebView.loadUrl(temporaryMhtFile.toString());
+            } catch (Exception exception) {
+                // Display a snackbar.
+                Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
+            }
+        } else {  // Let the WebView handle opening of the file.
+            // Open the file.
+            currentWebView.loadUrl(openFilePath);
+        }
     }
 
     @Override
@@ -3060,6 +3095,57 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Save the URL.
                 new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                break;
+
+            case SaveWebpageDialog.SAVE_ARCHIVE:
+                try {
+                    // Create a temporary MHT file.
+                    File temporaryMhtFile = File.createTempFile("temporary_mht_file", ".mht", getCacheDir());
+
+                    // Save the temporary MHT file.
+                    currentWebView.saveWebArchive(temporaryMhtFile.toString(), false, callbackValue -> {
+                        if (callbackValue != null) {  // The temporary MHT file was saved successfully.
+                            try {
+                                // Create a temporary MHT file input stream.
+                                FileInputStream temporaryMhtFileInputStream = new FileInputStream(temporaryMhtFile);
+
+                                // Get an output stream for the save webpage file path.
+                                OutputStream mhtOutputStream = getContentResolver().openOutputStream(Uri.parse(saveWebpageFilePath));
+
+                                // Create a transfer byte array.
+                                byte[] transferByteArray = new byte[1024];
+
+                                // Create an integer to track the number of bytes read.
+                                int bytesRead;
+
+                                // Copy the temporary MHT file input stream to the MHT output stream.
+                                while ((bytesRead = temporaryMhtFileInputStream.read(transferByteArray)) > 0) {
+                                    mhtOutputStream.write(transferByteArray, 0, bytesRead);
+                                }
+
+                                // Close the streams.
+                                mhtOutputStream.close();
+                                temporaryMhtFileInputStream.close();
+
+                                // Display a snackbar.
+                                Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + saveWebpageFilePath, Snackbar.LENGTH_SHORT).show();
+                            } catch (Exception exception) {
+                                // Display a snackbar with the exception.
+                                Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                            } finally {
+                                // Delete the temporary MHT file.
+                                //noinspection ResultOfMethodCallIgnored
+                                temporaryMhtFile.delete();
+                            }
+                        } else {  // There was an unspecified error while saving the temporary MHT file.
+                            // Display an error snackbar.
+                            Snackbar.make(currentWebView, getString(R.string.error_saving_file), Snackbar.LENGTH_INDEFINITE).show();
+                        }
+                    });
+                } catch (IOException ioException) {
+                    // Display a snackbar with the IO exception.
+                    Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + ioException.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                }
                 break;
 
             case SaveWebpageDialog.SAVE_IMAGE:
@@ -5095,6 +5181,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Explicitly disable geolocation.
         nestedScrollWebView.getSettings().setGeolocationEnabled(false);
+
+        // Allow loading of file:// URLs.  This is necessary for opening MHT web archives, which are copies into a temporary cache location.
+        nestedScrollWebView.getSettings().setAllowFileAccess(true);
 
         // Create a double-tap gesture detector to toggle full-screen mode.
         GestureDetector doubleTapGestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {

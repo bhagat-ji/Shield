@@ -40,6 +40,8 @@ import com.stoutner.privacybrowser.R
 
 // Define the class constants.
 private const val TAB_NUMBER = "tab_number"
+private const val SCROLL_X = "scroll_x"
+private const val SCROLL_Y = "scroll_y"
 
 class AboutWebViewFragment : Fragment() {
     // Define the class variables.
@@ -128,8 +130,8 @@ class AboutWebViewFragment : Fragment() {
         // Scroll the tab if the saved instance state is not null.
         if (savedInstanceState != null) {
             tabWebView.post {
-                tabWebView.scrollX = savedInstanceState.getInt("scroll_x")
-                tabWebView.scrollY = savedInstanceState.getInt("scroll_y")
+                tabWebView.scrollX = savedInstanceState.getInt(SCROLL_X)
+                tabWebView.scrollY = savedInstanceState.getInt(SCROLL_Y)
             }
         }
 
@@ -146,8 +148,8 @@ class AboutWebViewFragment : Fragment() {
 
         // Save the scroll positions if the layout is not null, which can happen if a tab is not currently selected.
         if (tabWebView != null) {
-            savedInstanceState.putInt("scroll_x", tabWebView.scrollX)
-            savedInstanceState.putInt("scroll_y", tabWebView.scrollY)
+            savedInstanceState.putInt(SCROLL_X, tabWebView.scrollX)
+            savedInstanceState.putInt(SCROLL_Y, tabWebView.scrollY)
         }
     }
 }

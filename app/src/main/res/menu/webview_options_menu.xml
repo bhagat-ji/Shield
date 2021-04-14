@@ -349,10 +349,9 @@
                         android:orderInCategory="1201"
                         app:showAsAction="never" />
 
-                    <!-- TODO. -->
                     <item
                         android:id="@+id/save_archive"
-                        android:title="Save Archive"
+                        android:title="@string/save_archive"
                         android:orderInCategory="1202"
                         app:showAsAction="never" />
 

@@ -1,16 +1,16 @@
-• Redesign file access to work with scoped storage and the Storage Access Framework. This allows the target API to be bumped to 30 and removes the need for the dangerous READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE permissions. Unfortunately, due to a bug in Android’s WebView, this also temporarily removes the ability to save a web archive.
-• Update About > Permissions.
-• Improve the descriptiveness of the save URL snackbar.
-• Add Metager to the list of search engines.
-• Fix I2P detection.
-• Fix the alignment of icons and radio buttons in the dialogs.
-• Update the URL bar when switching tabs even if it is being edited.
-• Allow displaying of the password in the HTTP authentication dialog.
-• Fix a number of rare crashes.
-• Fix the hamburger icon turning into an arrow if the drawer is open when the app is restarted.
-• Speed up the opening of the options menu.
+• Reconception de l'accès aux fichiers pour travailler avec le stockage cible et le Storage Access Framework. Cela permet de faire passer l'API cible à 30 et de supprimer la nécessité des permissions dangereuses READ_EXTERNAL_STORAGE et WRITE_EXTERNAL_STORAGE. Malheureusement, en raison d'un bogue dans la WebView d'Android, cela supprime aussi temporairement la possibilité d'enregistrer une archive web.
+• Mise à jour des A propos de > permissions.
+• Amélioration de la description de la bare d'enregistrement d'URL.
+• Ajout de Metager à la liste des moteurs de recherche.
+• Correction de détection I2P.
+• Correction de l'alignement des icônes et boutons radio dans les boîtes de dialogue.
+• Mise à jour de la barre d'URL lors du changement d'onglet même s'il est en cours d'édition.
+• Autorisation de l'affichage du mot de passe dans le dialogue d'authentification HTTP.
+• Correction d'un nombre de rare crash.
+• Correction de l'icône du hamburger se transformant en flèche si le tiroir est ouvert lors du redémarrage de l'app.
+• Accélération de l'ouverture du menu des options.
 • Traduction française mise à jour fournie par Kévin L.
-• Updated Brazilian Portuguese translation provided by Thiago Nazareno Conceição Silva de Jesus.
+• Traduction portugaise brésilienne mise à jour fournie par Thiago Nazareno Conceição Silva de Jesus.
 • Traduction allemande mise à jour fournie par Bernhard G. Keller.
 • Traduction italienne mise à jour fournie par Francesco Buratti.
 • Traduction russe mise à jour.

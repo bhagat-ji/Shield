@@ -190,9 +190,14 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
 
+    <!-- Open Dialog. -->
+    <string name="file_is_mht">The file is an MHT web archive.</string>
+    <string name="mht_checkbox_explanation">Sometimes MIME Encapsulated HTML (MHT) web archives need to be manually specified to be opened correctly.</string>
+
     <!-- Save Dialogs. -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
     <string name="save_url">Save URL</string>
+    <string name="save_archive">Save Archive</string>
     <string name="save_text">Save Text</string>
     <string name="save_image">Save Image</string>
     <string name="save_logcat">Save Logcat</string>
@@ -509,14 +514,14 @@
             <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
             <item>Mozilla/5.0 (Android 11; Mobile; rv:87.0) Gecko/87.0 Firefox/87.0</item>
             <item>Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Mobile Safari/537.36</item>
-            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 14_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1</item>
+            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1</item>
             <item>Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0</item>
             <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36 Edg/89.0.774.63</item>
             <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
-            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15</item>
+            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Safari/605.1.15</item>
             <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
         <string name="custom_user_agent">Custom user agent</string>

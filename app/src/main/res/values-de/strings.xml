@@ -191,6 +191,7 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">URL speichern</string>
+    <string name="save_archive">Archiv speichern</string>
     <string name="save_text">Text speichern</string>
     <string name="save_image">Grafik speichern</string>
     <string name="save_logcat">Logcat speichern</string>

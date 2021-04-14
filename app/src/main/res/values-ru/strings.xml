@@ -184,6 +184,7 @@
 
     <!-- Save Dialogs. -->
     <string name="save_url">Сохранить URL</string>
+    <string name="save_archive">Сохранить архив</string>
     <string name="save_text">Сохранить текст</string>
     <string name="save_image">Сохранить изображение</string>
     <string name="save_logcat">Сохранить logcat</string>

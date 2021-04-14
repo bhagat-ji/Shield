@@ -28,9 +28,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -39,9 +42,15 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
 
+// Define the class constants.
+private const val MHT_EXPLANATION_VISIBILITY = "mht_explanation_visibility"
+
 class OpenDialog : DialogFragment() {
-    // Define the open listener.
+    // Declare the class variables.
     private lateinit var openListener: OpenListener
+
+    // Declare the class views.
+    private lateinit var mhtExplanationTextView: TextView
 
     // The public interface is used to send information back to the parent activity.
     interface OpenListener {
@@ -107,6 +116,8 @@ class OpenDialog : DialogFragment() {
         // Get handles for the layout items.
         val fileNameEditText = alertDialog.findViewById<EditText>(R.id.file_name_edittext)!!
         val browseButton = alertDialog.findViewById<Button>(R.id.browse_button)!!
+        val mhtCheckBox = alertDialog.findViewById<CheckBox>(R.id.mht_checkbox)!!
+        mhtExplanationTextView = alertDialog.findViewById(R.id.mht_explanation_textview)!!
         val openButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Initially disable the open button.
@@ -146,7 +157,35 @@ class OpenDialog : DialogFragment() {
             requireActivity().startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_OPEN_REQUEST_CODE)
         }
 
+        // Handle clicks on the MHT checkbox.
+        mhtCheckBox.setOnClickListener {
+            // Update the visibility of the MHT explanation text view.
+            if (mhtCheckBox.isChecked) {
+                mhtExplanationTextView.visibility = View.VISIBLE
+            } else {
+                mhtExplanationTextView.visibility = View.GONE
+            }
+        }
+
+        // Restore the MHT explanation text view visibility if the saved instance state is not null.
+        if (savedInstanceState != null) {
+            // Restore the MHT explanation text view visibility.
+            if (savedInstanceState.getBoolean(MHT_EXPLANATION_VISIBILITY)) {
+                mhtExplanationTextView.visibility = View.VISIBLE
+            } else {
+                mhtExplanationTextView.visibility = View.GONE
+            }
+        }
+
         // Return the alert dialog.
         return alertDialog
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState)
+
+        // Add the MHT explanation visibility status to the bundle.
+        savedInstanceState.putBoolean(MHT_EXPLANATION_VISIBILITY, mhtExplanationTextView.visibility == View.VISIBLE)
     }
 }

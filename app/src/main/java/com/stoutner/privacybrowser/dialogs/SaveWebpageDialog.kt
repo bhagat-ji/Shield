@@ -77,7 +77,8 @@ class SaveWebpageDialog : DialogFragment() {
     companion object {
         // Define the companion object constants.  These can be moved to class constants once all of the code has transitioned to Kotlin.
         const val SAVE_URL = 0
-        const val SAVE_IMAGE = 1
+        const val SAVE_ARCHIVE = 1
+        const val SAVE_IMAGE = 2
 
         // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
@@ -132,6 +133,18 @@ class SaveWebpageDialog : DialogFragment() {
                     dialogBuilder.setIcon(R.drawable.copy_enabled_day)
                 } else {
                     dialogBuilder.setIcon(R.drawable.copy_enabled_night)
+                }
+            }
+
+            SAVE_ARCHIVE -> {
+                // Set the title.
+                dialogBuilder.setTitle(R.string.save_archive)
+
+                // Set the icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_day)
+                } else {
+                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_night)
                 }
             }
 

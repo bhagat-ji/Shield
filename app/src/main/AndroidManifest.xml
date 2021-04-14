@@ -43,7 +43,8 @@
         <!-- Orbot. -->
         <package android:name="org.torproject.android" />
 
-        <!-- For some reason, OpenKeychain is visible without having to be listed in the queries. -->
+        <!-- OpenKeyChain. -->
+        <package android:name="org.sufficientlysecure.keychain" />
     </queries>
 
     <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set. -->
@@ -124,7 +125,7 @@
                 <data android:scheme="https" />
             </intent-filter>
 
-            <!-- Process content intents for text files. -->
+            <!-- Process all content intents, including text, images, and MHT archives. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -132,7 +133,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="content" />
-                <data android:mimeType="text/*" />
+                <data android:mimeType="*/*" />
             </intent-filter>
 
             <!-- Process intents for text strings.  Sometimes URLs are presented this way. -->

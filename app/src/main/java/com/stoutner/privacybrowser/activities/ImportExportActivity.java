@@ -698,8 +698,7 @@ public class ImportExportActivity extends AppCompatActivity {
 
                         // Close the streams.
                         inputStream.close();
-                        temporaryPgpEncryptedImportFileOutputStream.flush();
-
+                        temporaryPgpEncryptedImportFileOutputStream.close();
 
                         // Create an decryption intent for OpenKeychain.
                         Intent openKeychainDecryptIntent = new Intent("org.sufficientlysecure.keychain.action.DECRYPT_DATA");
