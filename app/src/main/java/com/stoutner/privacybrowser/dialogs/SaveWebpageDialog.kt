@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
@@ -63,7 +64,7 @@ class SaveWebpageDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface SaveWebpageListener {
-        fun onSaveWebpage(saveType: Int, originalUrlString: String?, dialogFragment: DialogFragment)
+        fun onSaveWebpage(saveType: Int, originalUrlString: String, dialogFragment: DialogFragment)
     }
 
     override fun onAttach(context: Context) {
@@ -82,7 +83,7 @@ class SaveWebpageDialog : DialogFragment() {
 
         // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
-        fun saveWebpage(saveType: Int, urlString: String?, fileSizeString: String?, fileNameString: String, userAgentString: String?, cookiesEnabled: Boolean): SaveWebpageDialog {
+        fun saveWebpage(saveType: Int, urlString: String, fileSizeString: String?, fileNameString: String?, userAgentString: String?, cookiesEnabled: Boolean): SaveWebpageDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
 
@@ -110,9 +111,9 @@ class SaveWebpageDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments from the bundle.
         val saveType = requireArguments().getInt(SAVE_TYPE)
-        val originalUrlString = requireArguments().getString(URL_STRING)
+        val originalUrlString = requireArguments().getString(URL_STRING)!!
         val fileSizeString = requireArguments().getString(FILE_SIZE_STRING)
-        val fileNameString = requireArguments().getString(FILE_NAME_STRING)!!
+        var fileNameString = requireArguments().getString(FILE_NAME_STRING)
         val userAgentString = requireArguments().getString(USER_AGENT_STRING)
         val cookiesEnabled = requireArguments().getBoolean(COOKIES_ENABLED)
 
@@ -122,7 +123,7 @@ class SaveWebpageDialog : DialogFragment() {
         // Get the current theme status.
         val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
-        // Set the title and icon according to the save type.
+        // Configure the dialog according to the save type.
         when (saveType) {
             SAVE_URL -> {
                 // Set the title.
@@ -146,6 +147,12 @@ class SaveWebpageDialog : DialogFragment() {
                 } else {
                     dialogBuilder.setIcon(R.drawable.dom_storage_cleared_night)
                 }
+
+                // Convert the URL to a URI.
+                val uri = Uri.parse(originalUrlString)
+
+                // Build a file name string based on the host from the URI.
+                fileNameString = uri.host + ".mht"
             }
 
             SAVE_IMAGE -> {
@@ -158,6 +165,12 @@ class SaveWebpageDialog : DialogFragment() {
                 } else {
                     dialogBuilder.setIcon(R.drawable.images_enabled_night)
                 }
+
+                // Convert the URL to a URI.
+                val uri = Uri.parse(originalUrlString)
+
+                // Build a file name string based on the host from the URI.
+                fileNameString = uri.host + ".png"
             }
         }
 
@@ -204,7 +217,7 @@ class SaveWebpageDialog : DialogFragment() {
         // Modify the layout based on the save type.
         if (saveType == SAVE_URL) {  // A URL is being saved.
             // Populate the URL edit text according to the type.  This must be done before the text change listener is created below so that the file size isn't requested again.
-            if (originalUrlString!!.startsWith("data:")) {  // The URL contains the entire data of an image.
+            if (originalUrlString.startsWith("data:")) {  // The URL contains the entire data of an image.
                 // Get a substring of the data URL with the first 100 characters.  Otherwise, the user interface will freeze while trying to layout the edit text.
                 val urlSubstring = originalUrlString.substring(0, 100) + "…"
 

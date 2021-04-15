@@ -183,7 +183,6 @@
     <string name="save_image">Resmi kaydet</string>
     <string name="save_logcat">Logcat kaydet</string>
     <string name="file_name">Dosya adı</string>
-    <string name="webpage_png">Websayfası.png</string>
     <string name="unknown_size">Bilinmeyen boyut</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
 

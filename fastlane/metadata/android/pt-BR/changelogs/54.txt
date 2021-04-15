@@ -1,15 +1,15 @@
-• Redesign file access to work with scoped storage and the Storage Access Framework. This allows the target API to be bumped to 30 and removes the need for the dangerous READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE permissions. Unfortunately, due to a bug in Android’s WebView, this also temporarily removes the ability to save a web archive.
-• Update About > Permissions.
-• Improve the descriptiveness of the save URL snackbar.
-• Add Metager to the list of search engines.
-• Fix I2P detection.
-• Fix the alignment of icons and radio buttons in the dialogs.
-• Update the URL bar when switching tabs even if it is being edited.
-• Allow displaying of the password in the HTTP authentication dialog.
-• Fix a number of rare crashes.
-• Fix the hamburger icon turning into an arrow if the drawer is open when the app is restarted.
-• Speed up the opening of the options menu.
-• Updated Brazilian Portuguese translation provided by Thiago Nazareno Conceição Silva de Jesus.
+• Remodele o acesso ao arquivo para funcionar com escopo de armazenamento definido e Estrutura de Acesso ao Armazenamento. Isso permite que a API de destino seja aumentada para 30 e remove a necessidade das perigosas permissões READ_EXTERNAL_STORAGE e WRITE_EXTERNAL_STORAGE. Infelizmente, devido a um bug no WebView do Android, isso também remove temporariamente a capacidade de salvar um arquivo da web.
+• Atualiza Sobre > Permissões.
+• Melhora o texto da descrição da barra de salve URL.
+• Adicione Metager à lista de mecanismos de pesquisa.
+• Corrija a detecção I2P.
+• Corrija o alinhamento de ícones e botões de opção nas caixas de diálogo.
+• Atualize a barra de URL ao alternar entre as guias mesmo se estiver sendo editada.
+• Permite a exibição da senha na caixa de diálogo de autenticação HTTP.
+• Corrija um número de raro trava.
+• Corrija o ícone de hambúrguer transformando-se em uma seta se a gaveta for aberta quando o aplicativo for reiniciado.
+• Acelere a abertura do menu de opções.
+• Tradução atualizada para o português do Brasil fornecida por Thiago Nazareno Conceição Silva de Jesus.
 • Tradução francesa atualizada fornecida por Kévin L.
 • Tradução alemã atualizada fornecida por Bernhard G. Keller.
 • Tradução italiana atualizada fornecida por Francesco Buratti.

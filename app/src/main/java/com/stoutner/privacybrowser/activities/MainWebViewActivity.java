@@ -95,7 +95,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -1762,8 +1761,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Consume the event.
             return true;
         } else if (menuItemId == R.id.save_archive) {
-            // Instantiate the save dialog.  TODO.  Replace the hard coded file name.
-            DialogFragment saveArchiveFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_ARCHIVE, null, null, "Webpage.mht", null,
+            // Instantiate the save dialog.
+            DialogFragment saveArchiveFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_ARCHIVE, currentWebView.getCurrentUrl(), null, null, null,
                     false);
 
             // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
@@ -1772,7 +1771,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.save_image) {  // Save image.
             // Instantiate the save dialog.
-            DialogFragment saveImageFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_IMAGE, null, null, getString(R.string.webpage_png), null,
+            DialogFragment saveImageFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_IMAGE, currentWebView.getCurrentUrl(), null, null, null,
                     false);
 
             // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
@@ -3062,7 +3061,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveWebpage(int saveType, @Nullable String originalUrlString, DialogFragment dialogFragment) {
+    public void onSaveWebpage(int saveType, @NonNull String originalUrlString, DialogFragment dialogFragment) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
 
@@ -3085,7 +3084,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 String saveWebpageUrl;
 
                 // Store the URL.
-                if ((originalUrlString != null) && originalUrlString.startsWith("data:")) {
+                if (originalUrlString.startsWith("data:")) {
                     // Save the original URL.
                     saveWebpageUrl = originalUrlString;
                 } else {
@@ -3128,7 +3127,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 temporaryMhtFileInputStream.close();
 
                                 // Display a snackbar.
-                                Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + saveWebpageFilePath, Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + currentWebView.getCurrentUrl(), Snackbar.LENGTH_SHORT).show();
                             } catch (Exception exception) {
                                 // Display a snackbar with the exception.
                                 Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();

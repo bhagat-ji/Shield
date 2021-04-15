@@ -103,7 +103,8 @@ class AboutWebViewFragment : Fragment() {
             }
 
             override fun shouldInterceptRequest(webView: WebView, url: String): WebResourceResponse? {
-                // Have the WebView asset loader process the request.  This allows the loading of SVG files, which otherwise is prevented by the CORS policy.
+                // Have the WebView asset loader process the request.
+                // This allows using the `appassets.androidplatform.net` URL, which handles the loading of SVG files, which otherwise is prevented by the CORS policy.
                 return webViewAssetLoader.shouldInterceptRequest(Uri.parse(url))
             }
         }

@@ -199,7 +199,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
         }
 
         // Prevent the dialog from displaying if the app window is not visible.
-        // The asynctask continues to function even when the app is paused.  Attempting to display a dialog in that state leads to a crash.
+        // The async task continues to function even when the app is paused.  Attempting to display a dialog in that state leads to a crash.
         while (!activity.getWindow().isActive()) {
             try {
                 // The window is not active.  Wait 1 second.

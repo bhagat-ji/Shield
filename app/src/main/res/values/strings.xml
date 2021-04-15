@@ -202,7 +202,6 @@
     <string name="save_image">Save Image</string>
     <string name="save_logcat">Save Logcat</string>
     <string name="file_name">File name</string>
-    <string name="webpage_png">Webpage.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
     <string name="privacy_browser_version_png">Privacy Browser Version.png</string>

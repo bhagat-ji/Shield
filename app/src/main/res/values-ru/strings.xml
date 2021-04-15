@@ -189,7 +189,6 @@
     <string name="save_image">Сохранить изображение</string>
     <string name="save_logcat">Сохранить logcat</string>
     <string name="file_name">Имя файла</string>
-    <string name="webpage_png">Webpage.png</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
     <string name="privacy_browser_version_txt">Версия Privacy Browser.txt</string>
     <string name="privacy_browser_version_png">Версия Privacy Browser.png</string>

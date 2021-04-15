@@ -192,7 +192,6 @@
     <string name="save_image">Guardar imagen</string>
     <string name="save_logcat">Guardar logcat</string>
     <string name="file_name">Nombre de archivo</string>
-    <string name="webpage_png">PaginaWeb.png</string>
     <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
     <string name="privacy_browser_version_txt">Versión de Navegador Privado.txt</string>
     <string name="privacy_browser_version_png">Versiótoutnern de Navegador Privado.png</string>

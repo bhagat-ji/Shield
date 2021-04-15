@@ -64,7 +64,7 @@ public class AboutActivity extends AppCompatActivity implements SaveDialog.SaveL
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the screenshot preference.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

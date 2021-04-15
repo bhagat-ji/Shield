@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -117,7 +117,8 @@ public class GuideWebViewFragment extends Fragment {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView webView, String url) {
-                // Have the WebView asset loader process the request.  This allows loading of SVG files, which otherwise is prevented by the CORS policy.
+                // Have the WebView asset loader process the request.
+                // This allows using the `appassets.androidplatform.net` URL, which handles the loading of SVG files, which otherwise is prevented by the CORS policy.
                 return webViewAssetLoader.shouldInterceptRequest(Uri.parse(url));
             }
         });
