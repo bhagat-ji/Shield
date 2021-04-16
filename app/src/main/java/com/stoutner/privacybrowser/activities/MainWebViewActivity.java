@@ -48,11 +48,13 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
+import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -2029,14 +2031,50 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Make it so.
             startActivity(requestsIntent);
         } else if (menuItemId == R.id.downloads) {  // Downloads.
-            // Launch the system Download Manager.
-            Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+            // Try the default system download manager.
+            try {
+                // Launch the default system Download Manager.
+                Intent defaultDownloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
 
-            // Launch as a new task so that Download Manager and Privacy Browser show as separate windows in the recent tasks list.
-            downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // Launch as a new task so that the download manager and Privacy Browser show as separate windows in the recent tasks list.
+                defaultDownloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // Make it so.
-            startActivity(downloadManagerIntent);
+                // Make it so.
+                startActivity(defaultDownloadManagerIntent);
+            } catch (Exception defaultDownloadManagerException) {
+                // Try a generic file manager.
+                try {
+                    // Create a generic file manager intent.
+                    Intent genericFileManagerIntent = new Intent(Intent.ACTION_VIEW);
+
+                    // Open the download directory.
+                    genericFileManagerIntent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()), DocumentsContract.Document.MIME_TYPE_DIR);
+
+                    // Launch as a new task so that the file manager and Privacy Browser show as separate windows in the recent tasks list.
+                    genericFileManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(genericFileManagerIntent);
+                } catch (Exception gengericFileManagerException) {
+                    // Try an alternate file manager.
+                    try {
+                        // Create an alternate file manager intent.
+                        Intent alternateFileManagerIntent = new Intent(Intent.ACTION_VIEW);
+
+                        // Open the download directory.
+                        alternateFileManagerIntent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()), "resource/folder");
+
+                        // Launch as a new task so that the file manager and Privacy Browser show as separate windows in the recent tasks list.
+                        alternateFileManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        // Open the alternate file manager.
+                        startActivity(alternateFileManagerIntent);
+                    } catch (Exception alternateFileManagerException) {
+                        // Display a snackbar.
+                        Snackbar.make(currentWebView, R.string.no_file_manager_detected, Snackbar.LENGTH_INDEFINITE).show();
+                    }
+                }
+            }
         } else if (menuItemId == R.id.domains) {  // Domains.
             // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
             reapplyDomainSettingsOnRestart = true;
