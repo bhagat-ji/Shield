@@ -114,6 +114,7 @@
         <string name="clear_history">Очистить историю</string>
     <string name="open">Открыть</string>
     <string name="downloads">Загрузки</string>
+        <string name="no_file_manager_detected">Система не может обнаружить совместимый файловый менеджер.</string>
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
     <string name="logcat">Logcat</string>
@@ -181,6 +182,10 @@
     <!-- Find on Page. -->
     <string name="previous">Предыдущий</string>
     <string name="next">Следующий</string>
+
+    <!-- Open Dialog. -->
+    <string name="file_is_mht">Файл представляет собой веб-архив MHT.</string>
+    <string name="mht_checkbox_explanation">Иногда для корректного открытия веб-архивов MIME Encapsulated HTML (MHT) необходимо указать вручную.</string>
 
     <!-- Save Dialogs. -->
     <string name="save_url">Сохранить URL</string>

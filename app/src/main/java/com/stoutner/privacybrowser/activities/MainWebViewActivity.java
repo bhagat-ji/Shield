@@ -2055,7 +2055,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Make it so.
                     startActivity(genericFileManagerIntent);
-                } catch (Exception gengericFileManagerException) {
+                } catch (Exception genericFileManagerException) {
                     // Try an alternate file manager.
                     try {
                         // Create an alternate file manager intent.

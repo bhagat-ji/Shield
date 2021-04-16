@@ -117,6 +117,7 @@
         <string name="clear_history">Borrar historial</string>
     <string name="open">Abrir</string>
     <string name="downloads">Descargas</string>
+        <string name="no_file_manager_detected">El sistema no puede detectar un gestor de archivos compatible.</string>
     <string name="settings">Configuración</string>
     <string name="import_export">Importar/Exportar</string>
     <string name="logcat">Logcat</string>
@@ -184,6 +185,10 @@
     <!-- Find on Page. -->
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
+
+    <!-- Open Dialog. -->
+    <string name="file_is_mht">El archivo es un archivo de web MHT.</string>
+    <string name="mht_checkbox_explanation">A veces se necesita especificar manualmente los archivos web MIME Encapsulated HTML (MHT) para que se abran correctamente.</string>
 
     <!-- Save Dialogs. -->
     <string name="save_url">Guardar URL</string>

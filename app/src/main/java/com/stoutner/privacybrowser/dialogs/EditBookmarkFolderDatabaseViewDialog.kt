@@ -349,15 +349,18 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
             }
         })
 
-        // Update the save button if the parent folder changes.
-        parentFolderSpinner.onItemSelectedListener = object: OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                // Update the save button.
-                updateSaveButton(bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder)
-            }
+        // Wait to set the on item selected listener until the spinner has been inflated.  Otherwise the dialog will crash on restart.
+        parentFolderSpinner.post {
+            // Update the save button if the parent folder changes.
+            parentFolderSpinner.onItemSelectedListener = object: OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    // Update the save button.
+                    updateSaveButton(bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder)
+                }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing.
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // Do nothing.
+                }
             }
         }
 

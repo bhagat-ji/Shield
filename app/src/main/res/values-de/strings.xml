@@ -121,6 +121,7 @@
         <string name="clear_history">Verlauf löschen</string>
     <string name="open">Öffnen</string>
     <string name="downloads">Downloads</string>
+        <string name="no_file_manager_detected">Das System konnte keinen kompatiblen Datei-Manager ermitteln.</string>
     <string name="settings">Einstellungen</string>
     <string name="import_export">Importieren/Exportieren</string>
     <string name="logcat">Logcat</string>
@@ -188,6 +189,10 @@
     <!-- Find on Page. -->
     <string name="previous">Vorheriges</string>
     <string name="next">Nächstes</string>
+
+    <!-- Open Dialog. -->
+    <string name="file_is_mht">Die Datei ist ein MHT-Web-Archiv.</string>
+    <string name="mht_checkbox_explanation">Manchmal müssen MIME-gekapselte HTML-Web-Archive (MHT) manuell festgelegt werden, um korrekt geöffnet zu werden.</string>
 
     <!-- Save Dialogs. -->
     <string name="save_url">URL speichern</string>

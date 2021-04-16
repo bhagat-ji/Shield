@@ -365,7 +365,7 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
                     updateSaveButton(currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder)
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
+                override fun onNothingSelected(parent: AdapterView<*>) {
                     // Do nothing.
                 }
             }
