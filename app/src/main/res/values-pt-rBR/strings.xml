@@ -484,8 +484,6 @@
         <string name="incognito_mode">Modo de navegação anônima</string>
         <string name="incognito_mode_summary">Limpe o histórico e o cache após o término do carregamento de cada página da web. No modo de navegação anônima,
             volta para fechar a guia (ou o aplicativo, se houver apenas uma guia).</string>
-        <string name="do_not_track">Não rastreie</string>
-        <string name="do_not_track_summary">Envie \'Não Rastreie\' ao cabeçalho, que sugere educadamente que os servidores da web não rastreiam este navegador.</string>
         <string name="allow_screenshots">Permitir capturas de tela</string>
         <string name="allow_screenshots_summary">Permitir capturas de tela, gravação de vídeo e visualização em monitores não seguros. Alterar esta configuração irá reiniciar o Privacy Browser.</string>
     <string name="blocklists">Blocklists</string>

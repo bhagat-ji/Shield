@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -30,7 +30,7 @@ import com.stoutner.privacybrowser.backgroundtasks.GetSourceBackgroundTask
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 
-class WebViewSource(private val urlString: String, private val userAgent: String, private val doNotTrack: Boolean, private val localeString: String, private val proxy: Proxy,
+class WebViewSource(private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy,
                     private val executorService: ExecutorService): ViewModel() {
     // Initialize the mutable live data variables.
     private val mutableLiveDataSourceStringArray = MutableLiveData<Array<SpannableStringBuilder>>()
@@ -42,7 +42,7 @@ class WebViewSource(private val urlString: String, private val userAgent: String
         val getSourceBackgroundTask = GetSourceBackgroundTask()
 
         // Get the source.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, doNotTrack, localeString, proxy, this)) }
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, this)) }
     }
 
     // The source observer.
@@ -72,6 +72,6 @@ class WebViewSource(private val urlString: String, private val userAgent: String
         val getSourceBackgroundTask = GetSourceBackgroundTask()
 
         // Get the source.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, doNotTrack, localeString, proxy, this)) }
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, this)) }
     }
 }

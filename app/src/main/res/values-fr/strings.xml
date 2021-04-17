@@ -486,8 +486,6 @@
         <string name="incognito_mode">Mode Incognito</string>
         <string name="incognito_mode_summary">Vider l\'historique et le cache après le chargement de chaque page.
             Dans le mode Incognito, le bouton Retour ferme l\'onglet (ou l\'application s\'il n\'y a qu\'un seul onglet).</string>
-        <string name="do_not_track">Ne pas me pister</string>
-        <string name="do_not_track_summary">Envoyer aux sites web un signal «Ne pas me pister» indiquant poliement que vous ne souhaitez pas être pisté</string>
         <string name="allow_screenshots">Autoriser captures d\'écrans</string>
         <string name="allow_screenshots_summary">Autoriser les captures d\'écrans, enregistrements vidéo et affichage sur des écrans non-sécurisés. Changer ce paramètre redémarrera Privacy Browser.</string>
     <string name="blocklists">Listes noires</string>

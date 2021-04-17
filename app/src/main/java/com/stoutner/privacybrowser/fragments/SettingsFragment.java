@@ -80,7 +80,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference userAgentPreference = findPreference("user_agent");
         Preference customUserAgentPreference = findPreference("custom_user_agent");
         Preference incognitoModePreference = findPreference("incognito_mode");
-        Preference doNotTrackPreference = findPreference("do_not_track");
         Preference allowScreenshotsPreference = findPreference(getString(R.string.allow_screenshots_key));
         Preference easyListPreference = findPreference("easylist");
         Preference easyPrivacyPreference = findPreference("easyprivacy");
@@ -124,7 +123,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert userAgentPreference != null;
         assert customUserAgentPreference != null;
         assert incognitoModePreference != null;
-        assert doNotTrackPreference != null;
         assert allowScreenshotsPreference != null;
         assert easyListPreference != null;
         assert easyPrivacyPreference != null;
@@ -466,21 +464,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_night);
             } else {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_day);
-            }
-        }
-
-        // Set the Do Not Track icon.
-        if (savedPreferences.getBoolean("do_not_track", false)) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_night);
-            } else {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_day);
-            }
-        } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_night);
-            } else {
-                doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_day);
             }
         }
 
@@ -1136,24 +1119,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_day);
                         }
                     }
-                    break;
-
-                case "do_not_track":
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean("do_not_track", false)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_night);
-                        } else {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_day);
-                        }
-                    } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_night);
-                        } else {
-                            doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_day);
-                        }
-                    }
-
                     break;
 
                 case "allow_screenshots":

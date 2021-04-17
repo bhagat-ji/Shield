@@ -528,8 +528,6 @@
         <string name="system_default_user_agent" translatable="false">System default user agent</string>  <!-- This item is referenced in code.  It is never displayed on the screen. -->
         <string name="incognito_mode">Incognito Mode</string>
         <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading. In Incognito Mode, back closes the tab (or the app if there is only one tab).</string>
-        <string name="do_not_track">Do Not Track</string>
-        <string name="do_not_track_summary">Send the Do Not Track header, which politely suggests that web servers not track this browser.</string>
         <string name="allow_screenshots">Allow screenshots</string>
         <string name="allow_screenshots_summary">Allow screenshots, video recording, and viewing on non-secure displays. Changing this setting will restart Privacy Browser.</string>
     <string name="blocklists">Blocklists</string>
@@ -662,7 +660,6 @@
 
     <!-- Non-translatable preference keys. -->
     <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
-    <string name="do_not_track_key" translatable="false">do_not_track</string>
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
 

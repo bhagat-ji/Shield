@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -25,12 +25,12 @@ import androidx.lifecycle.ViewModelProvider
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 
-class WebViewSourceFactory (private val urlString: String, private val userAgent: String, private val doNotTrack: Boolean, private val localeString: String, private val proxy: Proxy,
+class WebViewSourceFactory (private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy,
                             private val executorService: ExecutorService): ViewModelProvider.Factory {
     // Override the create function in order to add the provided arguments.
     override fun <T: ViewModel?> create(modelClass: Class<T>): T {
         // Return a new instance of the model class with the provided arguments.
         return modelClass.getConstructor(String::class.java, String::class.java, Boolean::class.java, String::class.java, Proxy::class.java, ExecutorService::class.java)
-                .newInstance(urlString, userAgent, doNotTrack, localeString, proxy, executorService)
+                .newInstance(urlString, userAgent, localeString, proxy, executorService)
     }
 }

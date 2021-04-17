@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -183,9 +183,6 @@ class ViewSourceActivity: AppCompatActivity() {
         // Set the swipe refresh background color.
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt)
 
-        // Get the Do Not Track status.
-        val doNotTrack = sharedPreferences.getBoolean(getString(R.string.do_not_track_key), false)
-
         // Populate the locale string.
         val localeString = if (Build.VERSION.SDK_INT >= 24) {  // SDK >= 24 has a list of locales.
             // Get the list of locales.
@@ -257,7 +254,7 @@ class ViewSourceActivity: AppCompatActivity() {
         progressBar.isIndeterminate = true
 
         // Instantiate the WebView source factory.
-        val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl!!, userAgent!!, doNotTrack, localeString, proxy, MainWebViewActivity.executorService)
+        val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl!!, userAgent!!, localeString, proxy, MainWebViewActivity.executorService)
 
         // Instantiate the WebView source view model class.
         val webViewSource = ViewModelProvider(this, webViewSourceFactory).get(WebViewSource::class.java)
@@ -375,11 +372,8 @@ class ViewSourceActivity: AppCompatActivity() {
             // Get the index of the `/` immediately after the domain name.
             val endOfDomainName = urlString.indexOf("/", urlString.indexOf("//") + 2)
 
-            // Create a base URL string.
-            val baseUrl: String
-
             // Get the base URL.
-            baseUrl = if (endOfDomainName > 0) {  // There is at least one character after the base URL.
+            val baseUrl = if (endOfDomainName > 0) {  // There is at least one character after the base URL.
                 // Get the base URL.
                 urlString.substring(0, endOfDomainName)
             } else {  // There are no characters after the base URL.

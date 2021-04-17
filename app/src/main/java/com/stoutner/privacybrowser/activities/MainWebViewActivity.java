@@ -3605,7 +3605,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Store the values from the shared preferences in variables.
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
-        boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
         sanitizeFacebookClickIds = sharedPreferences.getBoolean("facebook_click_ids", true);
         sanitizeTwitterAmpRedirects = sharedPreferences.getBoolean("twitter_amp_redirects", true);
@@ -3635,13 +3634,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Apply the proxy.
         applyProxy(false);
-
-        // Set Do Not Track status.
-        if (doNotTrackEnabled) {
-            customHeaders.put("DNT", "1");
-        } else {
-            customHeaders.remove("DNT");
-        }
 
         // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command and using app bar layout parameters allows the `setScrollFlags()` command.
         CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();

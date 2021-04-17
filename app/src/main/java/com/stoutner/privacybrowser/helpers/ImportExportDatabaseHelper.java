@@ -41,7 +41,7 @@ public class ImportExportDatabaseHelper {
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
     // Declare the class constants.
-    private static final int SCHEMA_VERSION = 13;
+    private static final int SCHEMA_VERSION = 14;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // Declare the preferences constants.
@@ -54,7 +54,6 @@ public class ImportExportDatabaseHelper {
     private static final String USER_AGENT = "user_agent";
     private static final String CUSTOM_USER_AGENT = "custom_user_agent";
     private static final String INCOGNITO_MODE = "incognito_mode";
-    private static final String DO_NOT_TRACK = "do_not_track";
     private static final String ALLOW_SCREENSHOTS = "allow_screenshots";
     private static final String EASYLIST = "easylist";
     private static final String EASYPRIVACY = "easyprivacy";
@@ -345,6 +344,10 @@ public class ImportExportDatabaseHelper {
                     // Upgrade from schema version 12, Privacy Browser 3.6.
                     case 12:
                         // Do nothing.  `download_location` and `download_custom_location` were removed from the preferences table.
+
+                    // Upgrade from schema version 13, Privacy Browser 3.7
+                    case 13:
+                        // Do nothing.  `do_not_track` was removed from the preferences table.
                 }
             }
 
@@ -469,7 +472,6 @@ public class ImportExportDatabaseHelper {
                     .putString(USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(USER_AGENT)))
                     .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(CUSTOM_USER_AGENT)))
                     .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(INCOGNITO_MODE)) == 1)
-                    .putBoolean(DO_NOT_TRACK, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DO_NOT_TRACK)) == 1)
                     .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ALLOW_SCREENSHOTS)) == 1)
                     .putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYLIST)) == 1)
                     .putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYPRIVACY)) == 1)
@@ -640,7 +642,6 @@ public class ImportExportDatabaseHelper {
                     USER_AGENT + " TEXT, " +
                     CUSTOM_USER_AGENT + " TEXT, " +
                     INCOGNITO_MODE + " BOOLEAN, " +
-                    DO_NOT_TRACK + " BOOLEAN, " +
                     ALLOW_SCREENSHOTS + " BOOLEAN, " +
                     EASYLIST + " BOOLEAN, " +
                     EASYPRIVACY + " BOOLEAN, " +
@@ -691,7 +692,6 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)));
             preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)));
             preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false));
-            preferencesContentValues.put(DO_NOT_TRACK, sharedPreferences.getBoolean(DO_NOT_TRACK, false));
             preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false));
             preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true));
             preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true));

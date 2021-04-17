@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -37,7 +37,7 @@ import java.net.Proxy;
 import java.net.URL;
 
 public class GetSourceBackgroundTask {
-    public SpannableStringBuilder[] acquire(String urlString, String userAgent, boolean doNotTrack, String localeString, Proxy proxy, WebViewSource webViewSource) {
+    public SpannableStringBuilder[] acquire(String urlString, String userAgent, String localeString, Proxy proxy, WebViewSource webViewSource) {
         // Initialize the spannable string builders.
         SpannableStringBuilder requestHeadersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder responseMessageBuilder = new SpannableStringBuilder();
@@ -185,25 +185,6 @@ public class GetSourceBackgroundTask {
                 requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  ?1");
-
-
-            // Only populate `Do Not Track` if it is enabled.
-            if (doNotTrack) {
-                // Set the `dnt` header property.
-                httpUrlConnection.setRequestProperty("dnt", "1");
-
-                // Add the `dnt` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("dnt", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("dnt");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                requestHeadersBuilder.append(":  1");
-            }
 
 
             // Set the `Accept` header property.
