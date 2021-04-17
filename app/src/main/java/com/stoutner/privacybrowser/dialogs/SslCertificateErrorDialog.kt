@@ -336,7 +336,6 @@ class SslCertificateErrorDialog : DialogFragment() {
                 primaryErrorString = getString(R.string.invalid_certificate)
         }
 
-
         // Display the strings.
         primaryErrorTextView.text = primaryErrorString
         urlTextView.text = urlStringBuilder

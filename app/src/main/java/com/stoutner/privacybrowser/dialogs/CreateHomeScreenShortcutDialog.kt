@@ -71,7 +71,7 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
             // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
             favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream)
 
-            // Convert the byte array output stream to a byte array.
+            // Convert the favorite icon byte array output stream to a byte array.
             val favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray()
 
             // Create an arguments bundle.
@@ -107,14 +107,16 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
 
-        // Use an alert dialog builder to create the dialog.
-        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
-
         // Create a drawable version of the favorite icon.
         val favoriteIconDrawable: Drawable = BitmapDrawable(resources, favoriteIconBitmap)
 
-        // Set the title and icon.
+        // Use an alert dialog builder to create the dialog.
+        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
+
+        // Set the title.
         dialogBuilder.setTitle(R.string.create_shortcut)
+
+        // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable)
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
