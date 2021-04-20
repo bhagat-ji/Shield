@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -27,16 +27,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
+import com.stoutner.privacybrowser.R;
+
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 12;
+    private static final int SCHEMA_VERSION = 13;
     static final String DOMAINS_DATABASE = "domains.db";
     static final String DOMAINS_TABLE = "domains";
 
     public static final String _ID = "_id";
     public static final String DOMAIN_NAME = "domainname";
     public static final String ENABLE_JAVASCRIPT = "enablejavascript";
-    public static final String ENABLE_FIRST_PARTY_COOKIES = "enablefirstpartycookies";
-    public static final String ENABLE_THIRD_PARTY_COOKIES = "enablethirdpartycookies";
+    public static final String COOKIES = "cookies";
     public static final String ENABLE_DOM_STORAGE = "enabledomstorage";
     public static final String ENABLE_FORM_DATA = "enableformdata";  // Form data can be removed once the minimum API >= 26.
     public static final String ENABLE_EASYLIST = "enableeasylist";
@@ -75,8 +76,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
             _ID + " INTEGER PRIMARY KEY, " +
             DOMAIN_NAME + " TEXT, " +
             ENABLE_JAVASCRIPT + " BOOLEAN, " +
-            ENABLE_FIRST_PARTY_COOKIES + " BOOLEAN, " +
-            ENABLE_THIRD_PARTY_COOKIES + " BOOLEAN, " +
+            COOKIES + " BOOLEAN, " +
             ENABLE_DOM_STORAGE + " BOOLEAN, " +
             ENABLE_FORM_DATA + " BOOLEAN, " +
             ENABLE_EASYLIST + " BOOLEAN, " +
@@ -236,6 +236,14 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
                 // SQLite amazingly doesn't include an easy command to delete a column.  <https://www.sqlite.org/lang_altertable.html>
                 // Although a new table could be created and all the data copied to it, I think I will just leave the old night mode column.  It will be wiped out the next time an import is run.
+
+            // Upgrade from schema version 12.
+            case 12:
+                // Add the cookies column.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + COOKIES + " BOOLEAN");
+
+                // Copy the data from the old column to the new one.
+                domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + COOKIES + " = enablefirstpartycookies");
         }
     }
 
@@ -304,8 +312,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
         // Get the default settings.
         boolean javaScript = sharedPreferences.getBoolean("javascript", false);
-        boolean firstPartyCookies = sharedPreferences.getBoolean("first_party_cookies", false);
-        boolean thirdPartyCookies = sharedPreferences.getBoolean("third_party_cookies", false);
+        boolean cookies = sharedPreferences.getBoolean(appContext.getString(R.string.cookies_key), false);
         boolean domStorage = sharedPreferences.getBoolean("dom_storage", false);
         boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
         boolean easyList = sharedPreferences.getBoolean("easylist", true);
@@ -319,8 +326,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
         domainContentValues.put(DOMAIN_NAME, domainName);
         domainContentValues.put(ENABLE_JAVASCRIPT, javaScript);
-        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookies);
-        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookies);
+        domainContentValues.put(COOKIES, cookies);
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorage);
         domainContentValues.put(ENABLE_FORM_DATA, saveFormData);  // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(ENABLE_EASYLIST, easyList);
@@ -361,18 +367,17 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainsDatabase.close();
     }
 
-    public void updateDomain(int databaseId, String domainName, boolean javaScript, boolean firstPartyCookies, boolean thirdPartyCookies, boolean domStorage, boolean formData, boolean easyList,
-                             boolean easyPrivacy, boolean fanboysAnnoyance, boolean fanboysSocialBlocking, boolean ultraList, boolean ultraPrivacy, boolean blockAllThirdPartyRequests, String userAgent,
-                             int fontSize, int swipeToRefresh, int webViewTheme, int wideViewport, int displayImages, boolean pinnedSslCertificate, boolean pinnedIpAddresses) {
+    public void updateDomain(int databaseId, String domainName, boolean javaScript, boolean cookies, boolean domStorage, boolean formData, boolean easyList, boolean easyPrivacy, boolean fanboysAnnoyance,
+                             boolean fanboysSocialBlocking, boolean ultraList, boolean ultraPrivacy, boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int webViewTheme,
+                             int wideViewport, int displayImages, boolean pinnedSslCertificate, boolean pinnedIpAddresses) {
 
-        // Store the domain data in a `ContentValues`.
+        // Store the domain data in a content values.
         ContentValues domainContentValues = new ContentValues();
 
         // Add entries for each field in the database.
         domainContentValues.put(DOMAIN_NAME, domainName);
         domainContentValues.put(ENABLE_JAVASCRIPT, javaScript);
-        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookies);
-        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookies);
+        domainContentValues.put(COOKIES, cookies);
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorage);
         domainContentValues.put(ENABLE_FORM_DATA, formData);  // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(ENABLE_EASYLIST, easyList);

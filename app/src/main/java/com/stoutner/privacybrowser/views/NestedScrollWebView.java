@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -60,7 +60,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private final String DOMAIN_SETTINGS_DATABASE_ID = "domain_settings_database_id";
     private final String CURRENT_URl = "current_url";
     private final String CURRENT_DOMAIN_NAME = "current_domain_name";
-    private final String ACCEPT_FIRST_PARTY_COOKIES = "accept_first_party_cookies";
+    private final String ACCEPT_COOKIES = "accept_cookies";
     private final String EASYLIST_ENABLED = "easylist_enabled";
     private final String EASYPRIVACY_ENABLED = "easyprivacy_enabled";
     private final String FANBOYS_ANNOYANCE_LIST_ENABLED = "fanboys_annoyance_list_enabled";
@@ -104,8 +104,8 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // Keep track of when the domain name changes so that domain settings can be reapplied.  This should never be null.
     private String currentDomainName = "";
 
-    // Track the status of first-party cookies.  This is necessary because first-party cookie status is app wide instead of WebView specific.
-    private boolean acceptFirstPartyCookies;
+    // Track the cookie status, which is necessary because cookie status is app wide instead of WebView specific.
+    private boolean acceptCookies;
 
     // Track the resource requests.
     private final List<String[]> resourceRequests = Collections.synchronizedList(new ArrayList<>());  // Using a synchronized list makes adding resource requests thread safe.
@@ -289,15 +289,15 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     }
 
 
-    // First-party cookies.
-    public void setAcceptFirstPartyCookies(boolean status) {
-        // Store the accept first-party cookies status.
-        acceptFirstPartyCookies = status;
+    // Cookies.
+    public void setAcceptCookies(boolean status) {
+        // Store the accept cookies status.
+        acceptCookies = status;
     }
 
-    public boolean getAcceptFirstPartyCookies() {
-        // Return the accept first-party cookies status.
-        return acceptFirstPartyCookies;
+    public boolean getAcceptCookies() {
+        // Return the accept cookies status.
+        return acceptCookies;
     }
 
 
@@ -781,7 +781,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         savedState.putInt(DOMAIN_SETTINGS_DATABASE_ID, domainSettingsDatabaseId);
         savedState.putString(CURRENT_URl, currentUrl);
         savedState.putString(CURRENT_DOMAIN_NAME, currentDomainName);
-        savedState.putBoolean(ACCEPT_FIRST_PARTY_COOKIES, acceptFirstPartyCookies);
+        savedState.putBoolean(ACCEPT_COOKIES, acceptCookies);
         savedState.putBoolean(EASYLIST_ENABLED, easyListEnabled);
         savedState.putBoolean(EASYPRIVACY_ENABLED, easyPrivacyEnabled);
         savedState.putBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED, fanboysAnnoyanceListEnabled);
@@ -818,7 +818,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         domainSettingsDatabaseId = savedState.getInt(DOMAIN_SETTINGS_DATABASE_ID);
         currentUrl = savedState.getString(CURRENT_URl);
         currentDomainName = savedState.getString(CURRENT_DOMAIN_NAME);
-        acceptFirstPartyCookies = savedState.getBoolean(ACCEPT_FIRST_PARTY_COOKIES);
+        acceptCookies = savedState.getBoolean(ACCEPT_COOKIES);
         easyListEnabled = savedState.getBoolean(EASYLIST_ENABLED);
         easyPrivacyEnabled = savedState.getBoolean(EASYPRIVACY_ENABLED);
         fanboysAnnoyanceListEnabled = savedState.getBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED);

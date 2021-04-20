@@ -32,10 +32,6 @@
     <string name="privacy_mode">Mode privé</string>
     <string name="javascript_enabled">JavaScript activé</string>
     <string name="javascript_disabled">JavaScript désactivé</string>
-    <string name="first_party_cookies_enabled">Cookies internes activés</string>
-    <string name="first_party_cookies_disabled">Cookies internes désactivés</string>
-    <string name="third_party_cookies_enabled">Cookies tierces parties activés</string>
-    <string name="third_party_cookies_disabled">Cookies tierces parties désactivés</string>
     <string name="dom_storage_enabled">Stockage du DOM activé</string>
     <string name="dom_storage_disabled">Stockage du DOM désactivé</string>
     <string name="form_data_enabled">Données de formulaires activé</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
@@ -128,8 +124,6 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Rafraîchir</string>
     <string name="stop">Stop</string>
-    <string name="first_party_cookies">Cookies internes</string>
-    <string name="third_party_cookies">Cookies tiers</string>
     <string name="dom_storage">Stockage DOM</string>
     <string name="form_data">Formulaire de données</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Effacer les données</string>
@@ -440,14 +434,7 @@
     <string name="privacy">Vie privée</string>
         <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript permet aux sites web de lancer des programmes (scripts) sur le terminal.</string>
-        <string name="first_party_cookies_preference">Cookies internes</string>
-        <string name="first_party_cookies_preference_summary">L\'autorisation des cookies internes s\'effectuent au niveau de l\'application,
-            toute requête réseau effectué en arrière-plan par d\'autres onglets contenant des domaines de l\'onglet actif sera impactéé.
-            Android KitKat (version 4.4.x) ne différencie pas cookies internes et cookies tiers et les activeront tous avec ce paramètre.</string>
-        <string name="third_party_cookies_preference">Cookies tierces parties</string>
-        <string name="third_party_cookies_summary">Ce paramètre nécessite Android Lollipop (version 5.0) ou plus. Il n\'a pas d\'effet si les cookies internes sont désactivés</string>
         <string name="dom_storage_preference">Stockage du DOM</string>
-        <string name="dom_storage_preference_summary">JavaScript doit être activé pour que le stockage du DOM fonctionne.</string>
         <string name="save_form_data_preference">Formulaire de données</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="save_form_data_preference_summary">Les formulaires de données sauvegardés peuvent remplir automatiquement des champs sur les sites web.</string>
         <string name="user_agent">User agent</string>
@@ -552,7 +539,6 @@
         <string name="clear_everything_summary">Efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache de WebView.
             Supprime ensuite manuellement les répertoires entiers «app_webview» et «cache».</string>
         <string name="clear_cookies_preference">Effacer les cookies</string>
-        <string name="clear_cookies_summary">Efface l\'ensemble des cookies internes et tiers</string>
         <string name="clear_dom_storage_preference">Effacer le stockage DOM</string>
         <string name="clear_dom_storage_summary">Efface le stockage du DOM.</string>
         <string name="clear_form_data_preference">Effacer les données de formulaire</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

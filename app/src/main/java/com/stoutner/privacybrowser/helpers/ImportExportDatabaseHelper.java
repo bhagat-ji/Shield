@@ -47,8 +47,7 @@ public class ImportExportDatabaseHelper {
     // Declare the preferences constants.
     private static final String _ID = "_id";
     private static final String JAVASCRIPT = "javascript";
-    private static final String FIRST_PARTY_COOKIES = "first_party_cookies";
-    private static final String THIRD_PARTY_COOKIES = "third_party_cookies";
+    private static final String COOKIES = "cookies";
     private static final String DOM_STORAGE = "dom_storage";
     private static final String SAVE_FORM_DATA = "save_form_data";
     private static final String USER_AGENT = "user_agent";
@@ -133,30 +132,15 @@ public class ImportExportDatabaseHelper {
 
                     // Upgrade from schema version 2, Privacy Browser 2.14.
                     case 2:
-                        // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME COLUMN` can be used.  https://www.sqlite.org/lang_altertable.html  https://www.sqlite.org/changes.html
-                        // https://developer.android.com/reference/android/database/sqlite/package-summary
+                        // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
+                        // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                         // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
-
-                        // Get a cursor with the current `default_font_size` value.
-                        Cursor importDatabasePreferenceCursor = importDatabase.rawQuery("SELECT default_font_size FROM " + PREFERENCES_TABLE, null);
-
-                        // Move to the beginning fo the cursor.
-                        importDatabasePreferenceCursor.moveToFirst();
-
-                        // Get the current value in `default_font_size`.
-                        String fontSize = importDatabasePreferenceCursor.getString(importDatabasePreferenceCursor.getColumnIndex("default_font_size"));
-
-                        // SQL escape the font size.
-                        fontSize = DatabaseUtils.sqlEscapeString(fontSize);
-
-                        // Close the cursor.
-                        importDatabasePreferenceCursor.close();
 
                         // Create the new font size column.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + FONT_SIZE + " TEXT");
 
                         // Populate the preferences table with the current font size value.
-                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = '" + fontSize + "'");
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = default_font_size");
 
                     // Upgrade from schema version 3, Privacy Browser 2.15.
                     case 3:
@@ -347,10 +331,21 @@ public class ImportExportDatabaseHelper {
 
                     // Upgrade from schema version 13, Privacy Browser 3.7
                     case 13:
-                        // Do nothing.  `do_not_track` was removed from the preferences table.
+                        // `enabledthirdpartycookies` was removed from the domains table.  `do_not_track` and `third_party_cookies` were removed from the preferences table.
+
+                        // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
+                        // <https://developer.android.com/reference/android/database/sqlite/package-summary>
+                        // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
+
+                        // Create the new cookies columns.
+                        importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.COOKIES + " BOOLEAN");
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + COOKIES + " BOOLEAN");
+
+                        // Copy the data from the old cookies columns to the new ones.
+                        importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.COOKIES + " = enablefirstpartycookies");
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + COOKIES + " = first_party_cookies");
                 }
             }
-
 
             // Get a cursor for the bookmarks table.
             Cursor importBookmarksCursor = importDatabase.rawQuery("SELECT * FROM " + BookmarksDatabaseHelper.BOOKMARKS_TABLE, null);
@@ -407,8 +402,7 @@ public class ImportExportDatabaseHelper {
                 ContentValues domainsContentValues = new ContentValues();
                 domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)));
+                domainsContentValues.put(DomainsDatabaseHelper.COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)));
@@ -464,8 +458,7 @@ public class ImportExportDatabaseHelper {
             // Import the preference data.
             sharedPreferences.edit()
                     .putBoolean(JAVASCRIPT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(JAVASCRIPT)) == 1)
-                    .putBoolean(FIRST_PARTY_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FIRST_PARTY_COOKIES)) == 1)
-                    .putBoolean(THIRD_PARTY_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(THIRD_PARTY_COOKIES)) == 1)
+                    .putBoolean(COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(COOKIES)) == 1)
                     .putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOM_STORAGE)) == 1)
                     // Save form data can be removed once the minimum API >= 26.
                     .putBoolean(SAVE_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SAVE_FORM_DATA)) == 1)
@@ -590,8 +583,7 @@ public class ImportExportDatabaseHelper {
                 ContentValues domainsContentValues = new ContentValues();
                 domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)));
+                domainsContentValues.put(DomainsDatabaseHelper.COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)));
@@ -635,8 +627,7 @@ public class ImportExportDatabaseHelper {
             String CREATE_PREFERENCES_TABLE = "CREATE TABLE " + PREFERENCES_TABLE + " (" +
                     _ID + " INTEGER PRIMARY KEY, " +
                     JAVASCRIPT + " BOOLEAN, " +
-                    FIRST_PARTY_COOKIES + " BOOLEAN, " +
-                    THIRD_PARTY_COOKIES + " BOOLEAN, " +
+                    COOKIES + " BOOLEAN, " +
                     DOM_STORAGE + " BOOLEAN, " +
                     SAVE_FORM_DATA + " BOOLEAN, " +
                     USER_AGENT + " TEXT, " +
@@ -685,8 +676,7 @@ public class ImportExportDatabaseHelper {
             // Create a ContentValues with the preferences information.
             ContentValues preferencesContentValues = new ContentValues();
             preferencesContentValues.put(JAVASCRIPT, sharedPreferences.getBoolean(JAVASCRIPT, false));
-            preferencesContentValues.put(FIRST_PARTY_COOKIES, sharedPreferences.getBoolean(FIRST_PARTY_COOKIES, false));
-            preferencesContentValues.put(THIRD_PARTY_COOKIES, sharedPreferences.getBoolean(THIRD_PARTY_COOKIES, false));
+            preferencesContentValues.put(COOKIES, sharedPreferences.getBoolean(COOKIES, false));
             preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean(DOM_STORAGE, false));
             preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean(SAVE_FORM_DATA, false));  // Save form data can be removed once the minimum API >= 26.
             preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)));

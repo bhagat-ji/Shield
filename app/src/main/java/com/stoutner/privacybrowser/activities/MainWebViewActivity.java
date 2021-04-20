@@ -341,8 +341,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private MenuItem navigationRequestsMenuItem;
     private MenuItem optionsPrivacyMenuItem;
     private MenuItem optionsRefreshMenuItem;
-    private MenuItem optionsFirstPartyCookiesMenuItem;
-    private MenuItem optionsThirdPartyCookiesMenuItem;
+    private MenuItem optionsCookiesMenuItem;
     private MenuItem optionsDomStorageMenuItem;
     private MenuItem optionsSaveFormDataMenuItem;
     private MenuItem optionsClearDataMenuItem;
@@ -822,8 +821,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get handles for the class menu items.
         optionsPrivacyMenuItem = menu.findItem(R.id.javascript);
         optionsRefreshMenuItem = menu.findItem(R.id.refresh);
-        optionsFirstPartyCookiesMenuItem = menu.findItem(R.id.first_party_cookies);
-        optionsThirdPartyCookiesMenuItem = menu.findItem(R.id.third_party_cookies);
+        optionsCookiesMenuItem = menu.findItem(R.id.cookies);
         optionsDomStorageMenuItem = menu.findItem(R.id.dom_storage);
         optionsSaveFormDataMenuItem = menu.findItem(R.id.save_form_data);  // Form data can be removed once the minimum API >= 26.
         optionsClearDataMenuItem = menu.findItem(R.id.clear_data);
@@ -871,9 +869,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
         updatePrivacyIcons(false);
 
-        // Only display third-party cookies if API >= 21
-        optionsThirdPartyCookiesMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
-
         // Only display the form data menu items if the API < 26.
         optionsSaveFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
         optionsClearFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
@@ -897,11 +892,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (displayAdditionalAppBarIcons) {
             optionsRefreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             bookmarksMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            optionsFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            optionsCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else { //Do not display the additional icons.
             optionsRefreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             bookmarksMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            optionsFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            optionsCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         // Replace Refresh with Stop if a URL is already loading.
@@ -975,15 +970,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             optionsUltraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRAPRIVACY) + " - " + getString(R.string.ultraprivacy));
             optionsBlockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
 
-            // Only modify third-party cookies if the API >= 21.
-            if (Build.VERSION.SDK_INT >= 21) {
-                // Set the status of the third-party cookies checkbox.
-                optionsThirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
-
-                // Enable third-party cookies if first-party cookies are enabled.
-                optionsThirdPartyCookiesMenuItem.setEnabled(cookieManager.acceptCookie());
-            }
-
             // Enable DOM Storage if JavaScript is enabled.
             optionsDomStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
 
@@ -993,8 +979,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         }
 
-        // Set the checked status of the first party cookies menu item.
-        optionsFirstPartyCookiesMenuItem.setChecked(cookieManager.acceptCookie());
+        // Set the cookies menu item checked status.
+        optionsCookiesMenuItem.setChecked(cookieManager.acceptCookie());
 
         // Enable Clear Cookies if there are any.
         optionsClearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
@@ -1213,12 +1199,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
-        } else if (menuItemId == R.id.first_party_cookies) {  // First-party cookies.
+        } else if (menuItemId == R.id.cookies) {  // Cookies.
             // Switch the first-party cookie status.
             cookieManager.setAcceptCookie(!cookieManager.acceptCookie());
 
-            // Store the first-party cookie status.
-            currentWebView.setAcceptFirstPartyCookies(cookieManager.acceptCookie());
+            // Store the cookie status.
+            currentWebView.setAcceptCookies(cookieManager.acceptCookie());
 
             // Update the menu checkbox.
             menuItem.setChecked(cookieManager.acceptCookie());
@@ -1227,38 +1213,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             updatePrivacyIcons(true);
 
             // Display a snackbar.
-            if (cookieManager.acceptCookie()) {  // First-party cookies are enabled.
-                Snackbar.make(webViewPager, R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+            if (cookieManager.acceptCookie()) {  // Cookies are enabled.
+                Snackbar.make(webViewPager, R.string.cookies_enabled, Snackbar.LENGTH_SHORT).show();
             } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is still enabled.
-                Snackbar.make(webViewPager, R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(webViewPager, R.string.cookies_disabled, Snackbar.LENGTH_SHORT).show();
             } else {  // Privacy mode.
                 Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
             }
 
             // Reload the current WebView.
             currentWebView.reload();
-
-            // Consume the event.
-            return true;
-        } else if (menuItemId == R.id.third_party_cookies) {  // Third-party cookies.
-            // Only act if the API >= 21.  Otherwise, there are no third-party cookie controls.
-            if (Build.VERSION.SDK_INT >= 21) {
-                // Toggle the status of thirdPartyCookiesEnabled.
-                cookieManager.setAcceptThirdPartyCookies(currentWebView, !cookieManager.acceptThirdPartyCookies(currentWebView));
-
-                // Update the menu checkbox.
-                menuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
-
-                // Display a snackbar.
-                if (cookieManager.acceptThirdPartyCookies(currentWebView)) {
-                    Snackbar.make(webViewPager, R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(webViewPager, R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
-                }
-
-                // Reload the current WebView.
-                currentWebView.reload();
-            }
 
             // Consume the event.
             return true;
@@ -1758,7 +1722,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else if (menuItemId == R.id.save_url) {  // Save URL.
             // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
             new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                    currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
+                    currentWebView.getAcceptCookies()).execute(currentWebView.getCurrentUrl());
 
             // Consume the event.
             return true;
@@ -2271,7 +2235,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
                     // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
                     new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies()).execute(linkUrl);
+                            currentWebView.getAcceptCookies()).execute(linkUrl);
 
                     // Consume the event.
                     return true;
@@ -2338,7 +2302,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
                     new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies()).execute(imageUrl);
+                            currentWebView.getAcceptCookies()).execute(imageUrl);
 
                     // Consume the event.
                     return true;
@@ -2438,7 +2402,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
                     // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
                     new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies()).execute(imageUrl);
+                            currentWebView.getAcceptCookies()).execute(imageUrl);
 
                     // Consume the event.
                     return true;
@@ -2460,7 +2424,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
                     // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
                     new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies()).execute(linkUrl);
+                            currentWebView.getAcceptCookies()).execute(linkUrl);
 
                     // Consume the event.
                     return true;
@@ -3131,7 +3095,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Save the URL.
-                new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies()).execute(saveWebpageUrl);
                 break;
 
             case SaveWebpageDialog.SAVE_ARCHIVE:
@@ -3909,8 +3873,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the settings from the cursor.
                 nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
                 nestedScrollWebView.getSettings().setJavaScriptEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
-                nestedScrollWebView.setAcceptFirstPartyCookies(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
-                boolean domainThirdPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
+                nestedScrollWebView.setAcceptCookies(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES)) == 1);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 // Form data can be removed once the minimum API >= 26.
                 boolean saveFormData = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
@@ -3980,12 +3943,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Apply the cookie domain settings.
-                cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
-
-                // Set third-party cookies status if API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, domainThirdPartyCookiesEnabled);
-                }
+                cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptCookies());
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
@@ -4164,8 +4122,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from the shared preferences.
                 nestedScrollWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean("javascript", false));
-                nestedScrollWebView.setAcceptFirstPartyCookies(sharedPreferences.getBoolean("first_party_cookies", false));
-                boolean defaultThirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
+                nestedScrollWebView.setAcceptCookies(sharedPreferences.getBoolean(getString(R.string.cookies_key), false));
                 nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
                 boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYLIST, sharedPreferences.getBoolean("easylist", true));
@@ -4176,8 +4133,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
 
-                // Apply the default first-party cookie setting.
-                cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
+                // Apply the default cookie setting.
+                cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptCookies());
 
                 // Apply the default font size setting.
                 try {
@@ -4207,11 +4164,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reset the pinned variables.
                 nestedScrollWebView.setDomainSettingsDatabaseId(-1);
-
-                // Set third-party cookies status if API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, defaultThirdPartyCookiesEnabled);
-                }
 
                 // Get the array position of the user agent name.
                 int userAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
@@ -4423,7 +4375,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Update the privacy icon.
             if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled.
                 optionsPrivacyMenuItem.setIcon(R.drawable.javascript_enabled);
-            } else if (currentWebView.getAcceptFirstPartyCookies()) {  // JavaScript is disabled but cookies are enabled.
+            } else if (currentWebView.getAcceptCookies()) {  // JavaScript is disabled but cookies are enabled.
                 optionsPrivacyMenuItem.setIcon(R.drawable.warning);
             } else {  // All the dangerous features are disabled.
                 optionsPrivacyMenuItem.setIcon(R.drawable.privacy_mode);
@@ -4432,14 +4384,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the current theme status.
             int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-            // Update the first-party cookies icon.
-            if (currentWebView.getAcceptFirstPartyCookies()) {  // First-party cookies are enabled.
-                optionsFirstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
-            } else {  // First-party cookies are disabled.
+            // Update the cookies icon.
+            if (currentWebView.getAcceptCookies()) {  // Cookies are enabled.
+                optionsCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
+            } else {  // Cookies are disabled.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    optionsFirstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_day);
+                    optionsCookiesMenuItem.setIcon(R.drawable.cookies_disabled_day);
                 } else {
-                    optionsFirstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
+                    optionsCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
                 }
             }
 
@@ -5060,8 +5012,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get a handle for the cookie manager.
             CookieManager cookieManager = CookieManager.getInstance();
 
-            // Set the first-party cookie status.
-            cookieManager.setAcceptCookie(currentWebView.getAcceptFirstPartyCookies());
+            // Set the cookie status.
+            cookieManager.setAcceptCookie(currentWebView.getAcceptCookies());
 
             // Update the privacy icons.  `true` redraws the icons in the app bar.
             updatePrivacyIcons(true);
@@ -5357,7 +5309,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Instantiate the save dialog.
             DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
-                    nestedScrollWebView.getAcceptFirstPartyCookies());
+                    nestedScrollWebView.getAcceptCookies());
 
             // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
             saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
@@ -6187,7 +6139,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Flush any cookies to persistent storage.  The cookie manager has become very lazy about flushing cookies in recent versions.
-                if (nestedScrollWebView.getAcceptFirstPartyCookies() && Build.VERSION.SDK_INT >= 21) {
+                if (nestedScrollWebView.getAcceptCookies() && Build.VERSION.SDK_INT >= 21) {
                     CookieManager.getInstance().flush();
                 }
 

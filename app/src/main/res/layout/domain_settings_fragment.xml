@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -103,19 +103,19 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="14dp"
-                android:text="@string/javascript_enabled"
+                android:text="@string/javascript"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <!-- First-Party Cookies. -->
+        <!-- Cookies. -->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/first_party_cookies_imageview"
+                android:id="@+id/cookies_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -124,42 +124,13 @@
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/first_party_cookies_switch"
+                android:id="@+id/cookies_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="14dp"
-                android:text="@string/first_party_cookies_enabled"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <!-- Third-Party Cookies. -->
-        <LinearLayout
-            android:id="@+id/third_party_cookies_linearlayout"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:id="@+id/third_party_cookies_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/cookies_enabled"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/third_party_cookies_switch"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/third_party_cookies_enabled"
+                android:text="@string/cookies"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -186,7 +157,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="14dp"
-                android:text="@string/dom_storage_enabled"
+                android:text="@string/dom_storage_preference"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -213,7 +184,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="14dp"
-                android:text="@string/form_data_enabled"
+                android:text="@string/form_data"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="18sp" />
         </LinearLayout>

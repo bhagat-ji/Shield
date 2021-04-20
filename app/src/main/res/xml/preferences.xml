@@ -30,15 +30,9 @@
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="first_party_cookies"
-            android:title="@string/first_party_cookies_preference"
-            android:summary="@string/first_party_cookies_preference_summary"
-            android:defaultValue="false" />
-
-        <SwitchPreference
-            android:key="third_party_cookies"
-            android:title="@string/third_party_cookies_preference"
-            android:summary="@string/third_party_cookies_summary"
+            android:key="cookies"
+            android:title="@string/cookies_preference"
+            android:summary="@string/cookies_preference_summary"
             android:defaultValue="false" />
 
         <SwitchPreference

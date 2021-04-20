@@ -1,7 +1,7 @@
 <!--
   Copyright © 2016-2018,2020-2021 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019,2021 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -43,57 +43,34 @@
             Ensuite, chaque fois qu'un utilisateur visite le site Web sur cet appareil, il peut être lié à un profil unique que le serveur conserve pour ce numéro de série.
             même si le périphérique se connecte à partir d'adresses IP différentes.</p>
 
-        <p>Presque tous les sites Web avec des connexions exigent que les cookies propriétaires soient activés pour qu'un utilisateur puisse se connecter.
-            C'est ainsi qu'ils s'assurent que c'est toujours votre cas lorsque vous vous déplacez de page en page sur le site. C'est, à mon avis, l'une des rares utilisations légitimes des cookies.</p>
+        <p>Almost all websites with logins require cookies to be enabled for a user to log in.
+            That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, the only legitimate use for cookies.</p>
 
-        <p>Si les cookies propriétaires sont activés mais que JavaScript est désactivé,
-            l'icône de confidentialité sera jaune <img class="inline" src="../shared_images/warning.svg"> en guise d'avertissement.</p>
+        <p>If cookies are enabled but JavaScript is disabled, the privacy icon will be yellow <img class="inline" src="../shared_images/warning.svg"> as a warning.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Cookies de tiers</h3>
 
-        <p>Les cookies tiers sont définis par des parties d'un site Web chargées à partir de serveurs différents de l'URL en haut de la page.
-            Par exemple, la plupart des sites Web contenant des publicités les chargent depuis un courtier publicitaire tiers, comme <a href="https://www.google.com/adsense/start/">Ad Sense</a> de Google.
-            Chaque fois que le site Web se charge, il demande au courtier en publicité d'afficher une annonce.
-            Le courtier en publicité analyse toutes les informations dont il dispose sur l'utilisateur,
-            examine le tarif actuel que les annonceurs sont disposés à payer pour leurs annonces et sélectionne celle à afficher.
-            La section du site Web qui affiche les annonces est chargée à partir du serveur du courtier tiers au lieu du serveur principal.</p>
-
-        <p>La plupart des publicités sur Internet étant traitées par quelques courtiers uniquement,
-            ils ont vite compris qu'ils pouvaient définir un cookie de suivi sur le terminal de l'utilisateur et connaître chaque lieu où cet utilisateur se rend.
-            Chaque fois qu'une annonce est chargée à partir d'un courtier, elle vérifie d'abord si le périphérique a déjà un numéro de série unique dans un cookie de suivi.
-            Si tel est le cas, il recherche le profil pour ce numéro de série et note le nouveau site.
-            C'est pourquoi un utilisateur peut rechercher sur un site Web un produit qu'il ne recherche généralement pas, comme les noix,
-            et puis soudain commencer à voir des publicités pour les noix sur chaque site Web qu'ils visitent.</p>
-
-        <p>Outre les courtiers en publicité, les sites de médias sociaux ont découvert qu'ils pouvaient jouer un rôle actif.
-            Il y a quelques années, les principaux sites de médias sociaux tels que Facebook et Twitter ont convaincu un grand nombre de sites Web.
-            qu'il serait dans leur intérêt de placer de petites icônes de médias sociaux sur leurs pages.
-            Ce ne sont pas que des images. Ils contiennent le <a href="https://developers.facebook.com/docs/plugins/like-button/">code incorporé</a> qui renvoie au site de média social et, entre autres,
-            charge un cookie tiers sur l'appareil. Ces cookies sont placés même si l'utilisateur n'a pas de compte avec la plate-forme de médias sociaux.
-            Au fil du temps, des entreprises comme Facebook (qui gère également une régie publicitaire) ont constitué un assez grand nombre de profils détaillés sur les personnes qui ont
-            <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins"> n'a même jamais créé de compte sur son site </a>.</p>
-
-        <p>Il n'existe aucune raison valable d'autoriser les cookies tiers. Sur les appareils avec Android KitKat ou une version antérieure (version <= 4.4.4 ou API <= 20), WebView ne
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)"> différencie pas
-            entre les cookies propriétaires et tiers </a>. Ainsi, l'activation des cookies propriétaires permettra également l'utilisation de cookies tiers.</p>
+        <p>Third-party cookies are set by portions of a website that are loaded from servers different from the URL at the top of the page.
+            There is no good reason to ever enable third-party cookies. Privacy Browser 3.8 removed the option, and even Google is planning to
+            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">disable them in the future</a>.
+            On devices with Android KitKat (version 4.4.4, API 20), WebView does not
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
+            between first-party and third-party cookies</a>. Thus, enabling cookies will also enable third-party cookies.</p>
 
 
         <h3> <svg class="header"><use href="../shared_images/web.svg#icon"/></svg> Stockage du DOM</h3>
 
-        <p>Le stockage de modèle d'objet de document, également appelé stockage Web, ressemble à des cookies sur des stéroïdes.
-            Considérant que la taille de stockage combinée maximale pour tous les cookies d'une seule URL est de 4 kilo-octets,
-            Le stockage DOM peut contenir <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">des mégaoctets par site</a>.
-            Le stockage DOM utilisant JavaScript pour lire et écrire des données, il ne peut être activé que si JavaScript est également activé.</p>
+        <p>Document Object Model storage, also known as web storage, is like cookies on steroids. Whereas the maximum combined storage size for all cookies from a single URL is 4 kilobytes,
+            DOM storage can hold <a href="https://en.wikipedia.org/wiki/Web_storage#Features">megabytes per site</a>. Unlike cookies, DOM storage does not send all the data in the headers with every request.
+            Rather, it uses JavaScript to read and write data, which means it does not function when JavaScript is disabled.</p>
 
 
         <h3> <svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Données de formulaire</h3>
 
-        <p>Les données de formulaire contiennent des informations saisies dans des formulaires Web, telles que des noms d'utilisateur, des adresses, des numéros de téléphone,
-            etc., et les répertorient dans une liste déroulante lors de visites ultérieures.
-            Contrairement aux autres formes de stockage local, les données de formulaire ne sont pas envoyées au serveur Web sans interaction spécifique de l'utilisateur.
-            Depuis Android Oreo (8.0), les données de formulaire de WebView ont été remplacées par le
-            <a href="https://medium.com/@bherbst/getting-androids-autofill-tofwork-for-you-21435debea1">service de saisie automatique.</a>.
-            En tant que tels, les contrôles des données de formulaire n'apparaissent plus sur les nouveaux appareils Android.</p>
+        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
+            Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction. Beginning in Android Oreo (version 8.0, API 26),
+            WebView’s form data was replaced by the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
+            As such, controls for form data no longer appear on newer Android devices.</p>
     </body>
 </html>

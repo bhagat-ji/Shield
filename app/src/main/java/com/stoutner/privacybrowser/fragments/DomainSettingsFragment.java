@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -120,11 +120,8 @@ public class DomainSettingsFragment extends Fragment {
         EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
         ImageView javaScriptImageView = domainSettingsView.findViewById(R.id.javascript_imageview);
         SwitchCompat javaScriptSwitch = domainSettingsView.findViewById(R.id.javascript_switch);
-        ImageView firstPartyCookiesImageView = domainSettingsView.findViewById(R.id.first_party_cookies_imageview);
-        SwitchCompat firstPartyCookiesSwitch = domainSettingsView.findViewById(R.id.first_party_cookies_switch);
-        LinearLayout thirdPartyCookiesLinearLayout = domainSettingsView.findViewById(R.id.third_party_cookies_linearlayout);
-        ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.third_party_cookies_imageview);
-        SwitchCompat thirdPartyCookiesSwitch = domainSettingsView.findViewById(R.id.third_party_cookies_switch);
+        ImageView cookiesImageView = domainSettingsView.findViewById(R.id.cookies_imageview);
+        SwitchCompat cookiesSwitch = domainSettingsView.findViewById(R.id.cookies_switch);
         ImageView domStorageImageView = domainSettingsView.findViewById(R.id.dom_storage_imageview);
         SwitchCompat domStorageSwitch = domainSettingsView.findViewById(R.id.dom_storage_switch);
         ImageView formDataImageView = domainSettingsView.findViewById(R.id.form_data_imageview);  // The form data views can be remove once the minimum API >= 26.
@@ -214,8 +211,7 @@ public class DomainSettingsFragment extends Fragment {
         // Save the cursor entries as variables.
         String domainNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
         int javaScriptInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
-        int firstPartyCookiesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES));
-        int thirdPartyCookiesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES));
+        int cookiesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES));
         int domStorageInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
         int formDataInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));  // Form data can be remove once the minimum API >= 26.
         int easyListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST));
@@ -382,65 +378,28 @@ public class DomainSettingsFragment extends Fragment {
             javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null));
         }
 
-        // Set the first-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        if (firstPartyCookiesInt == 1) {  // First-party cookies are enabled.
-            firstPartyCookiesSwitch.setChecked(true);
-            firstPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_enabled, null));
-        } else {  // First-party cookies are disabled.
-            firstPartyCookiesSwitch.setChecked(false);
+        // Set the cookies switch status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (cookiesInt == 1) {  // Cookies are enabled.
+            // Turn the switch on.
+            cookiesSwitch.setChecked(true);
+
+            // Set the icon.
+            cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_enabled, null));
+        } else {  // Cookies are disabled.
+            // Turn the switch off
+            cookiesSwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                firstPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_night, null));
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_day, null));
             } else {
-                firstPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_day, null));
+                cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_night, null));
             }
-        }
-
-        // Only display third-party cookies if SDK_INT >= 21.
-        if (Build.VERSION.SDK_INT >= 21) {  // Third-party cookies can be configured for API >= 21.
-            // Only enable third-party-cookies if first-party cookies are enabled.
-            if (firstPartyCookiesInt == 1) {  // First-party cookies are enabled.
-                // Set the third-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-                if (thirdPartyCookiesInt == 1) {  // Both first-party and third-party cookies are enabled.
-                    // Set the third-party cookies switch to be checked.
-                    thirdPartyCookiesSwitch.setChecked(true);
-
-                    // Set the icon to be red.
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_warning, null));
-                } else {  // First party cookies are enabled but third-party cookies are disabled.
-                    // Set the third-party cookies switch to be checked.
-                    thirdPartyCookiesSwitch.setChecked(false);
-
-                    // Set the icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_night, null));
-                    } else {
-                        thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_day, null));
-                    }
-                }
-            } else {  // First-party cookies are disabled.
-                // Set the status of third-party cookies.
-                thirdPartyCookiesSwitch.setChecked(thirdPartyCookiesInt == 1);
-
-                // Disable the third-party cookies switch.
-                thirdPartyCookiesSwitch.setEnabled(false);
-
-                // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_ghosted_night, null));
-                } else {
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_ghosted_day, null));
-                }
-            }
-        } else {  // Third-party cookies cannot be configured for API <= 21.
-            // Hide the LinearLayout for third-party cookies.
-            thirdPartyCookiesLinearLayout.setVisibility(View.GONE);
         }
 
         // Only enable DOM storage if JavaScript is enabled.
         if (javaScriptInt == 1) {  // JavaScript is enabled.
-            // Enable the DOM storage `Switch`.
+            // Enable the DOM storage switch.
             domStorageSwitch.setEnabled(true);
 
             // Set the DOM storage status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
@@ -1390,59 +1349,17 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the first-party cookies switch listener.
-        firstPartyCookiesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            if (isChecked) {  // First-party cookies are enabled.
-                // Update the first-party cookies icon.
-                firstPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_enabled, null));
-
-                // Enable the third-party cookies switch.
-                thirdPartyCookiesSwitch.setEnabled(true);
-
-                // Update the third-party cookies icon.
-                if (thirdPartyCookiesSwitch.isChecked()) {  // Third-party cookies are enabled.
-                    // Set the third-party cookies icon to be red.
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_warning, null));
-                } else {  // Third-party cookies are disabled.
-                    // Set the third-party cookies icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_night, null));
-                    } else {
-                        thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_day, null));
-                    }
-                }
-            } else {  // First-party cookies are disabled.
-                // Update the first-party cookies icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    firstPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_night, null));
+        // Set the cookies switch listener.
+        cookiesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if (isChecked) {  // Cookies are enabled.
+                // Update the cookies icon.
+                cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_enabled, null));
+            } else {  // Cookies are disabled.
+                // Update the cookies icon according to the theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_day, null));
                 } else {
-                    firstPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_day, null));
-                }
-
-                // Disable the third-party cookies switch.
-                thirdPartyCookiesSwitch.setEnabled(false);
-
-                // Set the third-party cookies icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_ghosted_night, null));
-                } else {
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_ghosted_day, null));
-                }
-            }
-        });
-
-        // Set the third-party cookies switch listener.
-        thirdPartyCookiesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                // Set the third-party cookies icon to be red.
-                thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_warning, null));
-            } else {
-                // Update the third-party cookies icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_night, null));
-                } else {
-                    thirdPartyCookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_day, null));
+                    cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled_night, null));
                 }
             }
         });

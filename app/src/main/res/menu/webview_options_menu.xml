@@ -46,18 +46,11 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/first_party_cookies"
-        android:title="@string/first_party_cookies"
+        android:id="@+id/cookies"
+        android:title="@string/cookies"
         android:orderInCategory="400"
         android:checkable="true"
         android:icon="@drawable/cookies_disabled_day"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/third_party_cookies"
-        android:title="@string/third_party_cookies"
-        android:orderInCategory="500"
-        android:checkable="true"
         app:showAsAction="never" />
 
     <item

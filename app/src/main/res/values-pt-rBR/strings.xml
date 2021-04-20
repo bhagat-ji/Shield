@@ -31,10 +31,6 @@
     <string name="privacy_mode">Modo Privado</string>
     <string name="javascript_enabled">JavaScript ativado</string>
     <string name="javascript_disabled">JavaScript desativado</string>
-    <string name="first_party_cookies_enabled">Cookies primários habilitados</string>
-    <string name="first_party_cookies_disabled">Cookies primários desabilitados</string>
-    <string name="third_party_cookies_enabled">Cookies de terceiros habilitados</string>
-    <string name="third_party_cookies_disabled">Cookies de terceiros desabilitados</string>
     <string name="dom_storage_enabled">Armazenamento DOM ativado</string>
     <string name="dom_storage_disabled">Armazenamento DOM desativado</string>
     <string name="form_data_enabled">Dados de formulário habilitados</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
@@ -126,8 +122,6 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Atualizar</string>
     <string name="stop">Parar</string>
-    <string name="first_party_cookies">Cookies primários</string>
-    <string name="third_party_cookies">Cookies de terceiros</string>
     <string name="dom_storage">Armazenamento DOM</string>
     <string name="form_data">Dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Limpar dados</string>
@@ -437,14 +431,7 @@
     <string name="privacy">Privacidade</string>
         <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript permite que sites executem programas (scripts) no dispositivo.</string>
-        <string name="first_party_cookies_preference">Cookies primários</string>
-        <string name="first_party_cookies_preference_summary">Como os cookies primários são uma configuração de nível de aplicativo, quando a guia ativa tem cookies habilitados,
-            todas as solicitações de rede feitas em segundo plano por outras guias também incluirão quaisquer cookies armazenados para seus domínios.
-            O Android KitKat (versão 4.4.x) não diferencia entre cookies primários e de terceiros e os habilitará com esta configuração.</string>
-        <string name="third_party_cookies_preference">Cookies de terceiros</string>
-        <string name="third_party_cookies_summary">Esta configuração requer Android Lollipop (versão 5.0) ou superior. Não tem efeito se os cookies primários estiverem desativados.</string>
         <string name="dom_storage_preference">Armazenamento DOM</string>
-        <string name="dom_storage_preference_summary">JavaScript deve estar habilitado para que o armazenamento DOM funcione.</string>
         <string name="save_form_data_preference">Dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="save_form_data_preference_summary">Dados de formulário salvos podem preencher campos automaticamente em sites.</string>
         <!-- The form data strings can be removed once the minimum API >= 26. -->
@@ -549,7 +536,6 @@
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Limpa cookies, armazenamento DOM, dados de formulário e cache do WebView. Em seguida, exclui manualmente todos os diretórios “app_webview” e “cache”.</string>
         <string name="clear_cookies_preference">Limpar cookies</string>
-        <string name="clear_cookies_summary">Limpa os cookies originais e de terceiros.</string>
         <string name="clear_dom_storage_preference">Limpar armazenamento DOM</string>
         <string name="clear_dom_storage_summary">Limpa o armazenamento DOM.</string>
         <string name="clear_form_data_preference">Limpar dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

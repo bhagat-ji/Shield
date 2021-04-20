@@ -35,10 +35,6 @@
     <string name="privacy_mode">Privater Modus</string>
     <string name="javascript_enabled">JavaScript aktiviert</string>
     <string name="javascript_disabled">JavaScript deaktiviert</string>
-    <string name="first_party_cookies_enabled">Erstanbieter-Cookies aktiviert</string>
-    <string name="first_party_cookies_disabled">Erstanbieter-Cookies deaktiviert</string>
-    <string name="third_party_cookies_enabled">Drittanbieter-Cookies aktiviert</string>
-    <string name="third_party_cookies_disabled">Drittanbieter-Cookies deaktiviert</string>
     <string name="dom_storage_enabled">DOM-Speicher aktiviert</string>
     <string name="dom_storage_disabled">DOM-Speicher deaktiviert</string>
     <string name="form_data_enabled">Formulardaten aktiviert</string>
@@ -132,8 +128,6 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Aktualisieren</string>
     <string name="stop">Stop</string>
-    <string name="first_party_cookies">Erstanbieter-Cookies</string>
-    <string name="third_party_cookies">Drittanbieter-Cookies</string>
     <string name="dom_storage">DOM-Speicher</string>
     <string name="form_data">Formulardaten</string>
     <string name="clear_data">Daten löschen</string>
@@ -448,15 +442,7 @@
     <string name="privacy">Privatsphäre</string>
         <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
-        <string name="first_party_cookies_preference">Erstanbieter-Cookies</string>
-        <string name="first_party_cookies_preference_summary">Da die Cookie-Einstellungen App-weit gelten, werden, wenn im aktiven Tab Cookies erlaubt sind,
-            auch in den Hintergrund-Tabs Cookies der dort angezeigten Seiten und deren Domains angenommen.
-            Unter Android KitKat (version 4.4.x) wird nicht zwischen Cookies und Drittanbieter-Cookies unterschieden,
-            sodass in dieser Version mit dieser Einstellung beide Cookie-Varianten aktiviert werden.</string>
-        <string name="third_party_cookies_preference">Drittanbieter-Cookies</string>
-        <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
         <string name="dom_storage_preference">DOM-Speicher</string>
-        <string name="dom_storage_preference_summary">JavaScript muss für die Funktionalität des DOM-Speichers aktiviert sein.</string>
         <string name="save_form_data_preference">Formulardaten</string>
         <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
         <string name="user_agent">User Agent</string>
@@ -560,7 +546,6 @@
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, Formular-Daten, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
         <string name="clear_cookies_preference">Cookies löschen</string>
-        <string name="clear_cookies_summary">Löscht Cookies und Drittanbieter-Cookies.</string>
         <string name="clear_dom_storage_preference">DOM Storage löschen</string>
         <string name="clear_dom_storage_summary">Löscht DOM storage (aka Web Storage oder Supercookies).</string>
         <string name="clear_form_data_preference">Formulardaten löschen</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

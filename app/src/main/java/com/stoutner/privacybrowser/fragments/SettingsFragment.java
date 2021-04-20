@@ -73,8 +73,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Get handles for the preferences.
         Preference javaScriptPreference = findPreference("javascript");
-        Preference firstPartyCookiesPreference = findPreference("first_party_cookies");
-        Preference thirdPartyCookiesPreference = findPreference("third_party_cookies");
+        Preference cookiesPreference = findPreference(getString(R.string.cookies_key));
         Preference domStoragePreference = findPreference("dom_storage");
         Preference formDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
         Preference userAgentPreference = findPreference("user_agent");
@@ -116,8 +115,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Remove the lint warnings below that the preferences might be null.
         assert javaScriptPreference != null;
-        assert firstPartyCookiesPreference != null;
-        assert thirdPartyCookiesPreference != null;
+        assert cookiesPreference != null;
         assert domStoragePreference != null;
         assert formDataPreference != null;
         assert userAgentPreference != null;
@@ -168,14 +166,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Get booleans that are used in multiple places from the preferences.
         boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
-        boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies", false);
         boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboys_annoyance_list", true);
         boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
-
-        // Only enable the third-party cookies preference if first-party cookies are enabled and API >= 21.
-        thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabled && (Build.VERSION.SDK_INT >= 21));
 
         // Remove the form data preferences if the API is >= 26 as they no longer do anything.
         if (Build.VERSION.SDK_INT >= 26) {
@@ -375,33 +369,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             javaScriptPreference.setIcon(R.drawable.privacy_mode);
         }
 
-        // Set the first-party cookies icon.
-        if (firstPartyCookiesEnabled) {
-            firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
+        // Set the cookies icon.
+        if (savedPreferences.getBoolean(getString(R.string.cookies_key), false)) {
+            cookiesPreference.setIcon(R.drawable.cookies_enabled);
         } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                cookiesPreference.setIcon(R.drawable.cookies_disabled_day);
             } else {
-                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
-            }
-        }
-
-        // Set the third party cookies icon.
-        if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
-            if (savedPreferences.getBoolean("third_party_cookies", false)) {
-                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
-            } else {
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
-                } else {
-                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
-                }
-            }
-        } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_night);
-            } else {
-                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_day);
+                cookiesPreference.setIcon(R.drawable.cookies_disabled_night);
             }
         }
 
@@ -410,17 +385,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (savedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {  // DOM storage is disabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
+                } else {
+                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
                 }
             }
         } else {  // The preference is disabled.  The icon should be ghosted.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_day);
+            } else {
+                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
             }
         }
 
@@ -429,26 +404,26 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (savedPreferences.getBoolean("save_form_data", false)) {
                 formDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                    formDataPreference.setIcon(R.drawable.form_data_disabled_night);
-                } else {
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                     formDataPreference.setIcon(R.drawable.form_data_disabled_day);
+                } else {
+                    formDataPreference.setIcon(R.drawable.form_data_disabled_night);
                 }
             }
         }
 
         // Set the custom user agent icon.
         if (customUserAgentPreference.isEnabled()) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_day);
+            } else {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_night);
             }
         } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_day);
+            } else {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_night);
             }
         }
 
@@ -733,10 +708,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the clear everything preference icon.
         if (clearEverything) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_day);
+            } else {
+                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_night);
             }
         } else {
             clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
@@ -744,10 +719,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the clear cookies preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_cookies", true)) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 clearCookiesPreference.setIcon(R.drawable.cookies_cleared_day);
+            } else {
+                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
             }
         } else {
             clearCookiesPreference.setIcon(R.drawable.cookies_warning);
@@ -935,10 +910,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if (sharedPreferences.getBoolean("dom_storage", false)) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
-                            } else {
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
+                            } else {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
                             }
                         }
                     } else {  // The JavaScript preference is disabled.
@@ -949,67 +924,23 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         domStoragePreference.setEnabled(false);
 
                         // Set the icon for DOM storage preference to be ghosted.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_day);
+                        } else {
+                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_night);
                         }
                     }
                     break;
 
-                case "first_party_cookies":
-                    // Update the icons for `first_party_cookies` and `third_party_cookies`.
-                    if (sharedPreferences.getBoolean("first_party_cookies", false)) {
-                        // Set the icon for `first_party_cookies`.
-                        firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
-
-                        // Update the icon for `third_party_cookies`.
-                        if (Build.VERSION.SDK_INT >= 21) {
-                            if (sharedPreferences.getBoolean("third_party_cookies", false)) {
-                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
-                            } else {
-                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
-                                } else {
-                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
-                                }
-                            }
-                        } else {
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_night);
-                            } else {
-                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_day);
-                            }
-                        }
-                    } else {  // `first_party_cookies` is `false`.
-                        // Update the icon for `first_party_cookies`.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
-                        } else {
-                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
-                        }
-
-                        // Set the icon for `third_party_cookies` to be ghosted.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_night);
-                        } else {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_day);
-                        }
-                    }
-
-                    // Enable `third_party_cookies` if `first_party_cookies` is `true` and API >= 21.
-                    thirdPartyCookiesPreference.setEnabled(sharedPreferences.getBoolean("first_party_cookies", false) && (Build.VERSION.SDK_INT >= 21));
-                    break;
-
-                case "third_party_cookies":
+                case "cookies":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("third_party_cookies", false)) {
-                        thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
+                    if (sharedPreferences.getBoolean(getString(R.string.cookies_key), false)) {
+                        cookiesPreference.setIcon(R.drawable.cookies_enabled);
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_night);
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            cookiesPreference.setIcon(R.drawable.cookies_disabled_day);
                         } else {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_day);
+                            cookiesPreference.setIcon(R.drawable.cookies_disabled_night);
                         }
                     }
                     break;
@@ -1019,10 +950,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     if (sharedPreferences.getBoolean("dom_storage", false)) {
                         domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_disabled_day);
+                        } else {
+                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled_night);
                         }
                     }
                     break;
@@ -1033,10 +964,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     if (sharedPreferences.getBoolean("save_form_data", false)) {
                         formDataPreference.setIcon(R.drawable.form_data_enabled);
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            formDataPreference.setIcon(R.drawable.form_data_disabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             formDataPreference.setIcon(R.drawable.form_data_disabled_day);
+                        } else {
+                            formDataPreference.setIcon(R.drawable.form_data_disabled_night);
                         }
                     }
                     break;
@@ -1545,10 +1476,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the clear everything preference icon.
                     if (newClearEverythingBoolean) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_day);
+                        } else {
+                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_night);
                         }
                     } else {
                         clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
@@ -1556,10 +1487,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the clear cookies preference icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cookies", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearCookiesPreference.setIcon(R.drawable.cookies_cleared_day);
+                        } else {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
                         }
                     } else {
                         clearCookiesPreference.setIcon(R.drawable.cookies_warning);
@@ -1567,10 +1498,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the clear dom storage preference icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_day);
+                        } else {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
                         }
                     } else {
                         clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
@@ -1579,10 +1510,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Update the clear form data preference icon if the API < 26.
                     if (Build.VERSION.SDK_INT < 26) {
                         if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_form_data", true)) {
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
-                            } else {
+                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                                 clearFormDataPreference.setIcon(R.drawable.form_data_cleared_day);
+                            } else {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
                             }
                         } else {
                             clearFormDataPreference.setIcon(R.drawable.form_data_warning);
@@ -1602,10 +1533,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                     // Update the clear cache preference icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cache", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearCachePreference.setIcon(R.drawable.cache_cleared_day);
+                        } else {
+                            clearCachePreference.setIcon(R.drawable.cache_cleared_night);
                         }
                     } else {
                         clearCachePreference.setIcon(R.drawable.cache_warning);
@@ -1615,10 +1546,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_cookies":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_cookies", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearCookiesPreference.setIcon(R.drawable.cookies_cleared_day);
+                        } else {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared_night);
                         }
                     } else {
                         clearCookiesPreference.setIcon(R.drawable.cookies_warning);
@@ -1628,10 +1559,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_dom_storage":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_day);
+                        } else {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
                         }
                     } else {
                         clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
@@ -1642,10 +1573,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_form_data":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_form_data", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearFormDataPreference.setIcon(R.drawable.form_data_cleared_day);
+                        } else {
+                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
                         }
                     } else {
                         clearFormDataPreference.setIcon(R.drawable.form_data_warning);
@@ -1668,10 +1599,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "clear_cache":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_cache", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearCachePreference.setIcon(R.drawable.cache_cleared_day);
+                        } else {
+                            clearCachePreference.setIcon(R.drawable.cache_cleared_night);
                         }
                     } else {
                         clearCachePreference.setIcon(R.drawable.cache_warning);

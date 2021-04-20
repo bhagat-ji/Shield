@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -749,8 +749,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Get handles for the domain settings.
         EditText domainNameEditText = view.findViewById(R.id.domain_settings_name_edittext);
         SwitchCompat javaScriptSwitch = view.findViewById(R.id.javascript_switch);
-        SwitchCompat firstPartyCookiesSwitch = view.findViewById(R.id.first_party_cookies_switch);
-        SwitchCompat thirdPartyCookiesSwitch = view.findViewById(R.id.third_party_cookies_switch);
+        SwitchCompat cookiesSwitch = view.findViewById(R.id.cookies_switch);
         SwitchCompat domStorageSwitch = view.findViewById(R.id.dom_storage_switch);
         SwitchCompat formDataSwitch = view.findViewById(R.id.form_data_switch);  // Form data can be removed once the minimum API >= 26.
         SwitchCompat easyListSwitch = view.findViewById(R.id.easylist_switch);
@@ -776,8 +775,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Extract the data for the domain settings.
         String domainNameString = domainNameEditText.getText().toString();
         boolean javaScript = javaScriptSwitch.isChecked();
-        boolean firstPartyCookies = firstPartyCookiesSwitch.isChecked();
-        boolean thirdPartyCookies = thirdPartyCookiesSwitch.isChecked();
+        boolean cookies = cookiesSwitch.isChecked();
         boolean domStorage  = domStorageSwitch.isChecked();
         boolean formData = formDataSwitch.isChecked();  // Form data can be removed once the minimum API >= 26.
         boolean easyList = easyListSwitch.isChecked();
@@ -829,7 +827,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         }
 
         // Save the domain settings.
-        domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScript, firstPartyCookies, thirdPartyCookies, domStorage, formData, easyList, easyPrivacy,
+        domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScript, cookies, domStorage, formData, easyList, easyPrivacy,
                 fanboysAnnoyance, fanboysSocialBlocking, ultraList, ultraPrivacy, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt,
                 displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
 

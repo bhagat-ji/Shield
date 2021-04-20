@@ -29,10 +29,6 @@
     <string name="privacy_mode">Режим приватности</string>
     <string name="javascript_enabled">JavaScript включен</string>
     <string name="javascript_disabled">JavaScript отключен</string>
-    <string name="first_party_cookies_enabled">Первичные файлы cookie включены</string>
-    <string name="first_party_cookies_disabled">Первичные файлы cookie отключены</string>
-    <string name="third_party_cookies_enabled">Сторонние файлы cookie включены</string>
-    <string name="third_party_cookies_disabled">Сторонние файлы cookie отключены</string>
     <string name="dom_storage_enabled">DOM-хранилище включено</string>
     <string name="dom_storage_disabled">DOM-хранилище отключено</string>
     <string name="form_data_enabled">Данные формы включены</string>
@@ -125,8 +121,6 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Обновить</string>
     <string name="stop">Остановить</string>
-    <string name="first_party_cookies">Первичные файлы cookie</string>
-    <string name="third_party_cookies">Сторонние файлы cookie</string>
     <string name="dom_storage">DOM-хранилище</string>
     <string name="form_data">Данные формы</string>
     <string name="clear_data">Очистить данные</string>
@@ -441,14 +435,7 @@
     <string name="privacy">Конфиденциальность</string>
         <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript позволяет веб-сайтам запускать программы (скрипты) на устройстве.</string>
-        <string name="first_party_cookies_preference">Первичные файлы cookie</string>
-        <string name="first_party_cookies_preference_summary">Поскольку первичные файлы cookie являются настройкой уровня приложения, при включении файлов cookie на активной вкладке, любые сетевые запросы,
-            сделанные в фоновом режиме другими вкладками, также будут содержать любые сохраненные файлы cookie для их доменов.
-            Android KitKat (версия 4.4.x) не различает первичные и сторонние файлы cookie и включает их одновременно этой настройкой.</string>
-        <string name="third_party_cookies_preference">Сторонние файлы cookie</string>
-        <string name="third_party_cookies_summary">Этот параметр требует Android Lollipop (версия 5.0) или выше. Он не действует, если первичные файлы cookie отключены.</string>
         <string name="dom_storage_preference">DOM-хранилище</string>
-        <string name="dom_storage_preference_summary">Для работы хранилища DOM должен быть включен JavaScript.</string>
         <string name="save_form_data_preference">Сохранение данных формы</string>
         <string name="save_form_data_preference_summary">Сохраненные данные формы могут автоматически заполнять поля на веб-сайтах.</string>
         <string name="user_agent">User agent</string>
@@ -552,7 +539,6 @@
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Очищает файлы cookie, DOM-хранилище, данные форм, logcat и кэш WebView. После этого вручную удаляет каталоги "app_webview" и "cache".</string>
         <string name="clear_cookies_preference">Очистить файлы cookie</string>
-        <string name="clear_cookies_summary">Очистить первичные и сторонние файлы cookie.</string>
         <string name="clear_dom_storage_preference">Очистить DOM-хранилище</string>
         <string name="clear_dom_storage_summary">Очищает DOM-хранилище.</string>
         <string name="clear_form_data_preference">Очистка данных формы</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

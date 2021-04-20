@@ -29,10 +29,6 @@
     <string name="privacy_mode">Gizlilik Modu</string>
     <string name="javascript_enabled">JavaScript etkin</string>
     <string name="javascript_disabled">JavaScript devre dışı</string>
-    <string name="first_party_cookies_enabled">Birinci Taraf Çerezler etkin</string>
-    <string name="first_party_cookies_disabled">Birinci Taraf Çerezler devre dışı</string>
-    <string name="third_party_cookies_enabled">Üçüncü Taraf Çerezler etkin</string>
-    <string name="third_party_cookies_disabled">Üçüncü Taraf Çerezler devre dışı</string>
     <string name="dom_storage_enabled">DOM Depolama etkin</string>
     <string name="dom_storage_disabled">DOM Depolama devre dışı</string>
     <string name="form_data_enabled">Form Verisi etkin</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
@@ -123,8 +119,6 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Yenile</string>
     <string name="stop">Dur</string>
-    <string name="first_party_cookies">Birinci Taraf Çerezler</string>
-    <string name="third_party_cookies">Üçüncü Taraf Çerezler</string>
     <string name="dom_storage">DOM Depolama</string>
     <string name="form_data">Form Verisi</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Veriyi temizle</string>
@@ -396,15 +390,7 @@
     <string name="privacy">Gizlilik</string>
         <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript, web sitelerin cihazdaki programları (scriptler) çalıştırmasına izin verir.</string>
-        <string name="first_party_cookies_preference">Birinci taraf çerezler</string>
-        <string name="first_party_cookies_preference_summary">Birinci taraf çerezler uygulama düzeyinde bir ayar olduğundan, aktif sekmede çerezler etkinleştirildiğinde,
-            arka plandaki diğer sekmeler tarafından yapılan herhangi ağ istekleri aynı zamanda domainleri için depolanan çerezleri de kapsayacaktır.
-            Android Kitkat versiyonu (4.4.x), birinci ve üçüncü taraf çerezler arasında ayrım yapmaz ve bu ayarla ikisini de etkinleştirir.</string>
-        <string name="third_party_cookies_preference">Üçüncü taraf çerezler</string>
-        <string name="third_party_cookies_summary">Bu ayarı etkinleştirmek için Android Lollipop versiyonuna (5.0) ya da daha üst versiyonlara sahip olmak gerekir.
-            Birinci taraf çerezler devre dışı olduğu takdirde etkisi yoktur.</string>
         <string name="dom_storage_preference">DOM depolama</string>
-        <string name="dom_storage_preference_summary">DOM depolamasının çalışması için JavaScript\'in etkin olması gerekir.</string>
         <string name="save_form_data_preference">Form verisi</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="save_form_data_preference_summary">Kaydedilen form verisi, web sitelerdeki boşlukları otomatik olarak dolduracaktır.</string>
         <string name="user_agent">Kullanıcı aracısı</string>
@@ -490,7 +476,6 @@
     <string name="clear_everything">Her şeyi temizle</string>
         <string name="clear_everything_summary">Çerezleri, DOM depolamayı, form verisini ve WebView ön belleğini temizler. Sonrasında, manuel olarak bütün “app_webview” ve “cache” dizinlerini siler.</string>
         <string name="clear_cookies_preference">Çerezleri temizle</string>
-        <string name="clear_cookies_summary">Birinci ve üçüncü taraf çerezleri temizler.</string>
         <string name="clear_dom_storage_preference">DOM Depolamayı temizle</string>
         <string name="clear_dom_storage_summary">DOM Depolamayı temizler.</string>
         <string name="clear_form_data_preference">Form verisini temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
