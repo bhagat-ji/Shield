@@ -35,6 +35,7 @@
 
         <!-- A compound drawable doesn't work well because only the image view should execute the `onClick()`. -->
         <LinearLayout
+            android:id="@+id/bookmarks_header_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal"

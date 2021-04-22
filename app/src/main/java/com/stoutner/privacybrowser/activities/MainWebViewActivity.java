@@ -3110,7 +3110,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
         }
     }
-
+    
+    // Remove the warning that `OnTouchListener()` needs to override `performClick()`, as the only purpose of setting the `OnTouchListener()` is to make it do nothing.
+    @SuppressLint("ClickableViewAccessibility")
     private void initializeApp() {
         // Get a handle for the input method.
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -3220,6 +3222,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
         // Get handles for views that need to be modified.
+        LinearLayout bookmarksHeaderLinearLayout = findViewById(R.id.bookmarks_header_linearlayout);
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
@@ -3284,6 +3287,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Display the View SSL Certificate dialog.
                 viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
             }
+        });
+
+        // Set a touch listener on the bookmarks header linear layout so that touches don't pass through to the button underneath.
+        bookmarksHeaderLinearLayout.setOnTouchListener((view, motionEvent) -> {
+            // Consume the touch.
+            return true;
         });
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
