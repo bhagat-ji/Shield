@@ -32,6 +32,8 @@
     <string name="privacy_mode">Mode privé</string>
     <string name="javascript_enabled">JavaScript activé</string>
     <string name="javascript_disabled">JavaScript désactivé</string>
+    <string name="cookies_enabled">Cookies activés</string>
+    <string name="cookies_disabled">Cookies désactivés</string>
     <string name="dom_storage_enabled">Stockage du DOM activé</string>
     <string name="dom_storage_disabled">Stockage du DOM désactivé</string>
     <string name="form_data_enabled">Données de formulaires activé</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
@@ -114,6 +116,7 @@
         <string name="clear_history">Vider l\'historique</string>
     <string name="open">Ouvrir</string>
     <string name="downloads">Téléchargements</string>
+        <string name="no_file_manager_detected">Le système ne peut pas détecter un gestionnaire de fichiers compatible.</string>
     <string name="settings">Paramètres</string>
     <string name="import_export">Importer/Exporter</string>
     <string name="logcat">Journal système</string>
@@ -124,6 +127,7 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Rafraîchir</string>
     <string name="stop">Stop</string>
+    <string name="cookies">Cookies</string>
     <string name="dom_storage">Stockage DOM</string>
     <string name="form_data">Formulaire de données</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Effacer les données</string>
@@ -179,6 +183,10 @@
     <!-- Find on Page. -->
     <string name="previous">Précédent</string>
     <string name="next">Suivant</string>
+
+    <!-- Open Dialog. -->
+    <string name="file_is_mht">Le fichier est une archive web MHT.</string>
+    <string name="mht_checkbox_explanation">Parfois, les archives web MHT (MIME Encapsulated HTML) doivent être spécifiées manuellement pour être ouvertes correctement.</string>
 
     <!-- Save Dialogs. -->
     <string name="save_url">Enregistrer l\'URL</string>
@@ -432,9 +440,11 @@
 
     <!-- Preferences. -->
     <string name="privacy">Vie privée</string>
-        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript permet aux sites web de lancer des programmes (scripts) sur le terminal.</string>
+        <string name="cookies_preference_summary">Les cookies sont un paramètre au niveau de l\'application. Lorsque l\'onglet actif a les cookies activés,
+            toute requête réseau effectuée en arrière-plan par un autre onglet a également les cookies activés.</string>
         <string name="dom_storage_preference">Stockage du DOM</string>
+        <string name="dom_storage_preference_summary">JavaScript doit être activé pour que le stockage du Document Object Model fonctionne.</string>
         <string name="save_form_data_preference">Formulaire de données</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="save_form_data_preference_summary">Les formulaires de données sauvegardés peuvent remplir automatiquement des champs sur les sites web.</string>
         <string name="user_agent">User agent</string>
@@ -539,6 +549,7 @@
         <string name="clear_everything_summary">Efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache de WebView.
             Supprime ensuite manuellement les répertoires entiers «app_webview» et «cache».</string>
         <string name="clear_cookies_preference">Effacer les cookies</string>
+        <string name="clear_cookies_summary">Efface les cookies.</string>
         <string name="clear_dom_storage_preference">Effacer le stockage DOM</string>
         <string name="clear_dom_storage_summary">Efface le stockage du DOM.</string>
         <string name="clear_form_data_preference">Effacer les données de formulaire</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

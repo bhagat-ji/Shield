@@ -25,13 +25,13 @@
 
         <SwitchPreference
             android:key="javascript"
-            android:title="@string/javascript_preference"
+            android:title="@string/javascript"
             android:summary="@string/javascript_preference_summary"
             android:defaultValue="false" />
 
         <SwitchPreference
             android:key="cookies"
-            android:title="@string/cookies_preference"
+            android:title="@string/cookies"
             android:summary="@string/cookies_preference_summary"
             android:defaultValue="false" />
 

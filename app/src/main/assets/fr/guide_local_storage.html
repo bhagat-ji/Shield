@@ -43,34 +43,38 @@
             Ensuite, chaque fois qu'un utilisateur visite le site Web sur cet appareil, il peut être lié à un profil unique que le serveur conserve pour ce numéro de série.
             même si le périphérique se connecte à partir d'adresses IP différentes.</p>
 
-        <p>Almost all websites with logins require cookies to be enabled for a user to log in.
-            That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, the only legitimate use for cookies.</p>
+        <p>La quasi-totalité des sites web avec des identifiants nécessitent que les cookies soient activés pour qu'un utilisateur puisse se connecter.
+            C'est ainsi qu'ils s'assurent qu'il s'agit toujours de vous lorsque vous passez d'une page à l'autre du site, et c'est, à mon avis, la seule utilisation légitime des cookies.</p>
 
-        <p>If cookies are enabled but JavaScript is disabled, the privacy icon will be yellow <img class="inline" src="../shared_images/warning.svg"> as a warning.</p>
+        <p>Si les cookies sont activés mais que JavaScript est désactivé, l'icône de confidentialité sera jaune <img class="inline" src="../shared_images/warning.svg"> en guise d'avertissement.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Cookies de tiers</h3>
+        <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Cookies tiers</h3>
 
-        <p>Third-party cookies are set by portions of a website that are loaded from servers different from the URL at the top of the page.
-            There is no good reason to ever enable third-party cookies. Privacy Browser 3.8 removed the option, and even Google is planning to
-            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">disable them in the future</a>.
-            On devices with Android KitKat (version 4.4.4, API 20), WebView does not
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
-            between first-party and third-party cookies</a>. Thus, enabling cookies will also enable third-party cookies.</p>
+        <p>Les cookies tiers sont définis par les parties d'un site web qui sont chargées à partir de serveurs différents de l'URL en haut de la page.
+            Il n'y a aucune bonne raison d'activer les cookies tiers. Privacy Browser 3.8 a supprimé cette option, et même Google prévoit de
+            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">les désactiver à l'avenir</a>.
+            Sur les appareils équipés d'Android KitKat (version 4.4, API 19), WebView n'est pas
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">différencié
+                entre les cookies internes et les cookies tiers</a>. Par conséquent, l'activation des cookies activera également les cookies tiers.</p>
 
 
         <h3> <svg class="header"><use href="../shared_images/web.svg#icon"/></svg> Stockage du DOM</h3>
 
-        <p>Document Object Model storage, also known as web storage, is like cookies on steroids. Whereas the maximum combined storage size for all cookies from a single URL is 4 kilobytes,
-            DOM storage can hold <a href="https://en.wikipedia.org/wiki/Web_storage#Features">megabytes per site</a>. Unlike cookies, DOM storage does not send all the data in the headers with every request.
-            Rather, it uses JavaScript to read and write data, which means it does not function when JavaScript is disabled.</p>
+        <p>Le stockage du Document Object Model, également connu sous le nom de stockage web, est comme des cookies sous stéroïdes.
+            Alors que la taille maximale de stockage combinée pour tous les cookies d'une même URL est de 4 kilo-octets, le stockage DOM peut contenir
+            <a href="https://en.wikipedia.org/wiki/Web_storage#Features">des mégaoctets par site</a>.
+            Contrairement aux cookies, le stockage DOM n'envoie pas toutes les données dans les en-têtes avec chaque requête.
+            Il utilise plutôt JavaScript pour lire et écrire les données, ce qui signifie qu'il ne fonctionne pas lorsque JavaScript est désactivé.</p>
 
 
         <h3> <svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Données de formulaire</h3>
 
-        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
-            Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction. Beginning in Android Oreo (version 8.0, API 26),
-            WebView’s form data was replaced by the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
-            As such, controls for form data no longer appear on newer Android devices.</p>
+        <p>Les données de formulaire contiennent les informations saisies dans les formulaires web, comme les noms d'utilisateur, les adresses, les numéros de téléphone,
+            etc. et les répertorient dans une boîte déroulante lors de visites ultérieures.
+            Contrairement aux autres formes de stockage local, les données de formulaire ne sont pas envoyées au serveur web sans interaction spécifique de l'utilisateur.
+            À partir d'Android Oreo (version 8.0, API 26), les données de formulaire de WebView ont été remplacées par le
+            <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">service Autofill</a>.
+            Ainsi, les contrôles des données de formulaire n'apparaissent plus sur les appareils Android plus récents.</p>
     </body>
 </html>

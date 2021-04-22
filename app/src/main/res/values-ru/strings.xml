@@ -29,6 +29,8 @@
     <string name="privacy_mode">Режим приватности</string>
     <string name="javascript_enabled">JavaScript включен</string>
     <string name="javascript_disabled">JavaScript отключен</string>
+    <string name="cookies_enabled">Cookie включены</string>
+    <string name="cookies_disabled">Cookie отключены</string>
     <string name="dom_storage_enabled">DOM-хранилище включено</string>
     <string name="dom_storage_disabled">DOM-хранилище отключено</string>
     <string name="form_data_enabled">Данные формы включены</string>
@@ -121,6 +123,7 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Обновить</string>
     <string name="stop">Остановить</string>
+    <string name="cookies">Cookie</string>
     <string name="dom_storage">DOM-хранилище</string>
     <string name="form_data">Данные формы</string>
     <string name="clear_data">Очистить данные</string>
@@ -433,9 +436,11 @@
 
     <!-- Preferences. -->
     <string name="privacy">Конфиденциальность</string>
-        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript позволяет веб-сайтам запускать программы (скрипты) на устройстве.</string>
+        <string name="cookies_preference_summary">Файлы cookie - это настройка уровня приложения.
+            Включение cookie на активной вкладке также приведет к их включению и на фоновых вкладках для выполняемых сетевых запросов.</string>
         <string name="dom_storage_preference">DOM-хранилище</string>
+        <string name="dom_storage_preference_summary">Для работы DOM-хранилища необходимо включить JavaScript.</string>
         <string name="save_form_data_preference">Сохранение данных формы</string>
         <string name="save_form_data_preference_summary">Сохраненные данные формы могут автоматически заполнять поля на веб-сайтах.</string>
         <string name="user_agent">User agent</string>
@@ -537,8 +542,9 @@
         <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
     <string name="clear_everything">Очистить все</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Очищает файлы cookie, DOM-хранилище, данные форм, logcat и кэш WebView. После этого вручную удаляет каталоги "app_webview" и "cache".</string>
-        <string name="clear_cookies_preference">Очистить файлы cookie</string>
+        <string name="clear_everything_summary">Очищает cookie, DOM-хранилище, данные форм, logcat и кэш WebView. После этого вручную удаляет каталоги "app_webview" и "cache".</string>
+        <string name="clear_cookies_preference">Очистить cookie</string>
+        <string name="clear_cookies_summary">Очищает cookie.</string>
         <string name="clear_dom_storage_preference">Очистить DOM-хранилище</string>
         <string name="clear_dom_storage_summary">Очищает DOM-хранилище.</string>
         <string name="clear_form_data_preference">Очистка данных формы</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

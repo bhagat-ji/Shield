@@ -388,7 +388,6 @@
 
     <!-- Preferences. -->
     <string name="privacy">Gizlilik</string>
-        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript, web sitelerin cihazdaki programları (scriptler) çalıştırmasına izin verir.</string>
         <string name="dom_storage_preference">DOM depolama</string>
         <string name="save_form_data_preference">Form verisi</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

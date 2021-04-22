@@ -29,45 +29,47 @@
     <body>
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Первичные файлы cookie</h3>
 
-        <p>Первичные файлы cookie устанавливаются тем веб-сайтом, который указан в строке URL.</p>
+        <p>Первичные файлы cookie устанавливаются веб-сайтом, указанным в адресной строке.</p>
 
-        <p>С первых дней интернета стало очевидным, что веб-сайтам было бы выгодно иметь возможность хранить информацию на компьютере для последующего доступа к ней.
+        <p>Еще на заре эпохи интернета стало очевидным, что веб-сайтам было бы выгодно иметь возможность хранить информацию на компьютере для последующего доступа к ней.
             Например, веб-сайт, предоставляющий информацию о погоде, может запросить у пользователя название города, а затем сохранить его в файле cookie.
             При следующем посещении веб-сайта информация о погоде будет автоматически загружена для этого города, без необходимости вводить его снова.</p>
 
-        <p>Как и со всем остальным в интернете, умные люди выяснили все способы злоупотребления cookie, чтобы делать то, что пользователи не одобрят, если узнают что именно происходит.
+        <p>Как и со всем остальным в интернете, умные люди нашли всевозможные способы злоупотребления cookie, в том числе делать то, что пользователи не одобрят, если узнают что именно происходит.
             Например, веб-сайт может установить файл cookie на устройстве с уникальным номером.
-            Затем каждый раз, когда пользователь посещает веб-сайт с этого устройства, он может быть связан с уникальным профилем, который сервер хранит для этого номера,
+            Затем при каждом посещении веб-сайта с этого устройства, он может быть связан с уникальным профилем, который сервер хранит для этого номера,
             даже если устройство подключается с разных IP-адресов.</p>
 
-        <p>Almost all websites with logins require cookies to be enabled for a user to log in.
-            That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, the only legitimate use for cookies.</p>
+        <p>Почти все сайты с логинами требуют, чтобы для авторизации пользователя были включены cookie.
+            Именно так они удостоверяются, что это все еще вы, когда переходите со страницы на страницу на сайте, и, на мой взгляд, это единственное законное использование файлов cookie.</p>
 
-        <p>If cookies are enabled but JavaScript is disabled, the privacy icon will be yellow <img class="inline" src="../shared_images/warning.svg"> as a warning.</p>
+        <p>Если cookie включены и при этом JavaScript отключен, то значок конфиденциальности будет желтого цвета <img class="inline" src="../shared_images/warning.svg"> в качестве предупреждения.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Сторонние файлы cookie</h3>
 
-        <p>Third-party cookies are set by portions of a website that are loaded from servers different from the URL at the top of the page.
-            There is no good reason to ever enable third-party cookies. Privacy Browser 3.8 removed the option, and even Google is planning to
-            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">disable them in the future</a>.
-            On devices with Android KitKat (version 4.4.4, API 20), WebView does not
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
-            between first-party and third-party cookies</a>. Thus, enabling cookies will also enable third-party cookies.</p>
+        <p>Сторонние файлы cookie устанавливаются фрагментами сайта, которые загружаются с серверов, отличных от указанного в адресной строке.
+            Не существует никаких веских причин для включения сторонних файлов cookie. В Privacy Browser 3.8 эта опция была удалена, и даже Google
+            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">планирует отключить ее в будущем</a>.
+            На устройствах под управлением Android KitKat (версия 4.4, API 19) WebView
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">не различает
+            первичные и сторонние файлы cookie</a>. Таким образом, включение файлов cookie приводит и ко включению сторонних cookie.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/web.svg#icon"/></svg> DOM-хранилище</h3>
 
-        <p>Document Object Model storage, also known as web storage, is like cookies on steroids. Whereas the maximum combined storage size for all cookies from a single URL is 4 kilobytes,
-            DOM storage can hold <a href="https://en.wikipedia.org/wiki/Web_storage#Features">megabytes per site</a>. Unlike cookies, DOM storage does not send all the data in the headers with every request.
-            Rather, it uses JavaScript to read and write data, which means it does not function when JavaScript is disabled.</p>
+        <p>Хранилище Document Object Model (объектной модели документа), также известное как интернет-хранилище, напоминает файлы cookie на стероидах.
+            Если максимальный совокупный размер для хранения всех файлов cookie с одного URL составляет 4 килобайта,
+            то DOM-хранилище может вмещать <a href="https://en.wikipedia.org/wiki/Web_storage#Features">мегабайты на сайт</a>.
+            В отличие от cookie, DOM-хранилище не передает все данные в заголовках с каждым запросом.
+            Вместо этого оно использует JavaScript для чтения и записи данных, а это означает, что оно не работает, когда JavaScript отключен.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Данные формы</h3>
+        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Данные форм</h3>
 
-        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
-            Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction. Beginning in Android Oreo (version 8.0, API 26),
-            WebView’s form data was replaced by the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
-            As such, controls for form data no longer appear on newer Android devices.</p>
+        <p>Данные форм содержат информацию, введенную в веб-формы, такую как имена пользователей, адреса, номера телефонов и т.д., и отображаются в выпадающем списке при последующих посещениях.
+            В отличие от других форм локального хранилища, данные форм не передаются на веб-сервер без определенного взаимодействия с пользователем. Начиная с Android Oreo (версия 8.0, API 26),
+            данные форм WebView были заменены <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">сервисом автозаполнения</a>.
+            Таким образом, элементы управления данными формы больше не отображаются на новых Android-устройствах.</p>
     </body>
 </html>

@@ -429,7 +429,6 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacidade</string>
-        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript permite que sites executem programas (scripts) no dispositivo.</string>
         <string name="dom_storage_preference">Armazenamento DOM</string>
         <string name="save_form_data_preference">Dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

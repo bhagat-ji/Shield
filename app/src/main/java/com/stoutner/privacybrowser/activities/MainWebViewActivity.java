@@ -537,6 +537,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
             if (intentUriData != null || intentStringExtra != null || isWebSearch) {
+                // Exit the full screen video if it is displayed.
+                if (displayingFullScreenVideo) {
+                    // Exit full screen video mode.
+                    exitFullScreenVideo();
+
+                    // Reload the current WebView.  Otherwise, it can display entirely black.
+                    currentWebView.reload();
+                }
+
                 // Get the shared preferences.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -2693,62 +2702,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // close the bookmarks drawer.
             drawerLayout.closeDrawer(GravityCompat.END);
         } else if (displayingFullScreenVideo) {  // A full screen video is shown.
-            // Re-enable the screen timeout.
-            fullScreenVideoFrameLayout.setKeepScreenOn(false);
-
-            // Unset the full screen video flag.
-            displayingFullScreenVideo = false;
-
-            // Remove all the views from the full screen video frame layout.
-            fullScreenVideoFrameLayout.removeAllViews();
-
-            // Hide the full screen video frame layout.
-            fullScreenVideoFrameLayout.setVisibility(View.GONE);
-
-            // Enable the sliding drawers.
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-            // Show the main content relative layout.
-            mainContentRelativeLayout.setVisibility(View.VISIBLE);
-
-            // Apply the appropriate full screen mode flags.
-            if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-                // Hide the banner ad in the free flavor.
-                if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
-                    View adView = findViewById(R.id.adview);
-
-                    // Hide the banner ad.
-                    AdHelper.hideAd(adView);
-                }
-
-                /* Hide the system bars.
-                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                 */
-                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-                // Reload the website if the app bar is hidden.  Otherwise, there is some bug in Android that causes the WebView to be entirely black.
-                if (hideAppBar) {
-                    // Reload the WebView.
-                    currentWebView.reload();
-                }
-            } else {  // Switch to normal viewing mode.
-                // Remove the `SYSTEM_UI` flags from the root frame layout.
-                rootFrameLayout.setSystemUiVisibility(0);
-            }
-
-            // Reload the ad for the free flavor if not in full screen mode.
-            if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
-                // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
-                View adView = findViewById(R.id.adview);
-
-                // Reload the ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
-                AdHelper.loadAd(adView, getApplicationContext(), this, getString(R.string.ad_unit_id));
-            }
+            // Exit the full screen video.
+            exitFullScreenVideo();
         } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
             // Get the current web back forward list.
             WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
@@ -4779,6 +4734,68 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
+    private void exitFullScreenVideo() {
+        // Re-enable the screen timeout.
+        fullScreenVideoFrameLayout.setKeepScreenOn(false);
+
+        // Unset the full screen video flag.
+        displayingFullScreenVideo = false;
+
+        // Remove all the views from the full screen video frame layout.
+        fullScreenVideoFrameLayout.removeAllViews();
+
+        // Hide the full screen video frame layout.
+        fullScreenVideoFrameLayout.setVisibility(View.GONE);
+
+        // Enable the sliding drawers.
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+        // Show the main content relative layout.
+        mainContentRelativeLayout.setVisibility(View.VISIBLE);
+
+        // Apply the appropriate full screen mode flags.
+        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+            // Hide the app bar if specified.
+            if (hideAppBar) {
+                // Hide the tab linear layout.
+                tabsLinearLayout.setVisibility(View.GONE);
+
+                // Hide the action bar.
+                actionBar.hide();
+            }
+
+            // Hide the banner ad in the free flavor.
+            if (BuildConfig.FLAVOR.contentEquals("free")) {
+                // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+                View adView = findViewById(R.id.adview);
+
+                // Hide the banner ad.
+                AdHelper.hideAd(adView);
+            }
+
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+             */
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } else {  // Switch to normal viewing mode.
+            // Remove the `SYSTEM_UI` flags from the root frame layout.
+            rootFrameLayout.setSystemUiVisibility(0);
+        }
+
+        // Reload the ad for the free flavor if not in full screen mode.
+        if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
+            // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
+            View adView = findViewById(R.id.adview);
+
+            // Reload the ad.
+            AdHelper.loadAd(adView, this, this, getString(R.string.ad_unit_id));
+        }
+    }
+
     private void clearAndExit() {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -5521,65 +5538,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Exit full screen video.
             @Override
             public void onHideCustomView() {
-                // Re-enable the screen timeout.
-                fullScreenVideoFrameLayout.setKeepScreenOn(false);
-
-                // Unset the full screen video flag.
-                displayingFullScreenVideo = false;
-
-                // Remove all the views from the full screen video frame layout.
-                fullScreenVideoFrameLayout.removeAllViews();
-
-                // Hide the full screen video frame layout.
-                fullScreenVideoFrameLayout.setVisibility(View.GONE);
-
-                // Enable the sliding drawers.
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-                // Show the main content relative layout.
-                mainContentRelativeLayout.setVisibility(View.VISIBLE);
-
-                // Apply the appropriate full screen mode flags.
-                if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-                    // Hide the app bar if specified.
-                    if (hideAppBar) {
-                        // Hide the tab linear layout.
-                        tabsLinearLayout.setVisibility(View.GONE);
-
-                        // Hide the action bar.
-                        actionBar.hide();
-                    }
-
-                    // Hide the banner ad in the free flavor.
-                    if (BuildConfig.FLAVOR.contentEquals("free")) {
-                        // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
-                        View adView = findViewById(R.id.adview);
-
-                        // Hide the banner ad.
-                        AdHelper.hideAd(adView);
-                    }
-
-                    /* Hide the system bars.
-                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                     */
-                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                } else {  // Switch to normal viewing mode.
-                    // Remove the `SYSTEM_UI` flags from the root frame layout.
-                    rootFrameLayout.setSystemUiVisibility(0);
-                }
-
-                // Reload the ad for the free flavor if not in full screen mode.
-                if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
-                    // Get a handle for the ad view.  This cannot be a class variable because it changes with each ad load.
-                    View adView = findViewById(R.id.adview);
-
-                    // Reload the ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` once the minimum API >= 23.
-                    AdHelper.loadAd(adView, getApplicationContext(), activity, getString(R.string.ad_unit_id));
-                }
+                // Exit the full screen video.
+                exitFullScreenVideo();
             }
 
             // Upload files.

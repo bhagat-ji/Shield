@@ -31,6 +31,8 @@
     <string name="privacy_mode">Modalità privata</string>
     <string name="javascript_enabled">JavaScript abilitato</string>
     <string name="javascript_disabled">JavaScript disabilitato</string>
+    <string name="cookies_enabled">Cookies abilitati</string>
+    <string name="cookies_disabled">Cookies disabilitati</string>
     <string name="dom_storage_enabled">DOM Storage abilitato</string>
     <string name="dom_storage_disabled">DOM Storage disabilitato</string>
     <string name="form_data_enabled">Dati dei Moduli abilitati</string>
@@ -124,6 +126,7 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Aggiorna</string>
     <string name="stop">Stop</string>
+    <string name="cookies">Cookies</string>
     <string name="dom_storage">DOM storage</string>
     <string name="form_data">Dati dei moduli</string>
     <string name="clear_data">Elimina dati</string>
@@ -436,9 +439,11 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
-        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">Permetti a JavaScript di eseguire programmi (script) sul dispositivo.</string>
+        <string name="cookies_preference_summary">I Cookies sono un\'impostazione a livello di app.
+            Quando la scheda attiva ha i cookies abilitati, anche ogni altra richiesta di rete effettuata in background da altre schede ha i cookies abilitati.</string>
         <string name="dom_storage_preference">DOM Storage</string>
+        <string name="dom_storage_preference_summary">JavaScript deve essere  abilitato per permettere il funzionamento del Document Object Model storage.</string>
         <string name="save_form_data_preference">Dati dei moduli</string>
         <string name="save_form_data_preference_summary">I dati dei moduli salvati permettono di auto-compilare i campi dei moduli nei siti web.</string>
         <string name="user_agent">User agent</string>
@@ -543,11 +548,12 @@
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Cancella i cookies, il DOM storage, i dati dei moduli, il logcat e la cache di WebView.  Cancella completamente le cartelle “app_webview” e “cache”.</string>
         <string name="clear_cookies_preference">Elimina i cookie</string>
+        <string name="clear_cookies_summary">Cancella i cookies.</string>
         <string name="clear_dom_storage_preference">Elimina il DOM storage</string>
         <string name="clear_dom_storage_summary">Cancella solo il DOM storage.</string>
         <string name="clear_form_data_preference">Elimina i dati dei moduli</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Cancella solo i dati dei moduli.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_logcat_preference">Cancella logcat</string>
+        <string name="clear_logcat_preference">Elimina il logcat</string>
         <string name="clear_logcat_summary">Cancella il logcat.</string>
         <string name="clear_cache">Elimina la cache</string>
         <string name="clear_cache_summary">Cancella solo la cache di WebView.</string>

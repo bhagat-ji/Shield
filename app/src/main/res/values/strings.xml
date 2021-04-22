@@ -447,9 +447,7 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
-        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript allows websites to run programs (scripts) on the device.</string>
-        <string name="cookies_preference">Cookies</string>
         <string name="cookies_preference_summary">Cookies are an app level setting. When the active tab has cookies enabled,
             any network request made in the background by another tab also has cookies enabled.</string>
         <string name="dom_storage_preference">DOM storage</string>

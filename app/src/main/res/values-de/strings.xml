@@ -35,6 +35,8 @@
     <string name="privacy_mode">Privater Modus</string>
     <string name="javascript_enabled">JavaScript aktiviert</string>
     <string name="javascript_disabled">JavaScript deaktiviert</string>
+    <string name="cookies_enabled">Cookies aktiviert</string>
+    <string name="cookies_disabled">Cookies deaktiviert</string>
     <string name="dom_storage_enabled">DOM-Speicher aktiviert</string>
     <string name="dom_storage_disabled">DOM-Speicher deaktiviert</string>
     <string name="form_data_enabled">Formulardaten aktiviert</string>
@@ -128,6 +130,7 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Aktualisieren</string>
     <string name="stop">Stop</string>
+    <string name="cookies">Cookies</string>
     <string name="dom_storage">DOM-Speicher</string>
     <string name="form_data">Formulardaten</string>
     <string name="clear_data">Daten löschen</string>
@@ -440,9 +443,11 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privatsphäre</string>
-        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
+        <string name="cookies_preference_summary">Cookie-Einstellungen gelten auf Anwendungs-Ebene.
+            Sind Cookies im aktiven Tab aktiviert, sind diese auch für alle Netzwerk-Anfragen anderer Tabs im Hintergrund aktiviert.</string>
         <string name="dom_storage_preference">DOM-Speicher</string>
+        <string name="dom_storage_preference_summary">JavaScript muss aktiviert sein, damit der DOM-(Document Object Model)-Speicher funktioniert.</string>
         <string name="save_form_data_preference">Formulardaten</string>
         <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
         <string name="user_agent">User Agent</string>
@@ -546,6 +551,7 @@
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, Formular-Daten, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
         <string name="clear_cookies_preference">Cookies löschen</string>
+        <string name="clear_cookies_summary">Löscht Cookies.</string>
         <string name="clear_dom_storage_preference">DOM Storage löschen</string>
         <string name="clear_dom_storage_summary">Löscht DOM storage (aka Web Storage oder Supercookies).</string>
         <string name="clear_form_data_preference">Formulardaten löschen</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

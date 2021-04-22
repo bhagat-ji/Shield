@@ -32,42 +32,45 @@
     <body>
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Erstanbieter-Cookies</h3>
 
-        <p>Cookies können in zwei Typen unterteilt werden: Erstanbieter-Cookies sind Cookies, die von der aktuell besuchten Website gesetzt werden.</p>
+        <p>Cookies können in zwei Typen unterteilt werden: Erstanbieter-Cookies sind dabei Cookies, die von der aktuell besuchten Website gesetzt werden.</p>
 
         <p>Mit solchen Erstanbieter-Cookies können Websites z.B. Informationen auf einem Computer speichern, um diese bei späteren Aufrufen derselben Seite wieder zu verwenden.
             Zum Beispiel kann eine Internet-Seite, die das Wetter anzeigt, den Benutzer nach seiner Postleitzahl fragen und diese in einem Cookie speichern.
             Beim nächsten Besuch der Website wird dem Benutzer dann automatisch das Wetter für diese Postleitzahl/Region angezeigt, ohne dass der Benutzer diese erneut eingeben muss.</p>
 
-        <p>Wie viele anderen Dingen im Internet werden solche Cookies jedoch mittlerweile auch für Zwecke missbraucht, die Website-Besucher normalerweise nicht gestatten würden, wenn sie davon wüssten.
+        <p>Wie viele andere Dinge im Internet werden solche Cookies jedoch mittlerweile auch für Zwecke missbraucht, die Website-Besucher normalerweise nicht gestatten würden, wenn sie davon wüssten.
             Zum Beispiel können Websites eindeutige Kennzeichen oder Seriennummern in Cookies speichern.
             Jedes Mal wenn der Benutzer dann mit seinem Gerät diese Website aufruft, können dessen Bewegungen mit dem Profil dieser Seriennummer verknüpft werden,
             auch wenn dem Gerät inzwischen eine andere IP-Adresse zugewiesen wurde. So entstehen umfangreiche Profile über die Vorlieben von Website-Besuchern.</p>
 
-        <p>Almost all websites with logins require cookies to be enabled for a user to log in.
-            That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, the only legitimate use for cookies.</p>
+        <p>Für nahezu alle Internet-Seiten, bei denen man sich anmelden muss, müssen Cookies aktiviert sein.
+            Durch die Nutzung von Cookies stellen diese Internet-Seiten sicher, daß es sich um denselben angemeldeten Benutzer handelt, der von Seite zu Seite innerhalb einer Website navigiert.
+            Dies ist vermutlich die einzige legitime Nutzung von Cookies.</p>
 
-        <p>If cookies are enabled but JavaScript is disabled, the privacy icon will be yellow <img class="inline" src="../shared_images/warning.svg"> as a warning.</p>
+        <p>Wenn Cookies aktiviert sind, aber JavaScript deaktiviert ist, wird das Privatsphären-Icon <img class="inline" src="../shared_images/warning.svg"> zur Warnung in gelb dargestellt.</p>
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Drittanbieter-Cookies</h3>
 
-        <p>Third-party cookies are set by portions of a website that are loaded from servers different from the URL at the top of the page.
-            There is no good reason to ever enable third-party cookies. Privacy Browser 3.8 removed the option, and even Google is planning to
-            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">disable them in the future</a>.
-            On devices with Android KitKat (version 4.4.4, API 20), WebView does not
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
-            between first-party and third-party cookies</a>. Thus, enabling cookies will also enable third-party cookies.</p>
+        <p>Drittanbieter-Cookies werden von Teilen von Websites gesetzt, die von anderen Servern geladen werden als von dem, dessen Adresse (URL) in der Adresszeile des Browsers angezeigt wird.
+            Es gibt eigentlich keinen guten Grund, solche Cookies überhaupt zuzulassen. Ab Privacy Browser Version 3.8 wurde die Option daher entfernt und selbst Google plant,
+            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">Drittanbieter-Cookies in Zukunft zu deaktivieren</a>.
+            Auf Geräten mit Android KitKat (Version 4.4, API 19), unterscheidet WebView nicht
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">zwischen Erstanbieter- und Drittanbieter-Cookies</a>.
+            Daher werden bei solchen Geräten immer auch Drittanbieter-Cookies zugelassen, sobald Cookies aktiviert sind.</p>
 
         <h3><svg class="header"><use href="../shared_images/web.svg#icon"/></svg> DOM-Speicher</h3>
 
-        <p>Document Object Model storage, also known as web storage, is like cookies on steroids. Whereas the maximum combined storage size for all cookies from a single URL is 4 kilobytes,
-            DOM storage can hold <a href="https://en.wikipedia.org/wiki/Web_storage#Features">megabytes per site</a>. Unlike cookies, DOM storage does not send all the data in the headers with every request.
-            Rather, it uses JavaScript to read and write data, which means it does not function when JavaScript is disabled.</p>
+        <p>Der Document-Object-Model-Speicher - auch als Web-Speicher bekannt - funktioniert wie "gedopte" Cookies.
+            Während alle Cookies einer einzelnen Internet-Adresse (URL) gemeinsam nur 4 Kilobytes an Daten speichern können,
+            können im DOM-Speicher <a href="https://en.wikipedia.org/wiki/Web_storage#Features">mehrere Megabytes pro Internet-Seite</a> gespeichert werden.
+            Die gespeicherten Daten werden dabei - im Gegensatz zu Cookies - nicht bei jeder Anfrage zur Gänze im Header mitgeschickt,
+            sondern mittels JavaScript gelesen und geschrieben, sodass diese Form der Datenspeicherung nicht funktioniert, wenn JavaScript deaktiviert ist.</p>
 
         <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Formulardaten</h3>
 
-        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
-            Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction. Beginning in Android Oreo (version 8.0, API 26),
-            WebView’s form data was replaced by the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
-            As such, controls for form data no longer appear on newer Android devices.</p>
+        <p>Formulardaten enthalten Informationen, die in Web-Formulare eingegeben wurden (wie z.B. Benutzernamen, Adressen, Telefonnummern, usw.) und werden bei späteren Besuchen in Auswahl-Dialogen angezeigt.
+            Im Gegensatz zu in Cookies und im DOM-Speicher gespeicherten Daten werden diese Informationen nur nach Benutzer-Interaktion an den Webserver gesandt. Ab Android Oreo (Version 8.0, API 26) wurden
+            WebViews Formulardaten durch <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Googles Autofill-Service</a> ersetzt.
+            Daher erscheinen Formulardaten auf neueren Android-Geräten nicht mehr.</p>
     </body>
 </html>
