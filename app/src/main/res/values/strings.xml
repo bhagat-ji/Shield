@@ -234,6 +234,7 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Bookmarks</string>
     <string name="database_view">Database View</string>
+    <string name="bookmark_opened_in_background">The bookmark was opened in a background tab.</string>
     <string name="create_bookmark">Create Bookmark</string>
     <string name="create_folder">Create Folder</string>
     <string name="current_bookmark_icon">Current bookmark icon</string>

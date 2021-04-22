@@ -3450,7 +3450,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Find out if the selected bookmark is a folder.
             boolean isFolder = bookmarksDatabaseHelper.isFolder(databaseId);
 
-            if (isFolder) {
+            // Check to see if the bookmark is a folder.
+            if (isFolder) {  // The bookmark is a folder.
                 // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
                 oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
@@ -3459,7 +3460,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the edit folder bookmark dialog.
                 editBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.edit_folder));
-            } else {
+            } else {  // The bookmark is not a folder.
                 // Get the bookmark cursor for this ID.
                 Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseId);
 
@@ -3468,6 +3469,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Load the bookmark in a new tab but do not switch to the tab or close the drawer.
                 addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)), false);
+
+                // Display a snackbar.
+                Snackbar.make(currentWebView, R.string.bookmark_opened_in_background, Snackbar.LENGTH_SHORT).show();
             }
 
             // Consume the event.
@@ -4445,11 +4449,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
         bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
-        // Populate the bookmarks cursor adapter.  `this` specifies the `Context`.  `false` disables `autoRequery`.
+        // Populate the bookmarks cursor adapter.
         bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                // Inflate the individual item layout.  `false` does not attach it to the root.
+                // Inflate the individual item layout.
                 return getLayoutInflater().inflate(R.layout.bookmarks_drawer_item_linearlayout, parent, false);
             }
 
