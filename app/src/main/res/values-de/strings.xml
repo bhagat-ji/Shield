@@ -232,6 +232,7 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Lesezeichen</string>
     <string name="database_view">Lesezeichen-Übersicht</string>
+    <string name="bookmark_opened_in_background">Das Lesezeichen wurde in einem Tab im Hintergrund geöffnet.</string>
     <string name="create_bookmark">Lesezeichen erstellen</string>
     <string name="create_folder">Ordner erstellen</string>
     <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>

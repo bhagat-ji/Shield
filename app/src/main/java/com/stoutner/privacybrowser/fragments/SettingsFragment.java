@@ -45,10 +45,60 @@ import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-    // Define the class variables.
-    private SharedPreferences.OnSharedPreferenceChangeListener preferencesListener;
-    private SharedPreferences savedPreferences;
+    // Declare the class variables.
     private int currentThemeStatus;
+    private String defaultUserAgent;
+    private ArrayAdapter<CharSequence> userAgentNamesArray;
+    private String[] translatedUserAgentNamesArray;
+    private String[] userAgentDataArray;
+    private String[] appThemeEntriesStringArray;
+    private String[] appThemeEntryValuesStringArray;
+    private String[] webViewThemeEntriesStringArray;
+    private String[] webViewThemeEntryValuesStringArray;
+    private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
+
+    // Declare the class views.
+    private Preference javaScriptPreference;
+    private Preference cookiesPreference;
+    private Preference domStoragePreference;
+    private Preference formDataPreference;  // The form data preference can be removed once the minimum API >= 26.
+    private Preference userAgentPreference;
+    private Preference customUserAgentPreference;
+    private Preference incognitoModePreference;
+    private Preference allowScreenshotsPreference;
+    private Preference easyListPreference;
+    private Preference easyPrivacyPreference;
+    private Preference fanboyAnnoyanceListPreference;
+    private Preference fanboySocialBlockingListPreference;
+    private Preference ultraListPreference;
+    private Preference ultraPrivacyPreference;
+    private Preference blockAllThirdPartyRequestsPreference;
+    private Preference googleAnalyticsPreference;
+    private Preference facebookClickIdsPreference;
+    private Preference twitterAmpRedirectsPreference;
+    private Preference searchPreference;
+    private Preference searchCustomURLPreference;
+    private Preference proxyPreference;
+    private Preference proxyCustomUrlPreference;
+    private Preference fullScreenBrowsingModePreference;
+    private Preference hideAppBarPreference;
+    private Preference clearEverythingPreference;
+    private Preference clearCookiesPreference;
+    private Preference clearDomStoragePreference;
+    private Preference clearFormDataPreference;  // The clear form data preference can be removed once the minimum API >= 26.
+    private Preference clearLogcatPreference;
+    private Preference clearCachePreference;
+    private Preference homepagePreference;
+    private Preference fontSizePreference;
+    private Preference openIntentsInNewTabPreference;
+    private Preference swipeToRefreshPreference;
+    private Preference downloadWithExternalAppPreference;
+    private Preference scrollAppBarPreference;
+    private Preference displayAdditionalAppBarIconsPreference;
+    private Preference appThemePreference;
+    private Preference webViewThemePreference;
+    private Preference wideViewportPreference;
+    private Preference displayWebpageImagesPreference;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -61,57 +111,57 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Remove the lint warning below that `getApplicationContext()` might produce a null pointer exception.
         assert activity != null;
 
-        // Get a handle for the context and the resources.
-        Context context = activity.getApplicationContext();
+        // Get a handle for the resources.
         Resources resources = getResources();
 
         // Get the current theme status.
         currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        // Initialize savedPreferences.
-        savedPreferences = getPreferenceScreen().getSharedPreferences();
+        // // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
 
         // Get handles for the preferences.
-        Preference javaScriptPreference = findPreference("javascript");
-        Preference cookiesPreference = findPreference(getString(R.string.cookies_key));
-        Preference domStoragePreference = findPreference("dom_storage");
-        Preference formDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
-        Preference userAgentPreference = findPreference("user_agent");
-        Preference customUserAgentPreference = findPreference("custom_user_agent");
-        Preference incognitoModePreference = findPreference("incognito_mode");
-        Preference allowScreenshotsPreference = findPreference(getString(R.string.allow_screenshots_key));
-        Preference easyListPreference = findPreference("easylist");
-        Preference easyPrivacyPreference = findPreference("easyprivacy");
-        Preference fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
-        Preference fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
-        Preference ultraListPreference = findPreference("ultralist");
-        Preference ultraPrivacyPreference = findPreference("ultraprivacy");
-        Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
-        Preference googleAnalyticsPreference = findPreference("google_analytics");
-        Preference facebookClickIdsPreference = findPreference("facebook_click_ids");
-        Preference twitterAmpRedirectsPreference = findPreference("twitter_amp_redirects");
-        Preference searchPreference = findPreference("search");
-        Preference searchCustomURLPreference = findPreference("search_custom_url");
-        Preference proxyPreference = findPreference("proxy");
-        Preference proxyCustomUrlPreference = findPreference("proxy_custom_url");
-        Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
-        Preference hideAppBarPreference = findPreference("hide_app_bar");
-        Preference clearEverythingPreference = findPreference("clear_everything");
-        Preference clearCookiesPreference = findPreference("clear_cookies");
-        Preference clearDomStoragePreference = findPreference("clear_dom_storage");
-        Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
-        Preference clearLogcatPreference = findPreference(getString(R.string.clear_logcat_key));
-        Preference clearCachePreference = findPreference("clear_cache");
-        Preference homepagePreference = findPreference("homepage");
-        Preference fontSizePreference = findPreference("font_size");
-        Preference openIntentsInNewTabPreference = findPreference("open_intents_in_new_tab");
-        Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
-        Preference scrollAppBarPreference = findPreference("scroll_app_bar");
-        Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
-        Preference appThemePreference = findPreference("app_theme");
-        Preference webViewThemePreference = findPreference("webview_theme");
-        Preference wideViewportPreference = findPreference("wide_viewport");
-        Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
+        javaScriptPreference = findPreference("javascript");
+        cookiesPreference = findPreference(getString(R.string.cookies_key));
+        domStoragePreference = findPreference("dom_storage");
+        formDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
+        userAgentPreference = findPreference("user_agent");
+        customUserAgentPreference = findPreference("custom_user_agent");
+        incognitoModePreference = findPreference("incognito_mode");
+        allowScreenshotsPreference = findPreference(getString(R.string.allow_screenshots_key));
+        easyListPreference = findPreference("easylist");
+        easyPrivacyPreference = findPreference("easyprivacy");
+        fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
+        fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
+        ultraListPreference = findPreference("ultralist");
+        ultraPrivacyPreference = findPreference("ultraprivacy");
+        blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
+        googleAnalyticsPreference = findPreference("google_analytics");
+        facebookClickIdsPreference = findPreference("facebook_click_ids");
+        twitterAmpRedirectsPreference = findPreference("twitter_amp_redirects");
+        searchPreference = findPreference("search");
+        searchCustomURLPreference = findPreference("search_custom_url");
+        proxyPreference = findPreference("proxy");
+        proxyCustomUrlPreference = findPreference("proxy_custom_url");
+        fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
+        hideAppBarPreference = findPreference("hide_app_bar");
+        clearEverythingPreference = findPreference("clear_everything");
+        clearCookiesPreference = findPreference("clear_cookies");
+        clearDomStoragePreference = findPreference("clear_dom_storage");
+        clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
+        clearLogcatPreference = findPreference(getString(R.string.clear_logcat_key));
+        clearCachePreference = findPreference("clear_cache");
+        homepagePreference = findPreference("homepage");
+        fontSizePreference = findPreference("font_size");
+        openIntentsInNewTabPreference = findPreference("open_intents_in_new_tab");
+        swipeToRefreshPreference = findPreference("swipe_to_refresh");
+        downloadWithExternalAppPreference = findPreference(getString(R.string.download_with_external_app_key));
+        scrollAppBarPreference = findPreference("scroll_app_bar");
+        displayAdditionalAppBarIconsPreference = findPreference(getString(R.string.display_additional_app_bar_icons_key));
+        appThemePreference = findPreference("app_theme");
+        webViewThemePreference = findPreference("webview_theme");
+        wideViewportPreference = findPreference("wide_viewport");
+        displayWebpageImagesPreference = findPreference("display_webpage_images");
 
         // Remove the lint warnings below that the preferences might be null.
         assert javaScriptPreference != null;
@@ -148,6 +198,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert fontSizePreference != null;
         assert openIntentsInNewTabPreference != null;
         assert swipeToRefreshPreference != null;
+        assert downloadWithExternalAppPreference != null;
         assert scrollAppBarPreference != null;
         assert displayAdditionalAppBarIconsPreference != null;
         assert appThemePreference != null;
@@ -160,16 +211,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         domStoragePreference.setDependency("javascript");
 
         // Get strings from the preferences.
-        String userAgentName = savedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
-        String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
-        String proxyString = savedPreferences.getString("proxy", getString(R.string.proxy_default_value));
+        String userAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
+        String proxyString = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
-        boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
-        boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboys_annoyance_list", true);
-        boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
-        boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
-        boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
+        boolean javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
+        boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+        boolean fanboySocialBlockingEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
+        boolean fullScreenBrowsingMode = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
+        boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
 
         // Remove the form data preferences if the API is >= 26 as they no longer do anything.
         if (Build.VERSION.SDK_INT >= 26) {
@@ -199,10 +250,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Get a handle for a bare WebView.
         WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
 
+        // Get the default user agent.
+        defaultUserAgent = bareWebView.getSettings().getUserAgentString();
+
         // Get the user agent arrays.
-        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item);
-        String[] translatedUserAgentNamesArray = resources.getStringArray(R.array.translated_user_agent_names);
-        String[] userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
+        userAgentNamesArray = ArrayAdapter.createFromResource(requireContext(), R.array.user_agent_names, R.layout.spinner_item);
+        translatedUserAgentNamesArray = resources.getStringArray(R.array.translated_user_agent_names);
+        userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
 
         // Get the array position of the user agent name.
         int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
@@ -216,7 +270,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
             case MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                 // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
-                userAgentPreference.setSummary(translatedUserAgentNamesArray[userAgentArrayPosition] + ":\n" + bareWebView.getSettings().getUserAgentString());
+                userAgentPreference.setSummary(translatedUserAgentNamesArray[userAgentArrayPosition] + ":\n" + defaultUserAgent);
                 break;
 
             case MainWebViewActivity.SETTINGS_CUSTOM_USER_AGENT:
@@ -230,7 +284,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the summary text for the custom user agent preference.
-        customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+        customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
 
         // Only enable the custom user agent preference if the user agent is set to `Custom`.
         customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals(getString(R.string.custom_user_agent)));
@@ -246,7 +300,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the summary text for the search custom URL (the default is `""`).
-        searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
+        searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
 
         // Only enable the search custom URL preference if the search is set to `Custom URL`.
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
@@ -276,7 +330,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the summary text for the custom proxy URL.
-        proxyCustomUrlPreference.setSummary(savedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
+        proxyCustomUrlPreference.setSummary(sharedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
 
         // Only enable the custom proxy URL if a custom proxy is selected.
         proxyCustomUrlPreference.setEnabled(proxyString.equals("Custom"));
@@ -291,19 +345,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 
         // Set the homepage URL as the summary text for the homepage preference.
-        homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+        homepagePreference.setSummary(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
 
 
         // Set the font size as the summary text for the preference.
-        fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
+        fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
 
 
         // Get the app theme string arrays.
-        String[] appThemeEntriesStringArray = resources.getStringArray(R.array.app_theme_entries);
-        String[] appThemeEntryValuesStringArray = resources.getStringArray(R.array.app_theme_entry_values);
+        appThemeEntriesStringArray = resources.getStringArray(R.array.app_theme_entries);
+        appThemeEntryValuesStringArray = resources.getStringArray(R.array.app_theme_entry_values);
 
         // Get the current app theme.
-        String currentAppTheme = savedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
+        String currentAppTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
 
         // Define an app theme entry number.
         int appThemeEntryNumber;
@@ -325,11 +379,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 
         // Get the WebView theme string arrays.
-        String[] webViewThemeEntriesStringArray = resources.getStringArray(R.array.webview_theme_entries);
-        String[] webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values);
+        webViewThemeEntriesStringArray = resources.getStringArray(R.array.webview_theme_entries);
+        webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values);
 
         // Get the current WebView theme.
-        String currentWebViewTheme = savedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
+        String currentWebViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
 
         // Define a WebView theme entry number.
         int webViewThemeEntryNumber;
@@ -370,7 +424,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the cookies icon.
-        if (savedPreferences.getBoolean(getString(R.string.cookies_key), false)) {
+        if (sharedPreferences.getBoolean(getString(R.string.cookies_key), false)) {
             cookiesPreference.setIcon(R.drawable.cookies_enabled);
         } else {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
@@ -382,7 +436,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the DOM storage icon.
         if (javaScriptEnabled) {  // The preference is enabled.
-            if (savedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
+            if (sharedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {  // DOM storage is disabled.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
@@ -401,7 +455,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the save form data icon if API < 26.  Save form data has no effect on API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
-            if (savedPreferences.getBoolean("save_form_data", false)) {
+            if (sharedPreferences.getBoolean("save_form_data", false)) {
                 formDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
@@ -428,7 +482,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the incognito mode icon.
-        if (savedPreferences.getBoolean("incognito_mode", false)) {
+        if (sharedPreferences.getBoolean("incognito_mode", false)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_night);
             } else {
@@ -443,7 +497,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the allow screenshots icon.
-        if (savedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)) {
+        if (sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_day);
             } else {
@@ -458,7 +512,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the EasyList icon.
-        if (savedPreferences.getBoolean("easylist", true)) {
+        if (sharedPreferences.getBoolean("easylist", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 easyListPreference.setIcon(R.drawable.block_ads_enabled_night);
             } else {
@@ -473,7 +527,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the EasyPrivacy icon.
-        if (savedPreferences.getBoolean("easyprivacy", true)) {
+        if (sharedPreferences.getBoolean("easyprivacy", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_night);
             } else {
@@ -527,7 +581,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the UltraList icon.
-        if (savedPreferences.getBoolean("ultralist", true)){
+        if (sharedPreferences.getBoolean("ultralist", true)){
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 ultraListPreference.setIcon(R.drawable.block_ads_enabled_night);
             } else {
@@ -542,7 +596,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the UltraPrivacy icon.
-        if (savedPreferences.getBoolean("ultraprivacy", true)) {
+        if (sharedPreferences.getBoolean("ultraprivacy", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_night);
             } else {
@@ -557,7 +611,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the block all third-party requests icon.
-        if (savedPreferences.getBoolean("block_all_third_party_requests", false)) {
+        if (sharedPreferences.getBoolean("block_all_third_party_requests", false)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_night);
             } else {
@@ -572,7 +626,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the Google Analytics icon according to the theme.
-        if (savedPreferences.getBoolean("google_analytics", true)) {
+        if (sharedPreferences.getBoolean("google_analytics", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_night);
             } else {
@@ -587,7 +641,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the Facebook Click IDs icon according to the theme.
-        if (savedPreferences.getBoolean("facebook_click_ids", true)) {
+        if (sharedPreferences.getBoolean("facebook_click_ids", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_night);
             } else {
@@ -602,7 +656,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the Twitter AMP redirects icon according to the theme.
-        if (savedPreferences.getBoolean("twitter_amp_redirects", true)) {
+        if (sharedPreferences.getBoolean("twitter_amp_redirects", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_night);
             } else {
@@ -680,7 +734,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
 
             // Set the hide app bar icon.
-            if (savedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
+            if (sharedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
                 // Set the icon according to the theme.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
@@ -718,7 +772,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the clear cookies preference icon.
-        if (clearEverything || savedPreferences.getBoolean("clear_cookies", true)) {
+        if (clearEverything || sharedPreferences.getBoolean("clear_cookies", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 clearCookiesPreference.setIcon(R.drawable.cookies_cleared_day);
             } else {
@@ -729,7 +783,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the clear DOM storage preference icon.
-        if (clearEverything || savedPreferences.getBoolean("clear_dom_storage", true)) {
+        if (clearEverything || sharedPreferences.getBoolean("clear_dom_storage", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_night);
             } else {
@@ -741,7 +795,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the clear form data preference icon if the API < 26.  It has no effect on newer versions of Android.
         if (Build.VERSION.SDK_INT < 26) {
-            if (clearEverything || savedPreferences.getBoolean("clear_form_data", true)) {
+            if (clearEverything || sharedPreferences.getBoolean("clear_form_data", true)) {
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                     clearFormDataPreference.setIcon(R.drawable.form_data_cleared_night);
                 } else {
@@ -753,7 +807,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the clear logcat preference icon.
-        if (clearEverything || savedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
+        if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 clearLogcatPreference.setIcon(R.drawable.bug_cleared_day);
             } else {
@@ -764,7 +818,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the clear cache preference icon.
-        if (clearEverything || savedPreferences.getBoolean("clear_cache", true)) {
+        if (clearEverything || sharedPreferences.getBoolean("clear_cache", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 clearCachePreference.setIcon(R.drawable.cache_cleared_night);
             } else {
@@ -775,7 +829,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the open intents in new tab preference icon.
-        if (savedPreferences.getBoolean("open_intents_in_new_tab", true)) {
+        if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_night);
             } else {
@@ -790,47 +844,62 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the swipe to refresh preference icon.
-        if (savedPreferences.getBoolean("swipe_to_refresh", true)) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_night);
-            } else {
+        if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_day);
+            } else {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_night);
             }
         } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_day);
+            } else {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_night);
+            }
+        }
+
+        // Set the download with external app preference icon.
+        if (sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false)) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled_day);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled_night);
+            }
+        } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled_day);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled_night);
             }
         }
 
         // Set the scroll app bar preference icon.
-        if (savedPreferences.getBoolean("scroll_app_bar", true)) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
-            } else {
+        if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
+            } else {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
             }
         } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_day);
+            } else {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
             }
         }
 
         // Set the display additional app bar icons preference icon.
-        if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_night);
-            } else {
+        if (sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false)) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_day);
+            } else {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_night);
             }
         } else {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_night);
-            } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_day);
+            } else {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_night);
             }
         }
 
@@ -864,7 +933,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the wide viewport preference icon.
-        if (savedPreferences.getBoolean("wide_viewport", true)) {
+        if (sharedPreferences.getBoolean("wide_viewport", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_night);
             } else {
@@ -879,7 +948,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the display webpage images preference icon.
-        if (savedPreferences.getBoolean("display_webpage_images", true)) {
+        if (sharedPreferences.getBoolean("display_webpage_images", true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
                 displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_night);
             } else {
@@ -893,9 +962,46 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         }
 
+        // Get the shared preferences change listener.
+        sharedPreferenceChangeListener = getSharedPreferencesChangeListener(requireContext());
 
-        // Listen for preference changes.
-        preferencesListener = (SharedPreferences sharedPreferences, String key) -> {
+        // Register the listener.
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+    }
+
+    // The listener should be unregistered when the app is paused.
+    @Override
+    public void onPause() {
+        // Run the default commands.
+        super.onPause();
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+
+        // Unregister the shared preferences listener.
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+    }
+
+    // The listener should be re-registered when the app is resumed.
+    @Override
+    public void onResume() {
+        // Run the default commands.
+        super.onResume();
+
+        // Get a new shared preferences change listener.
+        sharedPreferenceChangeListener = getSharedPreferencesChangeListener(requireContext());
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+
+        // Re-register the shared preferences listener.
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+    }
+
+    // The context must be passed to the shared preference change listener or else any calls to the system `getString()` will crash if the app has been restarted.
+    private SharedPreferences.OnSharedPreferenceChangeListener getSharedPreferencesChangeListener(Context context) {
+        // Return the shared preference change listener.
+        return (SharedPreferences sharedPreferences, String key) -> {
             switch (key) {
                 case "javascript":
                     // Update the icons and the DOM storage preference status.
@@ -934,7 +1040,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "cookies":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.cookies_key), false)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.cookies_key), false)) {
                         cookiesPreference.setIcon(R.drawable.cookies_enabled);
                     } else {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
@@ -974,7 +1080,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "user_agent":
                     // Get the new user agent name.
-                    String newUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+                    String newUserAgentName = sharedPreferences.getString("user_agent", context.getString(R.string.user_agent_default_value));
 
                     // Get the array position for the new user agent name.
                     int newUserAgentArrayPosition = userAgentNamesArray.getPosition(newUserAgentName);
@@ -986,7 +1092,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     switch (newUserAgentArrayPosition) {
                         case MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                             // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
-                            userAgentPreference.setSummary(translatedNewUserAgentName + ":\n" + bareWebView.getSettings().getUserAgentString());
+                            userAgentPreference.setSummary(translatedNewUserAgentName + ":\n" + defaultUserAgent);
 
                             // Disable the custom user agent preference.
                             customUserAgentPreference.setEnabled(false);
@@ -1032,7 +1138,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "custom_user_agent":
                     // Set the new custom user agent as the summary text for the preference.
-                    customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+                    customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", context.getString(R.string.custom_user_agent_default_value)));
                     break;
 
                 case "incognito_mode":
@@ -1054,7 +1160,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "allow_screenshots":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.allow_screenshots_key), false)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_day);
                         } else {
@@ -1069,7 +1175,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
 
                     // Create an intent to restart Privacy Browser.
-                    Intent allowScreenshotsRestartIntent = getActivity().getParentActivityIntent();
+                    Intent allowScreenshotsRestartIntent = requireActivity().getParentActivityIntent();
 
                     // Assert that the intent is not null to remove the lint error below.
                     assert allowScreenshotsRestartIntent != null;
@@ -1295,7 +1401,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "search":
                     // Store the new search string.
-                    String newSearchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
+                    String newSearchString = sharedPreferences.getString("search", context.getString(R.string.search_default_value));
 
                     // Update the search and search custom URL preferences.
                     if (newSearchString.equals("Custom URL")) {  // `Custom URL` is selected.
@@ -1329,33 +1435,33 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "search_custom_url":
                     // Set the new search custom URL as the summary text for the preference.
-                    searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
+                    searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", context.getString(R.string.search_custom_url_default_value)));
                     break;
 
                 case "proxy":
                     // Get current proxy string.
-                    String currentProxyString = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
+                    String currentProxyString = sharedPreferences.getString("proxy", context.getString(R.string.proxy_default_value));
 
                     // Update the summary text for the proxy preference.
                     switch (currentProxyString) {
                         case ProxyHelper.NONE:
-                            proxyPreference.setSummary(getString(R.string.no_proxy_enabled));
+                            proxyPreference.setSummary(context.getString(R.string.no_proxy_enabled));
                             break;
 
                         case ProxyHelper.TOR:
                             if (Build.VERSION.SDK_INT == 19) {  // Proxying through SOCKS doesn't work on Android KitKat.
-                                proxyPreference.setSummary(getString(R.string.tor_enabled_kitkat));
+                                proxyPreference.setSummary(context.getString(R.string.tor_enabled_kitkat));
                             } else {
-                                proxyPreference.setSummary(getString(R.string.tor_enabled));
+                                proxyPreference.setSummary(context.getString(R.string.tor_enabled));
                             }
                             break;
 
                         case ProxyHelper.I2P:
-                            proxyPreference.setSummary(getString(R.string.i2p_enabled));
+                            proxyPreference.setSummary(context.getString(R.string.i2p_enabled));
                             break;
 
                         case ProxyHelper.CUSTOM:
-                            proxyPreference.setSummary(getString(R.string.custom_proxy));
+                            proxyPreference.setSummary(context.getString(R.string.custom_proxy));
                             break;
                     }
 
@@ -1404,7 +1510,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "proxy_custom_url":
                     // Set the summary text for the proxy custom URL.
-                    proxyCustomUrlPreference.setSummary(sharedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
+                    proxyCustomUrlPreference.setSummary(sharedPreferences.getString("proxy_custom_url", context.getString(R.string.proxy_custom_url_default_value)));
                     break;
 
                 case "full_screen_browsing_mode":
@@ -1521,7 +1627,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
 
                     // Update the clear logcat preference icon.
-                    if (newClearEverythingBoolean || sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
+                    if (newClearEverythingBoolean || sharedPreferences.getBoolean(context.getString(R.string.clear_logcat_key), true)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearLogcatPreference.setIcon(R.drawable.bug_cleared_day);
                         } else {
@@ -1585,7 +1691,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "clear_logcat":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.clear_logcat_key), true)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             clearLogcatPreference.setIcon(R.drawable.bug_cleared_day);
                         } else {
@@ -1611,27 +1717,27 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "homepage":
                     // Set the new homepage URL as the summary text for the Homepage preference.
-                    homepagePreference.setSummary(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+                    homepagePreference.setSummary(sharedPreferences.getString("homepage", context.getString(R.string.homepage_default_value)));
                     break;
 
                 case "font_size":
                     // Update the font size summary text.
-                    fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
+                    fontSizePreference.setSummary(sharedPreferences.getString("font_size", context.getString(R.string.font_size_default_value)) + "%");
                     break;
 
                 case "open_intents_in_new_tab":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_day);
+                        } else {
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_night);
                         }
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_day);
+                        } else {
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_night);
                         }
                     }
                     break;
@@ -1639,16 +1745,33 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "swipe_to_refresh":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_day);
+                        } else {
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_night);
                         }
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_day);
+                        } else {
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_night);
+                        }
+                    }
+                    break;
+
+                case "download_with_external_app":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean(context.getString(R.string.download_with_external_app_key), false)) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled_day);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled_night);
+                        }
+                    } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled_day);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled_night);
                         }
                     }
                     break;
@@ -1656,40 +1779,40 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 case "scroll_app_bar":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
+                        } else {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_night);
                         }
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_day);
+                        } else {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_night);
                         }
                     }
                     break;
 
                 case "display_additional_app_bar_icons":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_night);
-                        } else {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.display_additional_app_bar_icons_key), false)) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_day);
+                        } else {
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_night);
                         }
                     } else {
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_night);
-                        } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_day);
+                        } else {
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_night);
                         }
                     }
                     break;
 
                 case "app_theme":
                     // Get the new theme.
-                    String newAppTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
+                    String newAppTheme = sharedPreferences.getString("app_theme", context.getString(R.string.app_theme_default_value));
 
                     // Update the system according to the new theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
                     if (newAppTheme.equals(appThemeEntryValuesStringArray[1])) {  // The light theme is selected.
@@ -1724,7 +1847,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "webview_theme":
                     // Get the new WebView theme.
-                    String newWebViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
+                    String newWebViewTheme = sharedPreferences.getString("webview_theme", context.getString(R.string.webview_theme_default_value));
 
                     // Define a new WebView theme entry number.
                     int newWebViewThemeEntryNumber;
@@ -1808,21 +1931,5 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     break;
             }
         };
-
-        // Register the listener.
-        savedPreferences.registerOnSharedPreferenceChangeListener(preferencesListener);
-    }
-
-    // It is necessary to re-register the listener on every resume or it will randomly stop working because apps can be paused and resumed at any time, even while running in the foreground.
-    @Override
-    public void onPause() {
-        super.onPause();
-        savedPreferences.unregisterOnSharedPreferenceChangeListener(preferencesListener);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        savedPreferences.registerOnSharedPreferenceChangeListener(preferencesListener);
     }
 }

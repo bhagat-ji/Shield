@@ -24,7 +24,7 @@
     <item
         android:id="@+id/clear_and_exit"
         android:title="@string/clear_and_exit"
-        android:icon="@drawable/clear_and_exit"
+        android:icon="@drawable/download_with_external_app_enabled_day"
         android:orderInCategory="10" />
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->

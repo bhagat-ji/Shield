@@ -228,6 +228,7 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Segnalibri</string>
     <string name="database_view">Vista Database</string>
+    <string name="bookmark_opened_in_background">Il segnalibro è stato aperto in una scheda in background.</string>
     <string name="create_bookmark">Crea Segnalibro</string>
     <string name="create_folder">Crea Cartella</string>
     <string name="current_bookmark_icon">Icona Segnalibro</string>

@@ -247,39 +247,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ArrayList<List<String[]>> ultraList;
     private ArrayList<List<String[]>> ultraPrivacy;
 
-    // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
+    // Declare the class variables
+    private BroadcastReceiver orbotStatusBroadcastReceiver;
     private String webViewDefaultUserAgent;
-
-    // The incognito mode is set in `applyAppSettings()` and used in `initializeWebView()`.
     private boolean incognitoModeEnabled;
-
-    // The full screen browsing mode tracker is set it `applyAppSettings()` and used in `initializeWebView()`.
     private boolean fullScreenBrowsingModeEnabled;
-
-    // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applyAppSettings()`.
     private boolean inFullScreenBrowsingMode;
-
-    // The app bar trackers are set in `applyAppSettings()` and used in `initializeWebView()`.
+    private boolean downloadWithExternalApp;
     private boolean hideAppBar;
     private boolean scrollAppBar;
-
-    // The loading new intent tracker is set in `onNewIntent()` and used in `setCurrentWebView()`.
     private boolean loadingNewIntent;
-
-    // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
     private boolean reapplyDomainSettingsOnRestart;
-
-    // `reapplyAppSettingsOnRestart` is used in `onNavigationItemSelected()` and `onRestart()`.
     private boolean reapplyAppSettingsOnRestart;
-
-    // `displayingFullScreenVideo` is used in `onCreate()` and `onResume()`.
     private boolean displayingFullScreenVideo;
-
-    // `orbotStatusBroadcastReceiver` is used in `onCreate()` and `onDestroy()`.
-    private BroadcastReceiver orbotStatusBroadcastReceiver;
-
-    // The waiting for proxy boolean is used in `onResume()`, `initializeApp()` and `applyProxy()`.
-    private boolean waitingForProxy = false;
+    private boolean waitingForProxy;
 
     // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -1729,9 +1710,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Consume the event.
             return true;
         } else if (menuItemId == R.id.save_url) {  // Save URL.
-            // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-            new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                    currentWebView.getAcceptCookies()).execute(currentWebView.getCurrentUrl());
+            // Check the download preference.
+            if (downloadWithExternalApp) {  // Download with an external app.
+                downloadUrlWithExternalApp(currentWebView.getCurrentUrl());
+            } else {  // Handle the download inside of Privacy Browser.
+                // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptCookies()).execute(currentWebView.getCurrentUrl());
+            }
 
             // Consume the event.
             return true;
@@ -2242,9 +2228,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save URL entry.
                 menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptCookies()).execute(linkUrl);
+                    // Check the download preference.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        downloadUrlWithExternalApp(linkUrl);
+                    } else {  // Handle the download inside of Privacy Browser.
+                        // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                                currentWebView.getAcceptCookies()).execute(linkUrl);
+                    }
 
                     // Consume the event.
                     return true;
@@ -2309,9 +2300,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save Image entry.
                 menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
-                   // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptCookies()).execute(imageUrl);
+                    // Check the download preference.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        downloadUrlWithExternalApp(imageUrl);
+                    } else {  // Handle the download inside of Privacy Browser.
+                        // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                                currentWebView.getAcceptCookies()).execute(imageUrl);
+                    }
 
                     // Consume the event.
                     return true;
@@ -2409,9 +2405,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save Image entry.
                 menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptCookies()).execute(imageUrl);
+                    // Check the download preference.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        downloadUrlWithExternalApp(imageUrl);
+                    } else {  // Handle the download inside of Privacy Browser.
+                        // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                                currentWebView.getAcceptCookies()).execute(imageUrl);
+                    }
 
                     // Consume the event.
                     return true;
@@ -2431,9 +2432,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save URL entry.
                 menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptCookies()).execute(linkUrl);
+                    // Check the download preference.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        downloadUrlWithExternalApp(linkUrl);
+                    } else {  // Handle the download inside of Privacy Browser.
+                        // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                                currentWebView.getAcceptCookies()).execute(linkUrl);
+                    }
 
                     // Consume the event.
                     return true;
@@ -3017,7 +3023,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    @Override
+    private void downloadUrlWithExternalApp(String url) {
+        // Create a download intent.  Not specifying the action type will display the maximum number of options.
+        Intent downloadIntent = new Intent();
+
+        // Set the URI and the mime type.
+        downloadIntent.setDataAndType(Uri.parse(url), "text/html");
+
+        // Flag the intent to open in a new task.
+        downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Show the chooser.
+        startActivity(Intent.createChooser(downloadIntent, getString(R.string.download_with_external_app)));
+    }
+
     public void onSaveWebpage(int saveType, @NonNull String originalUrlString, DialogFragment dialogFragment) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
@@ -3542,6 +3561,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         sanitizeTwitterAmpRedirects = sharedPreferences.getBoolean("twitter_amp_redirects", true);
         proxyMode = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
+        downloadWithExternalApp = sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false);
         hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
         scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
 
@@ -5311,38 +5331,43 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Allow the downloading of files.
         nestedScrollWebView.setDownloadListener((String downloadUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
-            // Define a formatted file size string.
-            String formattedFileSizeString;
+            // Check the download preference.
+            if (downloadWithExternalApp) {  // Download with an external app.
+                downloadUrlWithExternalApp(downloadUrl);
+            } else {  // Handle the download inside of Privacy Browser.
+                // Define a formatted file size string.
+                String formattedFileSizeString;
 
-            // Process the content length if it contains data.
-            if (contentLength > 0) {  // The content length is greater than 0.
-                // Format the content length as a string.
-                formattedFileSizeString = NumberFormat.getInstance().format(contentLength) + " " + getString(R.string.bytes);
-            } else {  // The content length is not greater than 0.
-                // Set the formatted file size string to be `unknown size`.
-                formattedFileSizeString = getString(R.string.unknown_size);
-            }
-
-            // Get the file name from the content disposition.
-            String fileNameString = PrepareSaveDialog.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
-
-            // Prevent the dialog from displaying if the app window is not visible.
-            // The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
-            while (!activity.getWindow().isActive()) {
-                try {
-                    // The window is not active.  Wait 1 second.
-                    wait(1000);
-                } catch (InterruptedException e) {
-                    // Do nothing.
+                // Process the content length if it contains data.
+                if (contentLength > 0) {  // The content length is greater than 0.
+                    // Format the content length as a string.
+                    formattedFileSizeString = NumberFormat.getInstance().format(contentLength) + " " + getString(R.string.bytes);
+                } else {  // The content length is not greater than 0.
+                    // Set the formatted file size string to be `unknown size`.
+                    formattedFileSizeString = getString(R.string.unknown_size);
                 }
+
+                // Get the file name from the content disposition.
+                String fileNameString = PrepareSaveDialog.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
+
+                // Prevent the dialog from displaying if the app window is not visible.
+                // The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
+                while (!activity.getWindow().isActive()) {
+                    try {
+                        // The window is not active.  Wait 1 second.
+                        wait(1000);
+                    } catch (InterruptedException e) {
+                        // Do nothing.
+                    }
+                }
+
+                // Instantiate the save dialog.
+                DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
+                        nestedScrollWebView.getAcceptCookies());
+
+                // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+                saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
             }
-
-            // Instantiate the save dialog.
-            DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
-                    nestedScrollWebView.getAcceptCookies());
-
-            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-            saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
         });
 
         // Update the find on page count.

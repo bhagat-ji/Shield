@@ -274,6 +274,12 @@
             android:defaultValue="true" />
 
         <SwitchPreference
+            android:key="download_with_external_app"
+            android:title="@string/download_with_external_app"
+            android:summary="@string/download_with_external_app_summary"
+            android:defaultValue="false" />
+
+        <SwitchPreference
             android:key="scroll_app_bar"
             android:title="@string/scroll_app_bar"
             android:summary="@string/scroll_app_bar_summary"

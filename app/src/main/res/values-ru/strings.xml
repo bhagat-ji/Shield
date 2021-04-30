@@ -225,6 +225,7 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Закладки</string>
     <string name="database_view">Просмотр базы данных</string>
+    <string name="bookmark_opened_in_background">Закладка была открыта в фоновой вкладке.</string>
     <string name="create_bookmark">Создание закладки</string>
     <string name="create_folder">Создание папки</string>
     <string name="current_bookmark_icon">Текущий значок закладки</string>

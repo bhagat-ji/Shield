@@ -620,6 +620,8 @@
         <string name="open_intents_in_new_tab_summary">Intents are links sent from other apps.</string>
         <string name="swipe_to_refresh">Swipe to refresh</string>
         <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
+        <string name="download_with_external_app">Download with external app</string>
+        <string name="download_with_external_app_summary">Use an external app to download files.</string>
         <string name="scroll_app_bar">Scroll the app bar</string>
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
@@ -655,6 +657,7 @@
     <string name="cookies_key" translatable="false">cookies</string>
     <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
+    <string name="download_with_external_app_key" translatable="false">download_with_external_app</string>
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
 
     <!-- Non-translatable preference default values. -->
