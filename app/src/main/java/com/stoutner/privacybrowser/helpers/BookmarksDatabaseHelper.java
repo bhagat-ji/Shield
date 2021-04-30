@@ -415,7 +415,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Get a cursor with just database ID of bookmarks and folders in the specified folder.  This is useful for deleting folders with bookmarks that have favorite icons too large to fit in a cursor.
-    public Cursor getBookmarkIDs(String folderName) {
+    public Cursor getBookmarkIds(String folderName) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 

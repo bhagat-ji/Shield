@@ -465,6 +465,24 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Get an array of the selected row IDs.
                     final long[] selectedBookmarksIdsLongArray = bookmarksListView.getCheckedItemIds();
 
+                    // Initialize a variable to count the number of bookmarks to delete.
+                    int numberOfBookmarksToDelete = 0;
+
+                    // Count the number of bookmarks.
+                    for (long databaseIdLong : selectedBookmarksIdsLongArray) {
+                        // Convert the database ID long to an int.
+                        int databaseIdInt = (int) databaseIdLong;
+
+                        // Count the contents of the folder if the selected bookmark is a folder.
+                        if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
+                            // Add the bookmarks from the folder to the running total.
+                            numberOfBookmarksToDelete = numberOfBookmarksToDelete + countBookmarkFolderContents(databaseIdInt);
+                        }
+
+                        // Increment the count of the number of bookmarks to delete.
+                        numberOfBookmarksToDelete++;
+                    }
+
                     // Get an array of checked bookmarks.  `.clone()` makes a copy that won't change if the list view is reloaded, which is needed for re-selecting the bookmarks on undelete.
                     selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions().clone();
 
@@ -475,7 +493,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
                     // Create a Snackbar with the number of deleted bookmarks.
-                    bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length,
+                    bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.bookmarks_deleted) + "  " + numberOfBookmarksToDelete,
                             Snackbar.LENGTH_LONG)
                             .setAction(R.string.undo, view -> {
                                 // Do nothing because everything will be handled by `onDismissed()` below.
@@ -1004,16 +1022,48 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         contextualActionMode.finish();
     }
 
+    private int countBookmarkFolderContents(int databaseId) {
+        // Initialize the bookmark counter.
+        int bookmarkCounter = 0;
+
+        // Get the name of the folder.
+        String folderName = bookmarksDatabaseHelper.getFolderName(databaseId);
+
+        // Get the contents of the folder.
+        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkIds(folderName);
+
+        // Count each of the bookmarks in the folder.
+        for (int i = 0; i < folderCursor.getCount(); i++) {
+            // Move the folder cursor to the current row.
+            folderCursor.moveToPosition(i);
+
+            // Get the database ID of the item.
+            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
+
+            // If this is a folder, recursively count the contents first.
+            if (bookmarksDatabaseHelper.isFolder(itemDatabaseId)) {
+                // Add the bookmarks from the folder to the running total.
+                bookmarkCounter = bookmarkCounter + countBookmarkFolderContents(itemDatabaseId);
+            }
+
+            // Add the bookmark to the running total.
+            bookmarkCounter++;
+        }
+
+        // Return the bookmark counter.
+        return bookmarkCounter;
+    }
+
     private void deleteBookmarkFolderContents(int databaseId) {
         // Get the name of the folder.
         String folderName = bookmarksDatabaseHelper.getFolderName(databaseId);
 
         // Get the contents of the folder.
-        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkIDs(folderName);
+        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkIds(folderName);
 
         // Delete each of the bookmarks in the folder.
         for (int i = 0; i < folderCursor.getCount(); i++) {
-            // Move `folderCursor` to the current row.
+            // Move the folder cursor to the current row.
             folderCursor.moveToPosition(i);
 
             // Get the database ID of the item.
