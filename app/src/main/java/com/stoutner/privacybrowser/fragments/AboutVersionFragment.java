@@ -356,7 +356,7 @@ public class AboutVersionFragment extends Fragment {
         ultraPrivacyTextView.setText(ultraPrivacyStringBuilder);
 
         // Only populate the radio text view if there is a radio in the device.
-        if (!radio.isEmpty()) {
+        if ((radio != null) && !radio.isEmpty()) {
             String radioLabel = getString(R.string.radio) + "  ";
             SpannableStringBuilder radioStringBuilder = new SpannableStringBuilder(radioLabel + radio);
             radioStringBuilder.setSpan(blueColorSpan, radioLabel.length(), radioStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
