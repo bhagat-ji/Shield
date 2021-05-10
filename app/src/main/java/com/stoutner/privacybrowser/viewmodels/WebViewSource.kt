@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.viewmodels
 
+import android.content.ContentResolver
 import android.text.SpannableStringBuilder
 
 import androidx.lifecycle.LiveData
@@ -30,7 +31,7 @@ import com.stoutner.privacybrowser.backgroundtasks.GetSourceBackgroundTask
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 
-class WebViewSource(private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy,
+class WebViewSource(private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy, private val contentResolver: ContentResolver,
                     private val executorService: ExecutorService): ViewModel() {
     // Initialize the mutable live data variables.
     private val mutableLiveDataSourceStringArray = MutableLiveData<Array<SpannableStringBuilder>>()
@@ -42,7 +43,7 @@ class WebViewSource(private val urlString: String, private val userAgent: String
         val getSourceBackgroundTask = GetSourceBackgroundTask()
 
         // Get the source.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, this)) }
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this)) }
     }
 
     // The source observer.
@@ -72,6 +73,6 @@ class WebViewSource(private val urlString: String, private val userAgent: String
         val getSourceBackgroundTask = GetSourceBackgroundTask()
 
         // Get the source.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, this)) }
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this)) }
     }
 }

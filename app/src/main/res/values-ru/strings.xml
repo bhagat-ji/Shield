@@ -561,6 +561,8 @@
         <string name="open_intents_in_new_tab_summary">Цели - это ссылки, отправленные из других приложений.</string>
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
+        <string name="download_with_external_app">Загрузка во внешнем приложении</string>
+        <string name="download_with_external_app_summary">Использовать внешнее приложение для загрузки файлов.</string>
         <string name="scroll_app_bar">Прокручивать панель приложения</string>
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>

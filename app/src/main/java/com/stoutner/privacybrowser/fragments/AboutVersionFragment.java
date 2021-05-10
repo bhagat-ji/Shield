@@ -356,6 +356,7 @@ public class AboutVersionFragment extends Fragment {
         ultraPrivacyTextView.setText(ultraPrivacyStringBuilder);
 
         // Only populate the radio text view if there is a radio in the device.
+        // Null must be checked because some Samsung tablets report a null value for the radio instead of an empty string.  Grrrr.  <https://redmine.stoutner.com/issues/701>
         if ((radio != null) && !radio.isEmpty()) {
             String radioLabel = getString(R.string.radio) + "  ";
             SpannableStringBuilder radioStringBuilder = new SpannableStringBuilder(radioLabel + radio);

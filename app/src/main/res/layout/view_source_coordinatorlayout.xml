@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -84,6 +84,7 @@
 
                     <!-- Request headers. -->
                     <TextView
+                        android:id="@+id/request_headers_title_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:text="@string/request_headers"
@@ -93,7 +94,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/request_headers"
+                        android:id="@+id/request_headers_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:textIsSelectable="true"
@@ -101,6 +102,7 @@
 
                     <!-- Response message. -->
                     <TextView
+                        android:id="@+id/response_message_title_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:text="@string/response_message"
@@ -110,41 +112,43 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/response_message"
+                        android:id="@+id/response_message_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:textIsSelectable="true"
                         android:layout_marginBottom="8dp" />
 
                     <!-- Response headers. -->
+                    <!-- The title text is set programatically. -->
                     <TextView
+                        android:id="@+id/response_headers_title_textivew"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:text="@string/response_headers"
                         android:textAlignment="center"
                         android:textSize="18sp"
                         android:textColor="?attr/blueTextColor"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/response_headers"
+                        android:id="@+id/response_headers_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:textIsSelectable="true"
                         android:layout_marginBottom="8dp" />
 
                     <!-- Response body. -->
+                    <!-- The title text is set programatically. -->
                     <TextView
+                        android:id="@+id/response_body_title_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:text="@string/response_body"
                         android:textAlignment="center"
                         android:textSize="18sp"
                         android:textColor="?attr/blueTextColor"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/response_body"
+                        android:id="@+id/response_body_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:textIsSelectable="true" />

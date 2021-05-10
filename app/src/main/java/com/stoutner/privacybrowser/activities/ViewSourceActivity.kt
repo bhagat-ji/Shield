@@ -66,6 +66,14 @@ class ViewSourceActivity: AppCompatActivity() {
     private lateinit var finalGrayColorSpan: ForegroundColorSpan
     private lateinit var redColorSpan: ForegroundColorSpan
 
+    // Declare the class views.
+    private lateinit var requestHeadersTitleTextView: TextView
+    private lateinit var requestHeadersTextView: TextView
+    private lateinit var responseMessageTitleTextView: TextView
+    private lateinit var responseMessageTextView: TextView
+    private lateinit var responseHeadersTitleTextView: TextView
+    private lateinit var responseBodyTitleTextView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -88,8 +96,8 @@ class ViewSourceActivity: AppCompatActivity() {
         val intent = intent
 
         // Get the information from the intent.
-        val currentUrl = intent.getStringExtra(CURRENT_URL)
-        val userAgent = intent.getStringExtra(USER_AGENT)
+        val currentUrl = intent.getStringExtra(CURRENT_URL)!!
+        val userAgent = intent.getStringExtra(USER_AGENT)!!
 
         // Set the content view.
         setContentView(R.layout.view_source_coordinatorlayout)
@@ -111,12 +119,16 @@ class ViewSourceActivity: AppCompatActivity() {
 
         // Get handles for the views.
         val urlEditText = findViewById<EditText>(R.id.url_edittext)
-        val requestHeadersTextView = findViewById<TextView>(R.id.request_headers)
-        val responseMessageTextView = findViewById<TextView>(R.id.response_message)
-        val responseHeadersTextView = findViewById<TextView>(R.id.response_headers)
-        val responseBodyTextView = findViewById<TextView>(R.id.response_body)
         val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
         val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.view_source_swiperefreshlayout)
+        requestHeadersTitleTextView = findViewById(R.id.request_headers_title_textview)
+        requestHeadersTextView = findViewById(R.id.request_headers_textview)
+        responseMessageTitleTextView = findViewById(R.id.response_message_title_textview)
+        responseMessageTextView = findViewById(R.id.response_message_textview)
+        responseHeadersTitleTextView = findViewById(R.id.response_headers_title_textivew)
+        val responseHeadersTextView = findViewById<TextView>(R.id.response_headers_textview)
+        responseBodyTitleTextView = findViewById(R.id.response_body_title_textview)
+        val responseBodyTextView = findViewById<TextView>(R.id.response_body_textview)
 
         // Populate the URL text box.
         urlEditText.setText(currentUrl)
@@ -253,8 +265,11 @@ class ViewSourceActivity: AppCompatActivity() {
         // Set the progress bar to be indeterminate.
         progressBar.isIndeterminate = true
 
+        // Update the layout.
+        updateLayout(currentUrl)
+
         // Instantiate the WebView source factory.
-        val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl!!, userAgent!!, localeString, proxy, MainWebViewActivity.executorService)
+        val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl, userAgent, localeString, proxy, contentResolver, MainWebViewActivity.executorService)
 
         // Instantiate the WebView source view model class.
         val webViewSource = ViewModelProvider(this, webViewSourceFactory).get(WebViewSource::class.java)
@@ -294,6 +309,9 @@ class ViewSourceActivity: AppCompatActivity() {
             // Get the URL.
             val urlString = urlEditText.text.toString()
 
+            // Update the layout.
+            updateLayout(urlString)
+
             // Get the updated source.
             webViewSource.updateSource(urlString)
         }
@@ -316,6 +334,9 @@ class ViewSourceActivity: AppCompatActivity() {
 
                 // Get the URL.
                 val urlString = urlEditText.text.toString()
+
+                // Update the layout.
+                updateLayout(urlString)
 
                 // Get the updated source.
                 webViewSource.updateSource(urlString)
@@ -409,6 +430,30 @@ class ViewSourceActivity: AppCompatActivity() {
             if (endOfDomainName > 0) {
                 urlEditText.text.setSpan(finalGrayColorSpan, endOfDomainName, urlString.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             }
+        }
+    }
+
+    private fun updateLayout(urlString: String) {
+        if (urlString.startsWith("content://")) {  // This is a content URL.
+            // Hide the unused text views.
+            requestHeadersTitleTextView.visibility = View.GONE
+            requestHeadersTextView.visibility = View.GONE
+            responseMessageTitleTextView.visibility = View.GONE
+            responseMessageTextView.visibility = View.GONE
+
+            // Change the text of the remaining title text views.
+            responseHeadersTitleTextView.setText(R.string.content_metadata)
+            responseBodyTitleTextView.setText(R.string.content_data)
+        } else {  // This is not a content URL.
+            // Show the views.
+            requestHeadersTitleTextView.visibility = View.VISIBLE
+            requestHeadersTextView.visibility = View.VISIBLE
+            responseMessageTitleTextView.visibility = View.VISIBLE
+            responseMessageTextView.visibility = View.VISIBLE
+
+            // Restore the text of the other title text views.
+            responseHeadersTitleTextView.setText(R.string.response_headers)
+            responseBodyTitleTextView.setText(R.string.response_body)
         }
     }
 }
