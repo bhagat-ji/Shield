@@ -43,7 +43,7 @@ class AboutViewSourceDialog : DialogFragment() {
         // Set the text.
         dialogBuilder.setMessage(R.string.about_view_source_message)
 
-        // Set a listener on the close button.  Using `null` as the listener closes the dialog without doing anything else.
+        // Set the close button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.close, null)
 
         // Create an alert dialog from the alert dialog builder.

@@ -43,7 +43,8 @@ class WebViewSource(private val urlString: String, private val userAgent: String
         val getSourceBackgroundTask = GetSourceBackgroundTask()
 
         // Get the source.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this)) }
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this,
+            false)) }
     }
 
     // The source observer.
@@ -65,7 +66,7 @@ class WebViewSource(private val urlString: String, private val userAgent: String
     }
 
     // The workhorse that gets the source.
-    fun updateSource(urlString: String) {
+    fun updateSource(urlString: String, ignoreSslErrors: Boolean) {
         // Reset the mutable live data error string.  This prevents the snackbar from displaying later if the activity restarts.
         mutableLiveDataErrorString.postValue("")
 
@@ -73,6 +74,7 @@ class WebViewSource(private val urlString: String, private val userAgent: String
         val getSourceBackgroundTask = GetSourceBackgroundTask()
 
         // Get the source.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this)) }
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this,
+            ignoreSslErrors)) }
     }
 }

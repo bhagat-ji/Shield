@@ -143,11 +143,7 @@ class SslCertificateErrorDialog : DialogFragment() {
         val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the icon according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_day)
-        } else {
-            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_night)
-        }
+        dialogBuilder.setIconAttribute(R.attr.sslCertificateBlueIcon)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.ssl_certificate_error)
@@ -155,7 +151,7 @@ class SslCertificateErrorDialog : DialogFragment() {
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.ssl_certificate_error, null))
 
-        // Set a listener on the cancel button.
+        // Set the cancel button listener.
         dialogBuilder.setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int ->
             // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
             if (sslErrorHandler != null) {
@@ -167,7 +163,7 @@ class SslCertificateErrorDialog : DialogFragment() {
             }
         }
 
-        // Set a listener on the proceed button.
+        // Set the proceed button listener.
         dialogBuilder.setPositiveButton(R.string.proceed) { _: DialogInterface?, _: Int ->
             // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
             if (sslErrorHandler != null) {

@@ -220,6 +220,8 @@
     <string name="response_body">Response Body</string>
     <string name="content_metadata">Content Metadata</string>
     <string name="content_data">Content Data</string>
+    <string name="untrusted_ssl_certificate">The SSL certificate is untrusted.</string>
+    <string name="load_anyway">Load anyway</string>
     <string name="about_view_source">About View Source</string>
     <string name="about_view_source_message">Because Android’s WebView does not expose the source information,
         a separate request was made using system tools to gather the information displayed in this activity.
@@ -451,8 +453,8 @@
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
         <string name="javascript_preference_summary">JavaScript allows websites to run programs (scripts) on the device.</string>
-        <string name="cookies_preference_summary">Cookies are an app level setting. When the active tab has cookies enabled,
-            any network request made in the background by another tab also has cookies enabled.</string>
+        <string name="cookies_preference_summary">Cookies are an app level setting.
+            When the active tab has cookies enabled, any network request made in the background by another tab also has cookies enabled.</string>
         <string name="dom_storage_preference">DOM storage</string>
         <string name="dom_storage_preference_summary">JavaScript must be enabled for Document Object Model storage to function.</string>
         <string name="save_form_data_preference">Form data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->

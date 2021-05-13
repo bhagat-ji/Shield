@@ -3,7 +3,7 @@
 <!--
   Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2020 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2020-2021 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -31,6 +31,8 @@
     <string name="privacy_mode">Modo Privado</string>
     <string name="javascript_enabled">JavaScript ativado</string>
     <string name="javascript_disabled">JavaScript desativado</string>
+    <string name="cookies_enabled">Cookies ativados</string>
+    <string name="cookies_disabled">Cookies desativados</string>
     <string name="dom_storage_enabled">Armazenamento DOM ativado</string>
     <string name="dom_storage_disabled">Armazenamento DOM desativado</string>
     <string name="form_data_enabled">Dados de formulário habilitados</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
@@ -112,6 +114,7 @@
         <string name="clear_history">Limpar Histórico</string>
     <string name="open">Abrir</string>
     <string name="downloads">Downloads</string>
+        <string name="no_file_manager_detected">O sistema não pode detectar um gerenciador de arquivos compatível.</string>
     <string name="settings">Configurações</string>
     <string name="import_export">Importar/Exportar</string>
     <string name="logcat">Logcat</string>
@@ -122,6 +125,7 @@
     <string name="javascript">JavaScript</string>
     <string name="refresh">Atualizar</string>
     <string name="stop">Parar</string>
+    <string name="cookies">Cookies</string>
     <string name="dom_storage">Armazenamento DOM</string>
     <string name="form_data">Dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Limpar dados</string>
@@ -178,6 +182,10 @@
     <string name="previous">Anterior</string>
     <string name="next">Próximo</string>
 
+    <!-- Open Dialog. -->
+    <string name="file_is_mht">Este é um arquivo MHT da web.</string>
+    <string name="mht_checkbox_explanation">Às vezes, os arquivos da web MIME Encapsulated HTML (MHT) precisam ser especificados manualmente para serem abertos corretamente.</string>
+
     <!-- Save Dialogs. -->
     <string name="save_url">Salvar URL</string>
     <string name="save_archive">Salvar Arquivo</string>
@@ -195,6 +203,7 @@
     <string name="saving_file">Salvando file:</string>
     <string name="file_saved">Arquivo Salvo:</string>
     <string name="processing_image">Processando imagem… :</string>
+    <string name="image_saved">Image saved:</string>
     <string name="error_saving_file">Erro ao salvar o arquivo:</string>
 
     <!-- View Source. -->
@@ -202,6 +211,8 @@
     <string name="response_message">Mensagem de Resposta</string>
     <string name="response_headers">Cabeçalhos de resposta</string>
     <string name="response_body">Corpo de Resposta</string>
+    <string name="content_metadata">Metadados de conteúdo</string>
+    <string name="content_data">Dados de conteúdo</string>
     <string name="about_view_source">Sobre Ver Fonte</string>
     <string name="about_view_source_message">Como o WebView do Android não expõe as informações de origem,
         uma solicitação separada foi feita usando ferramentas do sistema para reunir as informações exibidas nesta atividade.
@@ -218,6 +229,7 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Favoritos</string>
     <string name="database_view">Visualização do banco de dados</string>
+    <string name="bookmark_opened_in_background">O favorito foi aberto em uma aba em segundo plano.</string>
     <string name="create_bookmark">Criar marcador</string>
     <string name="create_folder">Criar pasta</string>
     <string name="current_bookmark_icon">Ícone de favorito atual</string>
@@ -271,28 +283,28 @@
         <string name="blocked_plural">Bloqueados</string>
     <string name="blocklist">Lista de bloqueios</string>
         <string name="sublist">Sublista</string>
-        <string name="main_whitelist">Lista branca principal</string>
+        <string name="main_whitelist">Lista de permissão principal</string>
         <string name="final_whitelist">Lista de permissões final</string>
         <string name="domain_whitelist">Lista de permissões de domínio</string>
         <string name="domain_initial_whitelist">Lista de permissões inicial do domínio</string>
         <string name="domain_final_whitelist">Lista de permissões final de domínio</string>
         <string name="third_party_whitelist">Lista de permissões de terceiros</string>
-        <string name="third_party_domain_whitelist">Lista de permissões de domínio de terceiros</string>
-        <string name="third_party_domain_initial_whitelist">Lista de permissões inicial de domínio de terceiros</string>
-        <string name="main_blacklist">Lista negra principal</string>
-        <string name="initial_blacklist">Lista negra inicial</string>
-        <string name="final_blacklist">Lista negra final</string>
-        <string name="domain_blacklist">Lista negra de domínio</string>
-        <string name="domain_initial_blacklist">Lista negra inicial do domínio</string>
-        <string name="domain_final_blacklist">Lista negra final do domínio</string>
-        <string name="domain_regular_expression_blacklist">Lista negra de expressões regulares de domínio</string>
-        <string name="third_party_blacklist">Lista negra de terceiros</string>
-        <string name="third_party_initial_blacklist">Lista negra inicial de terceiros</string>
-        <string name="third_party_domain_blacklist">Lista negra de domínios de terceiros</string>
-        <string name="third_party_domain_initial_blacklist">Lista negra inicial de domínios de terceiros</string>
-        <string name="third_party_regular_expression_blacklist">Lista negra de expressões regulares de terceiros</string>
-        <string name="third_party_domain_regular_expression_blacklist">Lista negra de expressões regulares de domínios de terceiros</string>
-        <string name="regular_expression_blacklist">Lista negra de expressões regulares</string>
+        <string name="third_party_domain_whitelist">Lista de permissões de domínios de terceiros</string>
+        <string name="third_party_domain_initial_whitelist">Lista de permissões iniciais de domínios de terceiros</string>
+        <string name="main_blacklist">Lista de restrições principal</string>
+        <string name="initial_blacklist">Lista de restrições inicial</string>
+        <string name="final_blacklist">Lista de restrições final</string>
+        <string name="domain_blacklist">Lista de restrições de domínios</string>
+        <string name="domain_initial_blacklist">Lista de restrições inicial do domínio</string>
+        <string name="domain_final_blacklist">Lista de restrições final do domínio</string>
+        <string name="domain_regular_expression_blacklist">Lista de restrições de expressões regulares de domínio</string>
+        <string name="third_party_blacklist">Lista de restrições de terceiros</string>
+        <string name="third_party_initial_blacklist">Lista de restrições inicial de terceiros</string>
+        <string name="third_party_domain_blacklist">Lista de restrições de domínios de terceiros</string>
+        <string name="third_party_domain_initial_blacklist">Lista de restrições inicial de domínios de terceiros</string>
+        <string name="third_party_regular_expression_blacklist">Lista de restrições de expressões regulares de terceiros</string>
+        <string name="third_party_domain_regular_expression_blacklist">Lista de restrições de expressões regulares de domínios de terceiros</string>
+        <string name="regular_expression_blacklist">Lista de restrições de expressões regulares</string>
     <string name="blocklist_entries">Entradas da lista de bloqueio</string>
     <string name="blocklist_original_entry">Entrada original da lista de bloqueio</string>
 
@@ -430,11 +442,14 @@
     <!-- Preferences. -->
     <string name="privacy">Privacidade</string>
         <string name="javascript_preference_summary">JavaScript permite que sites executem programas (scripts) no dispositivo.</string>
+        <string name="cookies_preference_summary">Cookies são uma configuração de nível de aplicativo.
+            Quando a guia ativa tem cookies habilitados, qualquer solicitação de rede feita em segundo plano por outra guia também tem cookies habilitados.</string>
         <string name="dom_storage_preference">Armazenamento DOM</string>
+        <string name="dom_storage_preference_summary">O JavaScript deve estar habilitado para que o armazenamento do Document Object Model funcione.</string>
         <string name="save_form_data_preference">Dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="save_form_data_preference_summary">Dados de formulário salvos podem preencher campos automaticamente em sites.</string>
         <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="user_agent">Mimetizar o Navegador:</string>
+        <string name="user_agent">Agente do usuário</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
             <item>WebView Padrão</item>
@@ -466,7 +481,7 @@
             <item>Safari para macOS</item>
             <item>Personalizado</item>
         </string-array>
-        <string name="custom_user_agent">Agente de usuário personalizado</string>
+        <string name="custom_user_agent">Agente do usuário personalizado</string>
         <string name="incognito_mode">Modo de navegação anônima</string>
         <string name="incognito_mode_summary">Limpe o histórico e o cache após o término do carregamento de cada página da web. No modo de navegação anônima,
             volta para fechar a guia (ou o aplicativo, se houver apenas uma guia).</string>
@@ -535,6 +550,7 @@
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Limpa cookies, armazenamento DOM, dados de formulário e cache do WebView. Em seguida, exclui manualmente todos os diretórios “app_webview” e “cache”.</string>
         <string name="clear_cookies_preference">Limpar cookies</string>
+        <string name="clear_cookies_summary">Limpar os cookies.</string>
         <string name="clear_dom_storage_preference">Limpar armazenamento DOM</string>
         <string name="clear_dom_storage_summary">Limpa o armazenamento DOM.</string>
         <string name="clear_form_data_preference">Limpar dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
@@ -550,6 +566,8 @@
         <string name="open_intents_in_new_tab_summary">Conteúdos são links enviados de outros aplicativos.</string>
         <string name="swipe_to_refresh">Deslize para atualizar</string>
         <string name="swipe_to_refresh_summary">Alguns sites não funcionam bem se deslizar para atualizar estiver habilitado.</string>
+        <string name="download_with_external_app">Download com aplicativo externo</string>
+        <string name="download_with_external_app_summary">Usar um aplicativo externo para baixar arquivos.</string>
         <string name="scroll_app_bar">Role a barra de aplicativos</string>
         <string name="scroll_app_bar_summary">Role a barra de aplicativos para fora da parte superior da tela quando o WebView rola para baixo.</string>
         <string name="display_additional_app_bar_icons">Exibir ícones adicionais da barra de aplicativos</string>

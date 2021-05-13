@@ -107,7 +107,7 @@ class HttpAuthenticationDialog : DialogFragment() {
             val httpAuthHandler = nestedScrollWebView.httpAuthHandler
 
             // Use an alert dialog builder to create the alert dialog.
-            val dialogBuilder = AlertDialog.Builder(requireActivity(), R.style.PrivacyBrowserAlertDialog)
+            val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
             // Set the icon according to the theme.
             dialogBuilder.setIconAttribute(R.attr.lockBlueIcon)
@@ -173,11 +173,8 @@ class HttpAuthenticationDialog : DialogFragment() {
             // Get the current theme status.
             val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
-            // Create a blue foreground color span.
-            val blueColorSpan: ForegroundColorSpan
-
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until API >= 23.
-            blueColorSpan = if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+            val blueColorSpan = if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 @Suppress("DEPRECATION")
                 ForegroundColorSpan(resources.getColor(R.color.blue_700))
             } else {
@@ -229,7 +226,7 @@ class HttpAuthenticationDialog : DialogFragment() {
             return alertDialog
         } catch (exception: Exception) {  // Privacy Browser was restarted and the HTTP auth handler no longer exists.
             // Use an alert dialog builder to create an empty alert dialog.
-            val dialogBuilder = AlertDialog.Builder(requireActivity(), R.style.PrivacyBrowserAlertDialog)
+            val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
             // Create an empty alert dialog from the alert dialog builder.
             val alertDialog = dialogBuilder.create()
@@ -243,7 +240,7 @@ class HttpAuthenticationDialog : DialogFragment() {
     }
 
     override fun onResume() {
-        // Run the default command.
+        // Run the default commands.
         super.onResume()
 
         // Dismiss the alert dialog if the activity was restarted and the HTTP auth handler no longer exists.

@@ -212,6 +212,8 @@
     <string name="response_message">Messaggio di Risposta</string>
     <string name="response_headers">Risposta Intestazioni</string>
     <string name="response_body">Testo della Risposta</string>
+    <string name="content_metadata">Content - Metadati</string>
+    <string name="content_data">Content - Dati</string>
     <string name="about_view_source">Informazioni sulla visualizzazione della sorgente</string>
     <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
         ottenere le informazioni mostrate. Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView.

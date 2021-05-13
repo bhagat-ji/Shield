@@ -67,4 +67,5 @@
     <attr name="domainsBlueIcon" format="reference" />
     <attr name="fontSizeBlueIcon" format="reference" />
     <attr name="lockBlueIcon" format="reference" />
+    <attr name="sslCertificateBlueIcon" format="reference" />
 </resources>

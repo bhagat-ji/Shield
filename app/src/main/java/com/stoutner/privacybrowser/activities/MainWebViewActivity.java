@@ -1392,7 +1392,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Update the menu checkbox.
             menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
 
-            // Update the staus of Fanboy's Social Blocking List.
+            // Update the status of Fanboy's Social Blocking List.
             optionsFanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
 
             // Reload the current WebView.
@@ -2115,7 +2115,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     ultraList.get(0).get(0)[0], ultraPrivacy.get(0).get(0)[0]};
 
             // Add the blocklist versions to the intent.
-            aboutIntent.putExtra("blocklist_versions", blocklistVersions);
+            aboutIntent.putExtra(AboutActivity.BLOCKLIST_VERSIONS, blocklistVersions);
 
             // Make it so.
             startActivity(aboutIntent);
@@ -5806,7 +5806,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     String[] ultraListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraList);
 
                     // Process the UltraList results.
-                    if (ultraListResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraLists's blacklist.
+                    if (ultraListResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraList's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(new String[] {ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]});
 

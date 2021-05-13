@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.viewmodelfactories
 
 import android.content.ContentResolver
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 

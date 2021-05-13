@@ -212,6 +212,8 @@
     <string name="response_message">Mensaje de respuesta</string>
     <string name="response_headers">Cabeceras de respuesta</string>
     <string name="response_body">Cuerpo de respuesta</string>
+    <string name="content_metadata">Metadatos del contenido</string>
+    <string name="content_data">Datos del contenido</string>
     <string name="about_view_source">Acerca de ver la fuente</string>
     <string name="about_view_source_message">Debido a que WebView de Android no expone la información fuente,
         se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.

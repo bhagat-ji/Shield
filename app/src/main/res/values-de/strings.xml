@@ -216,6 +216,8 @@
     <string name="response_message">Status-Code</string>
     <string name="response_headers">Antwortkopfzeilen</string>
     <string name="response_body">Antwortinhalt</string>
+    <string name="content_metadata">Content-Metadaten</string>
+    <string name="content_data">Content-Daten</string>
     <string name="about_view_source">Über Quelltext</string>
     <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
         die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit WebView dargestellten Webseite auftreten.

@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.backgroundtasks;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -40,9 +41,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class GetSourceBackgroundTask {
-    public SpannableStringBuilder[] acquire(String urlString, String userAgent, String localeString, Proxy proxy, ContentResolver contentResolver, WebViewSource webViewSource) {
+    public SpannableStringBuilder[] acquire(String urlString, String userAgent, String localeString, Proxy proxy, ContentResolver contentResolver, WebViewSource webViewSource, boolean ignoreSslErrors) {
         // Initialize the spannable string builders.
         SpannableStringBuilder requestHeadersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder responseMessageBuilder = new SpannableStringBuilder();
@@ -315,13 +325,54 @@ public class GetSourceBackgroundTask {
                 }
                 requestHeadersBuilder.append(":  gzip");
 
+                // Ignore SSL errors if requested.
+                if (ignoreSslErrors){
+                    // Create a new host name verifier.
+                    HostnameVerifier hostnameVerifier = (hostname, sslSession) -> {
+                        // Allow all host names.
+                        return true;
+                    };
+
+                    // Create a new trust manager.
+                    TrustManager[] trustManager = new TrustManager[] {
+                            new X509TrustManager() {
+                                @SuppressLint("TrustAllX509TrustManager")
+                                @Override
+                                public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                                    // Do nothing, which trusts all client certificates.
+                                }
+
+                                @SuppressLint("TrustAllX509TrustManager")
+                                @Override
+                                public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                                    // Do nothing, which trusts all server certificates.
+                                }
+
+                                @Override
+                                public X509Certificate[] getAcceptedIssuers() {
+                                    return null;
+                                }
+                            }
+                    };
+
+                    // Get an SSL context.  `TLS` provides a base instance available from API 1.  <https://developer.android.com/reference/javax/net/ssl/SSLContext>
+                    SSLContext sslContext = SSLContext.getInstance("TLS");
+
+                    // Initialize the SSL context with the blank trust manager.
+                    sslContext.init(null, trustManager, new SecureRandom());
+
+                    // Get the SSL socket factory with the blank trust manager.
+                    SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+
+                    // Set the HTTPS URL Connection to use the blank host name verifier.
+                    ((HttpsURLConnection) httpUrlConnection).setHostnameVerifier(hostnameVerifier);
+
+                    // Set the HTTPS URL connection to use the socket factory with the blank trust manager.
+                    ((HttpsURLConnection) httpUrlConnection).setSSLSocketFactory(socketFactory);
+                }
 
                 // The actual network request is in a `try` bracket so that `disconnect()` is run in the `finally` section even if an error is encountered in the main block.
                 try {
-                    // Initialize the string builders.
-                    responseMessageBuilder = new SpannableStringBuilder();
-                    responseHeadersBuilder = new SpannableStringBuilder();
-
                     // Get the response code, which causes the connection to the server to be made.
                     int responseCode = httpUrlConnection.getResponseCode();
 
@@ -405,7 +456,7 @@ public class GetSourceBackgroundTask {
             }
         }
 
-        // Return the response body string as the result.
+        // Return the spannable string builders.
         return new SpannableStringBuilder[] {requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder};
     }
 }

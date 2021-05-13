@@ -50,6 +50,8 @@ import com.google.android.material.snackbar.Snackbar
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.dialogs.AboutViewSourceDialog
+import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog
+import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog.UntrustedSslCertificateListener
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.viewmodelfactories.WebViewSourceFactory
 import com.stoutner.privacybrowser.viewmodels.WebViewSource
@@ -60,13 +62,15 @@ import java.util.Locale
 const val CURRENT_URL = "current_url"
 const val USER_AGENT = "user_agent"
 
-class ViewSourceActivity: AppCompatActivity() {
+class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
     // Declare the class variables.
     private lateinit var initialGrayColorSpan: ForegroundColorSpan
     private lateinit var finalGrayColorSpan: ForegroundColorSpan
     private lateinit var redColorSpan: ForegroundColorSpan
+    private lateinit var webViewSource: WebViewSource
 
     // Declare the class views.
+    private lateinit var urlEditText: EditText
     private lateinit var requestHeadersTitleTextView: TextView
     private lateinit var requestHeadersTextView: TextView
     private lateinit var responseMessageTitleTextView: TextView
@@ -118,7 +122,7 @@ class ViewSourceActivity: AppCompatActivity() {
         actionBar.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
 
         // Get handles for the views.
-        val urlEditText = findViewById<EditText>(R.id.url_edittext)
+        urlEditText = findViewById(R.id.url_edittext)
         val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
         val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.view_source_swiperefreshlayout)
         requestHeadersTitleTextView = findViewById(R.id.request_headers_title_textview)
@@ -272,7 +276,7 @@ class ViewSourceActivity: AppCompatActivity() {
         val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl, userAgent, localeString, proxy, contentResolver, MainWebViewActivity.executorService)
 
         // Instantiate the WebView source view model class.
-        val webViewSource = ViewModelProvider(this, webViewSourceFactory).get(WebViewSource::class.java)
+        webViewSource = ViewModelProvider(this, webViewSourceFactory).get(WebViewSource::class.java)
 
         // Create a source observer.
         webViewSource.observeSource().observe(this, { sourceStringArray: Array<SpannableStringBuilder> ->
@@ -294,7 +298,16 @@ class ViewSourceActivity: AppCompatActivity() {
         webViewSource.observeErrors().observe(this, { errorString: String ->
             // Display an error snackbar if the string is not `""`.
             if (errorString != "") {
-                Snackbar.make(swipeRefreshLayout, errorString, Snackbar.LENGTH_LONG).show()
+                if (errorString.startsWith("javax.net.ssl.SSLHandshakeException")) {
+                    // Instantiate the untrusted SSL certificate dialog.
+                    val untrustedSslCertificateDialog = UntrustedSslCertificateDialog()
+
+                    // Show the untrusted SSL certificate dialog.
+                    untrustedSslCertificateDialog.show(supportFragmentManager, getString(R.string.invalid_certificate))
+                } else {
+                    // Display a snackbar with the error message.
+                    Snackbar.make(swipeRefreshLayout, errorString, Snackbar.LENGTH_LONG).show()
+                }
             }
         })
 
@@ -313,7 +326,7 @@ class ViewSourceActivity: AppCompatActivity() {
             updateLayout(urlString)
 
             // Get the updated source.
-            webViewSource.updateSource(urlString)
+            webViewSource.updateSource(urlString, false)
         }
 
         // Set the go button on the keyboard to request new source data.
@@ -339,7 +352,7 @@ class ViewSourceActivity: AppCompatActivity() {
                 updateLayout(urlString)
 
                 // Get the updated source.
-                webViewSource.updateSource(urlString)
+                webViewSource.updateSource(urlString, false)
 
                 // Consume the key press.
                 return@setOnKeyListener true
@@ -351,7 +364,7 @@ class ViewSourceActivity: AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu.  This adds items to the action bar if it is present.
+        // Inflate the menu.
         menuInflater.inflate(R.menu.view_source_options_menu, menu)
 
         // Display the menu.
@@ -359,7 +372,7 @@ class ViewSourceActivity: AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
-        // Get a handle for the about alert dialog.
+        // Instantiate the about dialog fragment.
         val aboutDialogFragment: DialogFragment = AboutViewSourceDialog()
 
         // Show the about alert dialog.
@@ -373,6 +386,11 @@ class ViewSourceActivity: AppCompatActivity() {
     fun goBack(@Suppress("UNUSED_PARAMETER") view: View) {
         // Go home.
         NavUtils.navigateUpFromSameTask(this)
+    }
+
+    override fun loadAnyway() {
+        // Load the URL anyway.
+        webViewSource.updateSource(urlEditText.text.toString(), true)
     }
 
     private fun highlightUrlText() {

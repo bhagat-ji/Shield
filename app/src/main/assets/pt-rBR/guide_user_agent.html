@@ -29,37 +29,38 @@
     </head>
 
     <body>
-        <h3><svg class="header"><use href="../shared_images/devices_other.svg#icon"/></svg> Browser Identification</h3>
+        <h3><svg class="header"><use href="../shared_images/devices_other.svg#icon"/></svg> Identificação do Navegador</h3>
 
-        <p>When web browsers connect to websites, they send a user agent, which identifies the browser and the rendering capabilities it possesses.
-            The web server can use this information to decide which version of the website to send to the browser.
-            For example, many websites have different versions for desktop and mobile browsers.</p>
+        <p>Quando os navegadores da web se conectam a sites, eles enviam um agente do usuário, que identifica o navegador e os recursos de renderização que possui.
+            O servidor da web pode usar essas informações para decidir qual versão do site enviar para o navegador.
+            Por exemplo, muitos sites têm versões diferentes para navegadores de desktop e móveis.</p>
 
-        <p>By default, Privacy Browser uses its own user agent, which is <code>PrivacyBrowser/1.0</code>. This sends a minimum of information to the web server.
-            Because web servers do not recognize this to be a mobile user agent, they typically display the desktop version of the site.</p>
+        <p>Por padrão, o Privacy Browser usa seu próprio agente de usuário, que é <code>PrivacyBrowser/1.0</code>. Isso envia um mínimo de informações para o servidor da web.
+            Como os servidores da web não reconhecem este como um agente de usuário móvel, eles geralmente exibem a versão desktop do site.</p>
 
-        <p>By comparison, WebView’s default user agent divulges a large amount of information about the hardware and software of the device.
-            On the <strong>Settings</strong> screen, selecting <strong>WebView Default</strong> as the <strong>User agent</strong> displays the user agent that will be sent.
-            The screenshot below shows a Pixel 2 XL running Android 10 with Android System WebView 84.0.4147.125 installed.
-            Most web servers will recognize this as a mobile browser and will display the mobile version of the site if they have one.</p>
+        <p>Em comparação, o agente de usuário padrão do WebView divulga uma grande quantidade de informações sobre o hardware e software do dispositivo.
+            Na tela <strong>Configurações</strong>, selecionar <strong>WebView Padrão</strong> como o <strong>Agente do usuário</strong> exibe o agente do usuário que será enviado.
+            A captura de tela abaixo mostra um Pixel 5 rodando Android 11 com Android System WebView 90.0.4430.210 instalado.
+            A maioria dos servidores da web o reconhecerá como um navegador móvel e exibirá a versão móvel do site, se houver.</p>
 
-        <img class="center" src="images/user_agent.png">
+        <img class="center216" src="images/user_agent.png">
 
-        <p>There is enough information in the user agent that sometimes only a few visitors to a website will be the same.
-            If the user agent is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
-            The Electronic Frontier Foundation created a tool called <a href="https://panopticlick.eff.org/">Panopticlick</a> to demonstrate how much information can be gleaned from these sources.
-            If this test is run with JavaScript enabled the amount of information that is disclosed increases greatly.
-            <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information on this topic.</p>
+        <p>Há informações suficientes no agente do usuário para queapenas para alguns visitantes de um site, às vezes, sejam os mesmos.
+            Se o agente do usuário for combinado com outra informação de identificação não exclusiva, geralmente resulta em uma impressão digital exclusiva.
+            A Electronic Frontier Foundation criou uma ferramenta chamada <a href="https://panopticlick.eff.org/">Panopticlick</a> para demonstrar quanta informação pode ser obtida dessas fontes.
+            Se este teste for executado com o JavaScript habilitado, a quantidade de informações divulgadas aumenta muito.
+            <a href="https://www.browserleaks.com">Browser Leaks</a> e <a href="https://amiunique.org/">Am I Unique</a> também são boas fontes de informações sobre este tópico.</p>
 
         <img class="center" src="../shared_images/panopticlick.png">
 
-        <p>There are several preset user agents that match common browsers and operating systems. For browser fingerprinting purposes, anything that is rare is easier to track.
-            If Privacy Browser becomes common and many people use <code>PrivacyBrowser/1.0</code> as their user agent, it will be a good choice for privacy.
-            Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly that it is likely the user agents included in Privacy Browser
-            will often be out of step with the majority of user agents in the server logs.</p>
+        <p>Existem vários agentes de usuário predefinidos que correspondem a navegadores e sistemas operacionais comuns.
+            Para fins de impressão digital do navegador, qualquer coisa rara é mais fácil de rastrear.
+            Se o Privacy Browser se tornar comum e muitas pessoas usarem <code>PrivacyBrowser/1.0</code> como seu agente de usuário, será uma boa escolha para privacidade.
+            Firefox ou Chrome são os agentes de usuário mais comuns, mas eles se atualizam automaticamente e seus números de versão mudam tão rapidamente que provavelmente os agentes de usuário
+            incluídos no Privacy Browser frequentemente estará fora de sincronia com a maioria dos agentes de usuário nos logs do servidor.</p>
 
-        <p>Some websites <a href="https://www.stoutner.com/user-agent-problems/">do not function correctly</a> if they do not recognize the user agent.
-            Using domain settings to set the user agent to <strong>WebView Default</strong>, or another user agent that is commonly recognized, usually resolves the problem.
-            Android’s WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
+        <p>Alguns sites <a href="https://www.stoutner.com/user-agent-problems/">não funcionam corretamente</a> se não reconhecem o agente do usuário.
+            Usar as configurações de domínio para definir o agente do usuário para <strong>WebView Padrão</strong>ou outro agente do usuário comumente reconhecido geralmente resolve o problema.
+            O WebView do Android não permite que o agente do usuário fique em branco. Se for, o WebView simplesmente envia o agente do usuário padrão para o servidor.</p>
     </body>
 </html>

@@ -29,53 +29,56 @@
     </head>
 
     <body>
-        <h3><svg class="header"><use href="../shared_images/vpn_key.svg#icon"/></svg> Proxies and Their Limits</h3>
+        <h3><svg class="header"><use href="../shared_images/vpn_key.svg#icon"/></svg> Proxies e seus limites</h3>
 
-        <p>There are two general categories of bad actors that want to infringe on the privacy of the web:
-            malicious governments with access to ISPs (Internet Service Providers) and mega corporations that run social and advertising networks.
-            Proxies like TOR (The Onion Router) and I2P (the Invisible Internet Project) are useful in protecting privacy from malicious governments (which spy on traffic in transit)
-            but not from mega corporations (which embed malicious code on web servers).</p>
-
-
-        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> Malicious Governments</h3>
-
-        <p>Malicious governments often spy on their citizens to punish dissent or human rights activity.
-            They commonly either operate the local ISPs or they can force them to disclose information showing every IP address that is visited by each user.
-            Layered proxies are designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through multiple servers on the internet
-            before sending it on to the final destination.
-            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address of the user’s device</a> and the IP address of the final web server.
-            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using a layered proxy service.
-            In some parts of the world, using proxies could be construed as an evidence of illegal behavior (“If you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
-            and users could be punished because governments assume they are doing something that is prohibited. Thus, proxies can be helpful, but they aren’t a panacea.</p>
+        <p>Existem duas categorias gerais de agentes mal-intencionados que desejam violar a privacidade da web:
+            governos maliciosos com acesso a ISPs (Provedores de Serviços de Internet) e megacorporações que administram redes sociais e de publicidade.
+            Proxies como TOR (The Onion Router) e I2P (Invisible Internet Project) são úteis para proteger a privacidade de governos maliciosos (que espionam o tráfego em trânsito)
+            mas não de megacorporações (que incorporam código malicioso em servidores da web).</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> Mega Corporations</h3>
+        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> Governos Maliciosos</h3>
 
-        <p>When a user connects to a web server, the web server can see the user’s IP address.
-            Although it isn’t a perfect science, IP addresses can be turned into physical addresses with a <a href="https://www.whatismyip.com/">fair amount of accuracy</a>.
-            Small web servers typically rely on IP addresses to identify the location of the users visiting their site. Proxies are a good solution to mask the user’s location from these servers.
-            But large mega corporations that own social media and advertising networks use a whole profile of information that is designed to track users across devices and IP addresses.
-            These profiles employ a variety of techniques to identify users, including JavaScript, cookies, tracking IDs, and <a href="https://panopticlick.eff.org/">browser fingerprinting</a>.
-            Because the vast majority of the websites on the internet either load an ad from one of the major networks or embed social media icons with their associated JavaScript,
-            these corporations have built profiles for almost every online user and can track their internet activity across unrelated sites.</p>
-
-        <p>They track every site that is visited, everything that is purchased, every credit card that is used to make a purchase, every address that items are shipped to,
-            and the GPS metadata of every picture that is uploaded to the internet.
-            They build a profile of a user’s age, gender, marital status, address, political affiliations, religious affiliations, family circumstances, number of pets,
-            and everything else they can get their hands on.
-            They even buy up databases of credit card transactions at local stores, so they can track the off-line purchasing patterns of the users in their profiles.
-            Because they already have much more accurate address information about a user than an IP address discloses, proxies provides no real privacy protection against mega corporations.</p>
-
-        <p>The single best privacy protection against mega corporations is to browse the web with JavaScript disabled, followed by blocking ad networks, disabling cookies and DOM storage,
-            and using a browser that is difficult to fingerprint.</p>
+        <p>Governos mal-intencionados freqüentemente espionam seus cidadãos para punir dissidentes ou atividades de direitos humanos.
+            Eles geralmente operam os ISPs locais ou podem forçá-los a divulgar informações mostrando todos os endereços IP visitados por cada usuário.
+            Proxies em camadas são projetados para derrotar essa violação de privacidade criptografando o tráfego do dispositivo de um usuário e roteando-o por meio de vários servidores na Internet
+            antes de enviá-lo para o destino final.
+            Isso significa que nenhum ISP, servidor ou site individual pode saber o <a href="https://ipleak.net">endereço IP do dispositivo do usuário</a> e o endereço IP do servidor web final.
+            Governos mal-intencionados e os ISPs que eles controlam não podem dizer quais servidores da web um usuário está acessando,
+            embora possam dizer que o usuário está usando um serviço de proxy em camadas.
+            Em algumas partes do mundo, o uso de proxies pode ser interpretado como uma evidência de comportamento ilegal (“Se você não tivesse nada a esconder, não estaria criptografando seu tráfego”)
+            e os usuários podem ser punidos porque os governos presumem que eles estão fazendo algo que é proibido. Assim, os proxies podem ser úteis, mas não são uma panacéia.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/open_in_browser.svg#icon"/></svg> Using Proxies</h3>
+        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> Mega Corporações</h3>
 
-        <p>Despite their limitations, proxies can be useful in some circumstances.
-            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>
-            have Android apps that make it easy to use their proxy networks. When proxying is turned on in Privacy Browser, the app bar will have a light blue background instead of the default light grey.
-            Because traffic is being routed through several proxy nodes, using a layered proxy is often much slower than connecting directly to the internet.</p>
+        <p>Quando um usuário se conecta a um servidor web, o servidor web pode ver o endereço IP do usuário.
+            Embora não seja uma ciência perfeita, os endereços IP podem ser transformados em endereços físicos com uma <a href="https://www.whatismyip.com/">quantidade razoável de precisão</a>.
+            Os pequenos servidores da web geralmente dependem de endereços IP para identificar a localização dos usuários que visitam seu site.
+            Os proxies são uma boa solução para mascarar a localização do usuário desses servidores.
+            Mas as grandes megacorporações que possuem mídia social e redes de publicidade usam todo um perfil de informações que é projetado para rastrear usuários em dispositivos e endereços IP.
+            Esses perfis empregam uma variedade de técnicas para identificar usuários,
+            incluindo JavaScript, cookies, IDs de rastreamento e <a href="https://panopticlick.eff.org/">impressão digital do navegador</a>.
+            Como a grande maioria dos sites na Internet carrega um anúncio de uma das principais redes ou incorpora ícones de mídia social com seu JavaScript associado,
+            essas empresas criaram perfis para quase todos os usuários on-line e podem rastrear suas atividades na Internet em sites não relacionados.</p>
+
+        <p>Eles rastreiam cada site visitado, tudo o que é comprado, cada cartão de crédito usado para fazer uma compra, cada endereço para onde os itens são enviados,
+            e os metadados de GPS de cada imagem enviada para a Internet.
+            Eles constroem um perfil de idade, sexo, estado civil, endereço, afiliações políticas, afiliações religiosas, circunstâncias familiares, número de animais de estimação do usuário,
+            e tudo o mais que eles possam ter em suas mãos.
+            Eles até compram bancos de dados de transações de cartão de crédito em lojas locais, para que possam rastrear os padrões de compra off-line dos usuários em seus perfis.
+            Como eles já têm informações de endereço muito mais precisas sobre um usuário do que as divulgadas por um endereço IP, os proxies não oferecem proteção real à privacidade contra megacorporações.</p>
+
+        <p>A melhor proteção de privacidade contra megacorporações é navegar na web com o JavaScript desabilitado, seguido pelo bloqueio de redes de anúncios, desabilitando cookies e armazenamento DOM,
+            e usando um navegador de difícil impressão digital.</p>
+
+
+        <h3><svg class="header"><use href="../shared_images/open_in_browser.svg#icon"/></svg> Usando Proxies</h3>
+
+        <p>Apesar de suas limitações, os proxies podem ser úteis em algumas circunstâncias.
+            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> e <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>
+            têm aplicativos Android que facilitam o uso de suas redes proxy. Quando o proxy está ativado no Navegador de privacidade, a barra de aplicativos terá um fundo azul claro em vez do cinza claro padrão.
+            Como o tráfego está sendo roteado por vários nós de proxy, usar um proxy em camadas costuma ser muito mais lento do que conectar-se diretamente à Internet.</p>
 
         <img class="center" src="images/tor.png"/>
     </body>

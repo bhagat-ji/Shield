@@ -164,3 +164,12 @@ img.center {
   height: 720;
   width: 360;
 }
+
+/* Centered screenshot images with a 2.16 aspect ratio.  An image must be a block to be centered. */
+img.center216 {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 780;
+  width: 360;
+}

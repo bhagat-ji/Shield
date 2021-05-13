@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -70,6 +70,7 @@
         <item name="domainsBlueIcon">@drawable/domains_night</item>
         <item name="fontSizeBlueIcon">@drawable/font_size_night</item>
         <item name="lockBlueIcon">@drawable/lock_night</item>
+        <item name="sslCertificateBlueIcon">@drawable/ssl_certificate_enabled_night</item>
     </style>
 
     <style name="PrivacyBrowserAppBar" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" >
