@@ -170,7 +170,8 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                     InputStream inputStream = new BufferedInputStream(httpUrlConnection.getInputStream());
 
                     // Initialize the conversion buffer byte array.
-                    byte[] conversionBufferByteArray = new byte[1024];
+                    // This is set to a megabyte so that frequent updating of the snackbar doesn't freeze the interface on download.  <https://redmine.stoutner.com/issues/709>
+                    byte[] conversionBufferByteArray = new byte[1048576];
 
                     // Initialize the downloaded kilobytes counter.
                     long downloadedKilobytesCounter = 0;
