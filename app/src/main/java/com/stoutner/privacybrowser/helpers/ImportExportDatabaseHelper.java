@@ -82,6 +82,7 @@ public class ImportExportDatabaseHelper {
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
     private static final String DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app";
     private static final String SCROLL_APP_BAR = "scroll_app_bar";
+    private static final String BOTTOM_APP_BAR = "bottom_app_bar";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
     private static final String APP_THEME = "app_theme";
     private static final String WEBVIEW_THEME = "webview_theme";
@@ -319,7 +320,7 @@ public class ImportExportDatabaseHelper {
                         // Get the current clear logcat value.
                         boolean clearLogcat = sharedPreferences.getBoolean(CLEAR_LOGCAT, true);
 
-                        // Populate the preference table with the current clear logcat value.
+                        // Populate the preferences table with the current clear logcat value.
                         if (clearLogcat) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + CLEAR_LOGCAT + " = " + 1);
                         } else {
@@ -346,8 +347,27 @@ public class ImportExportDatabaseHelper {
                         importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.COOKIES + " = enablefirstpartycookies");
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + COOKIES + " = first_party_cookies");
 
-                        // Create the download with external app column.
+                        // Create the new columns.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN");
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + BOTTOM_APP_BAR + " BOOLEAN");
+
+                        // Get the current values for the new columns.
+                        boolean downloadWithExternalApp = sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false);
+                        boolean bottomAppBar = sharedPreferences.getBoolean(BOTTOM_APP_BAR, false);
+
+                        // Populate the preferences table with the current download with external app value.
+                        if (downloadWithExternalApp) {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 0);
+                        }
+
+                        // Populate the preferences table with the current bottom app bar value.
+                        if (bottomAppBar) {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + BOTTOM_APP_BAR + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + BOTTOM_APP_BAR + " = " + 0);
+                        }
                 }
             }
 
@@ -499,6 +519,7 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
                     .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
                     .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SCROLL_APP_BAR)) == 1)
+                    .putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(BOTTOM_APP_BAR)) == 1)
                     .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
                     .putString(APP_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(APP_THEME)))
                     .putString(WEBVIEW_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(WEBVIEW_THEME)))
@@ -667,6 +688,7 @@ public class ImportExportDatabaseHelper {
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
                     DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
                     SCROLL_APP_BAR + " BOOLEAN, " +
+                    BOTTOM_APP_BAR + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
                     APP_THEME + " TEXT, " +
                     WEBVIEW_THEME + " TEXT, " +
@@ -717,6 +739,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
             preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false));
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
+            preferencesContentValues.put(BOTTOM_APP_BAR, sharedPreferences.getBoolean(BOTTOM_APP_BAR, false));
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
             preferencesContentValues.put(APP_THEME, sharedPreferences.getString(APP_THEME, context.getString(R.string.app_theme_default_value)));
             preferencesContentValues.put(WEBVIEW_THEME, sharedPreferences.getString(WEBVIEW_THEME, context.getString(R.string.webview_theme_default_value)));

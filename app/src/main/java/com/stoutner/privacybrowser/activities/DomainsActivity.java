@@ -129,8 +129,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the screenshot preference.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        // Get the preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
+        boolean bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -178,8 +179,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         sslEndDateLong = intent.getLongExtra("ssl_end_date", 0);
         currentIpAddresses = intent.getStringExtra("current_ip_addresses");
 
-        // Set the content view.
-        setContentView(R.layout.domains_coordinatorlayout);
+        // Set the view.
+        if (bottomAppBar) {
+            setContentView(R.layout.domains_coordinatorlayout_bottom_appbar);
+        } else {
+            setContentView(R.layout.domains_coordinatorlayout_top_appbar);
+        }
 
         // Populate the class variables.
         coordinatorLayout = findViewById(R.id.domains_coordinatorlayout);

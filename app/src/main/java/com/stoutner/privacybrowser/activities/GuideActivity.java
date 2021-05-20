@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -40,8 +40,9 @@ public class GuideActivity extends AppCompatActivity {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the screenshot preference.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        // Get the preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
+        boolean bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -55,10 +56,16 @@ public class GuideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Set the content view.
-        setContentView(R.layout.guide_coordinatorlayout);
+        if (bottomAppBar) {
+            setContentView(R.layout.guide_coordinatorlayout_bottom_appbar);
+        } else {
+            setContentView(R.layout.guide_coordinatorlayout_top_appbar);
+        }
 
-        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        // Get a handle for the toolbar.
         Toolbar toolbar = findViewById(R.id.guide_toolbar);
+
+        // Set the support action bar.
         setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.

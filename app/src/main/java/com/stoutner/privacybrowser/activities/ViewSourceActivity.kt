@@ -82,8 +82,9 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         // Get a handle for the shared preferences.
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
-        // Get the screenshot preference.
+        // Get the preferences.
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
+        val bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -104,7 +105,11 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         val userAgent = intent.getStringExtra(USER_AGENT)!!
 
         // Set the content view.
-        setContentView(R.layout.view_source_coordinatorlayout)
+        if (bottomAppBar) {
+            setContentView(R.layout.view_source_coordinatorlayout_bottom_appbar)
+        } else {
+            setContentView(R.layout.view_source_coordinatorlayout_top_appbar)
+        }
 
         // Get a handle for the toolbar.
         val toolbar = findViewById<Toolbar>(R.id.view_source_toolbar)

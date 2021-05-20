@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017,2019-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2017,2019-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>>.
 
@@ -19,10 +19,10 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <FrameLayout
+    android:id="@+id/root_framelayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_framelayout"
     android:layout_height="match_parent"
     android:layout_width="match_parent" >
 
@@ -38,7 +38,7 @@
             android:layout_width="match_parent" >
 
             <!-- Include the AdView.  For the standard flavor, this just includes a TextView with `visibility="gone"`. -->
-            <include layout="@layout/adview" />
+            <include layout="@layout/adview_top_appbar" />
 
             <!-- Setting the CoordinatorLayout to be `focusableInTouchMode` prevents the URL text box from stealing focus on launch and opening the keyboard. -->
             <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -191,8 +191,8 @@
 
                         <com.stoutner.privacybrowser.views.NoSwipeViewPager
                             android:id="@+id/webviewpager"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent" />
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </RelativeLayout>
@@ -207,7 +207,7 @@
             app:itemIconTint="?attr/navigationIconTintColor" />
 
         <!-- Include the bookmarks drawer, which varies based on screen width. -->
-        <include layout="@layout/bookmarks_drawer" />
+        <include layout="@layout/bookmarks_drawer_top_appbar" />
     </androidx.drawerlayout.widget.DrawerLayout>
 
     <!-- The full screen video frame layout is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->

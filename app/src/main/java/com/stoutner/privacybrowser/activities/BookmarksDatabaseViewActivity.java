@@ -41,6 +41,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -97,8 +98,9 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the screenshot preference.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        // Get the preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
+        boolean bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -123,8 +125,17 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Convert the favorite icon byte array to a bitmap and store it in a class variable.
         Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
-        // Set the content view.
-        setContentView(R.layout.bookmarks_databaseview_coordinatorlayout);
+        // Set the view according to the theme.
+        if (bottomAppBar) {
+            // Set the content view.
+            setContentView(R.layout.bookmarks_databaseview_coordinatorlayout_bottom_appbar);
+        } else {
+            // `Window.FEATURE_ACTION_MODE_OVERLAY` makes the contextual action mode cover the support action bar.  It must be requested before the content is set.
+            supportRequestWindowFeature(Window.FEATURE_ACTION_MODE_OVERLAY);
+
+            // Set the content view.
+            setContentView(R.layout.bookmarks_databaseview_coordinatorlayout_top_appbar);
+        }
 
         // Get a handle for the toolbar.
         Toolbar toolbar = findViewById(R.id.bookmarks_databaseview_toolbar);

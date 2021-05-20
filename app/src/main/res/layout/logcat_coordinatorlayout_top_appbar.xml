@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/logcat_coordinatorlayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" >
+
+    <!-- The linear layout with `orientation="vertical"` moves the content below the app bar layout. -->
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical" >
+
+        <!-- The app bar theme must be specified here because the activity uses a `NoActionBar` theme. -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/logcat_appbarlayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:background="?android:attr/colorBackground"
+            android:theme="@style/PrivacyBrowserAppBar" >
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/logcat_toolbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/logcat_swiperefreshlayout"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" >
+
+            <ScrollView
+                android:id="@+id/logcat_scrollview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" >
+
+                <TextView
+                    android:id="@+id/logcat_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_margin="10dp"
+                    android:textIsSelectable="true" />
+            </ScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

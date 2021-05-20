@@ -23,7 +23,6 @@
         <!-- Main Items. -->
         <item name="android:statusBarColor">?android:attr/colorBackground</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="windowActionModeOverlay">true</item>  <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
 
         <!-- Colors.  -->
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>

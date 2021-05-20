@@ -158,12 +158,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+
 import java.text.NumberFormat;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -256,6 +260,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean downloadWithExternalApp;
     private boolean hideAppBar;
     private boolean scrollAppBar;
+    private boolean bottomAppBar;
     private boolean loadingNewIntent;
     private boolean reapplyDomainSettingsOnRestart;
     private boolean reapplyAppSettingsOnRestart;
@@ -295,6 +300,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean sanitizeGoogleAnalytics;
     private boolean sanitizeFacebookClickIds;
     private boolean sanitizeTwitterAmpRedirects;
+
+    // Define the class variables.
+    private long lastScrollUpdate = 0;
 
     // Declare the class views.
     private FrameLayout rootFrameLayout;
@@ -385,9 +393,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the screenshot preference.
+        // Get the preferences.
         String appTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
         boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
+        bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false);
 
         // Get the theme entry values string array.
         String[] appThemeEntryValuesStringArray = getResources().getStringArray(R.array.app_theme_entry_values);
@@ -423,7 +432,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         setTheme(R.style.PrivacyBrowser);
 
         // Set the content view.
-        setContentView(R.layout.main_framelayout);
+        if (bottomAppBar) {
+            setContentView(R.layout.main_framelayout_bottom_appbar);
+        } else {
+            setContentView(R.layout.main_framelayout_top_appbar);
+        }
 
         // Get handles for the views.
         rootFrameLayout = findViewById(R.id.root_framelayout);
@@ -3395,7 +3408,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Implement swipe to refresh.
-        swipeRefreshLayout.setOnRefreshListener(() -> currentWebView.reload());
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Check the visibility of the bottom app bar.  Sometimes it is hidden if the WebView is the same size as the visible screen.
+            if (bottomAppBar && scrollAppBar && (appBarLayout.getVisibility() == View.GONE)) {  // The bottom app bar is currently hidden.
+                // Show the app bar.
+                appBarLayout.setVisibility(View.VISIBLE);
+
+                // Disable the refreshing animation.
+                swipeRefreshLayout.setRefreshing(false);
+            } else {  // A bottom app bar is not currently hidden.
+                // Reload the website.
+                currentWebView.reload();
+            }
+        });
 
         // Store the default progress view offsets for use later in `initializeWebView()`.
         defaultProgressViewStartOffset = swipeRefreshLayout.getProgressViewStartOffset();
@@ -3587,51 +3612,48 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Apply the proxy.
         applyProxy(false);
 
-        // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command and using app bar layout parameters allows the `setScrollFlags()` command.
-        CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
-        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        AppBarLayout.LayoutParams findOnPageLayoutParams = (AppBarLayout.LayoutParams) findOnPageLinearLayout.getLayoutParams();
-        AppBarLayout.LayoutParams tabsLayoutParams = (AppBarLayout.LayoutParams) tabsLinearLayout.getLayoutParams();
+        // Adjust the layout and scrolling parameters if the app bar is at the top of the screen.
+        if (!bottomAppBar) {
+            // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command and using app bar layout parameters allows the `setScrollFlags()` command.
+            CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+            AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+            AppBarLayout.LayoutParams findOnPageLayoutParams = (AppBarLayout.LayoutParams) findOnPageLinearLayout.getLayoutParams();
+            AppBarLayout.LayoutParams tabsLayoutParams = (AppBarLayout.LayoutParams) tabsLinearLayout.getLayoutParams();
 
-        // Add the scrolling behavior to the layout parameters.
-        if (scrollAppBar) {
-            // Enable scrolling of the app bar.
-            swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
-            toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-            findOnPageLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-            tabsLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-        } else {
-            // Disable scrolling of the app bar.
-            swipeRefreshLayoutParams.setBehavior(null);
-            toolbarLayoutParams.setScrollFlags(0);
-            findOnPageLayoutParams.setScrollFlags(0);
-            tabsLayoutParams.setScrollFlags(0);
+            // Add the scrolling behavior to the layout parameters.
+            if (scrollAppBar) {
+                // Enable scrolling of the app bar.
+                swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+                toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+                findOnPageLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+                tabsLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+            } else {
+                // Disable scrolling of the app bar.
+                swipeRefreshLayoutParams.setBehavior(null);
+                toolbarLayoutParams.setScrollFlags(0);
+                findOnPageLayoutParams.setScrollFlags(0);
+                tabsLayoutParams.setScrollFlags(0);
 
-            // Expand the app bar if it is currently collapsed.
-            appBarLayout.setExpanded(true);
-        }
+                // Expand the app bar if it is currently collapsed.
+                appBarLayout.setExpanded(true);
+            }
 
-        // Apply the modified layout parameters.
-        swipeRefreshLayout.setLayoutParams(swipeRefreshLayoutParams);
-        toolbar.setLayoutParams(toolbarLayoutParams);
-        findOnPageLinearLayout.setLayoutParams(findOnPageLayoutParams);
-        tabsLinearLayout.setLayoutParams(tabsLayoutParams);
+            // Set the app bar scrolling for each WebView.
+            for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-        // Set the app bar scrolling for each WebView.
-        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-            // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
 
-            // Get the fragment view.
-            View fragmentView = webViewTabFragment.getView();
+                // Only modify the WebViews if they exist.
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
-            // Only modify the WebViews if they exist.
-            if (fragmentView != null) {
-                // Get the nested scroll WebView from the tab fragment.
-                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
-
-                // Set the app bar scrolling.
-                nestedScrollWebView.setNestedScrollingEnabled(scrollAppBar);
+                    // Set the app bar scrolling.
+                    nestedScrollWebView.setNestedScrollingEnabled(scrollAppBar);
+                }
             }
         }
 
@@ -5238,19 +5260,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Hide the action bar.
                             actionBar.hide();
 
-                            // Check to see if the app bar is normally scrolled.
-                            if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
-                                // Get the swipe refresh layout parameters.
-                                CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+                            // Set layout and scrolling parameters if the app bar is at the top of the screen.
+                            if (!bottomAppBar) {
+                                // Check to see if the app bar is normally scrolled.
+                                if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
+                                    // Get the swipe refresh layout parameters.
+                                    CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
 
-                                // Remove the off-screen scrolling layout.
-                                swipeRefreshLayoutParams.setBehavior(null);
-                            } else {  // The app bar is not scrolled when it is displayed.
-                                // Remove the padding from the top of the swipe refresh layout.
-                                swipeRefreshLayout.setPadding(0, 0, 0, 0);
+                                    // Remove the off-screen scrolling layout.
+                                    swipeRefreshLayoutParams.setBehavior(null);
+                                } else {  // The app bar is not scrolled when it is displayed.
+                                    // Remove the padding from the top of the swipe refresh layout.
+                                    swipeRefreshLayout.setPadding(0, 0, 0, 0);
 
-                                // The swipe refresh circle must be moved above the now removed status bar location.
-                                swipeRefreshLayout.setProgressViewOffset(false, -200, defaultProgressViewEndOffset);
+                                    // The swipe refresh circle must be moved above the now removed status bar location.
+                                    swipeRefreshLayout.setProgressViewOffset(false, -200, defaultProgressViewEndOffset);
+                                }
                             }
                         }
 
@@ -5280,19 +5305,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Show the action bar.
                             actionBar.show();
 
-                            // Check to see if the app bar is normally scrolled.
-                            if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
-                                // Get the swipe refresh layout parameters.
-                                CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+                            // Set layout and scrolling parameters if the app bar is at the top of the screen.
+                            if (!bottomAppBar) {
+                                // Check to see if the app bar is normally scrolled.
+                                if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
+                                    // Get the swipe refresh layout parameters.
+                                    CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
 
-                                // Add the off-screen scrolling layout.
-                                swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
-                            } else {  // The app bar is not scrolled when it is displayed.
-                                // The swipe refresh layout must be manually moved below the app bar layout.
-                                swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
+                                    // Add the off-screen scrolling layout.
+                                    swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+                                } else {  // The app bar is not scrolled when it is displayed.
+                                    // The swipe refresh layout must be manually moved below the app bar layout.
+                                    swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
 
-                                // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
-                                swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10 + appBarHeight, defaultProgressViewEndOffset + appBarHeight);
+                                    // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
+                                    swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10 + appBarHeight, defaultProgressViewEndOffset + appBarHeight);
+                                }
                             }
                         }
 
@@ -5396,13 +5424,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.  Also reinforce full screen browsing mode.
         // On API < 23, `getViewTreeObserver().addOnScrollChangedListener()` must be used, but it is a little bit buggy and appears to get garbage collected from time to time.
         if (Build.VERSION.SDK_INT >= 23) {
-            nestedScrollWebView.setOnScrollChangeListener((view, i, i1, i2, i3) -> {
+            nestedScrollWebView.setOnScrollChangeListener((view, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                // Set the swipe to refresh status.
                 if (nestedScrollWebView.getSwipeToRefresh()) {
                     // Only enable swipe to refresh if the WebView is scrolled to the top.
                     swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
                 } else {
                     // Disable swipe to refresh.
                     swipeRefreshLayout.setEnabled(false);
+                }
+
+                //  Set the visibility of the bottom app bar.
+                if (bottomAppBar && scrollAppBar && (Calendar.getInstance().getTimeInMillis() - lastScrollUpdate > 100)) {
+                    if (scrollY - oldScrollY > 25) {  // The WebView was scrolled down.
+                        appBarLayout.setVisibility(View.GONE);
+                    } else if (scrollY - oldScrollY < -25) {  // The WebView was scrolled up.
+                        appBarLayout.setVisibility(View.VISIBLE);
+                    }
+
+                    // Update the last scroll update variable.  This prevents the app bar from flashing on and off at the bottom of the screen.
+                    lastScrollUpdate = Calendar.getInstance().getTimeInMillis();
                 }
 
                 // Reinforce the system UI visibility flags if in full screen browsing mode.
@@ -5427,7 +5468,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Disable swipe to refresh.
                     swipeRefreshLayout.setEnabled(false);
                 }
-
 
                 // Reinforce the system UI visibility flags if in full screen browsing mode.
                 // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
@@ -6060,25 +6100,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // Get the preferences.
-                boolean scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
+                // Set the padding and layout settings if the app bar is at the top of the screen.
+                if (!bottomAppBar) {
+                    // Set the top padding of the swipe refresh layout according to the app bar scrolling preference.  This can't be done in `appAppSettings()` because the app bar is not yet populated there.
+                    if (scrollAppBar || (inFullScreenBrowsingMode && hideAppBar)) {
+                        // No padding is needed because it will automatically be placed below the app bar layout due to the scrolling layout behavior.
+                        swipeRefreshLayout.setPadding(0, 0, 0, 0);
 
-                // Set the top padding of the swipe refresh layout according to the app bar scrolling preference.  This can't be done in `appAppSettings()` because the app bar is not yet populated there.
-                if (scrollAppBar || (inFullScreenBrowsingMode && hideAppBar)) {
-                    // No padding is needed because it will automatically be placed below the app bar layout due to the scrolling layout behavior.
-                    swipeRefreshLayout.setPadding(0, 0, 0, 0);
+                        // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
+                        swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10, defaultProgressViewEndOffset);
+                    } else {
+                        // Get the app bar layout height.  This can't be done in `applyAppSettings()` because the app bar is not yet populated there.
+                        appBarHeight = appBarLayout.getHeight();
 
-                    // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
-                    swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10, defaultProgressViewEndOffset);
-                } else {
-                    // Get the app bar layout height.  This can't be done in `applyAppSettings()` because the app bar is not yet populated there.
-                    appBarHeight = appBarLayout.getHeight();
+                        // The swipe refresh layout must be manually moved below the app bar layout.
+                        swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
 
-                    // The swipe refresh layout must be manually moved below the app bar layout.
-                    swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
-
-                    // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
-                    swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10 + appBarHeight, defaultProgressViewEndOffset + appBarHeight);
+                        // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
+                        swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10 + appBarHeight, defaultProgressViewEndOffset + appBarHeight);
+                    }
                 }
 
                 // Reset the list of resource requests.

@@ -213,6 +213,10 @@
     <string name="response_message">Message de la réponse</string>
     <string name="response_headers">En-tête de la réponse</string>
     <string name="response_body">Corps de la réponse</string>
+    <string name="content_metadata">Métadonnées du contenu</string>
+    <string name="content_data">Données du contenu</string>
+    <string name="untrusted_ssl_certificate">Le certificat SSL n\'est pas fiable.</string>
+    <string name="load_anyway">Charger quand même</string>
     <string name="about_view_source">A propos View Source</string>
     <string name="about_view_source_message">Puisqu\'Android Webview ne permet pas de révêler l\'information source,
         une requête séparée a été effectuée en utilisant les outils sytèmes afin d\'afficher ce qui est présenté à l\'écran

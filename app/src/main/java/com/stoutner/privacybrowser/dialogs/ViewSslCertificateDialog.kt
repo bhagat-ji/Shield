@@ -41,6 +41,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
 import com.stoutner.privacybrowser.views.NestedScrollWebView
+
 import java.io.ByteArrayOutputStream
 
 import java.text.DateFormat

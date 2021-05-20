@@ -286,6 +286,12 @@
             android:defaultValue="true" />
 
         <SwitchPreference
+            android:key="bottom_app_bar"
+            android:title="@string/bottom_app_bar"
+            android:summary="@string/bottom_app_bar_summary"
+            android:defaultValue="false" />
+
+        <SwitchPreference
             android:key="display_additional_app_bar_icons"
             android:title="@string/display_additional_app_bar_icons"
             android:summary="@string/display_additional_app_bar_icons_summary"

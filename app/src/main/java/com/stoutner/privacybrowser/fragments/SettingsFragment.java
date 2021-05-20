@@ -94,6 +94,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Preference swipeToRefreshPreference;
     private Preference downloadWithExternalAppPreference;
     private Preference scrollAppBarPreference;
+    private Preference bottomAppBarPreference;
     private Preference displayAdditionalAppBarIconsPreference;
     private Preference appThemePreference;
     private Preference webViewThemePreference;
@@ -157,6 +158,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         swipeToRefreshPreference = findPreference("swipe_to_refresh");
         downloadWithExternalAppPreference = findPreference(getString(R.string.download_with_external_app_key));
         scrollAppBarPreference = findPreference("scroll_app_bar");
+        bottomAppBarPreference = findPreference(getString(R.string.bottom_app_bar_key));
         displayAdditionalAppBarIconsPreference = findPreference(getString(R.string.display_additional_app_bar_icons_key));
         appThemePreference = findPreference("app_theme");
         webViewThemePreference = findPreference("webview_theme");
@@ -200,6 +202,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert swipeToRefreshPreference != null;
         assert downloadWithExternalAppPreference != null;
         assert scrollAppBarPreference != null;
+        assert bottomAppBarPreference != null;
         assert displayAdditionalAppBarIconsPreference != null;
         assert appThemePreference != null;
         assert webViewThemePreference != null;
@@ -888,6 +891,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         }
 
+        // Set the bottom app bar preference icon.
+        if (sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)) {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled_day);
+            } else {
+                bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled_night);
+            }
+        } else {
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled_day);
+            } else {
+                bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled_night);
+            }
+        }
+
         // Set the display additional app bar icons preference icon.
         if (sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
@@ -1174,29 +1192,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         }
                     }
 
-                    // Create an intent to restart Privacy Browser.
-                    Intent allowScreenshotsRestartIntent = requireActivity().getParentActivityIntent();
-
-                    // Assert that the intent is not null to remove the lint error below.
-                    assert allowScreenshotsRestartIntent != null;
-
-                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
-                    allowScreenshotsRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                    // Create a handler to restart the activity.
-                    Handler allowScreenshotsRestartHandler = new Handler(Looper.getMainLooper());
-
-                    // Create a runnable to restart the activity.
-                    Runnable allowScreenshotsRestartRunnable = () -> {
-                        // Restart the activity.
-                        startActivity(allowScreenshotsRestartIntent);
-
-                        // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
-                        System.exit(0);
-                    };
-
-                    // Restart the activity after 150 milliseconds, so that the app has enough time to save the change to the preference.
-                    allowScreenshotsRestartHandler.postDelayed(allowScreenshotsRestartRunnable, 150);
+                    // Restart Privacy Browser.
+                    restartPrivacyBrowser();
                     break;
 
                 case "easylist":
@@ -1793,6 +1790,26 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
                     break;
 
+                case "bottom_app_bar":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean(context.getString(R.string.bottom_app_bar_key), false)) {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled_day);
+                        } else {
+                            bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled_night);
+                        }
+                    } else {
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled_day);
+                        } else {
+                            bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled_night);
+                        }
+                    }
+
+                    // Restart Privacy Browser.
+                    restartPrivacyBrowser();
+                    break;
+
                 case "display_additional_app_bar_icons":
                     // Update the icon.
                     if (sharedPreferences.getBoolean(context.getString(R.string.display_additional_app_bar_icons_key), false)) {
@@ -1931,5 +1948,31 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     break;
             }
         };
+    }
+
+    private void restartPrivacyBrowser() {
+        // Create an intent to restart Privacy Browser.
+        Intent restartIntent = requireActivity().getParentActivityIntent();
+
+        // Assert that the intent is not null to remove the lint error below.
+        assert restartIntent != null;
+
+        // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
+        restartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        // Create a handler to restart the activity.
+        Handler restartHandler = new Handler(Looper.getMainLooper());
+
+        // Create a runnable to restart the activity.
+        Runnable restartRunnable = () -> {
+            // Restart the activity.
+            startActivity(restartIntent);
+
+            // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
+            System.exit(0);
+        };
+
+        // Restart the activity after 200 milliseconds, so that the app has enough time to save the change to the preference.
+        restartHandler.postDelayed(restartRunnable, 200);
     }
 }

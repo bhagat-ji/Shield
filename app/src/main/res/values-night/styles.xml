@@ -20,9 +20,6 @@
 
 <resources>
     <style name="PrivacyBrowser" parent="Theme.AppCompat.DayNight.NoActionBar" >
-        <!-- Main Items. -->
-        <item name="windowActionModeOverlay">true</item>  <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
-
         <!-- Colors.  -->
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
         <item name="android:textColorHighlight">@color/violet_700</item>

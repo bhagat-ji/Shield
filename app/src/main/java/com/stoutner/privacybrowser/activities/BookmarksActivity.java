@@ -39,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.CursorAdapter;
@@ -123,8 +124,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the screenshot preference.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        // Get the preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
+        boolean bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -160,11 +162,22 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Convert the favorite icon byte array to a bitmap.
         Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
-        // Set the content view.
-        setContentView(R.layout.bookmarks_coordinatorlayout);
+        // Set the content according to the app bar position.
+        if (bottomAppBar) {
+            // Set the content view.
+            setContentView(R.layout.bookmarks_coordinatorlayout_bottom_appbar);
+        } else {
+            // `Window.FEATURE_ACTION_MODE_OVERLAY` makes the contextual action mode cover the support action bar.  It must be requested before the content is set.
+            supportRequestWindowFeature(Window.FEATURE_ACTION_MODE_OVERLAY);
 
-        // The AndroidX toolbar must be used until the minimum API is >= 21.
+            // Set the content view.
+            setContentView(R.layout.bookmarks_coordinatorlayout_top_appbar);
+        }
+
+        // Get a handle for the toolbar.
         final Toolbar toolbar = findViewById(R.id.bookmarks_toolbar);
+
+        // Set the support action bar.
         setSupportActionBar(toolbar);
 
         // Get handles for the views.
@@ -695,6 +708,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 bookmarksListView.setItemChecked(i, true);
             }
         } else if (menuItemId == R.id.bookmarks_database_view) {
+            // Close the contextual action bar if it is displayed.  This can happen if the bottom app bar is enabled.
+            if (contextualActionMode != null) {
+                contextualActionMode.finish();
+            }
+
             // Create an intent to launch the bookmarks database view activity.
             Intent bookmarksDatabaseViewIntent = new Intent(this, BookmarksDatabaseViewActivity.class);
 

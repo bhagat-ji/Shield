@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2019-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -19,13 +19,12 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/guide_coordinatorlayout"
+    android:id="@+id/requests_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent" >
 
-    <!-- The linear layout with `orientation="vertical"` moves the view pager below the app bar layout. -->
+    <!-- The linear layout with `orientation="vertical"` moves the content below the app bar layout. -->
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -33,29 +32,24 @@
 
         <!-- The app bar theme must be specified here because the activity uses a `NoActionBar` theme. -->
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/guide_appbarlayout"
+            android:id="@+id/requests_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:background="?android:attr/colorBackground"
             android:theme="@style/PrivacyBrowserAppBar" >
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/guide_toolbar"
+                android:id="@+id/requests_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent" />
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/guide_tablayout"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                app:tabMode="scrollable" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- `android:layout_weight="1"` makes `about_viewpager` fill the rest of the screen. -->
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/guide_viewpager"
+        <!-- `android:dividerHeight` must be at least `1dp` or the list view is inconsistent in calculating how many bookmarks are displayed. -->
+        <ListView
+            android:id="@+id/requests_listview"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:divider="@color/transparent"
+            android:dividerHeight="1dp" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

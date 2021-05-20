@@ -64,8 +64,9 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        // Get the screenshot preference.
-        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        // Get the preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
+        boolean bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -85,7 +86,11 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         boolean blockAllThirdPartyRequests = intent.getBooleanExtra("block_all_third_party_requests", false);
 
         // Set the content view.
-        setContentView(R.layout.requests_coordinatorlayout);
+        if (bottomAppBar) {
+            setContentView(R.layout.requests_coordinatorlayout_bottom_appbar);
+        } else {
+            setContentView(R.layout.requests_coordinatorlayout_top_appbar);
+        }
 
         // Use the AndroidX toolbar until the minimum API is >= 21.
         Toolbar toolbar = findViewById(R.id.requests_toolbar);
