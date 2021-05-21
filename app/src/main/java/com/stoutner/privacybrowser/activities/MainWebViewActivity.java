@@ -6135,7 +6135,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Display the formatted URL text.
                     urlEditText.setText(url);
 
-                    // Apply text highlighting to `urlTextBox`.
+                    // Apply text highlighting to the URL text box.
                     highlightUrlText();
 
                     // Hide the keyboard.
