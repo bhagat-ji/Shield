@@ -1,0 +1,17 @@
+• Option hinzugefügt, um die App-Leiste unten anzuzeigen.
+• Option zum Speichern von Web-Archiven wieder integriert.
+• Option, externe Apps zum Herunterladen von Dateien zu verwenden, wieder integriert.
+• Ausweichlösung für die Nutzung alternativer Download-Manager integriert.
+• Monocles zur Liste der nutzbaren Suchmaschinen hinzugefügt.
+• Do-Not-Track und Drittanbieter-Cookies entfernt.
+• Möglichkeit, von anderen Apps bereitgestellte Content-URLs zu öffnen.
+• Behandlung von Content-Daten und -Metadaten sowie nicht vertrauenswürdigen SSL-Zertifikaten in Quelltext-Anzeige ermöglicht.
+• Einfrieren der Benutzeroberfläche während des Downloads auf manchen Geräten behoben.
+• Ursache einiger seltener Abstürze behoben.
+• Kleine Verbesserungen an der Benutzeroberfläche durchgeführt.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte brasilianisch-portugiesische Übersetzung von Thiago Nazareno Conceição Silva de Jesus.
+• Aktualisierte französische Übersetzung von Kévin L.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

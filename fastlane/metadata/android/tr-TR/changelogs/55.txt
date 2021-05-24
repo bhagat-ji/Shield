@@ -1,0 +1,17 @@
+• Add an option to move the app bar to the bottom.
+• Reimplement the saving of web archives.
+• Reimplement the option to use an external app to download files.
+• Add fallbacks to open alternate download managers.
+• Add Monocles to the list of search engines.
+• Remove Do Not Track and third-party cookies.
+• Offer to open content URLs shared by other apps.
+• Handle content URLs and untrusted SSL certificates in View Source.
+• Fix UI freezing while downloading on some devices.
+• Fix a few rare crashes.
+• Make minor improvements to the user interface.
+• Updated Brazilian Portuguese translation provided by Thiago Nazareno Conceição Silva de Jesus.
+• Updated French translation provided by Kévin L.
+• Almanca çevirisi güncellendi. (Çevirmen Bernhard G. Keller.)
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

@@ -1,0 +1,17 @@
+• Adicionado uma opção para mover a barra de aplicativos para a parte inferior.
+• Reimplementado o salvamento de arquivos da web.
+• Reimplementada a opção de usar um aplicativo externo para baixar arquivos.
+• Adicionado substitutos para abrir gerenciadores de download alternativos.
+• Adicionado o Monocles à lista de mecanismos de pesquisa.
+• Removido Não Rastreie e Cookies de terceiros.
+• Disponibilidade de abrir conteúdo de URLs compartilhada por outros aplicativos.
+• Manipule URLs de conteúdo e certificado SSL não confiável em Exibir código-fonte.
+• Corrigido o congelamento da interface de usuário durante o download em alguns dispositivos.
+• Corrijida algumas raras falhas.
+• Feitas pequenas melhorias na interface do usuário.
+• Tradução atualizada para o português do Brasil fornecida por Thiago Nazareno Conceição Silva de Jesus.
+• Tradução francesa atualizada fornecida por Kévin L.
+• Tradução alemã atualizada fornecida por Bernhard G. Keller.
+• Tradução italiana atualizada fornecida por Francesco Buratti.
+• Tradução russa atualizada.
+• Tradução em espanhol atualizada fornecida por Jose A. León.

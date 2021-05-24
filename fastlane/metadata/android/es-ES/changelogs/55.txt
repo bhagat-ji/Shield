@@ -1,0 +1,17 @@
+• Añadir una opción para mover la barra de aplicaciones a la parte inferior.
+• Reimplementar el guardar archivos web.
+• Reimplementar la opción de utilizar una aplicación externa para descargar archivos.
+• Añadir fallbacks para abrir gestores de descarga alternativos.
+• Añadir Monocles a la lista de buscadores.
+• Eliminar Do Not Track y cookies de terceros.
+• Ofrecer el abrir URLs de contenido compartidos por otras apps.
+• Manejar URLs de contenido y certificados SSL no confiables en la Vista de Fuente.
+• Arreglar la congelación de la interfaz de usuario durante la descarga en algunos dispositivos.
+• Arreglar unas pocas y poco frecuente caídas.
+• Hacer leves mejoras al interfaz de usuario.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la tracuddión al portugués brasileño proporcionada por Thiago Nazareno Conceição Silva de Jesus.
+• Actualizada la traducción al francés proporcionada por Kévin L.
+• Actualizada la traducción al alemán proporcionada por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

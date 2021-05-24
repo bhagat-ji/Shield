@@ -1,0 +1,17 @@
+• Aggiunta l'opzione per spostare in basso la barra dell'app.
+• Nuova implementazione del salvataggio degli archivi web.
+• Nuova implementazione dell'opzione per l'utilizzo di una app esterna per il download dei files.
+• Aggiunta la possibilità di utilizzare download manager alternativi.
+• Aggiunto Monocles alla lista dei motori di ricerca.
+• Rimozione del "Non tracciarmi" e dei cookie di terze parti.
+• Possibilità di aprire indirizzi "content" condivisi da altre app.
+• Gestione di indirizzi "content" e di certificati SSL non attendibili nella visualizzazione della sorgente.
+• Sistemazione del blocco dell'interfaccia durante lo scaricamento su alcuni dispositivi.
+• Sistemazione di alcuni rari crash.
+• Aggiunta di alcuni miglioramenti minori all'interfaccia utente.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione in Portoghese Brasiliano fornita da Thiago Nazareno Conceição Silva de Jesus.
+• Aggiornamento della traduzione Francese fornita da Kévin L.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.
