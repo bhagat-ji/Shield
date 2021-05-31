@@ -115,11 +115,7 @@ class MoveToFolderDialog : DialogFragment() {
         val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the icon according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            dialogBuilder.setIcon(R.drawable.move_to_folder_blue_day)
-        } else {
-            dialogBuilder.setIcon(R.drawable.move_to_folder_blue_night)
-        }
+        dialogBuilder.setIconAttribute(R.attr.moveToFolderBlueIcon)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.move_to_folder)

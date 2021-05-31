@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018,2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018,2020-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -17,32 +17,39 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser.helpers;
-import android.app.Activity;
-import android.content.Context;
-import android.view.View;
+package com.stoutner.privacybrowser.helpers
 
-import androidx.fragment.app.FragmentManager;
+import android.app.Activity
+import android.content.Context
+import android.view.View
 
-@SuppressWarnings("unused")
-public class AdHelper {
-    public static void initializeAds(View view, Context applicationContext, Activity activity, FragmentManager fragmentManager, String adUnitId) {
+import androidx.fragment.app.FragmentManager
+
+// The `@JvmStatic` notation can be removed once all the code has migrated to Kotlin.
+@Suppress("UNUSED_PARAMETER")
+object AdHelper {
+    @JvmStatic
+    fun initializeAds(view: View, context: Context, activity: Activity, fragmentManager: FragmentManager, adUnitId: String) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void loadAd(View view, Context applicationContext, Activity activity, String adUnitId) {
+    @JvmStatic
+    fun loadAd(view: View, context: Context, activity: Activity, adUnitId: String) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void hideAd(View view) {
+    @JvmStatic
+    fun hideAd(view: View) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void pauseAd(View view) {
+    @JvmStatic
+    fun pauseAd(view: View) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void resumeAd(View view) {
+    @JvmStatic
+    fun resumeAd(view: View) {
         // Do nothing because this is the standard flavor.
     }
 }

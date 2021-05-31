@@ -104,11 +104,7 @@ class SaveDialog : DialogFragment() {
                 dialogBuilder.setTitle(R.string.save_logcat)
 
                 // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    dialogBuilder.setIcon(R.drawable.save_dialog_day)
-                } else {
-                    dialogBuilder.setIcon(R.drawable.save_dialog_night)
-                }
+                dialogBuilder.setIconAttribute(R.attr.saveBlueIcon)
             }
 
             SAVE_ABOUT_VERSION_TEXT -> {
@@ -116,11 +112,7 @@ class SaveDialog : DialogFragment() {
                 dialogBuilder.setTitle(R.string.save_text)
 
                 // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    dialogBuilder.setIcon(R.drawable.save_text_blue_day)
-                } else {
-                    dialogBuilder.setIcon(R.drawable.save_text_blue_night)
-                }
+                dialogBuilder.setIconAttribute(R.attr.saveTextBlueIcon)
             }
 
             SAVE_ABOUT_VERSION_IMAGE -> {
@@ -128,11 +120,7 @@ class SaveDialog : DialogFragment() {
                 dialogBuilder.setTitle(R.string.save_image)
 
                 // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    dialogBuilder.setIcon(R.drawable.images_enabled_day)
-                } else {
-                    dialogBuilder.setIcon(R.drawable.images_enabled_night)
-                }
+                dialogBuilder.setIconAttribute(R.attr.imagesBlueIcon)
             }
         }
 

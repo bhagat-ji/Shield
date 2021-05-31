@@ -75,11 +75,7 @@ class OpenDialog : DialogFragment() {
         val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the icon according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            dialogBuilder.setIcon(R.drawable.proxy_enabled_day)
-        } else {
-            dialogBuilder.setIcon(R.drawable.proxy_enabled_night)
-        }
+        dialogBuilder.setIconAttribute(R.attr.proxyBlueIcon)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.open)

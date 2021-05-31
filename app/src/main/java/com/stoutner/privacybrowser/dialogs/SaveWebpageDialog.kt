@@ -130,11 +130,7 @@ class SaveWebpageDialog : DialogFragment() {
                 dialogBuilder.setTitle(R.string.save_url)
 
                 // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    dialogBuilder.setIcon(R.drawable.copy_enabled_day)
-                } else {
-                    dialogBuilder.setIcon(R.drawable.copy_enabled_night)
-                }
+                dialogBuilder.setIconAttribute(R.attr.copyBlueIcon)
             }
 
             SAVE_ARCHIVE -> {
@@ -142,11 +138,7 @@ class SaveWebpageDialog : DialogFragment() {
                 dialogBuilder.setTitle(R.string.save_archive)
 
                 // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_day)
-                } else {
-                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_night)
-                }
+                dialogBuilder.setIconAttribute(R.attr.domStorageBlueIcon)
 
                 // Convert the URL to a URI.
                 val uri = Uri.parse(originalUrlString)
@@ -160,11 +152,7 @@ class SaveWebpageDialog : DialogFragment() {
                 dialogBuilder.setTitle(R.string.save_image)
 
                 // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    dialogBuilder.setIcon(R.drawable.images_enabled_day)
-                } else {
-                    dialogBuilder.setIcon(R.drawable.images_enabled_night)
-                }
+                dialogBuilder.setIconAttribute(R.attr.imagesBlueIcon)
 
                 // Convert the URL to a URI.
                 val uri = Uri.parse(originalUrlString)

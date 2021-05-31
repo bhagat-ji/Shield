@@ -61,13 +61,6 @@
         <item name="selectAllIcon">@drawable/select_all_day</item>
         <item name="shareIcon">@drawable/share_day</item>
         <item name="sortIcon">@drawable/sort_day</item>
-
-        <!-- Dialog Icons. -->
-        <item name="aboutBlueIcon">@drawable/about_blue_day</item>
-        <item name="domainsBlueIcon">@drawable/domains_day</item>
-        <item name="fontSizeBlueIcon">@drawable/font_size_day</item>
-        <item name="lockBlueIcon">@drawable/lock_day</item>
-        <item name="sslCertificateBlueIcon">@drawable/ssl_certificate_enabled_day</item>
     </style>
 
     <style name="PrivacyBrowserAppBar" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" >
@@ -93,6 +86,22 @@
     </style>
 
     <style name="PrivacyBrowserAlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert" >
+        <!-- Colors. -->
         <item name="colorAccent">@color/blue_700</item>
+
+        <!-- Dialog Icons. -->
+        <item name="aboutBlueIcon">@drawable/about_blue_day</item>
+        <item name="blockAdsBlueIcon">@drawable/block_ads_enabled_day</item>
+        <item name="copyBlueIcon">@drawable/copy_enabled_day</item>
+        <item name="domainsBlueIcon">@drawable/domains_day</item>
+        <item name="domStorageBlueIcon">@drawable/dom_storage_cleared_day</item>
+        <item name="fontSizeBlueIcon">@drawable/font_size_day</item>
+        <item name="imagesBlueIcon">@drawable/images_enabled_day</item>
+        <item name="lockBlueIcon">@drawable/lock_day</item>
+        <item name="moveToFolderBlueIcon">@drawable/move_to_folder_blue_day</item>
+        <item name="proxyBlueIcon">@drawable/proxy_enabled_day</item>
+        <item name="saveBlueIcon">@drawable/save_dialog_day</item>
+        <item name="saveTextBlueIcon">@drawable/save_text_blue_day</item>
+        <item name="sslCertificateBlueIcon">@drawable/ssl_certificate_enabled_day</item>
     </style>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2021 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -64,8 +64,16 @@
 
     <!-- Dialog Icons. -->
     <attr name="aboutBlueIcon" format="reference" />
+    <attr name="blockAdsBlueIcon" format="reference" />
+    <attr name="copyBlueIcon" format="reference" />
     <attr name="domainsBlueIcon" format="reference" />
+    <attr name="domStorageBlueIcon" format="reference" />
     <attr name="fontSizeBlueIcon" format="reference" />
+    <attr name="imagesBlueIcon" format="reference" />
     <attr name="lockBlueIcon" format="reference" />
+    <attr name="moveToFolderBlueIcon" format="reference" />
+    <attr name="proxyBlueIcon" format="reference" />
+    <attr name="saveBlueIcon" format="reference" />
+    <attr name="saveTextBlueIcon" format="reference" />
     <attr name="sslCertificateBlueIcon" format="reference" />
 </resources>

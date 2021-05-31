@@ -123,11 +123,7 @@ class PinnedMismatchDialog : DialogFragment() {
             val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
             // Set the icon according to the theme.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_day)
-            } else {
-                dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_night)
-            }
+            dialogBuilder.setIconAttribute(R.attr.sslCertificateBlueIcon)
         } else {  // There is a favorite icon.
             // Create a drawable version of the favorite icon.
             val favoriteIconDrawable: Drawable = BitmapDrawable(resources, favoriteIconBitmap)
