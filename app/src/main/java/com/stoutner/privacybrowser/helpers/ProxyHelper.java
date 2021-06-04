@@ -250,13 +250,13 @@ public class ProxyHelper {
             case (ProxyHelper.TOR):
                 if (Build.VERSION.SDK_INT >= 21) {
                     // Use localhost port 9050 as the socket address.
-                    SocketAddress torSocketAddress = new InetSocketAddress("localhost", 9050);
+                    SocketAddress torSocketAddress = InetSocketAddress.createUnresolved("localhost", 9050);
 
                     // Create a SOCKS proxy.
                     proxy = new Proxy(Proxy.Type.SOCKS, torSocketAddress);
                 } else {
                     // Use localhost port 8118 as the socket address.
-                    SocketAddress oldTorSocketAddress = new InetSocketAddress("localhost", 8118);
+                    SocketAddress oldTorSocketAddress = InetSocketAddress.createUnresolved("localhost", 8118);
 
                     // Create an HTTP proxy.
                     proxy = new Proxy(Proxy.Type.HTTP, oldTorSocketAddress);
@@ -265,7 +265,7 @@ public class ProxyHelper {
 
             case (ProxyHelper.I2P):
                 // Use localhost port 4444 as the socket address.
-                SocketAddress i2pSocketAddress = new InetSocketAddress("localhost", 4444);
+                SocketAddress i2pSocketAddress = InetSocketAddress.createUnresolved("localhost", 4444);
 
                 // Create an HTTP proxy.
                 proxy = new Proxy(Proxy.Type.HTTP, i2pSocketAddress);
@@ -284,7 +284,7 @@ public class ProxyHelper {
                     Uri customProxyUri = Uri.parse(customProxyUrlString);
 
                     // Get the custom socket address.
-                    SocketAddress customSocketAddress = new InetSocketAddress(customProxyUri.getHost(), customProxyUri.getPort());
+                    SocketAddress customSocketAddress = InetSocketAddress.createUnresolved(customProxyUri.getHost(), customProxyUri.getPort());
 
                     // Get the custom proxy scheme.
                     String customProxyScheme = customProxyUri.getScheme();
