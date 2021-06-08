@@ -4805,6 +4805,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Add the new WebView page.
         webViewPagerAdapter.addPage(newTabNumber, webViewPager, url, moveToTab);
+
+        // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
+        if (bottomAppBar && moveToTab) {
+            appBarLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     public void closeTab(View view) {
