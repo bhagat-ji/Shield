@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017,2021 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,17 +19,17 @@
 
 package com.stoutner.privacybrowser.definitions;
 
-import android.graphics.Bitmap;
+import androidx.fragment.app.DialogFragment;
 
-// Create a History object.
-public class History {
+// Create a PendingDialogs object.
+public class PendingDialog {
     // Declare the class variables.
-    public final Bitmap favoriteIcon;
-    public final String url;
+    public final DialogFragment dialogFragment;
+    public final String tag;
 
-    public History(Bitmap favoriteIcon, String url){
+    public PendingDialog(DialogFragment dialogFragment, String tag) {
         // Populate the class variables.
-        this.favoriteIcon = favoriteIcon;
-        this.url = url;
+        this.dialogFragment = dialogFragment;
+        this.tag = tag;
     }
 }

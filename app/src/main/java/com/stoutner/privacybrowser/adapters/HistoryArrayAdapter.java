@@ -68,8 +68,8 @@ public class HistoryArrayAdapter extends ArrayAdapter<History> {
         assert history != null;
 
         // Set `favoriteIconImageView` and `urlTextView`.
-        favoriteIconImageView.setImageBitmap(history.entryFavoriteIcon);
-        urlTextView.setText(history.entryUrl);
+        favoriteIconImageView.setImageBitmap(history.favoriteIcon);
+        urlTextView.setText(history.url);
 
         // Set the URL text for `currentPage` to be bold.
         if (position == currentPage) {

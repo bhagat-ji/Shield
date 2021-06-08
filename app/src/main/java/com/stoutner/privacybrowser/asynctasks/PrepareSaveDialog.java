@@ -30,6 +30,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.definitions.PendingDialog;
 import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
@@ -198,22 +200,17 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
             return;
         }
 
-        // Prevent the dialog from displaying if the app window is not visible.
-        // The async task continues to function even when the app is paused.  Attempting to display a dialog in that state leads to a crash.
-        while (!activity.getWindow().isActive()) {
-            try {
-                // The window is not active.  Wait 1 second.
-                wait(1000);
-            } catch (InterruptedException e) {
-                // Do nothing.
-            }
-        }
-
         // Instantiate the save dialog.
         DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(saveType, urlString, fileStringArray[0], fileStringArray[1], userAgent, cookiesEnabled);
 
-        // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-        saveDialogFragment.show(fragmentManager, activity.getString(R.string.save_dialog));
+        // Try to show the dialog.  Sometimes the window is not active.
+        try {
+            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+            saveDialogFragment.show(fragmentManager, activity.getString(R.string.save_dialog));
+        } catch (Exception exception) {
+            // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+            MainWebViewActivity.pendingDialogsArrayList.add(new PendingDialog(saveDialogFragment, activity.getString(R.string.save_dialog)));
+        }
     }
 
     // Content dispositions can contain other text besides the file name, and they can be in any order.

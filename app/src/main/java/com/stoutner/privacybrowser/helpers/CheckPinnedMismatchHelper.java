@@ -25,6 +25,9 @@ import android.net.http.SslCertificate;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.definitions.PendingDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
@@ -121,22 +124,17 @@ public class CheckPinnedMismatchHelper {
                 !currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) || !currentWebsiteSslStartDateString.equals(pinnedSslStartDateString) ||
                 !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
 
-            // Prevent the dialog from displaying if the app window is not visible.
-            // The check pinned mismatch helper continues to function even when the app is paused.  Attempting to display a dialog in that state leads to a crash.
-            while (!activity.getWindow().isActive()) {
-                try {
-                    // The window is not active.  Wait 1 second.
-                    activity.wait(1000);
-                } catch (InterruptedException e) {
-                    // Do nothing.
-                }
-            }
-
             // Get a handle for the pinned mismatch alert dialog.
             DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(nestedScrollWebView.getWebViewFragmentId());
 
-            // Show the pinned mismatch alert dialog.
-            pinnedMismatchDialogFragment.show(fragmentManager, "Pinned Mismatch");
+            // Try to show the dialog.  Sometimes the window is not active.
+            try {
+                // Show the pinned mismatch alert dialog.
+                pinnedMismatchDialogFragment.show(fragmentManager, activity.getString(R.string.pinned_mismatch));
+            } catch (Exception exception) {
+                // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                MainWebViewActivity.pendingDialogsArrayList.add(new PendingDialog(pinnedMismatchDialogFragment, activity.getString(R.string.pinned_mismatch)));
+            }
         }
     }
 }

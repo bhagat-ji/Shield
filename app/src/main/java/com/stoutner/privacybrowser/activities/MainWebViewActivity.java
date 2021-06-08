@@ -107,6 +107,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.webkit.WebSettingsCompat;
@@ -126,6 +127,7 @@ import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
 import com.stoutner.privacybrowser.asynctasks.PrepareSaveDialog;
 import com.stoutner.privacybrowser.asynctasks.SaveUrl;
 import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
+import com.stoutner.privacybrowser.definitions.PendingDialog;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
@@ -195,6 +197,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksActivity;
 
+    // Define the public static variables.
+    public static ArrayList<PendingDialog> pendingDialogsArrayList =  new ArrayList<>();
+
     // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
     // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     public static String currentBookmarksFolder;
@@ -251,22 +256,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ArrayList<List<String[]>> ultraList;
     private ArrayList<List<String[]>> ultraPrivacy;
 
-    // Declare the class variables
-    private BroadcastReceiver orbotStatusBroadcastReceiver;
-    private String webViewDefaultUserAgent;
-    private boolean incognitoModeEnabled;
-    private boolean fullScreenBrowsingModeEnabled;
-    private boolean inFullScreenBrowsingMode;
-    private boolean downloadWithExternalApp;
-    private boolean hideAppBar;
-    private boolean scrollAppBar;
-    private boolean bottomAppBar;
-    private boolean loadingNewIntent;
-    private boolean reapplyDomainSettingsOnRestart;
-    private boolean reapplyAppSettingsOnRestart;
-    private boolean displayingFullScreenVideo;
-    private boolean waitingForProxy;
-
     // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
@@ -300,6 +289,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean sanitizeGoogleAnalytics;
     private boolean sanitizeFacebookClickIds;
     private boolean sanitizeTwitterAmpRedirects;
+
+    // Declare the class variables
+    private BroadcastReceiver orbotStatusBroadcastReceiver;
+    private String webViewDefaultUserAgent;
+    private boolean incognitoModeEnabled;
+    private boolean fullScreenBrowsingModeEnabled;
+    private boolean inFullScreenBrowsingMode;
+    private boolean downloadWithExternalApp;
+    private boolean hideAppBar;
+    private boolean scrollAppBar;
+    private boolean bottomAppBar;
+    private boolean loadingNewIntent;
+    private boolean reapplyDomainSettingsOnRestart;
+    private boolean reapplyAppSettingsOnRestart;
+    private boolean displayingFullScreenVideo;
+    private boolean waitingForProxy;
 
     // Define the class variables.
     private long lastScrollUpdate = 0;
@@ -703,6 +708,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Resume the ad.
             AdHelper.resumeAd(adView);
         }
+
+        // Show any pending dialogs.
+        for (int i = 0; i < pendingDialogsArrayList.size(); i++) {
+            // Get the pending dialog from the array list.
+            PendingDialog pendingDialog = pendingDialogsArrayList.get(i);
+
+            // Show the pending dialog.
+            pendingDialog.dialogFragment.show(getSupportFragmentManager(), pendingDialog.tag);
+        }
+
+        // Clear the pending dialogs array list.
+        pendingDialogsArrayList.clear();
     }
 
     // `onStop()` runs after `onPause()`.  It is used instead of `onPause()` so the commands are not called every time the screen is partially hidden.
@@ -3209,12 +3226,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reset the waiting for proxy status.
                     waitingForProxy = false;
 
-                    // Get a handle for the waiting for proxy dialog.
-                    DialogFragment waitingForProxyDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.waiting_for_proxy_dialog));
+                    // Get a list of the current fragments.
+                    List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
 
-                    // Dismiss the waiting for proxy dialog if it is displayed.
-                    if (waitingForProxyDialogFragment != null) {
-                        waitingForProxyDialogFragment.dismiss();
+                    // Check each fragment to see if it is a waiting for proxy dialog.  Sometimes more than one is displayed.
+                    for (int i = 0; i < fragmentList.size(); i++) {
+                        // Get the fragment tag.
+                        String fragmentTag = fragmentList.get(i).getTag();
+
+                        // Check to see if it is the waiting for proxy dialog.
+                        if ((fragmentTag!= null) && fragmentTag.equals(getString(R.string.waiting_for_proxy_dialog))) {
+                            // Dismiss the waiting for proxy dialog.
+                            ((DialogFragment) fragmentList.get(i)).dismiss();
+                        }
                     }
 
                     // Reload existing URLs and load any URLs that are waiting for the proxy.
@@ -4304,8 +4328,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Get a handle for the waiting for proxy alert dialog.
                             DialogFragment waitingForProxyDialogFragment = new WaitingForProxyDialog();
 
-                            // Display the waiting for proxy alert dialog.
-                            waitingForProxyDialogFragment.show(getSupportFragmentManager(), getString(R.string.waiting_for_proxy_dialog));
+                            // Try to show the dialog.  Sometimes the window is not yet active if returning from Settings.
+                            try {
+                                // Show the waiting for proxy alert dialog.
+                                waitingForProxyDialogFragment.show(getSupportFragmentManager(), getString(R.string.waiting_for_proxy_dialog));
+                            } catch (Exception waitingForTorException) {
+                                // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                                pendingDialogsArrayList.add(new PendingDialog(waitingForProxyDialogFragment, getString(R.string.waiting_for_proxy_dialog)));
+                            }
                         }
                     }
                 } catch (PackageManager.NameNotFoundException exception) {  // Orbot is not installed.
@@ -4314,8 +4344,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Get a handle for the Orbot not installed alert dialog.
                         DialogFragment orbotNotInstalledDialogFragment = ProxyNotInstalledDialog.displayDialog(proxyMode);
 
-                        // Display the Orbot not installed alert dialog.
-                        orbotNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
+                        // Try to show the dialog.  Sometimes the window is not yet active if returning from Settings.
+                        try {
+                            // Display the Orbot not installed alert dialog.
+                            orbotNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
+                        } catch (Exception orbotNotInstalledException) {
+                            // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                            pendingDialogsArrayList.add(new PendingDialog(orbotNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
+                        }
                     }
                 }
                 break;
@@ -4341,8 +4377,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Get a handle for the waiting for proxy alert dialog.
                         DialogFragment i2pNotInstalledDialogFragment = ProxyNotInstalledDialog.displayDialog(proxyMode);
 
-                        // Display the I2P not installed alert dialog.
-                        i2pNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
+                        // Try to show the dialog.  Sometimes the window is not yet active if returning from Settings.
+                        try {
+                            // Display the I2P not installed alert dialog.
+                            i2pNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
+                        } catch (Exception i2pNotInstalledException) {
+                            // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                            pendingDialogsArrayList.add(new PendingDialog(i2pNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
+                        }
                     }
                 }
                 break;
@@ -5378,23 +5420,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the file name from the content disposition.
                 String fileNameString = PrepareSaveDialog.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
 
-                // Prevent the dialog from displaying if the app window is not visible.
-                // The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
-                while (!activity.getWindow().isActive()) {
-                    try {
-                        // The window is not active.  Wait 1 second.
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        // Do nothing.
-                    }
-                }
-
                 // Instantiate the save dialog.
                 DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
                         nestedScrollWebView.getAcceptCookies());
 
-                // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-                saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                // Try to show the dialog.  The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
+                try {
+                    // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                } catch (Exception exception) {  // The dialog could not be shown.
+                    // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                    pendingDialogsArrayList.add(new PendingDialog(saveDialogFragment, getString(R.string.save_dialog)));
+                }
             }
         });
 
@@ -6346,22 +6383,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Store the SSL error handler.
                     nestedScrollWebView.setSslErrorHandler(handler);
 
-                    // Prevent the dialog from displaying if the app window is not visible.
-                    // The SSL error handler continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
-                    while (!activity.getWindow().isActive()) {
-                        try {
-                            // The window is not active.  Wait 1 second.
-                            wait(1000);
-                        } catch (InterruptedException e) {
-                            // Do nothing.
-                        }
-                    }
-
                     // Instantiate an SSL certificate error alert dialog.
                     DialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error, nestedScrollWebView.getWebViewFragmentId());
 
-                    // Show the SSL certificate error dialog.
-                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
+                    // Try to show the dialog.  The SSL error handler continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
+                    try {
+                        // Show the SSL certificate error dialog.
+                        sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
+                    } catch (Exception exception) {
+                        // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                        pendingDialogsArrayList.add(new PendingDialog(sslCertificateErrorDialogFragment, getString(R.string.ssl_certificate_error)));
+                    }
                 }
             }
         });
