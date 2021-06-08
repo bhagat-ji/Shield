@@ -125,7 +125,7 @@
                 <data android:scheme="https" />
             </intent-filter>
 
-            <!-- Process all content intents, including text, images, and MHT archives. -->
+            <!-- Process all content intents. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -133,7 +133,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="content" />
-                <data android:mimeType="*/*" />
+
+                <!-- Process text and images. -->
+                <data android:mimeType="text/*" />
+                <data android:mimeType="image/*" />
+
+                <!-- Process MHT web archives. -->
+                <data android:mimeType="multipart/related" />
+                <data android:mimeType="message/rfc822" />
             </intent-filter>
 
             <!-- Process intents for text strings.  Sometimes URLs are presented this way. -->
