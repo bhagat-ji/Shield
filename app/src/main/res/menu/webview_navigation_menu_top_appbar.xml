@@ -18,8 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
         android:id="@+id/clear_and_exit"
@@ -28,9 +27,7 @@
         android:orderInCategory="10" />
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
-    <group
-        android:id="@+id/navigation_group" >
-
+    <group android:id="@+id/navigation_group" >
         <item
             android:id="@+id/home"
             android:title="@string/home"
@@ -63,9 +60,7 @@
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
-    <group
-        android:id="@+id/features_group" >
-
+    <group android:id="@+id/features_group" >
         <item
             android:id="@+id/requests"
             android:title="@string/requests"
@@ -80,9 +75,7 @@
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
-    <group
-        android:id="@+id/settings_group" >
-
+    <group android:id="@+id/settings_group" >
         <item
             android:id="@+id/domains"
             android:title="@string/domains"
@@ -109,9 +102,7 @@
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
-    <group
-        android:id="@+id/info_group" >
-
+    <group android:id="@+id/info_group" >
         <item
             android:id="@+id/guide"
             android:title="@string/guide"
