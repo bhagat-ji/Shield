@@ -454,10 +454,10 @@
         <string name="twitter_amp_redirects_summary">URL\'den sonra gelen “?amp=1” ve diğer şeyleri kaldırır.</string>
     <string name="search">Arama</string>
         <string-array name="search_entries">
+            <item>Mojeek</item>
             <item>Startpage</item>
             <item>Monocles</item>
             <item>Metager</item>
-            <item>Mojeek</item>
             <item>DuckDuckGo - JavaScript devre dışı</item>
             <item>DuckDuckGo - JavaScript etkin</item>
             <item>Google</item>

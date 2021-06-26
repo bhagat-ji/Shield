@@ -517,10 +517,10 @@
         <string name="twitter_amp_redirects_summary">Entfernt “?amp=1” sowie alles danach URLs.</string>
     <string name="search">Suche</string>
         <string-array name="search_entries">
+            <item>Mojeek</item>
             <item>Startpage</item>
             <item>Monocles</item>
             <item>Metager</item>
-            <item>Mojeek</item>
             <item>DuckDuckGo - JavaScript deaktiviert</item>
             <item>DuckDuckGo - JavaScript aktiviert</item>
             <item>Google</item>
