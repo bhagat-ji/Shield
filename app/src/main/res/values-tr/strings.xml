@@ -455,7 +455,6 @@
     <string name="search">Arama</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
-            <item>Startpage</item>
             <item>Monocles</item>
             <item>Metager</item>
             <item>DuckDuckGo - JavaScript devre dışı</item>

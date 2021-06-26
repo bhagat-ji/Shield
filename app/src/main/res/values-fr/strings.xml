@@ -515,7 +515,6 @@
     <string name="search">Moteur de Recherche</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
-            <item>Startpage</item>
             <item>Monocles</item>
             <item>Metager</item>
             <item>DuckDuckGo - JavaScript désactivé</item>

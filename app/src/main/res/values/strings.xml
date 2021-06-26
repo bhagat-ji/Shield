@@ -552,7 +552,6 @@
     <string name="search">Search</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
-            <item>Startpage</item>
             <item>Monocles</item>
             <item>Metager</item>
             <item>DuckDuckGo - JavaScript disabled</item>
@@ -565,7 +564,6 @@
         </string-array>
         <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
             <item>https://www.mojeek.com/search?q=</item>
-            <item>https://www.startpage.com/do/search?query=</item>
             <item>https://monocles.de/search?q=</item>
             <item>https://metager.org/meta/meta.ger3?eingabe=</item>
             <item>https://duckduckgo.com/html/?q=</item>

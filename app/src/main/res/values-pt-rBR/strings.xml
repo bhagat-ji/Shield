@@ -514,7 +514,6 @@
     <string name="search">Search</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
-            <item>Startpage</item>
             <item>Monocles</item>
             <item>Metager</item>
             <item>DuckDuckGo - JavaScript desativado</item>
