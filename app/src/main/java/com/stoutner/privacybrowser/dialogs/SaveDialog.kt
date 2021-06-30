@@ -24,7 +24,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -93,9 +92,6 @@ class SaveDialog : DialogFragment() {
 
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
-
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the title and the icon according to the save type.
         when (saveType) {

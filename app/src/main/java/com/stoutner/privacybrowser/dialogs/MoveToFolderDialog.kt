@@ -23,7 +23,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.MatrixCursor
@@ -110,9 +109,6 @@ class MoveToFolderDialog : DialogFragment() {
 
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
-
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the icon according to the theme.
         dialogBuilder.setIconAttribute(R.attr.moveToFolderBlueIcon)

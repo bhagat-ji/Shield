@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs
 
 import android.app.Dialog
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.WindowManager
 
@@ -62,9 +61,6 @@ class ProxyNotInstalledDialog : DialogFragment() {
 
         // Use a builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
-
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the icon according to the theme.
         dialogBuilder.setIconAttribute(R.attr.proxyBlueIcon)

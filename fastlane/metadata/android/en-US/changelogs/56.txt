@@ -1,0 +1,5 @@
+• Remove Startpage and make Mojeek the default homepage and search engine.
+• Invert the navigation menu when the app bar is on the bottom.
+• Show the bottom app bar when a new tab loads.
+• Limit content intent filters to text, images, and MHT files.
+• Fix some rare crashes.

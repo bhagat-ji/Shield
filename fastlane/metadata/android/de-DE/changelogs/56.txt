@@ -1,0 +1,6 @@
+• Startpage entfernt und Mojeek als Standard-Homepage und -Suchmaschine eingerichtet.
+• Reihenfolge des Navigations-Menüs umgekehrt, wenn die App-Leiste unten angezeigt wird.
+• Die untere App-Leiste wird nun angezeigt, wenn ein neuer Tab geladen wird.
+• Content-Intent-Filter auf Text, Bilder und MHT-Dateien beschränkt.
+• Einige seltene Abstürze behoben.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

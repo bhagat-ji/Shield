@@ -1,0 +1,6 @@
+• Eliminar Startpage y hacer de Mojeek el motor de búsqueda y la página de inicio por defecto.
+• Invertir el menú de navegación cuando la barra de aplicaciones está en la parte inferior.
+• Mostrar la barra inferior de aplicación cuando se carga una nueva pestaña.
+• Limitar los filtros de intención de contenido a texto, imagenes y archivos MHT.
+• Corregir algunos fallos raros.
+• Actualizada la traducción al español proporcionada por Jose A. León.

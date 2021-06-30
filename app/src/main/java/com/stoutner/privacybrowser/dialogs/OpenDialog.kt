@@ -24,7 +24,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -70,9 +69,6 @@ class OpenDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
-
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the icon according to the theme.
         dialogBuilder.setIconAttribute(R.attr.proxyBlueIcon)

@@ -1972,7 +1972,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             System.exit(0);
         };
 
-        // Restart the activity after 300 milliseconds, so that the app has enough time to save the change to the preference.
-        restartHandler.postDelayed(restartRunnable, 300);
+        // Restart the activity after 400 milliseconds, so that the app has enough time to save the change to the preference.
+        restartHandler.postDelayed(restartRunnable, 400);
     }
 }

@@ -1,0 +1,6 @@
+• Rimozione di Startpage e sostituzione con Mojeek come pagina iniziale e motore di ricerca predefinito.
+• Inversione del menù di navigazione quando la barra dell'app è in basso.
+• Ora è mostrata la barra dell'app inferiore quando viene caricata una nuova scheda.
+• Limitazione dei filtri per il content intent a file di testo, immagini e file MHT.
+• Correzione di alcuni rari crash.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

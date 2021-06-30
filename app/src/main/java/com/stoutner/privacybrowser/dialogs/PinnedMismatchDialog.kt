@@ -23,7 +23,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -119,9 +118,6 @@ class PinnedMismatchDialog : DialogFragment() {
 
         // Set the favorite icon as the dialog icon if it exists.
         if (favoriteIconBitmap.sameAs(defaultFavoriteIconBitmap)) {  // There is no website favorite icon.
-            // Get the current theme status.
-            val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
             // Set the icon according to the theme.
             dialogBuilder.setIconAttribute(R.attr.sslCertificateBlueIcon)
         } else {  // There is a favorite icon.
