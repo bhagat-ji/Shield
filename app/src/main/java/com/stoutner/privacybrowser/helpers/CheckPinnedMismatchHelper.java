@@ -27,7 +27,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-import com.stoutner.privacybrowser.definitions.PendingDialog;
+import com.stoutner.privacybrowser.dataclasses.PendingDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
@@ -117,7 +117,7 @@ public class CheckPinnedMismatchHelper {
         }
 
         // Check to see if the pinned information matches the current information.
-        if ((nestedScrollWebView.hasPinnedIpAddresses() && !nestedScrollWebView.getCurrentIpAddresses().equals(nestedScrollWebView.getPinnedIpAddresses())) ||
+        if ((!nestedScrollWebView.getPinnedIpAddresses().equals("") && !nestedScrollWebView.getCurrentIpAddresses().equals(nestedScrollWebView.getPinnedIpAddresses())) ||
                 (nestedScrollWebView.hasPinnedSslCertificate() && (!currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) ||
                 !currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) || !currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) ||
                 !currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) || !currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) ||

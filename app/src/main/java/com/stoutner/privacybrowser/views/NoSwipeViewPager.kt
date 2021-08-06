@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019,2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -17,51 +17,37 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser.views;
+package com.stoutner.privacybrowser.views
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.MotionEvent
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager
 
-public class NoSwipeViewPager extends ViewPager {
-    // The basic constructor
-    public NoSwipeViewPager(@NonNull Context context) {
-        // Roll up to the full constructor.
-        this(context, null);
-    }
+import kotlin.jvm.JvmOverloads
 
-    // The full constructor.
-    public NoSwipeViewPager(@NonNull Context context, @Nullable AttributeSet attributeSet) {
-        // Run the default commands.
-        super(context, attributeSet);
-    }
-
+class NoSwipeViewPager
+@JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : ViewPager(context, attributeSet) {
     // It is necessary to override `performClick()` when overriding `onTouchEvent()`
-    @Override
-    public boolean performClick() {
+    override fun performClick(): Boolean {
         // Run the default commands.
-        super.performClick();
+        super.performClick()
 
         // Do not consume the events.
-        return false;
+        return false
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         // `onTouchEvent()` requires calling `performClick()`.
-        performClick();
+        performClick()
 
         // Do not allow swiping.
-        return false;
+        return false
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         // Do not allow swiping.
-        return false;
+        return false
     }
 }

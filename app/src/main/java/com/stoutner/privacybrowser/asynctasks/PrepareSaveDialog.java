@@ -31,7 +31,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-import com.stoutner.privacybrowser.definitions.PendingDialog;
+import com.stoutner.privacybrowser.dataclasses.PendingDialog;
 import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
@@ -97,7 +97,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
             String base64DataString = urlWithoutData.substring(urlWithoutData.indexOf(",") + 1);
 
             // Calculate the file size of the data URL.  Each Base64 character represents 6 bits.
-            formattedFileSize = NumberFormat.getInstance().format(base64DataString.length() * 3 / 4) + " " + context.getString(R.string.bytes);
+            formattedFileSize = NumberFormat.getInstance().format(base64DataString.length() * 3L / 4) + " " + context.getString(R.string.bytes);
 
             // Set the file name according to the MIME type.
             fileNameString = context.getString(R.string.file) + "." + MimeTypeMap.getSingleton().getExtensionFromMimeType(urlMimeType);

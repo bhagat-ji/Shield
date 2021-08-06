@@ -127,7 +127,7 @@ import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
 import com.stoutner.privacybrowser.asynctasks.PrepareSaveDialog;
 import com.stoutner.privacybrowser.asynctasks.SaveUrl;
 import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
-import com.stoutner.privacybrowser.definitions.PendingDialog;
+import com.stoutner.privacybrowser.dataclasses.PendingDialog;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
@@ -376,9 +376,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private MenuItem optionsFontSizeMenuItem;
     private MenuItem optionsAddOrEditDomainMenuItem;
 
-    @Override
-    // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
+    // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with WebView.
     @SuppressLint("ClickableViewAccessibility")
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Run the default commands.
         super.onCreate(savedInstanceState);
@@ -631,7 +631,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
                     // Reset the current domain name so the domain settings will be reapplied.
-                    nestedScrollWebView.resetCurrentDomainName();
+                    nestedScrollWebView.setCurrentDomainName("");
 
                     // Reapply the domain settings if the URL is not null, which can happen if an empty tab is active when returning from settings.
                     if (nestedScrollWebView.getUrl() != null) {
@@ -969,13 +969,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the status of the menu item checkboxes.
             optionsDomStorageMenuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
             optionsSaveFormDataMenuItem.setChecked(currentWebView.getSettings().getSaveFormData());  // Form data can be removed once the minimum API >= 26.
-            optionsEasyListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
-            optionsEasyPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
-            optionsFanboysAnnoyanceListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
-            optionsFanboysSocialBlockingListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
-            optionsUltraListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
-            optionsUltraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
-            optionsBlockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+            optionsEasyListMenuItem.setChecked(currentWebView.getEasyListEnabled());
+            optionsEasyPrivacyMenuItem.setChecked(currentWebView.getEasyPrivacyEnabled());
+            optionsFanboysAnnoyanceListMenuItem.setChecked(currentWebView.getFanboysAnnoyanceListEnabled());
+            optionsFanboysSocialBlockingListMenuItem.setChecked(currentWebView.getFanboysSocialBlockingListEnabled());
+            optionsUltraListMenuItem.setChecked(currentWebView.getUltraListEnabled());
+            optionsUltraPrivacyMenuItem.setChecked(currentWebView.getUltraPrivacyEnabled());
+            optionsBlockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.getBlockAllThirdPartyRequests());
             optionsSwipeToRefreshMenuItem.setChecked(currentWebView.getSwipeToRefresh());
             optionsWideViewportMenuItem.setChecked(currentWebView.getSettings().getUseWideViewPort());
             optionsDisplayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
@@ -1393,10 +1393,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.easylist) {  // EasyList.
             // Toggle the EasyList status.
-            currentWebView.enableBlocklist(NestedScrollWebView.EASYLIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
+            currentWebView.setEasyListEnabled(!currentWebView.getEasyListEnabled());
 
             // Update the menu checkbox.
-            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
+            menuItem.setChecked(currentWebView.getEasyListEnabled());
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1405,10 +1405,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.easyprivacy) {  // EasyPrivacy.
             // Toggle the EasyPrivacy status.
-            currentWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
+            currentWebView.setEasyPrivacyEnabled(!currentWebView.getEasyPrivacyEnabled());
 
             // Update the menu checkbox.
-            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
+            menuItem.setChecked(currentWebView.getEasyPrivacyEnabled());
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1417,13 +1417,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.fanboys_annoyance_list) {  // Fanboy's Annoyance List.
             // Toggle Fanboy's Annoyance List status.
-            currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+            currentWebView.setFanboysAnnoyanceListEnabled(!currentWebView.getFanboysAnnoyanceListEnabled());
 
             // Update the menu checkbox.
-            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+            menuItem.setChecked(currentWebView.getFanboysAnnoyanceListEnabled());
 
             // Update the status of Fanboy's Social Blocking List.
-            optionsFanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+            optionsFanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.getFanboysAnnoyanceListEnabled());
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1432,10 +1432,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.fanboys_social_blocking_list) {  // Fanboy's Social Blocking List.
             // Toggle Fanboy's Social Blocking List status.
-            currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
+            currentWebView.setFanboysSocialBlockingListEnabled(!currentWebView.getFanboysSocialBlockingListEnabled());
 
             // Update the menu checkbox.
-            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
+            menuItem.setChecked(currentWebView.getFanboysSocialBlockingListEnabled());
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1444,10 +1444,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.ultralist) {  // UltraList.
             // Toggle the UltraList status.
-            currentWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+            currentWebView.setUltraListEnabled(!currentWebView.getUltraListEnabled());
 
             // Update the menu checkbox.
-            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+            menuItem.setChecked(currentWebView.getUltraListEnabled());
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1456,10 +1456,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.ultraprivacy) {  // UltraPrivacy.
             // Toggle the UltraPrivacy status.
-            currentWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
+            currentWebView.setUltraPrivacyEnabled(!currentWebView.getUltraPrivacyEnabled());
 
             // Update the menu checkbox.
-            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
+            menuItem.setChecked(currentWebView.getUltraPrivacyEnabled());
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1468,10 +1468,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.block_all_third_party_requests) {  // Block all third-party requests.
             //Toggle the third-party requests blocker status.
-            currentWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, !currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+            currentWebView.setBlockAllThirdPartyRequests(!currentWebView.getBlockAllThirdPartyRequests());
 
             // Update the menu checkbox.
-            menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+            menuItem.setChecked(currentWebView.getBlockAllThirdPartyRequests());
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1839,6 +1839,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
                 domainsIntent.putExtra("close_on_back", true);
                 domainsIntent.putExtra("current_url", currentWebView.getUrl());
+                domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
 
                 // Get the current certificate.
                 SslCertificate sslCertificate = currentWebView.getCertificate();
@@ -1864,12 +1865,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
                     domainsIntent.putExtra("ssl_start_date", startDateLong);
                     domainsIntent.putExtra("ssl_end_date", endDateLong);
-                }
-
-                // Check to see if the current IP addresses have been received.
-                if (currentWebView.hasCurrentIpAddresses()) {
-                    // Add the current IP addresses to the intent.
-                    domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
                 }
 
                 // Make it so.
@@ -1895,6 +1890,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 domainsIntent.putExtra("load_domain", newDomainDatabaseId);
                 domainsIntent.putExtra("close_on_back", true);
                 domainsIntent.putExtra("current_url", currentWebView.getUrl());
+                domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
 
                 // Get the current certificate.
                 SslCertificate sslCertificate = currentWebView.getCertificate();
@@ -1920,12 +1916,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
                     domainsIntent.putExtra("ssl_start_date", startDateLong);
                     domainsIntent.putExtra("ssl_end_date", endDateLong);
-                }
-
-                // Check to see if the current IP addresses have been received.
-                if (currentWebView.hasCurrentIpAddresses()) {
-                    // Add the current IP addresses to the intent.
-                    domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
                 }
 
                 // Make it so.
@@ -2015,7 +2005,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             Intent requestsIntent = new Intent(this, RequestsActivity.class);
 
             // Add the block third-party requests status to the intent.
-            requestsIntent.putExtra("block_all_third_party_requests", currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+            requestsIntent.putExtra("block_all_third_party_requests", currentWebView.getBlockAllThirdPartyRequests());
 
             // Make it so.
             startActivity(requestsIntent);
@@ -2073,6 +2063,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Add the extra information to the intent.
             domainsIntent.putExtra("current_url", currentWebView.getUrl());
+            domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
 
             // Get the current certificate.
             SslCertificate sslCertificate = currentWebView.getCertificate();
@@ -2098,12 +2089,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
                 domainsIntent.putExtra("ssl_start_date", startDateLong);
                 domainsIntent.putExtra("ssl_end_date", endDateLong);
-            }
-
-            // Check to see if the current IP addresses have been received.
-            if (currentWebView.hasCurrentIpAddresses()) {
-                // Add the current IP addresses to the intent.
-                domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
             }
 
             // Make it so.
@@ -3263,7 +3248,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 loadUrl(nestedScrollWebView, waitingForProxyUrlString);
 
                                 // Reset the waiting for proxy URL string.
-                                nestedScrollWebView.resetWaitingForProxyUrlString();
+                                nestedScrollWebView.setWaitingForProxyUrlString("");
                             } else {  // No URL is waiting to be loaded.
                                 // Reload the existing URL.
                                 nestedScrollWebView.reload();
@@ -3338,7 +3323,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 // Instantiate the View SSL Certificate dialog.
-                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId());
+                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId(), currentWebView.getFavoriteOrDefaultIcon());
 
                 // Display the View SSL Certificate dialog.
                 viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
@@ -3791,7 +3776,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Clear any pinned SSL certificate or IP addresses.
             nestedScrollWebView.clearPinnedSslCertificate();
-            nestedScrollWebView.clearPinnedIpAddresses();
+            nestedScrollWebView.setPinnedIpAddresses("");
 
             // Reset the favorite icon if specified.
             if (resetTab) {
@@ -3911,19 +3896,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 // Form data can be removed once the minimum API >= 26.
                 boolean saveFormData = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYLIST,
-                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY,
-                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST,
-                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST,
-                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY,
-                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS,
-                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
+                nestedScrollWebView.setEasyListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
+                nestedScrollWebView.setEasyPrivacyEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
+                nestedScrollWebView.setFanboysAnnoyanceListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
+                nestedScrollWebView.setFanboysSocialBlockingListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(
+                        DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
+                nestedScrollWebView.setUltraListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)) == 1);
+                nestedScrollWebView.setUltraPrivacyEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
+                nestedScrollWebView.setBlockAllThirdPartyRequests(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
                 String userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
@@ -3937,30 +3917,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 String pinnedSslIssuedByCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
                 String pinnedSslIssuedByOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
                 String pinnedSslIssuedByUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+                Date pinnedSslStartDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+                Date pinnedSslEndDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
                 boolean pinnedIpAddresses = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
                 String pinnedHostIpAddresses = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
-
-                // Get the pinned SSL date longs.
-                long pinnedSslStartDateLong = currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE));
-                long pinnedSslEndDateLong = currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE));
-
-                // Define the pinned SSL date variables.
-                Date pinnedSslStartDate;
-                Date pinnedSslEndDate;
-
-                // Set the pinned SSL certificate start date to `null` if the saved date long is 0 because creating a new date results in an error if the input is 0.
-                if (pinnedSslStartDateLong == 0) {
-                    pinnedSslStartDate = null;
-                } else {
-                    pinnedSslStartDate = new Date(pinnedSslStartDateLong);
-                }
-
-                // Set the pinned SSL certificate end date to `null` if the saved date long is 0 because creating a new date results in an error if the input is 0.
-                if (pinnedSslEndDateLong == 0) {
-                    pinnedSslEndDate = null;
-                } else {
-                    pinnedSslEndDate = new Date(pinnedSslEndDateLong);
-                }
 
                 // Close the current host domain settings cursor.
                 currentDomainSettingsCursor.close();
@@ -4159,13 +4119,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.setAcceptCookies(sharedPreferences.getBoolean(getString(R.string.cookies_key), false));
                 nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
                 boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYLIST, sharedPreferences.getBoolean("easylist", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY, sharedPreferences.getBoolean("easyprivacy", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean("fanboys_annoyance_list", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean("fanboys_social_blocking_list", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, sharedPreferences.getBoolean("ultralist", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
+                nestedScrollWebView.setEasyListEnabled(sharedPreferences.getBoolean("easylist", true));
+                nestedScrollWebView.setEasyPrivacyEnabled(sharedPreferences.getBoolean("easyprivacy", true));
+                nestedScrollWebView.setFanboysAnnoyanceListEnabled(sharedPreferences.getBoolean("fanboys_annoyance_list", true));
+                nestedScrollWebView.setFanboysSocialBlockingListEnabled(sharedPreferences.getBoolean("fanboys_social_blocking_list", true));
+                nestedScrollWebView.setUltraListEnabled(sharedPreferences.getBoolean("ultralist", true));
+                nestedScrollWebView.setUltraPrivacyEnabled(sharedPreferences.getBoolean("ultraprivacy", true));
+                nestedScrollWebView.setBlockAllThirdPartyRequests(sharedPreferences.getBoolean("block_all_third_party_requests", false));
 
                 // Apply the default cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptCookies());
@@ -5204,6 +5164,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url, Boolean restoringState) {
         // Get a handle for the shared preferences.
@@ -5258,9 +5219,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Remove the lint warning below that the input method manager might be null.
         assert inputMethodManager != null;
-
-        // Initialize the favorite icon.
-        nestedScrollWebView.initializeFavoriteIcon();
 
         // Set the app bar scrolling.
         nestedScrollWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
@@ -5821,7 +5779,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 String currentDomain = currentBaseDomain;
 
                 // Nobody is happy when comparing null strings.
-                if ((currentBaseDomain != null) && (url != null)) {
+                if (url != null) {
                     // Convert the request URL to a URI.
                     Uri requestUri = Uri.parse(url);
 
@@ -5854,7 +5812,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 boolean webViewDisplayed = (webViewPagePosition == tabLayout.getSelectedTabPosition());
 
                 // Block third-party requests if enabled.
-                if (isThirdPartyRequest && nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS)) {
+                if (isThirdPartyRequest && nestedScrollWebView.getBlockAllThirdPartyRequests()) {
                     // Add the result to the resource requests.
                     nestedScrollWebView.addResourceRequest(new String[]{BlocklistHelper.REQUEST_THIRD_PARTY, url});
 
@@ -5883,7 +5841,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check UltraList if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST)) {
+                if (nestedScrollWebView.getUltraListEnabled()) {
                     // Check the URL against UltraList.
                     String[] ultraListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraList);
 
@@ -5923,7 +5881,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check UltraPrivacy if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY)) {
+                if (nestedScrollWebView.getUltraPrivacyEnabled()) {
                     // Check the URL against UltraPrivacy.
                     String[] ultraPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraPrivacy);
 
@@ -5965,7 +5923,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check EasyList if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST)) {
+                if (nestedScrollWebView.getEasyListEnabled()) {
                     // Check the URL against EasyList.
                     String[] easyListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyList);
 
@@ -6002,7 +5960,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check EasyPrivacy if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY)) {
+                if (nestedScrollWebView.getEasyPrivacyEnabled()) {
                     // Check the URL against EasyPrivacy.
                     String[] easyPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyPrivacy);
 
@@ -6040,7 +5998,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check Fanboy’s Annoyance List if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST)) {
+                if (nestedScrollWebView.getFanboysAnnoyanceListEnabled()) {
                     // Check the URL against Fanboy's Annoyance List.
                     String[] fanboysAnnoyanceListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList);
 
@@ -6077,7 +6035,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         whitelistResultStringArray = new String[] {fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                                 fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]};
                     }
-                } else if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST)) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
+                } else if (nestedScrollWebView.getFanboysSocialBlockingListEnabled()) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     // Check the URL against Fanboy's Annoyance List.
                     String[] fanboysSocialListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysSocialList);
 
@@ -6185,7 +6143,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Reset the list of host IP addresses.
-                nestedScrollWebView.clearCurrentIpAddresses();
+                nestedScrollWebView.setCurrentIpAddresses("");
 
                 // Get a URI for the current URL.
                 Uri currentUri = Uri.parse(url);

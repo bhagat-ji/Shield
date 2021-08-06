@@ -25,7 +25,6 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -50,8 +49,8 @@ import java.util.Date
 
 // Define the class constants.
 private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
+private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 private const val HAS_SSL_CERTIFICATE = "has_ssl_certificate"
-private const val FAVORITE_ICON = "favorite_icon"
 private const val DOMAIN = "domain"
 private const val IP_ADDRESSES = "ip_addresses"
 private const val ISSUED_TO_CNAME = "issued_to_cname"
@@ -68,7 +67,6 @@ class ViewSslCertificateDialog : DialogFragment() {
     private var hasSslCertificate: Boolean = false
 
     // Declare the class variables.
-    private lateinit var favoriteIconDrawable: Drawable
     private lateinit var domainString: String
     private lateinit var ipAddresses: String
     private lateinit var issuedToCName: String
@@ -86,12 +84,22 @@ class ViewSslCertificateDialog : DialogFragment() {
     companion object {
         // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
-        fun displayDialog(webViewFragmentId: Long): ViewSslCertificateDialog {
+        fun displayDialog(webViewFragmentId: Long, favoriteIconBitmap: Bitmap): ViewSslCertificateDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
 
-            // Store the WebView fragment ID in the bundle.
+            // Create a favorite icon byte array output stream.
+            val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
+
+            // Convert the bitmap to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
+            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream)
+
+            // Convert the favorite icon byte array output stream to a byte array.
+            val favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray()
+
+            // Store the arguments in the bundle.
             argumentsBundle.putLong(WEBVIEW_FRAGMENT_ID, webViewFragmentId)
+            argumentsBundle.putByteArray(FAVORITE_ICON_BYTE_ARRAY, favoriteIconByteArray)
 
             // Create a new instance of the view SSL certificate dialog.
             val viewSslCertificateDialog = ViewSslCertificateDialog()
@@ -130,9 +138,6 @@ class ViewSslCertificateDialog : DialogFragment() {
             // Store the status of the SSL certificate.
             hasSslCertificate = sslCertificate != null
 
-            // Create a drawable version of the favorite icon.
-            favoriteIconDrawable = BitmapDrawable(resources, nestedScrollWebView.favoriteOrDefaultIcon)
-
             // Populate the certificate class variables if the webpage has an SSL certificate.
             if (hasSslCertificate) {
                 // Convert the URL to a URI.
@@ -157,13 +162,6 @@ class ViewSslCertificateDialog : DialogFragment() {
         } else {  // The dialog has been restarted.
             // Get the data from the saved instance state.
             hasSslCertificate = savedInstanceState.getBoolean(HAS_SSL_CERTIFICATE)
-            val favoriteIconByteArray = savedInstanceState.getByteArray(FAVORITE_ICON)!!
-
-            // Convert the favorite icon byte array to a bitmap.
-            val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
-
-            // Create a drawable version of the favorite icon.
-            favoriteIconDrawable = BitmapDrawable(resources, favoriteIconBitmap)
 
             // Populate the certificate class variables if the webpage has an SSL certificate.
             if (hasSslCertificate) {
@@ -180,6 +178,15 @@ class ViewSslCertificateDialog : DialogFragment() {
                 endDate = Date(savedInstanceState.getLong(END_DATE))
             }
         }
+
+        // Get the favorite icon byte array from the arguments.
+        val favoriteIconByteArray = requireArguments().getByteArray(FAVORITE_ICON_BYTE_ARRAY)!!
+
+        // Convert the favorite icon byte array to a bitmap.
+        val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
+
+        // Create a drawable version of the favorite icon.
+        val favoriteIconDrawable = BitmapDrawable(resources, favoriteIconBitmap)
 
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable)
@@ -372,24 +379,8 @@ class ViewSslCertificateDialog : DialogFragment() {
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState)
 
-        // Get the favorite icon bitmap drawable.
-        val favoriteIconBitmapDrawable = favoriteIconDrawable as BitmapDrawable
-
-        // Get the favorite icon bitmap.
-        val favoriteIconBitmap = favoriteIconBitmapDrawable.bitmap
-
-        // Create a favorite icon byte array output stream.
-        val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
-
-        // Convert the bitmap to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
-        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream)
-
-        // Convert the favorite icon byte array output stream to a byte array.
-        val favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray()
-
         // Save the common class variables.
         savedInstanceState.putBoolean(HAS_SSL_CERTIFICATE, hasSslCertificate)
-        savedInstanceState.putByteArray(FAVORITE_ICON, favoriteIconByteArray)
 
         // Save the SSL certificate strings if they exist.
         if (hasSslCertificate) {

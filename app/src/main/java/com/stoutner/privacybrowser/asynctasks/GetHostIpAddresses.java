@@ -101,7 +101,7 @@ public class GetHostIpAddresses extends AsyncTask<String, Void, String> {
         nestedScrollWebView.setCurrentIpAddresses(ipAddresses);
 
         // Checked for pinned mismatches if there is pinned information and it is not ignored.
-        if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && !nestedScrollWebView.ignorePinnedDomainInformation()) {
+        if ((nestedScrollWebView.hasPinnedSslCertificate() || !nestedScrollWebView.getPinnedIpAddresses().equals("")) && !nestedScrollWebView.getIgnorePinnedDomainInformation()) {
             CheckPinnedMismatchHelper.checkPinnedMismatch(activity, fragmentManager, nestedScrollWebView);
         }
     }

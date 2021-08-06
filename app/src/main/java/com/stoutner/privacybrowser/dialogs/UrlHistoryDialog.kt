@@ -40,7 +40,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
 import com.stoutner.privacybrowser.adapters.HistoryArrayAdapter
-import com.stoutner.privacybrowser.definitions.History
+import com.stoutner.privacybrowser.dataclasses.History
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
 // Define the class constants.
@@ -131,7 +131,7 @@ class UrlHistoryDialog : DialogFragment() {
             }
 
             // Store the favorite icon and the URL in history entry.
-            val historyEntry = History(favoriteIconBitmap, webBackForwardList.getItemAtIndex(i).url)
+            val historyEntry = History(favoriteIconBitmap!!, webBackForwardList.getItemAtIndex(i).url)
 
             // Add this history entry to the history array list.
             historyArrayList.add(historyEntry)

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2017,2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -17,19 +17,9 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser.definitions;
+package com.stoutner.privacybrowser.dataclasses
 
-import androidx.fragment.app.DialogFragment;
+import android.graphics.Bitmap
 
-// Create a PendingDialogs object.
-public class PendingDialog {
-    // Declare the class variables.
-    public final DialogFragment dialogFragment;
-    public final String tag;
-
-    public PendingDialog(DialogFragment dialogFragment, String tag) {
-        // Populate the class variables.
-        this.dialogFragment = dialogFragment;
-        this.tag = tag;
-    }
-}
+// Define the history data class.  The `@JvmField` notation can be remove once all the code has migrated to Kotlin.
+data class History(@JvmField val favoriteIcon: Bitmap, @JvmField val url: String)

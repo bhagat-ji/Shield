@@ -1,14 +1,14 @@
-• Add an option to move the app bar to the bottom.
-• Reimplement the saving of web archives.
-• Reimplement the option to use an external app to download files.
-• Add fallbacks to open alternate download managers.
-• Add Monocles to the list of search engines.
-• Remove Do Not Track and third-party cookies.
-• Offer to open content URLs shared by other apps.
-• Handle content URLs and untrusted SSL certificates in View Source.
-• Fix UI freezing while downloading on some devices.
-• Fix a few rare crashes.
-• Make minor improvements to the user interface.
+• Ajout d'une option pour déplacer la barre des apps en bas.
+• Ré-implémentation de la sauvegarde des archives web.
+• Ré-implémentation de l'option d'utiliser une application externe pour télécharger des fichiers.
+• Ajout de fallbacks pour ouvrir des gestionnaires de téléchargement alternatifs.
+• Ajout de Monocles à la liste des moteurs de recherche.
+• Suppression de Do Not Track et des cookies tiers.
+• Offrir d'ouvrir les contenus d'URLs partagés par d'autres apps.
+• Gestion des URLs de contenu et des certificats SSL non fiables dans View Source.
+• Correction d'un gel de l'interface utilisateur lors du téléchargement sur certains appareils.
+• Correction de quelques rares crash.
+• Quelques améliorations mineures de l'interface utilisateur.
 • Traduction française mise à jour fournie par Kévin L.
 • Traduction portugaise brésilienne mise à jour fournie par Thiago Nazareno Conceição Silva de Jesus.
 • Traduction allemande mise à jour fournie par Bernhard G. Keller.

@@ -131,7 +131,7 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
         }
 
         // Get the pinned SSL certificate.
-        val pinnedSslCertificateArrayList = nestedScrollWebView.pinnedSslCertificate
+        val pinnedSslCertificateArrayList = nestedScrollWebView.getPinnedSslCertificate()
 
         // Extract the arrays from the array list.
         val pinnedSslCertificateStringArray = pinnedSslCertificateArrayList[0] as Array<*>
@@ -222,7 +222,7 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
         domainNameStringBuilder.setSpan(blueColorSpan, domainNameLabel.length, domainNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
         // Color coordinate the IP addresses if they are pinned.
-        if (nestedScrollWebView.hasPinnedIpAddresses()) {
+        if (!nestedScrollWebView.pinnedIpAddresses.equals("")) {
             if (nestedScrollWebView.currentIpAddresses == nestedScrollWebView.pinnedIpAddresses) {
                 ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length, ipAddressesStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             } else {

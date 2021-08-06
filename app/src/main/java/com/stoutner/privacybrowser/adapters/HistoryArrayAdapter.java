@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019,2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -31,7 +31,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.definitions.History;
+import com.stoutner.privacybrowser.dataclasses.History;
 
 import java.util.ArrayList;
 

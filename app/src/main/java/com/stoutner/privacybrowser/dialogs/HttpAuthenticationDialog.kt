@@ -120,18 +120,19 @@ class HttpAuthenticationDialog : DialogFragment() {
 
             // Set the close button listener.
             dialogBuilder.setNegativeButton(R.string.close) { _: DialogInterface?, _: Int ->
-                // Cancel the HTTP authentication request.
-                httpAuthHandler.cancel()
+                if (httpAuthHandler != null) {
+                    // Cancel the HTTP authentication request.
+                    httpAuthHandler.cancel()
 
-                // Reset the HTTP authentication handler.
-                nestedScrollWebView.resetHttpAuthHandler()
-            }// Set the proceed button listener.
+                    // Reset the HTTP authentication handler.
+                    nestedScrollWebView.resetHttpAuthHandler()
+                }
+            }
+
+            // Set the proceed button listener.
             dialogBuilder.setPositiveButton(R.string.proceed) { _: DialogInterface?, _: Int ->
                 // Send the login information
-                login(httpAuthHandler)
-
-                // Reset the HTTP authentication handler.
-                nestedScrollWebView.resetHttpAuthHandler()
+                login(httpAuthHandler, nestedScrollWebView)
             }
 
             // Create an alert dialog from the alert dialog builder.
@@ -193,7 +194,7 @@ class HttpAuthenticationDialog : DialogFragment() {
                 // Check the key code and event.
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {  // The enter key was pressed.
                     // Send the login information.
-                    login(httpAuthHandler)
+                    login(httpAuthHandler, nestedScrollWebView)
 
                     // Manually dismiss the alert dialog.
                     alertDialog.dismiss()
@@ -210,7 +211,7 @@ class HttpAuthenticationDialog : DialogFragment() {
                 // Check the key code and event.
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {  // The enter key was pressed.
                     // Send the login information.
-                    login(httpAuthHandler)
+                    login(httpAuthHandler, nestedScrollWebView)
 
                     // Manually dismiss the alert dialog.
                     alertDialog.dismiss()
@@ -249,8 +250,13 @@ class HttpAuthenticationDialog : DialogFragment() {
         }
     }
 
-    private fun login(httpAuthHandler: HttpAuthHandler) {
-        // Send the login information.
-        httpAuthHandler.proceed(usernameEditText.text.toString(), passwordEditText.text.toString())
+    private fun login(httpAuthHandler: HttpAuthHandler?, nestedScrollWebView: NestedScrollWebView) {
+        if (httpAuthHandler != null) {
+            // Send the login information.
+            httpAuthHandler.proceed(usernameEditText.text.toString(), passwordEditText.text.toString())
+
+            // Reset the HTTP authentication handler.
+            nestedScrollWebView.resetHttpAuthHandler()
+        }
     }
 }

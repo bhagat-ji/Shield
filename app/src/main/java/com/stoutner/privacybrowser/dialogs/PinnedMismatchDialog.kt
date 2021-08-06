@@ -105,7 +105,7 @@ class PinnedMismatchDialog : DialogFragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Get the favorite icon.
-        val favoriteIconBitmap = nestedScrollWebView.favoriteOrDefaultIcon
+        val favoriteIconBitmap = nestedScrollWebView.getFavoriteOrDefaultIcon()
 
         // Get the default favorite icon drawable.  `ContextCompat` must be used until API >= 21.
         val defaultFavoriteIconDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.world)
@@ -163,7 +163,7 @@ class PinnedMismatchDialog : DialogFragment() {
             }
 
             // Update the IP addresses if they are pinned.
-            if (nestedScrollWebView.hasPinnedIpAddresses()) {
+            if (!nestedScrollWebView.pinnedIpAddresses.equals("")) {
                 // Update the pinned IP addresses in the domain database.
                 domainsDatabaseHelper.updatePinnedIpAddresses(nestedScrollWebView.domainSettingsDatabaseId, nestedScrollWebView. currentIpAddresses)
 
@@ -186,7 +186,7 @@ class PinnedMismatchDialog : DialogFragment() {
         // Set the proceed button listener.
         dialogBuilder.setPositiveButton(R.string.proceed) { _: DialogInterface?, _: Int ->
             // Do not check the pinned information for this domain again until the domain changes.
-            nestedScrollWebView.setIgnorePinnedDomainInformation(true)
+            nestedScrollWebView.ignorePinnedDomainInformation = true
         }
 
         // Create an alert dialog from the alert dialog builder.
