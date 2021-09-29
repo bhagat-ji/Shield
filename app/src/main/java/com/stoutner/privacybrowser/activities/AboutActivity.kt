@@ -83,9 +83,9 @@ class AboutActivity : AppCompatActivity(), SaveListener {
 
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.about_coordinatorlayout_bottom_appbar)
+            setContentView(R.layout.about_bottom_appbar)
         } else {
-            setContentView(R.layout.about_coordinatorlayout_top_appbar)
+            setContentView(R.layout.about_top_appbar)
         }
 
         // Get handles for the views.
@@ -93,13 +93,13 @@ class AboutActivity : AppCompatActivity(), SaveListener {
         val aboutTabLayout = findViewById<TabLayout>(R.id.about_tablayout)
         val aboutViewPager = findViewById<ViewPager>(R.id.about_viewpager)
 
-        // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
+        // Set the support action bar.
         setSupportActionBar(toolbar)
 
         // Get a handle for the action bar.
         val actionBar = supportActionBar!!
 
-        // Display the home arrow on action bar.
+        // Display the home arrow on the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true)
 
         // Initialize the about pager adapter.

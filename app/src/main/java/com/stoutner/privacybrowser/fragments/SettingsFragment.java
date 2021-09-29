@@ -118,7 +118,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Get the current theme status.
         currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        // // Get a handle for the shared preferences.
+        // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
 
         // Get handles for the preferences.
@@ -979,12 +979,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_day);
             }
         }
-
-        // Get the shared preferences change listener.
-        sharedPreferenceChangeListener = getSharedPreferencesChangeListener(requireContext());
-
-        // Register the listener.
-        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
     }
 
     // The listener should be unregistered when the app is paused.
@@ -996,7 +990,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
 
-        // Unregister the shared preferences listener.
+        // Unregister the shared preference listener.
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
     }
 
@@ -1006,18 +1000,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Run the default commands.
         super.onResume();
 
-        // Get a new shared preferences change listener.
-        sharedPreferenceChangeListener = getSharedPreferencesChangeListener(requireContext());
+        // Get a new shared preference change listener.
+        sharedPreferenceChangeListener = getSharedPreferenceChangeListener(requireContext());
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
 
-        // Re-register the shared preferences listener.
+        // Re-register the shared preference listener.
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
     }
 
     // The context must be passed to the shared preference change listener or else any calls to the system `getString()` will crash if the app has been restarted.
-    private SharedPreferences.OnSharedPreferenceChangeListener getSharedPreferencesChangeListener(Context context) {
+    // This can be removed at some future point, perhaps after the switch to PreferenceScreenCompat.  It isn't an issue in Privacy Cell.
+    private SharedPreferences.OnSharedPreferenceChangeListener getSharedPreferenceChangeListener(Context context) {
         // Return the shared preference change listener.
         return (SharedPreferences sharedPreferences, String key) -> {
             switch (key) {

@@ -134,9 +134,9 @@ public class ImportExportActivity extends AppCompatActivity {
 
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.import_export_coordinatorlayout_bottom_appbar);
+            setContentView(R.layout.import_export_bottom_appbar);
         } else {
-            setContentView(R.layout.import_export_coordinatorlayout_top_appbar);
+            setContentView(R.layout.import_export_top_appbar);
         }
 
         // Get a handle for the toolbar.

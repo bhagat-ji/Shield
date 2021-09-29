@@ -57,9 +57,9 @@ public class GuideActivity extends AppCompatActivity {
 
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.guide_coordinatorlayout_bottom_appbar);
+            setContentView(R.layout.guide_bottom_appbar);
         } else {
-            setContentView(R.layout.guide_coordinatorlayout_top_appbar);
+            setContentView(R.layout.guide_top_appbar);
         }
 
         // Get a handle for the toolbar.

@@ -32,7 +32,7 @@ import com.stoutner.privacybrowser.R
 class AboutViewSourceDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
-        val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
+        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the icon according to the theme.
         dialogBuilder.setIconAttribute(R.attr.aboutBlueIcon)

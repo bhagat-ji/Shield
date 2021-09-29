@@ -89,7 +89,7 @@ class AboutWebViewFragment : Fragment() {
 
         // Set a WebView client.
         tabWebView.webViewClient = object : WebViewClient() {
-            // `shouldOverrideUrlLoading` allows the sending of external links back to the main Privacy Browser WebView.  The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
+            // // Send external links back to the main Privacy Browser WebView.  The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 // Create an intent to view the URL.
                 val urlIntent = Intent(Intent.ACTION_VIEW)
@@ -99,11 +99,13 @@ class AboutWebViewFragment : Fragment() {
 
                 // Make it so.
                 startActivity(urlIntent)
+                
+                // Consume the click.
                 return true
             }
-
+            
+            // Process asset requests with the asset loader.
             override fun shouldInterceptRequest(webView: WebView, url: String): WebResourceResponse? {
-                // Have the WebView asset loader process the request.
                 // This allows using the `appassets.androidplatform.net` URL, which handles the loading of SVG files, which otherwise is prevented by the CORS policy.
                 return webViewAssetLoader.shouldInterceptRequest(Uri.parse(url))
             }

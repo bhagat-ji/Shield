@@ -165,13 +165,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Set the content according to the app bar position.
         if (bottomAppBar) {
             // Set the content view.
-            setContentView(R.layout.bookmarks_coordinatorlayout_bottom_appbar);
+            setContentView(R.layout.bookmarks_bottom_appbar);
         } else {
             // `Window.FEATURE_ACTION_MODE_OVERLAY` makes the contextual action mode cover the support action bar.  It must be requested before the content is set.
             supportRequestWindowFeature(Window.FEATURE_ACTION_MODE_OVERLAY);
 
             // Set the content view.
-            setContentView(R.layout.bookmarks_coordinatorlayout_top_appbar);
+            setContentView(R.layout.bookmarks_top_appbar);
         }
 
         // Get a handle for the toolbar.

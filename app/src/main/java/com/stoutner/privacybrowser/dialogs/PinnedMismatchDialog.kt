@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -83,8 +82,6 @@ class PinnedMismatchDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the WebView fragment ID.
         val webViewFragmentId = requireArguments().getLong(WEBVIEW_FRAGMENT_ID)
@@ -131,8 +128,8 @@ class PinnedMismatchDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.pinned_mismatch)
 
-        // Set the layout.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.pinned_mismatch_linearlayout, null))
+        // Set the layout.
+        dialogBuilder.setView(R.layout.pinned_mismatch_linearlayout)
 
         // Set the update button listener.
         dialogBuilder.setNeutralButton(R.string.update) { _: DialogInterface?, _: Int ->
@@ -163,7 +160,7 @@ class PinnedMismatchDialog : DialogFragment() {
             }
 
             // Update the IP addresses if they are pinned.
-            if (!nestedScrollWebView.pinnedIpAddresses.equals("")) {
+            if (nestedScrollWebView.pinnedIpAddresses != "") {
                 // Update the pinned IP addresses in the domain database.
                 domainsDatabaseHelper.updatePinnedIpAddresses(nestedScrollWebView.domainSettingsDatabaseId, nestedScrollWebView. currentIpAddresses)
 

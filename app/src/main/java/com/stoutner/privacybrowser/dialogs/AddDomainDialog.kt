@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -81,8 +80,6 @@ class AddDomainDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
         val arguments = requireArguments()
@@ -91,7 +88,7 @@ class AddDomainDialog : DialogFragment() {
         val urlString = arguments.getString(URL_STRING)
 
         // Use an alert dialog builder to create the alert dialog.
-        val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
+        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the icon according to the theme.
         dialogBuilder.setIconAttribute(R.attr.domainsBlueIcon)
@@ -99,8 +96,8 @@ class AddDomainDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.add_domain)
 
-        // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.add_domain_dialog, null))
+        // Set the view.
+        dialogBuilder.setView(R.layout.add_domain_dialog)
 
         // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

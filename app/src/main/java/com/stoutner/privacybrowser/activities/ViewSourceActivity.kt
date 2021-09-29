@@ -106,9 +106,9 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
 
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.view_source_coordinatorlayout_bottom_appbar)
+            setContentView(R.layout.view_source_bottom_appbar)
         } else {
-            setContentView(R.layout.view_source_coordinatorlayout_top_appbar)
+            setContentView(R.layout.view_source_top_appbar)
         }
 
         // Get a handle for the toolbar.

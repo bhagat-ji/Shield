@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -64,8 +63,6 @@ class OpenDialog : DialogFragment() {
         openListener = context as OpenListener
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using null as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -76,8 +73,8 @@ class OpenDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.open)
 
-        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.open_dialog, null))
+        // Set the view.
+        dialogBuilder.setView(R.layout.open_dialog)
 
         // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

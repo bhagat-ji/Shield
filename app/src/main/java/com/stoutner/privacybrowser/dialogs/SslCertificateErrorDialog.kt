@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
@@ -105,8 +104,6 @@ class SslCertificateErrorDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the variables from the bundle.
         val primaryErrorInt = requireArguments().getInt(PRIMARY_ERROR_INT)
@@ -148,8 +145,8 @@ class SslCertificateErrorDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.ssl_certificate_error)
 
-        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.ssl_certificate_error, null))
+        // Set the view.
+        dialogBuilder.setView(R.layout.ssl_certificate_error)
 
         // Set the cancel button listener.
         dialogBuilder.setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int ->

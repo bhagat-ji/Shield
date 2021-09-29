@@ -89,9 +89,9 @@ public class LogcatActivity extends AppCompatActivity implements SaveDialog.Save
 
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.logcat_coordinatorlayout_bottom_appbar);
+            setContentView(R.layout.logcat_bottom_appbar);
         } else {
-            setContentView(R.layout.logcat_coordinatorlayout_top_appbar);
+            setContentView(R.layout.logcat_top_appbar);
         }
 
         // Get handles for the views.

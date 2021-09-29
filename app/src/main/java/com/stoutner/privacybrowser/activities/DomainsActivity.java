@@ -181,9 +181,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Set the view.
         if (bottomAppBar) {
-            setContentView(R.layout.domains_coordinatorlayout_bottom_appbar);
+            setContentView(R.layout.domains_bottom_appbar);
         } else {
-            setContentView(R.layout.domains_coordinatorlayout_top_appbar);
+            setContentView(R.layout.domains_top_appbar);
         }
 
         // Populate the class variables.

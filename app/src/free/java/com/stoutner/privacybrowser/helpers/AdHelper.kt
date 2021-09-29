@@ -131,7 +131,7 @@ object AdHelper {
         // Create an ad settings bundle.
         val adSettingsBundle = Bundle()
 
-        // Only request non-personalized ads.  <https://developers.google.com/ad-manager/mobile-ads-sdk/android/eu-consent#forward_consent_to_the_google_mobile_ads_sdk>
+        // Only request non-personalized ads.  <https://developers.google.com/ad-manager/mobile-ads-sdk/android/eu-consent#forward-consent>
         adSettingsBundle.putString("npa", "1")
 
         // Build the ad request.

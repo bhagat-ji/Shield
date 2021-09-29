@@ -454,10 +454,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         tabLayout = findViewById(R.id.tablayout);
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         webViewPager = findViewById(R.id.webviewpager);
-        fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
-
-        // Get a handle for the navigation view.
         NavigationView navigationView = findViewById(R.id.navigationview);
+        fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
 
         // Get a handle for the navigation menu.
         Menu navigationMenu = navigationView.getMenu();
@@ -3561,9 +3559,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
                     }
 
-                    // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
+                    // Clear the focus from from the URL text box.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     urlEditText.clearFocus();
-                    currentWebView.clearFocus();
+
+                    // Clear the focus from from the WebView if it is not null, which can happen if a user opens a drawer while the browser is being resumed.
+                    if (currentWebView != null) {
+                        // Clearing the focus from the WebView removes any text selection markers and context menus, which otherwise draw above the open drawers.
+                        currentWebView.clearFocus();
+                    }
                 }
             }
         });

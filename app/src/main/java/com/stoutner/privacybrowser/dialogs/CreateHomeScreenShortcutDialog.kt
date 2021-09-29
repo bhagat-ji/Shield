@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -93,8 +92,6 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
         val arguments = requireArguments()
@@ -119,8 +116,8 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable)
 
-        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null))
+        // Set the view.
+        dialogBuilder.setView(R.layout.create_home_screen_shortcut_dialog)
 
         // Set a listener on the close button.  Using null closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

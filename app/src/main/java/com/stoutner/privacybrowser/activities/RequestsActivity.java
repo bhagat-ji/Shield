@@ -87,9 +87,9 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.requests_coordinatorlayout_bottom_appbar);
+            setContentView(R.layout.requests_bottom_appbar);
         } else {
-            setContentView(R.layout.requests_coordinatorlayout_top_appbar);
+            setContentView(R.layout.requests_top_appbar);
         }
 
         // Use the AndroidX toolbar until the minimum API is >= 21.

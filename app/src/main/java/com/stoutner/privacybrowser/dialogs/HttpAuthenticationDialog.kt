@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.res.Configuration
@@ -78,8 +77,6 @@ class HttpAuthenticationDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get a handle for the arguments.
         val arguments = requireArguments()
@@ -115,8 +112,8 @@ class HttpAuthenticationDialog : DialogFragment() {
             // Set the title.
             dialogBuilder.setTitle(R.string.http_authentication)
 
-            // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
-            dialogBuilder.setView(layoutInflater.inflate(R.layout.http_authentication_dialog, null))
+            // Set the view.
+            dialogBuilder.setView(R.layout.http_authentication_dialog)
 
             // Set the close button listener.
             dialogBuilder.setNegativeButton(R.string.close) { _: DialogInterface?, _: Int ->

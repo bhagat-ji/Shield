@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -95,8 +94,6 @@ class CreateBookmarkFolderDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
         val arguments = requireArguments()
@@ -113,8 +110,8 @@ class CreateBookmarkFolderDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.create_folder)
 
-        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.create_bookmark_folder_dialog, null))
+        // Set the view.
+        dialogBuilder.setView(R.layout.create_bookmark_folder_dialog)
 
         // Set a listener on the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

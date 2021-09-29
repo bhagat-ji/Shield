@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -97,8 +96,6 @@ class MoveToFolderDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the data from the arguments.
         val currentFolder = requireArguments().getString(CURRENT_FOLDER)!!
@@ -116,8 +113,8 @@ class MoveToFolderDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.move_to_folder)
 
-        // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.move_to_folder_dialog, null))
+        // Set the view.
+        dialogBuilder.setView(R.layout.move_to_folder_dialog)
 
         // Set the listener for the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)

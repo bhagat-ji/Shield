@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.WindowManager
@@ -31,14 +30,12 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 
 class WaitingForProxyDialog : DialogFragment() {
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-        // Set the layout.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.waiting_for_proxy_dialog, null))
+        // Set the layout.
+        dialogBuilder.setView(R.layout.waiting_for_proxy_dialog)
 
         // Create an alert dialog from the builder.
         val alertDialog = dialogBuilder.create()

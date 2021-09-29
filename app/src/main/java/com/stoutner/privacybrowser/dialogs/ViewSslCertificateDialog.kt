@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -112,8 +111,6 @@ class ViewSslCertificateDialog : DialogFragment() {
         }
     }
 
-    // `@SuppressLint("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
-    @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -205,8 +202,8 @@ class ViewSslCertificateDialog : DialogFragment() {
             // Set the title.
             dialogBuilder.setTitle(R.string.ssl_certificate)
 
-            // Set the layout.  The parent view is `null` because it will be assigned by the alert dialog.
-            dialogBuilder.setView(layoutInflater.inflate(R.layout.view_ssl_certificate_dialog, null))
+            // Set the layout.
+            dialogBuilder.setView(R.layout.view_ssl_certificate_dialog)
 
             // Create an alert dialog from the builder.
             val alertDialog = dialogBuilder.create()
@@ -358,8 +355,8 @@ class ViewSslCertificateDialog : DialogFragment() {
             // Set the title.
             dialogBuilder.setTitle(R.string.unencrypted_website)
 
-            // Set the Layout.  The parent view is `null` because it will be assigned by the alert dialog.
-            dialogBuilder.setView(layoutInflater.inflate(R.layout.unencrypted_website_dialog, null))
+            // Set the Layout.
+            dialogBuilder.setView(R.layout.unencrypted_website_dialog)
 
             // Create an alert dialog from the builder.
             val alertDialog = dialogBuilder.create()

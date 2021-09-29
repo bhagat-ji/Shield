@@ -39,16 +39,16 @@
             android:background="?android:attr/colorBackground"
             android:theme="@style/PrivacyBrowserAppBar" >
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/guide_toolbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" />
+
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/guide_tablayout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 app:tabMode="scrollable" />
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/guide_toolbar"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <!-- `android:layout_weight="1"` makes the view pager fill the rest of the screen. -->

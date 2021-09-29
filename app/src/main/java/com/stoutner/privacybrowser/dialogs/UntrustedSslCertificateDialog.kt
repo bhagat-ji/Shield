@@ -53,7 +53,7 @@ class UntrustedSslCertificateDialog : DialogFragment() {
         // Check to see if the app has been restarted.
         if (savedInstanceState == null) {  // The app has not been restarted.
             // Use a builder to create the alert dialog.
-            val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
+            val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
             // Set the icon according to the theme.
             dialogBuilder.setIconAttribute(R.attr.sslCertificateBlueIcon)

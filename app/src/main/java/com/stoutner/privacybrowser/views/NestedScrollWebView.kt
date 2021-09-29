@@ -80,7 +80,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     NestedScrollingChild2 {
 
     companion object {
-        // Define the companion object blocklists constants.  These can be moved to class constants once all of the code has transitioned to Kotlin.
+        // Define the public companion object blocklists constants.
         const val BLOCKED_REQUESTS = 0
         const val EASYLIST = 1
         const val EASYPRIVACY = 2
