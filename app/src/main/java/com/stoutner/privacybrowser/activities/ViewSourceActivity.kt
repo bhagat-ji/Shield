@@ -186,11 +186,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         }
 
         // Set the refresh color scheme according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_700)
-        } else {
-            swipeRefreshLayout.setColorSchemeResources(R.color.violet_500)
-        }
+        swipeRefreshLayout.setColorSchemeResources(R.color.blue_text)
 
         // Initialize a color background typed value.
         val colorBackgroundTypedValue = TypedValue()

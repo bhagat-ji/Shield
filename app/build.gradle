@@ -17,15 +17,17 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
 android {
-    compileSdkVersion 30
+    compileSdk 30
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 30
+        minSdk 19
+        targetSdk 30
         versionCode 56
         versionName "3.8.1"
 
@@ -62,13 +64,7 @@ android {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     // Include the following AndroidX libraries.
     implementation 'androidx.arch.core:core-common:2.1.0'
     implementation 'androidx.arch.core:core-runtime:2.1.0'

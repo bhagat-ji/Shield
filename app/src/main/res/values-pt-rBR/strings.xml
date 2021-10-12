@@ -371,7 +371,7 @@
     <string name="import_failed">A importação falhou:</string>
 
     <!-- Logcat. -->
-    <string name="copy_string">Cópia</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
+    <string name="copy">Cópia</string>
     <string name="logcat_copied">Logcat copiado.</string>
     <string name="clear">Limpar</string>
 

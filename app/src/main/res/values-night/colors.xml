@@ -20,10 +20,8 @@
 
 <!-- Colors are currently hardcoded in the vector drawables.  Once the minimum API is >= 22 the hardcoded colors can be removed and they can reference these entries instead. -->
 <resources>
-    <!-- Named colors. -->
-    <color name="disabled_tint">#FF9E9E9E</color>  <!-- gray_500 -->
-    <color name="ghosted_tint">#FF616161</color>  <!-- gray_700 -->
-    <color name="red_tint">#FFB71C1C</color>  <!-- red_900 -->
+    <!-- Nicknamed colors. -->
+    <color name="blue_text">@color/violet_500</color>
 
     <!-- Raw colors. -->
     <color name="semi_transparent_black">#66000000</color>

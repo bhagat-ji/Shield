@@ -369,7 +369,7 @@
     <string name="import_failed">Сбой при импорте:</string>
 
     <!-- Logcat. -->
-    <string name="copy_string">Копировать</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
+    <string name="copy">Копировать</string>
     <string name="logcat_copied">Logcat скопирован.</string>
     <string name="clear">Очистить</string>
 
