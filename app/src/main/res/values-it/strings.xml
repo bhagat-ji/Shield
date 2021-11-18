@@ -23,6 +23,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
+    <string name="short_name">Browser</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">it</string>
 
@@ -186,16 +187,12 @@
     <string name="file_is_mht">Questo file è un archivio web MHT.</string>
     <string name="mht_checkbox_explanation">Talvolta gli archivi web del tipo MIME Encapsulated HTML (MHT) devono essere specificati manualmente per essere aperti correttamente.</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_url">Salva URL</string>
     <string name="save_archive">Salva Archivio</string>
     <string name="save_text">Salva Testo</string>
     <string name="save_image">Salva Immagine</string>
-    <string name="save_logcat">Salva il log</string>
     <string name="file_name">Nome File</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="privacy_browser_version_txt">Versione di Privacy Browser.txt</string>
-    <string name="privacy_browser_version_png">Versione di Privacy Browser.png</string>
     <string name="file">File</string>
     <string name="bytes">byte</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
@@ -370,10 +367,14 @@
     <string name="export_failed">Esportazione fallita:</string>
     <string name="import_failed">Importazione fallita:</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">Copia</string>
-    <string name="logcat_copied">Logcat copiato.</string>
     <string name="clear">Cancella</string>
+    <string name="logcat_copied">Logcat copiato.</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="saved">%1$s salvato.</string>
+    <string name="error_saving_logcat">Errore salvataggio logcat: \u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Descrizione</string>
@@ -391,7 +392,7 @@
     <string name="custom_proxy_invalid">La URL del proxy personalizzato non è valida.</string>
     <string name="socks_proxies_do_not_work_on_kitkat">I proxy SOCKS non funzionano con Android KitKat.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>
     <string name="version">Versione</string>
         <string name="version_code">codice versione</string>
@@ -434,6 +435,8 @@
             <string name="serial_number">Numero di Serie:</string>
             <string name="signature_algorithm">Algoritmo di firma:</string>
         <string name="version_info_copied">Info sulla Versione copiate.</string>
+        <string name="privacy_browser_version_txt">Versione di Privacy Browser %1$s.txt</string>
+        <string name="privacy_browser_version_png">Versione di Privacy Browser %1$s.png</string>
     <string name="permissions">Autorizzazioni</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="changelog">Changelog</string>
@@ -572,6 +575,8 @@
         <string name="download_with_external_app_summary">Utilizza una applicazione esterna per scaricare i file.</string>
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>
         <string name="scroll_app_bar_summary">Permette lo scorrere della barra dell\'applicazione dalla parte alta dello schermo quando si effettua lo scrolling.</string>
+        <string name="bottom_app_bar">Barra dell\'app in basso</string>
+        <string name="bottom_app_bar_summary">Sposta la barra dell\'app nella parte bassa dello schermo.  La modifica di questa impostazione provocherà il riavvio di Privacy Browser.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento della pagina e, se lo spazio è disponibile,
             per aprire i preferiti e per abilitare o disabilitare i cookie.</string>

@@ -23,6 +23,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Navegador Privado</string>
+    <string name="short_name">Browser</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">es</string>
 
@@ -186,16 +187,12 @@
     <string name="file_is_mht">El archivo es un archivo de web MHT.</string>
     <string name="mht_checkbox_explanation">A veces se necesita especificar manualmente los archivos web MIME Encapsulated HTML (MHT) para que se abran correctamente.</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_url">Guardar URL</string>
     <string name="save_archive">Guardar archivo</string>
     <string name="save_text">Guardar texto</string>
     <string name="save_image">Guardar imagen</string>
-    <string name="save_logcat">Guardar logcat</string>
     <string name="file_name">Nombre de archivo</string>
-    <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
-    <string name="privacy_browser_version_txt">Versión de Navegador Privado.txt</string>
-    <string name="privacy_browser_version_png">Versiótoutnern de Navegador Privado.png</string>
     <string name="file">Archivo</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">Tamaño desconocido</string>
@@ -371,10 +368,14 @@
     <string name="export_failed">Exportación fallida:</string>
     <string name="import_failed">Importación fallida:</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">Copiar</string>
-    <string name="logcat_copied">Logcat copiado.</string>
     <string name="clear">Borrar</string>
+    <string name="logcat_copied">Logcat copiado.</string>
+    <string name="privacy_browser_logcat_txt">Navegador Privado %1$s Logcat.txt</string>
+    <string name="saved">%1$s guardado.</string>
+    <string name="error_saving_logcat">Error guardando logcat: \u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Visión general</string>
@@ -392,7 +393,7 @@
     <string name="custom_proxy_invalid">La URL del proxy personalizado no es válida.</string>
     <string name="socks_proxies_do_not_work_on_kitkat">SOCKS proxies do not work on Android KitKat.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>
     <string name="version">Versión</string>
         <string name="version_code">código de versión</string>
@@ -435,6 +436,8 @@
             <string name="serial_number">Número de serie:</string>
             <string name="signature_algorithm">Algoritmo de firma:</string>
         <string name="version_info_copied">Información de la versión copiada.</string>
+        <string name="privacy_browser_version_txt">Versión de Navegador Privado %1$s.txt</string>
+        <string name="privacy_browser_version_png">Versión de Navegador Privado %1$s.png</string>
     <string name="permissions">Permisos</string>
     <string name="privacy_policy">Política de privacidad</string>
     <string name="changelog">Historial de cambios</string>
@@ -573,6 +576,8 @@
         <string name="download_with_external_app_summary">Use una app externa para descargar archivos.</string>
         <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
+        <string name="bottom_app_bar">Barra inferior de la app</string>
+        <string name="bottom_app_bar_summary">Mover la barra de apps a la parte inferior de la pantalla.  Al cambiar esta configuración se reiniciará Navegador Privado.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio,
             para abrir el cajón de marcadores y cambiar las cookies.</string>

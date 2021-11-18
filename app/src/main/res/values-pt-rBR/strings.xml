@@ -185,16 +185,12 @@
     <string name="file_is_mht">Este é um arquivo MHT da web.</string>
     <string name="mht_checkbox_explanation">Às vezes, os arquivos da web MIME Encapsulated HTML (MHT) precisam ser especificados manualmente para serem abertos corretamente.</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_url">Salvar URL</string>
     <string name="save_archive">Salvar Arquivo</string>
     <string name="save_text">Salvar Texto</string>
     <string name="save_image">Salvar Imagem</string>
-    <string name="save_logcat">Salvar logcat</string>
     <string name="file_name">Nome do Arquivo</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="privacy_browser_version_txt">Privacy Browser Versão.txt</string>
-    <string name="privacy_browser_version_png">Privacy Browser Versão.png</string>
     <string name="file">Arquivo</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">tamanho desconhecido</string>
@@ -369,10 +365,12 @@
     <string name="export_failed">A exportação falhou:</string>
     <string name="import_failed">A importação falhou:</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">Cópia</string>
-    <string name="logcat_copied">Logcat copiado.</string>
     <string name="clear">Limpar</string>
+    <string name="logcat_copied">Logcat copiado.</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
 
     <!-- Guide. -->
     <string name="overview">Visão geral</string>
@@ -390,7 +388,7 @@
     <string name="custom_proxy_invalid">O URL do proxy personalizado é inválido.</string>
     <string name="socks_proxies_do_not_work_on_kitkat">Os proxies SOCKS não funcionam no Android KitKat.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">Sobre o Privacy Browser</string>
     <string name="version">Versão</string>
         <string name="version_code">Código da Versão</string>
@@ -433,6 +431,8 @@
             <string name="serial_number">Número de série:</string>
             <string name="signature_algorithm">Algoritmo de Assinatura:</string>
         <string name="version_info_copied">Informações de versão copiada.</string>
+        <string name="privacy_browser_version_txt">Privacy Browser Versão %1$s.txt</string>
+        <string name="privacy_browser_version_png">Privacy Browser Versão %1$s.png</string>
     <string name="permissions">Permissões</string>
     <string name="privacy_policy">Política de Privacidade</string>
     <string name="changelog">Changelog</string>

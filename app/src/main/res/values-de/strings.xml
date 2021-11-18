@@ -27,6 +27,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
+    <string name="short_name">Browser</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">de</string>
 
@@ -190,16 +191,12 @@
     <string name="file_is_mht">Die Datei ist ein MHT-Web-Archiv.</string>
     <string name="mht_checkbox_explanation">Manchmal müssen MIME-gekapselte HTML-Web-Archive (MHT) manuell festgelegt werden, um korrekt geöffnet zu werden.</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_url">URL speichern</string>
     <string name="save_archive">Archiv speichern</string>
     <string name="save_text">Text speichern</string>
     <string name="save_image">Grafik speichern</string>
-    <string name="save_logcat">Logcat speichern</string>
     <string name="file_name">Dateiname</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
-    <string name="privacy_browser_version_png">Privacy Browser Version.png</string>
     <string name="file">Datei</string>
     <string name="bytes">Bytes</string>
     <string name="unknown_size">Unbekannte Größe</string>
@@ -374,10 +371,14 @@
     <string name="export_failed">Export fehlgeschlagen:</string>
     <string name="import_failed">Import fehlgeschlagen:</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">kopieren</string>
-    <string name="logcat_copied">Logcat kopiert.</string>
     <string name="clear">leeren</string>
+    <string name="logcat_copied">Logcat kopiert.</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="saved">%1$s gespeichert.</string>
+    <string name="error_saving_logcat">Fehler beim Speichern von Logcat: \u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Übersicht</string>
@@ -395,7 +396,7 @@
     <string name="custom_proxy_invalid">Die benutzerdefinierte Proxy-URL ist ungültig.</string>
     <string name="socks_proxies_do_not_work_on_kitkat">SOCKS-Proxies funktionieren nicht unter Android KitKat.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">Über Privacy Browser</string>
     <string name="version">Version</string>
         <string name="version_code">Versions-Code</string>
@@ -438,6 +439,8 @@
             <string name="serial_number">Seriennummer:</string>
             <string name="signature_algorithm">Signaturalgorithmus:</string>
         <string name="version_info_copied">Versions-Information wurde kopiert.</string>
+        <string name="privacy_browser_version_txt">Privacy Browser Version %1$s.txt</string>
+        <string name="privacy_browser_version_png">Privacy Browser Version %1$s.png</string>
     <string name="permissions">Berechtigungen</string>
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="changelog">Changelog</string>
@@ -575,6 +578,8 @@
         <string name="download_with_external_app_summary">Eine externe App verwenden, um Dateien herunterzuladen.</string>
         <string name="scroll_app_bar">App-Leiste scrollen</string>
         <string name="scroll_app_bar_summary">Scrollt die App-Leiste mit der URL nach oben, wenn die Webseite gescrollt wird.</string>
+        <string name="bottom_app_bar">Untere Anwendungs-Leiste</string>
+        <string name="bottom_app_bar_summary">Zeigt die Anwendungs-Leiste am unteren Bildschirmrand an. Nach Ändern dieser Einstellung wird Privacy Browser neu gestartet.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Icons zum Neu-Laden von WebView und - so genug Platz zur Verfügung steht -
             zum Öffnen der Lesezeichen und zum Umschalten von Cookies in der App-Leiste anzeigen.</string>

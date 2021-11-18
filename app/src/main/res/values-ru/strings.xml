@@ -21,6 +21,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
+    <string name="short_name">Браузер</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">ru</string> -->
 
@@ -183,16 +184,12 @@
     <string name="file_is_mht">Файл представляет собой веб-архив MHT.</string>
     <string name="mht_checkbox_explanation">Иногда для корректного открытия веб-архивов MIME Encapsulated HTML (MHT) необходимо указать вручную.</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_url">Сохранить URL</string>
     <string name="save_archive">Сохранить архив</string>
     <string name="save_text">Сохранить текст</string>
     <string name="save_image">Сохранить изображение</string>
-    <string name="save_logcat">Сохранить logcat</string>
     <string name="file_name">Имя файла</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="privacy_browser_version_txt">Версия Privacy Browser.txt</string>
-    <string name="privacy_browser_version_png">Версия Privacy Browser.png</string>
     <string name="file">Файл</string>
     <string name="bytes">байтов</string>
     <string name="unknown_size">неизвестный размер</string>
@@ -367,10 +364,14 @@
     <string name="export_failed">Сбой при экспорте:</string>
     <string name="import_failed">Сбой при импорте:</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">Копировать</string>
-    <string name="logcat_copied">Logcat скопирован.</string>
     <string name="clear">Очистить</string>
+    <string name="logcat_copied">Logcat скопирован.</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="saved">%1$s сохранен.</string>
+    <string name="error_saving_logcat">Ошибка сохранения logcat: \u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Обзор</string>
@@ -388,7 +389,7 @@
     <string name="custom_proxy_invalid">URL пользовательского прокси недействителен.</string>
     <string name="socks_proxies_do_not_work_on_kitkat">SOCKS-прокси не работает на Android KitKat.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">О Privacy Browser</string>
     <string name="version">Версия</string>
         <string name="version_code">код версии</string>
@@ -431,6 +432,8 @@
             <string name="serial_number">Серийный номер:</string>
             <string name="signature_algorithm">Алгоритм подписи:</string>
         <string name="version_info_copied">Информация о версии скопирована.</string>
+        <string name="privacy_browser_version_txt">Версия Privacy Browser %1$s.txt</string>
+        <string name="privacy_browser_version_png">Версия Privacy Browser %1$s.png</string>
     <string name="permissions">Разрешения</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="changelog">История изменений</string>
@@ -568,6 +571,8 @@
         <string name="download_with_external_app_summary">Использовать внешнее приложение для загрузки файлов.</string>
         <string name="scroll_app_bar">Прокручивать панель приложения</string>
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
+        <string name="bottom_app_bar">Нижняя панель приложения</string>
+        <string name="bottom_app_bar_summary">Перемещает панель приложения в нижнюю часть экрана. Изменение этой настройки приведет к перезапуску Privacy Browser.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Показывать в панели приложения значки для обновления WebView и, если есть место, для открытия окна закладок и переключения cookie.</string>
         <string name="app_theme">Тема приложения</string>

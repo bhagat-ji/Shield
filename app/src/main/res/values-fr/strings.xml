@@ -24,6 +24,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
+    <string name="short_name">Browser</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">fr</string>
 
@@ -187,16 +188,12 @@
     <string name="file_is_mht">Le fichier est une archive web MHT.</string>
     <string name="mht_checkbox_explanation">Parfois, les archives web MHT (MIME Encapsulated HTML) doivent être spécifiées manuellement pour être ouvertes correctement.</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_url">Enregistrer l\'URL</string>
     <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_text">Sauvegarder le texte</string>
     <string name="save_image">Sauvegarder en tant qu\'image</string>
-    <string name="save_logcat">Sauvegarder le journal système</string>
     <string name="file_name">Nom du fichier</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
-    <string name="privacy_browser_version_png">Privacy Browser Version.png</string>
     <string name="file">Fichier</string>
     <string name="bytes">octets</string>
     <string name="unknown_size">taille inconnue</string>
@@ -371,10 +368,14 @@
     <string name="export_failed">L\'export a échoué :</string>
     <string name="import_failed">L\'import a échoué :</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">Copie</string>
-    <string name="logcat_copied">Journal système copié.</string>
     <string name="clear">Vider</string>
+    <string name="logcat_copied">Journal système copié.</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="saved">%1$s sauvegardé.</string>
+    <string name="error_saving_logcat">Erreur de sauvegarde du logcat: \u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Présentation</string>
@@ -392,7 +393,7 @@
     <string name="custom_proxy_invalid">L\'URL du proxy personnalisé n\'est pas valide.</string>
     <string name="socks_proxies_do_not_work_on_kitkat">Les proxys de type SOCKS ne fonctionnent pas sur Android KitKat.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">À propos</string>
     <string name="version">Version</string>
         <string name="version_code">Code de la version</string>
@@ -435,6 +436,8 @@
             <string name="serial_number">Numéro de série :</string>
             <string name="signature_algorithm">Algorithme de chiffrement :</string>
         <string name="version_info_copied">Informations de version copiées.</string>
+        <string name="privacy_browser_version_txt">Privacy Browser Version %1$s.txt</string>
+        <string name="privacy_browser_version_png">Privacy Browser Version %1$s.png</string>
     <string name="permissions">Permissions</string>
     <string name="privacy_policy">Politique de confidentialité</string>
     <string name="changelog">Journal des changements</string>
@@ -571,6 +574,8 @@
         <string name="swipe_to_refresh_summary">Certains sites Web ne fonctionnent pas bien lorsque "Glisser pour rafraîchir" est activé.</string>
         <string name="download_with_external_app">Téléchargement avec une app externe</string>
         <string name="download_with_external_app_summary">Utiliser une application externe pour télécharger des fichiers.</string>
+        <string name="bottom_app_bar">Barre d\'application en bas</string>
+        <string name="bottom_app_bar_summary">Déplacer la barre d\'application vers le bas de l\'écran. La modification de ce paramètre entraîne le redémarrage de Privacy Browser.</string>
         <string name="scroll_app_bar">Défilement barre d\'applications</string>
         <string name="scroll_app_bar_summary">Faites défiler la barre d\'applications en haut de l\'écran lorsque WebView défile vers le bas.</string>
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>

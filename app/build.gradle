@@ -78,8 +78,8 @@ dependencies {
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'androidx.webkit:webkit:1.4.0'
 
-    // Include the Kotlin standard libraries.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31'
+    // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0'
 
     // Include the Google material library.
     implementation 'com.google.android.material:material:1.4.0'

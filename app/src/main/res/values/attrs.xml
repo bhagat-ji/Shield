@@ -73,7 +73,5 @@
     <attr name="lockBlueIcon" format="reference" />
     <attr name="moveToFolderBlueIcon" format="reference" />
     <attr name="proxyBlueIcon" format="reference" />
-    <attr name="saveBlueIcon" format="reference" />
-    <attr name="saveTextBlueIcon" format="reference" />
     <attr name="sslCertificateBlueIcon" format="reference" />
 </resources>

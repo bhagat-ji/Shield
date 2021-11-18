@@ -19,35 +19,20 @@
 
 package com.stoutner.privacybrowser.activities
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.LinearLayout
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.adapters.AboutPagerAdapter
-import com.stoutner.privacybrowser.asynctasks.SaveAboutVersionImage
-import com.stoutner.privacybrowser.dialogs.SaveDialog
-import com.stoutner.privacybrowser.dialogs.SaveDialog.SaveListener
-import com.stoutner.privacybrowser.fragments.AboutVersionFragment
 
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.lang.Exception
-import java.nio.charset.StandardCharsets
-
-class AboutActivity : AppCompatActivity(), SaveListener {
+class AboutActivity : AppCompatActivity() {
     // Declare the class variables.
     private lateinit var aboutPagerAdapter: AboutPagerAdapter
 
@@ -113,86 +98,5 @@ class AboutActivity : AppCompatActivity(), SaveListener {
 
         // Connect the tab layout to the view pager.
         aboutTabLayout.setupWithViewPager(aboutViewPager)
-    }
-
-    // The activity result is called after browsing for a file in the save alert dialog.
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, returnedIntent: Intent?) {
-        // Run the default commands.
-        super.onActivityResult(requestCode, resultCode, returnedIntent)
-
-        // Only do something if the user didn't press back from the file picker.
-        if (resultCode == RESULT_OK) {
-            // Get a handle for the save dialog fragment.
-            val saveDialogFragment = supportFragmentManager.findFragmentByTag(getString(R.string.save_dialog)) as DialogFragment?
-
-            // Only update the file name if the dialog still exists.
-            if (saveDialogFragment != null) {
-                // Get a handle for the save dialog.
-                val saveDialog = saveDialogFragment.dialog!!
-
-                // Get a handle for the file name edit text.
-                val fileNameEditText = saveDialog.findViewById<EditText>(R.id.file_name_edittext)
-
-                // Get the file name URI from the intent.
-                val fileNameUri = returnedIntent!!.data
-
-                // Get the file name string from the URI.
-                val fileNameString = fileNameUri.toString()
-
-                // Set the file name text.
-                fileNameEditText.setText(fileNameString)
-
-                // Move the cursor to the end of the file name edit text.
-                fileNameEditText.setSelection(fileNameString.length)
-            }
-        }
-    }
-
-    override fun onSave(saveType: Int, dialogFragment: DialogFragment) {
-        // Get a handle for the dialog.
-        val dialog = dialogFragment.dialog!!
-
-        // Get a handle for the file name edit text.
-        val fileNameEditText = dialog.findViewById<EditText>(R.id.file_name_edittext)
-
-        // Get the file name string.
-        val fileNameString = fileNameEditText.text.toString()
-
-        // Get a handle for the about version linear layout.
-        val aboutVersionLinearLayout = findViewById<LinearLayout>(R.id.about_version_linearlayout)
-
-        // Process the save event according to the type.
-        when (saveType) {
-            SaveDialog.SAVE_ABOUT_VERSION_TEXT -> try {
-                // Get a handle for the about version fragment.
-                val aboutVersionFragment = aboutPagerAdapter.getTabFragment(0) as AboutVersionFragment
-
-                // Get the about version text.
-                val aboutVersionString = aboutVersionFragment.aboutVersionString
-
-                // Create an input stream with the contents of about version.
-                val aboutVersionInputStream: InputStream = ByteArrayInputStream(aboutVersionString.toByteArray(StandardCharsets.UTF_8))
-
-                // Open an output stream.
-                val outputStream = contentResolver.openOutputStream(Uri.parse(fileNameString))!!
-
-                // Copy the input stream to the output stream.
-                aboutVersionInputStream.copyTo(outputStream, 2048)
-
-                // Close the streams.
-                aboutVersionInputStream.close()
-                outputStream.close()
-
-                // Display a snackbar with the saved about version information.
-                Snackbar.make(aboutVersionLinearLayout, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show()
-            } catch (exception: Exception) {
-                // Display a snackbar with the error message.
-                Snackbar.make(aboutVersionLinearLayout, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show()
-            }
-
-            SaveDialog.SAVE_ABOUT_VERSION_IMAGE ->
-                // Save the about version image.
-                SaveAboutVersionImage(this, fileNameString, aboutVersionLinearLayout).execute()
-        }
     }
 }

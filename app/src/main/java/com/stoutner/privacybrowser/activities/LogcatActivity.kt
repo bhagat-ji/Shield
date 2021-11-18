@@ -21,7 +21,6 @@ package com.stoutner.privacybrowser.activities
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -30,20 +29,19 @@ import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.ScrollView
 
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.google.android.material.snackbar.Snackbar
+import com.stoutner.privacybrowser.BuildConfig
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.dialogs.SaveDialog
 
 import java.io.BufferedReader
 import java.io.IOException
@@ -54,7 +52,7 @@ import java.nio.charset.StandardCharsets
 // Define the class constants.
 private const val SCROLLVIEW_POSITION = "scrollview_position"
 
-class LogcatActivity : AppCompatActivity(), SaveDialog.SaveListener {
+class LogcatActivity : AppCompatActivity() {
     // Define the class variables.
     private var scrollViewYPositionInt = 0
 
@@ -62,6 +60,50 @@ class LogcatActivity : AppCompatActivity(), SaveDialog.SaveListener {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var logcatScrollView: ScrollView
     private lateinit var logcatTextView: TextView
+
+    // Define the save logcat activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileNameUri: Uri? ->
+        // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
+        if (fileNameUri != null) {
+            try {
+                // Get the logcat string.
+                val logcatString = logcatTextView.text.toString()
+
+                // Open an output stream.
+                val outputStream = contentResolver.openOutputStream(fileNameUri)!!
+
+                // Write the logcat string to the output stream.
+                outputStream.write(logcatString.toByteArray(StandardCharsets.UTF_8))
+
+                // Close the output stream.
+                outputStream.close()
+
+                // Initialize the file name string from the file name URI last path segment.
+                var fileNameString = fileNameUri.lastPathSegment
+
+                // Query the exact file name if the API >= 26.
+                if (Build.VERSION.SDK_INT >= 26) {
+                    // Get a cursor from the content resolver.
+                    val contentResolverCursor = contentResolver.query(fileNameUri, null, null, null)!!
+
+                    // Move to the fist row.
+                    contentResolverCursor.moveToFirst()
+
+                    // Get the file name from the cursor.
+                    fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+
+                    // Close the cursor.
+                    contentResolverCursor.close()
+                }
+
+                // Display a snackbar with the saved logcat information.
+                Snackbar.make(logcatTextView, getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show()
+            } catch (exception: Exception) {
+                // Display a snackbar with the error message.
+                Snackbar.make(logcatTextView, getString(R.string.error_saving_logcat, exception.toString()), Snackbar.LENGTH_INDEFINITE).show()
+            }
+        }
+    }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
@@ -164,11 +206,8 @@ class LogcatActivity : AppCompatActivity(), SaveDialog.SaveListener {
             }
 
             R.id.save -> {  // Save was selected.
-                // Instantiate the save alert dialog.
-                val saveDialogFragment: DialogFragment = SaveDialog.save(SaveDialog.SAVE_LOGCAT)
-
-                // Show the save alert dialog.
-                saveDialogFragment.show(supportFragmentManager, getString(R.string.save_logcat))
+                // Open the file picker.
+                saveLogcatActivityResultLauncher.launch(getString(R.string.privacy_browser_logcat_txt, BuildConfig.VERSION_NAME))
 
                 // Consume the event.
                 true
@@ -238,84 +277,5 @@ class LogcatActivity : AppCompatActivity(), SaveDialog.SaveListener {
 
         // Stop the swipe to refresh animation if it is displayed.
         swipeRefreshLayout.isRefreshing = false
-    }
-
-    // The activity result is called after browsing for a file in the save alert dialog.
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, returnedIntent: Intent?) {
-        // Run the default commands.
-        super.onActivityResult(requestCode, resultCode, returnedIntent)
-
-        // Only do something if the user didn't press back from the file picker.
-        if (resultCode == RESULT_OK) {
-            // Get a handle for the save dialog fragment.
-            val saveDialogFragment = supportFragmentManager.findFragmentByTag(getString(R.string.save_logcat)) as DialogFragment?
-
-            // Only update the file name if the dialog still exists.
-            if (saveDialogFragment != null) {
-                // Get a handle for the save dialog.
-                val saveDialog = saveDialogFragment.dialog!!
-
-                // Get a handle for the file name edit text.
-                val fileNameEditText = saveDialog.findViewById<EditText>(R.id.file_name_edittext)
-
-                // Get the file name URI from the intent.
-                val fileNameUri = returnedIntent!!.data
-
-                // Get the file name string from the URI.
-                val fileNameString = fileNameUri.toString()
-
-                // Set the file name text.
-                fileNameEditText.setText(fileNameString)
-
-                // Move the cursor to the end of the file name edit text.
-                fileNameEditText.setSelection(fileNameString.length)
-            }
-        }
-    }
-
-    override fun onSave(saveType: Int, dialogFragment: DialogFragment) {
-        // Get a handle for the dialog.
-        val dialog = dialogFragment.dialog!!
-
-        // Get a handle for the file name edit text.
-        val fileNameEditText = dialog.findViewById<EditText>(R.id.file_name_edittext)
-
-        // Get the file path string.
-        var fileNameString = fileNameEditText.text.toString()
-
-        try {
-            // Get the logcat as a string.
-            val logcatString = logcatTextView.text.toString()
-
-            // Open an output stream.
-            val outputStream = contentResolver.openOutputStream(Uri.parse(fileNameString))!!
-
-            // Write the logcat string to the output stream.
-            outputStream.write(logcatString.toByteArray(StandardCharsets.UTF_8))
-
-            // Close the output stream.
-            outputStream.close()
-
-            // Get the actual file name if the API >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
-                // Get a cursor from the content resolver.
-                val contentResolverCursor = contentResolver.query(Uri.parse(fileNameString), null, null, null)!!
-
-                // Move to the first row.
-                contentResolverCursor.moveToFirst()
-
-                // Get the file name from the cursor.
-                fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-
-                // Close the cursor.
-                contentResolverCursor.close()
-            }
-
-            // Display a snackbar with the saved logcat information.
-            Snackbar.make(logcatTextView, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show()
-        } catch (exception: Exception) {
-            // Display a snackbar with the error message.
-            Snackbar.make(logcatTextView, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show()
-        }
     }
 }

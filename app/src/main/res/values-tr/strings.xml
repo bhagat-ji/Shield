@@ -172,12 +172,10 @@
     <string name="previous">Önceki</string>
     <string name="next">Sonraki</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_image">Resmi kaydet</string>
-    <string name="save_logcat">Logcat kaydet</string>
     <string name="file_name">Dosya adı</string>
     <string name="unknown_size">Bilinmeyen boyut</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
 
     <!-- View Source. -->
     <string name="request_headers">İstek Başlıkları</string>
@@ -332,10 +330,12 @@
     <string name="export_failed">Dışa aktarım başarısız:</string>
     <string name="import_failed">İçe aktarım başarısız:</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">Kopyala</string>
-    <string name="logcat_copied">Logcat kopyalandı.</string>
     <string name="clear">Temizle</string>
+    <string name="logcat_copied">Logcat kopyalandı.</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
 
     <!-- Guide. -->
     <string name="overview">Genel Bakış</string>

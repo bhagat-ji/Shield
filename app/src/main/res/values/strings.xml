@@ -192,17 +192,13 @@
     <string name="file_is_mht">The file is an MHT web archive.</string>
     <string name="mht_checkbox_explanation">Sometimes MIME Encapsulated HTML (MHT) web archives need to be manually specified to be opened correctly.</string>
 
-    <!-- Save Dialogs. -->
+    <!-- Save Dialog. -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
     <string name="save_url">Save URL</string>
     <string name="save_archive">Save Archive</string>
     <string name="save_text">Save Text</string>
     <string name="save_image">Save Image</string>
-    <string name="save_logcat">Save Logcat</string>
     <string name="file_name">File name</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
-    <string name="privacy_browser_version_txt">Privacy Browser Version.txt</string>
-    <string name="privacy_browser_version_png">Privacy Browser Version.png</string>
     <string name="file">File</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">unknown size</string>
@@ -377,10 +373,14 @@
     <string name="export_failed">Export failed:</string>
     <string name="import_failed">Import failed:</string>
 
-    <!-- Logcat. -->
+    <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
     <string name="copy">Copy</string>
-    <string name="logcat_copied">Logcat copied.</string>
     <string name="clear">Clear</string>
+    <string name="logcat_copied">Logcat copied.</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="saved">%1$s saved.</string>
+    <string name="error_saving_logcat">Error saving logcat: \u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Overview</string>
@@ -400,7 +400,7 @@
     <string name="custom_proxy_invalid">The custom proxy URL is invalid.</string>
     <string name="socks_proxies_do_not_work_on_kitkat">SOCKS proxies do not work on Android KitKat.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">About Privacy Browser</string>
     <string name="version">Version</string>
         <string name="version_code">version code</string>
@@ -443,6 +443,8 @@
             <string name="serial_number">Serial Number:</string>
             <string name="signature_algorithm">Signature Algorithm:</string>
         <string name="version_info_copied">Version info copied.</string>
+        <string name="privacy_browser_version_txt">Privacy Browser Version %1$s.txt</string>
+        <string name="privacy_browser_version_png">Privacy Browser Version %1$s.png</string>
     <string name="permissions">Permissions</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="changelog">Changelog</string>

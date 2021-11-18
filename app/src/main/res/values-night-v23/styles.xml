@@ -100,8 +100,6 @@
         <item name="lockBlueIcon">@drawable/lock_night</item>
         <item name="moveToFolderBlueIcon">@drawable/move_to_folder_blue_night</item>
         <item name="proxyBlueIcon">@drawable/proxy_enabled_night</item>
-        <item name="saveBlueIcon">@drawable/save_dialog_night</item>
-        <item name="saveTextBlueIcon">@drawable/save_text_blue_night</item>
         <item name="sslCertificateBlueIcon">@drawable/ssl_certificate_enabled_night</item>
     </style>
 </resources>

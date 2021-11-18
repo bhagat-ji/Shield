@@ -20,10 +20,13 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.OpenableColumns;
 import android.widget.LinearLayout;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -35,26 +38,45 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
+    // Declare the class constants.
+    private final String SUCCESS = "Success";
+
     // Declare the weak references.
     private final WeakReference<Activity> activityWeakReference;
     private final WeakReference<LinearLayout> aboutVersionLinearLayoutWeakReference;
 
-    // Declare the class constants.
-    private final String SUCCESS = "Success";
-
     // Declare the class variables.
     private Snackbar savingImageSnackbar;
     private Bitmap aboutVersionBitmap;
+    private final Uri fileNameUri;
     private final String fileNameString;
 
     // The public constructor.
-    public SaveAboutVersionImage(Activity activity, String fileNameString, LinearLayout aboutVersionLinearLayout) {
+    public SaveAboutVersionImage(Activity activity, Uri fileNameUri, LinearLayout aboutVersionLinearLayout) {
         // Populate the weak references.
         activityWeakReference = new WeakReference<>(activity);
         aboutVersionLinearLayoutWeakReference = new WeakReference<>(aboutVersionLinearLayout);
 
         // Store the class variables.
-        this.fileNameString = fileNameString;
+        this.fileNameUri = fileNameUri;
+
+        // Query the exact file name if the API >= 26.
+        if (Build.VERSION.SDK_INT >= 26) {
+            // Get a cursor from the content resolver.
+            Cursor contentResolverCursor = activity.getContentResolver().query(fileNameUri, null, null, null);
+
+            // Move to the first row.
+            contentResolverCursor.moveToFirst();
+
+            // Get the file name from the cursor.
+            fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+            // Close the cursor.
+            contentResolverCursor.close();
+        } else {
+            // Use the URI last path segment as the file name string.
+            fileNameString = fileNameUri.getLastPathSegment();
+        }
     }
 
     // `onPreExecute()` operates on the UI thread.
@@ -107,7 +129,7 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
 
         try {
             // Open an output stream.
-            OutputStream outputStream = activity.getContentResolver().openOutputStream(Uri.parse(fileNameString));
+            OutputStream outputStream = activity.getContentResolver().openOutputStream(fileNameUri);
 
             // Write the webpage image to the image file.
             aboutVersionByteArrayOutputStream.writeTo(outputStream);
