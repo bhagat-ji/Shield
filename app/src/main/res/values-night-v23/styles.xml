@@ -94,9 +94,7 @@
         <item name="blockAdsBlueIcon">@drawable/block_ads_enabled_night</item>
         <item name="copyBlueIcon">@drawable/copy_enabled_night</item>
         <item name="domainsBlueIcon">@drawable/domains_night</item>
-        <item name="domStorageBlueIcon">@drawable/dom_storage_cleared_night</item>
         <item name="fontSizeBlueIcon">@drawable/font_size_night</item>
-        <item name="imagesBlueIcon">@drawable/images_enabled_night</item>
         <item name="lockBlueIcon">@drawable/lock_night</item>
         <item name="moveToFolderBlueIcon">@drawable/move_to_folder_blue_night</item>
         <item name="proxyBlueIcon">@drawable/proxy_enabled_night</item>

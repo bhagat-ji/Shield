@@ -62,15 +62,15 @@ class LogcatActivity : AppCompatActivity() {
     private lateinit var logcatTextView: TextView
 
     // Define the save logcat activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileNameUri: Uri? ->
+    private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileUri: Uri? ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
-        if (fileNameUri != null) {
+        if (fileUri != null) {
             try {
                 // Get the logcat string.
                 val logcatString = logcatTextView.text.toString()
 
                 // Open an output stream.
-                val outputStream = contentResolver.openOutputStream(fileNameUri)!!
+                val outputStream = contentResolver.openOutputStream(fileUri)!!
 
                 // Write the logcat string to the output stream.
                 outputStream.write(logcatString.toByteArray(StandardCharsets.UTF_8))
@@ -78,13 +78,13 @@ class LogcatActivity : AppCompatActivity() {
                 // Close the output stream.
                 outputStream.close()
 
-                // Initialize the file name string from the file name URI last path segment.
-                var fileNameString = fileNameUri.lastPathSegment
+                // Initialize the file name string from the file URI last path segment.
+                var fileNameString = fileUri.lastPathSegment
 
                 // Query the exact file name if the API >= 26.
                 if (Build.VERSION.SDK_INT >= 26) {
                     // Get a cursor from the content resolver.
-                    val contentResolverCursor = contentResolver.query(fileNameUri, null, null, null)!!
+                    val contentResolverCursor = contentResolver.query(fileUri, null, null, null)!!
 
                     // Move to the fist row.
                     contentResolverCursor.moveToFirst()

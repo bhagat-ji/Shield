@@ -55,6 +55,7 @@ import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.provider.DocumentsContract;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -96,6 +97,9 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -138,7 +142,7 @@ import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.OpenDialog;
 import com.stoutner.privacybrowser.dialogs.ProxyNotInstalledDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
-import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
+import com.stoutner.privacybrowser.dialogs.SaveDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
@@ -182,7 +186,7 @@ import java.util.concurrent.Executors;
 
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener,
-        PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageDialog.SaveWebpageListener, UrlHistoryDialog.NavigateHistoryListener,
+        PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveListener, UrlHistoryDialog.NavigateHistoryListener,
         WebViewTabFragment.NewTabListener {
 
     // The executor service handles background tasks.  It is accessed from `ViewSourceActivity`.
@@ -212,10 +216,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
-    // Define the start activity for result request codes.  The public static entries are accessed from `OpenDialog()` and `SaveWebpageDialog()`.
+    // Define the start activity for result request codes.  The public static entry is accessed from `OpenDialog()`.
     private final int BROWSE_FILE_UPLOAD_REQUEST_CODE = 0;
     public final static int BROWSE_OPEN_REQUEST_CODE = 1;
-    public final static int BROWSE_SAVE_WEBPAGE_REQUEST_CODE = 2;
 
     // The proxy mode is public static so it can be accessed from `ProxyHelper()`.
     // It is also used in `onRestart()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxy()`.
@@ -308,6 +311,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // Define the class variables.
     private long lastScrollUpdate = 0;
+    private String saveUrlString = "";
 
     // Declare the class views.
     private FrameLayout rootFrameLayout;
@@ -376,12 +380,123 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private MenuItem optionsFontSizeMenuItem;
     private MenuItem optionsAddOrEditDomainMenuItem;
 
+    // This variable won't be needed once the class is migrated to Kotlin, as can be seen in LogcatActivity or AboutVersionFragment.
+    private Activity resultLauncherActivityHandle;
+
+    // Define the save URL activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    private final ActivityResultLauncher<String> saveUrlActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri fileUri) {
+                    // Only save the URL if the file URI is not null, which happens if the user exited the file picker by pressing back.
+                    if (fileUri != null) {
+                        new SaveUrl(getApplicationContext(), resultLauncherActivityHandle, fileUri, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies()).execute(saveUrlString);
+                    }
+
+                    // Reset the save URL string.
+                    saveUrlString = "";
+                }
+            });
+
+    // Define the save webpage archive activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    private final ActivityResultLauncher<String> saveWebpageArchiveActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri fileUri) {
+                    // Only save the webpage archive if the file URI is not null, which happens if the user exited the file picker by pressing back.
+                    if (fileUri != null) {
+                        try {
+                            // Create a temporary MHT file.
+                            File temporaryMhtFile = File.createTempFile("temporary_mht_file", ".mht", getCacheDir());
+
+                            // Save the temporary MHT file.
+                            currentWebView.saveWebArchive(temporaryMhtFile.toString(), false, callbackValue -> {
+                                if (callbackValue != null) {  // The temporary MHT file was saved successfully.
+                                    try {
+                                        // Create a temporary MHT file input stream.
+                                        FileInputStream temporaryMhtFileInputStream = new FileInputStream(temporaryMhtFile);
+
+                                        // Get an output stream for the save webpage file path.
+                                        OutputStream mhtOutputStream = getContentResolver().openOutputStream(fileUri);
+
+                                        // Create a transfer byte array.
+                                        byte[] transferByteArray = new byte[1024];
+
+                                        // Create an integer to track the number of bytes read.
+                                        int bytesRead;
+
+                                        // Copy the temporary MHT file input stream to the MHT output stream.
+                                        while ((bytesRead = temporaryMhtFileInputStream.read(transferByteArray)) > 0) {
+                                            mhtOutputStream.write(transferByteArray, 0, bytesRead);
+                                        }
+
+                                        // Close the streams.
+                                        mhtOutputStream.close();
+                                        temporaryMhtFileInputStream.close();
+
+                                        // Initialize the file name string from the file URI last path segment.
+                                        String fileNameString = fileUri.getLastPathSegment();
+
+                                        // Query the exact file name if the API >= 26.
+                                        if (Build.VERSION.SDK_INT >= 26) {
+                                            // Get a cursor from the content resolver.
+                                            Cursor contentResolverCursor = resultLauncherActivityHandle.getContentResolver().query(fileUri, null, null, null);
+
+                                            // Move to the fist row.
+                                            contentResolverCursor.moveToFirst();
+
+                                            // Get the file name from the cursor.
+                                            fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+                                            // Close the cursor.
+                                            contentResolverCursor.close();
+                                        }
+
+                                        // Display a snackbar.
+                                        Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
+                                    } catch (Exception exception) {
+                                        // Display a snackbar with the exception.
+                                        Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                                    } finally {
+                                        // Delete the temporary MHT file.
+                                        //noinspection ResultOfMethodCallIgnored
+                                        temporaryMhtFile.delete();
+                                    }
+                                } else {  // There was an unspecified error while saving the temporary MHT file.
+                                    // Display an error snackbar.
+                                    Snackbar.make(currentWebView, getString(R.string.error_saving_file), Snackbar.LENGTH_INDEFINITE).show();
+                                }
+                            });
+                        } catch (IOException ioException) {
+                            // Display a snackbar with the IO exception.
+                            Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + ioException.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                        }
+                    }
+                }
+            });
+
+    // Define the save webpage image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    private final ActivityResultLauncher<String> saveWebpageImageActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri fileUri) {
+                    // Only save the webpage image if the file URI is not null, which happens if the user exited the file picker by pressing back.
+                    if (fileUri != null) {
+                        // Save the webpage image.
+                        new SaveWebpageImage(resultLauncherActivityHandle, fileUri, currentWebView).execute();
+                    }
+                }
+            });
+
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with WebView.
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Run the default commands.
         super.onCreate(savedInstanceState);
+
+        // Populate the result launcher activity.  This will no longer be needed once the activity has transitioned to Kotlin.
+        resultLauncherActivityHandle = this;
 
         // Check to see if the activity has been restarted.
         if (savedInstanceState != null) {
@@ -1743,28 +1858,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 downloadUrlWithExternalApp(currentWebView.getCurrentUrl());
             } else {  // Handle the download inside of Privacy Browser.
                 // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
                         currentWebView.getAcceptCookies()).execute(currentWebView.getCurrentUrl());
             }
 
             // Consume the event.
             return true;
         } else if (menuItemId == R.id.save_archive) {
-            // Instantiate the save dialog.
-            DialogFragment saveArchiveFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_ARCHIVE, currentWebView.getCurrentUrl(), null, null, null,
-                    false);
+            // Open the file picker with a default file name built from the current domain name.
+            saveWebpageArchiveActivityResultLauncher.launch(currentWebView.getCurrentDomainName() + ".mht");
 
-            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-            saveArchiveFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
+            // Consume the event.
             return true;
         } else if (menuItemId == R.id.save_image) {  // Save image.
-            // Instantiate the save dialog.
-            DialogFragment saveImageFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_IMAGE, currentWebView.getCurrentUrl(), null, null, null,
-                    false);
-
-            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-            saveImageFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+            // Open the file picker with a default file name built from the current domain name.
+            saveWebpageImageActivityResultLauncher.launch(currentWebView.getCurrentDomainName() + ".png");
 
             // Consume the event.
             return true;
@@ -2246,7 +2354,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(linkUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
                                 currentWebView.getAcceptCookies()).execute(linkUrl);
                     }
 
@@ -2318,7 +2426,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(imageUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
                                 currentWebView.getAcceptCookies()).execute(imageUrl);
                     }
 
@@ -2423,7 +2531,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(imageUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
                                 currentWebView.getAcceptCookies()).execute(imageUrl);
                     }
 
@@ -2450,7 +2558,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(linkUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), SaveWebpageDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
                                 currentWebView.getAcceptCookies()).execute(linkUrl);
                     }
 
@@ -2798,38 +2906,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
                 break;
-
-            case BROWSE_SAVE_WEBPAGE_REQUEST_CODE:
-                // Don't do anything if the user pressed back from the file picker.
-                if (resultCode == Activity.RESULT_OK) {
-                    // Get a handle for the save dialog fragment.
-                    DialogFragment saveWebpageDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_dialog));
-
-                    // Only update the file name if the dialog still exists.
-                    if (saveWebpageDialogFragment != null) {
-                        // Get a handle for the save webpage dialog.
-                        Dialog saveWebpageDialog = saveWebpageDialogFragment.getDialog();
-
-                        // Remove the incorrect lint warning below that the dialog might be null.
-                        assert saveWebpageDialog != null;
-
-                        // Get a handle for the file name edit text.
-                        EditText fileNameEditText = saveWebpageDialog.findViewById(R.id.file_name_edittext);
-
-                        // Get the file name URI from the intent.
-                        Uri fileNameUri = returnedIntent.getData();
-
-                        // Get the file name string from the URI.
-                        String fileNameString = fileNameUri.toString();
-
-                        // Set the file name text.
-                        fileNameEditText.setText(fileNameString);
-
-                        // Move the cursor to the end of the file name edit text.
-                        fileNameEditText.setSelection(fileNameString.length());
-                    }
-                }
-                break;
         }
     }
 
@@ -3050,97 +3126,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         startActivity(Intent.createChooser(downloadIntent, getString(R.string.download_with_external_app)));
     }
 
-    public void onSaveWebpage(int saveType, @NonNull String originalUrlString, DialogFragment dialogFragment) {
-        // Get the dialog.
-        Dialog dialog = dialogFragment.getDialog();
+    public void onSaveUrl(@NonNull String originalUrlString, @NonNull String fileNameString, @NonNull DialogFragment dialogFragment) {
+        // Store the URL.  This will be used in the save URL activity result launcher.
+        if (originalUrlString.startsWith("data:")) {
+            // Save the original URL.
+            saveUrlString = originalUrlString;
+        } else {
+            // Get the dialog.
+            Dialog dialog = dialogFragment.getDialog();
 
-        // Remove the incorrect lint warning below that the dialog might be null.
-        assert dialog != null;
+            // Remove the incorrect lint warning below that the dialog might be null.
+            assert dialog != null;
 
-        // Get a handle for the file name edit text.
-        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
+            // Get a handle for the dialog URL edit text.
+            EditText dialogUrlEditText = dialog.findViewById(R.id.url_edittext);
 
-        // Get the file path from the edit text.
-        String saveWebpageFilePath = fileNameEditText.getText().toString();
-
-        //Save the webpage according to the save type.
-        switch (saveType) {
-            case SaveWebpageDialog.SAVE_URL:
-                // Get a handle for the dialog URL edit text.
-                EditText dialogUrlEditText = dialog.findViewById(R.id.url_edittext);
-
-                // Define the save webpage URL.
-                String saveWebpageUrl;
-
-                // Store the URL.
-                if (originalUrlString.startsWith("data:")) {
-                    // Save the original URL.
-                    saveWebpageUrl = originalUrlString;
-                } else {
-                    // Get the URL from the edit text, which may have been modified.
-                    saveWebpageUrl = dialogUrlEditText.getText().toString();
-                }
-
-                // Save the URL.
-                new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies()).execute(saveWebpageUrl);
-                break;
-
-            case SaveWebpageDialog.SAVE_ARCHIVE:
-                try {
-                    // Create a temporary MHT file.
-                    File temporaryMhtFile = File.createTempFile("temporary_mht_file", ".mht", getCacheDir());
-
-                    // Save the temporary MHT file.
-                    currentWebView.saveWebArchive(temporaryMhtFile.toString(), false, callbackValue -> {
-                        if (callbackValue != null) {  // The temporary MHT file was saved successfully.
-                            try {
-                                // Create a temporary MHT file input stream.
-                                FileInputStream temporaryMhtFileInputStream = new FileInputStream(temporaryMhtFile);
-
-                                // Get an output stream for the save webpage file path.
-                                OutputStream mhtOutputStream = getContentResolver().openOutputStream(Uri.parse(saveWebpageFilePath));
-
-                                // Create a transfer byte array.
-                                byte[] transferByteArray = new byte[1024];
-
-                                // Create an integer to track the number of bytes read.
-                                int bytesRead;
-
-                                // Copy the temporary MHT file input stream to the MHT output stream.
-                                while ((bytesRead = temporaryMhtFileInputStream.read(transferByteArray)) > 0) {
-                                    mhtOutputStream.write(transferByteArray, 0, bytesRead);
-                                }
-
-                                // Close the streams.
-                                mhtOutputStream.close();
-                                temporaryMhtFileInputStream.close();
-
-                                // Display a snackbar.
-                                Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + currentWebView.getCurrentUrl(), Snackbar.LENGTH_SHORT).show();
-                            } catch (Exception exception) {
-                                // Display a snackbar with the exception.
-                                Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
-                            } finally {
-                                // Delete the temporary MHT file.
-                                //noinspection ResultOfMethodCallIgnored
-                                temporaryMhtFile.delete();
-                            }
-                        } else {  // There was an unspecified error while saving the temporary MHT file.
-                            // Display an error snackbar.
-                            Snackbar.make(currentWebView, getString(R.string.error_saving_file), Snackbar.LENGTH_INDEFINITE).show();
-                        }
-                    });
-                } catch (IOException ioException) {
-                    // Display a snackbar with the IO exception.
-                    Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + ioException.toString(), Snackbar.LENGTH_INDEFINITE).show();
-                }
-                break;
-
-            case SaveWebpageDialog.SAVE_IMAGE:
-                // Save the webpage image.
-                new SaveWebpageImage(this, saveWebpageFilePath, currentWebView).execute();
-                break;
+            // Get the URL from the edit text, which may have been modified.
+            saveUrlString = dialogUrlEditText.getText().toString();
         }
+
+        // Open the file picker.
+        saveUrlActivityResultLauncher.launch(fileNameString);
     }
     
     // Remove the warning that `OnTouchListener()` needs to override `performClick()`, as the only purpose of setting the `OnTouchListener()` is to make it do nothing.
@@ -5383,7 +5389,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 String fileNameString = PrepareSaveDialog.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
 
                 // Instantiate the save dialog.
-                DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
+                DialogFragment saveDialogFragment = SaveDialog.saveUrl(downloadUrl, formattedFileSizeString, fileNameString, userAgent,
                         nestedScrollWebView.getAcceptCookies());
 
                 // Try to show the dialog.  The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.

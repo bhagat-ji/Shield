@@ -32,7 +32,7 @@ import androidx.fragment.app.FragmentManager;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.dataclasses.PendingDialog;
-import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
+import com.stoutner.privacybrowser.dialogs.SaveDialog;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 import java.lang.ref.WeakReference;
@@ -48,20 +48,18 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
     private final WeakReference<FragmentManager> fragmentManagerWeakReference;
 
     // Define the class variables.
-    private final int saveType;
     private final String userAgent;
     private final boolean cookiesEnabled;
     private String urlString;
 
     // The public constructor.
-    public PrepareSaveDialog(Activity activity, Context context, FragmentManager fragmentManager, int saveType, String userAgent, boolean cookiesEnabled) {
+    public PrepareSaveDialog(Activity activity, Context context, FragmentManager fragmentManager, String userAgent, boolean cookiesEnabled) {
         // Populate the weak references.
         activityWeakReference = new WeakReference<>(activity);
         contextWeakReference = new WeakReference<>(context);
         fragmentManagerWeakReference = new WeakReference<>(fragmentManager);
 
         // Store the class variables.
-        this.saveType = saveType;
         this.userAgent = userAgent;
         this.cookiesEnabled = cookiesEnabled;
     }
@@ -90,7 +88,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
             // Remove `data:` from the beginning of the URL.
             String urlWithoutData = urlString.substring(5);
 
-            // Get the URL MIME type, which end with a `;`.
+            // Get the URL MIME type, which ends with a `;`.
             String urlMimeType = urlWithoutData.substring(0, urlWithoutData.indexOf(";"));
 
             // Get the Base64 data, which begins after a `,`.
@@ -201,7 +199,7 @@ public class PrepareSaveDialog extends AsyncTask<String, Void, String[]> {
         }
 
         // Instantiate the save dialog.
-        DialogFragment saveDialogFragment = SaveWebpageDialog.saveWebpage(saveType, urlString, fileStringArray[0], fileStringArray[1], userAgent, cookiesEnabled);
+        DialogFragment saveDialogFragment = SaveDialog.saveUrl(urlString, fileStringArray[0], fileStringArray[1], userAgent, cookiesEnabled);
 
         // Try to show the dialog.  Sometimes the window is not active.
         try {

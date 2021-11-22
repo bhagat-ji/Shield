@@ -21,8 +21,11 @@ package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.OpenableColumns;
 import android.util.Base64;
 import android.webkit.CookieManager;
 
@@ -41,32 +44,50 @@ import java.net.URL;
 import java.text.NumberFormat;
 
 public class SaveUrl extends AsyncTask<String, Long, String> {
-    // Define a weak references.
+    // Declare the weak references.
     private final WeakReference<Context> contextWeakReference;
     private final WeakReference<Activity> activityWeakReference;
 
     // Define a success string constant.
     private final String SUCCESS = "Success";
 
-    // Define the class variables.
-    private final String filePathString;
+    // Declare the class variables.
+    private final Uri fileUri;
     private final String userAgent;
     private final boolean cookiesEnabled;
     private Snackbar savingFileSnackbar;
     private long fileSize;
     private String formattedFileSize;
-    private String urlString = "";
+    private final String fileNameString;
 
     // The public constructor.
-    public SaveUrl(Context context, Activity activity, String filePathString, String userAgent, boolean cookiesEnabled) {
+    public SaveUrl(Context context, Activity activity, Uri fileUri, String userAgent, boolean cookiesEnabled) {
         // Populate weak references to the calling context and activity.
         contextWeakReference = new WeakReference<>(context);
         activityWeakReference = new WeakReference<>(activity);
 
         // Store the class variables.
-        this.filePathString = filePathString;
+        this.fileUri = fileUri;
         this.userAgent = userAgent;
         this.cookiesEnabled = cookiesEnabled;
+
+        // Query the exact file name if the API >= 26.
+        if (Build.VERSION.SDK_INT >= 26) {
+            // Get a cursor from the content resolver.
+            Cursor contentResolverCursor = activity.getContentResolver().query(fileUri, null, null, null);
+
+            // Move to the first row.
+            contentResolverCursor.moveToFirst();
+
+            // Get the file name from the cursor.
+            fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+            // Close the cursor.
+            contentResolverCursor.close();
+        } else {
+            // Use the file URI last path segment as the file name string.
+            fileNameString = fileUri.getLastPathSegment();
+        }
     }
 
     // `onPreExecute()` operates on the UI thread.
@@ -84,7 +105,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         NoSwipeViewPager noSwipeViewPager = activity.findViewById(R.id.webviewpager);
 
         // Create a saving file snackbar.
-        savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file) + "  0%  -  " + urlString, Snackbar.LENGTH_INDEFINITE);
+        savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file) + "  0%  -  " + fileNameString, Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving file snackbar.
         savingFileSnackbar.show();
@@ -105,11 +126,11 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         String saveDisposition = SUCCESS;
 
         // Get the URL string.
-        urlString = urlToSave[0];
+        String urlString = urlToSave[0];
 
         try {
             // Open an output stream.
-            OutputStream outputStream = activity.getContentResolver().openOutputStream(Uri.parse(filePathString));
+            OutputStream outputStream = activity.getContentResolver().openOutputStream(fileUri);
 
             // Save the URL.
             if (urlString.startsWith("data:")) {  // The URL contains the entire data of an image.
@@ -227,14 +248,14 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         // Check to see if the file size is known.
         if (fileSize == -1) {  // The size of the download file is not known.
             // Update the snackbar.
-            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + "  -  " + urlString);
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + "  -  " + fileNameString);
         } else {  // The size of the download file is known.
             // Calculate the download percentage.
             long downloadPercentage = (numberOfBytesDownloaded[0] * 100) / fileSize;
 
             // Update the snackbar.
-            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + downloadPercentage + "%  -  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + " / " + formattedFileSize + " " +
-                    activity.getString(R.string.bytes) + "  -  " + urlString);
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + downloadPercentage + "%  -  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + " / " +
+                    formattedFileSize + " " + activity.getString(R.string.bytes) + "  -  " + fileNameString);
         }
     }
 
@@ -258,7 +279,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         // Display a save disposition snackbar.
         if (saveDisposition.equals(SUCCESS)) {
             // Display the file saved snackbar.
-            Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + urlString, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_LONG).show();
         } else {
             // Display the file saving error.
             Snackbar.make(noSwipeViewPager, activity.getString(R.string.error_saving_file) + "  " + saveDisposition, Snackbar.LENGTH_INDEFINITE).show();

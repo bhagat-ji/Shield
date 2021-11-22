@@ -20,10 +20,13 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.OpenableColumns;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -45,16 +48,35 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
     // Declare the class variables.
     private Snackbar savingImageSnackbar;
     private Bitmap webpageBitmap;
-    private final String filePathString;
+    private final Uri fileUri;
+    private final String fileNameString;
 
     // The public constructor.
-    public SaveWebpageImage(Activity activity, String filePathString, NestedScrollWebView nestedScrollWebView) {
+    public SaveWebpageImage(Activity activity, Uri fileUri, NestedScrollWebView nestedScrollWebView) {
         // Populate the weak references.
         activityWeakReference = new WeakReference<>(activity);
         nestedScrollWebViewWeakReference = new WeakReference<>(nestedScrollWebView);
 
         // Populate the class variables.
-        this.filePathString = filePathString;
+        this.fileUri = fileUri;
+
+        // Query the exact file name if the API >= 26.
+        if (Build.VERSION.SDK_INT >= 26) {
+            // Get a cursor from the content resolver.
+            Cursor contentResolverCursor = activity.getContentResolver().query(fileUri, null, null, null);
+
+            // Move to the first row.
+            contentResolverCursor.moveToFirst();
+
+            // Get the file name from the cursor.
+            fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+            // Close the cursor.
+            contentResolverCursor.close();
+        } else {
+            // Use the file URI last path segment as the file name string.
+            fileNameString = fileUri.getLastPathSegment();
+        }
     }
 
     // `onPreExecute()` operates on the UI thread.
@@ -70,7 +92,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
         }
 
         // Create a saving image snackbar.
-        savingImageSnackbar = Snackbar.make(nestedScrollWebView, activity.getString(R.string.processing_image) + "  " + nestedScrollWebView.getCurrentUrl(), Snackbar.LENGTH_INDEFINITE);
+        savingImageSnackbar = Snackbar.make(nestedScrollWebView, activity.getString(R.string.processing_image) + "  " + fileNameString, Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving image snackbar.
         savingImageSnackbar.show();
@@ -106,7 +128,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
 
         try {
             // Create an image file output stream.
-            OutputStream imageFileOutputStream = activity.getContentResolver().openOutputStream(Uri.parse(filePathString));
+            OutputStream imageFileOutputStream = activity.getContentResolver().openOutputStream(fileUri);
 
             // Write the webpage image to the image file.
             webpageByteArrayOutputStream.writeTo(imageFileOutputStream);
@@ -137,7 +159,7 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
         // Display a file creation disposition snackbar.
         if (fileCreationDisposition.equals(SUCCESS)) {
             // Display the image saved snackbar.
-            Snackbar.make(nestedScrollWebView, activity.getString(R.string.image_saved) + "  " + nestedScrollWebView.getCurrentUrl(), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(nestedScrollWebView, activity.getString(R.string.image_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
         } else {
             // Display the file saving error.
             Snackbar.make(nestedScrollWebView, activity.getString(R.string.error_saving_file) + "  " + fileCreationDisposition, Snackbar.LENGTH_INDEFINITE).show();

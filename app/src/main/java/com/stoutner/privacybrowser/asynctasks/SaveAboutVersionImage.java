@@ -48,22 +48,22 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
     // Declare the class variables.
     private Snackbar savingImageSnackbar;
     private Bitmap aboutVersionBitmap;
-    private final Uri fileNameUri;
+    private final Uri fileUri;
     private final String fileNameString;
 
     // The public constructor.
-    public SaveAboutVersionImage(Activity activity, Uri fileNameUri, LinearLayout aboutVersionLinearLayout) {
+    public SaveAboutVersionImage(Activity activity, Uri fileUri, LinearLayout aboutVersionLinearLayout) {
         // Populate the weak references.
         activityWeakReference = new WeakReference<>(activity);
         aboutVersionLinearLayoutWeakReference = new WeakReference<>(aboutVersionLinearLayout);
 
         // Store the class variables.
-        this.fileNameUri = fileNameUri;
+        this.fileUri = fileUri;
 
         // Query the exact file name if the API >= 26.
         if (Build.VERSION.SDK_INT >= 26) {
             // Get a cursor from the content resolver.
-            Cursor contentResolverCursor = activity.getContentResolver().query(fileNameUri, null, null, null);
+            Cursor contentResolverCursor = activity.getContentResolver().query(fileUri, null, null, null);
 
             // Move to the first row.
             contentResolverCursor.moveToFirst();
@@ -75,7 +75,7 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
             contentResolverCursor.close();
         } else {
             // Use the URI last path segment as the file name string.
-            fileNameString = fileNameUri.getLastPathSegment();
+            fileNameString = fileUri.getLastPathSegment();
         }
     }
 
@@ -129,7 +129,7 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
 
         try {
             // Open an output stream.
-            OutputStream outputStream = activity.getContentResolver().openOutputStream(fileNameUri);
+            OutputStream outputStream = activity.getContentResolver().openOutputStream(fileUri);
 
             // Write the webpage image to the image file.
             aboutVersionByteArrayOutputStream.writeTo(outputStream);

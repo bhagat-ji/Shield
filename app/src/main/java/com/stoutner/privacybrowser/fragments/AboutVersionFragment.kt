@@ -154,15 +154,15 @@ class AboutVersionFragment : Fragment() {
     }
 
     // Define the save about version text activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileNameUri: Uri? ->
+    private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileUri: Uri? ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
-        if (fileNameUri != null) {
+        if (fileUri != null) {
             try {
                 // Get the about version string.
                 val aboutVersionString = getAboutVersionString()
 
                 // Open an output stream.
-                val outputStream = requireActivity().contentResolver.openOutputStream(fileNameUri)!!
+                val outputStream = requireActivity().contentResolver.openOutputStream(fileUri)!!
 
                 // Write the about version string to the output stream.
                 outputStream.write(aboutVersionString.toByteArray(StandardCharsets.UTF_8))
@@ -170,13 +170,13 @@ class AboutVersionFragment : Fragment() {
                 // Close the output stream.
                 outputStream.close()
 
-                // Initialize the file name string from the file name URI last path segment.
-                var fileNameString = fileNameUri.lastPathSegment
+                // Initialize the file name string from the file URI last path segment.
+                var fileNameString = fileUri.lastPathSegment
 
                 // Query the exact file name if the API >= 26.
                 if (Build.VERSION.SDK_INT >= 26) {
                     // Get a cursor from the content resolver.
-                    val contentResolverCursor = requireActivity().contentResolver.query(fileNameUri, null, null, null)!!
+                    val contentResolverCursor = requireActivity().contentResolver.query(fileUri, null, null, null)!!
 
                     // Move to the first row.
                     contentResolverCursor.moveToFirst()
@@ -198,11 +198,11 @@ class AboutVersionFragment : Fragment() {
     }
 
     // Define the save about version image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveAboutVersionImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileNameUri: Uri? ->
+    private val saveAboutVersionImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileUri: Uri? ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
-        if (fileNameUri != null) {
+        if (fileUri != null) {
             // Save the about version image.
-            SaveAboutVersionImage(requireActivity(), fileNameUri, aboutVersionLayout.findViewById(R.id.about_version_linearlayout)).execute()
+            SaveAboutVersionImage(requireActivity(), fileUri, aboutVersionLayout.findViewById(R.id.about_version_linearlayout)).execute()
         }
     }
 

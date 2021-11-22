@@ -67,9 +67,7 @@
     <attr name="blockAdsBlueIcon" format="reference" />
     <attr name="copyBlueIcon" format="reference" />
     <attr name="domainsBlueIcon" format="reference" />
-    <attr name="domStorageBlueIcon" format="reference" />
     <attr name="fontSizeBlueIcon" format="reference" />
-    <attr name="imagesBlueIcon" format="reference" />
     <attr name="lockBlueIcon" format="reference" />
     <attr name="moveToFolderBlueIcon" format="reference" />
     <attr name="proxyBlueIcon" format="reference" />
