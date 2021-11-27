@@ -1,0 +1,6 @@
+• Simplifcation des fenêtres de sauvegarde.
+• Affichage du nom du fichier sauvegardé dans les écrans d'enregistrement.
+• Changement du nom raccourci de l'application de Privacy à Browser.
+• Correction d'un plantage si un sélecteur est ouvert alors que l'application est redémarrée.
+• Passage de l'API cible à 31 (Android 12).
+• Traduction française mise à jour fournie par Kévin L.

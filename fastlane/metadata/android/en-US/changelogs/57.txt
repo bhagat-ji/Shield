@@ -1,0 +1,5 @@
+• Simplify the save dialogs.
+• Display the saved file name in the save snackbars.
+• Change the short app name from Privacy to Browser.
+• Fix a crash if a drawer is opened while the app is restarted.
+• Bump the target API to 31 (Android 12).

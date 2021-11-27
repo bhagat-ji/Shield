@@ -1,0 +1,6 @@
+• Simplificar los diálogos de guardado.
+• Mostrar el nombre del archivo guardado en las barras de herramientas de guardado.
+• Cambiar el nombre corto de la app de Privacidad a Navegador.
+• Corregir un fallo si se abre un cajón mientras se reinicia la app.
+• Aumentar la API objetivo a 31 (Android 12).
+• Actualizada la traducción al español proporcionada por Jose A. León.

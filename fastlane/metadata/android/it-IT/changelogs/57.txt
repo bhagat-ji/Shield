@@ -1,0 +1,6 @@
+• Semplificazione delle finestre di salvataggio.
+• Visualizzazione del nome del file salvato nelle snackbar di salvataggio.
+• Modifica del nome breve dell'app da Privacy a Browser.
+• Sistemazione di un crash che avveniva quando un menù a cassetto veniva aperto mentre la app si riavviava.
+• Spostamento della target API a 31 (Android 12).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
