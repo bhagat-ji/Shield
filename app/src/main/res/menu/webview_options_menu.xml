@@ -402,10 +402,4 @@
         android:title="@string/add_domain_settings"
         android:orderInCategory="1400"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/ad_consent"
-        android:title="@string/ad_consent"
-        android:orderInCategory="1500"
-        app:showAsAction="never" />
 </menu>
