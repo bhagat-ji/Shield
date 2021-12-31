@@ -179,15 +179,15 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Store the current folder values.
-        val currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME))
-        val currentDisplayOrder = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER))
-        val parentFolder = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER))
+        val currentFolderName = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+        val currentDisplayOrder = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER))
+        val parentFolder = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER))
 
         // Populate the database ID text view.
-        databaseIdTextView.text = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper._ID)).toString()
+        databaseIdTextView.text = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID)).toString()
 
         // Get the current favorite icon byte array from the cursor.
-        val currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON))
+        val currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
 
         // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
         val currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.size)
@@ -232,7 +232,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
                     spinnerItemImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.folder_gray))
                 } else {  // Set a user folder icon.
                     // Get the folder icon byte array.
-                    val folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON))
+                    val folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
 
                     // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
                     val folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.size)
@@ -242,7 +242,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
                 }
 
                 // Set the text view to display the folder name.
-                spinnerItemTextView.text = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME))
+                spinnerItemTextView.text = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
             }
         }
 
@@ -255,7 +255,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         // Select the current folder in the spinner if the bookmark isn't in the "Home Folder".
         if (parentFolder != "") {
             // Get the database ID of the parent folder as a long.
-            val parentFolderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER))).toLong()
+            val parentFolderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderCursor.getString(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER))).toLong()
 
             // Initialize the parent folder position and the iteration variable.
             var parentFolderPosition = 0
@@ -281,7 +281,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         val currentParentFolderDatabaseId = parentFolderSpinner.selectedItemId.toInt()
 
         // Populate the display order edit text.
-        displayOrderEditText.setText(folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)).toString())
+        displayOrderEditText.setText(folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)).toString())
 
         // Initially disable the edit button.
         saveButton.isEnabled = false
@@ -462,7 +462,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
             subfoldersCursor.moveToPosition(i)
 
             // Get the name of the subfolder.
-            val subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME))
+            val subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
 
             // Add a comma to the end of the existing string.
             currentAndSubfolderStringBuilder.append(",")

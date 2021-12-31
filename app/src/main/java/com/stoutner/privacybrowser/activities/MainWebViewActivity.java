@@ -21,6 +21,7 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -170,7 +171,6 @@ import java.net.URLEncoder;
 import java.text.NumberFormat;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -186,24 +186,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveListener, UrlHistoryDialog.NavigateHistoryListener,
         WebViewTabFragment.NewTabListener {
 
-    // The executor service handles background tasks.  It is accessed from `ViewSourceActivity`.
+    // Define the public static variables.
     public static ExecutorService executorService = Executors.newFixedThreadPool(4);
-
-    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
     public static String orbotStatus = "unknown";
+    public static ArrayList<PendingDialog> pendingDialogsArrayList =  new ArrayList<>();
+    public static String proxyMode = ProxyHelper.NONE;
 
-    // The WebView pager adapter is accessed from `HttpAuthenticationDialog`, `PinnedMismatchDialog`, and `SslCertificateErrorDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
+    // Declare the public static variables.
+    public static String currentBookmarksFolder;
+    public static boolean restartFromBookmarksActivity;
     public static WebViewPagerAdapter webViewPagerAdapter;
 
-    // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
-    public static boolean restartFromBookmarksActivity;
-
-    // Define the public static variables.
-    public static ArrayList<PendingDialog> pendingDialogsArrayList =  new ArrayList<>();
-
-    // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
-    // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
-    public static String currentBookmarksFolder;
+    // Declare the public static views.
+    public static AppBarLayout appBarLayout;
 
     // The user agent constants are public static so they can be accessed from `SettingsFragment`, `DomainsActivity`, and `DomainSettingsFragment`.
     public final static int UNRECOGNIZED_USER_AGENT = -1;
@@ -216,11 +211,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Define the start activity for result request codes.  The public static entry is accessed from `OpenDialog()`.
     private final int BROWSE_FILE_UPLOAD_REQUEST_CODE = 0;
     public final static int BROWSE_OPEN_REQUEST_CODE = 1;
-
-    // The proxy mode is public static so it can be accessed from `ProxyHelper()`.
-    // It is also used in `onRestart()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxy()`.
-    // It will be updated in `applyAppSettings()`, but it needs to be initialized here or the first run of `onPrepareOptionsMenu()` crashes.
-    public static String proxyMode = ProxyHelper.NONE;
 
     // Define the saved instance state constants.
     private final String SAVED_STATE_ARRAY_LIST = "saved_state_array_list";
@@ -264,10 +254,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ForegroundColorSpan initialGrayColorSpan;
     private ForegroundColorSpan finalGrayColorSpan;
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
-    // and `loadBookmarksFolder()`.
-    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
-
     // `bookmarksCursor` is used in `onDestroy()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private Cursor bookmarksCursor;
 
@@ -291,30 +277,31 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean sanitizeTwitterAmpRedirects;
 
     // Declare the class variables
-    private BroadcastReceiver orbotStatusBroadcastReceiver;
-    private String webViewDefaultUserAgent;
-    private boolean incognitoModeEnabled;
-    private boolean fullScreenBrowsingModeEnabled;
-    private boolean inFullScreenBrowsingMode;
-    private boolean downloadWithExternalApp;
-    private boolean hideAppBar;
-    private boolean scrollAppBar;
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
     private boolean bottomAppBar;
-    private boolean loadingNewIntent;
-    private boolean reapplyDomainSettingsOnRestart;
-    private boolean reapplyAppSettingsOnRestart;
     private boolean displayingFullScreenVideo;
+    private boolean downloadWithExternalApp;
+    private boolean fullScreenBrowsingModeEnabled;
+    private boolean hideAppBar;
+    private boolean incognitoModeEnabled;
+    private boolean inFullScreenBrowsingMode;
+    private boolean loadingNewIntent;
+    private BroadcastReceiver orbotStatusBroadcastReceiver;
+    private ProxyHelper proxyHelper;
+    private boolean reapplyAppSettingsOnRestart;
+    private boolean reapplyDomainSettingsOnRestart;
+    private boolean scrollAppBar;
     private boolean waitingForProxy;
+    private String webViewDefaultUserAgent;
 
     // Define the class variables.
-    private long lastScrollUpdate = 0;
+    private ObjectAnimator objectAnimator = new ObjectAnimator();
     private String saveUrlString = "";
 
     // Declare the class views.
     private FrameLayout rootFrameLayout;
     private DrawerLayout drawerLayout;
     private CoordinatorLayout coordinatorLayout;
-    private AppBarLayout appBarLayout;
     private Toolbar toolbar;
     private RelativeLayout urlRelativeLayout;
     private EditText urlEditText;
@@ -443,7 +430,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                             contentResolverCursor.moveToFirst();
 
                                             // Get the file name from the cursor.
-                                            fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                                            fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
 
                                             // Close the cursor.
                                             contentResolverCursor.close();
@@ -615,6 +602,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Store up to 100 tabs in memory.
         webViewPager.setOffscreenPageLimit(100);
+
+        // Instantiate the proxy helper.
+        proxyHelper = new ProxyHelper();
 
         // Initialize the app.
         initializeApp();
@@ -3158,7 +3148,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
 
                 // If Privacy Browser is waiting on the proxy, load the website now that Orbot is connected.
-                if ((orbotStatus != null) && orbotStatus.equals("ON") && waitingForProxy) {
+                if ((orbotStatus != null) && orbotStatus.equals(ProxyHelper.ORBOT_STATUS_ON) && waitingForProxy) {
                     // Reset the waiting for proxy status.
                     waitingForProxy = false;
 
@@ -3369,17 +3359,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Implement swipe to refresh.
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Check the visibility of the bottom app bar.  Sometimes it is hidden if the WebView is the same size as the visible screen.
-            if (bottomAppBar && scrollAppBar && (appBarLayout.getVisibility() == View.GONE)) {  // The bottom app bar is currently hidden.
-                // Show the app bar.
-                appBarLayout.setVisibility(View.VISIBLE);
-
-                // Disable the refreshing animation.
-                swipeRefreshLayout.setRefreshing(false);
-            } else {  // A bottom app bar is not currently hidden.
-                // Reload the website.
-                currentWebView.reload();
-            }
+            // Reload the website.
+            currentWebView.reload();
         });
 
         // Store the default progress view offsets for use later in `initializeWebView()`.
@@ -3425,15 +3406,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
-            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
                 // Store the new folder name in `currentBookmarksFolder`.
-                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Load the new folder.
                 loadBookmarksFolder();
             } else {  // The selected bookmark is not a folder.
                 // Load the bookmark URL.
-                loadUrl(currentWebView, bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
+                loadUrl(currentWebView, bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)));
 
                 // Close the bookmarks drawer.
                 drawerLayout.closeDrawer(GravityCompat.END);
@@ -3453,7 +3434,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Check to see if the bookmark is a folder.
             if (isFolder) {  // The bookmark is a folder.
                 // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
-                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Instantiate the edit folder bookmark dialog.
                 DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
@@ -3468,7 +3449,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 bookmarkCursor.moveToFirst();
 
                 // Load the bookmark in a new tab but do not switch to the tab or close the drawer.
-                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)), false);
+                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), false);
 
                 // Display a snackbar.
                 Snackbar.make(currentWebView, R.string.bookmark_opened_in_background, Snackbar.LENGTH_SHORT).show();
@@ -3549,7 +3530,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         downloadWithExternalApp = sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false);
         hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
-        scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
+        scrollAppBar = sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true);
 
         // Apply the saved proxy mode if the app has been restarted.
         if (savedProxyMode != null) {
@@ -3752,14 +3733,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             Set<String> domainSettingsSet = new HashSet<>();
 
             // Get the domain name column index.
-            int domainNameColumnIndex = domainNameCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME);
+            int domainNameColumnIndex = domainNameCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME);
 
             // Populate `domainSettingsSet`.
             for (int i = 0; i < domainNameCursor.getCount(); i++) {
-                // Move `domainsCursor` to the current row.
+                // Move the domains cursor to the current row.
                 domainNameCursor.moveToPosition(i);
 
-                // Store the domain name in `domainSettingsSet`.
+                // Store the domain name in the domain settings set.
                 domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex));
             }
 
@@ -3823,37 +3804,37 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 currentDomainSettingsCursor.moveToFirst();
 
                 // Get the settings from the cursor.
-                nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
-                nestedScrollWebView.getSettings().setJavaScriptEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
-                nestedScrollWebView.setAcceptCookies(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES)) == 1);
-                nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
+                nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper._ID)));
+                nestedScrollWebView.getSettings().setJavaScriptEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
+                nestedScrollWebView.setAcceptCookies(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES)) == 1);
+                nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 // Form data can be removed once the minimum API >= 26.
-                boolean saveFormData = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
-                nestedScrollWebView.setEasyListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
-                nestedScrollWebView.setEasyPrivacyEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
-                nestedScrollWebView.setFanboysAnnoyanceListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
-                nestedScrollWebView.setFanboysSocialBlockingListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(
+                boolean saveFormData = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
+                nestedScrollWebView.setEasyListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
+                nestedScrollWebView.setEasyPrivacyEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
+                nestedScrollWebView.setFanboysAnnoyanceListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
+                nestedScrollWebView.setFanboysSocialBlockingListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(
                         DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
-                nestedScrollWebView.setUltraListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)) == 1);
-                nestedScrollWebView.setUltraPrivacyEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
-                nestedScrollWebView.setBlockAllThirdPartyRequests(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
-                String userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
-                int fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
-                int swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
-                int webViewThemeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME));
-                int wideViewportInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT));
-                int displayWebpageImagesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
-                boolean pinnedSslCertificate = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
-                String pinnedSslIssuedToCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
-                String pinnedSslIssuedToOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
-                String pinnedSslIssuedToUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
-                String pinnedSslIssuedByCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
-                String pinnedSslIssuedByOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
-                String pinnedSslIssuedByUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
-                Date pinnedSslStartDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
-                Date pinnedSslEndDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
-                boolean pinnedIpAddresses = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
-                String pinnedHostIpAddresses = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
+                nestedScrollWebView.setUltraListEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST)) == 1);
+                nestedScrollWebView.setUltraPrivacyEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
+                nestedScrollWebView.setBlockAllThirdPartyRequests(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
+                String userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT));
+                int fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE));
+                int swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
+                int webViewThemeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME));
+                int wideViewportInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT));
+                int displayWebpageImagesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES));
+                boolean pinnedSslCertificate = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
+                String pinnedSslIssuedToCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+                String pinnedSslIssuedToOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
+                String pinnedSslIssuedToUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
+                String pinnedSslIssuedByCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
+                String pinnedSslIssuedByOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
+                String pinnedSslIssuedByUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+                Date pinnedSslStartDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)));
+                Date pinnedSslEndDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)));
+                boolean pinnedIpAddresses = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
+                String pinnedHostIpAddresses = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES));
 
                 // Close the current host domain settings cursor.
                 currentDomainSettingsCursor.close();
@@ -4170,8 +4151,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void applyProxy(boolean reloadWebViews) {
-        // Set the proxy according to the mode.  `this` refers to the current activity where an alert dialog might be displayed.
-        ProxyHelper.setProxy(getApplicationContext(), appBarLayout, proxyMode);
+        // Set the proxy according to the mode.
+        proxyHelper.setProxy(getApplicationContext(), appBarLayout, proxyMode);
 
         // Reset the waiting for proxy tracker.
         waitingForProxy = false;
@@ -4212,7 +4193,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     packageManager.getPackageInfo("org.torproject.android", 0);
 
                     // Check to see if the proxy is ready.
-                    if (!orbotStatus.equals("ON")) {  // Orbot is not ready.
+                    if (!orbotStatus.equals(ProxyHelper.ORBOT_STATUS_ON)) {  // Orbot is not ready.
                         // Set the waiting for proxy status.
                         waitingForProxy = true;
 
@@ -4441,7 +4422,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 TextView bookmarkNameTextView = view.findViewById(R.id.bookmark_name);
 
                 // Get the favorite icon byte array from the cursor.
-                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON));
 
                 // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
                 Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
@@ -4450,11 +4431,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap);
 
                 // Get the bookmark name from the cursor and display it in `bookmarkNameTextView`.
-                String bookmarkNameString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                String bookmarkNameString = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
                 bookmarkNameTextView.setText(bookmarkNameString);
 
                 // Make the font bold for folders.
-                if (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {
+                if (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT_BOLD);
                 } else {  // Reset the font to default for normal bookmarks.
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT);
@@ -4700,8 +4681,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         webViewPagerAdapter.addPage(newTabNumber, webViewPager, url, moveToTab);
 
         // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
-        if (bottomAppBar && moveToTab) {
-            appBarLayout.setVisibility(View.VISIBLE);
+        if (bottomAppBar && moveToTab && (appBarLayout.getTranslationY() != 0)) {
+            // Animate the bottom app bar onto the screen.
+            objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);
+
+            // Make it so.
+            objectAnimator.start();
         }
     }
 
@@ -5136,7 +5121,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         assert inputMethodManager != null;
 
         // Set the app bar scrolling.
-        nestedScrollWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
+        nestedScrollWebView.setNestedScrollingEnabled(scrollAppBar);
 
         // Allow pinch to zoom.
         nestedScrollWebView.getSettings().setBuiltInZoomControls(true);
@@ -5331,16 +5316,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     swipeRefreshLayout.setEnabled(false);
                 }
 
-                //  Set the visibility of the bottom app bar.
-                if (bottomAppBar && scrollAppBar && (Calendar.getInstance().getTimeInMillis() - lastScrollUpdate > 100)) {
-                    if (scrollY - oldScrollY > 25) {  // The WebView was scrolled down.
-                        appBarLayout.setVisibility(View.GONE);
-                    } else if (scrollY - oldScrollY < -25) {  // The WebView was scrolled up.
-                        appBarLayout.setVisibility(View.VISIBLE);
-                    }
+                //  Scroll the bottom app bar if enabled.
+                if (bottomAppBar && scrollAppBar && !objectAnimator.isRunning()) {
+                    if (scrollY < oldScrollY) {  // The WebView was scrolled down.
+                        // Animate the bottom app bar onto the screen.
+                        objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);
 
-                    // Update the last scroll update variable.  This prevents the app bar from flashing on and off at the bottom of the screen.
-                    lastScrollUpdate = Calendar.getInstance().getTimeInMillis();
+                        // Make it so.
+                        objectAnimator.start();
+                    } else if (scrollY > oldScrollY) {  // The WebView was scrolled up.
+                        // Animate the bottom app bar off the screen.
+                        objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", appBarLayout.getHeight());
+
+                        // Make it so.
+                        objectAnimator.start();
+                    }
                 }
 
                 // Reinforce the system UI visibility flags if in full screen browsing mode.

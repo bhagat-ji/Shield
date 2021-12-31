@@ -172,7 +172,7 @@ class EditBookmarkFolderDialog : DialogFragment() {
         saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Get the current favorite icon byte array from the cursor.
-        val currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON))
+        val currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
 
         // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
         val currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.size)
@@ -184,7 +184,7 @@ class EditBookmarkFolderDialog : DialogFragment() {
         webpageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
 
         // Get the current folder name.
-        currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME))
+        currentFolderName = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
 
         // Display the current folder name.
         folderNameEditText.setText(currentFolderName)

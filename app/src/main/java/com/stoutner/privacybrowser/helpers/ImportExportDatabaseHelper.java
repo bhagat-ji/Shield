@@ -387,12 +387,12 @@ public class ImportExportDatabaseHelper {
             for (int i = 0; i < importBookmarksCursor.getCount(); i++) {
                 // Extract the record from the cursor and store the data in a ContentValues.
                 ContentValues bookmarksContentValues = new ContentValues();
-                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, importBookmarksCursor.getInt(importBookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, importBookmarksCursor.getInt(importBookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, importBookmarksCursor.getBlob(importBookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, importBookmarksCursor.getInt(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, importBookmarksCursor.getInt(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, importBookmarksCursor.getBlob(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON)));
 
                 // Insert the record into the export database.
                 bookmarksDatabaseHelper.createBookmark(bookmarksContentValues);
@@ -424,40 +424,44 @@ public class ImportExportDatabaseHelper {
             for (int i = 0; i < importDomainsCursor.getCount(); i++) {
                 // Extract the record from the cursor and store the data in a ContentValues.
                 ContentValues domainsContentValues = new ContentValues();
-                domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
-                domainsContentValues.put(DomainsDatabaseHelper.COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)));
+                domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
+                domainsContentValues.put(DomainsDatabaseHelper.COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST,
-                        importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
+                        importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST,
-                        importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
+                        importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
                 domainsContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS,
-                        importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
-                domainsContentValues.put(DomainsDatabaseHelper.USER_AGENT, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
-                domainsContentValues.put(DomainsDatabaseHelper.FONT_SIZE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH)));
-                domainsContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME)));
-                domainsContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT)));
-                domainsContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES)));
-                domainsContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)));
+                        importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
+                domainsContentValues.put(DomainsDatabaseHelper.USER_AGENT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT)));
+                domainsContentValues.put(DomainsDatabaseHelper.FONT_SIZE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH)));
+                domainsContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME)));
+                domainsContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT)));
+                domainsContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME,
+                        importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION,
+                        importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)));
                 domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT,
-                        importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)));
+                        importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME,
+                        importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION,
+                        importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)));
                 domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT,
-                        importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
-                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES)));
+                        importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
+                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES)));
 
                 // Insert the record into the export database.
                 domainsDatabaseHelper.addDomain(domainsContentValues);
@@ -481,50 +485,50 @@ public class ImportExportDatabaseHelper {
 
             // Import the preference data.
             sharedPreferences.edit()
-                    .putBoolean(JAVASCRIPT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(JAVASCRIPT)) == 1)
-                    .putBoolean(COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(COOKIES)) == 1)
-                    .putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOM_STORAGE)) == 1)
+                    .putBoolean(JAVASCRIPT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(JAVASCRIPT)) == 1)
+                    .putBoolean(COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(COOKIES)) == 1)
+                    .putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOM_STORAGE)) == 1)
                     // Save form data can be removed once the minimum API >= 26.
-                    .putBoolean(SAVE_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SAVE_FORM_DATA)) == 1)
-                    .putString(USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(USER_AGENT)))
-                    .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(CUSTOM_USER_AGENT)))
-                    .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(INCOGNITO_MODE)) == 1)
-                    .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ALLOW_SCREENSHOTS)) == 1)
-                    .putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYLIST)) == 1)
-                    .putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYPRIVACY)) == 1)
-                    .putBoolean(FANBOYS_ANNOYANCE_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_ANNOYANCE_LIST)) == 1)
-                    .putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
-                    .putBoolean(ULTRALIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ULTRALIST)) == 1)
-                    .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ULTRAPRIVACY)) == 1)
-                    .putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
-                    .putBoolean(GOOGLE_ANALYTICS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(GOOGLE_ANALYTICS)) == 1)
-                    .putBoolean(FACEBOOK_CLICK_IDS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FACEBOOK_CLICK_IDS)) == 1)
-                    .putBoolean(TWITTER_AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(TWITTER_AMP_REDIRECTS)) == 1)
-                    .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH)))
-                    .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH_CUSTOM_URL)))
-                    .putString(PROXY, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY)))
-                    .putString(PROXY_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY_CUSTOM_URL)))
-                    .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FULL_SCREEN_BROWSING_MODE)) == 1)
-                    .putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(HIDE_APP_BAR)) == 1)
-                    .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_EVERYTHING)) == 1)
-                    .putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_COOKIES)) == 1)
-                    .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_DOM_STORAGE)) == 1)
+                    .putBoolean(SAVE_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SAVE_FORM_DATA)) == 1)
+                    .putString(USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(USER_AGENT)))
+                    .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(CUSTOM_USER_AGENT)))
+                    .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(INCOGNITO_MODE)) == 1)
+                    .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ALLOW_SCREENSHOTS)) == 1)
+                    .putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(EASYLIST)) == 1)
+                    .putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(EASYPRIVACY)) == 1)
+                    .putBoolean(FANBOYS_ANNOYANCE_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FANBOYS_ANNOYANCE_LIST)) == 1)
+                    .putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
+                    .putBoolean(ULTRALIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRALIST)) == 1)
+                    .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRAPRIVACY)) == 1)
+                    .putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
+                    .putBoolean(GOOGLE_ANALYTICS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(GOOGLE_ANALYTICS)) == 1)
+                    .putBoolean(FACEBOOK_CLICK_IDS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FACEBOOK_CLICK_IDS)) == 1)
+                    .putBoolean(TWITTER_AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(TWITTER_AMP_REDIRECTS)) == 1)
+                    .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH)))
+                    .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH_CUSTOM_URL)))
+                    .putString(PROXY, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY)))
+                    .putString(PROXY_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY_CUSTOM_URL)))
+                    .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FULL_SCREEN_BROWSING_MODE)) == 1)
+                    .putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(HIDE_APP_BAR)) == 1)
+                    .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_EVERYTHING)) == 1)
+                    .putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_COOKIES)) == 1)
+                    .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_DOM_STORAGE)) == 1)
                     // Clear form data can be removed once the minimum API >= 26.
-                    .putBoolean(CLEAR_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_FORM_DATA)) == 1)
-                    .putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_LOGCAT)) == 1)
-                    .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
-                    .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
-                    .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(FONT_SIZE)))
-                    .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(OPEN_INTENTS_IN_NEW_TAB)) == 1)
-                    .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
-                    .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
-                    .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SCROLL_APP_BAR)) == 1)
-                    .putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(BOTTOM_APP_BAR)) == 1)
-                    .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
-                    .putString(APP_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(APP_THEME)))
-                    .putString(WEBVIEW_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(WEBVIEW_THEME)))
-                    .putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(WIDE_VIEWPORT)) == 1)
-                    .putBoolean(DISPLAY_WEBPAGE_IMAGES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_WEBPAGE_IMAGES)) == 1)
+                    .putBoolean(CLEAR_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_FORM_DATA)) == 1)
+                    .putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_LOGCAT)) == 1)
+                    .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_CACHE)) == 1)
+                    .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(HOMEPAGE)))
+                    .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(FONT_SIZE)))
+                    .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(OPEN_INTENTS_IN_NEW_TAB)) == 1)
+                    .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)) == 1)
+                    .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
+                    .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SCROLL_APP_BAR)) == 1)
+                    .putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BOTTOM_APP_BAR)) == 1)
+                    .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
+                    .putString(APP_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(APP_THEME)))
+                    .putString(WEBVIEW_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
+                    .putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)) == 1)
+                    .putBoolean(DISPLAY_WEBPAGE_IMAGES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_WEBPAGE_IMAGES)) == 1)
                     .apply();
 
             // Close the preferences cursor.
@@ -572,12 +576,12 @@ public class ImportExportDatabaseHelper {
             for (int i = 0; i < bookmarksCursor.getCount(); i++) {
                 // Extract the record from the cursor and store the data in a ContentValues.
                 ContentValues bookmarksContentValues = new ContentValues();
-                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)));
-                bookmarksContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, bookmarksCursor.getBlob(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)));
+                bookmarksContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, bookmarksCursor.getBlob(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON)));
 
                 // Insert the record into the temporary export database.
                 temporaryExportDatabase.insert(BookmarksDatabaseHelper.BOOKMARKS_TABLE, null, bookmarksContentValues);
@@ -607,35 +611,38 @@ public class ImportExportDatabaseHelper {
             for (int i = 0; i < domainsCursor.getCount(); i++) {
                 // Extract the record from the cursor and store the data in a ContentValues.
                 ContentValues domainsContentValues = new ContentValues();
-                domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
-                domainsContentValues.put(DomainsDatabaseHelper.COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)));
-                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
-                domainsContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
-                domainsContentValues.put(DomainsDatabaseHelper.USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
-                domainsContentValues.put(DomainsDatabaseHelper.FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH)));
-                domainsContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME)));
-                domainsContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT)));
-                domainsContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES)));
-                domainsContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
-                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
-                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES)));
+                domainsContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)));
+                domainsContentValues.put(DomainsDatabaseHelper.COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST,
+                        domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
+                domainsContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
+                domainsContentValues.put(DomainsDatabaseHelper.USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT)));
+                domainsContentValues.put(DomainsDatabaseHelper.FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH)));
+                domainsContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME)));
+                domainsContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT)));
+                domainsContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT,
+                        domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT,
+                        domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
+                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES)));
 
                 // Insert the record into the temporary export database.
                 temporaryExportDatabase.insert(DomainsDatabaseHelper.DOMAINS_TABLE, null, domainsContentValues);

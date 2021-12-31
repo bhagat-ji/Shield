@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019,2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -1634,7 +1634,7 @@ public class BlocklistHelper {
 
         // Process the white lists.
         // Main white list.
-        for (String[] whitelistEntry : blocklist.get(Integer.valueOf(MAIN_WHITELIST))) {
+        for (String[] whitelistEntry : blocklist.get(Integer.parseInt(MAIN_WHITELIST))) {
             switch (whitelistEntry.length) {
                 case 2:  // There is one entry.
                     if (resourceUrl.contains(whitelistEntry[0])) {
@@ -1660,7 +1660,7 @@ public class BlocklistHelper {
         }
 
         // Final white list.
-        for (String[] whitelistEntry : blocklist.get(Integer.valueOf(FINAL_WHITELIST))) {
+        for (String[] whitelistEntry : blocklist.get(Integer.parseInt(FINAL_WHITELIST))) {
             if (whitelistEntry.length == 2) {  // There is one entry.
                 if (resourceUrl.contains(whitelistEntry[0])) {
                     // Return a whitelist match request allowed.
@@ -1677,7 +1677,7 @@ public class BlocklistHelper {
         // Only check the domain lists if the current domain is not null (like `about:blank`).
         if (currentDomain != null) {
             // Domain white list.
-            for (String[] whitelistEntry : blocklist.get(Integer.valueOf(DOMAIN_WHITELIST))) {
+            for (String[] whitelistEntry : blocklist.get(Integer.parseInt(DOMAIN_WHITELIST))) {
                 switch (whitelistEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(whitelistEntry[0]) && resourceUrl.contains(whitelistEntry[1])) {
@@ -1714,7 +1714,7 @@ public class BlocklistHelper {
             }
 
             // Domain initial white list.
-            for (String[] whitelistEntry : blocklist.get(Integer.valueOf(DOMAIN_INITIAL_WHITELIST))) {
+            for (String[] whitelistEntry : blocklist.get(Integer.parseInt(DOMAIN_INITIAL_WHITELIST))) {
                 switch (whitelistEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(whitelistEntry[0]) && resourceUrl.startsWith(whitelistEntry[1])) {
@@ -1742,7 +1742,7 @@ public class BlocklistHelper {
             }
 
             // Domain final white list.
-            for (String[] whitelistEntry : blocklist.get(Integer.valueOf(DOMAIN_FINAL_WHITELIST))) {
+            for (String[] whitelistEntry : blocklist.get(Integer.parseInt(DOMAIN_FINAL_WHITELIST))) {
                 switch (whitelistEntry.length) {
                     case 3:  // There is one entry;
                         if (currentDomain.endsWith(whitelistEntry[0]) && resourceUrl.endsWith(whitelistEntry[1])) {
@@ -1765,7 +1765,7 @@ public class BlocklistHelper {
         // Only check the third-party white lists if this is a third-party request.
         if (isThirdPartyRequest) {
             // Third-party white list.
-            for (String[] whitelistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_WHITELIST))) {
+            for (String[] whitelistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_WHITELIST))) {
                 switch (whitelistEntry.length) {
                     case 2:  // There is one entry
                         if (resourceUrl.contains(whitelistEntry[0])) {
@@ -1809,7 +1809,7 @@ public class BlocklistHelper {
             }
 
             // Third-party domain white list.
-            for (String[] whitelistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_DOMAIN_WHITELIST))) {
+            for (String[] whitelistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_DOMAIN_WHITELIST))) {
                 if (whitelistEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(whitelistEntry[0]) && resourceUrl.contains(whitelistEntry[1])) {
                         // Return a whitelist match request allowed.
@@ -1825,7 +1825,7 @@ public class BlocklistHelper {
             }
 
             // Third-party domain initial white list.
-            for (String[] whitelistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_DOMAIN_INITIAL_WHITELIST))) {
+            for (String[] whitelistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_DOMAIN_INITIAL_WHITELIST))) {
                 if (whitelistEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(whitelistEntry[0]) && resourceUrl.startsWith(whitelistEntry[1])) {
                         // Return a whitelist match request allowed.
@@ -1843,7 +1843,7 @@ public class BlocklistHelper {
 
         // Process the black lists.
         // Main black list.
-        for (String[] blacklistEntry : blocklist.get(Integer.valueOf(MAIN_BLACKLIST))) {
+        for (String[] blacklistEntry : blocklist.get(Integer.parseInt(MAIN_BLACKLIST))) {
             switch (blacklistEntry.length) {
                 case 2:  // There is one entry.
                     if (resourceUrl.contains(blacklistEntry[0])) {
@@ -1886,7 +1886,7 @@ public class BlocklistHelper {
         }
 
         // Initial black list.
-        for (String[] blacklistEntry : blocklist.get(Integer.valueOf(INITIAL_BLACKLIST))) {
+        for (String[] blacklistEntry : blocklist.get(Integer.parseInt(INITIAL_BLACKLIST))) {
             if (blacklistEntry.length == 2) {  // There is one entry.
                 if (resourceUrl.startsWith(blacklistEntry[0])) {
                     // Return a blacklist match request blocked.
@@ -1901,7 +1901,7 @@ public class BlocklistHelper {
         }
 
         // Final black list.
-        for (String[] blacklistEntry : blocklist.get(Integer.valueOf(FINAL_BLACKLIST))) {
+        for (String[] blacklistEntry : blocklist.get(Integer.parseInt(FINAL_BLACKLIST))) {
             switch (blacklistEntry.length) {
                 case 2:  // There is one entry.
                     if (resourceUrl.endsWith(blacklistEntry[0])) {
@@ -1929,7 +1929,7 @@ public class BlocklistHelper {
         // Only check the domain lists if the current domain is not null (like `about:blank`).
         if (currentDomain != null) {
             // Domain black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(DOMAIN_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(DOMAIN_BLACKLIST))) {
                 switch (blacklistEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(blacklistEntry[0]) && resourceUrl.contains(blacklistEntry[1])) {
@@ -1957,7 +1957,7 @@ public class BlocklistHelper {
             }
 
             // Domain initial black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(DOMAIN_INITIAL_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(DOMAIN_INITIAL_BLACKLIST))) {
                 // Store the entry in the resource request log.
                 if (currentDomain.endsWith(blacklistEntry[0]) && resourceUrl.startsWith(blacklistEntry[1])) {
                     // Return a blacklist match request blocked.
@@ -1966,7 +1966,7 @@ public class BlocklistHelper {
             }
 
             // Domain final black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(DOMAIN_FINAL_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(DOMAIN_FINAL_BLACKLIST))) {
                 switch (blacklistEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(blacklistEntry[0]) && resourceUrl.endsWith(blacklistEntry[1])) {
@@ -1986,7 +1986,7 @@ public class BlocklistHelper {
             }
 
             // Domain regular expression black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(DOMAIN_REGULAR_EXPRESSION_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(DOMAIN_REGULAR_EXPRESSION_BLACKLIST))) {
                 if (currentDomain.endsWith(blacklistEntry[0]) && Pattern.matches(blacklistEntry[1], resourceUrl)) {
                     // Return a blacklist match request blocked.
                     return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_REGULAR_EXPRESSION_BLACKLIST, blacklistEntry[0] + "\n" + blacklistEntry[1], blacklistEntry[2]};
@@ -1997,7 +1997,7 @@ public class BlocklistHelper {
         // Only check the third-party black lists if this is a third-party request.
         if (isThirdPartyRequest) {
             // Third-party black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_BLACKLIST))) {
                 switch (blacklistEntry.length) {
                     case 2:  // There is one entry.
                         if (resourceUrl.contains(blacklistEntry[0])) {
@@ -2032,7 +2032,7 @@ public class BlocklistHelper {
             }
 
             // Third-party initial black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_INITIAL_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_INITIAL_BLACKLIST))) {
                 if (blacklistEntry.length == 2) {  // There is one entry.
                     if (resourceUrl.startsWith(blacklistEntry[0])) {
                         // Return a blacklist match request blocked.
@@ -2047,7 +2047,7 @@ public class BlocklistHelper {
             }
 
             // Third-party domain black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_DOMAIN_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_DOMAIN_BLACKLIST))) {
                 if (blacklistEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(blacklistEntry[0]) && resourceUrl.contains(blacklistEntry[1])) {
                         // Return a blacklist match request blocked.
@@ -2063,7 +2063,7 @@ public class BlocklistHelper {
             }
 
             // Third-party domain initial black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST))) {
                 switch (blacklistEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(blacklistEntry[0]) && resourceUrl.startsWith(blacklistEntry[1])) {
@@ -2091,7 +2091,7 @@ public class BlocklistHelper {
             }
 
             // Third-party regular expression black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST))) {
                 if (Pattern.matches(blacklistEntry[0], resourceUrl)) {
                     // Return a blacklist match request blocked.
                     return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST, blacklistEntry[0], blacklistEntry[1]};
@@ -2099,7 +2099,7 @@ public class BlocklistHelper {
             }
 
             // Third-party domain regular expression black list.
-            for (String[] blacklistEntry : blocklist.get(Integer.valueOf(THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST))) {
+            for (String[] blacklistEntry : blocklist.get(Integer.parseInt(THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST))) {
                 if (currentDomain.endsWith(blacklistEntry[0]) && Pattern.matches(blacklistEntry[1], resourceUrl)) {
                     // Return a blacklist match request blocked.
                     return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST, blacklistEntry[0] + "\n" + blacklistEntry[1], blacklistEntry[2]};
@@ -2108,7 +2108,7 @@ public class BlocklistHelper {
         }
 
         // Regular expression black list.
-        for (String[] blacklistEntry : blocklist.get(Integer.valueOf(REGULAR_EXPRESSION_BLACKLIST))) {
+        for (String[] blacklistEntry : blocklist.get(Integer.parseInt(REGULAR_EXPRESSION_BLACKLIST))) {
             if (Pattern.matches(blacklistEntry[0], resourceUrl)) {
                 // Return a blacklist match request blocked.
                 return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, REGULAR_EXPRESSION_BLACKLIST, blacklistEntry[0], blacklistEntry[1]};

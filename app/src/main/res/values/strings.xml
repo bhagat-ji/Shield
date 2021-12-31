@@ -668,6 +668,8 @@
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
     <string name="download_with_external_app_key" translatable="false">download_with_external_app</string>
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
+    <string name="proxy_custom_url_key" translatable="false">proxy_custom_url</string>
+    <string name="scroll_app_bar_key" translatable="false">scroll_app_bar</string>
 
     <!-- Non-translatable preference default values. -->
     <string name="app_theme_default_value" translatable="false">System default</string>

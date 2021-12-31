@@ -209,45 +209,45 @@ public class DomainSettingsFragment extends Fragment {
         domainCursor.moveToFirst();
 
         // Save the cursor entries as variables.
-        String domainNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
-        int javaScriptInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
-        int cookiesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.COOKIES));
-        int domStorageInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
-        int formDataInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));  // Form data can be remove once the minimum API >= 26.
-        int easyListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST));
-        int easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
-        int fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST));
-        int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
-        int ultraListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST));
-        int ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY));
-        int blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS));
-        String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
-        int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
-        int swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
-        int webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.WEBVIEW_THEME));
-        int wideViewportInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT));
-        int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
-        int pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE));
-        String savedSslIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
-        String savedSslIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
-        String savedSslIssuedToUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
-        String savedSslIssuedByCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
-        String savedSslIssuedByONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
-        String savedSslIssuedByUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
-        int pinnedIpAddressesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES));
-        String savedIpAddresses = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
+        String domainNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME));
+        int javaScriptInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
+        int cookiesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES));
+        int domStorageInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
+        int formDataInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA));  // Form data can be remove once the minimum API >= 26.
+        int easyListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST));
+        int easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
+        int fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST));
+        int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
+        int ultraListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST));
+        int ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY));
+        int blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS));
+        String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT));
+        int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE));
+        int swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
+        int webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME));
+        int wideViewportInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT));
+        int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES));
+        int pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE));
+        String savedSslIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+        String savedSslIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
+        String savedSslIssuedToUNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
+        String savedSslIssuedByCNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
+        String savedSslIssuedByONameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
+        String savedSslIssuedByUNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+        int pinnedIpAddressesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES));
+        String savedIpAddresses = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES));
 
         // Initialize the saved SSL certificate date variables.
         Date savedSslStartDate = null;
         Date savedSslEndDate = null;
 
         // Only get the saved SSL certificate dates from the cursor if they are not set to `0`.
-        if (domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) != 0) {
-            savedSslStartDate = new Date(domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+        if (domainCursor.getLong(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)) != 0) {
+            savedSslStartDate = new Date(domainCursor.getLong(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)));
         }
 
-        if (domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) != 0) {
-            savedSslEndDate = new Date(domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+        if (domainCursor.getLong(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)) != 0) {
+            savedSslEndDate = new Date(domainCursor.getLong(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)));
         }
 
         // Create array adapters for the spinners.

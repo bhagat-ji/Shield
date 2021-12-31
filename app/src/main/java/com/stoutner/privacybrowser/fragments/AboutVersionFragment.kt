@@ -182,7 +182,7 @@ class AboutVersionFragment : Fragment() {
                     contentResolverCursor.moveToFirst()
 
                     // Get the file name from the cursor.
-                    fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
                     // Close the cursor.
                     contentResolverCursor.close()

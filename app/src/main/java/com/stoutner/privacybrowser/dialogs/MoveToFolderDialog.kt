@@ -272,7 +272,7 @@ class MoveToFolderDialog : DialogFragment() {
             subfoldersCursor.moveToPosition(i)
 
             // Get the name of the subfolder.
-            val subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME))
+            val subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
 
             // Add the subfolder to except folders.
             exceptFolders.append(",")
@@ -293,8 +293,8 @@ class MoveToFolderDialog : DialogFragment() {
 
             override fun bindView(view: View, context: Context, cursor: Cursor) {
                 // Get the data from the cursor.
-                val folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON))
-                val folderName = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME))
+                val folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
+                val folderName = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
 
                 // Get handles for the views.
                 val folderIconImageView = view.findViewById<ImageView>(R.id.move_to_folder_icon)

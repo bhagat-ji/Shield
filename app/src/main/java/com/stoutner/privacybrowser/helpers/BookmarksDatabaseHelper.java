@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -147,7 +147,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Get the folder name.
         folderCursor.moveToFirst();
-        String folderName = folderCursor.getString(folderCursor.getColumnIndex(BOOKMARK_NAME));
+        String folderName = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BOOKMARK_NAME));
 
         // Close the cursor and the database handle.
         folderCursor.close();
@@ -175,7 +175,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Get the database ID.
         folderCursor.moveToFirst();
-        int databaseId = folderCursor.getInt(folderCursor.getColumnIndex(_ID));
+        int databaseId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(_ID));
 
         // Close the cursor and the database handle.
         folderCursor.close();
@@ -255,7 +255,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         bookmarkCursor.moveToFirst();
 
         // Store the name of the parent folder.
-        String parentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(PARENT_FOLDER));
+        String parentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(PARENT_FOLDER));
 
         // Close the cursor.
         bookmarkCursor.close();
@@ -277,7 +277,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         bookmarkCursor.moveToFirst();
 
         // Store the name of the parent folder.
-        String parentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(PARENT_FOLDER));
+        String parentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(PARENT_FOLDER));
 
         // Close the cursor.
         bookmarkCursor.close();
@@ -509,7 +509,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Ascertain if this database ID is a folder.
         folderCursor.moveToFirst();
-        boolean isFolder = (folderCursor.getInt(folderCursor.getColumnIndex(IS_FOLDER)) == 1);
+        boolean isFolder = (folderCursor.getInt(folderCursor.getColumnIndexOrThrow(IS_FOLDER)) == 1);
 
         // Close the cursor and the database handle.
         folderCursor.close();
@@ -767,7 +767,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
             newFolderCursor.moveToLast();
 
             // Set the display order to be one greater that the last bookmark.
-            displayOrder = newFolderCursor.getInt(newFolderCursor.getColumnIndex(DISPLAY_ORDER)) + 1;
+            displayOrder = newFolderCursor.getInt(newFolderCursor.getColumnIndexOrThrow(DISPLAY_ORDER)) + 1;
         } else {  // There are no bookmarks in the new folder.
             // Set the display order to be `0`.
             displayOrder = 0;

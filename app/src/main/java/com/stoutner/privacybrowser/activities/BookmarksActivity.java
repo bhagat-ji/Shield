@@ -209,9 +209,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
-            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
                 // Update the current folder.
-                currentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                currentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Load the new folder.
                 loadFolder();
@@ -359,7 +359,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             bookmarksCursor.moveToPosition(i);
 
                             // Update the display order only if it is not correct in the database.
-                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
+                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
                                 bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                             }
                         }
@@ -409,7 +409,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             bookmarksCursor.moveToPosition(i);
 
                             // Update the display order only if it is not correct in the database.
-                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
+                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
                                 bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                             }
                         }
@@ -449,15 +449,15 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     bookmarksCursor.moveToPosition(selectedBookmarkPosition);
 
                     // Find out if this bookmark is a folder.
-                    boolean isFolder = (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
+                    boolean isFolder = (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
                     // Get the selected bookmark database ID.
-                    int databaseId = bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
+                    int databaseId = bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
 
                     // Show the edit bookmark or edit bookmark folder dialog.
                     if (isFolder) {
                         // Save the current folder name, which is used in `onSaveBookmarkFolder()`.
-                        oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                        oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                         // Instantiate the edit bookmark folder dialog.
                         DialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, favoriteIconBitmap);
@@ -550,7 +550,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                             bookmarksCursor.moveToPosition(i);
 
                                             // Update the display order only if it is not correct in the database.
-                                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
+                                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
                                                 bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                                             }
                                         }
@@ -1056,7 +1056,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             folderCursor.moveToPosition(i);
 
             // Get the database ID of the item.
-            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
+            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
 
             // If this is a folder, recursively count the contents first.
             if (bookmarksDatabaseHelper.isFolder(itemDatabaseId)) {
@@ -1085,7 +1085,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             folderCursor.moveToPosition(i);
 
             // Get the database ID of the item.
-            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
+            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
 
             // If this is a folder, recursively delete the contents first.
             if (bookmarksDatabaseHelper.isFolder(itemDatabaseId)) {
@@ -1187,7 +1187,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 TextView bookmarkNameTextView = view.findViewById(R.id.bookmark_name);
 
                 // Get the favorite icon byte array from the `Cursor`.
-                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON));
 
                 // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
                 Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
@@ -1196,11 +1196,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap);
 
                 // Get the bookmark name from the cursor and display it in `bookmarkNameTextView`.
-                String bookmarkNameString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                String bookmarkNameString = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
                 bookmarkNameTextView.setText(bookmarkNameString);
 
                 // Make the font bold for folders.
-                if (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {
+                if (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT_BOLD);
                 } else {  // Reset the font to default for normal bookmarks.
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT);

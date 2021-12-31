@@ -452,7 +452,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     @Override
                     public void bindView(View view, Context context, Cursor cursor) {
                         // Get the domain name string.
-                        String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+                        String domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME));
 
                         // Get a handle for the domain name text view.
                         TextView domainNameTextView = view.findViewById(R.id.domain_name_textview);
@@ -507,7 +507,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             @Override
                                             public void bindView(View view, Context context, Cursor cursor) {
                                                 /// Get the domain name string.
-                                                String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+                                                String domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME));
 
                                                 // Get a handle for the domain name text view.
                                                 TextView domainNameTextView = view.findViewById(R.id.domain_name_textview);
@@ -868,7 +868,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Set the domain name.
-                String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+                String domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME));
                 TextView domainNameTextView = view.findViewById(R.id.domain_name_textview);
                 domainNameTextView.setText(domainNameString);
             }
@@ -891,7 +891,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 domainsCursor.moveToPosition(i);
 
                 // Get the database ID for this position.
-                int currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
+                int currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper._ID));
 
                 // Set `highlightedDomainPosition` if the database ID for this matches `highlightedDomainDatabaseId`.
                 if (highlightedDomainDatabaseId == currentDatabaseId) {
@@ -904,7 +904,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Get the database ID for the highlighted domain.
             domainsCursor.moveToPosition(highlightedDomainPosition);
-            currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
+            currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper._ID));
 
             // Create an arguments bundle.
             Bundle argumentsBundle = new Bundle();

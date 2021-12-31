@@ -203,7 +203,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
 
                     // Get the folder icon byte array from the cursor.
-                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON));
 
                     // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
                     Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
@@ -223,7 +223,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 }
 
                 // Set the text view to display the folder name.
-                spinnerItemTextView.setText(cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
+                spinnerItemTextView.setText(cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME)));
             }
         };
 
@@ -293,15 +293,15 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                boolean isFolder = (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
+                boolean isFolder = (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
                 // Get the database ID from the `Cursor` and display it in `bookmarkDatabaseIdTextView`.
-                int bookmarkDatabaseId = cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper._ID));
+                int bookmarkDatabaseId = cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
                 TextView bookmarkDatabaseIdTextView = view.findViewById(R.id.bookmarks_databaseview_database_id);
                 bookmarkDatabaseIdTextView.setText(String.valueOf(bookmarkDatabaseId));
 
                 // Get the favorite icon byte array from the `Cursor`.
-                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON));
                 // Convert the byte array to a `Bitmap` beginning at the beginning at the first byte and ending at the last.
                 Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
                 // Display the bitmap in `bookmarkFavoriteIcon`.
@@ -309,7 +309,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap);
 
                 // Get the bookmark name from the `Cursor` and display it in `bookmarkNameTextView`.
-                String bookmarkNameString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                String bookmarkNameString = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
                 TextView bookmarkNameTextView = view.findViewById(R.id.bookmarks_databaseview_bookmark_name);
                 bookmarkNameTextView.setText(bookmarkNameString);
 
@@ -322,7 +322,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 }
 
                 // Get the bookmark URL form the `Cursor` and display it in `bookmarkUrlTextView`.
-                String bookmarkUrlString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+                String bookmarkUrlString = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL));
                 TextView bookmarkUrlTextView = view.findViewById(R.id.bookmarks_databaseview_bookmark_url);
                 bookmarkUrlTextView.setText(bookmarkUrlString);
 
@@ -334,12 +334,12 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 }
 
                 // Get the display order from the `Cursor` and display it in `bookmarkDisplayOrderTextView`.
-                int bookmarkDisplayOrder = cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER));
+                int bookmarkDisplayOrder = cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER));
                 TextView bookmarkDisplayOrderTextView = view.findViewById(R.id.bookmarks_databaseview_display_order);
                 bookmarkDisplayOrderTextView.setText(String.valueOf(bookmarkDisplayOrder));
 
                 // Get the parent folder from the `Cursor` and display it in `bookmarkParentFolder`.
-                String bookmarkParentFolder = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER));
+                String bookmarkParentFolder = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER));
                 ImageView parentFolderImageView = view.findViewById(R.id.bookmarks_databaseview_parent_folder_icon);
                 TextView bookmarkParentFolderTextView = view.findViewById(R.id.bookmarks_databaseview_parent_folder);
 
@@ -377,7 +377,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             // Show the edit bookmark or edit bookmark folder dialog.
             if (bookmarksDatabaseHelper.isFolder(databaseId)) {
                 // Save the current folder name, which is used in `onSaveBookmarkFolder()`.
-                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Show the edit bookmark folder dialog.
                 DialogFragment editBookmarkFolderDatabaseViewDialog = EditBookmarkFolderDatabaseViewDialog.folderDatabaseId(databaseId, favoriteIconBitmap);
@@ -472,7 +472,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                             // Get the position of the folder in the bookmarks cursor.
                             while ((folderPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
                                 // Check if the folder database ID matches the bookmark database ID.
-                                if (folderDatabaseId == bookmarksCursor.getInt((bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID)))) {
+                                if (folderDatabaseId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID))) {
                                     // Get the folder position.
                                     folderPosition = bookmarksCursor.getPosition();
 
@@ -772,7 +772,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
         while (folderCursor.getPosition() < folderCursor.getCount()) {
             // Get the bookmark database ID.
-            int bookmarkId = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
+            int bookmarkId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
 
             // Move the bookmarks cursor to the first position.
             bookmarksCursor.moveToFirst();
@@ -783,7 +783,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             // Get the position of this bookmark in the bookmarks cursor.
             while ((bookmarkPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
                 // Check if the bookmark IDs match.
-                if (bookmarkId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID))) {
+                if (bookmarkId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID))) {
                     // Get the bookmark position.
                     bookmarkPosition = bookmarksCursor.getPosition();
 

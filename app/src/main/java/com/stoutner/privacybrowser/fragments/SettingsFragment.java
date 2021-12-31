@@ -143,7 +143,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         searchPreference = findPreference("search");
         searchCustomURLPreference = findPreference("search_custom_url");
         proxyPreference = findPreference("proxy");
-        proxyCustomUrlPreference = findPreference("proxy_custom_url");
+        proxyCustomUrlPreference = findPreference(getString(R.string.proxy_custom_url_key));
         fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
         hideAppBarPreference = findPreference("hide_app_bar");
         clearEverythingPreference = findPreference("clear_everything");
@@ -157,7 +157,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         openIntentsInNewTabPreference = findPreference("open_intents_in_new_tab");
         swipeToRefreshPreference = findPreference("swipe_to_refresh");
         downloadWithExternalAppPreference = findPreference(getString(R.string.download_with_external_app_key));
-        scrollAppBarPreference = findPreference("scroll_app_bar");
+        scrollAppBarPreference = findPreference(getString(R.string.scroll_app_bar_key));
         bottomAppBarPreference = findPreference(getString(R.string.bottom_app_bar_key));
         displayAdditionalAppBarIconsPreference = findPreference(getString(R.string.display_additional_app_bar_icons_key));
         appThemePreference = findPreference("app_theme");
@@ -333,10 +333,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the summary text for the custom proxy URL.
-        proxyCustomUrlPreference.setSummary(sharedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
+        proxyCustomUrlPreference.setSummary(sharedPreferences.getString(getString(R.string.proxy_custom_url_key), getString(R.string.proxy_custom_url_default_value)));
 
         // Only enable the custom proxy URL if a custom proxy is selected.
-        proxyCustomUrlPreference.setEnabled(proxyString.equals("Custom"));
+        proxyCustomUrlPreference.setEnabled(proxyString.equals(ProxyHelper.CUSTOM));
 
 
         // Set the status of the clear and exit preferences.
@@ -689,7 +689,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the Proxy icons according to the theme and status.
-        if (proxyString.equals("None")) {  // Proxying is disabled.
+        if (proxyString.equals(ProxyHelper.NONE)) {  // Proxying is disabled.
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // Dark theme.
                 // Set the main proxy icon to be disabled.
                 proxyPreference.setIcon(R.drawable.proxy_disabled_night);
@@ -877,7 +877,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the scroll app bar preference icon.
-        if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true)) {
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                 scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
             } else {
@@ -1458,10 +1458,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
 
                     // Update the status of the custom URL preference.
-                    proxyCustomUrlPreference.setEnabled(currentProxyString.equals("Custom"));
+                    proxyCustomUrlPreference.setEnabled(currentProxyString.equals(ProxyHelper.CUSTOM));
 
                     // Update the icons.
-                    if (currentProxyString.equals("None")) {  // Proxying is disabled.
+                    if (currentProxyString.equals(ProxyHelper.NONE)) {  // Proxying is disabled.
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {  // Dark theme.
                             // Set the main proxy icon to be disabled
                             proxyPreference.setIcon(R.drawable.proxy_disabled_night);
@@ -1502,7 +1502,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "proxy_custom_url":
                     // Set the summary text for the proxy custom URL.
-                    proxyCustomUrlPreference.setSummary(sharedPreferences.getString("proxy_custom_url", context.getString(R.string.proxy_custom_url_default_value)));
+                    proxyCustomUrlPreference.setSummary(sharedPreferences.getString(context.getString(R.string.proxy_custom_url_key), context.getString(R.string.proxy_custom_url_default_value)));
                     break;
 
                 case "full_screen_browsing_mode":
@@ -1770,7 +1770,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "scroll_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.scroll_app_bar_key), true)) {
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                             scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_day);
                         } else {

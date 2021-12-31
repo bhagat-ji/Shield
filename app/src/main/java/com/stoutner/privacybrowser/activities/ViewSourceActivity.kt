@@ -58,7 +58,7 @@ import com.stoutner.privacybrowser.viewmodels.WebViewSource
 
 import java.util.Locale
 
-// Declare the public constants.
+// Define the public constants.
 const val CURRENT_URL = "current_url"
 const val USER_AGENT = "user_agent"
 

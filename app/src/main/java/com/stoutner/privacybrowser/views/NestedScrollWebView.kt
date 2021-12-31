@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.views
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
@@ -36,6 +37,7 @@ import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.activities.MainWebViewActivity
 
 import java.util.Collections
 import java.util.Date
@@ -78,9 +80,8 @@ private const val FONT_SIZE = "font_size"
 // NestedScrollWebView extends WebView to handle nested scrolls (scrolling the app bar off the screen).  It also stores extra information about the state of the WebView used by Privacy Browser.
 class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defaultStyle: Int = android.R.attr.webViewStyle) : WebView(context, attributeSet, defaultStyle),
     NestedScrollingChild2 {
-
     companion object {
-        // Define the public companion object blocklists constants.
+        // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
         const val BLOCKED_REQUESTS = 0
         const val EASYLIST = 1
         const val EASYPRIVACY = 2
@@ -312,6 +313,19 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         return computeVerticalScrollRange()
     }
 
+    override fun onOverScrolled(scrollX: Int, scrollY: Int, clampedX: Boolean, clampedY: Boolean) {
+        // Run the default commands.
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY)
+
+        // Display the bottom app bar if it has been hidden and the WebView was over-scrolled at the top of the screen.
+        if ((MainWebViewActivity.appBarLayout.translationY != 0f) && (scrollY == 0) && clampedY) {
+            // Animate the bottom app bar onto the screen.
+            val objectAnimator = ObjectAnimator.ofFloat(MainWebViewActivity.appBarLayout, "translationY", 0f)
+
+            // Make it so.
+            objectAnimator.start()
+        }
+    }
 
     // Handle touches.
     @SuppressLint("ClickableViewAccessibility")
