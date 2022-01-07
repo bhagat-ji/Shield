@@ -352,7 +352,6 @@
         <item>Пароль</item>
         <item>OpenPGP</item>
     </string-array>
-    <string name="kitkat_password_encryption_message">Шифрование паролем не работает на Android KitKat.</string>
     <string name="openkeychain_required">Для использования шифрования OpenPGP необходимо приложение OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Незашифрованный файл должен быть импортирован на отдельном шаге после его дешифрования.</string>
     <string name="file_location">Расположение файла</string>
@@ -387,7 +386,6 @@
     <string name="i2p_not_installed_message">Прокси через I2P работать не будет, если приложение I2P не установлено.</string>
     <string name="waiting_for_orbot">Ожидание подключения Orbot.</string>
     <string name="custom_proxy_invalid">URL пользовательского прокси недействителен.</string>
-    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS-прокси не работает на Android KitKat.</string>
 
     <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">О Privacy Browser</string>
@@ -538,7 +536,6 @@
         </string-array>
         <string name="no_proxy_enabled">Нет - подключиться к интернету напрямую.</string>
         <string name="tor_enabled">Tor - connect through socks://localhost:9050.</string>
-        <string name="tor_enabled_kitkat">Tor - подключиться через http://localhost:8118.</string>
         <string name="i2p_enabled">I2P - подключиться через http://localhost:4444.</string>
         <string name="custom_proxy">Пользовательский прокси</string>
         <string name="proxy_custom_url">URL пользовательского прокси</string>

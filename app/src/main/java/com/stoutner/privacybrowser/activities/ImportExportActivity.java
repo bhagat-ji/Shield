@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -154,9 +153,6 @@ public class ImportExportActivity extends AppCompatActivity {
         // Display the home arrow on the support action bar.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // Find out if the system is running KitKat
-        boolean runningKitKat = (Build.VERSION.SDK_INT == 19);
-
         // Find out if OpenKeychain is installed.
         try {
             openKeychainInstalled = !getPackageManager().getPackageInfo("org.sufficientlysecure.keychain", 0).versionName.isEmpty();
@@ -168,7 +164,6 @@ public class ImportExportActivity extends AppCompatActivity {
         encryptionSpinner = findViewById(R.id.encryption_spinner);
         encryptionPasswordTextInputLayout = findViewById(R.id.encryption_password_textinputlayout);
         encryptionPasswordEditText = findViewById(R.id.encryption_password_edittext);
-        kitKatPasswordEncryptionTextView = findViewById(R.id.kitkat_password_encryption_textview);
         openKeychainRequiredTextView = findViewById(R.id.openkeychain_required_textview);
         fileLocationCardView = findViewById(R.id.file_location_cardview);
         importRadioButton = findViewById(R.id.import_radiobutton);
@@ -217,37 +212,28 @@ public class ImportExportActivity extends AppCompatActivity {
                         break;
 
                     case PASSWORD_ENCRYPTION:
-                        if (runningKitKat) {
-                            // Show the KitKat password encryption message.
-                            kitKatPasswordEncryptionTextView.setVisibility(View.VISIBLE);
+                        // Hide the OpenPGP layout items.
+                        openKeychainRequiredTextView.setVisibility(View.GONE);
+                        openKeychainImportInstructionsTextView.setVisibility(View.GONE);
 
-                            // Hide the OpenPGP required text view and the file location card.
-                            openKeychainRequiredTextView.setVisibility(View.GONE);
-                            fileLocationCardView.setVisibility(View.GONE);
-                        } else {
-                            // Hide the OpenPGP layout items.
-                            openKeychainRequiredTextView.setVisibility(View.GONE);
-                            openKeychainImportInstructionsTextView.setVisibility(View.GONE);
+                        // Show the password encryption layout items.
+                        encryptionPasswordTextInputLayout.setVisibility(View.VISIBLE);
 
-                            // Show the password encryption layout items.
-                            encryptionPasswordTextInputLayout.setVisibility(View.VISIBLE);
+                        // Show the file location card.
+                        fileLocationCardView.setVisibility(View.VISIBLE);
 
-                            // Show the file location card.
-                            fileLocationCardView.setVisibility(View.VISIBLE);
-
-                            // Show the file name linear layout if either import or export is checked.
-                            if (importRadioButton.isChecked() || exportRadioButton.isChecked()) {
-                                fileNameLinearLayout.setVisibility(View.VISIBLE);
-                            }
-
-                            // Reset the text of the import button, which may have been changed to `Decrypt`.
-                            if (importRadioButton.isChecked()) {
-                                importExportButton.setText(R.string.import_button);
-                            }
-
-                            // Enable the import/button if both the password and the file name are populated.
-                            importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                        // Show the file name linear layout if either import or export is checked.
+                        if (importRadioButton.isChecked() || exportRadioButton.isChecked()) {
+                            fileNameLinearLayout.setVisibility(View.VISIBLE);
                         }
+
+                        // Reset the text of the import button, which may have been changed to `Decrypt`.
+                        if (importRadioButton.isChecked()) {
+                            importExportButton.setText(R.string.import_button);
+                        }
+
+                        // Enable the import/button if both the password and the file name are populated.
+                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
                         break;
 
                     case OPENPGP_ENCRYPTION:

@@ -42,9 +42,9 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.fragment.app.DialogFragment
-import androidx.multidex.BuildConfig
 import androidx.preference.PreferenceManager
 
+import com.stoutner.privacybrowser.BuildConfig
 import com.stoutner.privacybrowser.R
 
 import java.io.ByteArrayOutputStream

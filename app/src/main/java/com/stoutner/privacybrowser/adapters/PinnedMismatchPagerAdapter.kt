@@ -207,22 +207,18 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
 
         // Set the color spans according to the theme.  The deprecated `resources` must be used until the minimum API >= 23.
         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            @Suppress("DEPRECATION")
-            blueColorSpan = ForegroundColorSpan(context.resources.getColor(R.color.blue_700))
-            @Suppress("DEPRECATION")
-            redColorSpan = ForegroundColorSpan(context.resources.getColor(R.color.red_a700))
+            blueColorSpan = ForegroundColorSpan(context.getColor(R.color.blue_700))
+            redColorSpan = ForegroundColorSpan(context.getColor(R.color.red_a700))
         } else {
-            @Suppress("DEPRECATION")
-            blueColorSpan = ForegroundColorSpan(context.resources.getColor(R.color.violet_700))
-            @Suppress("DEPRECATION")
-            redColorSpan = ForegroundColorSpan(context.resources.getColor(R.color.red_900))
+            blueColorSpan = ForegroundColorSpan(context.getColor(R.color.violet_700))
+            redColorSpan = ForegroundColorSpan(context.getColor(R.color.red_900))
         }
 
         // Set the domain name to be blue.
         domainNameStringBuilder.setSpan(blueColorSpan, domainNameLabel.length, domainNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
         // Color coordinate the IP addresses if they are pinned.
-        if (!nestedScrollWebView.pinnedIpAddresses.equals("")) {
+        if (nestedScrollWebView.pinnedIpAddresses != "") {
             if (nestedScrollWebView.currentIpAddresses == nestedScrollWebView.pinnedIpAddresses) {
                 ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length, ipAddressesStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             } else {

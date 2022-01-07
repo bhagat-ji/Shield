@@ -303,13 +303,13 @@ public class DomainSettingsFragment extends Fragment {
         final ForegroundColorSpan blueColorSpan;
         final ForegroundColorSpan redColorSpan;
 
-        // Set the color spans according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
+        // Set the color spans according to the theme.
         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_700));
-            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
+            blueColorSpan = new ForegroundColorSpan(context.getColor(R.color.blue_700));
+            redColorSpan = new ForegroundColorSpan(context.getColor(R.color.red_a700));
         } else {
-            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.violet_700));
-            redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_900));
+            blueColorSpan = new ForegroundColorSpan(context.getColor(R.color.violet_700));
+            redColorSpan = new ForegroundColorSpan(context.getColor(R.color.red_900));
         }
 
         // Set the domain name from the the database cursor.
@@ -834,99 +834,90 @@ public class DomainSettingsFragment extends Fragment {
             appWebViewThemeEntryNumber = 0;
         }
 
-        // Set the WebView theme visibility.
-        if (Build.VERSION.SDK_INT < 21) {  // The WebView theme cannot be set on API 19.
-            // Get a handle for the webView theme linear layout.
-            LinearLayout webViewThemeLinearLayout = domainSettingsView.findViewById(R.id.webview_theme_linearlayout);
+        // Select the WebView theme in the spinner.
+        webViewThemeSpinner.setSelection(webViewThemeInt);
 
-            // Hide the WebView theme linear layout.
-            webViewThemeLinearLayout.setVisibility(View.GONE);
-        } else {  // The WebView theme can be set on API >= 21.
-            // Select the WebView theme in the spinner.
-            webViewThemeSpinner.setSelection(webViewThemeInt);
-
-            // Set the WebView theme text.
-            if (appWebViewThemeEntryNumber == DomainsDatabaseHelper.SYSTEM_DEFAULT) {  // The app WebView theme is system default.
-                // Set the text according to the current UI theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    webViewThemeTextView.setText(webViewThemeStringArray[DomainsDatabaseHelper.LIGHT_THEME]);
-                } else {
-                    webViewThemeTextView.setText(webViewThemeStringArray[DomainsDatabaseHelper.DARK_THEME]);
-                }
-            } else {  // The app WebView theme is not system default.
-                // Set the text according to the app WebView theme.
-                webViewThemeTextView.setText(webViewThemeStringArray[appWebViewThemeEntryNumber]);
+        // Set the WebView theme text.
+        if (appWebViewThemeEntryNumber == DomainsDatabaseHelper.SYSTEM_DEFAULT) {  // The app WebView theme is system default.
+            // Set the text according to the current UI theme.
+            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                webViewThemeTextView.setText(webViewThemeStringArray[DomainsDatabaseHelper.LIGHT_THEME]);
+            } else {
+                webViewThemeTextView.setText(webViewThemeStringArray[DomainsDatabaseHelper.DARK_THEME]);
             }
-
-            // Set the WebView theme icon and text visibility.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-            switch (webViewThemeInt) {
-                case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The domain WebView theme is system default.
-                    // Set the icon according to the app WebView theme.
-                    switch (appWebViewThemeEntryNumber) {
-                        case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The default WebView theme is system default.
-                            // Set the icon according to the app theme.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                                // Set the light mode icon.
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_day, null));
-                            } else {
-                                // Set the dark theme icon.
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_night, null));
-                            }
-                            break;
-
-                        case DomainsDatabaseHelper.LIGHT_THEME:  // the default WebView theme is light.
-                            // Set the icon according to the app theme.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_day, null));
-                            } else {
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_night, null));
-                            }
-                            break;
-
-                        case DomainsDatabaseHelper.DARK_THEME:  // the default WebView theme is dark.
-                            // Set the icon according to the app theme.
-                            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_day, null));
-                            } else {
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_night, null));                            }
-                            break;
-                    }
-
-                    // Show the WebView theme text view.
-                    webViewThemeTextView.setVisibility(View.VISIBLE);
-                    break;
-
-                case DomainsDatabaseHelper.LIGHT_THEME:  // The domain WebView theme is light.
-                    // Set the icon according to the app theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_day, null));
-                    } else {
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_night, null));
-                    }
-
-                    // Hide the WebView theme text view.
-                    webViewThemeTextView.setVisibility(View.GONE);
-                    break;
-
-                case DomainsDatabaseHelper.DARK_THEME:  // The domain WebView theme is dark.
-                    // Set the icon according to the app theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_day, null));
-                    } else {
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_night, null));
-                    }
-
-                    // Hide the WebView theme text view.
-                    webViewThemeTextView.setVisibility(View.GONE);
-                    break;
-            }
-
-            // Open the WebView theme spinner when the text view is clicked.
-            webViewThemeTextView.setOnClickListener((View v) -> {
-                // Open the WebView theme spinner.
-                webViewThemeSpinner.performClick();
-            });
+        } else {  // The app WebView theme is not system default.
+            // Set the text according to the app WebView theme.
+            webViewThemeTextView.setText(webViewThemeStringArray[appWebViewThemeEntryNumber]);
         }
+
+        // Set the WebView theme icon and text visibility.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        switch (webViewThemeInt) {
+            case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The domain WebView theme is system default.
+                // Set the icon according to the app WebView theme.
+                switch (appWebViewThemeEntryNumber) {
+                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The default WebView theme is system default.
+                        // Set the icon according to the app theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            // Set the light mode icon.
+                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_day, null));
+                        } else {
+                            // Set the dark theme icon.
+                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_night, null));
+                        }
+                        break;
+
+                    case DomainsDatabaseHelper.LIGHT_THEME:  // the default WebView theme is light.
+                        // Set the icon according to the app theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_day, null));
+                        } else {
+                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_night, null));
+                        }
+                        break;
+
+                    case DomainsDatabaseHelper.DARK_THEME:  // the default WebView theme is dark.
+                        // Set the icon according to the app theme.
+                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_day, null));
+                        } else {
+                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_night, null));                            }
+                        break;
+                }
+
+                // Show the WebView theme text view.
+                webViewThemeTextView.setVisibility(View.VISIBLE);
+                break;
+
+            case DomainsDatabaseHelper.LIGHT_THEME:  // The domain WebView theme is light.
+                // Set the icon according to the app theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_day, null));
+                } else {
+                    webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme_night, null));
+                }
+
+                // Hide the WebView theme text view.
+                webViewThemeTextView.setVisibility(View.GONE);
+                break;
+
+            case DomainsDatabaseHelper.DARK_THEME:  // The domain WebView theme is dark.
+                // Set the icon according to the app theme.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+                    webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_day, null));
+                } else {
+                    webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme_night, null));
+                }
+
+                // Hide the WebView theme text view.
+                webViewThemeTextView.setVisibility(View.GONE);
+                break;
+        }
+
+        // Open the WebView theme spinner when the text view is clicked.
+        webViewThemeTextView.setOnClickListener((View v) -> {
+            // Open the WebView theme spinner.
+            webViewThemeSpinner.performClick();
+        });
 
         // Select the wide viewport in the spinner.
         wideViewportSpinner.setSelection(wideViewportInt);

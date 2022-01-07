@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2021 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -79,7 +79,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 dispositionTextView.setText(requestDefault);
 
                 // Set the background color.
-                linearLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+                linearLayout.setBackgroundColor(context.getColor(R.color.transparent));
                 break;
 
             case BlocklistHelper.REQUEST_ALLOWED:
@@ -91,9 +91,9 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
 
                 // Set the background color.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_100));
+                    linearLayout.setBackgroundColor(context.getColor(R.color.blue_100));
                 } else {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.blue_700_50));
+                    linearLayout.setBackgroundColor(context.getColor(R.color.blue_700_50));
                 }
                 break;
 
@@ -106,9 +106,9 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
 
                 // Set the background color.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_100));
+                    linearLayout.setBackgroundColor(context.getColor(R.color.yellow_100));
                 } else {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_700_50));
+                    linearLayout.setBackgroundColor(context.getColor(R.color.yellow_700_50));
                 }
                 break;
 
@@ -122,9 +122,9 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
 
                 // Set the background color.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_100));
+                    linearLayout.setBackgroundColor(context.getColor(R.color.red_100));
                 } else {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_700_40));
+                    linearLayout.setBackgroundColor(context.getColor(R.color.red_700_40));
                 }
                 break;
         }

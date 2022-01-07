@@ -79,6 +79,7 @@ import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
@@ -528,9 +529,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
-        if (Build.VERSION.SDK_INT >= 21) {
-            WebView.enableSlowWholeDocumentDraw();
-        }
+        WebView.enableSlowWholeDocumentDraw();
 
         // Set the theme.
         setTheme(R.style.PrivacyBrowser);
@@ -978,9 +977,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Disable the clear form data menu item if the API >= 26 so that the status of the main Clear Data is calculated correctly.
         optionsClearFormDataMenuItem.setEnabled(Build.VERSION.SDK_INT < 26);
 
-        // Only display the dark WebView menu item if API >= 21.
-        optionsDarkWebViewMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
-
         // Get the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -1379,12 +1375,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         @Override
                         public void onDismissed(Snackbar snackbar, int event) {
                             if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
-                                // Delete the cookies, which command varies by SDK.
-                                if (Build.VERSION.SDK_INT < 21) {
-                                    cookieManager.removeAllCookie();
-                                } else {
-                                    cookieManager.removeAllCookies(null);
-                                }
+                                // Delete the cookies.
+                                cookieManager.removeAllCookies(null);
                             }
                         }
                     })
@@ -1811,7 +1803,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             assert printManager != null;
 
             // Create a print document adapter from the current WebView.
-            PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
+            PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter(getString(R.string.print));
 
             // Print the document.
             printManager.print(getString(R.string.privacy_browser_webpage), printDocumentAdapter, null);
@@ -2785,11 +2777,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             closeCurrentTab();
         } else {  // There isn't anything to do in Privacy Browser.
             // Close Privacy Browser.  `finishAndRemoveTask()` also removes Privacy Browser from the recent app list.
-            if (Build.VERSION.SDK_INT >= 21) {
-                finishAndRemoveTask();
-            } else {
-                finish();
-            }
+            finishAndRemoveTask();
 
             // Manually kill Privacy Browser.  Otherwise, it is glitchy when restarted.
             System.exit(0);
@@ -2805,11 +2793,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the commands that correlate to the specified request code.
         switch (requestCode) {
             case BROWSE_FILE_UPLOAD_REQUEST_CODE:
-                // File uploads only work on API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    // Pass the file to the WebView.
-                    fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, returnedIntent));
-                }
+                // Pass the file to the WebView.
+                fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, returnedIntent));
                 break;
 
             case BROWSE_OPEN_REQUEST_CODE:
@@ -3095,18 +3080,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the lint warning below that the input method manager might be null.
         assert inputMethodManager != null;
 
-        // Initialize the gray foreground color spans for highlighting the URLs.  The deprecated `getResources()` must be used until API >= 23.
-        initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
-        finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+        // Initialize the gray foreground color spans for highlighting the URLs.
+        initialGrayColorSpan = new ForegroundColorSpan(getColor(R.color.gray_500));
+        finalGrayColorSpan = new ForegroundColorSpan(getColor(R.color.gray_500));
 
         // Get the current theme status.
         int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
         // Set the red color span according to the theme.
         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+            redColorSpan = new ForegroundColorSpan(getColor(R.color.red_a700));
         } else {
-            redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_900));
+            redColorSpan = new ForegroundColorSpan(getColor(R.color.red_900));
         }
 
         // Remove the formatting from the URL edit text when the user is editing the text.
@@ -4778,12 +4763,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Clear cookies.
         if (clearEverything || sharedPreferences.getBoolean("clear_cookies", true)) {
-            // The command to remove cookies changed slightly in API 21.
-            if (Build.VERSION.SDK_INT >= 21) {
-                CookieManager.getInstance().removeAllCookies(null);
-            } else {
-                CookieManager.getInstance().removeAllCookie();
-            }
+            // Request the cookies be deleted.
+            CookieManager.getInstance().removeAllCookies(null);
 
             // Manually delete the cookies database, as `CookieManager` sometimes will not flush its changes to disk before `System.exit(0)` is run.
             try {
@@ -4941,11 +4922,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
-        if (Build.VERSION.SDK_INT >= 21) {
-            finishAndRemoveTask();
-        } else {
-            finish();
-        }
+        finishAndRemoveTask();
 
         // Remove the terminated program from RAM.  The status code is `0`.
         System.exit(0);
@@ -5130,9 +5107,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         nestedScrollWebView.getSettings().setDisplayZoomControls(false);
 
         // Don't allow mixed content (HTTP and HTTPS) on the same website.
-        if (Build.VERSION.SDK_INT >= 21) {
-            nestedScrollWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        }
+        nestedScrollWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
 
         // Set the WebView to load in overview mode (zoomed out to the maximum width).
         nestedScrollWebView.getSettings().setLoadWithOverviewMode(true);
@@ -5304,72 +5279,46 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.  Also reinforce full screen browsing mode.
-        // On API < 23, `getViewTreeObserver().addOnScrollChangedListener()` must be used, but it is a little bit buggy and appears to get garbage collected from time to time.
-        if (Build.VERSION.SDK_INT >= 23) {
-            nestedScrollWebView.setOnScrollChangeListener((view, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                // Set the swipe to refresh status.
-                if (nestedScrollWebView.getSwipeToRefresh()) {
-                    // Only enable swipe to refresh if the WebView is scrolled to the top.
-                    swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
-                } else {
-                    // Disable swipe to refresh.
-                    swipeRefreshLayout.setEnabled(false);
-                }
+        nestedScrollWebView.setOnScrollChangeListener((view, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            // Set the swipe to refresh status.
+            if (nestedScrollWebView.getSwipeToRefresh()) {
+                // Only enable swipe to refresh if the WebView is scrolled to the top.
+                swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
+            } else {
+                // Disable swipe to refresh.
+                swipeRefreshLayout.setEnabled(false);
+            }
 
-                //  Scroll the bottom app bar if enabled.
-                if (bottomAppBar && scrollAppBar && !objectAnimator.isRunning()) {
-                    if (scrollY < oldScrollY) {  // The WebView was scrolled down.
-                        // Animate the bottom app bar onto the screen.
-                        objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);
+            //  Scroll the bottom app bar if enabled.
+            if (bottomAppBar && scrollAppBar && !objectAnimator.isRunning()) {
+                if (scrollY < oldScrollY) {  // The WebView was scrolled down.
+                    // Animate the bottom app bar onto the screen.
+                    objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);
 
-                        // Make it so.
-                        objectAnimator.start();
-                    } else if (scrollY > oldScrollY) {  // The WebView was scrolled up.
-                        // Animate the bottom app bar off the screen.
-                        objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", appBarLayout.getHeight());
+                    // Make it so.
+                    objectAnimator.start();
+                } else if (scrollY > oldScrollY) {  // The WebView was scrolled up.
+                    // Animate the bottom app bar off the screen.
+                    objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", appBarLayout.getHeight());
 
-                        // Make it so.
-                        objectAnimator.start();
-                    }
+                    // Make it so.
+                    objectAnimator.start();
                 }
+            }
 
-                // Reinforce the system UI visibility flags if in full screen browsing mode.
-                // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
-                if (inFullScreenBrowsingMode) {
-                    /* Hide the system bars.
-                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                     */
-                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                }
-            });
-        } else {
-            nestedScrollWebView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-                if (nestedScrollWebView.getSwipeToRefresh()) {
-                    // Only enable swipe to refresh if the WebView is scrolled to the top.
-                    swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
-                } else {
-                    // Disable swipe to refresh.
-                    swipeRefreshLayout.setEnabled(false);
-                }
-
-                // Reinforce the system UI visibility flags if in full screen browsing mode.
-                // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
-                if (inFullScreenBrowsingMode) {
-                    /* Hide the system bars.
-                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                     */
-                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                }
-            });
-        }
+            // Reinforce the system UI visibility flags if in full screen browsing mode.
+            // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
+            if (inFullScreenBrowsingMode) {
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            }
+        });
 
         // Set the web chrome client.
         nestedScrollWebView.setWebChromeClient(new WebChromeClient() {
@@ -5501,34 +5450,31 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Upload files.
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                // Show the file chooser if the device is running API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    // Store the file path callback.
-                    fileChooserCallback = filePathCallback;
+                // Store the file path callback.
+                fileChooserCallback = filePathCallback;
 
-                    // Create an intent to open a chooser based on the file chooser parameters.
-                    Intent fileChooserIntent = fileChooserParams.createIntent();
+                // Create an intent to open a chooser based on the file chooser parameters.
+                Intent fileChooserIntent = fileChooserParams.createIntent();
 
-                    // Get a handle for the package manager.
-                    PackageManager packageManager = getPackageManager();
+                // Get a handle for the package manager.
+                PackageManager packageManager = getPackageManager();
 
-                    // Check to see if the file chooser intent resolves to an installed package.
-                    if (fileChooserIntent.resolveActivity(packageManager) != null) {  // The file chooser intent is fine.
-                        // Start the file chooser intent.
-                        startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
-                    } else {  // The file chooser intent will cause a crash.
-                        // Create a generic intent to open a chooser.
-                        Intent genericFileChooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                // Check to see if the file chooser intent resolves to an installed package.
+                if (fileChooserIntent.resolveActivity(packageManager) != null) {  // The file chooser intent is fine.
+                    // Start the file chooser intent.
+                    startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                } else {  // The file chooser intent will cause a crash.
+                    // Create a generic intent to open a chooser.
+                    Intent genericFileChooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
 
-                        // Request an openable file.
-                        genericFileChooserIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    // Request an openable file.
+                    genericFileChooserIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
-                        // Set the file type to everything.
-                        genericFileChooserIntent.setType("*/*");
+                    // Set the file type to everything.
+                    genericFileChooserIntent.setType("*/*");
 
-                        // Start the generic file chooser intent.
-                        startActivityForResult(genericFileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
-                    }
+                    // Start the generic file chooser intent.
+                    startActivityForResult(genericFileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
                 }
                 return true;
             }
@@ -5618,7 +5564,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
             @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest webResourceRequest) {
+                // Get the URL.
+                String url = webResourceRequest.getUrl().toString();
+
                 // Check to see if the resource request is for the main URL.
                 if (url.equals(nestedScrollWebView.getCurrentUrl())) {
                     // `return null` loads the resource request, which should never be blocked if it is the main URL.
@@ -5638,9 +5587,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Sanitize the URL.
-                url = sanitizeUrl(url);
-
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
 
@@ -5656,31 +5602,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Store a copy of the current domain for use in later requests.
                 String currentDomain = currentBaseDomain;
 
-                // Nobody is happy when comparing null strings.
-                if (url != null) {
-                    // Convert the request URL to a URI.
-                    Uri requestUri = Uri.parse(url);
+                // Get the request host name.
+                String requestBaseDomain = webResourceRequest.getUrl().getHost();
 
-                    // Get the request host name.
-                    String requestBaseDomain = requestUri.getHost();
-
-                    // Only check for third-party requests if the current base domain is not empty and the request domain is not null.
-                    if (!currentBaseDomain.isEmpty() && (requestBaseDomain != null)) {
-                        // Determine the current base domain.
-                        while (currentBaseDomain.indexOf(".", currentBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
-                            // Remove the first subdomain.
-                            currentBaseDomain = currentBaseDomain.substring(currentBaseDomain.indexOf(".") + 1);
-                        }
-
-                        // Determine the request base domain.
-                        while (requestBaseDomain.indexOf(".", requestBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
-                            // Remove the first subdomain.
-                            requestBaseDomain = requestBaseDomain.substring(requestBaseDomain.indexOf(".") + 1);
-                        }
-
-                        // Update the third party request tracker.
-                        isThirdPartyRequest = !currentBaseDomain.equals(requestBaseDomain);
+                // Only check for third-party requests if the current base domain is not empty and the request domain is not null.
+                if (!currentBaseDomain.isEmpty() && (requestBaseDomain != null)) {
+                    // Determine the current base domain.
+                    while (currentBaseDomain.indexOf(".", currentBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
+                        // Remove the first subdomain.
+                        currentBaseDomain = currentBaseDomain.substring(currentBaseDomain.indexOf(".") + 1);
                     }
+
+                    // Determine the request base domain.
+                    while (requestBaseDomain.indexOf(".", requestBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
+                        // Remove the first subdomain.
+                        requestBaseDomain = requestBaseDomain.substring(requestBaseDomain.indexOf(".") + 1);
+                    }
+
+                    // Update the third party request tracker.
+                    isThirdPartyRequest = !currentBaseDomain.equals(requestBaseDomain);
                 }
 
                 // Get the current WebView page position.
@@ -6055,7 +5995,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Flush any cookies to persistent storage.  The cookie manager has become very lazy about flushing cookies in recent versions.
-                if (nestedScrollWebView.getAcceptCookies() && Build.VERSION.SDK_INT >= 21) {
+                if (nestedScrollWebView.getAcceptCookies()) {
                     CookieManager.getInstance().flush();
                 }
 

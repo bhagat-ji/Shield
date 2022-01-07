@@ -134,6 +134,9 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         // Get the WebView frame layout.
         FrameLayout webViewFrameLayout = (FrameLayout) webViewTabFragment.getView();
 
+        // Remove the warning below that the WebView frame layout might be null.
+        assert webViewFrameLayout != null;
+
         // Get a handle for the nested scroll WebView.
         NestedScrollWebView nestedScrollWebView = webViewFrameLayout.findViewById(R.id.nestedscroll_webview);
 

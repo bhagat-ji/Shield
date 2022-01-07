@@ -93,16 +93,6 @@
                                 android:inputType="textPassword"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- KitKat password encryption message. -->
-                        <TextView
-                            android:id="@+id/kitkat_password_encryption_textview"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/kitkat_password_encryption_message"
-                            android:textAlignment="center" />
-
                         <!-- OpenKeychain required message. -->
                         <TextView
                             android:id="@+id/openkeychain_required_textview"

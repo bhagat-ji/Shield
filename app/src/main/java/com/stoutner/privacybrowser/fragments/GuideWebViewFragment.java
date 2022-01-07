@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -116,10 +117,10 @@ public class GuideWebViewFragment extends Fragment {
             }
 
             @Override
-            public WebResourceResponse shouldInterceptRequest(WebView webView, String url) {
+            public WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest webResourceRequest) {
                 // Have the WebView asset loader process the request.
                 // This allows using the `appassets.androidplatform.net` URL, which handles the loading of SVG files, which otherwise is prevented by the CORS policy.
-                return webViewAssetLoader.shouldInterceptRequest(Uri.parse(url));
+                return webViewAssetLoader.shouldInterceptRequest(webResourceRequest.getUrl());
             }
         });
 

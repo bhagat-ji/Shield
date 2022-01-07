@@ -316,11 +316,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 break;
 
             case ProxyHelper.TOR:
-                if (Build.VERSION.SDK_INT == 19) {  // Proxying through SOCKS doesn't work on Android KitKat.
-                    proxyPreference.setSummary(getString(R.string.tor_enabled_kitkat));
-                } else {
-                    proxyPreference.setSummary(getString(R.string.tor_enabled));
-                }
+                proxyPreference.setSummary(getString(R.string.tor_enabled));
                 break;
 
             case ProxyHelper.I2P:
@@ -403,20 +399,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             webViewThemeEntryNumber = 0;
         }
 
-        // Set the visibility of the WebView theme preference.
-        if (Build.VERSION.SDK_INT < 21) {  // The device is running API 19.
-            // Get a handle for the general category.
-            PreferenceCategory generalCategory = findPreference("general");
-
-            // Remove the incorrect lint warning below that the general preference category might be null.
-            assert generalCategory != null;
-
-            // Remove the WebView theme preference.
-            generalCategory.removePreference(webViewThemePreference);
-        } else {  // The device is running API >= 21
-            // Set the current theme as the summary text for the preference.
-            webViewThemePreference.setSummary(webViewThemeEntriesStringArray[webViewThemeEntryNumber]);
-        }
+        // Set the current theme as the summary text for the preference.
+        webViewThemePreference.setSummary(webViewThemeEntriesStringArray[webViewThemeEntryNumber]);
 
 
         // Set the JavaScript icon.
@@ -1441,11 +1425,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             break;
 
                         case ProxyHelper.TOR:
-                            if (Build.VERSION.SDK_INT == 19) {  // Proxying through SOCKS doesn't work on Android KitKat.
-                                proxyPreference.setSummary(context.getString(R.string.tor_enabled_kitkat));
-                            } else {
-                                proxyPreference.setSummary(context.getString(R.string.tor_enabled));
-                            }
+                            proxyPreference.setSummary(context.getString(R.string.tor_enabled));
                             break;
 
                         case ProxyHelper.I2P:

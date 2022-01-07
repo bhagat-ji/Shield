@@ -6,8 +6,7 @@
     android:viewportHeight="24.0"
     android:viewportWidth="24.0" >
 
-    <!-- A hard coded color must be used until API >= 21.  Then `@color` or `?attr/colorControlNormal` may be used instead. -->
     <path
-        android:fillColor="#FF000000"
+        android:fillColor="@color/black"
         android:pathData="M12,8l-6,6 1.41,1.41L12,10.83l4.59,4.58L18,14z"/>
 </vector>

@@ -355,7 +355,6 @@
         <item>Password</item>
         <item>OpenPGP</item>
     </string-array>
-    <string name="kitkat_password_encryption_message">La cifratura delle Password non funziona su Android KitKat.</string>
     <string name="openkeychain_required">La cifratura OpenPGP richiede l\'installazione di OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Il file non cifrato deve essere importato in un secondo momento dopo che è stato decriptato.</string>
     <string name="file_location">Posizione del File</string>
@@ -390,7 +389,6 @@
     <string name="i2p_not_installed_message">Il Proxy con I2P non funziona se non è installata la app I2P.</string>
     <string name="waiting_for_orbot">In attesa della connessione di Orbot.</string>
     <string name="custom_proxy_invalid">La URL del proxy personalizzato non è valida.</string>
-    <string name="socks_proxies_do_not_work_on_kitkat">I proxy SOCKS non funzionano con Android KitKat.</string>
 
     <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>
@@ -542,7 +540,6 @@
         </string-array>
         <string name="no_proxy_enabled">Nessuno - connessione diretta a internet.</string>
         <string name="tor_enabled">Tor - connessione con socks://localhost:9050.</string>
-        <string name="tor_enabled_kitkat">Tor - connessione con http://localhost:8118.</string>
         <string name="i2p_enabled">I2P - connessione con http://localhost:4444.</string>
         <string name="custom_proxy">Proxy personalizzato</string>
         <string name="proxy_custom_url">URL personalizzata del Proxy</string>

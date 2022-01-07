@@ -357,7 +357,7 @@ class AboutVersionFragment : Fragment() {
         val ultraPrivacyStringBuilder = SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[5])
 
         // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-        blueColorSpan = ForegroundColorSpan(resources.getColor(R.color.about_version_blue_text))
+        blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.about_version_blue_text))
 
         // Set the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         brandStringBuilder.setSpan(blueColorSpan, brandLabel.length, brandStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -411,50 +411,38 @@ class AboutVersionFragment : Fragment() {
             radioTextView.visibility = View.GONE
         }
 
-        // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
-        if (Build.VERSION.SDK_INT >= 23) {
-            // Setup the label.
-            val securityPatchLabel = getString(R.string.security_patch) + "  "
+        // Setup the label.
+        val securityPatchLabel = getString(R.string.security_patch) + "  "
 
-            // Get the security patch version.
-            val securityPatch = Build.VERSION.SECURITY_PATCH
+        // Get the security patch version.
+        val securityPatch = Build.VERSION.SECURITY_PATCH
 
-            // Create a spannable string builder.
-            val securityPatchStringBuilder = SpannableStringBuilder(securityPatchLabel + securityPatch)
+        // Create a spannable string builder.
+        val securityPatchStringBuilder = SpannableStringBuilder(securityPatchLabel + securityPatch)
 
-            // Set the span to display the security patch version in blue.
-            securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length, securityPatchStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        // Set the span to display the security patch version in blue.
+        securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length, securityPatchStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
-            // Display the string in the text view.
-            securityPatchTextView.text = securityPatchStringBuilder
-        } else {  // The API < 23.
-            // Hide the security patch text view.
-            securityPatchTextView.visibility = View.GONE
-        }
+        // Display the string in the text view.
+        securityPatchTextView.text = securityPatchStringBuilder
 
-        // Only populate the WebView provider if the SDK >= 21.
-        if (Build.VERSION.SDK_INT >= 21) {
-            // Create the WebView provider label.
-            val webViewProviderLabel = getString(R.string.webview_provider) + "  "
+        // Create the WebView provider label.
+        val webViewProviderLabel = getString(R.string.webview_provider) + "  "
 
-            // Get the current WebView package info.
-            val webViewPackageInfo = WebViewCompat.getCurrentWebViewPackage(requireContext())!!
+        // Get the current WebView package info.
+        val webViewPackageInfo = WebViewCompat.getCurrentWebViewPackage(requireContext())!!
 
-            // Get the WebView provider name.
-            val webViewPackageName = webViewPackageInfo.packageName
+        // Get the WebView provider name.
+        val webViewPackageName = webViewPackageInfo.packageName
 
-            // Create the spannable string builder.
-            val webViewProviderStringBuilder = SpannableStringBuilder(webViewProviderLabel + webViewPackageName)
+        // Create the spannable string builder.
+        val webViewProviderStringBuilder = SpannableStringBuilder(webViewProviderLabel + webViewPackageName)
 
-            // Apply the coloration.
-            webViewProviderStringBuilder.setSpan(blueColorSpan, webViewProviderLabel.length, webViewProviderStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        // Apply the coloration.
+        webViewProviderStringBuilder.setSpan(blueColorSpan, webViewProviderLabel.length, webViewProviderStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
-            // Display the WebView provider.
-            webViewProviderTextView.text = webViewProviderStringBuilder
-        } else {  // The API < 21.
-            // Hide the WebView provider text view.
-            webViewProviderTextView.visibility = View.GONE
-        }
+        // Display the WebView provider.
+        webViewProviderTextView.text = webViewProviderStringBuilder
 
         // Only populate the Orbot text view if it is installed.
         if (orbot.isNotEmpty()) {

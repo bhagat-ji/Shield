@@ -65,10 +65,6 @@ public class GetSourceBackgroundTask {
                 // Get a URI for the content URL.
                 Uri contentUri = Uri.parse(urlString);
 
-                // Define the variables necessary to build the response headers.
-                int oldResponseHeadersBuilderLength;
-                int newResponseHeadersBuilderLength;
-
                 // Get a cursor with metadata about the content URL.
                 Cursor contentCursor = contentResolver.query(contentUri, null, null, null, null);
 
@@ -82,14 +78,7 @@ public class GetSourceBackgroundTask {
                     }
 
                     // Add each header to the string builder.
-                    if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                        responseHeadersBuilder.append(contentCursor.getColumnName(i), new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    } else {  // Older versions are not so much.
-                        oldResponseHeadersBuilderLength = responseHeadersBuilder.length();
-                        responseHeadersBuilder.append(contentCursor.getColumnName(i));
-                        newResponseHeadersBuilderLength = responseHeadersBuilder.length();
-                        responseHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldResponseHeadersBuilderLength, newResponseHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
+                    responseHeadersBuilder.append(contentCursor.getColumnName(i), new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     responseHeadersBuilder.append(":  ");
                     responseHeadersBuilder.append(contentCursor.getString(i));
                 }
@@ -121,23 +110,11 @@ public class GetSourceBackgroundTask {
                 // Open a connection to the URL.  No data is actually sent at this point.
                 HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
 
-                // Define the variables necessary to build the request headers.
-                int oldRequestHeadersBuilderLength;
-                int newRequestHeadersBuilderLength;
-
-
                 // Set the `Host` header property.
                 httpUrlConnection.setRequestProperty("Host", url.getHost());
 
                 // Add the `Host` header to the string builder and format the text.
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Host", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Host");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Host", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  ");
                 requestHeadersBuilder.append(url.getHost());
 
@@ -147,14 +124,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `Connection` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Connection", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Connection");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Connection", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  keep-alive");
 
 
@@ -163,14 +133,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `Upgrade-Insecure-Requests` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Upgrade-Insecure-Requests", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Upgrade-Insecure_Requests");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Upgrade-Insecure-Requests", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  1");
 
 
@@ -179,14 +142,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `User-Agent` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("User-Agent", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("User-Agent");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("User-Agent", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  ");
                 requestHeadersBuilder.append(userAgent);
 
@@ -196,14 +152,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `x-requested-with` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("x-requested-with", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("x-requested-with");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("x-requested-with", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  ");
 
 
@@ -212,14 +161,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `Sec-Fetch-Site` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Sec-Fetch-Site", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Sec-Fetch-Site");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Sec-Fetch-Site", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  none");
 
 
@@ -228,14 +170,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `Sec-Fetch-Mode` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Sec-Fetch-Mode", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Sec-Fetch-Mode");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Sec-Fetch-Mode", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  navigate");
 
 
@@ -244,14 +179,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `Sec-Fetch-User` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Sec-Fetch-User", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Sec-Fetch-User");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Sec-Fetch-User", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  ?1");
 
 
@@ -260,14 +188,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `Accept` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Accept", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Accept");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Accept", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  ");
                 requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
 
@@ -277,14 +198,7 @@ public class GetSourceBackgroundTask {
 
                 // Add the `Accept-Language` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Accept-Language", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Accept-Language");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Accept-Language", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  ");
                 requestHeadersBuilder.append(localeString);
 
@@ -299,14 +213,7 @@ public class GetSourceBackgroundTask {
 
                     // Add the cookie header to the string builder and format the text.
                     requestHeadersBuilder.append(System.getProperty("line.separator"));
-                    if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                        requestHeadersBuilder.append("Cookie", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    } else {  // Older versions not so much.
-                        oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                        requestHeadersBuilder.append("Cookie");
-                        newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                        requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
+                    requestHeadersBuilder.append("Cookie", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     requestHeadersBuilder.append(":  ");
                     requestHeadersBuilder.append(cookiesString);
                 }
@@ -315,14 +222,7 @@ public class GetSourceBackgroundTask {
                 // `HttpUrlConnection` sets `Accept-Encoding` to be `gzip` by default.  If the property is manually set, than `HttpUrlConnection` does not process the decoding.
                 // Add the `Accept-Encoding` header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
-                if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                    requestHeadersBuilder.append("Accept-Encoding", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {  // Older versions not so much.
-                    oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.append("Accept-Encoding");
-                    newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
+                requestHeadersBuilder.append("Accept-Encoding", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 requestHeadersBuilder.append(":  gzip");
 
                 // Ignore SSL errors if requested.
@@ -377,13 +277,7 @@ public class GetSourceBackgroundTask {
                     int responseCode = httpUrlConnection.getResponseCode();
 
                     // Populate the response message string builder.
-                    if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                        responseMessageBuilder.append(String.valueOf(responseCode), new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    } else {  // Older versions not so much.
-                        responseMessageBuilder.append(String.valueOf(responseCode));
-                        int newLength = responseMessageBuilder.length();
-                        responseMessageBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, newLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
+                    responseMessageBuilder.append(String.valueOf(responseCode), new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     responseMessageBuilder.append(":  ");
                     responseMessageBuilder.append(httpUrlConnection.getResponseMessage());
 
@@ -398,14 +292,7 @@ public class GetSourceBackgroundTask {
                         }
 
                         // Add the header to the string builder and format the text.
-                        if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                            responseHeadersBuilder.append(httpUrlConnection.getHeaderFieldKey(i), new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        } else {  // Older versions not so much.
-                            int oldLength = responseHeadersBuilder.length();
-                            responseHeadersBuilder.append(httpUrlConnection.getHeaderFieldKey(i));
-                            int newLength = responseHeadersBuilder.length();
-                            responseHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldLength, newLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        }
+                        responseHeadersBuilder.append(httpUrlConnection.getHeaderFieldKey(i), new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         responseHeadersBuilder.append(":  ");
                         responseHeadersBuilder.append(httpUrlConnection.getHeaderField(i));
 
