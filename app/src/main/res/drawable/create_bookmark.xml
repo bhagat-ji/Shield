@@ -1,5 +1,23 @@
-<!-- This file is derived from elements of `bookmark` and `create_new_folder`, which are part of the Android Material icon set.  They are released under the Apache License 2.0.
-    Modifications copyright © 2017 Soren Stoutner <soren@stoutner.com>.  The resulting image is released under the GPLv3+ license. -->
+<!--
+  Copyright © 2017,2022 Soren Stoutner <soren@stoutner.com>.
+
+  This file is derived from elements of `bookmark` and `create_new_folder`, which are part of the Android Material icon set.  They are released under the Apache License 2.0.
+
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+
+  Privacy Browser Android is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser Android is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:height="24dp"

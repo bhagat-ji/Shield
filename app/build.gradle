@@ -1,20 +1,20 @@
 /*
- * Copyright © 2016-2021 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
- * Privacy Browser is free software: you can redistribute it and/or modify
+ * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Privacy Browser is distributed in the hope that it will be useful,
+ * Privacy Browser Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 plugins {
@@ -68,9 +68,9 @@ dependencies {
     // Include the following AndroidX libraries.
     implementation 'androidx.arch.core:core-common:2.1.0'
     implementation 'androidx.arch.core:core-runtime:2.1.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
     implementation 'androidx.preference:preference-ktx:1.1.1'
@@ -82,5 +82,5 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.5.0'
 }
