@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.adapters;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -115,7 +116,7 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
 
         // Move to the new page if indicated.
         if (moveToNewPage) {
-            webViewPager.setCurrentItem(pageNumber);
+            moveToNewPage(pageNumber, webViewPager);
         }
     }
 
@@ -163,5 +164,25 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
     public WebViewTabFragment getPageFragment(int pageNumber) {
         // Return the page fragment.
         return webViewFragmentsList.get(pageNumber);
+    }
+
+    private void moveToNewPage(int pageNumber, ViewPager webViewPager) {
+        // Check to see if the new page has been populated.
+        if (webViewPager.getChildCount() >= pageNumber) {  // The new page is ready.
+            // Move to the new page.
+            webViewPager.setCurrentItem(pageNumber);
+        } else {  // The new page is not yet ready.
+            // Create a handler.
+            Handler moveToNewPageHandler = new Handler();
+
+            // Create a runnable.
+            Runnable moveToNewPageRunnable = () -> {
+                // Move to the new page.
+                webViewPager.setCurrentItem(pageNumber);
+            };
+
+            // Try again to move to the new page after 50 milliseconds.
+            moveToNewPageHandler.postDelayed(moveToNewPageRunnable, 50);
+        }
     }
 }

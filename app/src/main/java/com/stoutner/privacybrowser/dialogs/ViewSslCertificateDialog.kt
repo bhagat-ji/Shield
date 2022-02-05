@@ -192,7 +192,7 @@ class ViewSslCertificateDialog : DialogFragment() {
         dialogBuilder.setNegativeButton(R.string.close, null)
 
         // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         // Get the screenshot preference.
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)

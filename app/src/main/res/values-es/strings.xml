@@ -369,7 +369,7 @@
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
-    <string name="copy">Copiar</string>
+    <string name="copy_string">Copiar</string>
     <string name="clear">Borrar</string>
     <string name="logcat_copied">Logcat copiado.</string>
     <string name="privacy_browser_logcat_txt">Navegador Privado %1$s Logcat.txt</string>

@@ -108,7 +108,7 @@ class FontSizeDialog : DialogFragment() {
         val dialogWindow = alertDialog.window!!
 
         // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         // Get the screenshot preferences.
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
