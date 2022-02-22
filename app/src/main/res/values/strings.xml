@@ -550,8 +550,6 @@
             <item>Mojeek</item>
             <item>Monocles</item>
             <item>MetaGer</item>
-            <item>DuckDuckGo - JavaScript disabled</item>
-            <item>DuckDuckGo - JavaScript enabled</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript disabled</item>
@@ -562,8 +560,6 @@
             <item>https://www.mojeek.com/search?q=</item>
             <item>https://monocles.de/search?q=</item>
             <item>https://metager.org/meta/meta.ger3?eingabe=</item>
-            <item>https://duckduckgo.com/html/?q=</item>
-            <item>https://duckduckgo.com/?q=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
             <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
