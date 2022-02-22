@@ -460,7 +460,6 @@
             <item>Firefox на Windows</item>
             <item>Chrome на Windows</item>
             <item>Edge на Windows</item>
-            <item>Internet Explorer на Windows</item>
             <item>Safari на macOS</item>
             <item>Настраиваемый</item>
         </string-array>
@@ -476,7 +475,6 @@
             <item>Firefox на Windows</item>
             <item>Chrome на Windows</item>
             <item>Edge на Windows</item>
-            <item>Internet Explorer на Windows</item>
             <item>Safari на macOS</item>
             <item>Настраиваемый</item>
         </string-array>

@@ -463,7 +463,6 @@
             <item>Firefox su Windows</item>
             <item>Chrome su Windows</item>
             <item>Edge su Windows</item>
-            <item>Internet Explorer su Windows</item>
             <item>Safari su macOS</item>
             <item>Personalizzato</item>
         </string-array>
@@ -479,7 +478,6 @@
             <item>Firefox su Windows</item>
             <item>Chrome su Windows</item>
             <item>Edge su Windows</item>
-            <item>Internet Explorer su Windows</item>
             <item>Safari su macOS</item>
             <item>Personalizzato</item>
         </string-array>

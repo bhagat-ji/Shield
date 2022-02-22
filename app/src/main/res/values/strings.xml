@@ -471,7 +471,6 @@
             <item>Firefox on Windows</item>
             <item>Chrome on Windows</item>
             <item>Edge on Windows</item>
-            <item>Internet Explorer on Windows</item>
             <item>Safari on macOS</item>
             <item>Custom</item>
         </string-array>
@@ -487,7 +486,6 @@
             <item>Firefox on Windows</item>
             <item>Chrome on Windows</item>
             <item>Edge on Windows</item>
-            <item>Internet Explorer on Windows</item>
             <item>Safari on macOS</item>
             <item>Custom</item>
         </string-array>
@@ -502,7 +500,6 @@
             <item>Firefox on Windows</item>
             <item>Chrome on Windows</item>
             <item>Edge on Windows</item>
-            <item>Internet Explorer on Windows</item>
             <item>Safari on macOS</item>
             <item>Custom user agent</item>
         </string-array>
@@ -517,7 +514,6 @@
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36 Edg/96.0.1054.34</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
             <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1 Safari/605.1.15</item>
             <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
