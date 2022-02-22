@@ -23,7 +23,7 @@
     <item
         android:id="@+id/clear_and_exit"
         android:title="@string/clear_and_exit"
-        android:icon="@drawable/download_with_external_app_enabled_day"
+        android:icon="@drawable/download_with_external_app_enabled"
         android:orderInCategory="10" />
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -31,7 +31,7 @@
         <item
             android:id="@+id/home"
             android:title="@string/home"
-            android:icon="@drawable/home_enabled_day"
+            android:icon="@drawable/home"
             android:orderInCategory="20" />
 
         <item
@@ -55,7 +55,7 @@
         <item
             android:id="@+id/open"
             android:title="@string/open"
-            android:icon="@drawable/proxy_enabled_day"
+            android:icon="@drawable/proxy_enabled"
             android:orderInCategory="60" />
     </group>
 
@@ -64,13 +64,13 @@
         <item
             android:id="@+id/requests"
             android:title="@string/requests"
-            android:icon="@drawable/block_ads_enabled_day"
+            android:icon="@drawable/block_ads_enabled"
             android:orderInCategory="70" />
 
         <item
             android:id="@+id/downloads"
             android:title="@string/downloads"
-            android:icon="@drawable/downloads_enabled_day"
+            android:icon="@drawable/download"
             android:orderInCategory="80" />
     </group>
 
@@ -79,7 +79,7 @@
         <item
             android:id="@+id/domains"
             android:title="@string/domains"
-            android:icon="@drawable/domains_day"
+            android:icon="@drawable/domains"
             android:orderInCategory="90" />
 
         <item
@@ -97,7 +97,7 @@
         <item
             android:id="@+id/logcat"
             android:title="@string/logcat"
-            android:icon="@drawable/bug"
+            android:icon="@drawable/clear_logcat_enabled"
             android:orderInCategory="120" />
     </group>
 
@@ -112,7 +112,7 @@
         <item
             android:id="@+id/about"
             android:title="@string/about"
-            android:icon="@drawable/about_day"
+            android:icon="@drawable/about"
             android:orderInCategory="140" />
     </group>
 </menu>

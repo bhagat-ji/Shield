@@ -115,8 +115,8 @@ class PinnedMismatchDialog : DialogFragment() {
 
         // Set the favorite icon as the dialog icon if it exists.
         if (favoriteIconBitmap.sameAs(defaultFavoriteIconBitmap)) {  // There is no website favorite icon.
-            // Set the icon according to the theme.
-            dialogBuilder.setIconAttribute(R.attr.sslCertificateBlueIcon)
+            // Set the icon.
+            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled)
         } else {  // There is a favorite icon.
             // Create a drawable version of the favorite icon.
             val favoriteIconDrawable: Drawable = BitmapDrawable(resources, favoriteIconBitmap)

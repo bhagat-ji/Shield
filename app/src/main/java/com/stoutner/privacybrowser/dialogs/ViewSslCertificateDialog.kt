@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs
 
 import android.app.Dialog
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -251,24 +250,8 @@ class ViewSslCertificateDialog : DialogFragment() {
             val endDateStringBuilder = SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate))
 
             // Define the color spans.
-            val blueColorSpan: ForegroundColorSpan
-            val redColorSpan: ForegroundColorSpan
-
-            // Get the current theme status.
-            val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
-            // Set the color spans according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                @Suppress("DEPRECATION")
-                blueColorSpan = ForegroundColorSpan(resources.getColor(R.color.blue_700))
-                @Suppress("DEPRECATION")
-                redColorSpan = ForegroundColorSpan(resources.getColor(R.color.red_a700))
-            } else {
-                @Suppress("DEPRECATION")
-                blueColorSpan = ForegroundColorSpan(resources.getColor(R.color.violet_700))
-                @Suppress("DEPRECATION")
-                redColorSpan = ForegroundColorSpan(resources.getColor(R.color.red_900))
-            }
+            val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.blue_text))
+            val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
 
             // Format the domain string and issued to CName colors.
             if (domainString == issuedToCName) {  // The domain and issued to CName match.

@@ -84,7 +84,7 @@ class FontSizeDialog : DialogFragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the icon according to the theme.
-        dialogBuilder.setIconAttribute(R.attr.fontSizeBlueIcon)
+        dialogBuilder.setIcon(R.drawable.font_size)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.font_size)

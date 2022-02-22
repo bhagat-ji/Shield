@@ -24,7 +24,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -1107,45 +1106,34 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // bookmarksListView is 0 indexed.
         int lastBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(bookmarksListView.getCount() - 1);
 
-        // Get the current theme status.
-        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-        // Update the move bookmark up `MenuItem`.
+        // Update the move bookmark up menu item.
         if (selectedBookmarkDatabaseId == firstBookmarkDatabaseId) {  // The selected bookmark is in the first position.
-            // Disable the move bookmark up `MenuItem`.
+            // Disable the move bookmark up menu item.
             moveBookmarkUpMenuItem.setEnabled(false);
 
-            //  Set the move bookmark up icon to be ghosted.
+            //  Set the icon.
             moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_disabled);
         } else {  // The selected bookmark is not in the first position.
             // Enable the move bookmark up menu item.
             moveBookmarkUpMenuItem.setEnabled(true);
 
             // Set the icon according to the theme.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_night);
-            } else {
-                moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_day);
-            }
+            moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled);
         }
 
-        // Update the move bookmark down `MenuItem`.
+        // Update the move bookmark down menu item.
         if (selectedBookmarkDatabaseId == lastBookmarkDatabaseId) {  // The selected bookmark is in the last position.
-            // Disable the move bookmark down `MenuItem`.
+            // Disable the move bookmark down menu item.
             moveBookmarkDownMenuItem.setEnabled(false);
 
-            // Set the move bookmark down icon to be ghosted.
+            // Set the icon.
             moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_disabled);
         } else {  // The selected bookmark is not in the last position.
-            // Enable the move bookmark down `MenuItem`.
+            // Enable the move bookmark down menu item.
             moveBookmarkDownMenuItem.setEnabled(true);
 
-            // Set the icon according to the theme.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_night);
-            } else {
-                moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_day);
-            }
+            // Set the icon.
+            moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled);
         }
     }
 

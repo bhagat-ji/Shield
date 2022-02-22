@@ -441,7 +441,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                         Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
                                     } catch (Exception exception) {
                                         // Display a snackbar with the exception.
-                                        Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                                        Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
                                     } finally {
                                         // Delete the temporary MHT file.
                                         //noinspection ResultOfMethodCallIgnored
@@ -454,7 +454,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             });
                         } catch (IOException ioException) {
                             // Display a snackbar with the IO exception.
-                            Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + ioException.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                            Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + ioException, Snackbar.LENGTH_INDEFINITE).show();
                         }
                     }
                 }
@@ -999,17 +999,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the title.
             optionsRefreshMenuItem.setTitle(R.string.stop);
 
-            // Set the icon if it is displayed in the app bar.
+            // Set the icon if it is displayed in the app bar.  Once the minimum API is >= 26, the blue and black icons can be combined with a tint list.
             if (displayAdditionalAppBarIcons) {
-                // Get the current theme status.
-                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                // Set the icon according to the current theme status.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_day);
-                } else {
-                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_night);
-                }
+                optionsRefreshMenuItem.setIcon(R.drawable.close_blue);
             }
         }
 
@@ -2838,21 +2830,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Initialize the formatted URL string.
         String url = "";
 
-        // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
+        // Check to see if the unformatted URL string is a valid URL.  Otherwise, convert it into a search.
         if (unformattedUrlString.startsWith("content://")) {  // This is a Content URL.
             // Load the entire content URL.
             url = unformattedUrlString;
         } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://") ||
                 unformattedUrlString.startsWith("file://")) {  // This is a standard URL.
             // Add `https://` at the beginning if there is no protocol.  Otherwise the app will segfault.
-            if (!unformattedUrlString.startsWith("http") && !unformattedUrlString.startsWith("file://") && !unformattedUrlString.startsWith("content://")) {
+            if (!unformattedUrlString.startsWith("http") && !unformattedUrlString.startsWith("file://")) {
                 unformattedUrlString = "https://" + unformattedUrlString;
             }
 
-            // Initialize `unformattedUrl`.
+            // Initialize the unformatted URL.
             URL unformattedUrl = null;
 
-            // Convert `unformattedUrlString` to a `URL`, then to a `URI`, and then back to a `String`, which sanitizes the input and adds in any missing components.
+            // Convert the unformatted URL string to a URL, then to a URI, and then back to a string, which sanitizes the input and adds in any missing components.
             try {
                 unformattedUrl = new URL(unformattedUrlString);
             } catch (MalformedURLException e) {
@@ -3026,7 +3018,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 currentWebView.loadUrl(temporaryMhtFile.toString());
             } catch (Exception exception) {
                 // Display a snackbar.
-                Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
             }
         } else {  // Let the WebView handle opening of the file.
             // Open the file.
@@ -4003,15 +3995,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         break;
                 }
 
-                // Get the current theme status.
-                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
                 // Set a background on the URL relative layout to indicate that custom domain settings are being used.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_light_green, null));
-                } else {
-                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_dark_blue, null));
-                }
+                urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.domain_settings_url_background, null));
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from the shared preferences.
                 nestedScrollWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean("javascript", false));
@@ -4292,35 +4277,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 optionsPrivacyMenuItem.setIcon(R.drawable.privacy_mode);
             }
 
-            // Get the current theme status.
-            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
             // Update the cookies icon.
-            if (currentWebView.getAcceptCookies()) {  // Cookies are enabled.
+            if (currentWebView.getAcceptCookies()) {
                 optionsCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
-            } else {  // Cookies are disabled.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    optionsCookiesMenuItem.setIcon(R.drawable.cookies_disabled_day);
-                } else {
-                    optionsCookiesMenuItem.setIcon(R.drawable.cookies_disabled_night);
-                }
+            } else {
+                optionsCookiesMenuItem.setIcon(R.drawable.cookies_disabled);
             }
 
             // Update the refresh icon.
             if (optionsRefreshMenuItem.getTitle() == getString(R.string.refresh)) {  // The refresh icon is displayed.
-                // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
-                } else {
-                    optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
-                }
+                // Set the icon.  Once the minimum API is >= 26, the blue and black icons can be combined with a tint list.
+                optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled);
             } else {  // The stop icon is displayed.
-                // Set the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_day);
-                } else {
-                    optionsRefreshMenuItem.setIcon(R.drawable.close_blue_night);
-                }
+                // Set the icon.  Once the minimum API is >= 26, the blue and black icons can be combined with a tint list.
+                optionsRefreshMenuItem.setIcon(R.drawable.close_blue);
             }
 
             // `invalidateOptionsMenu()` calls `onPrepareOptionsMenu()` and redraws the icons in the app bar.
@@ -5014,16 +4984,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Set the background to indicate the domain settings status.
             if (currentWebView.getDomainSettingsApplied()) {
-                // Get the current theme status.
-                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                // Set a green background on the URL relative layout to indicate that custom domain settings are being used.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_light_green, null));
-                } else {
-                    urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.url_bar_background_dark_blue, null));
-                }
+                // Set a background on the URL relative layout to indicate that custom domain settings are being used.
+                urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.domain_settings_url_background, null));
             } else {
+                // Remove any background on the URL relative layout.
                 urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparent, null));
             }
         } else {  // The fragment has not been populated.  Try again in 100 milliseconds.
@@ -5977,17 +5941,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get the app bar and theme preferences.
                     boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
 
-                    // If the icon is displayed in the AppBar, set it according to the theme.
+                    // Set the icon if it is displayed in the AppBar.  Once the minimum API is >= 26, the blue and black icons can be combined with a tint list.
                     if (displayAdditionalAppBarIcons) {
-                        // Get the current theme status.
-                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                        // Set the stop icon according to the theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                            optionsRefreshMenuItem.setIcon(R.drawable.close_blue_day);
-                        } else {
-                            optionsRefreshMenuItem.setIcon(R.drawable.close_blue_night);
-                        }
+                        optionsRefreshMenuItem.setIcon(R.drawable.close_blue);
                     }
                 }
             }
@@ -6009,15 +5965,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // If the icon is displayed in the app bar, reset it according to the theme.
                     if (displayAdditionalAppBarIcons) {
-                        // Get the current theme status.
-                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                        // Set the icon according to the theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                            optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_day);
-                        } else {
-                            optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled_night);
-                        }
+                        // Set the icon.
+                        optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled);
                     }
                 }
 
@@ -6126,7 +6075,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
 
-            // Handle SSL Certificate errors.
+            // Handle SSL Certificate errors.  Suppress the lint warning that ignoring the error might be dangerous.
+            @SuppressLint("WebViewClientOnReceivedSslError")
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 // Get the current website SSL certificate.

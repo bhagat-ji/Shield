@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,15 +109,8 @@ public class DomainsListFragment extends Fragment {
                     // Enable the delete menu item.
                     DomainsActivity.deleteMenuItem.setEnabled(true);
 
-                    // Get the current theme status.
-                    int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                    // Set the delete icon according to the theme.
-                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_night);
-                    } else {
-                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_day);
-                    }
+                    // Set the delete icon.
+                    DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_enabled);
                 }
 
                 // Display the domain settings fragment.

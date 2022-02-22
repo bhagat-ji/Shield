@@ -104,8 +104,8 @@ class SaveDialog : DialogFragment() {
         // Set the title.
         dialogBuilder.setTitle(R.string.save_url)
 
-        // Set the icon according to the theme.
-        dialogBuilder.setIconAttribute(R.attr.copyBlueIcon)
+        // Set the icon.
+        dialogBuilder.setIcon(R.drawable.download)
 
         // Set the view.
         dialogBuilder.setView(R.layout.save_dialog)

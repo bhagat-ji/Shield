@@ -107,8 +107,8 @@ class MoveToFolderDialog : DialogFragment() {
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-        // Set the icon according to the theme.
-        dialogBuilder.setIconAttribute(R.attr.moveToFolderBlueIcon)
+        // Set the icon.
+        dialogBuilder.setIcon(R.drawable.move_to_folder_blue)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.move_to_folder)

@@ -35,7 +35,7 @@ class AboutViewSourceDialog : DialogFragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the icon according to the theme.
-        dialogBuilder.setIconAttribute(R.attr.aboutBlueIcon)
+        dialogBuilder.setIcon(R.drawable.about_blue)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.about_view_source)

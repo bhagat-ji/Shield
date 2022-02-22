@@ -613,19 +613,12 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Inflate the menu.
         getMenuInflater().inflate(R.menu.bookmarks_databaseview_options_menu, menu);
 
-        // Get the current theme status.
-        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
         // Get a handle for the sort menu item.
         MenuItem sortMenuItem = menu.findItem(R.id.sort);
 
         // Change the sort menu item icon if the listview is sorted by display order, which restores the state after a restart.
         if (sortByDisplayOrder) {
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                sortMenuItem.setIcon(R.drawable.sort_selected_day);
-            } else {
-                sortMenuItem.setIcon(R.drawable.sort_selected_night);
-            }
+            sortMenuItem.setIcon(R.drawable.sort_selected);
         }
 
         // Success.
@@ -648,27 +641,16 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             // Get a handle for the bookmarks list view.
             ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
 
-            // Get the current theme status.
-            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
             // Update the icon and display a snackbar.
             if (sortByDisplayOrder) {  // Sort by display order.
-                // Update the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    menuItem.setIcon(R.drawable.sort_selected_day);
-                } else {
-                    menuItem.setIcon(R.drawable.sort_selected_night);
-                }
+                // Update the icon.
+                menuItem.setIcon(R.drawable.sort_selected);
 
                 // Display a Snackbar indicating the current sort type.
                 Snackbar.make(bookmarksListView, R.string.sorted_by_display_order, Snackbar.LENGTH_SHORT).show();
             } else {  // Sort by database id.
-                // Update the icon according to the theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    menuItem.setIcon(R.drawable.sort_day);
-                } else {
-                    menuItem.setIcon(R.drawable.sort_night);
-                }
+                // Update the icon.
+                menuItem.setIcon(R.drawable.sort);
 
                 // Display a Snackbar indicating the current sort type.
                 Snackbar.make(bookmarksListView, R.string.sorted_by_database_id, Snackbar.LENGTH_SHORT).show();

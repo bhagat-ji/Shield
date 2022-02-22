@@ -21,7 +21,6 @@ package com.stoutner.privacybrowser.dialogs
 
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -106,8 +105,8 @@ class HttpAuthenticationDialog : DialogFragment() {
             // Use an alert dialog builder to create the alert dialog.
             val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-            // Set the icon according to the theme.
-            dialogBuilder.setIconAttribute(R.attr.lockBlueIcon)
+            // Set the icon.
+            dialogBuilder.setIcon(R.drawable.lock)
 
             // Set the title.
             dialogBuilder.setTitle(R.string.http_authentication)
@@ -168,17 +167,8 @@ class HttpAuthenticationDialog : DialogFragment() {
             val hostLabel = getString(R.string.host) + "  "
             val hostStringBuilder = SpannableStringBuilder(hostLabel + httpAuthHost)
 
-            // Get the current theme status.
-            val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
-            // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until API >= 23.
-            val blueColorSpan = if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                @Suppress("DEPRECATION")
-                ForegroundColorSpan(resources.getColor(R.color.blue_700))
-            } else {
-                @Suppress("DEPRECATION")
-                ForegroundColorSpan(resources.getColor(R.color.violet_700))
-            }
+            // Set the blue color span.
+            val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.blue_text))
 
             // Setup the span to display the host name in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             hostStringBuilder.setSpan(blueColorSpan, hostLabel.length, hostStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)

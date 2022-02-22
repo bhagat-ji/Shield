@@ -55,8 +55,8 @@ class UntrustedSslCertificateDialog : DialogFragment() {
             // Use a builder to create the alert dialog.
             val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-            // Set the icon according to the theme.
-            dialogBuilder.setIconAttribute(R.attr.sslCertificateBlueIcon)
+            // Set the icon.
+            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled)
 
             // Set the title.
             dialogBuilder.setTitle(R.string.ssl_certificate_error)

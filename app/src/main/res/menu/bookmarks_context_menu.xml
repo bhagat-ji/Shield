@@ -39,15 +39,14 @@
         android:id="@+id/move_to_folder"
         android:title="@string/move_to_folder"
         android:orderInCategory="30"
-        android:icon="?attr/moveToFolderIcon"
+        android:icon="@drawable/move_to_folder"
         app:showAsAction="ifRoom" />
 
-    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/edit_bookmark"
         android:title="@string/edit"
         android:orderInCategory="40"
-        android:icon="?attr/editIcon"
+        android:icon="@drawable/edit"
         app:showAsAction="ifRoom" />
 
     <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
@@ -55,14 +54,13 @@
         android:id="@+id/delete_bookmark"
         android:title="@string/delete"
         android:orderInCategory="50"
-        android:icon="?attr/deleteIcon"
+        android:icon="@drawable/delete_enabled"
         app:showAsAction="ifRoom" />
 
-    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/context_menu_select_all_bookmarks"
         android:title="@string/select_all"
         android:orderInCategory="60"
-        android:icon="?attr/selectAllIcon"
+        android:icon="@drawable/select_all"
         app:showAsAction="ifRoom" />
 </menu>

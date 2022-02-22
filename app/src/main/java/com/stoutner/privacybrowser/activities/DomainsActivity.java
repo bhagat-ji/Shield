@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -529,15 +528,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                         // Enable the options delete menu item.
                                         deleteMenuItem.setEnabled(true);
 
-                                        // Get the current theme status.
-                                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                                        // Set the delete menu item icon according to the theme.
-                                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                            deleteMenuItem.setIcon(R.drawable.delete_night);
-                                        } else {
-                                            deleteMenuItem.setIcon(R.drawable.delete_day);
-                                        }
+                                        // Set the delete menu item icon.
+                                        deleteMenuItem.setIcon(R.drawable.delete_enabled);
                                     } else {  // The device in in one-paned mode.
                                         // Display the domain settings fragment.
                                         fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
@@ -564,15 +556,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                                 // Enable the delete menu item.
                                                 deleteMenuItem.setEnabled(true);
 
-                                                // Get the current theme status.
-                                                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                                                // Set the delete menu item icon according to the theme.
-                                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                                                    deleteMenuItem.setIcon(R.drawable.delete_night);
-                                                } else {
-                                                    deleteMenuItem.setIcon(R.drawable.delete_day);
-                                                }
+                                                // Set the delete menu item icon.
+                                                deleteMenuItem.setIcon(R.drawable.delete_enabled);
                                             } else {  // Single-paned mode.
                                                 // Show the delete menu item.
                                                 deleteMenuItem.setVisible(true);
@@ -925,15 +910,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Enable the delete options menu items.
             deleteMenuItem.setEnabled(true);
 
-            // Get the current theme status.
-            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-            // Set the delete icon according to the theme.
-            if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) {
-                deleteMenuItem.setIcon(R.drawable.delete_night);
-            } else {
-                deleteMenuItem.setIcon(R.drawable.delete_day);
-            }
+            // Set the delete icon.
+            deleteMenuItem.setIcon(R.drawable.delete_enabled);
         } else if (twoPanedMode) {  // Two-paned mode is enabled but there are no domains.
             // Disable the options `MenuItems`.
             deleteMenuItem.setEnabled(false);

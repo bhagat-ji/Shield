@@ -21,7 +21,14 @@
 <resources>
     <!-- Nicknamed colors. -->
     <color name="about_version_blue_text">@color/blue_700</color>
+    <color name="blue_icon">@color/blue_800</color>
     <color name="blue_text">@color/blue_700</color>
+    <color name="disabled_icon">@color/gray_600</color>
+    <color name="ghosted_icon">@color/gray_425</color>
+    <color name="icon">@color/gray_925</color>
+    <color name="domain_settings_url_background">@color/green_200</color>
+    <color name="red_text">@color/red_a700</color>
+    <color name="selected_icon_background">@color/gray_300</color>
 
     <!-- Raw colors. -->
     <color name="semi_transparent_black">#66000000</color>

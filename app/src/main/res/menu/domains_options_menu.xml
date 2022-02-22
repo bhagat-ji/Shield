@@ -27,6 +27,6 @@
         android:id="@+id/delete_domain"
         android:title="@string/delete"
         android:orderInCategory="10"
-        android:icon="?attr/deleteIcon"
+        android:icon="@drawable/delete_enabled"
         app:showAsAction="ifRoom" />
 </menu>

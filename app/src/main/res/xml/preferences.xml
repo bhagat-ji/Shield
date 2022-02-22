@@ -54,7 +54,7 @@
             android:entries="@array/translated_user_agent_names"
             android:entryValues="@array/user_agent_names"
             android:defaultValue="@string/user_agent_default_value"
-            android:icon="?attr/userAgentIcon" />
+            android:icon="@drawable/user_agent" />
 
         <!-- android:inputType="textVisiblePassword" sets the keyboard to have a dedicated number row.-->
         <EditTextPreference
@@ -156,7 +156,7 @@
             android:entries="@array/search_entries"
             android:entryValues="@array/search_entry_values"
             android:defaultValue="@string/search_default_value"
-            android:icon="?attr/searchIcon" />
+            android:icon="@drawable/search" />
 
         <EditTextPreference
             android:key="search_custom_url"
@@ -251,7 +251,7 @@
             android:title="@string/homepage"
             android:defaultValue="@string/homepage_default_value"
             android:inputType="textUri"
-            android:icon="?attr/homepageIcon" />
+            android:icon="@drawable/home" />
 
         <!-- `android:inputType="number"` currently doesn't work with AndroidX. -->
         <EditTextPreference
@@ -259,7 +259,7 @@
             android:title="@string/font_size_preference"
             android:defaultValue="@string/font_size_default_value"
             android:inputType="number"
-            android:icon="?attr/fontSizeIcon" />
+            android:icon="@drawable/font_size" />
 
         <SwitchPreference
             android:key="open_intents_in_new_tab"
@@ -303,7 +303,7 @@
             android:entries="@array/app_theme_entries"
             android:entryValues="@array/app_theme_entry_values"
             android:defaultValue="@string/app_theme_default_value"
-            android:icon="?attr/appThemeIcon" />
+            android:icon="@drawable/app_theme" />
 
         <ListPreference
             android:key="webview_theme"

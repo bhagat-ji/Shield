@@ -22,7 +22,6 @@ package com.stoutner.privacybrowser.dialogs
 import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.net.Uri
 import android.net.http.SslError
 import android.os.AsyncTask
@@ -136,11 +135,8 @@ class SslCertificateErrorDialog : DialogFragment() {
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
-        // Set the icon according to the theme.
-        dialogBuilder.setIconAttribute(R.attr.sslCertificateBlueIcon)
+        // Set the icon.
+        dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.ssl_certificate_error)
@@ -230,21 +226,8 @@ class SslCertificateErrorDialog : DialogFragment() {
         val endDateStringBuilder = SpannableStringBuilder(endDateLabel + endDate)
 
         // Define the color spans.
-        val blueColorSpan: ForegroundColorSpan
-        val redColorSpan: ForegroundColorSpan
-
-        // Set the color spans according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            @Suppress("DEPRECATION")
-            blueColorSpan = ForegroundColorSpan(resources.getColor(R.color.blue_700))
-            @Suppress("DEPRECATION")
-            redColorSpan = ForegroundColorSpan(resources.getColor(R.color.red_a700))
-        } else {
-            @Suppress("DEPRECATION")
-            blueColorSpan = ForegroundColorSpan(resources.getColor(R.color.violet_700))
-            @Suppress("DEPRECATION")
-            redColorSpan = ForegroundColorSpan(resources.getColor(R.color.red_900))
-        }
+        val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.blue_text))
+        val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         urlStringBuilder.setSpan(blueColorSpan, urlLabel.length, urlStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -272,14 +255,8 @@ class SslCertificateErrorDialog : DialogFragment() {
             }
 
             SslError.SSL_UNTRUSTED -> {
-                // Change the issued by text view text to red.  The deprecated `getColor()` must be used until the minimum API >= 23.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    @Suppress("DEPRECATION")
-                    issuedByTextView.setTextColor(resources.getColor(R.color.red_a700))
-                } else {
-                    @Suppress("DEPRECATION")
-                    issuedByTextView.setTextColor(resources.getColor(R.color.red_900))
-                }
+                // Change the issued by text view text to red.
+                issuedByTextView.setTextColor(requireContext().getColor(R.color.red_text))
 
                 // Change the issued by span color to red.
                 issuedByCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length, issuedByCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -291,14 +268,8 @@ class SslCertificateErrorDialog : DialogFragment() {
             }
 
             SslError.SSL_DATE_INVALID -> {
-                // Change the valid dates text view text to red.  The deprecated `getColor()` must be used until the minimum API >= 23.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    @Suppress("DEPRECATION")
-                    validDatesTextView.setTextColor(resources.getColor(R.color.red_a700))
-                } else {
-                    @Suppress("DEPRECATION")
-                    validDatesTextView.setTextColor(resources.getColor(R.color.red_900))
-                }
+                // Change the valid dates text view text to red.
+                validDatesTextView.setTextColor(requireContext().getColor(R.color.red_text))
 
                 // Change the date span colors to red.
                 startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -390,20 +361,8 @@ class SslCertificateErrorDialog : DialogFragment() {
             // Create a spannable string builder.
             val ipAddressesStringBuilder = SpannableStringBuilder(ipAddressesLabel + ipAddresses)
 
-            // Create a blue foreground color span.
-            val blueColorSpan: ForegroundColorSpan
-
-            // Get the current theme status.
-            val currentThemeStatus = activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
-            // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            blueColorSpan = if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                @Suppress("DEPRECATION")
-                ForegroundColorSpan(activity.resources.getColor(R.color.blue_700))
-            } else {
-                @Suppress("DEPRECATION")
-                ForegroundColorSpan(activity.resources.getColor(R.color.violet_500))
-            }
+            // Create a blue color span according to the theme.
+            val blueColorSpan = ForegroundColorSpan(activity.getColor(R.color.blue_text))
 
             // Set the string builder to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length, ipAddressesStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)

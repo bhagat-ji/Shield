@@ -37,12 +37,11 @@
         android:orderInCategory="200"
         app:showAsAction="never" />
 
-    <!-- `android:iconTint` can be used once the minimum API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/bookmarks"
         android:title="@string/bookmarks"
         android:orderInCategory="300"
-        android:icon="?attr/bookmarksAppBarIcon"
+        android:icon="@drawable/bookmarks"
         app:showAsAction="never" />
 
     <item
@@ -50,7 +49,7 @@
         android:title="@string/cookies"
         android:orderInCategory="400"
         android:checkable="true"
-        android:icon="@drawable/cookies_disabled_day"
+        android:icon="@drawable/cookies_disabled"
         app:showAsAction="never" />
 
     <item

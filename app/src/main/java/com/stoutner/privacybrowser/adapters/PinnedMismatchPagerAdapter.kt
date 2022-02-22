@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.adapters
 
 import android.content.Context
-import android.content.res.Configuration
 import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -198,21 +197,9 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
             }
         }
 
-        // Define the color spans.
-        val blueColorSpan: ForegroundColorSpan
-        val redColorSpan: ForegroundColorSpan
-
-        // Get the current theme status.
-        val currentThemeStatus = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
-        // Set the color spans according to the theme.  The deprecated `resources` must be used until the minimum API >= 23.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            blueColorSpan = ForegroundColorSpan(context.getColor(R.color.blue_700))
-            redColorSpan = ForegroundColorSpan(context.getColor(R.color.red_a700))
-        } else {
-            blueColorSpan = ForegroundColorSpan(context.getColor(R.color.violet_700))
-            redColorSpan = ForegroundColorSpan(context.getColor(R.color.red_900))
-        }
+        // Create the color spans.
+        val blueColorSpan = ForegroundColorSpan(context.getColor(R.color.blue_text))
+        val redColorSpan = ForegroundColorSpan(context.getColor(R.color.red_text))
 
         // Set the domain name to be blue.
         domainNameStringBuilder.setSpan(blueColorSpan, domainNameLabel.length, domainNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)

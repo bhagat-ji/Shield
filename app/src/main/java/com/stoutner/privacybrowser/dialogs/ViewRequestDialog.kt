@@ -96,8 +96,8 @@ class ViewRequestDialog : DialogFragment() {
         // Get the current theme status.
         val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
-        // Set the icon according to the theme.
-        dialogBuilder.setIconAttribute(R.attr.blockAdsBlueIcon)
+        // Set the icon.
+        dialogBuilder.setIcon(R.drawable.block_ads_enabled)
 
         // Set the title.
         dialogBuilder.setTitle(resources.getString(R.string.request_details) + " - " + id)
