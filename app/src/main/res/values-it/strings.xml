@@ -517,8 +517,7 @@
             <item>MetaGer</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo - JavaScript disabilitato</item>
-            <item>Yahoo - JavaScript abilitato</item>
+            <item>Yahoo</item>
             <item>Personalizzata</item>
         </string-array>
         <string name="custom_url">URL Personalizzata</string>

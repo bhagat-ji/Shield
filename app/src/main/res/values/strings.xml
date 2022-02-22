@@ -552,8 +552,7 @@
             <item>MetaGer</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo - JavaScript disabled</item>
-            <item>Yahoo - JavaScript enabled</item>
+            <item>Yahoo</item>
             <item>Custom</item>
         </string-array>
         <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
@@ -562,7 +561,6 @@
             <item>https://metager.org/meta/meta.ger3?eingabe=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
-            <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
             <item>https://search.yahoo.com/mobile/s?p=</item>
             <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>

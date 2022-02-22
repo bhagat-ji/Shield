@@ -520,8 +520,7 @@
             <item>MetaGer</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo - JavaScript deaktiviert</item>
-            <item>Yahoo - JavaScript aktiviert</item>
+            <item>Yahoo</item>
             <item>Eigene</item>
         </string-array>
         <string name="custom_url">Eigene URL</string>

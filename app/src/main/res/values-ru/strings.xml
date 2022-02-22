@@ -513,8 +513,7 @@
             <item>MetaGer</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo - JavaScript выключен</item>
-            <item>Yahoo - JavaScript включен</item>
+            <item>Yahoo</item>
             <item>Настраиваемый</item>
         </string-array>
         <string name="custom_url">Настраиваемый URL</string>

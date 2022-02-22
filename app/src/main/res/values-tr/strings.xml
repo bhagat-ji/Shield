@@ -455,8 +455,7 @@
             <item>MetaGer</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo - JavaScript devre dışı</item>
-            <item>Yahoo - JavaScript etkin</item>
+            <item>Yahoo</item>
             <item>Özel sayfa</item>
         </string-array>
         <string name="custom_url">Özel sayfa</string>
