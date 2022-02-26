@@ -1,0 +1,5 @@
+• Eliminazione della versione free.
+• Spostamento della API minima a 23 (Android 6.0, Marshmallow) poichè gli aggiornamenti di WebView updates non sono più disponibili per le versioni precedenti di Android.
+• Sistemazione dello scrolling della barra della app inferiore.
+• Correzione di un baco che a volte faceva in modo che i collegamenti aperti in una nuova scheda mostrassero una pagina di una scheda precedente.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

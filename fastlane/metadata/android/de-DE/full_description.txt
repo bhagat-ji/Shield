@@ -10,8 +10,6 @@ In Privacy Browser hingegen sind Funktionen, welche die Privatsphäre gefährden
 
 Der Privacy Browser verwendet Androids eingebaute WebView-Komponente zum Anzeigen von Webseiten, weshalb die neueste Version von WebView installiert sein sollte (siehe https://www.stoutner.com/privacy-browser/common-settings/webview/). Für erweiterte Privatsphäre-Funktionen wird ab Version 4.x eine speziell angepaßte Version („Privacy WebView”) von WebView verwendet werden.
 
-Achtung: Android KitKat (Version 4.4.x, API 19) wurde mit einer alten Version von OpenSSL ausgeliefert, welche für Man-In-The-Middle-Angriffe (MITM) anfällig ist, wenn auf Webseiten mit veralteten Protokollen und Cipher-Suites gesurft wird. Weitere Informationen dazu sind auf https://www.stoutner.com/kitkat-security-problems/ verfügbar.
-
 Features:
 • Integrierter EasyList-Werbeblocker
 • TOR-Proxy-Unterstützung mittels Orbot

@@ -1,0 +1,10 @@
+• Eliminar el sabor gratuito.
+• Subir la API mínima a 23 (Android 6.0, Marshmallow) porque las actualizaciones de WebView ya no están disponibles para versiones anteriores de Android.
+• Corregir el desplazamiento de la barra inferior de la app.
+• Corregir un error que a veces provocaba que los enlaces que abrían una nueva pestaña mostraran la página de una pestaña antigua.
+• Eliminar DuckDuckGo de la lista de motores de búsqueda.
+• Actualizar la URL de búsqueda de Yahoo.
+• Eliminar Internet Explorer de la lista de User Agents.
+• Actualizar los enlaces dentro de la app para acomodar cambios en la página web de Privacy Browser PC.
+• Combinar algunos archivos dibujables tras actualizar la API mínima a 23.
+• Actualizada la traducción al español proporcionada por Jose A. León.

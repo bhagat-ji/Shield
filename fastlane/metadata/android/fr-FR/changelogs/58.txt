@@ -1,0 +1,10 @@
+• Suppression de version gratuite.
+• Passage de l'API minimale à 23 (Android 6.0, Marshmallow) car les mises à jour de WebView ne sont plus disponibles pour les anciennes versions d'Android.
+• Correction du défilement de la barre d'application du bas.
+• Correction d'un bug qui faisait parfois que les liens ouvrant un nouvel onglet affichaient la page d'un ancien onglet.
+• Suppression de DuckDuckGo de la liste des moteurs de recherche.
+• Mise à jour de l'URL de recherche Yahoo.
+• Suppression de Internet Explorer de la liste des agents utilisateurs.
+• Mise à jour des liens à l'intérieur de l'application pour accomoder les changements dans le site web pour Privacy Browser PC.
+• Regroupement de certains fichiers de dessins après la mise à jour de l'API minimale à 23.
+• Traduction française mise à jour fournie par Kévin L.

@@ -10,8 +10,6 @@ In contrast, privacy sensitive features are disabled by default in Privacy Brows
 
 Privacy Browser currently uses Android’s built-in WebView to render web pages. As such, it works best when the latest version of WebView is installed (see https://www.stoutner.com/privacy-browser/common-settings/webview/). In the 4.x series, Privacy Browser will switch to a forked version of Android’s WebView called Privacy WebView that will allow for advanced privacy features.
 
-Warning: Android KitKat (version 4.4.x, API 19) ships an older version of OpenSSL, which is susceptible to MITM (Man In The Middle) attacks when browsing websites that use outdated protocols and cipher suites. More information about this issue is available at https://www.stoutner.com/kitkat-security-problems/.
-
 Features:
 • Integrated EasyList ad blocking.
 • Tor Orbot proxy support.

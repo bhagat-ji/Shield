@@ -174,7 +174,7 @@ class UrlHistoryDialog : DialogFragment() {
         alertDialog.show()
 
         // Instantiate a history array adapter.
-        val historyArrayAdapter = HistoryArrayAdapter(context, historyArrayList, currentPageId)
+        val historyArrayAdapter = HistoryArrayAdapter(requireContext(), historyArrayList, currentPageId)
 
         // Get a handle for the list view.
         val listView = alertDialog.findViewById<ListView>(R.id.history_listview)!!

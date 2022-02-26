@@ -1,0 +1,10 @@
+• Kostenlose Version des Privacy Browsers entfernt.
+• Minimum-API auf 23 (Android 6.0, Marshmallow) erhöht, da WebView-Updates nicht mehr für ältere Android-Versionen angeboten werden.
+• Problem behoben, das die untere App-Leiste beim Scrollen manchmal verschwinden ließ.
+• Problem behoben, durch das manchmal beim Öffnen von Links in einem neuen Tab Seiten aus alten Tabs angezeigt wurden.
+• DuckDuckGo aus der Liste der Suchmaschinen entfernt.
+• Adresse der Yahoo-Suche aktualisiert.
+• Internet Explorer aus der Liste der User-Agents entfernt.
+• Links in der App aktualisiert, um auf die korrekten Internet-Seiten von Android- und PC-Version von Privacy Browser zu verlinken.
+• Bedingt duch das Anheben der Minimum-API auf 23 einige Grafik-Dateien zusammengeführt.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

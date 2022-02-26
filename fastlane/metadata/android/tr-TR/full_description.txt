@@ -10,9 +10,6 @@ Privacy Browser, bir tarayıcının web sitelere sunduğu bilgi miktarını en a
 
 Privacy Browser şu anda, web sayfalarını oluşturmak için Android’in yerleşik WebView’ını kullanmaktadır. Bu nedenle güncel WebView versiyonu yüklü olduğunda en iyi şekilde çalışır (bakınız https://www.stoutner.com/privacy-browser/common-settings/webview/). 4.x serisinde, Privacy Browser Android WebView’ın gelişmiş gizlilik özelliklerine sahip Privacy WebView adlı bölünmüş bir versiyonu ile devam edecek.
 
-Uyarı: Android KitKat (versiyon 4.4x, API 19) eski bir OpenSSL versiyonuna sahiptir, bu da onu, eski protokolleri ve şifre takımlarını kullanan web sayfalarını ziyaret ederken, MITM (Ortadaki Adam, Man In The Middle) saldırılarına açık hale getirir. Bu konu hakkında daha fazla bilgi burada mevcuttur.
-https://www.stoutner.com/kitkat-security-problems/
-
 Özellikler:
 • Entegre EasyList reklam engelleme.
 • Tor Orbot vekil sunucusu desteği.
