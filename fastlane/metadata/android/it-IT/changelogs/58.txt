@@ -2,4 +2,9 @@
 • Spostamento della API minima a 23 (Android 6.0, Marshmallow) poichè gli aggiornamenti di WebView updates non sono più disponibili per le versioni precedenti di Android.
 • Sistemazione dello scrolling della barra della app inferiore.
 • Correzione di un baco che a volte faceva in modo che i collegamenti aperti in una nuova scheda mostrassero una pagina di una scheda precedente.
+• Rimozione di DuckDuckGo dalla lista dei motori di ricerca.
+• Aggiornamento della URL di ricerca di Yahoo.
+• Rimozione di Internet Explorer dalla lista degli User Agent.
+• Aggiornamento dei link nella app a seguito dei cambiamenti nel sito per Privacy Browser PC.
+• Unione di alcuni drawable filedopo l'aggiornamento della API minima a 23.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

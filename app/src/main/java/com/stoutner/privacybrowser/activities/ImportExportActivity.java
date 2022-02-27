@@ -84,7 +84,6 @@ public class ImportExportActivity extends AppCompatActivity {
 
     // Define the saved instance state constants.
     private final String ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY = "encryption_password_textinputlayout_visibility";
-    private final String KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY = "kitkat_password_encrypted_textview_visibility";
     private final String OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY = "open_keychain_required_textview_visibility";
     private final String FILE_LOCATION_CARD_VIEW = "file_location_card_view";
     private final String FILE_NAME_LINEARLAYOUT_VISIBILITY = "file_name_linearlayout_visibility";
@@ -97,7 +96,6 @@ public class ImportExportActivity extends AppCompatActivity {
     Spinner encryptionSpinner;
     TextInputLayout encryptionPasswordTextInputLayout;
     EditText encryptionPasswordEditText;
-    TextView kitKatPasswordEncryptionTextView;
     TextView openKeychainRequiredTextView;
     CardView fileLocationCardView;
     RadioButton importRadioButton;
@@ -190,7 +188,6 @@ public class ImportExportActivity extends AppCompatActivity {
                     case NO_ENCRYPTION:
                         // Hide the unneeded layout items.
                         encryptionPasswordTextInputLayout.setVisibility(View.GONE);
-                        kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
                         openKeychainRequiredTextView.setVisibility(View.GONE);
                         openKeychainImportInstructionsTextView.setVisibility(View.GONE);
 
@@ -239,7 +236,6 @@ public class ImportExportActivity extends AppCompatActivity {
                     case OPENPGP_ENCRYPTION:
                         // Hide the password encryption layout items.
                         encryptionPasswordTextInputLayout.setVisibility(View.GONE);
-                        kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
 
                         // Updated items based on the installation status of OpenKeychain.
                         if (openKeychainInstalled) {  // OpenKeychain is installed.
@@ -329,7 +325,6 @@ public class ImportExportActivity extends AppCompatActivity {
         if (savedInstanceState == null) {  // The app has not been restarted.
             // Initially hide the unneeded views.
             encryptionPasswordTextInputLayout.setVisibility(View.GONE);
-            kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
             openKeychainRequiredTextView.setVisibility(View.GONE);
             fileNameLinearLayout.setVisibility(View.GONE);
             openKeychainImportInstructionsTextView.setVisibility(View.GONE);
@@ -337,7 +332,6 @@ public class ImportExportActivity extends AppCompatActivity {
         } else {  // The app has been restarted.
             // Restore the visibility of the views.
             encryptionPasswordTextInputLayout.setVisibility(savedInstanceState.getInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY));
-            kitKatPasswordEncryptionTextView.setVisibility(savedInstanceState.getInt(KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY));
             openKeychainRequiredTextView.setVisibility(savedInstanceState.getInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY));
             fileLocationCardView.setVisibility(savedInstanceState.getInt(FILE_LOCATION_CARD_VIEW));
             fileNameLinearLayout.setVisibility(savedInstanceState.getInt(FILE_NAME_LINEARLAYOUT_VISIBILITY));
@@ -357,7 +351,6 @@ public class ImportExportActivity extends AppCompatActivity {
 
         // Save the visibility of the views.
         savedInstanceState.putInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY, encryptionPasswordTextInputLayout.getVisibility());
-        savedInstanceState.putInt(KITKAT_PASSWORD_ENCRYPTED_TEXTVIEW_VISIBILITY, kitKatPasswordEncryptionTextView.getVisibility());
         savedInstanceState.putInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY, openKeychainRequiredTextView.getVisibility());
         savedInstanceState.putInt(FILE_LOCATION_CARD_VIEW, fileLocationCardView.getVisibility());
         savedInstanceState.putInt(FILE_NAME_LINEARLAYOUT_VISIBILITY, fileNameLinearLayout.getVisibility());
