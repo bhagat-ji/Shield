@@ -601,7 +601,8 @@ public class DomainSettingsFragment extends Fragment {
                     // Get the user agent string from the user agent data array.
                     userAgentTextView.setText(userAgentDataArray[defaultUserAgentArrayPosition]);
             }
-        } else if (userAgentArrayPosition == MainWebViewActivity.UNRECOGNIZED_USER_AGENT) {  // A custom user agent is stored in the current user agent name.
+        } else if (userAgentArrayPosition == MainWebViewActivity.UNRECOGNIZED_USER_AGENT || currentUserAgentName.equals(getString(R.string.custom_user_agent))) {
+            // A custom user agent is stored in the current user agent name.  The second check is necessary in case the user did not change the default custom text.
             // Set the user agent spinner to `Custom user agent`.
             userAgentSpinner.setSelection(MainWebViewActivity.DOMAINS_CUSTOM_USER_AGENT);
 

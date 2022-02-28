@@ -204,10 +204,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The user agent constants are public static so they can be accessed from `SettingsFragment`, `DomainsActivity`, and `DomainSettingsFragment`.
     public final static int UNRECOGNIZED_USER_AGENT = -1;
     public final static int SETTINGS_WEBVIEW_DEFAULT_USER_AGENT = 1;
-    public final static int SETTINGS_CUSTOM_USER_AGENT = 12;
+    public final static int SETTINGS_CUSTOM_USER_AGENT = 11;
     public final static int DOMAINS_SYSTEM_DEFAULT_USER_AGENT = 0;
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
-    public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
+    public final static int DOMAINS_CUSTOM_USER_AGENT = 12;
 
     // Define the start activity for result request codes.  The public static entry is accessed from `OpenDialog()`.
     private final int BROWSE_FILE_UPLOAD_REQUEST_CODE = 0;
