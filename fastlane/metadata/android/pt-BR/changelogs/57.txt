@@ -1,5 +1,6 @@
-• Simplify the save dialogs.
-• Display the saved file name in the save snackbars.
-• Change the short app name from Privacy to Browser.
-• Fix a crash if a drawer is opened while the app is restarted.
-• Bump the target API to 31 (Android 12).
+• Simplificadas as caixas de diálogo de salvamento.
+• Exibe o nome do arquivo salvo nas barras de notificação flutuantes.
+• Alterado o o nome abreviado do aplicativo de Privacy para Browser.
+• Corrigido um travamento se um menu de gaveta é aberto enquanto o aplicativo é reiniciado.
+• Promovido o API alvo para 31 (Android 12).
+• Tradução atualizada para o português do Brasil fornecida por Thiago Nazareno Conceição Silva de Jesus.

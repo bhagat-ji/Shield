@@ -3,7 +3,7 @@
 <!--
   Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2020-2021 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2020-2022 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -23,6 +23,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Navegador Privado</string>
+    <string name="short_name">Navegador</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">pt-rBR</string>
 
@@ -563,6 +564,8 @@
         <string name="download_with_external_app_summary">Usar um aplicativo externo para baixar arquivos.</string>
         <string name="scroll_app_bar">Role a barra de aplicativos</string>
         <string name="scroll_app_bar_summary">Role a barra de aplicativos para fora da parte superior da tela quando o WebView rola para baixo.</string>
+        <string name="bottom_app_bar">Barra de aplicativos inferior</string>
+        <string name="bottom_app_bar_summary">Mova a barra de aplicativos para a parte inferior da tela. Alterar essa configuração reiniciará o Privacy Browser.</string>
         <string name="display_additional_app_bar_icons">Exibir ícones adicionais da barra de aplicativos</string>
         <string name="display_additional_app_bar_icons_summary">Exibe ícones na barra de aplicativos para atualizar o WebView e, se houver espaço, para abrir o menu de favoritos e alternar os cookies.</string>
         <string name="app_theme">Tema do  aplicativo</string>

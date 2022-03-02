@@ -1,1 +1,2 @@
 • Fix a crash when opening the Import/Export activity.
+• Fix a problem with custom user agents.

@@ -1,0 +1,2 @@
+• Corrige uma falha ao abrir a função Importar/Exportar.
+• Corrige um problema com agente de usuário personalizado.

@@ -1,0 +1,2 @@
+• Problem behoben, das beim Öffnen der Import/Export-Seite zum Absturz führte.
+• Problem mit benutzerdefinierten User-Agents behoben.

@@ -1,0 +1,2 @@
+• Corregir un fallo al abrir la actividad de Importación/Exportación.
+• Corregir un problema con los agentes de usuario personalizados.

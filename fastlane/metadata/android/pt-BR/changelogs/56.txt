@@ -1,6 +1,6 @@
-• Remove Startpage and make Mojeek the default homepage and search engine.
-• Invert the navigation menu when the app bar is on the bottom.
-• Show the bottom app bar when a new tab loads.
-• Limit content intent filters to text, images, and MHT files.
-• Fix some rare crashes.
+• Removido Startpage e colocado Mojeek como a página inicial padrão e motor de busca.
+• Invertido o menu de navegação quando a barra do aplicativo está embaixo.
+• Mostrado a barra do aplicativo embaixo quando uma nova aba carrega.
+• Limitado os filtros de conteúdo direcionados a texto, imagens e arquivos MHT.
+• Corrigidos alguns raroa travamentos.
 • Tradução atualizada para o português do Brasil fornecida por Thiago Nazareno Conceição Silva de Jesus.

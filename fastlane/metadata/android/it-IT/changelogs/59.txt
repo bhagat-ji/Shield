@@ -1,0 +1,2 @@
+• Sistemazione di un crash quando si apriva la scheda di Importazione/Esportazione.
+• Sistemazione di un problema con gli user agent personalizzati.

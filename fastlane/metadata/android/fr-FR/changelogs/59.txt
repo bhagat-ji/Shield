@@ -1,0 +1,2 @@
+• Correction d'un crash lors de l'ouverture de l'activité Import/Export.
+• Correction d'un problème avec les agents utilisateurs personnalisés.
