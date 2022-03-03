@@ -371,6 +371,8 @@
     <string name="clear">Limpar</string>
     <string name="logcat_copied">Logcat copiado.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="saved">%1$s salvo.</string>
+    <string name="error_saving_logcat">Erro ao salvar logcat: \u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Visão geral</string>
