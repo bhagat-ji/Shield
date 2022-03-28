@@ -118,6 +118,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
+import kotlin.Pair;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -529,7 +530,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
-        //WebView.enableSlowWholeDocumentDraw();    Temporarily disabled due to <https://redmine.stoutner.com/issues/811>.
+        WebView.enableSlowWholeDocumentDraw();
 
         // Set the theme.
         setTheme(R.style.PrivacyBrowser);
@@ -1933,8 +1934,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 Uri currentUri = Uri.parse(currentWebView.getUrl());
                 String currentDomain = currentUri.getHost();
 
-                // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-                DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+                // Initialize the database handler.
+                DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this);
 
                 // Create the domain and store the database ID.
                 int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
@@ -3363,8 +3364,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
         drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
 
-        // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
+        // Initialize the bookmarks database helper.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
 
         // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.
         currentBookmarksFolder = "";
@@ -3700,8 +3701,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
 
-            // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+            // Initialize the database handler.
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this);
 
             // Get a full cursor from `domainsDatabaseHelper`.
             Cursor domainNameCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
@@ -3712,7 +3713,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the domain name column index.
             int domainNameColumnIndex = domainNameCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME);
 
-            // Populate `domainSettingsSet`.
+            // Populate the domain settings set.
             for (int i = 0; i < domainNameCursor.getCount(); i++) {
                 // Move the domains cursor to the current row.
                 domainNameCursor.moveToPosition(i);
@@ -3721,7 +3722,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex));
             }
 
-            // Close `domainNameCursor.
+            // Close the domain name cursor.
             domainNameCursor.close();
 
             // Initialize the domain name in database variable.
@@ -3740,7 +3741,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // Check all the subdomains of the host name against wildcard domains in the domain cursor.
-            while (!nestedScrollWebView.getDomainSettingsApplied() && newHostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
+            while (!nestedScrollWebView.getDomainSettingsApplied() && newHostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the hostname.
                 if (domainSettingsSet.contains("*." + newHostName)) {  // Check the host name prepended by `*.`.
                     // Set the domain settings applied tracker to true.
                     nestedScrollWebView.setDomainSettingsApplied(true);
@@ -3776,12 +3777,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
             if (nestedScrollWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
-                // Get a cursor for the current host and move it to the first position.
+                // Remove the incorrect lint warning below that the domain name in database might be null.
+                assert domainNameInDatabase != null;
+
+                // Get a cursor for the current host.
                 Cursor currentDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
+
+                // Move to the first position.
                 currentDomainSettingsCursor.moveToFirst();
 
                 // Get the settings from the cursor.
-                nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper._ID)));
+                nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ID)));
                 nestedScrollWebView.getSettings().setJavaScriptEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
                 nestedScrollWebView.setAcceptCookies(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES)) == 1);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
@@ -6095,11 +6101,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
                 if (nestedScrollWebView.hasPinnedSslCertificate()) {
                     // Get the pinned SSL certificate.
-                    ArrayList<Object> pinnedSslCertificateArrayList = nestedScrollWebView.getPinnedSslCertificate();
+                    Pair<String[], Date[]> pinnedSslCertificatePair = nestedScrollWebView.getPinnedSslCertificate();
 
                     // Extract the arrays from the array list.
-                    String[] pinnedSslCertificateStringArray = (String[]) pinnedSslCertificateArrayList.get(0);
-                    Date[] pinnedSslCertificateDateArray = (Date[]) pinnedSslCertificateArrayList.get(1);
+                    String[] pinnedSslCertificateStringArray = pinnedSslCertificatePair.getFirst();
+                    Date[] pinnedSslCertificateDateArray = pinnedSslCertificatePair.getSecond();
 
                     // Check if the current SSL certificate matches the pinned certificate.
                     if (currentWebsiteIssuedToCName.equals(pinnedSslCertificateStringArray[0]) && currentWebsiteIssuedToOName.equals(pinnedSslCertificateStringArray[1]) &&

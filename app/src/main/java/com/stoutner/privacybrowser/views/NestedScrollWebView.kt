@@ -208,22 +208,15 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         hasPinnedSslCertificate = true
     }
 
-    fun getPinnedSslCertificate(): ArrayList<Any> {
-        // Initialize an array list.
-        val arrayList = ArrayList<Any>()
-
+    fun getPinnedSslCertificate(): Pair<Array<String>, Array<Date>> {
         // Create the SSL certificate string array.
         val sslCertificateStringArray = arrayOf(pinnedSslIssuedToCName, pinnedSslIssuedToOName, pinnedSslIssuedToUName, pinnedSslIssuedByCName, pinnedSslIssuedByOName, pinnedSslIssuedByUName)
 
         // Create the SSL certificate date array.
         val sslCertificateDateArray = arrayOf(pinnedSslStartDate, pinnedSslEndDate)
 
-        // Add the arrays to the array list.
-        arrayList.add(sslCertificateStringArray)
-        arrayList.add(sslCertificateDateArray)
-
-        // Return the pinned SSL certificate array list.
-        return arrayList
+        // Return the pinned SSL certificate pair.
+        return Pair(sslCertificateStringArray, sslCertificateDateArray)
     }
 
     fun clearPinnedSslCertificate() {

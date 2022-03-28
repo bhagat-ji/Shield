@@ -179,8 +179,8 @@ class CreateBookmarkFolderDialog : DialogFragment() {
             defaultIconRadioButton.isChecked = false
         }
 
-        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        val bookmarksDatabaseHelper = BookmarksDatabaseHelper(context, null, null, 0)
+        // Initialize the database helper.
+        val bookmarksDatabaseHelper = BookmarksDatabaseHelper(requireContext())
 
         // Enable the create button if the new folder name is unique.
         folderNameEditText.addTextChangedListener(object: TextWatcher {

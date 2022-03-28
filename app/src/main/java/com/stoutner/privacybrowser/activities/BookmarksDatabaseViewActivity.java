@@ -153,11 +153,11 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         actionBar.setCustomView(R.layout.spinner);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
 
-        // Initialize the database handler.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
-        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
+        // Initialize the database handler.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
 
         // Setup a matrix cursor for "All Folders" and "Home Folder".
-        String[] matrixCursorColumnNames = {BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME};
+        String[] matrixCursorColumnNames = {BookmarksDatabaseHelper.ID, BookmarksDatabaseHelper.BOOKMARK_NAME};
         MatrixCursor matrixCursor = new MatrixCursor(matrixCursorColumnNames);
         matrixCursor.addRow(new Object[]{ALL_FOLDERS_DATABASE_ID, getString(R.string.all_folders)});
         matrixCursor.addRow(new Object[]{HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
@@ -296,7 +296,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 boolean isFolder = (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
                 // Get the database ID from the `Cursor` and display it in `bookmarkDatabaseIdTextView`.
-                int bookmarkDatabaseId = cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
+                int bookmarkDatabaseId = cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID));
                 TextView bookmarkDatabaseIdTextView = view.findViewById(R.id.bookmarks_databaseview_database_id);
                 bookmarkDatabaseIdTextView.setText(String.valueOf(bookmarkDatabaseId));
 
@@ -472,7 +472,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                             // Get the position of the folder in the bookmarks cursor.
                             while ((folderPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
                                 // Check if the folder database ID matches the bookmark database ID.
-                                if (folderDatabaseId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID))) {
+                                if (folderDatabaseId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID))) {
                                     // Get the folder position.
                                     folderPosition = bookmarksCursor.getPosition();
 
@@ -754,7 +754,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
         while (folderCursor.getPosition() < folderCursor.getCount()) {
             // Get the bookmark database ID.
-            int bookmarkId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
+            int bookmarkId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID));
 
             // Move the bookmarks cursor to the first position.
             bookmarksCursor.moveToFirst();
@@ -765,7 +765,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             // Get the position of this bookmark in the bookmarks cursor.
             while ((bookmarkPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
                 // Check if the bookmark IDs match.
-                if (bookmarkId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID))) {
+                if (bookmarkId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID))) {
                     // Get the bookmark position.
                     bookmarkPosition = bookmarksCursor.getPosition();
 

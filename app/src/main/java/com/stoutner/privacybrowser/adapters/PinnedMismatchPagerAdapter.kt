@@ -129,12 +129,12 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
             currentSslEndDate = sslCertificate.validNotAfterDate
         }
 
-        // Get the pinned SSL certificate.
-        val pinnedSslCertificateArrayList = nestedScrollWebView.getPinnedSslCertificate()
+        // Get the pinned SSL certificate pair.
+        val pinnedSslCertificatePair = nestedScrollWebView.getPinnedSslCertificate()
 
         // Extract the arrays from the array list.
-        val pinnedSslCertificateStringArray = pinnedSslCertificateArrayList[0] as Array<*>
-        val pinnedSslCertificateDateArray = pinnedSslCertificateArrayList[1] as Array<*>
+        val pinnedSslCertificateStringArray = pinnedSslCertificatePair.first
+        val pinnedSslCertificateDateArray = pinnedSslCertificatePair.second
 
         // Setup the domain name spannable string builder.
         val domainNameStringBuilder = SpannableStringBuilder(domainNameLabel + domainName)
@@ -182,19 +182,8 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
             issuedByCNameStringBuilder = SpannableStringBuilder(cNameLabel + pinnedSslCertificateStringArray[3])
             issuedByONameStringBuilder = SpannableStringBuilder(oNameLabel + pinnedSslCertificateStringArray[4])
             issuedByUNameStringBuilder = SpannableStringBuilder(uNameLabel + pinnedSslCertificateStringArray[5])
-
-            // Set the dates if they aren't null.  Formatting a null date causes a crash.
-            startDateStringBuilder = if (pinnedSslCertificateDateArray[0] == null) {
-                SpannableStringBuilder(startDateLabel)
-            } else {
-                SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(pinnedSslCertificateDateArray[0]))
-            }
-
-            endDateStringBuilder = if (pinnedSslCertificateDateArray[1] == null) {
-                SpannableStringBuilder(endDateLabel)
-            } else {
-                SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(pinnedSslCertificateDateArray[1]))
-            }
+            startDateStringBuilder = SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(pinnedSslCertificateDateArray[0]))
+            endDateStringBuilder = SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(pinnedSslCertificateDateArray[1]))
         }
 
         // Create the color spans.

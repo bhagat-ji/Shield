@@ -115,8 +115,8 @@ class EditBookmarkFolderDialog : DialogFragment() {
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
 
-        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        bookmarksDatabaseHelper = BookmarksDatabaseHelper(context, null, null, 0)
+        // Initialize the database helper.
+        bookmarksDatabaseHelper = BookmarksDatabaseHelper(requireContext())
 
         // Get a cursor with the selected folder.
         val folderCursor = bookmarksDatabaseHelper.getBookmark(selectedFolderDatabaseId)

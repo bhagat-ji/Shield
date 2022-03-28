@@ -101,8 +101,8 @@ class MoveToFolderDialog : DialogFragment() {
         val currentFolder = requireArguments().getString(CURRENT_FOLDER)!!
         val selectedBookmarksLongArray = requireArguments().getLongArray(SELECTED_BOOKMARKS_LONG_ARRAY)!!
 
-        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in the bookmarks database helper.
-        bookmarksDatabaseHelper = BookmarksDatabaseHelper(context, null, null, 0)
+        // Initialize the database helper.
+        bookmarksDatabaseHelper = BookmarksDatabaseHelper(requireContext())
 
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -195,7 +195,7 @@ class MoveToFolderDialog : DialogFragment() {
             val homeFolderIconByteArray = homeFolderIconByteArrayOutputStream.toByteArray()
 
             // Setup the home folder matrix cursor column names.
-            val homeFolderMatrixCursorColumnNames = arrayOf(BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME, BookmarksDatabaseHelper.FAVORITE_ICON)
+            val homeFolderMatrixCursorColumnNames = arrayOf(BookmarksDatabaseHelper.ID, BookmarksDatabaseHelper.BOOKMARK_NAME, BookmarksDatabaseHelper.FAVORITE_ICON)
 
             // Setup a matrix cursor for the `Home Folder`.
             val homeFolderMatrixCursor = MatrixCursor(homeFolderMatrixCursorColumnNames)

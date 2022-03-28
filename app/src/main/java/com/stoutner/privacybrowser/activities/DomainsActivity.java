@@ -202,8 +202,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Set the back arrow on the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+        // Initialize the database handler.
+        domainsDatabaseHelper = new DomainsDatabaseHelper(this);
 
         // Determine if we are in two pane mode.  `domain_settings_fragment_container` does not exist on devices with a width less than 900dp.
         twoPanedMode = (findViewById(R.id.domain_settings_fragment_container) != null);
@@ -876,7 +876,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 domainsCursor.moveToPosition(i);
 
                 // Get the database ID for this position.
-                int currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper._ID));
+                int currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ID));
 
                 // Set `highlightedDomainPosition` if the database ID for this matches `highlightedDomainDatabaseId`.
                 if (highlightedDomainDatabaseId == currentDatabaseId) {
@@ -889,7 +889,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Get the database ID for the highlighted domain.
             domainsCursor.moveToPosition(highlightedDomainPosition);
-            currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper._ID));
+            currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ID));
 
             // Create an arguments bundle.
             Bundle argumentsBundle = new Bundle();

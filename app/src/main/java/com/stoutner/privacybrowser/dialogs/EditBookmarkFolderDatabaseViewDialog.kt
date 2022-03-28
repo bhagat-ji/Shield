@@ -119,8 +119,8 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
 
-        // Initialize the bookmarks database helper.   The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        val bookmarksDatabaseHelper = BookmarksDatabaseHelper(context, null, null, 0)
+        // Initialize the bookmarks database helper.
+        val bookmarksDatabaseHelper = BookmarksDatabaseHelper(requireContext())
 
         // Get a cursor with the selected bookmark.
         val folderCursor = bookmarksDatabaseHelper.getBookmark(folderDatabaseId)
@@ -184,7 +184,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         val parentFolder = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER))
 
         // Populate the database ID text view.
-        databaseIdTextView.text = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID)).toString()
+        databaseIdTextView.text = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID)).toString()
 
         // Get the current favorite icon byte array from the cursor.
         val currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
@@ -202,7 +202,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         nameEditText.setText(currentFolderName)
 
         // Define an array of matrix cursor column names.
-        val matrixCursorColumnNames = arrayOf(BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME)
+        val matrixCursorColumnNames = arrayOf(BookmarksDatabaseHelper.ID, BookmarksDatabaseHelper.BOOKMARK_NAME)
 
         // Create a matrix cursor.
         val matrixCursor = MatrixCursor(matrixCursorColumnNames)

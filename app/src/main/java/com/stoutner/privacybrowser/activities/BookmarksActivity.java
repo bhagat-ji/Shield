@@ -189,9 +189,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Display the home arrow on the app bar.
         appBar.setDisplayHomeAsUpEnabled(true);
 
-        // Initialize the database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-        // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
+        // Initialize the database helper.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
 
         // Load the home folder.
         loadFolder();
@@ -451,7 +450,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     boolean isFolder = (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
                     // Get the selected bookmark database ID.
-                    int databaseId = bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
+                    int databaseId = bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID));
 
                     // Show the edit bookmark or edit bookmark folder dialog.
                     if (isFolder) {
@@ -1055,7 +1054,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             folderCursor.moveToPosition(i);
 
             // Get the database ID of the item.
-            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
+            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID));
 
             // If this is a folder, recursively count the contents first.
             if (bookmarksDatabaseHelper.isFolder(itemDatabaseId)) {
@@ -1084,7 +1083,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             folderCursor.moveToPosition(i);
 
             // Get the database ID of the item.
-            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID));
+            int itemDatabaseId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID));
 
             // If this is a folder, recursively delete the contents first.
             if (bookmarksDatabaseHelper.isFolder(itemDatabaseId)) {

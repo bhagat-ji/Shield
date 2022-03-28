@@ -125,8 +125,8 @@ class AddDomainDialog : DialogFragment() {
         // The alert dialog must be shown before the contents can be modified.
         alertDialog.show()
 
-        // Initialize the domains database helper.  The `0` specifies the database version, but that is ignored and set instead using a constant in domains database helper.
-        val domainsDatabaseHelper = DomainsDatabaseHelper(context, null, null, 0)
+        // Initialize the domains database helper.
+        val domainsDatabaseHelper = DomainsDatabaseHelper(requireContext())
 
         // Get handles for the views in the alert dialog.
         val addDomainEditText = alertDialog.findViewById<EditText>(R.id.domain_name_edittext)!!

@@ -201,8 +201,8 @@ public class DomainSettingsFragment extends Fragment {
         String startDateLabel = getString(R.string.start_date) + "  ";
         String endDateLabel = getString(R.string.end_date) + "  ";
 
-        // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
+        // Initialize the database handler.
+        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(requireContext());
 
         // Get the database cursor for this ID and move it to the first row.
         Cursor domainCursor = domainsDatabaseHelper.getCursorForId(databaseId);

@@ -126,8 +126,8 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         // Convert the favorite icon byte array to a bitmap.
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
 
-        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        val bookmarksDatabaseHelper = BookmarksDatabaseHelper(context, null, null, 0)
+        // Initialize the database helper.
+        val bookmarksDatabaseHelper = BookmarksDatabaseHelper(requireContext())
 
         // Get a cursor with the selected bookmark.
         val bookmarkCursor = bookmarksDatabaseHelper.getBookmark(bookmarkDatabaseId)
@@ -190,7 +190,7 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         val currentDisplayOrder = bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER))
 
         // Set the database ID.
-        databaseIdTextView.text = bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper._ID)).toString()
+        databaseIdTextView.text = bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID)).toString()
 
         // Get the current favorite icon byte array from the cursor.
         val currentIconByteArray = bookmarkCursor.getBlob(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
@@ -209,7 +209,7 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         urlEditText.setText(currentUrl)
 
         // Create an an array of column names for the matrix cursor comprised of the ID and the name.
-        val matrixCursorColumnNamesArray = arrayOf(BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME)
+        val matrixCursorColumnNamesArray = arrayOf(BookmarksDatabaseHelper.ID, BookmarksDatabaseHelper.BOOKMARK_NAME)
 
         // Create a matrix cursor based on the column names array.
         val matrixCursor = MatrixCursor(matrixCursorColumnNamesArray)

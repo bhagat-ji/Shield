@@ -377,8 +377,8 @@ public class ImportExportDatabaseHelper {
             // Delete the current bookmarks database.
             context.deleteDatabase(BookmarksDatabaseHelper.BOOKMARKS_DATABASE);
 
-            // Create a new bookmarks database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-            BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(context, null, null, 0);
+            // Create a new bookmarks database.
+            BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(context);
 
             // Move to the first bookmark.
             importBookmarksCursor.moveToFirst();
@@ -414,8 +414,8 @@ public class ImportExportDatabaseHelper {
             // Delete the current domains database.
             context.deleteDatabase(DomainsDatabaseHelper.DOMAINS_DATABASE);
 
-            // Create a new domains database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
+            // Create a new domains database.
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context);
 
             // Move to the first domain.
             importDomainsCursor.moveToFirst();
@@ -563,8 +563,8 @@ public class ImportExportDatabaseHelper {
             // Create the temporary export database bookmarks table.
             temporaryExportDatabase.execSQL(BookmarksDatabaseHelper.CREATE_BOOKMARKS_TABLE);
 
-            // Open the bookmarks database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-            BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(context, null, null, 0);
+            // Open the bookmarks database.
+            BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(context);
 
             // Get a full bookmarks cursor.
             Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarks();
@@ -598,8 +598,8 @@ public class ImportExportDatabaseHelper {
             // Create the temporary export database domains table.
             temporaryExportDatabase.execSQL(DomainsDatabaseHelper.CREATE_DOMAINS_TABLE);
 
-            // Open the domains database.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
+            // Open the domains database.
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context);
 
             // Get a full domains database cursor.
             Cursor domainsCursor = domainsDatabaseHelper.getCompleteCursorOrderedByDomain();

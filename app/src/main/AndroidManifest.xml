@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2021 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -47,7 +47,8 @@
         <package android:name="org.sufficientlysecure.keychain" />
     </queries>
 
-    <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set. -->
+    <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set.
+        `tools:ignore="DataExtractionRules` removes the warning that backups can still transfer data device to device. -->
     <application
         android:label="@string/privacy_browser"
         android:icon="@mipmap/privacy_browser"
@@ -56,7 +57,7 @@
         android:fullBackupContent="false"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        tools:ignore="UnusedAttribute" >
+        tools:ignore="DataExtractionRules,UnusedAttribute" >
 
         <!-- If `android:name="android.webkit.WebView.MetricsOptOut"` is not `true` then `WebViews` will upload metrics to Google.  <https://developer.android.com/reference/android/webkit/WebView.html> -->
         <meta-data
@@ -72,11 +73,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/google_app_id" />
-
-        <!-- Don't initialize the ad system in the free flavor until it is explicitly called. -->
-        <meta-data
-            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
-            android:value="true"/>
 
         <!-- The file provider is required to encrypt files with OpenKeychain. -->
         <provider

@@ -144,8 +144,8 @@ class PinnedMismatchDialog : DialogFragment() {
             val currentSslStartDateLong: Long = currentSslStartDate?.time ?: 0
             val currentSslEndDateLong: Long = currentSslEndDate?.time ?: 0
 
-            // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in the domains database helper.
-            val domainsDatabaseHelper = DomainsDatabaseHelper(context, null, null, 0)
+            // Initialize the database handler.
+            val domainsDatabaseHelper = DomainsDatabaseHelper(requireContext())
 
             // Update the SSL certificate if it is pinned.
             if (nestedScrollWebView.hasPinnedSslCertificate()) {
