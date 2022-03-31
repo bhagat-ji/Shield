@@ -167,6 +167,7 @@
         <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
     <string name="share">Share</string>
+        <string name="share_message">Share Message</string>
         <string name="share_url">Share URL</string>
         <string name="open_with_app">Open with App</string>
         <string name="open_with_browser">Open with Browser</string>

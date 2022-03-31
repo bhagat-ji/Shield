@@ -1850,24 +1850,45 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Consume the event.
             return true;
-        } else if (menuItemId == R.id.share_url) {  // Share URL.
-            // Setup the share string.
+        } else if (menuItemId == R.id.share_message) {  // Share a message.
+            // Prepare the share string.
             String shareString = currentWebView.getTitle() + " – " + currentWebView.getUrl();
 
             // Create the share intent.
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            Intent shareMessageIntent = new Intent(Intent.ACTION_SEND);
 
             // Add the share string to the intent.
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+            shareMessageIntent.putExtra(Intent.EXTRA_TEXT, shareString);
 
             // Set the MIME type.
-            shareIntent.setType("text/plain");
+            shareMessageIntent.setType("text/plain");
 
             // Set the intent to open in a new task.
-            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shareMessageIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             // Make it so.
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
+            startActivity(Intent.createChooser(shareMessageIntent, getString(R.string.share_message)));
+
+            // Consume the event.
+            return true;
+        } else if (menuItemId == R.id.share_url) {  // Share URL.
+            // Create the share intent.
+            Intent shareUrlIntent = new Intent(Intent.ACTION_SEND);
+
+            // Add the URL to the intent.
+            shareUrlIntent.putExtra(Intent.EXTRA_TEXT, currentWebView.getUrl());
+
+            // Add the title to the intent.
+            shareUrlIntent.putExtra(Intent.EXTRA_SUBJECT, currentWebView.getTitle());
+
+            // Set the MIME type.
+            shareUrlIntent.setType("text/plain");
+
+            // Set the intent to open in a new task.
+            shareUrlIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            //Make it so.
+            startActivity(Intent.createChooser(shareUrlIntent, getString(R.string.share_url)));
 
             // Consume the event.
             return true;

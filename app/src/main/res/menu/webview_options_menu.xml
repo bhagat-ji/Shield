@@ -377,21 +377,27 @@
 
         <menu>
             <item
+                android:id="@+id/share_message"
+                android:title="@string/share_message"
+                android:orderInCategory="1310"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/share_url"
                 android:title="@string/share_url"
-                android:orderInCategory="1310"
+                android:orderInCategory="1320"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/open_with_app"
                 android:title="@string/open_with_app"
-                android:orderInCategory="1320"
+                android:orderInCategory="1330"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/open_with_browser"
                 android:title="@string/open_with_browser"
-                android:orderInCategory="1330"
+                android:orderInCategory="1340"
                 app:showAsAction="never" />
         </menu>
     </item>
