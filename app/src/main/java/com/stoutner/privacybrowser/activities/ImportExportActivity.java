@@ -531,6 +531,7 @@ public class ImportExportActivity extends AppCompatActivity {
                 case NO_ENCRYPTION:
                     try {
                         // Get an input stream for the file name.
+                        // A file may be opened directly once the minimum API >= 29.  <https://developer.android.com/reference/kotlin/android/content/ContentResolver#openfile>
                         InputStream inputStream = getContentResolver().openInputStream(Uri.parse(fileNameString));
 
                         // Import the unencrypted file.
@@ -724,6 +725,7 @@ public class ImportExportActivity extends AppCompatActivity {
 
                     try {
                         // Get the export file output stream.
+                        // A file may be opened directly once the minimum API >= 29.  <https://developer.android.com/reference/kotlin/android/content/ContentResolver#openfile>
                         OutputStream exportFileOutputStream = getContentResolver().openOutputStream(Uri.parse(noEncryptionFileNameString));
 
                         // Export the unencrypted file.

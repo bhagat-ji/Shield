@@ -163,9 +163,10 @@
         <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
     <string name="share">Condividi</string>
+        <string name="share_message">Condividi messaggio</string>
         <string name="share_url">Condividi URL</string>
-        <string name="open_with_app">Apri con App</string>
-        <string name="open_with_browser">Apri con il Browser</string>
+        <string name="open_with_app">Apri con app</string>
+        <string name="open_with_browser">Apri con il browser</string>
     <string name="add_domain_settings">Aggiungi dominio</string>
     <string name="edit_domain_settings">Modifica dominio</string>
 
@@ -568,7 +569,7 @@
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>
         <string name="scroll_app_bar_summary">Permette lo scorrere della barra dell\'applicazione dalla parte alta dello schermo quando si effettua lo scrolling.</string>
         <string name="bottom_app_bar">Barra dell\'app in basso</string>
-        <string name="bottom_app_bar_summary">Sposta la barra dell\'app nella parte bassa dello schermo.  La modifica di questa impostazione provocherà il riavvio di Privacy Browser.</string>
+        <string name="bottom_app_bar_summary">Sposta la barra dell\'app nella parte bassa dello schermo. La modifica di questa impostazione provocherà il riavvio di Privacy Browser.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento della pagina e, se lo spazio è disponibile,
             per aprire i preferiti e per abilitare o disabilitare i cookie.</string>

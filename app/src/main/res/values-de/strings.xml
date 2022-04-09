@@ -167,6 +167,7 @@
         <string name="view_source">Quelltext anzeigen</string>
         <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="share">Teilen</string>
+    <string name="share_message">URL als Nachricht teilen</string>
         <string name="share_url">URL teilen</string>
         <string name="open_with_app">Mit App öffnen</string>
         <string name="open_with_browser">Mit Browser öffnen</string>

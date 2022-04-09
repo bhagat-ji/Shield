@@ -1230,20 +1230,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "scroll_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(context.getString(R.string.scroll_app_bar_key), true)) {
-                        scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled);
-                    } else {
-                        scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled);
-                    }
+                    if (sharedPreferences.getBoolean(context.getString(R.string.scroll_app_bar_key), true)) scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled);
+                    else scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled);
+
                     break;
 
                 case "bottom_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(context.getString(R.string.bottom_app_bar_key), false)) {
-                        bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled);
-                    } else {
-                        bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled);
-                    }
+                    if (sharedPreferences.getBoolean(context.getString(R.string.bottom_app_bar_key), false)) bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled);
+                    else bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled);
 
                     // Restart Privacy Browser.
                     restartPrivacyBrowser();

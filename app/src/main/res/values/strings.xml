@@ -619,7 +619,7 @@
         <string name="scroll_app_bar">Scroll the app bar</string>
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
         <string name="bottom_app_bar">Bottom app bar</string>
-        <string name="bottom_app_bar_summary">Move the app bar to the bottom of the screen.  Changing this setting will restart Privacy Browser.</string>
+        <string name="bottom_app_bar_summary">Move the app bar to the bottom of the screen. Changing this setting will restart Privacy Browser.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for opening the bookmarks drawer and toggling cookies.</string>
         <string name="app_theme">App theme</string>

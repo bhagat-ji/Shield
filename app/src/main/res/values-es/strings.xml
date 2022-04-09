@@ -163,9 +163,10 @@
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
+        <string name="share_message">Compartir mensaje</string>
         <string name="share_url">Compartir URL</string>
-        <string name="open_with_app">Abrir con App</string>
-        <string name="open_with_browser">Abrir con Navegador</string>
+        <string name="open_with_app">Abrir con app</string>
+        <string name="open_with_browser">Abrir con navegador</string>
     <string name="add_domain_settings">Añadir dominio</string>
     <string name="edit_domain_settings">Editar dominio</string>
 
@@ -569,7 +570,7 @@
         <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
         <string name="bottom_app_bar">Barra inferior de la app</string>
-        <string name="bottom_app_bar_summary">Mover la barra de apps a la parte inferior de la pantalla.  Al cambiar esta configuración se reiniciará Navegador Privado.</string>
+        <string name="bottom_app_bar_summary">Mover la barra de apps a la parte inferior de la pantalla. Al cambiar esta configuración se reiniciará Navegador Privado.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio,
             para abrir el cajón de marcadores y cambiar las cookies.</string>

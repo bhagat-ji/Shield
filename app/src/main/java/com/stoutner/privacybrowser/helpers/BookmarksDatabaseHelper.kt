@@ -26,17 +26,17 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-// The private constants.
+// Define the private class constants.
 private const val SCHEMA_VERSION = 1
 
 class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOKMARKS_DATABASE, null, SCHEMA_VERSION) {
     // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
     companion object {
-        // The database constants.
+        // Define the public database constants.
         const val BOOKMARKS_DATABASE = "bookmarks.db"
         const val BOOKMARKS_TABLE = "bookmarks"
 
-        // The schema constants.
+        // Define the public schema constants.
         const val ID = "_id"
         const val BOOKMARK_NAME = "bookmarkname"
         const val BOOKMARK_URL = "bookmarkurl"
@@ -45,7 +45,7 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         const val IS_FOLDER = "isfolder"
         const val FAVORITE_ICON = "favoriteicon"
 
-        // The table creation constant.
+        // Define the public table creation constant.
         const val CREATE_BOOKMARKS_TABLE = "CREATE TABLE " + BOOKMARKS_TABLE + " (" +
                 ID + " INTEGER PRIMARY KEY, " +
                 BOOKMARK_NAME + " TEXT, " +

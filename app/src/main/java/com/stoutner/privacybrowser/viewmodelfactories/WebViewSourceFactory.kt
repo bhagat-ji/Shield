@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService
 class WebViewSourceFactory (private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy, private val contentResolver: ContentResolver,
                             private val executorService: ExecutorService): ViewModelProvider.Factory {
     // Override the create function in order to add the provided arguments.
-    override fun <T: ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T: ViewModel> create(modelClass: Class<T>): T {
         // Return a new instance of the model class with the provided arguments.
         return modelClass.getConstructor(String::class.java, String::class.java, String::class.java, Proxy::class.java, ContentResolver::class.java, ExecutorService::class.java)
                 .newInstance(urlString, userAgent, localeString, proxy, contentResolver, executorService)

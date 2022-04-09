@@ -27,9 +27,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.webkit.WebView
-import android.webkit.SslErrorHandler
 import android.webkit.HttpAuthHandler
+import android.webkit.SslErrorHandler
+import android.webkit.WebView
 
 import androidx.core.content.ContextCompat
 import androidx.core.view.NestedScrollingChild2

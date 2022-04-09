@@ -119,141 +119,141 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(domainsDatabase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Upgrade the database table.
-        when (oldVersion) {
-            // Upgrade from schema version 1.  TODO.  Test to make sure updates work across multiple versions.
-            1 -> {
-                // Add the display images column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $DISPLAY_IMAGES INTEGER")
+        // Upgrade from schema version 1, first used in Privacy Browser 2.0, to schema version 2, first used in Privacy Browser 2.3.
+        if (oldVersion < 2) {
+            // Add the display images column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $DISPLAY_IMAGES INTEGER")
+        }
+
+        // Upgrade from schema version 2, first used in Privacy Browser 2.3, to schema version 3, first used in Privacy Browser 2.5.
+        if (oldVersion < 3) {
+            //  Add the SSL certificate columns.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $PINNED_SSL_CERTIFICATE BOOLEAN")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_TO_COMMON_NAME TEXT")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_TO_ORGANIZATION TEXT")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_TO_ORGANIZATIONAL_UNIT TEXT")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_BY_COMMON_NAME TEXT")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_BY_ORGANIZATION TEXT")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_BY_ORGANIZATIONAL_UNIT TEXT")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_START_DATE INTEGER")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_END_DATE INTEGER")
+        }
+
+        // Upgrade from schema version 3, first used in Privacy Browser 2.5, to schema version 4, first used in Privacy Browser 2.6.
+        if (oldVersion < 4) {
+            // Add the night mode column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN nightmode INTEGER")
+        }
+
+        // Upgrade from schema version 4, first used in Privacy Browser 2.6, to schema version 5, first used in Privacy Browser 2.9.
+        if (oldVersion < 5) {
+            // Add the block lists columns.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_EASYLIST BOOLEAN")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_EASYPRIVACY BOOLEAN")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_ANNOYANCE_LIST BOOLEAN")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN")
+
+            // Get a handle for the shared preference.
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
+
+            // Get the default block list settings.
+            val easyListEnabled = sharedPreferences.getBoolean("easylist", true)
+            val easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true)
+            val fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true)
+            val fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true)
+
+            // Set EasyList for existing rows according to the current system-wide default.
+            // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
+            // <https://developer.android.com/reference/android/database/sqlite/package-summary>
+            if (easyListEnabled) {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYLIST = 1")
+            } else {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYLIST = 0")
             }
 
-            // Upgrade from schema version 2.
-            2 -> {
-                //  Add the SSL certificate columns.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $PINNED_SSL_CERTIFICATE BOOLEAN")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_TO_COMMON_NAME TEXT")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_TO_ORGANIZATION TEXT")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_TO_ORGANIZATIONAL_UNIT TEXT")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_BY_COMMON_NAME TEXT")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_BY_ORGANIZATION TEXT")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_ISSUED_BY_ORGANIZATIONAL_UNIT TEXT")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_START_DATE INTEGER")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SSL_END_DATE INTEGER")
+            // Set EasyPrivacy for existing rows according to the current system-wide default.
+            if (easyPrivacyEnabled) {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYPRIVACY = 1")
+            } else {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYPRIVACY = 0")
             }
 
-            // Upgrade from schema version 3.
-            3 -> {
-                // Add the night mode column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN nightmode INTEGER")
+            // Set Fanboy's Annoyance List for existing rows according to the current system-wide default.
+            if (fanboyAnnoyanceListEnabled) {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_ANNOYANCE_LIST = 1")
+            } else {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_ANNOYANCE_LIST = 0")
             }
 
-            // Upgrade from schema version 4.
-            4 -> {
-                // Add the block lists columns.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_EASYLIST BOOLEAN")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_EASYPRIVACY BOOLEAN")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_ANNOYANCE_LIST BOOLEAN")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN")
-
-                // Get a handle for the shared preference.
-                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
-
-                // Get the default block list settings.
-                val easyListEnabled = sharedPreferences.getBoolean("easylist", true)
-                val easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true)
-                val fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true)
-                val fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true)
-
-                // Set EasyList for existing rows according to the current system-wide default.
-                if (easyListEnabled) {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYLIST = 1")
-                } else {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYLIST = 0")
-                }
-
-                // Set EasyPrivacy for existing rows according to the current system-wide default.
-                if (easyPrivacyEnabled) {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYPRIVACY = 1")
-                } else {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYPRIVACY = 0")
-                }
-
-                // Set Fanboy's Annoyance List for existing rows according to the current system-wide default.
-                if (fanboyAnnoyanceListEnabled) {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_ANNOYANCE_LIST = 1")
-                } else {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_ANNOYANCE_LIST = 0")
-                }
-
-                // Set Fanboy's Social Blocking List for existing rows according to the current system-wide default.
-                if (fanboySocialBlockingListEnabled) {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = 1")
-                } else {
-                    domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = 0")
-                }
+            // Set Fanboy's Social Blocking List for existing rows according to the current system-wide default.
+            if (fanboySocialBlockingListEnabled) {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = 1")
+            } else {
+                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = 0")
             }
+        }
 
-            // Upgrade from schema version 5.
-            5 -> {
-                // Add the swipe to refresh column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SWIPE_TO_REFRESH INTEGER")
-            }
+        // Upgrade from schema version 5, first used in Privacy Browser 2.9, to schema version 6, first used in Privacy Browser 2.11.
+        if (oldVersion < 6) {
+            // Add the swipe to refresh column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $SWIPE_TO_REFRESH INTEGER")
+        }
 
-            // Upgrade from schema version 6.
-            6 -> {
-                // Add the block all third-party requests column.  This defaults to `0`, which is off, so a separate step isn't needed to populate the column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN")
-            }
+        // Upgrade from schema version 6, first used in Privacy Browser 2.11, to schema version 7, first used in Privacy Browser 2.12.
+        if (oldVersion < 7) {
+            // Add the block all third-party requests column.  This defaults to `0`, which is off, so a separate step isn't needed to populate the column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN")
+        }
 
-            // Upgrade from schema version 7.
-            7 -> {
-                // Add the UltraPrivacy column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_ULTRAPRIVACY BOOLEAN")
+        // Upgrade from schema version 7, first used in Privacy Browser 2.12, to schema version 8, first used in Privacy Browser 2.12.
+        // For some reason (lack of planning or attention to detail), the 2.12 update included two schema version jumps.
+        if (oldVersion < 8) {
+            // Add the UltraPrivacy column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_ULTRAPRIVACY BOOLEAN")
 
-                // Enable it for all existing rows.
-                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_ULTRAPRIVACY = 1")
-            }
+            // Enable it for all existing rows.
+            domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_ULTRAPRIVACY = 1")
+        }
 
-            // Upgrade from schema version 8.
-            8 -> {
-                // Add the pinned IP addresses columns.  These default to `0` and `""`, so a separate step isn't needed to populate the columns.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $PINNED_IP_ADDRESSES BOOLEAN")
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $IP_ADDRESSES TEXT")
-            }
+        // Upgrade from schema version 8, first used in Privacy Browser 2.12, to schema version 9, first used in Privacy Browser 2.16.
+        if (oldVersion < 9) {
+            // Add the pinned IP addresses columns.  These default to `0` and `""`, so a separate step isn't needed to populate the columns.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $PINNED_IP_ADDRESSES BOOLEAN")
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $IP_ADDRESSES TEXT")
+        }
 
-            // Upgrade from schema version 9.
-            9 -> {
-                // Add the wide viewport column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $WIDE_VIEWPORT INTEGER")
-            }
+        // Upgrade from schema version 9, first used in Privacy Browser 2.16, to schema version 10, first used in Privacy Browser 3.1.
+        if (oldVersion < 10) {
+            // Add the wide viewport column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $WIDE_VIEWPORT INTEGER")
+        }
 
-            // Upgrade from schema version 10.
-            10 -> {
-                // Add the UltraList column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ULTRALIST BOOLEAN")
+        // Upgrade from schema version 10, first used in Privacy Browser 3.1, to schema version 11, first used in Privacy Browser 3.2.
+        if (oldVersion < 11) {
+            // Add the UltraList column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ULTRALIST BOOLEAN")
 
-                // Enable it for all existing rows.
-                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ULTRALIST = 1")
-            }
+            // Enable it for all existing rows.
+            domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ULTRALIST = 1")
+        }
 
-            // Upgrade from schema version 11.
-            11 -> {
-                // Add the WebView theme column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $WEBVIEW_THEME INTEGER")
+        // Upgrade from schema version 11, first used in Privacy Browser 3.2, to schema version 12, first used in Privacy Browser 3.5.
+        if (oldVersion < 12) {
+            // Add the WebView theme column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $WEBVIEW_THEME INTEGER")
 
-                // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
-                // It will be a while before that is supported in Android.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
-                // Although a new table could be created and all the data copied to it, I think I will just leave the old night mode column.  It will be wiped out the next time an import is run.
-            }
+            // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
+            // It will be a while before that is supported in Android.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
+            // Although a new table could be created and all the data copied to it, I think I will just leave the old night mode column.  It will be wiped out the next time an import is run.
+        }
 
-            // Upgrade from schema version 12.
-            12 -> {
-                // Add the cookies column.
-                domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $COOKIES BOOLEAN")
+        // Upgrade from schema version 12, first used in Privacy Browser 3.5, to schema version 13, first used in Privacy Browser 3.8.
+        if (oldVersion < 13) {
+            // Add the cookies column.
+            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $COOKIES BOOLEAN")
 
-                // Copy the data from the old column to the new one.
-                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $COOKIES = enablefirstpartycookies")
-            }
+            // Copy the data from the old column to the new one.
+            domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $COOKIES = enablefirstpartycookies")
         }
     }
 

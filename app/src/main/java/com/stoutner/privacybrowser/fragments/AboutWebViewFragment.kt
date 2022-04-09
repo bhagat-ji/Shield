@@ -91,6 +91,7 @@ class AboutWebViewFragment : Fragment() {
         // Set a WebView client.
         tabWebView.webViewClient = object : WebViewClient() {
             // // Send external links back to the main Privacy Browser WebView.  The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
+            @Deprecated("Deprecated in Java")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 // Create an intent to view the URL.
                 val urlIntent = Intent(Intent.ACTION_VIEW)

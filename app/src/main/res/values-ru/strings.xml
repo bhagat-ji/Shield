@@ -160,6 +160,7 @@
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
+        <string name="share_message">Поделиться в сообщении</string>
         <string name="share_url">Поделиться URL</string>
         <string name="open_with_app">Открыть в приложении</string>
         <string name="open_with_browser">Открыть в браузере</string>

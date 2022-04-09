@@ -535,12 +535,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the theme.
         setTheme(R.style.PrivacyBrowser);
 
-        // Set the content view.
-        if (bottomAppBar) {
-            setContentView(R.layout.main_framelayout_bottom_appbar);
-        } else {
-            setContentView(R.layout.main_framelayout_top_appbar);
-        }
+        // Set the content view according to the position of the app bar.
+        if (bottomAppBar) setContentView(R.layout.main_framelayout_bottom_appbar);
+        else setContentView(R.layout.main_framelayout_top_appbar);
 
         // Get handles for the views.
         rootFrameLayout = findViewById(R.id.root_framelayout);
@@ -3553,8 +3550,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Apply the proxy.
         applyProxy(false);
 
-        // Adjust the layout and scrolling parameters if the app bar is at the top of the screen.
-        if (!bottomAppBar) {
+        // Adjust the layout and scrolling parameters according to the position of the app bar.
+        if (bottomAppBar) {  // The app bar is on the bottom.
+            // Adjust the UI.
+            if (scrollAppBar || (inFullScreenBrowsingMode && hideAppBar)) {  // The app bar scrolls or full screen browsing mode is engaged with the app bar hidden.
+                // Reset the WebView padding to fill the available space.
+                swipeRefreshLayout.setPadding(0, 0, 0, 0);
+            } else {  // The app bar doesn't scroll or full screen browsing mode is not engaged with the app bar hidden.
+                // Move the WebView above the app bar layout.
+                swipeRefreshLayout.setPadding(0, 0, 0, appBarHeight);
+
+                // Show the app bar if it is scrolled off the screen.
+                if (appBarLayout.getTranslationY() != 0) {
+                    // Animate the bottom app bar onto the screen.
+                    objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);
+
+                    // Make it so.
+                    objectAnimator.start();
+                }
+            }
+        } else {  // The app bar is on the top.
             // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command and using app bar layout parameters allows the `setScrollFlags()` command.
             CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
             AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
@@ -5121,7 +5136,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Toggle the full screen browsing mode.
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
                         // Hide the app bar if specified.
-                        if (hideAppBar) {
+                        if (hideAppBar) {  // The app bar is hidden.
                             // Close the find on page bar if it is visible.
                             closeFindOnPage(null);
 
@@ -5131,8 +5146,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Hide the action bar.
                             actionBar.hide();
 
-                            // Set layout and scrolling parameters if the app bar is at the top of the screen.
-                            if (!bottomAppBar) {
+                            // Set layout and scrolling parameters according to the position of the app bar.
+                            if (bottomAppBar) {  // The app bar is at the bottom.
+                                // Reset the WebView padding to fill the available space.
+                                swipeRefreshLayout.setPadding(0, 0, 0, 0);
+                            } else {  // The app bar is at the top.
                                 // Check to see if the app bar is normally scrolled.
                                 if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
                                     // Get the swipe refresh layout parameters.
@@ -5146,6 +5164,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                     // The swipe refresh circle must be moved above the now removed status bar location.
                                     swipeRefreshLayout.setProgressViewOffset(false, -200, defaultProgressViewEndOffset);
+                                }
+                            }
+                        } else {  // The app bar is not hidden.
+                            // Adjust the UI for the bottom app bar.
+                            if (bottomAppBar) {
+                                // Adjust the UI according to the scrolling of the app bar.
+                                if (scrollAppBar) {
+                                    // Reset the WebView padding to fill the available space.
+                                    swipeRefreshLayout.setPadding(0, 0, 0, 0);
+                                } else {
+                                    // Move the WebView above the app bar layout.
+                                    swipeRefreshLayout.setPadding(0, 0, 0, appBarHeight);
                                 }
                             }
                         }
@@ -5166,23 +5196,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                             // Show the action bar.
                             actionBar.show();
+                        }
 
-                            // Set layout and scrolling parameters if the app bar is at the top of the screen.
-                            if (!bottomAppBar) {
-                                // Check to see if the app bar is normally scrolled.
-                                if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
-                                    // Get the swipe refresh layout parameters.
-                                    CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+                        // Set layout and scrolling parameters according to the position of the app bar.
+                        if (bottomAppBar) {  // The app bar is at the bottom.
+                            // Adjust the UI.
+                            if (scrollAppBar) {
+                                // Reset the WebView padding to fill the available space.
+                                swipeRefreshLayout.setPadding(0, 0, 0, 0);
+                            } else {
+                                // Move the WebView above the app bar layout.
+                                swipeRefreshLayout.setPadding(0, 0, 0, appBarHeight);
+                            }
+                        } else {  // The app bar is at the top.
+                            // Check to see if the app bar is normally scrolled.
+                            if (scrollAppBar) {  // The app bar is scrolled when it is displayed.
+                                // Get the swipe refresh layout parameters.
+                                CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
 
-                                    // Add the off-screen scrolling layout.
-                                    swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
-                                } else {  // The app bar is not scrolled when it is displayed.
-                                    // The swipe refresh layout must be manually moved below the app bar layout.
-                                    swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
+                                // Add the off-screen scrolling layout.
+                                swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+                            } else {  // The app bar is not scrolled when it is displayed.
+                                // The swipe refresh layout must be manually moved below the app bar layout.
+                                swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
 
-                                    // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
-                                    swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10 + appBarHeight, defaultProgressViewEndOffset + appBarHeight);
-                                }
+                                // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
+                                swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10 + appBarHeight, defaultProgressViewEndOffset + appBarHeight);
                             }
                         }
 
@@ -5195,6 +5234,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else { // Do not consume the double-tap because full screen browsing mode is disabled.
                     return false;
                 }
+            }
+
+            @Override
+            public boolean onFling(MotionEvent motionEvent1, MotionEvent motionEvent2, float velocityX, float velocityY) {
+                // Scroll the bottom app bar if enabled.
+                if (bottomAppBar && scrollAppBar && !objectAnimator.isRunning()) {
+                    // Calculate the Y change.
+                    float motionY = motionEvent2.getY() - motionEvent1.getY();
+
+                    // Scroll the app bar if the change is greater than 100 pixels.
+                    if (motionY > 50) {
+                        // Animate the bottom app bar onto the screen.
+                        objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);
+                    } else if (motionY < -50) {
+                        // Animate the bottom app bar off the screen.
+                        objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", appBarLayout.getHeight());
+                    }
+
+                    // Make it so.
+                    objectAnimator.start();
+                }
+
+                // Do not consume the event.
+                return false;
             }
         });
 
@@ -5269,7 +5332,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.  Also reinforce full screen browsing mode.
+        // Process scroll changes.
         nestedScrollWebView.setOnScrollChangeListener((view, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             // Set the swipe to refresh status.
             if (nestedScrollWebView.getSwipeToRefresh()) {
@@ -5278,23 +5341,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else {
                 // Disable swipe to refresh.
                 swipeRefreshLayout.setEnabled(false);
-            }
-
-            //  Scroll the bottom app bar if enabled.
-            if (bottomAppBar && scrollAppBar && !objectAnimator.isRunning()) {
-                if (scrollY < oldScrollY) {  // The WebView was scrolled down.
-                    // Animate the bottom app bar onto the screen.
-                    objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);
-
-                    // Make it so.
-                    objectAnimator.start();
-                } else if (scrollY > oldScrollY) {  // The WebView was scrolled up.
-                    // Animate the bottom app bar off the screen.
-                    objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", appBarLayout.getHeight());
-
-                    // Make it so.
-                    objectAnimator.start();
-                }
             }
 
             // Reinforce the system UI visibility flags if in full screen browsing mode.
@@ -5909,8 +5955,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // Set the padding and layout settings if the app bar is at the top of the screen.
-                if (!bottomAppBar) {
+                // Get the app bar layout height.  This can't be done in `applyAppSettings()` because the app bar is not yet populated there.
+                // This should only be populated if it is greater than 0 because otherwise it will be reset to 0 if the app bar is hidden in full screen browsing mode.
+                if (appBarLayout.getHeight() > 0) appBarHeight = appBarLayout.getHeight();
+
+                // Set the padding and layout settings according to the position of the app bar.
+                if (bottomAppBar) {  // The app bar is on the bottom.
+                    // Adjust the UI.
+                    if (scrollAppBar || (inFullScreenBrowsingMode && hideAppBar)) {  // The app bar scrolls or full screen browsing mode is engaged with the app bar hidden.
+                        // Reset the WebView padding to fill the available space.
+                        swipeRefreshLayout.setPadding(0, 0, 0, 0);
+                    } else {  // The app bar doesn't scroll or full screen browsing mode is not engaged with the app bar hidden.
+                        // Move the WebView above the app bar layout.
+                        swipeRefreshLayout.setPadding(0, 0, 0, appBarHeight);
+                    }
+                } else {  // The app bar is on the top.
                     // Set the top padding of the swipe refresh layout according to the app bar scrolling preference.  This can't be done in `appAppSettings()` because the app bar is not yet populated there.
                     if (scrollAppBar || (inFullScreenBrowsingMode && hideAppBar)) {
                         // No padding is needed because it will automatically be placed below the app bar layout due to the scrolling layout behavior.
@@ -5919,9 +5978,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
                         swipeRefreshLayout.setProgressViewOffset(false, defaultProgressViewStartOffset - 10, defaultProgressViewEndOffset);
                     } else {
-                        // Get the app bar layout height.  This can't be done in `applyAppSettings()` because the app bar is not yet populated there.
-                        appBarHeight = appBarLayout.getHeight();
-
                         // The swipe refresh layout must be manually moved below the app bar layout.
                         swipeRefreshLayout.setPadding(0, appBarHeight, 0, 0);
 
