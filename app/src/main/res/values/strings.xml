@@ -664,7 +664,7 @@
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
     <string name="font_size_default_value" translatable="false">100</string>
     <string name="homepage_default_value" translatable="false">https://www.mojeek.com/</string>
-    <string name="proxy_custom_url_default_value" translatable="false">http://localhost:8118</string>
+    <string name="proxy_custom_url_default_value" translatable="false">socks://localhost:9050</string>
     <string name="proxy_default_value" translatable="false">None</string>
     <string name="search_custom_url_default_value" translatable="false" />
     <string name="search_default_value" translatable="false">https://www.mojeek.com/search?q=</string>
