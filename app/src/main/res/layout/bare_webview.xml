@@ -18,7 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- This WebView displays inside of the tabs in the about and guide activities. -->
+<!-- This WebView displays inside of the tabs in the About and Guide activities. -->
 <WebView
     android:id="@+id/bare_webview"
     xmlns:android="http://schemas.android.com/apk/res/android"

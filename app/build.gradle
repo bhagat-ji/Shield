@@ -62,6 +62,8 @@ android {
             dimension "basic"
         }
     }
+
+    namespace 'com.stoutner.privacybrowser'
 }
 
 dependencies {
@@ -79,8 +81,8 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.4.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.20'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.0'
 }

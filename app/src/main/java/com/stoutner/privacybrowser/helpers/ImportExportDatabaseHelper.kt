@@ -151,8 +151,8 @@ class ImportExportDatabaseHelper {
             // Upgrade from schema version 3, first used in Privacy Browser 2.15, to schema version 4, first used in Privacy Browser 2.16.
             if (importDatabaseVersion < 4) {
                 // Add the Pinned IP Addresses columns to the domains table.
-                importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.PINNED_IP_ADDRESSES + " BOOLEAN")
-                importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.IP_ADDRESSES + " TEXT")
+                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.PINNED_IP_ADDRESSES}  BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.IP_ADDRESSES} TEXT")
             }
 
             // Upgrade from schema version 4, first used in Privacy Browser 2.16, to schema version 5, first used in Privacy Browser 2.17.
@@ -202,7 +202,7 @@ class ImportExportDatabaseHelper {
             // Upgrade from schema version 6, first used in Privacy Browser 3.0, to schema version 7, first used in Privacy Browser 3.1.
             if (importDatabaseVersion < 7) {
                 // Add the wide viewport column to the domains table.
-                importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.WIDE_VIEWPORT + " INTEGER")
+                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.WIDE_VIEWPORT} INTEGER")
 
                 // Add the Google Analytics, Facebook Click IDs, Twitter AMP redirects, and wide viewport columns to the preferences table.
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $GOOGLE_ANALYTICS BOOLEAN")
@@ -250,7 +250,7 @@ class ImportExportDatabaseHelper {
             // Upgrade from schema version 7, first used in Privacy Browser 3.1, to schema version 8, first used in Privacy Browser 3.2.
             if (importDatabaseVersion < 8) {
                 // Add the UltraList column to the tables.
-                importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.ULTRALIST + " BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.ULTRALIST} BOOLEAN")
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $ULTRALIST BOOLEAN")
 
                 // Get the current preference values.
@@ -260,10 +260,10 @@ class ImportExportDatabaseHelper {
                 // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 if (ultraList) {
-                    importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.ULTRALIST + " = " + 1)
+                    importDatabase.execSQL("UPDATE ${DomainsDatabaseHelper.DOMAINS_TABLE} SET ${DomainsDatabaseHelper.ULTRALIST}  =  1")
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $ULTRALIST = 1")
                 } else {
-                    importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.ULTRALIST + " = " + 0)
+                    importDatabase.execSQL("UPDATE ${DomainsDatabaseHelper.DOMAINS_TABLE} SET ${DomainsDatabaseHelper.ULTRALIST} = 0")
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $ULTRALIST = 0")
                 }
             }
@@ -325,7 +325,7 @@ class ImportExportDatabaseHelper {
                 }
 
                 // Add the WebView theme to the domains table.  This defaults to 0, which is `System default`, so a separate step isn't needed to populate the database.
-                importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.WEBVIEW_THEME + " INTEGER")
+                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.WEBVIEW_THEME} INTEGER")
 
                 // Add the WebView theme to the preferences table.
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $WEBVIEW_THEME TEXT")
@@ -367,11 +367,11 @@ class ImportExportDatabaseHelper {
                 // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
 
                 // Create the new cookies columns.
-                importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.COOKIES + " BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.COOKIES} BOOLEAN")
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $COOKIES BOOLEAN")
 
                 // Copy the data from the old cookies columns to the new ones.
-                importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.COOKIES + " = enablefirstpartycookies")
+                importDatabase.execSQL("UPDATE ${DomainsDatabaseHelper.DOMAINS_TABLE} SET ${DomainsDatabaseHelper.COOKIES} = enablefirstpartycookies")
                 importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $COOKIES = first_party_cookies")
 
                 // Create the new download with external app and bottom app bar columns.
@@ -400,7 +400,7 @@ class ImportExportDatabaseHelper {
             }
 
             // Get a cursor for the bookmarks table.
-            val importBookmarksCursor = importDatabase.rawQuery("SELECT * FROM " + BookmarksDatabaseHelper.BOOKMARKS_TABLE, null)
+            val importBookmarksCursor = importDatabase.rawQuery("SELECT * FROM ${BookmarksDatabaseHelper.BOOKMARKS_TABLE}", null)
 
             // Delete the current bookmarks database.
             context.deleteDatabase(BookmarksDatabaseHelper.BOOKMARKS_DATABASE)
@@ -437,7 +437,7 @@ class ImportExportDatabaseHelper {
 
 
             // Get a cursor for the domains table.
-            val importDomainsCursor = importDatabase.rawQuery("SELECT * FROM " + DomainsDatabaseHelper.DOMAINS_TABLE + " ORDER BY " + DomainsDatabaseHelper.DOMAIN_NAME + " ASC", null)
+            val importDomainsCursor = importDatabase.rawQuery("SELECT * FROM ${DomainsDatabaseHelper.DOMAINS_TABLE} ORDER BY ${DomainsDatabaseHelper.DOMAIN_NAME} ASC", null)
 
             // Delete the current domains database.
             context.deleteDatabase(DomainsDatabaseHelper.DOMAINS_DATABASE)

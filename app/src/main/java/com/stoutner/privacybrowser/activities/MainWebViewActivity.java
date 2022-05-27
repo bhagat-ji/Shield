@@ -3448,7 +3448,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), false);
 
                 // Display a snackbar.
-                Snackbar.make(currentWebView, R.string.bookmark_opened_in_background, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(drawerLayout, R.string.bookmark_opened_in_background, Snackbar.LENGTH_SHORT).show();
             }
 
             // Consume the event.
