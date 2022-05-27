@@ -158,6 +158,12 @@
                 android:textIsSelectable="true" />
 
             <TextView
+                android:id="@+id/kernel"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
+
+            <TextView
                 android:id="@+id/webview_provider"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

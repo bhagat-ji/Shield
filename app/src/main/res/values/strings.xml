@@ -413,8 +413,9 @@
         <string name="software">Software</string>
             <string name="android">Android:</string>
             <string name="api">API</string>
-            <string name="build">Build:</string>
             <string name="security_patch">Security Patch:</string>
+            <string name="build">Build:</string>
+            <string name="kernel">Kernel:</string>
             <string name="webview_provider">WebView Provider:</string>
             <string name="webview_version">WebView Version:</string>
             <string name="orbot">Orbot:</string>

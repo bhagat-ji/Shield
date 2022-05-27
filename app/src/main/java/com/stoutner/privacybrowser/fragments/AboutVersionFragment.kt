@@ -105,6 +105,7 @@ class AboutVersionFragment : Fragment() {
     private lateinit var androidTextView: TextView
     private lateinit var securityPatchTextView: TextView
     private lateinit var buildTextView: TextView
+    private lateinit var kernelTextView: TextView
     private lateinit var webViewProviderTextView: TextView
     private lateinit var webViewVersionTextView: TextView
     private lateinit var orbotTextView: TextView
@@ -235,6 +236,7 @@ class AboutVersionFragment : Fragment() {
         androidTextView = aboutVersionLayout.findViewById(R.id.android)
         securityPatchTextView = aboutVersionLayout.findViewById(R.id.security_patch)
         buildTextView = aboutVersionLayout.findViewById(R.id.build)
+        kernelTextView = aboutVersionLayout.findViewById(R.id.kernel)
         webViewProviderTextView = aboutVersionLayout.findViewById(R.id.webview_provider)
         webViewVersionTextView = aboutVersionLayout.findViewById(R.id.webview_version)
         orbotTextView = aboutVersionLayout.findViewById(R.id.orbot)
@@ -273,6 +275,7 @@ class AboutVersionFragment : Fragment() {
         val bootloaderLabel = getString(R.string.bootloader) + "  "
         val androidLabel = getString(R.string.android) + "  "
         val buildLabel = getString(R.string.build) + "  "
+        val kernelLabel = getString(R.string.kernel) + "  "
         val webViewVersionLabel = getString(R.string.webview_version) + "  "
         appConsumedMemoryLabel = getString(R.string.app_consumed_memory) + "  "
         appAvailableMemoryLabel = getString(R.string.app_available_memory) + "  "
@@ -310,7 +313,9 @@ class AboutVersionFragment : Fragment() {
         val radio = Build.getRadioVersion()
         val android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Build.VERSION.SDK_INT + ")"
         val build = Build.DISPLAY
-        // Select the substring that begins after `Chrome/` and goes until the next ` `.
+        val kernel = System.getProperty("os.version")
+
+        // Get the WebView version, selecting the substring that begins after `Chrome/` and goes until the next ` `.
         val webView = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")))
 
         // Get the Orbot version name if Orbot is installed.
@@ -348,6 +353,7 @@ class AboutVersionFragment : Fragment() {
         val bootloaderStringBuilder = SpannableStringBuilder(bootloaderLabel + bootloader)
         val androidStringBuilder = SpannableStringBuilder(androidLabel + android)
         val buildStringBuilder = SpannableStringBuilder(buildLabel + build)
+        val kernelStringBuilder = SpannableStringBuilder(kernelLabel + kernel)
         val webViewVersionStringBuilder = SpannableStringBuilder(webViewVersionLabel + webView)
         val easyListStringBuilder = SpannableStringBuilder(easyListLabel + blocklistVersions[0])
         val easyPrivacyStringBuilder = SpannableStringBuilder(easyPrivacyLabel + blocklistVersions[1])
@@ -367,6 +373,7 @@ class AboutVersionFragment : Fragment() {
         bootloaderStringBuilder.setSpan(blueColorSpan, bootloaderLabel.length, bootloaderStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         androidStringBuilder.setSpan(blueColorSpan, androidLabel.length, androidStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         buildStringBuilder.setSpan(blueColorSpan, buildLabel.length, buildStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        kernelStringBuilder.setSpan(blueColorSpan, kernelLabel.length, kernelStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         webViewVersionStringBuilder.setSpan(blueColorSpan, webViewVersionLabel.length, webViewVersionStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length, easyListStringBuilder.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length, easyPrivacyStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -384,6 +391,7 @@ class AboutVersionFragment : Fragment() {
         bootloaderTextView.text = bootloaderStringBuilder
         androidTextView.text = androidStringBuilder
         buildTextView.text = buildStringBuilder
+        kernelTextView.text = kernelStringBuilder
         webViewVersionTextView.text = webViewVersionStringBuilder
         easyListTextView.text = easyListStringBuilder
         easyPrivacyTextView.text = easyPrivacyStringBuilder
@@ -806,6 +814,8 @@ class AboutVersionFragment : Fragment() {
             aboutVersionStringBuilder.append("\n")
         }
         aboutVersionStringBuilder.append(buildTextView.text)
+        aboutVersionStringBuilder.append("\n")
+        aboutVersionStringBuilder.append(kernelTextView.text)
         aboutVersionStringBuilder.append("\n")
         if (webViewProviderTextView.visibility == View.VISIBLE) {
             aboutVersionStringBuilder.append(webViewProviderTextView.text)

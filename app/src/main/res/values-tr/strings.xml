@@ -359,8 +359,8 @@
         <string name="software">Yazılım</string>
             <string name="android">Android:</string>
             <string name="api">API</string>
-            <string name="build">Derleme:</string>
             <string name="security_patch">Güvenlik Yaması:</string>
+            <string name="build">Derleme:</string>
             <string name="webview_provider">WebView Sağlayıcısı:</string>
             <string name="webview_version">WebView Versiyonu:</string>
             <string name="orbot">Orbot:</string>

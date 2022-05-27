@@ -405,8 +405,8 @@
         <string name="software">Logiciel</string>
             <string name="android">Android :</string>
             <string name="api">API</string>
-            <string name="build">Version :</string>
             <string name="security_patch">MAJ de sécurité :</string>
+            <string name="build">Version :</string>
             <string name="webview_provider">Fournisseur WebView :</string>
             <string name="webview_version">Version WebView :</string>
             <string name="orbot">Orbot :</string>

@@ -402,8 +402,8 @@
         <string name="software">Программное обеспечение</string>
             <string name="android">Android:</string>
             <string name="api">API</string>
-            <string name="build">Сборка:</string>
             <string name="security_patch">Патч безопасности:</string>
+            <string name="build">Сборка:</string>
             <string name="webview_provider">Провайдер WebView:</string>
             <string name="webview_version">Версия WebView:</string>
             <string name="orbot">Orbot:</string>
