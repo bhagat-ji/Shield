@@ -411,6 +411,7 @@
             <string name="api">API</string>
             <string name="security_patch">Sicherheits-Patch:</string>
             <string name="build">Build:</string>
+            <string name="kernel">Kernel:</string>
             <string name="webview_provider">WebView-Anbieter:</string>
             <string name="webview_version">WebView-Version:</string>
             <string name="orbot">Orbot:</string>
