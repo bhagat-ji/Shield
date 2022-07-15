@@ -123,9 +123,6 @@ public class ImportExportActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the theme.
-        setTheme(R.style.PrivacyBrowser);
-
         // Run the default commands.
         super.onCreate(savedInstanceState);
 

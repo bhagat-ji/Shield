@@ -91,9 +91,6 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
 
-        // Set the theme.
-        setTheme(R.style.PrivacyBrowser)
-
         // Run the default commands.
         super.onCreate(savedInstanceState)
 

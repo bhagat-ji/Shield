@@ -107,9 +107,6 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the activity theme.
-        setTheme(R.style.PrivacyBrowser);
-
         // Run the default commands.
         super.onCreate(savedInstanceState);
 

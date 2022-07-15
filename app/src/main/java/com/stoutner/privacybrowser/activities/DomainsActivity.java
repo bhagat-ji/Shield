@@ -137,9 +137,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the theme.
-        setTheme(R.style.PrivacyBrowser);
-
         // Run the default commands.
         super.onCreate(savedInstanceState);
 

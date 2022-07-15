@@ -55,6 +55,7 @@
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:supportsRtl="true"
+        android:theme="@style/PrivacyBrowser"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="DataExtractionRules,UnusedAttribute" >
 
@@ -227,6 +228,7 @@
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
+            android:theme="@style/PrivacyBrowserSettings"
             tools:ignore="UnusedAttribute" />
 
         <!-- ImportExportActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.

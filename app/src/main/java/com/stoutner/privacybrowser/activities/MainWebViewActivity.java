@@ -535,9 +535,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
         WebView.enableSlowWholeDocumentDraw();
 
-        // Set the theme.
-        setTheme(R.style.PrivacyBrowser);
-
         // Set the content view according to the position of the app bar.
         if (bottomAppBar) setContentView(R.layout.main_framelayout_bottom_appbar);
         else setContentView(R.layout.main_framelayout_top_appbar);

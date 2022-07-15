@@ -43,9 +43,6 @@ public class SettingsActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the theme.
-        setTheme(R.style.PrivacyBrowserSettings);
-
         // Run the default commands.
         super.onCreate(savedInstanceState);
 

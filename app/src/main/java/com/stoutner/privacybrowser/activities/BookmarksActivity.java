@@ -132,9 +132,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the theme.
-        setTheme(R.style.PrivacyBrowser);
-
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
