@@ -621,9 +621,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onNewIntent(intent);
 
-        // Replace the intent that started the app with this one.
-        setIntent(intent);
-
         // Check to see if the app is being restarted from a saved state.
         if (savedStateArrayList == null || savedStateArrayList.size() == 0) {  // The activity is not being restarted from a saved state.
             // Get the information from the intent.
