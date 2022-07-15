@@ -35,7 +35,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 // Define the private class constants.
-private const val SCHEMA_VERSION = 14
+private const val SCHEMA_VERSION = 15
 private const val PREFERENCES_TABLE = "preferences"
 
 // Define the private preferences constants.
@@ -55,9 +55,8 @@ private const val FANBOYS_SOCIAL_BLOCKING_LIST = "fanboys_social_blocking_list"
 private const val ULTRALIST = "ultralist"
 private const val ULTRAPRIVACY = "ultraprivacy"
 private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
-private const val GOOGLE_ANALYTICS = "google_analytics"
-private const val FACEBOOK_CLICK_IDS = "facebook_click_ids"
-private const val TWITTER_AMP_REDIRECTS = "twitter_amp_redirects"
+private const val TRACKING_QUERIES = "tracking_queries"
+private const val AMP_REDIRECTS = "amp_redirects"
 private const val SEARCH = "search"
 private const val SEARCH_CUSTOM_URL = "search_custom_url"
 private const val PROXY = "proxy"
@@ -137,7 +136,7 @@ class ImportExportDatabaseHelper {
 
             // Upgrade from schema version 2, first used in Privacy Browser 2.14, to schema version 3, first used in Privacy Browser 2.15.
             if (importDatabaseVersion < 3) {
-                // Once the SQLite version is >= 3.25.0 (API >= 30) `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
+                // Once the SQLite version is >= 3.25.0 (Android API >= 30) `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
 
@@ -201,42 +200,35 @@ class ImportExportDatabaseHelper {
 
             // Upgrade from schema version 6, first used in Privacy Browser 3.0, to schema version 7, first used in Privacy Browser 3.1.
             if (importDatabaseVersion < 7) {
+                // Previously this upgrade added `facebook_click_ids` to the Preferences table.  But that is now removed in schema version 15.
+
                 // Add the wide viewport column to the domains table.
                 importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.WIDE_VIEWPORT} INTEGER")
 
-                // Add the Google Analytics, Facebook Click IDs, Twitter AMP redirects, and wide viewport columns to the preferences table.
-                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $GOOGLE_ANALYTICS BOOLEAN")
-                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $FACEBOOK_CLICK_IDS BOOLEAN")
-                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $TWITTER_AMP_REDIRECTS BOOLEAN")
+                // Add the Google Analytics, Twitter AMP redirects, and wide viewport columns to the preferences table.
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN google_analytics BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN twitter_amp_redirects BOOLEAN")
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $WIDE_VIEWPORT BOOLEAN")
 
                 // Get the current preference values.
-                val googleAnalytics = sharedPreferences.getBoolean(GOOGLE_ANALYTICS, true)
-                val facebookClickIds = sharedPreferences.getBoolean(FACEBOOK_CLICK_IDS, true)
-                val twitterAmpRedirects = sharedPreferences.getBoolean(TWITTER_AMP_REDIRECTS, true)
+                val trackingQueries = sharedPreferences.getBoolean(TRACKING_QUERIES, true)
+                val ampRedirects = sharedPreferences.getBoolean(AMP_REDIRECTS, true)
                 val wideViewport = sharedPreferences.getBoolean(WIDE_VIEWPORT, true)
 
-                // Populate the preferences with the current Google Analytics value.
+                // Populate the preferences with the current Tracking Queries value.  Google Analytics was renamed Tracking Queries in schema version 15.
                 // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
-                if (googleAnalytics) {
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $GOOGLE_ANALYTICS = 1")
+                if (trackingQueries) {
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET google_analytics = 1")
                 } else {
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $GOOGLE_ANALYTICS = 0")
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET google_analytics = 0")
                 }
 
-                // Populate the preferences with the current Facebook Click IDs value.
-                if (facebookClickIds) {
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $FACEBOOK_CLICK_IDS = 1")
+                // Populate the preferences table with the current AMP Redirects value.  Twitter AMP Redirects was renamed AMP Redirects in schema version 15.
+                if (ampRedirects) {
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET twitter_amp_redirects = 1")
                 } else {
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $FACEBOOK_CLICK_IDS = 0")
-                }
-
-                // Populate the preferences table with the current Twitter AMP redirects value.
-                if (twitterAmpRedirects) {
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $TWITTER_AMP_REDIRECTS = 1")
-                } else {
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $TWITTER_AMP_REDIRECTS = 0")
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET twitter_amp_redirects = 0")
                 }
 
                 // Populate the preferences table with the current wide viewport value.
@@ -362,7 +354,7 @@ class ImportExportDatabaseHelper {
             if (importDatabaseVersion < 14) {
                 // `enabledthirdpartycookies` was removed from the domains table.  `do_not_track` and `third_party_cookies` were removed from the preferences table.
 
-                // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
+                // Once the SQLite version is >= 3.25.0 (Android API >= 30) `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
 
@@ -397,6 +389,23 @@ class ImportExportDatabaseHelper {
                 } else {
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $BOTTOM_APP_BAR = 0")
                 }
+            }
+
+            // Upgrade from schema version 14, first used in Privacy Browser 3.8, to schema version 15, first used in Privacy Browser 3.11.
+            if (importDatabaseVersion < 15) {
+                // `facebook_click_ids` was removed from the preferences table.
+
+                // Once the SQLite version is >= 3.25.0 (Android API >= 30) `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
+                // <https://developer.android.com/reference/android/database/sqlite/package-summary>
+                // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
+
+                // Create the new URL modification columns.
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $TRACKING_QUERIES BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $AMP_REDIRECTS BOOLEAN")
+
+                // Copy the data from the old columns to the new ones.
+                importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $TRACKING_QUERIES = google_analytics")
+                importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $AMP_REDIRECTS = twitter_amp_redirects")
             }
 
             // Get a cursor for the bookmarks table.
@@ -528,9 +537,8 @@ class ImportExportDatabaseHelper {
                 .putBoolean(ULTRALIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRALIST)) == 1)
                 .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRAPRIVACY)) == 1)
                 .putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
-                .putBoolean(GOOGLE_ANALYTICS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(GOOGLE_ANALYTICS)) == 1)
-                .putBoolean(FACEBOOK_CLICK_IDS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FACEBOOK_CLICK_IDS)) == 1)
-                .putBoolean(TWITTER_AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(TWITTER_AMP_REDIRECTS)) == 1)
+                .putBoolean(TRACKING_QUERIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(TRACKING_QUERIES)) == 1)
+                .putBoolean(AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(AMP_REDIRECTS)) == 1)
                 .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH)))
                 .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH_CUSTOM_URL)))
                 .putString(PROXY, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY)))
@@ -685,50 +693,49 @@ class ImportExportDatabaseHelper {
 
 
             // Prepare the preferences table SQL creation string.
-            val createPreferencesTable = "CREATE TABLE " + PREFERENCES_TABLE + " (" +
-                    ID + " INTEGER PRIMARY KEY, " +
-                    JAVASCRIPT + " BOOLEAN, " +
-                    COOKIES + " BOOLEAN, " +
-                    DOM_STORAGE + " BOOLEAN, " +
-                    SAVE_FORM_DATA + " BOOLEAN, " +
-                    USER_AGENT + " TEXT, " +
-                    CUSTOM_USER_AGENT + " TEXT, " +
-                    INCOGNITO_MODE + " BOOLEAN, " +
-                    ALLOW_SCREENSHOTS + " BOOLEAN, " +
-                    EASYLIST + " BOOLEAN, " +
-                    EASYPRIVACY + " BOOLEAN, " +
-                    FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
-                    FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
-                    ULTRALIST + " BOOLEAN, " +
-                    ULTRAPRIVACY + " BOOLEAN, " +
-                    BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
-                    GOOGLE_ANALYTICS + " BOOLEAN, " +
-                    FACEBOOK_CLICK_IDS + " BOOLEAN, " +
-                    TWITTER_AMP_REDIRECTS + " BOOLEAN, " +
-                    SEARCH + " TEXT, " +
-                    SEARCH_CUSTOM_URL + " TEXT, " +
-                    PROXY + " TEXT, " +
-                    PROXY_CUSTOM_URL + " TEXT, " +
-                    FULL_SCREEN_BROWSING_MODE + " BOOLEAN, " +
-                    HIDE_APP_BAR + " BOOLEAN, " +
-                    CLEAR_EVERYTHING + " BOOLEAN, " +
-                    CLEAR_COOKIES + " BOOLEAN, " +
-                    CLEAR_DOM_STORAGE + " BOOLEAN, " +
-                    CLEAR_FORM_DATA + " BOOLEAN, " +
-                    CLEAR_LOGCAT + " BOOLEAN, " +
-                    CLEAR_CACHE + " BOOLEAN, " +
-                    HOMEPAGE + " TEXT, " +
-                    FONT_SIZE + " TEXT, " +
-                    OPEN_INTENTS_IN_NEW_TAB + " BOOLEAN, " +
-                    SWIPE_TO_REFRESH + " BOOLEAN, " +
-                    DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
-                    SCROLL_APP_BAR + " BOOLEAN, " +
-                    BOTTOM_APP_BAR + " BOOLEAN, " +
-                    DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
-                    APP_THEME + " TEXT, " +
-                    WEBVIEW_THEME + " TEXT, " +
-                    WIDE_VIEWPORT + " BOOLEAN, " +
-                    DISPLAY_WEBPAGE_IMAGES + " BOOLEAN)"
+            val createPreferencesTable = "CREATE TABLE $PREFERENCES_TABLE (" +
+                    "$ID INTEGER PRIMARY KEY, " +
+                    "$JAVASCRIPT BOOLEAN, " +
+                    "$COOKIES BOOLEAN, " +
+                    "$DOM_STORAGE BOOLEAN, " +
+                    "$SAVE_FORM_DATA BOOLEAN, " +
+                    "$USER_AGENT TEXT, " +
+                    "$CUSTOM_USER_AGENT TEXT, " +
+                    "$INCOGNITO_MODE BOOLEAN, " +
+                    "$ALLOW_SCREENSHOTS BOOLEAN, " +
+                    "$EASYLIST BOOLEAN, " +
+                    "$EASYPRIVACY BOOLEAN, " +
+                    "$FANBOYS_ANNOYANCE_LIST BOOLEAN, " +
+                    "$FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN, " +
+                    "$ULTRALIST BOOLEAN, " +
+                    "$ULTRAPRIVACY BOOLEAN, " +
+                    "$BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN, " +
+                    "$TRACKING_QUERIES BOOLEAN, " +
+                    "$AMP_REDIRECTS BOOLEAN, " +
+                    "$SEARCH TEXT, " +
+                    "$SEARCH_CUSTOM_URL TEXT, " +
+                    "$PROXY TEXT, " +
+                    "$PROXY_CUSTOM_URL TEXT, " +
+                    "$FULL_SCREEN_BROWSING_MODE BOOLEAN, " +
+                    "$HIDE_APP_BAR BOOLEAN, " +
+                    "$CLEAR_EVERYTHING BOOLEAN, " +
+                    "$CLEAR_COOKIES BOOLEAN, " +
+                    "$CLEAR_DOM_STORAGE BOOLEAN, " +
+                    "$CLEAR_FORM_DATA BOOLEAN, " +
+                    "$CLEAR_LOGCAT BOOLEAN, " +
+                    "$CLEAR_CACHE BOOLEAN, " +
+                    "$HOMEPAGE TEXT, " +
+                    "$FONT_SIZE TEXT, " +
+                    "$OPEN_INTENTS_IN_NEW_TAB BOOLEAN, " +
+                    "$SWIPE_TO_REFRESH BOOLEAN, " +
+                    "$DOWNLOAD_WITH_EXTERNAL_APP BOOLEAN, " +
+                    "$SCROLL_APP_BAR BOOLEAN, " +
+                    "$BOTTOM_APP_BAR BOOLEAN, " +
+                    "$DISPLAY_ADDITIONAL_APP_BAR_ICONS BOOLEAN, " +
+                    "$APP_THEME TEXT, " +
+                    "$WEBVIEW_THEME TEXT, " +
+                    "$WIDE_VIEWPORT BOOLEAN, " +
+                    "$DISPLAY_WEBPAGE_IMAGES BOOLEAN)"
 
             // Create the temporary export database preferences table.
             temporaryExportDatabase.execSQL(createPreferencesTable)
@@ -755,9 +762,8 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(ULTRALIST, sharedPreferences.getBoolean(ULTRALIST, true))
             preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true))
             preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, false))
-            preferencesContentValues.put(GOOGLE_ANALYTICS, sharedPreferences.getBoolean(GOOGLE_ANALYTICS, true))
-            preferencesContentValues.put(FACEBOOK_CLICK_IDS, sharedPreferences.getBoolean(FACEBOOK_CLICK_IDS, true))
-            preferencesContentValues.put(TWITTER_AMP_REDIRECTS, sharedPreferences.getBoolean(TWITTER_AMP_REDIRECTS, true))
+            preferencesContentValues.put(TRACKING_QUERIES, sharedPreferences.getBoolean(TRACKING_QUERIES, true))
+            preferencesContentValues.put(AMP_REDIRECTS, sharedPreferences.getBoolean(AMP_REDIRECTS, true))
             preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)))
             preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString(SEARCH_CUSTOM_URL, context.getString(R.string.search_custom_url_default_value)))
             preferencesContentValues.put(PROXY, sharedPreferences.getString(PROXY, context.getString(R.string.proxy_default_value)))

@@ -118,7 +118,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
-import kotlin.Pair;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -153,6 +152,7 @@ import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
+import com.stoutner.privacybrowser.helpers.SanitizeUrlHelper;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayInputStream;
@@ -182,6 +182,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import kotlin.Pair;
 
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener,
@@ -273,13 +275,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private int defaultProgressViewStartOffset;
     private int defaultProgressViewEndOffset;
 
-    // The URL sanitizers are set in `applyAppSettings()` and used in `sanitizeUrl()`.
-    private boolean sanitizeGoogleAnalytics;
-    private boolean sanitizeFacebookClickIds;
-    private boolean sanitizeTwitterAmpRedirects;
+    // Declare the helpers.
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+    private DomainsDatabaseHelper domainsDatabaseHelper;
+    private ProxyHelper proxyHelper;
+    private SanitizeUrlHelper sanitizeUrlHelper;
 
     // Declare the class variables
-    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
     private boolean bottomAppBar;
     private boolean displayingFullScreenVideo;
     private boolean downloadWithExternalApp;
@@ -289,9 +291,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean inFullScreenBrowsingMode;
     private boolean loadingNewIntent;
     private BroadcastReceiver orbotStatusBroadcastReceiver;
-    private ProxyHelper proxyHelper;
     private boolean reapplyAppSettingsOnRestart;
     private boolean reapplyDomainSettingsOnRestart;
+    private boolean sanitizeAmpRedirects;
+    private boolean sanitizeTrackingQueries;
     private boolean scrollAppBar;
     private boolean waitingForProxy;
     private String webViewDefaultUserAgent;
@@ -600,8 +603,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Store up to 100 tabs in memory.
         webViewPager.setOffscreenPageLimit(100);
 
-        // Instantiate the proxy helper.
+        // Instantiate the helpers.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
+        domainsDatabaseHelper = new DomainsDatabaseHelper(this);
         proxyHelper = new ProxyHelper();
+        sanitizeUrlHelper = new SanitizeUrlHelper();
 
         // Initialize the app.
         initializeApp();
@@ -1951,9 +1957,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the current domain
                 Uri currentUri = Uri.parse(currentWebView.getUrl());
                 String currentDomain = currentUri.getHost();
-
-                // Initialize the database handler.
-                DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this);
 
                 // Create the domain and store the database ID.
                 int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
@@ -3382,9 +3385,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
         drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
 
-        // Initialize the bookmarks database helper.
-        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
-
         // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.
         currentBookmarksFolder = "";
 
@@ -3519,9 +3519,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Store the values from the shared preferences in variables.
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
-        sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
-        sanitizeFacebookClickIds = sharedPreferences.getBoolean("facebook_click_ids", true);
-        sanitizeTwitterAmpRedirects = sharedPreferences.getBoolean("twitter_amp_redirects", true);
+        sanitizeTrackingQueries = sharedPreferences.getBoolean(getString(R.string.tracking_queries_key), true);
+        sanitizeAmpRedirects = sharedPreferences.getBoolean(getString(R.string.amp_redirects_key), true);
         proxyMode = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         downloadWithExternalApp = sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false);
@@ -3737,10 +3736,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
 
-            // Initialize the database handler.
-            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this);
-
-            // Get a full cursor from `domainsDatabaseHelper`.
+            // Get a full domain name cursor.
             Cursor domainNameCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
 
             // Initialize `domainSettingsSet`.
@@ -4498,49 +4494,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private String sanitizeUrl(String url) {
-        // Sanitize Google Analytics.
-        if (sanitizeGoogleAnalytics) {
-            // Remove `?utm_`.
-            if (url.contains("?utm_")) {
-                url = url.substring(0, url.indexOf("?utm_"));
-            }
+        // Sanitize tracking queries.
+        if (sanitizeTrackingQueries)
+            url = sanitizeUrlHelper.sanitizeTrackingQueries(url);
 
-            // Remove `&utm_`.
-            if (url.contains("&utm_")) {
-                url = url.substring(0, url.indexOf("&utm_"));
-            }
-        }
-
-        // Sanitize Facebook Click IDs.
-        if (sanitizeFacebookClickIds) {
-            // Remove `?fbclid=`.
-            if (url.contains("?fbclid=")) {
-                url = url.substring(0, url.indexOf("?fbclid="));
-            }
-
-            // Remove `&fbclid=`.
-            if (url.contains("&fbclid=")) {
-                url = url.substring(0, url.indexOf("&fbclid="));
-            }
-
-            // Remove `?fbadid=`.
-            if (url.contains("?fbadid=")) {
-                url = url.substring(0, url.indexOf("?fbadid="));
-            }
-
-            // Remove `&fbadid=`.
-            if (url.contains("&fbadid=")) {
-                url = url.substring(0, url.indexOf("&fbadid="));
-            }
-        }
-
-        // Sanitize Twitter AMP redirects.
-        if (sanitizeTwitterAmpRedirects) {
-            // Remove `?amp=1`.
-            if (url.contains("?amp=1")) {
-                url = url.substring(0, url.indexOf("?amp=1"));
-            }
-        }
+        // Sanitize AMP redirects.
+        if (sanitizeAmpRedirects)
+            url = sanitizeUrlHelper.sanitizeAmpRedirects(url);
 
         // Return the sanitized URL.
         return url;

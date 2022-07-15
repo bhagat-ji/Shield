@@ -405,6 +405,7 @@
             <string name="api">API</string>
             <string name="security_patch">Patch de segurança:</string>
             <string name="build">Build:</string>
+            <string name="kernel">Kernel:</string>
             <string name="webview_provider">Fornecedor WebView:</string>
             <string name="webview_version">Versão do WebView:</string>
             <string name="orbot">Orbot:</string>
@@ -503,12 +504,6 @@
         <string name="block_all_third_party_requests">Bloquear todas as solicitações de terceiros</string>
         <string name="block_all_third_party_requests_summary">Bloquear todas as solicitações de terceiros aumenta a privacidade, mas quebra muitos sites.</string>
     <string name="url_modification">Modificação de URL</string>
-        <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Remova utm_ e amp; utm_ e qualquer coisa depois deles dos URLs.</string>
-        <string name="facebook_click_ids">IDs de clique do Facebook</string>
-        <string name="facebook_click_ids_summary">Remover â€œ?fbclid=â€ , â€œ&amp;fbclid=â€ , â€œ?fbadid=â€ , e â€œ&amp;fbadid=â€  e qualquer coisa depois deles a partir de URLs.</string>
-        <string name="twitter_amp_redirects">Redirecionamentos de AMP do Twitter</string>
-        <string name="twitter_amp_redirects_summary">Remover â€œ?amp=1â€  e qualquer coisa depois de URLs.</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
             <item>Mojeek</item>

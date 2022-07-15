@@ -42,7 +42,7 @@ import java.net.SocketAddress
 
 class ProxyHelper {
     companion object {
-        // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
+        // Define the public static companion object constants.
         const val NONE = "None"
         const val TOR = "Tor"
         const val I2P = "I2P"

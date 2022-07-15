@@ -75,9 +75,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Preference ultraListPreference;
     private Preference ultraPrivacyPreference;
     private Preference blockAllThirdPartyRequestsPreference;
-    private Preference googleAnalyticsPreference;
-    private Preference facebookClickIdsPreference;
-    private Preference twitterAmpRedirectsPreference;
+    private Preference trackingQueriesPreference;
+    private Preference ampRedirectsPreference;
     private Preference searchPreference;
     private Preference searchCustomURLPreference;
     private Preference proxyPreference;
@@ -142,9 +141,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         ultraListPreference = findPreference("ultralist");
         ultraPrivacyPreference = findPreference("ultraprivacy");
         blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
-        googleAnalyticsPreference = findPreference("google_analytics");
-        facebookClickIdsPreference = findPreference("facebook_click_ids");
-        twitterAmpRedirectsPreference = findPreference("twitter_amp_redirects");
+        trackingQueriesPreference = findPreference(getString(R.string.tracking_queries_key));
+        ampRedirectsPreference = findPreference(getString(R.string.amp_redirects_key));
         searchPreference = findPreference("search");
         searchCustomURLPreference = findPreference("search_custom_url");
         proxyPreference = findPreference("proxy");
@@ -186,9 +184,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert ultraListPreference != null;
         assert ultraPrivacyPreference != null;
         assert blockAllThirdPartyRequestsPreference != null;
-        assert googleAnalyticsPreference != null;
-        assert facebookClickIdsPreference != null;
-        assert twitterAmpRedirectsPreference != null;
+        assert trackingQueriesPreference != null;
+        assert ampRedirectsPreference != null;
         assert searchPreference != null;
         assert searchCustomURLPreference != null;
         assert proxyPreference != null;
@@ -516,25 +513,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled);
         }
 
-        // Set the Google Analytics icon.
-        if (sharedPreferences.getBoolean("google_analytics", true)) {
-            googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled);
+        // Set the Tracking Queries icon.
+        if (sharedPreferences.getBoolean(getString(R.string.tracking_queries_key), true)) {
+            trackingQueriesPreference.setIcon(R.drawable.modify_url_enabled);
         } else {
-            googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled);
+            trackingQueriesPreference.setIcon(R.drawable.modify_url_disabled);
         }
 
-        // Set the Facebook Click IDs icon.
-        if (sharedPreferences.getBoolean("facebook_click_ids", true)) {
-            facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled);
+        // Set the AMP Redirects icon.
+        if (sharedPreferences.getBoolean(getString(R.string.amp_redirects_key), true)) {
+            ampRedirectsPreference.setIcon(R.drawable.modify_url_enabled);
         } else {
-            facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled);
-        }
-
-        // Set the Twitter AMP redirects icon.
-        if (sharedPreferences.getBoolean("twitter_amp_redirects", true)) {
-            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled);
-        } else {
-            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled);
+            ampRedirectsPreference.setIcon(R.drawable.modify_url_disabled);
         }
 
         // Set the search custom URL icon.
@@ -952,30 +942,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
                     break;
 
-                case "google_analytics":
+                case "tracking_queries":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("google_analytics", true)) {
-                        googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled);
+                    if (sharedPreferences.getBoolean(context.getString(R.string.tracking_queries_key), true)) {
+                        trackingQueriesPreference.setIcon(R.drawable.modify_url_enabled);
                     } else {
-                        googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled);
+                        trackingQueriesPreference.setIcon(R.drawable.modify_url_disabled);
                     }
                     break;
 
-                case "facebook_click_ids":
+                case "amp_redirects":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("facebook_click_ids", true)) {
-                        facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled);
+                    if (sharedPreferences.getBoolean(context.getString(R.string.amp_redirects_key), true)) {
+                        ampRedirectsPreference.setIcon(R.drawable.modify_url_enabled);
                     } else {
-                        facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled);
-                    }
-                    break;
-
-                case "twitter_amp_redirects":
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean("twitter_amp_redirects", true)) {
-                        twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled);
-                    } else {
-                        twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled);
+                        ampRedirectsPreference.setIcon(R.drawable.modify_url_disabled);
                     }
                     break;
 

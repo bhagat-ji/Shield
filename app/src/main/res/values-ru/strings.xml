@@ -404,6 +404,7 @@
             <string name="api">API</string>
             <string name="security_patch">Патч безопасности:</string>
             <string name="build">Сборка:</string>
+            <string name="kernel">Ядро:</string>
             <string name="webview_provider">Провайдер WebView:</string>
             <string name="webview_version">Версия WebView:</string>
             <string name="orbot">Orbot:</string>
@@ -501,12 +502,6 @@
         <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>
         <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
     <string name="url_modification">Модификация URL</string>
-        <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Удалять из URL “?utm_” и “&amp;utm_” и все что будет после.</string>
-        <string name="facebook_click_ids">Идентификаторы кликов в Facebook</string>
-        <string name="facebook_click_ids_summary">Удалять из URL “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, и “&amp;fbadid=” и все что будет после.</string>
-        <string name="twitter_amp_redirects">AMP-перенаправления в Twitter</string>
-        <string name="twitter_amp_redirects_summary">Удалять из URL “?amp=1” и все что будет после.</string>
     <string name="search">Поиск</string>
         <string-array name="search_entries">
             <item>Mojeek</item>

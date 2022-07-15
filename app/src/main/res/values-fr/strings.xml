@@ -164,6 +164,7 @@
         <string name="add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
         <string name="view_source">Voir Source</string>
     <string name="share">Partager</string>
+        <string name="share_message">Partager le message</string>
         <string name="share_url">Partager URL</string>
         <string name="open_with_app">Ouvrir avec une application</string>
         <string name="open_with_browser">Ouvrir dans le navigateur</string>
@@ -505,12 +506,6 @@
         <string name="block_all_third_party_requests">Bloquer toutes les requêtes tierces</string>
         <string name="block_all_third_party_requests_summary">Le blocage de toutes les requêtes tierces augmente la vie privée, mais détruit de nombreux sites Web.</string>
     <string name="url_modification">Modifications d\'URL</string>
-        <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Supprime “?utm_” et “&amp;utm_” et tout ce qui suit après ces URLs.</string>
-        <string name="facebook_click_ids">Facebook Click IDs</string>
-        <string name="facebook_click_ids_summary">Supprime “?fbclid=”, “&amp;fbclid=”, “?fbadid=” et “&amp;fbadid=” et tout ce qui suit après ces URLs.</string>
-        <string name="twitter_amp_redirects">Twitter AMP</string>
-        <string name="twitter_amp_redirects_summary">Supprime “?amp=1” et tout ce qui suit après cette URL.</string>
     <string name="search">Moteur de Recherche</string>
         <string-array name="search_entries">
             <item>Mojeek</item>

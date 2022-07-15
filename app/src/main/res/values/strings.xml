@@ -541,12 +541,10 @@
         <string name="block_all_third_party_requests">Block all third-party requests</string>
         <string name="block_all_third_party_requests_summary">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
     <string name="url_modification">URL Modification</string>
-        <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Remove “?utm_” and “&amp;utm_” and anything after them from URLs.</string>
-        <string name="facebook_click_ids">Facebook Click IDs</string>
-        <string name="facebook_click_ids_summary">Remove “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, and “&amp;fbadid=” and anything after them from URLs.</string>
-        <string name="twitter_amp_redirects">Twitter AMP redirects</string>
-        <string name="twitter_amp_redirects_summary">Remove “?amp=1” and anything after it from URLs.</string>
+        <string name="tracking_queries">Tracking queries</string>
+        <string name="tracking_queries_summary">Remove known tracking queries from URLs.</string>
+        <string name="amp_redirects">AMP redirects</string>
+        <string name="amp_redirects_summary">Remove known AMP (Accelerated Mobil Pages) redirect queries from URLs.</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
@@ -652,6 +650,7 @@
 
     <!-- Non-translatable preference keys. -->
     <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
+    <string name="amp_redirects_key" translatable="false">amp_redirects</string>
     <string name="bottom_app_bar_key" translatable="false">bottom_app_bar</string>
     <string name="cookies_key" translatable="false">cookies</string>
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
@@ -659,6 +658,7 @@
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
     <string name="proxy_custom_url_key" translatable="false">proxy_custom_url</string>
     <string name="scroll_app_bar_key" translatable="false">scroll_app_bar</string>
+    <string name="tracking_queries_key" translatable="false">tracking_queries</string>
 
     <!-- Non-translatable preference default values. -->
     <string name="app_theme_default_value" translatable="false">System default</string>

@@ -46,14 +46,14 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         const val FAVORITE_ICON = "favoriteicon"
 
         // Define the public table creation constant.
-        const val CREATE_BOOKMARKS_TABLE = "CREATE TABLE " + BOOKMARKS_TABLE + " (" +
-                ID + " INTEGER PRIMARY KEY, " +
-                BOOKMARK_NAME + " TEXT, " +
-                BOOKMARK_URL + " TEXT, " +
-                PARENT_FOLDER + " TEXT, " +
-                DISPLAY_ORDER + " INTEGER, " +
-                IS_FOLDER + " BOOLEAN, " +
-                FAVORITE_ICON + " BLOB)"
+        const val CREATE_BOOKMARKS_TABLE = "CREATE TABLE $BOOKMARKS_TABLE (" +
+                "$ID INTEGER PRIMARY KEY, " +
+                "$BOOKMARK_NAME TEXT, " +
+                "$BOOKMARK_URL TEXT, " +
+                "$PARENT_FOLDER TEXT, " +
+                "$DISPLAY_ORDER INTEGER, " +
+                "$IS_FOLDER BOOLEAN, " +
+                "$FAVORITE_ICON BLOB)"
     }
 
     override fun onCreate(bookmarksDatabase: SQLiteDatabase) {

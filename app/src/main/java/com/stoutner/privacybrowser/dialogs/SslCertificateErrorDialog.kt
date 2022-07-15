@@ -322,6 +322,7 @@ class SslCertificateErrorDialog : DialogFragment() {
         private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
         private val alertDialogWeakReference: WeakReference<AlertDialog> = WeakReference(alertDialog)
 
+        @Deprecated("Deprecated in Java")
         override fun doInBackground(vararg domainName: String): SpannableStringBuilder {
             // Get handles for the activity and the alert dialog.
             val activity = activityWeakReference.get()
@@ -372,6 +373,7 @@ class SslCertificateErrorDialog : DialogFragment() {
         }
 
         // `onPostExecute()` operates on the UI thread.
+        @Deprecated("Deprecated in Java")
         override fun onPostExecute(ipAddresses: SpannableStringBuilder) {
             // Get handles for the activity and the alert dialog.
             val activity = activityWeakReference.get()

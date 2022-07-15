@@ -80,37 +80,37 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         const val IP_ADDRESSES = "ip_addresses"
 
         // The table creation constant.
-        const val CREATE_DOMAINS_TABLE = "CREATE TABLE " + DOMAINS_TABLE + " (" +
-                ID + " INTEGER PRIMARY KEY, " +
-                DOMAIN_NAME + " TEXT, " +
-                ENABLE_JAVASCRIPT + " BOOLEAN, " +
-                COOKIES + " BOOLEAN, " +
-                ENABLE_DOM_STORAGE + " BOOLEAN, " +
-                ENABLE_FORM_DATA + " BOOLEAN, " +
-                ENABLE_EASYLIST + " BOOLEAN, " +
-                ENABLE_EASYPRIVACY + " BOOLEAN, " +
-                ENABLE_FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
-                ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
-                ULTRALIST + " BOOLEAN, " +
-                ENABLE_ULTRAPRIVACY + " BOOLEAN, " +
-                BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
-                USER_AGENT + " TEXT, " +
-                FONT_SIZE + " INTEGER, " +
-                SWIPE_TO_REFRESH + " INTEGER, " +
-                WEBVIEW_THEME + " INTEGER, " +
-                WIDE_VIEWPORT + " INTEGER, " +
-                DISPLAY_IMAGES + " INTEGER, " +
-                PINNED_SSL_CERTIFICATE + " BOOLEAN, " +
-                SSL_ISSUED_TO_COMMON_NAME + " TEXT, " +
-                SSL_ISSUED_TO_ORGANIZATION + " TEXT, " +
-                SSL_ISSUED_TO_ORGANIZATIONAL_UNIT + " TEXT, " +
-                SSL_ISSUED_BY_COMMON_NAME + " TEXT, " +
-                SSL_ISSUED_BY_ORGANIZATION + " TEXT, " +
-                SSL_ISSUED_BY_ORGANIZATIONAL_UNIT + " TEXT, " +
-                SSL_START_DATE + " INTEGER, " +
-                SSL_END_DATE + " INTEGER, " +
-                PINNED_IP_ADDRESSES + " BOOLEAN, " +
-                IP_ADDRESSES + " TEXT)"
+        const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
+                "$ID INTEGER PRIMARY KEY, " +
+                "$DOMAIN_NAME TEXT, " +
+                "$ENABLE_JAVASCRIPT BOOLEAN, " +
+                "$COOKIES BOOLEAN, " +
+                "$ENABLE_DOM_STORAGE BOOLEAN, " +
+                "$ENABLE_FORM_DATA BOOLEAN, " +
+                "$ENABLE_EASYLIST BOOLEAN, " +
+                "$ENABLE_EASYPRIVACY BOOLEAN, " +
+                "$ENABLE_FANBOYS_ANNOYANCE_LIST BOOLEAN, " +
+                "$ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN, " +
+                "$ULTRALIST BOOLEAN, " +
+                "$ENABLE_ULTRAPRIVACY BOOLEAN, " +
+                "$BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN, " +
+                "$USER_AGENT TEXT, " +
+                "$FONT_SIZE INTEGER, " +
+                "$SWIPE_TO_REFRESH INTEGER, " +
+                "$WEBVIEW_THEME INTEGER, " +
+                "$WIDE_VIEWPORT INTEGER, " +
+                "$DISPLAY_IMAGES INTEGER, " +
+                "$PINNED_SSL_CERTIFICATE BOOLEAN, " +
+                "$SSL_ISSUED_TO_COMMON_NAME TEXT, " +
+                "$SSL_ISSUED_TO_ORGANIZATION TEXT, " +
+                "$SSL_ISSUED_TO_ORGANIZATIONAL_UNIT TEXT, " +
+                "$SSL_ISSUED_BY_COMMON_NAME TEXT, " +
+                "$SSL_ISSUED_BY_ORGANIZATION TEXT, " +
+                "$SSL_ISSUED_BY_ORGANIZATIONAL_UNIT TEXT, " +
+                "$SSL_START_DATE INTEGER, " +
+                "$SSL_END_DATE INTEGER, " +
+                "$PINNED_IP_ADDRESSES BOOLEAN, " +
+                "$IP_ADDRESSES TEXT)"
     }
 
     override fun onCreate(domainsDatabase: SQLiteDatabase) {

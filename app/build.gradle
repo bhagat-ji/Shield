@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         minSdk 23
@@ -70,10 +70,10 @@ dependencies {
     // Include the following AndroidX libraries.
     implementation 'androidx.arch.core:core-common:2.1.0'
     implementation 'androidx.arch.core:core-runtime:2.1.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
@@ -81,8 +81,8 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.4.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'com.google.android.material:material:1.6.1'
 }

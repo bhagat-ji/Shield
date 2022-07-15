@@ -128,21 +128,15 @@
         android:title="@string/url_modification" >
 
         <SwitchPreference
-            android:key="google_analytics"
-            android:title="@string/google_analytics"
-            android:summary="@string/google_analytics_summary"
+            android:key="tracking_queries"
+            android:title="@string/tracking_queries"
+            android:summary="@string/tracking_queries_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="facebook_click_ids"
-            android:title="@string/facebook_click_ids"
-            android:summary="@string/facebook_click_ids_summary"
-            android:defaultValue="true" />
-
-        <SwitchPreference
-            android:key="twitter_amp_redirects"
-            android:title="@string/twitter_amp_redirects"
-            android:summary="@string/twitter_amp_redirects_summary"
+            android:key="amp_redirects"
+            android:title="@string/amp_redirects"
+            android:summary="@string/amp_redirects_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 
