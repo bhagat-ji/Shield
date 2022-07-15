@@ -71,15 +71,13 @@ import java.util.ArrayList;
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
 
-    // `currentFolder` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.
+    // Declare the public static variables, which are accessed from the bookmarks database view activity.
     public static String currentFolder;
-
-    // `restartFromBookmarksDatabaseViewActivity` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksDatabaseViewActivity;
-
 
     // Define the saved instance state constants.
     private final String CHECKED_BOOKMARKS_ARRAY_LIST = "checked_bookmarks_array_list";
+    private final String CURRENT_FOLDER = "current_folder";
 
     // Define the class menu items.
     private MenuItem moveBookmarkUpMenuItem;
@@ -188,9 +186,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Initialize the database helper.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
-
-        // Load the home folder.
-        loadFolder();
 
         // Set a listener so that tapping a list item loads the URL or folder.
         bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -614,6 +609,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Restore the state if the app has been restarted.
         if (savedInstanceState != null) {
+            // Restore the current folder.
+            currentFolder = savedInstanceState.getString(CURRENT_FOLDER);
+
             // Update the bookmarks list view after it has loaded.
             bookmarksListView.post(() -> {
                 // Get the checked bookmarks array list.
@@ -627,6 +625,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 }
             });
         }
+
+        // Load the home folder.
+        loadFolder();
     }
 
     @Override
@@ -664,7 +665,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             }
         }
 
-        // Store the checked items array list in the saved instance state.
+        // Store the variables in the saved instance state.
+        savedInstanceState.putString(CURRENT_FOLDER, currentFolder);
         savedInstanceState.putIntegerArrayList(CHECKED_BOOKMARKS_ARRAY_LIST, checkedBookmarksArrayList);
     }
 

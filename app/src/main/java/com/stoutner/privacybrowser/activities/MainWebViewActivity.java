@@ -197,7 +197,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static String proxyMode = ProxyHelper.NONE;
 
     // Declare the public static variables.
-    public static String currentBookmarksFolder;
+    public static String currentBookmarksFolder = "";
     public static boolean restartFromBookmarksActivity;
     public static WebViewPagerAdapter webViewPagerAdapter;
 
@@ -3379,12 +3379,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
         drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
 
-        // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.
-        currentBookmarksFolder = "";
-
-        // Load the home folder, which is `""` in the database.
+        // Load the bookmarks folder.
         loadBookmarksFolder();
 
+        // Handle clicks on bookmarks.
         bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
             // Convert the id from long to int to match the format of the bookmarks database.
             int databaseId = (int) id;
