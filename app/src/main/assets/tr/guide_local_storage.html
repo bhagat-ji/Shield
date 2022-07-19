@@ -44,6 +44,12 @@
         <p>Almost all websites with logins require cookies to be enabled for a user to log in.
             That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, the only legitimate use for cookies.</p>
 
+        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
+            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
+            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
+            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
+            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+
         <p>If cookies are enabled but JavaScript is disabled, the privacy icon will be yellow <img class="inline" src="../shared_images/warning.svg"> as a warning.</p>
 
 
@@ -51,10 +57,7 @@
 
         <p>Third-party cookies are set by portions of a website that are loaded from servers different from the URL at the top of the page.
             There is no good reason to ever enable third-party cookies. Privacy Browser 3.8 removed the option, and even Google is planning to
-            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">disable them in the future</a>.
-            On devices with Android KitKat (version 4.4, API 19), WebView does not
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
-            between first-party and third-party cookies</a>. Thus, enabling cookies will also enable third-party cookies.</p>
+            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">disable them in the future</a>.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/web.svg#icon"/></svg> DOM Depolama</h3>
@@ -66,7 +69,7 @@
 
         <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Form Verisi</h3>
 
-        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
+        <p>Form data contains information typed into web forms, like usernames, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
             Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction. Beginning in Android Oreo (version 8.0, API 26),
             WebView’s form data was replaced by the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
             As such, controls for form data no longer appear on newer Android devices.</p>

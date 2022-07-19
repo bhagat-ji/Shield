@@ -45,6 +45,12 @@
         <p>Casi todas las páginas web con logins requieren que las cookies estén habilitadas para que el usuario pueda iniciar sesión.
             Así es como se aseguran de que sigues siendo tú al pasar de una página a otra de la web, y es, en mi opinión, el único uso legítimo de las cookies.</p>
 
+        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
+            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
+            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
+            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
+            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+
         <p>Si las cookies están activadas pero JavaScript está desactivado, el icono de privacidad será amarillo <img class="inline" src="../shared_images/warning.svg"> como advertencia.</p>
 
 
@@ -52,10 +58,7 @@
 
         <p>Las cookies de terceros son instaladas por partes de un sitio web que se cargan desde servidores diferentes a la URL que aparece en la parte superior de la página.
             No hay ninguna buena razón para activar las cookies de terceros. La versión 3.8 de Privacy Browser eliminó la opción, e incluso Google planea
-            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">desactivarlas en un futuro.</a>.
-            En dispositivos con Android KitKat (versión 4.4, API 19), WebView no
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">distingue entre cookies de origen y de terceros</a>.
-            Por lo tanto, si se habilitan las cookies, también se habilitarán las de terceros.</p>
+            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">desactivarlas en un futuro.</a>.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/web.svg#icon"/></svg> Almacenamiento DOM</h3>

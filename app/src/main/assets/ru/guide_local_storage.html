@@ -43,6 +43,12 @@
         <p>Почти все сайты с логинами требуют, чтобы для авторизации пользователя были включены cookie.
             Именно так они удостоверяются, что это все еще вы, когда переходите со страницы на страницу на сайте, и, на мой взгляд, это единственное законное использование файлов cookie.</p>
 
+        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
+            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
+            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
+            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
+            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+
         <p>Если cookie включены и при этом JavaScript отключен, то значок конфиденциальности будет желтого цвета <img class="inline" src="../shared_images/warning.svg"> в качестве предупреждения.</p>
 
 
@@ -50,10 +56,7 @@
 
         <p>Сторонние файлы cookie устанавливаются фрагментами сайта, которые загружаются с серверов, отличных от указанного в адресной строке.
             Не существует никаких веских причин для включения сторонних файлов cookie. В Privacy Browser 3.8 эта опция была удалена, и даже Google
-            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">планирует отключить ее в будущем</a>.
-            На устройствах под управлением Android KitKat (версия 4.4, API 19) WebView
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">не различает
-            первичные и сторонние файлы cookie</a>. Таким образом, включение файлов cookie приводит и ко включению сторонних cookie.</p>
+            <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">планирует отключить ее в будущем</a>.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/web.svg#icon"/></svg> DOM-хранилище</h3>
