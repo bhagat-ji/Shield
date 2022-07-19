@@ -692,6 +692,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     drawerLayout.closeDrawer(GravityCompat.END);
                 }
             }
+        } else {  // The app has been restarted.
+            // Replace the intent that started the app with this one.  This will load the tab after the others have been restored.
+            setIntent(intent);
         }
     }
 

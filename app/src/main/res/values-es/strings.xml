@@ -506,6 +506,10 @@
         <string name="block_all_third_party_requests">Bloquear todas las solicitudes de terceras partes</string>
         <string name="block_all_third_party_requests_summary">Bloquear todas las solicitudes de terceras  partes aumenta la privacidad, pero rompe muchas páginas web.</string>
     <string name="url_modification">Modificación de URL</string>
+        <string name="tracking_queries">Peticiones de seguimiento</string>
+        <string name="tracking_queries_summary">Eliminar las peticiones de seguimiento conocidas de las URLs.</string>
+        <string name="amp_redirects">Redirecciones AMP</string>
+        <string name="amp_redirects_summary">Eliminar las peticiones de redirección AMP (Accelerated Mobil Pages) conocidas de las URLs.</string>
     <string name="search">Búsqueda</string>
         <string-array name="search_entries">
             <item>Mojeek</item>

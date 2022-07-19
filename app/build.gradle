@@ -30,9 +30,6 @@ android {
         targetSdk 32
         versionCode 59
         versionName "3.10.1"
-
-        // `multiDexEnabled` can possibly be removed once the `minSdkVersion` is >= 21.
-        multiDexEnabled true
     }
 
     buildTypes {
