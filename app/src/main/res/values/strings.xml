@@ -521,6 +521,8 @@
         </string-array>
         <string name="custom_user_agent">Custom user agent</string>
         <string name="system_default_user_agent" translatable="false">System default user agent</string>  <!-- This item is referenced in code.  It is never displayed on the screen. -->
+        <string name="x_requested_with_header">X-Requested-With header</string>
+        <string name="x_requested_with_header_summary">When enabled, Privacy Browser send a null value for the X-Requested-With header. Usually this isn\'t a problem, but a few websites don\'t like it.</string>
         <string name="incognito_mode">Incognito Mode</string>
         <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading. In Incognito Mode, back closes the tab (or the app if there is only one tab).</string>
         <string name="allow_screenshots">Allow screenshots</string>
@@ -602,7 +604,7 @@
         <string name="clear_dom_storage_summary">Clears DOM storage.</string>
         <string name="clear_form_data_preference">Clear form data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Clears form data.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_logcat_preference">Clear logcat</string>
+        <string name="clear_logcat">Clear logcat</string>
         <string name="clear_logcat_summary">Clears the logcat.</string>
         <string name="clear_cache">Clear cache</string>
         <string name="clear_cache_summary">Clears WebView’s cache.</string>
@@ -659,6 +661,7 @@
     <string name="proxy_custom_url_key" translatable="false">proxy_custom_url</string>
     <string name="scroll_app_bar_key" translatable="false">scroll_app_bar</string>
     <string name="tracking_queries_key" translatable="false">tracking_queries</string>
+    <string name="x_requested_with_header_key" translatable="false">x_requested_with_header</string>
 
     <!-- Non-translatable preference default values. -->
     <string name="app_theme_default_value" translatable="false">System default</string>

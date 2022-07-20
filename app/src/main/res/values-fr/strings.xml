@@ -549,7 +549,7 @@
         <string name="clear_dom_storage_summary">Efface le stockage du DOM.</string>
         <string name="clear_form_data_preference">Effacer les données de formulaire</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Efface les données de formulaire.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_logcat_preference">Vider logcat</string>
+        <string name="clear_logcat">Vider logcat</string>
         <string name="clear_logcat_summary">Vide le logcat.</string>
         <string name="clear_cache">Effacer cache</string>
         <string name="clear_cache_summary">Efface le cache WebView.</string>

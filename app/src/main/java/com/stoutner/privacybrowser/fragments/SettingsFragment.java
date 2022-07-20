@@ -66,6 +66,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private Preference formDataPreference;  // The form data preference can be removed once the minimum API >= 26.
     private Preference userAgentPreference;
     private Preference customUserAgentPreference;
+    private Preference xRequestedWithHeaderPreference;
     private Preference incognitoModePreference;
     private Preference allowScreenshotsPreference;
     private Preference easyListPreference;
@@ -132,6 +133,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         formDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
         userAgentPreference = findPreference("user_agent");
         customUserAgentPreference = findPreference("custom_user_agent");
+        xRequestedWithHeaderPreference = findPreference(getString(R.string.x_requested_with_header_key));
         incognitoModePreference = findPreference("incognito_mode");
         allowScreenshotsPreference = findPreference(getString(R.string.allow_screenshots_key));
         easyListPreference = findPreference("easylist");
@@ -175,6 +177,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert formDataPreference != null;
         assert userAgentPreference != null;
         assert customUserAgentPreference != null;
+        assert xRequestedWithHeaderPreference != null;
         assert incognitoModePreference != null;
         assert allowScreenshotsPreference != null;
         assert easyListPreference != null;
@@ -431,47 +434,47 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the save form data icon if API < 26.  Save form data has no effect on API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
-            if (sharedPreferences.getBoolean("save_form_data", false)) {
+            if (sharedPreferences.getBoolean("save_form_data", false))
                 formDataPreference.setIcon(R.drawable.form_data_enabled);
-            } else {
+            else
                 formDataPreference.setIcon(R.drawable.form_data_disabled);
-            }
         }
 
         // Set the custom user agent icon.
-        if (customUserAgentPreference.isEnabled()) {
+        if (customUserAgentPreference.isEnabled())
             customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled);
-        } else {
+        else
             customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted);
-        }
+
+        // Set the X-Requested With header icon.
+        if (sharedPreferences.getBoolean(getString(R.string.x_requested_with_header_key), true))
+            xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_enabled);
+        else
+            xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_disabled);
 
         // Set the incognito mode icon.
-        if (sharedPreferences.getBoolean("incognito_mode", false)) {
+        if (sharedPreferences.getBoolean("incognito_mode", false))
             incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled);
-        } else {
+        else
             incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled);
-        }
 
         // Set the allow screenshots icon.
-        if (sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)) {
+        if (sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false))
             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled);
-        } else {
+        else
             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled);
-        }
 
         // Set the EasyList icon.
-        if (sharedPreferences.getBoolean("easylist", true)) {
+        if (sharedPreferences.getBoolean("easylist", true))
             easyListPreference.setIcon(R.drawable.block_ads_enabled);
-        } else {
+        else
             easyListPreference.setIcon(R.drawable.block_ads_disabled);
-        }
 
         // Set the EasyPrivacy icon.
-        if (sharedPreferences.getBoolean("easyprivacy", true)) {
+        if (sharedPreferences.getBoolean("easyprivacy", true))
             easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled);
-        } else {
+        else
             easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled);
-        }
 
         // Set the Fanboy lists icons.
         if (fanboyAnnoyanceListEnabled) {
@@ -840,22 +843,28 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", context.getString(R.string.custom_user_agent_default_value)));
                     break;
 
+                case "x_requested_with_header":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean(context.getString(R.string.x_requested_with_header_key), true))
+                        xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_enabled);
+                    else
+                        xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_disabled);
+                    break;
+
                 case "incognito_mode":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("incognito_mode", false)) {
+                    if (sharedPreferences.getBoolean("incognito_mode", false))
                         incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled);
-                    } else {
+                    else
                         incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled);
-                    }
                     break;
 
                 case "allow_screenshots":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(context.getString(R.string.allow_screenshots_key), false)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.allow_screenshots_key), false))
                         allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled);
-                    } else {
+                    else
                         allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled);
-                    }
 
                     // Restart Privacy Browser.
                     restartPrivacyBrowser();
@@ -863,20 +872,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "easylist":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("easylist", true)) {
+                    if (sharedPreferences.getBoolean("easylist", true))
                         easyListPreference.setIcon(R.drawable.block_ads_enabled);
-                    } else {
+                    else
                         easyListPreference.setIcon(R.drawable.block_ads_disabled);
-                    }
                     break;
 
                 case "easyprivacy":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("easyprivacy", true)) {
+                    if (sharedPreferences.getBoolean("easyprivacy", true))
                         easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled);
-                    } else {
+                    else
                         easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled);
-                    }
                     break;
 
                 case "fanboys_annoyance_list":

@@ -3,7 +3,7 @@
 <!--
   Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2021 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2022 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -553,7 +553,7 @@
         <string name="clear_dom_storage_summary">Borra el almacenamiento DOM.</string>
         <string name="clear_form_data_preference">Borrar datos de formulario</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Borra los datos de formulario.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_logcat_preference">Borrar logcat</string>
+        <string name="clear_logcat">Borrar logcat</string>
         <string name="clear_logcat_summary">Borra el logcat.</string>
         <string name="clear_cache">Borrar caché</string>
         <string name="clear_cache_summary">Borra la caché de WebView.</string>

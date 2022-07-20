@@ -544,7 +544,7 @@
         <string name="clear_dom_storage_summary">Очищает DOM-хранилище.</string>
         <string name="clear_form_data_preference">Очистка данных формы</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Очищает данные формы.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_logcat_preference">Очистить logcat</string>
+        <string name="clear_logcat">Очистить logcat</string>
         <string name="clear_logcat_summary">Очищает logcat.</string>
         <string name="clear_cache">Очистить кэш</string>
         <string name="clear_cache_summary">Очищает кэш WebView.</string>

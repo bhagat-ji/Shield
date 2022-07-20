@@ -3,7 +3,7 @@
 <!--
   Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2021 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2022 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -506,6 +506,10 @@
         <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
         <string name="block_all_third_party_requests_summary">Il blocco di tutte le richieste di Terze Parti aumenta privacy, ma impedisce la visualizzazione di molti siti web.</string>
     <string name="url_modification">Modifica delle URL</string>
+        <string name="tracking_queries">Query di tracciamento</string>
+        <string name="tracking_queries_summary">Rimuovi dall\'URL le query di tracciamento conosciute.</string>
+        <string name="amp_redirects">Reindirizzamento AMP</string>
+        <string name="amp_redirects_summary">Rimuovi dall\'URL le query di reindirizzamento AMP (Accelerated Mobil Pages) conosciute.</string>
     <string name="search">Ricerca</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
@@ -548,7 +552,7 @@
         <string name="clear_dom_storage_summary">Cancella solo il DOM storage.</string>
         <string name="clear_form_data_preference">Elimina i dati dei moduli</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Cancella solo i dati dei moduli.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_logcat_preference">Elimina il logcat</string>
+        <string name="clear_logcat">Elimina il logcat</string>
         <string name="clear_logcat_summary">Cancella il logcat.</string>
         <string name="clear_cache">Elimina la cache</string>
         <string name="clear_cache_summary">Cancella solo la cache di WebView.</string>

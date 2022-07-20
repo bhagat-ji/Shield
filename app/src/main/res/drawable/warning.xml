@@ -20,10 +20,10 @@
 
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="26dp"
-    android:width="26dp"
-    android:viewportHeight="256.0"
-    android:viewportWidth="256.0" >
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="256"
+    android:viewportWidth="256" >
 
     <!-- Inner shield. -->
     <path

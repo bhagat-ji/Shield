@@ -3,7 +3,7 @@
 <!--
   Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019-2021 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2022 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -509,6 +509,10 @@
         <string name="block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
         <string name="block_all_third_party_requests_summary">Alle Zugriffe auf Dritt-Anbieter-Inhalte zu blockieren verbessert die Privatsphäre, kann jedoch Webseiten verunstalten.</string>
     <string name="url_modification">URL-Bereinigung</string>
+        <string name="tracking_queries">Tracking-Anfragen / -Query Strings</string>
+        <string name="tracking_queries_summary">Entferne bekannte Tracking-Anfragen / -Query Strings aus URLs.</string>
+        <string name="amp_redirects">AMP-Weiterleitungen / -Redirects</string>
+        <string name="amp_redirects_summary">Entferne bekannte Weiterleitungs-Anfragen bei AMP (Accelerated Mobil Pages) aus URLs.</string>
     <string name="search">Suche</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
@@ -551,7 +555,7 @@
         <string name="clear_dom_storage_summary">Löscht DOM storage (aka Web Storage oder Supercookies).</string>
         <string name="clear_form_data_preference">Formulardaten löschen</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_form_data_summary">Löscht in Formulare eingegebene Daten.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_logcat_preference">Logcat leeren</string>
+        <string name="clear_logcat">Logcat leeren</string>
         <string name="clear_logcat_summary">Leert das Logcat Systemlogbuch.</string>
         <string name="clear_cache">Cache löschen</string>
         <string name="clear_cache_summary">Löscht den WebView-Cache.</string>

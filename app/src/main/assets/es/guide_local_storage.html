@@ -45,11 +45,12 @@
         <p>Casi todas las páginas web con logins requieren que las cookies estén habilitadas para que el usuario pueda iniciar sesión.
             Así es como se aseguran de que sigues siendo tú al pasar de una página a otra de la web, y es, en mi opinión, el único uso legítimo de las cookies.</p>
 
-        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
-            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
-            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
-            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
-            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+        <p>El sistema WebView de Android trata las cookies como un ajuste a nivel de aplicación, lo que significa que las cookies están activadas o desactivadas para todas las pestañas de Navegador Privado.
+            El resultado es que la configuración de las cookies de la pestaña que se muestra en ese momento controla también la configuración de las cookies de todas las pestañas del fondo.
+            Si tienes una pestaña en segundo plano que tiene las cookies habilitadas para poder entrar en un sitio web, y cambias a una pestaña que no tiene las cookies habilitadas,
+            se deshabilitan las cookies para todas las pestañas.
+            Si la pestaña en segundo plano hace una petición, por ejemplo, para ver si hay información actualizada, esa petición se enviará sin cookies, lo que hará que el sitio web cierre la sesión.
+            Esta es una limitación que se eliminará con el lanzamiento de <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> en la serie 4.x.</p>
 
         <p>Si las cookies están activadas pero JavaScript está desactivado, el icono de privacidad será amarillo <img class="inline" src="../shared_images/warning.svg"> como advertencia.</p>
 
@@ -79,10 +80,11 @@
             Por ello, los controles para los datos de los formularios ya no aparecen en los dispositivos Android más nuevos.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Clear and Exit</h3>
+        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Borrar y Salir</h3>
 
-        <p>Clear and Exit runs every time the last tab is closed or Clear and Exit is selected from the navigation menu.
-            By default it clears the cookies, DOM storage, form data, the logcat, and the WebView cache. Then it manually deletes the entire <code>app_webview</code> and <code>cache</code> directories.
-            The behavior of Clear and Exit can be configured in the settings.</p>
+        <p>Borrar y salir se ejecuta cada vez que se cierra la última pestaña o se selecciona Borrar y salir en el menú de navegación.
+            Por defecto borra las cookies, el almacenamiento DOM, los datos del formulario, el logcat y la caché de WebView.
+            Luego borra manualmente los directorios <code>app_webview</code> y <code>cache</code>.
+            El comportamiento de Borrar y Salir se puede configurar en los ajustes.</p>
     </body>
 </html>
