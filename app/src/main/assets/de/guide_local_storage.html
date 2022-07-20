@@ -76,5 +76,12 @@
             Im Gegensatz zu in Cookies und im DOM-Speicher gespeicherten Daten werden diese Informationen nur nach Benutzer-Interaktion an den Webserver gesandt. Ab Android Oreo (Version 8.0, API 26) wurden
             WebViews Formulardaten durch <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Googles Autofill-Service</a> ersetzt.
             Daher erscheinen Formulardaten auf neueren Android-Geräten nicht mehr.</p>
+
+
+        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Clear and Exit</h3>
+
+        <p>Clear and Exit runs every time the last tab is closed or Clear and Exit is selected from the navigation menu.
+            By default it clears the cookies, DOM storage, form data, the logcat, and the WebView cache. Then it manually deletes the entire <code>app_webview</code> and <code>cache</code> directories.
+            The behavior of Clear and Exit can be configured in the settings.</p>
     </body>
 </html>
