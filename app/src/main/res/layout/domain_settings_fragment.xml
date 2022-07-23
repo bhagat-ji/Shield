@@ -53,7 +53,7 @@
                     android:layout_marginBottom="12dp"
                     android:layout_gravity="bottom"
                     android:src="@drawable/domains"
-                    app:tint="?attr/domainSettingsIconTintColor"
+                    app:tint="@color/blue_icon"
                     tools:ignore="contentDescription" />
 
                 <!-- `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
@@ -202,6 +202,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/block_ads_enabled"
+                app:tint="@color/blue_icon_selector"
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -229,6 +231,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/block_tracking_enabled"
+                app:tint="@color/blue_icon_selector"
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -256,6 +260,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/social_media_enabled"
+                app:tint="@color/blue_icon_selector"
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -283,6 +289,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/social_media_enabled"
+                app:tint="@color/blue_icon_selector"
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -310,6 +318,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/block_ads_enabled"
+                app:tint="@color/blue_icon_selector"
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -337,6 +347,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/block_tracking_enabled"
+                app:tint="@color/blue_icon_selector"
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -364,6 +376,8 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
+                android:src="@drawable/block_all_third_party_requests_enabled"
+                app:tint="@color/blue_icon_selector"
                 tools:ignore="contentDescription" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -398,7 +412,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/user_agent"
-                    app:tint="?attr/domainSettingsIconTintColor"
+                    app:tint="@color/blue_icon"
                     android:contentDescription="@string/user_agent" />
 
                 <Spinner
@@ -409,7 +423,7 @@
 
             <TextView
                 android:id="@+id/user_agent_textview"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
@@ -424,6 +438,45 @@
                 android:inputType="textUri"
                 android:hint="@string/custom_user_agent"
                 android:importantForAutofill="no" />
+        </LinearLayout>
+
+        <!-- X-Requested-With Header. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp" >
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/x_requested_with_header_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/x_requested_with_header_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/x_requested_with_header" />
+
+                <Spinner
+                    android:id="@+id/x_requested_with_header_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/x_requested_with_header_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Font Size. -->
@@ -446,7 +499,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/font_size"
-                    app:tint="?attr/domainSettingsIconTintColor"
+                    app:tint="@color/blue_icon"
                     android:contentDescription="@string/font_size" />
 
                 <Spinner
@@ -457,7 +510,7 @@
 
             <TextView
                 android:id="@+id/default_font_size_textview"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
@@ -494,6 +547,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
+                    android:src="@drawable/refresh_enabled"
+                    app:tint="@color/blue_icon_selector"
                     android:contentDescription="@string/swipe_to_refresh" />
 
                 <Spinner
@@ -504,7 +559,7 @@
 
             <TextView
                 android:id="@+id/swipe_to_refresh_textview"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
@@ -532,6 +587,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
+                    android:src="@drawable/webview_light_theme"
+                    app:tint="@color/blue_icon_selector"
                     android:contentDescription="@string/webview_theme" />
 
                 <Spinner
@@ -542,7 +599,7 @@
 
             <TextView
                 android:id="@+id/webview_theme_textview"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
@@ -569,6 +626,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
+                    android:src="@drawable/wide_viewport_enabled"
+                    app:tint="@color/blue_icon_selector"
                     android:contentDescription="@string/wide_viewport" />
 
                 <Spinner
@@ -579,7 +638,7 @@
 
             <TextView
                 android:id="@+id/wide_viewport_textview"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
@@ -606,6 +665,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
+                    android:src="@drawable/images_enabled"
+                    app:tint="@color/blue_icon_selector"
                     android:contentDescription="@string/display_webpage_images" />
 
                 <Spinner
@@ -616,7 +677,7 @@
 
             <TextView
                 android:id="@+id/display_webpage_images_textview"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
@@ -644,6 +705,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
+                    android:src="@drawable/ssl_certificate_enabled"
+                    app:tint="@color/blue_icon_selector"
                     tools:ignore="contentDescription" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -696,7 +759,7 @@
                             android:text="@string/issued_to"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/blueTitleTextColor" />
+                            android:textColor="@color/blue_title_text" />
 
                         <TextView
                             android:id="@+id/saved_ssl_certificate_issued_to_cname"
@@ -721,7 +784,7 @@
                             android:text="@string/issued_by"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/blueTitleTextColor"/>
+                            android:textColor="@color/blue_title_text"/>
 
                         <TextView
                             android:id="@+id/saved_ssl_certificate_issued_by_cname"
@@ -746,7 +809,7 @@
                             android:text="@string/valid_dates"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/blueTitleTextColor"/>
+                            android:textColor="@color/blue_title_text"/>
 
                         <TextView
                             android:id="@+id/saved_ssl_certificate_start_date"
@@ -798,7 +861,7 @@
                             android:text="@string/issued_to"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/blueTitleTextColor" />
+                            android:textColor="@color/blue_title_text" />
 
                         <TextView
                             android:id="@+id/current_website_certificate_issued_to_cname"
@@ -823,7 +886,7 @@
                             android:text="@string/issued_by"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/blueTitleTextColor" />
+                            android:textColor="@color/blue_title_text" />
 
                         <TextView
                             android:id="@+id/current_website_certificate_issued_by_cname"
@@ -848,7 +911,7 @@
                             android:text="@string/valid_dates"
                             android:textAllCaps="true"
                             android:textStyle="bold"
-                            android:textColor="?attr/blueTitleTextColor" />
+                            android:textColor="@color/blue_title_text" />
 
                         <TextView
                             android:id="@+id/current_website_certificate_start_date"
@@ -897,6 +960,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
+                    android:src="@drawable/ssl_certificate_enabled"
+                    app:tint="@color/blue_icon_selector"
                     tools:ignore="contentDescription" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -940,7 +1005,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:layout_marginStart="32dp"
-                        android:textColor="?attr/blueTextColor" />
+                        android:textColor="@color/blue_text" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -972,7 +1037,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:layout_marginStart="32dp"
-                        android:textColor="?attr/blueTextColor" />
+                        android:textColor="@color/blue_text" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>

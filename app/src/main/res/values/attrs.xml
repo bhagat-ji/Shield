@@ -21,14 +21,11 @@
     <!-- Colors. -->
     <attr name="aboutBackground" format="color" />
     <attr name="activatedListViewItemBackground" format="color" />
-    <attr name="blueTextColor" format="color" />
-    <attr name="blueTitleTextColor" format="color" />
     <attr name="buttonBackgroundColorSelector" format="color" />
     <attr name="buttonTextColorSelector" format="color" />
     <attr name="redTextColor" format="color" />
 
     <!-- Tint Colors. -->
-    <attr name="domainSettingsIconTintColor" format="color" />
     <attr name="fabIconTintColor" format="color" />
     <attr name="findOnPageIconTintColor" format="color" />
     <attr name="navigationIconTintColor" format="color" />

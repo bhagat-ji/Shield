@@ -226,7 +226,7 @@ class SslCertificateErrorDialog : DialogFragment() {
         val endDateStringBuilder = SpannableStringBuilder(endDateLabel + endDate)
 
         // Define the color spans.
-        val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.blue_text))
+        val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
         val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
@@ -363,7 +363,7 @@ class SslCertificateErrorDialog : DialogFragment() {
             val ipAddressesStringBuilder = SpannableStringBuilder(ipAddressesLabel + ipAddresses)
 
             // Create a blue color span according to the theme.
-            val blueColorSpan = ForegroundColorSpan(activity.getColor(R.color.blue_text))
+            val blueColorSpan = ForegroundColorSpan(activity.getColor(R.color.alt_blue_text))
 
             // Set the string builder to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length, ipAddressesStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)

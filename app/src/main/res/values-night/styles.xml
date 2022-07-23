@@ -27,15 +27,12 @@
         <!-- Colors.  -->
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
         <item name="android:textColorHighlight">@color/violet_700</item>
-        <item name="blueTextColor">@color/violet_700</item>
-        <item name="blueTitleTextColor">@color/violet_500</item>
         <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_night</item>
         <item name="buttonTextColorSelector">@color/button_text_color_selector_night</item>
         <item name="colorAccent">@color/violet_500</item>
         <item name="redTextColor">@color/red_900</item>
 
         <!-- Tints. -->
-        <item name="domainSettingsIconTintColor">@color/violet_500</item>
         <item name="fabIconTintColor">@color/gray_875</item>
         <item name="findOnPageIconTintColor">@color/violet_500</item>
         <item name="navigationIconTintColor">@color/violet_500</item>

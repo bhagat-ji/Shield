@@ -19,7 +19,8 @@
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <!-- Setting the layout root to be `focusableInTouchMode` prevents the URL toolbar from stealing focus on launch and opening the keyboard. -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/view_source_coordinatorlayout"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/view_source_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
@@ -61,7 +62,7 @@
                         android:text="@string/request_headers"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="?attr/blueTextColor"
+                        android:textColor="@color/blue_text"
                         android:textStyle="bold" />
 
                     <TextView
@@ -79,7 +80,7 @@
                         android:text="@string/response_message"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="?attr/blueTextColor"
+                        android:textColor="@color/blue_text"
                         android:textStyle="bold" />
 
                     <TextView
@@ -97,7 +98,7 @@
                         android:layout_width="match_parent"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="?attr/blueTextColor"
+                        android:textColor="@color/blue_text"
                         android:textStyle="bold" />
 
                     <TextView
@@ -115,7 +116,7 @@
                         android:layout_width="match_parent"
                         android:textAlignment="center"
                         android:textSize="18sp"
-                        android:textColor="?attr/blueTextColor"
+                        android:textColor="@color/blue_text"
                         android:textStyle="bold" />
 
                     <TextView

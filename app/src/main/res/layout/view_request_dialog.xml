@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:text="@string/disposition"
             android:textSize="12sp"
-            android:textColor="?attr/blueTextColor"
+            android:textColor="@color/blue_text"
             android:layout_marginTop="5dp" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:text="@string/url"
             android:textSize="12sp"
-            android:textColor="?attr/blueTextColor"
+            android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:text="@string/blocklist"
             android:textSize="12sp"
-            android:textColor="?attr/blueTextColor"
+            android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:text="@string/sublist"
             android:textSize="12sp"
-            android:textColor="?attr/blueTextColor"
+            android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:text="@string/blocklist_entries"
             android:textSize="12sp"
-            android:textColor="?attr/blueTextColor"
+            android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
@@ -125,7 +125,7 @@
             android:layout_width="match_parent"
             android:text="@string/blocklist_original_entry"
             android:textSize="12sp"
-            android:textColor="?attr/blueTextColor"
+            android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView

@@ -363,7 +363,7 @@ class AboutVersionFragment : Fragment() {
         val ultraPrivacyStringBuilder = SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[5])
 
         // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-        blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.about_version_blue_text))
+        blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
 
         // Set the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         brandStringBuilder.setSpan(blueColorSpan, brandLabel.length, brandStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)

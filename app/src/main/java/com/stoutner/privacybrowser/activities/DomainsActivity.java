@@ -748,6 +748,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         SwitchCompat blockAllThirdPartyRequestsSwitch = view.findViewById(R.id.block_all_third_party_requests_switch);
         Spinner userAgentSpinner = view.findViewById(R.id.user_agent_spinner);
         EditText customUserAgentEditText = view.findViewById(R.id.custom_user_agent_edittext);
+        Spinner xRequestedWithHeaderSpinner = view.findViewById(R.id.x_requested_with_header_spinner);
         Spinner fontSizeSpinner = view.findViewById(R.id.font_size_spinner);
         EditText customFontSizeEditText = view.findViewById(R.id.custom_font_size_edittext);
         Spinner swipeToRefreshSpinner = view.findViewById(R.id.swipe_to_refresh_spinner);
@@ -773,6 +774,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         boolean ultraPrivacy = ultraPrivacySwitch.isChecked();
         boolean blockAllThirdPartyRequests = blockAllThirdPartyRequestsSwitch.isChecked();
         int userAgentSwitchPosition = userAgentSpinner.getSelectedItemPosition();
+        int xRequestedWithHeaderSwitchInt = xRequestedWithHeaderSpinner.getSelectedItemPosition();
         int fontSizeSwitchPosition = fontSizeSpinner.getSelectedItemPosition();
         int swipeToRefreshInt = swipeToRefreshSpinner.getSelectedItemPosition();
         int webViewThemeInt = webViewThemeSpinner.getSelectedItemPosition();
@@ -815,8 +817,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Save the domain settings.
         domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScript, cookies, domStorage, formData, easyList, easyPrivacy,
-                fanboysAnnoyance, fanboysSocialBlocking, ultraList, ultraPrivacy, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt,
-                displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
+                fanboysAnnoyance, fanboysSocialBlocking, ultraList, ultraPrivacy, blockAllThirdPartyRequests, userAgentName, xRequestedWithHeaderSwitchInt, fontSizeInt, swipeToRefreshInt, webViewThemeInt,
+                wideViewportInt, displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
 
         // Update the pinned SSL certificate if a new one is checked.
         if (currentWebsiteCertificateRadioButton.isChecked()) {

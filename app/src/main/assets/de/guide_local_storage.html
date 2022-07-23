@@ -1,7 +1,7 @@
 <!--
   Copyright © 2016-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019,2021 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019,2021-2022 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -48,11 +48,13 @@
             Durch die Nutzung von Cookies stellen diese Internet-Seiten sicher, daß es sich um denselben angemeldeten Benutzer handelt, der von Seite zu Seite innerhalb einer Website navigiert.
             Dies ist vermutlich die einzige legitime Nutzung von Cookies.</p>
 
-        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
-            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
-            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
-            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
-            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+        <p>Die Android-System-Komponente WebView behandelt Cookies auf App-Ebene, d.h. Cookies können grundsätzlich nur für alle Privacy-Browser-Tabs ein- oder ausgeschaltet werden.
+            Daher gelten die Einstellungen des aktuell angezeigten Tabs auch für alle im Hintergrund geöffneten Tabs.
+            Wurden Cookies für einen Hintergrund-Tab aktiviert, um an einer Website angemeldet zu bleiben, und sie wechseln zu einem Tab, für den Cookies deaktivert wurden,
+            werden Cookies auch für alle anderen Tabs deaktiviert.
+            Stellt der Hintergrund-Tab in dieser Situation eine Anfrage an den Server, um z.B. Daten zu aktualisieren, wird diese Anfrage ohne Cookies gesendet,
+            wodurch sie ggf. von der Website abgemeldet werden.
+            Diese Einschränkung wird mit <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in den Versionen 4.x von Privacy Browser behoben werden.</p>
 
         <p>Wenn Cookies aktiviert sind, aber JavaScript deaktiviert ist, wird das Privatsphären-Icon <img class="inline" src="../shared_images/warning.svg"> zur Warnung in gelb dargestellt.</p>
 
@@ -78,10 +80,11 @@
             Daher erscheinen Formulardaten auf neueren Android-Geräten nicht mehr.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Clear and Exit</h3>
+        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Bereinigen und Schließen</h3>
 
-        <p>Clear and Exit runs every time the last tab is closed or Clear and Exit is selected from the navigation menu.
-            By default it clears the cookies, DOM storage, form data, the logcat, and the WebView cache. Then it manually deletes the entire <code>app_webview</code> and <code>cache</code> directories.
-            The behavior of Clear and Exit can be configured in the settings.</p>
+        <p>Bereinigen und Schließen wird immer durchgeführt, wenn der letzte Tab geschlossen oder der entsprechende Menüpunkt im Navigations-Menü ausgewählt wird.
+            Standardmäßig werden dabei Cookies, der DOM-Speicher, Formulardaten, logcat-Logs und der WebView-Cache bereinigt bzw. gelöscht,
+            danach werden alle <code>App-WebView-</code> und <code>Cache-</code> Verzeichnisse gelöscht.
+            Das Verhalten von "Bereinigen und Schließen" kann in den Einstellungen konfiguriert werden.</p>
     </body>
 </html>

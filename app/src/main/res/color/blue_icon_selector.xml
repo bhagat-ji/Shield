@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -18,16 +18,9 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<resources>
-    <!-- Nicknamed colors. -->
-    <color name="alt_blue_text">@color/violet_700</color>
-    <color name="blue_icon">@color/violet_500</color>
-    <color name="blue_text">@color/violet_500</color>
-    <color name="blue_title_text">@color/violet_500</color>
-    <color name="disabled_icon">@color/gray_500</color>
-    <color name="ghosted_icon">@color/gray_700</color>
-    <color name="icon">@color/white</color>
-    <color name="domain_settings_url_background">@color/dark_blue_40</color>
-    <color name="red_text">@color/red_900</color>
-    <color name="selected_icon_background">@color/gray_700</color>
-</resources>
+<!-- Set the icon tint color based on the state. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_enabled="false" android:color="@color/ghosted_icon" />
+    <item android:state_selected="true" android:color="@color/blue_icon" />
+    <item android:state_selected="false" android:color="@color/disabled_icon" />
+</selector>

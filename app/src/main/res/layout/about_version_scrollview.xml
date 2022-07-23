@@ -58,7 +58,7 @@
                 android:text="@string/privacy_browser"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:textColor="?attr/blueTitleTextColor"
+                android:textColor="@color/blue_title_text"
                 android:paddingTop="12dp"
                 android:layout_toEndOf="@id/icon" />
 
@@ -66,7 +66,7 @@
                 android:id="@+id/version"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textColor="?attr/blueTextColor"
+                android:textColor="@color/alt_blue_text"
                 android:textIsSelectable="true"
                 android:layout_below="@id/privacy_browser_textview"
                 android:layout_toEndOf="@id/icon" />
@@ -90,7 +90,7 @@
                 android:text="@string/hardware"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="?attr/blueTitleTextColor" />
+                android:textColor="@color/blue_title_text" />
 
             <TextView
                 android:id="@+id/brand"
@@ -136,7 +136,7 @@
                 android:text="@string/software"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="?attr/blueTitleTextColor"
+                android:textColor="@color/blue_title_text"
                 android:paddingTop="12dp" />
 
             <TextView
@@ -201,7 +201,7 @@
                 android:text="@string/memory_usage"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="?attr/blueTitleTextColor"
+                android:textColor="@color/blue_title_text"
                 android:paddingTop="12dp" />
 
             <TextView
@@ -254,7 +254,7 @@
                 android:text="@string/blocklists"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="?attr/blueTitleTextColor"
+                android:textColor="@color/blue_title_text"
                 android:paddingTop="12dp" />
 
             <TextView
@@ -301,7 +301,7 @@
                 android:text="@string/package_signature"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="?attr/blueTitleTextColor"
+                android:textColor="@color/blue_title_text"
                 android:paddingTop="12dp" />
 
             <TextView

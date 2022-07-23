@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -52,7 +51,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;  // The AndroidX fragment must be used until minimum API >= 23.  Otherwise `getContext()` does not work.
+import androidx.fragment.app.Fragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.DomainsActivity;
@@ -94,21 +93,18 @@ public class DomainSettingsFragment extends Fragment {
         View domainSettingsView = inflater.inflate(R.layout.domain_settings_fragment, container, false);
 
         // Get handles for the context and the resources.
-        Context context = getContext();
         Resources resources = getResources();
-
-        // Remove the error below that the context might be null.
-        assert context != null;
 
         // Get the current theme status.
         int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
         // Get a handle for the shared preference.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         // Store the default settings.
         String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
         String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
+        boolean defaultXRequestedWithHeader = sharedPreferences.getBoolean(getString(R.string.x_requested_with_header_key), true);
         String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
         boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
         String defaultWebViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
@@ -143,6 +139,9 @@ public class DomainSettingsFragment extends Fragment {
         Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.user_agent_spinner);
         TextView userAgentTextView = domainSettingsView.findViewById(R.id.user_agent_textview);
         EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.custom_user_agent_edittext);
+        ImageView xRequestedWithHeaderImageView = domainSettingsView.findViewById(R.id.x_requested_with_header_imageview);
+        Spinner xRequestedWithHeaderSpinner = domainSettingsView.findViewById(R.id.x_requested_with_header_spinner);
+        TextView xRequestedWithHeaderTextView = domainSettingsView.findViewById(R.id.x_requested_with_header_textview);
         Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.font_size_spinner);
         TextView defaultFontSizeTextView = domainSettingsView.findViewById(R.id.default_font_size_textview);
         EditText customFontSizeEditText = domainSettingsView.findViewById(R.id.custom_font_size_edittext);
@@ -222,6 +221,7 @@ public class DomainSettingsFragment extends Fragment {
         int ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY));
         int blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS));
         String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT));
+        int xRequestedWithHeaderInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE));
         int swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
         int webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME));
@@ -251,15 +251,17 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Create array adapters for the spinners.
-        ArrayAdapter<CharSequence> translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.font_size_array, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> webViewThemeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.webview_theme_array, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> wideViewportArrayAdapter = ArrayAdapter.createFromResource(context, R.array.wide_viewport_array, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> xRequestedWithHeaderArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.x_requested_with_header_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.font_size_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.swipe_to_refresh_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> webViewThemeArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.webview_theme_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> wideViewportArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.wide_viewport_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.display_webpage_images_array, R.layout.spinner_item);
 
         // Set the drop down view resource on the spinners.
         translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
+        xRequestedWithHeaderArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         webViewThemeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
@@ -268,6 +270,7 @@ public class DomainSettingsFragment extends Fragment {
 
         // Set the array adapters for the spinners.
         userAgentSpinner.setAdapter(translatedUserAgentArrayAdapter);
+        xRequestedWithHeaderSpinner.setAdapter(xRequestedWithHeaderArrayAdapter);
         fontSizeSpinner.setAdapter(fontSizeArrayAdapter);
         swipeToRefreshSpinner.setAdapter(swipeToRefreshArrayAdapter);
         webViewThemeSpinner.setAdapter(webViewThemeArrayAdapter);
@@ -300,8 +303,8 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Create the color spans.
-        final ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(context.getColor(R.color.blue_text));
-        final ForegroundColorSpan redColorSpan = new ForegroundColorSpan(context.getColor(R.color.red_text));
+        final ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text));
+        final ForegroundColorSpan redColorSpan = new ForegroundColorSpan(requireContext().getColor(R.color.red_text));
 
         // Set the domain name from the the database cursor.
         domainNameEditText.setText(domainNameString);
@@ -435,132 +438,29 @@ public class DomainSettingsFragment extends Fragment {
             }
         }
 
-        // Set the EasyList status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
-        if (easyListInt == 1) {  // EasyList is on.
-            // Turn the switch on.
-            easyListSwitch.setChecked(true);
+        // Set the switch positions.
+        easyListSwitch.setChecked(easyListInt == 1);
+        easyPrivacySwitch.setChecked(easyPrivacyInt == 1);
+        fanboysAnnoyanceListSwitch.setChecked(fanboysAnnoyanceListInt == 1);
+        fanboysSocialBlockingListSwitch.setChecked(fanboysSocialBlockingListInt == 1);
+        ultraListSwitch.setChecked(ultraListInt == 1);
+        ultraPrivacySwitch.setChecked(ultraPrivacyInt == 1);
+        blockAllThirdPartyRequestsSwitch.setChecked(blockAllThirdPartyRequestsInt == 1);
 
-            // Set the icon.
-            easyListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_enabled, null));
-        } else {  // EasyList is off.
-            // Turn the switch off.
-            easyListSwitch.setChecked(false);
+        // Set the switch icon colors.
+        easyListImageView.setSelected(easyListInt == 1);
+        easyPrivacyImageView.setSelected(easyPrivacyInt == 1);
+        fanboysAnnoyanceListImageView.setSelected(fanboysAnnoyanceListInt == 1);
+        fanboysSocialBlockingListImageView.setSelected(fanboysSocialBlockingListInt == 1);
+        ultraListImageView.setSelected(ultraListInt == 1);
+        ultraPrivacyImageView.setSelected(ultraPrivacyInt == 1);
+        blockAllThirdPartyRequestsImageView.setSelected(blockAllThirdPartyRequestsInt == 1);
 
-            // Set the icon.
-            easyListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_disabled, null));
-        }
+        // Set Fanboy's Social Blocking List switch status based on the Annoyance List status.
+        fanboysSocialBlockingListSwitch.setEnabled(fanboysAnnoyanceListInt == 0);
 
-        // Set the EasyPrivacy status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
-        if (easyPrivacyInt == 1) {  // EasyPrivacy is on.
-            // Turn the switch on.
-            easyPrivacySwitch.setChecked(true);
-
-            // Set the icon.
-            easyPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_enabled, null));
-        } else {  // EasyPrivacy is off.
-            // Turn the switch off.
-            easyPrivacySwitch.setChecked(false);
-
-            // Set the icon.
-            easyPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_disabled, null));
-        }
-
-        // Set the Fanboy's Annoyance List status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
-        if (fanboysAnnoyanceListInt == 1) {  // Fanboy's Annoyance List is on.
-            // Turn the switch on.
-            fanboysAnnoyanceListSwitch.setChecked(true);
-
-            // Set the icon.
-            fanboysAnnoyanceListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_enabled, null));
-        } else {  // Fanboy's Annoyance List is off.
-            // Turn the switch off.
-            fanboysAnnoyanceListSwitch.setChecked(false);
-
-            // Set the icon.
-            fanboysAnnoyanceListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_disabled, null));
-        }
-
-        // Only enable Fanboy's Social Blocking List if Fanboy's Annoyance List is off.
-        if (fanboysAnnoyanceListInt == 0) {  // Fanboy's Annoyance List is on.
-            // Enable Fanboy's Social Blocking List switch.
-            fanboysSocialBlockingListSwitch.setEnabled(true);
-
-            // Enable Fanboy's Social Blocking List.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-            // Doing this makes no sense until it can also be done with the preferences.
-            if (fanboysSocialBlockingListInt == 1) {  // Fanboy's Social Blocking List is on.
-                // Turn on Fanboy's Social Blocking List switch.
-                fanboysSocialBlockingListSwitch.setChecked(true);
-
-                // Set the icon.
-                fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_enabled, null));
-            } else {  // Fanboy's Social Blocking List is off.
-                // Turn off Fanboy's Social Blocking List switch.
-                fanboysSocialBlockingListSwitch.setChecked(false);
-
-                // Set the icon.
-                fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_disabled, null));
-            }
-        } else {  // Fanboy's Annoyance List is on.
-            // Disable Fanboy's Social Blocking List switch.
-            fanboysSocialBlockingListSwitch.setEnabled(false);
-
-            // Set the status of Fanboy's Social Blocking List.
-            fanboysSocialBlockingListSwitch.setChecked(fanboysSocialBlockingListInt == 1);
-
-            // Set the icon.
-            fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_ghosted, null));
-        }
-
-        // Set the UltraList status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
-        if (ultraListInt == 1) {  // UltraList is on.
-            // Turn the switch on.
-            ultraListSwitch.setChecked(true);
-
-            // Set the icon.
-            ultraListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_enabled, null));
-        } else {  // UltraList is off.
-            // Turn the switch off.
-            ultraListSwitch.setChecked(false);
-
-            // Set the icon.
-            ultraListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_disabled, null));
-        }
-
-        // Set the UltraPrivacy status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
-        if (ultraPrivacyInt == 1) {  // UltraPrivacy is on.
-            // Turn the switch on.
-            ultraPrivacySwitch.setChecked(true);
-
-            // Set the icon.
-            ultraPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_enabled, null));
-        } else {  // EasyPrivacy is off.
-            // Turn the switch off.
-            ultraPrivacySwitch.setChecked(false);
-
-            // Set the icon.
-            ultraPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_disabled, null));
-        }
-
-        // Set the third-party resource blocking status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
-        if (blockAllThirdPartyRequestsInt == 1) {  // Blocking all third-party requests is on.
-            // Turn the switch on.
-            blockAllThirdPartyRequestsSwitch.setChecked(true);
-
-            // Set the icon.
-            blockAllThirdPartyRequestsImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_all_third_party_requests_enabled, null));
-        } else {  // Blocking all third-party requests is off.
-            // Turn the switch off.
-            blockAllThirdPartyRequestsSwitch.setChecked(false);
-
-            // Set the icon.
-            blockAllThirdPartyRequestsImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_all_third_party_requests_disabled, null));
-        }
+        // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
+        fanboysSocialBlockingListImageView.setEnabled(fanboysAnnoyanceListInt == 0);
 
         // Inflated a WebView to get the default user agent.
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the bare WebView should not be displayed on the screen.
@@ -569,7 +469,7 @@ public class DomainSettingsFragment extends Fragment {
         final String webViewDefaultUserAgentString = bareWebView.getSettings().getUserAgentString();
 
         // Get a handle for the user agent array adapter.  This array does not contain the `System default` entry.
-        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(requireContext(), R.array.user_agent_names, R.layout.spinner_item);
 
         // Get the positions of the user agent and the default user agent.
         int userAgentArrayPosition = userAgentNamesArray.getPosition(currentUserAgentName);
@@ -638,6 +538,48 @@ public class DomainSettingsFragment extends Fragment {
             userAgentSpinner.performClick();
         });
 
+        // Select the X-Requested-With header selection in the spinner.
+        xRequestedWithHeaderSpinner.setSelection(xRequestedWithHeaderInt);
+
+        // Set the X-Requested-With header text.
+        if (defaultXRequestedWithHeader)
+            xRequestedWithHeaderTextView.setText(xRequestedWithHeaderArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED));
+        else
+            xRequestedWithHeaderTextView.setText(xRequestedWithHeaderArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED));
+
+        // Set the X-Requested-With header icon and text view settings.
+        switch (xRequestedWithHeaderInt) {
+            case DomainsDatabaseHelper.SYSTEM_DEFAULT:
+                // Set the icon color.
+                xRequestedWithHeaderImageView.setSelected(defaultXRequestedWithHeader);
+
+                // Show the X-Requested-With header text view.
+                xRequestedWithHeaderTextView.setVisibility(View.VISIBLE);
+                break;
+
+            case DomainsDatabaseHelper.ENABLED:
+                // Set the icon color.
+                xRequestedWithHeaderImageView.setSelected(true);
+
+                // Hide the X-Requested-With header text view.
+                xRequestedWithHeaderTextView.setVisibility(View.GONE);
+                break;
+
+            case DomainsDatabaseHelper.DISABLED:
+                // Set the icon color.
+                xRequestedWithHeaderImageView.setSelected(false);
+
+                // Hide the X-Requested-With header text view.
+                xRequestedWithHeaderTextView.setVisibility(View.GONE);
+                break;
+        }
+
+        // Open the X-Requested-With header spinner when the text view is clicked.
+        xRequestedWithHeaderTextView.setOnClickListener((View v) -> {
+            // Open the X-Requested-With header spinner.
+            xRequestedWithHeaderSpinner.performClick();
+        });
+
         // Display the font size settings.
         if (fontSizeInt == 0) {  // `0` is the code for system default font size.
             // Set the font size to the system default
@@ -681,39 +623,32 @@ public class DomainSettingsFragment extends Fragment {
         swipeToRefreshSpinner.setSelection(swipeToRefreshInt);
 
         // Set the swipe to refresh text.
-        if (defaultSwipeToRefresh) {
+        if (defaultSwipeToRefresh)
             swipeToRefreshTextView.setText(swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED));
-        } else {
+        else
             swipeToRefreshTextView.setText(swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED));
-        }
 
-        // Set the swipe to refresh icon and text view settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
+        // Set the swipe to refresh icon and text view settings.
         switch (swipeToRefreshInt) {
             case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled by default.
-                    // Set the icon.
-                    swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_enabled, null));
-                } else {
-                    // Set the icon.
-                    swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_disabled, null));
-                }
+                // Set the icon color.
+                swipeToRefreshImageView.setSelected(defaultSwipeToRefresh);
 
                 // Show the swipe to refresh text view.
                 swipeToRefreshTextView.setVisibility(View.VISIBLE);
                 break;
 
             case DomainsDatabaseHelper.ENABLED:
-                // Set the icon.
-                swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_enabled, null));
+                // Set the icon color.
+                swipeToRefreshImageView.setSelected(true);
 
                 // Hide the swipe to refresh text view.
                 swipeToRefreshTextView.setVisibility(View.GONE);
                 break;
 
             case DomainsDatabaseHelper.DISABLED:
-                // Set the icon.
-                swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_disabled, null));
+                // Set the icon color.
+                swipeToRefreshImageView.setSelected(false);
 
                 // Hide the swipe to refresh text view.
                 swipeToRefreshTextView.setVisibility(View.GONE);
@@ -761,31 +696,24 @@ public class DomainSettingsFragment extends Fragment {
             webViewThemeTextView.setText(webViewThemeStringArray[appWebViewThemeEntryNumber]);
         }
 
-        // Set the WebView theme icon and text visibility.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
+        // Set the WebView theme icon and text visibility.
         switch (webViewThemeInt) {
             case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The domain WebView theme is system default.
                 // Set the icon according to the app WebView theme.
                 switch (appWebViewThemeEntryNumber) {
                     case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The default WebView theme is system default.
-                        // Set the icon according to the app theme.
-                        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                            // Set the light theme icon.
-                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme, null));
-                        } else {
-                            // Set the dark theme icon.
-                            webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme, null));
-                        }
+                        // Set the icon color.
+                        webViewThemeImageView.setSelected(currentThemeStatus == Configuration.UI_MODE_NIGHT_NO);
                         break;
 
                     case DomainsDatabaseHelper.LIGHT_THEME:  // the default WebView theme is light.
-                        // Set the icon.
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme, null));
+                        // Set the icon color.
+                        webViewThemeImageView.setSelected(true);
                         break;
 
                     case DomainsDatabaseHelper.DARK_THEME:  // the default WebView theme is dark.
-                        // Set the icon.
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme, null));
+                        // Set the icon color.
+                        webViewThemeImageView.setSelected(false);
                         break;
                 }
 
@@ -794,16 +722,16 @@ public class DomainSettingsFragment extends Fragment {
                 break;
 
             case DomainsDatabaseHelper.LIGHT_THEME:  // The domain WebView theme is light.
-                // Set the icon.
-                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme, null));
+                // Set the icon color.
+                webViewThemeImageView.setSelected(true);
 
                 // Hide the WebView theme text view.
                 webViewThemeTextView.setVisibility(View.GONE);
                 break;
 
             case DomainsDatabaseHelper.DARK_THEME:  // The domain WebView theme is dark.
-                // Set the icon.
-                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme, null));
+                // Set the icon color.
+                webViewThemeImageView.setSelected(false);
 
                 // Hide the WebView theme text view.
                 webViewThemeTextView.setVisibility(View.GONE);
@@ -820,38 +748,32 @@ public class DomainSettingsFragment extends Fragment {
         wideViewportSpinner.setSelection(wideViewportInt);
 
         // Set the default wide viewport text.
-        if (defaultWideViewport) {
+        if (defaultWideViewport)
             wideViewportTextView.setText(wideViewportArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED));
-        } else {
+        else
             wideViewportTextView.setText(wideViewportArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED));
-        }
 
-        // Set the wide viewport icon and text view settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
+        // Set the wide viewport icon and text view settings.
         switch (wideViewportInt) {
             case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                // Set the icon.
-                if (defaultWideViewport) {  // Wide viewport enabled by default.
-                    wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_enabled, null));
-                } else {  // Wide viewport disabled by default.
-                    wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_disabled, null));
-                }
+                // Set the icon color.
+                wideViewportImageView.setSelected(defaultWideViewport);
 
                 // Show the wide viewport text view.
                 wideViewportTextView.setVisibility(View.VISIBLE);
                 break;
 
             case DomainsDatabaseHelper.ENABLED:
-                // Set the icon according to the theme.
-                wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_enabled, null));
+                // Set the icon color.
+                wideViewportImageView.setSelected(true);
 
                 // Hide the wide viewport text view.
                 wideViewportTextView.setVisibility(View.GONE);
                 break;
 
             case DomainsDatabaseHelper.DISABLED:
-                // Set the icon.
-                wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_disabled, null));
+                // Set the icon color.
+                wideViewportImageView.setSelected(false);
 
                 // Hide the wide viewport text view.
                 wideViewportTextView.setVisibility(View.GONE);
@@ -874,33 +796,27 @@ public class DomainSettingsFragment extends Fragment {
             displayImagesTextView.setText(displayImagesArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED));
         }
 
-        // Set the display website images icon and text view settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
+        // Set the display website images icon and text view settings.
         switch (displayImagesInt) {
             case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                if (defaultDisplayWebpageImages) {  // Display webpage images enabled by default.
-                    // Set the icon.
-                    displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_enabled, null));
-                } else {  // Display webpage images disabled by default.
-                    // Set the icon.
-                    displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_disabled, null));
-                }
+                // Set the icon color.
+                displayWebpageImagesImageView.setSelected(defaultDisplayWebpageImages);
 
                 // Show the display images text view.
                 displayImagesTextView.setVisibility(View.VISIBLE);
                 break;
 
             case DomainsDatabaseHelper.ENABLED:
-                // Set the icon.
-                displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_enabled, null));
+                // Set the icon color.
+                displayWebpageImagesImageView.setSelected(true);
 
                 // Hide the display images text view.
                 displayImagesTextView.setVisibility(View.GONE);
                 break;
 
             case DomainsDatabaseHelper.DISABLED:
-                // Set the icon.
-                displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_disabled, null));
+                // Set the icon color.
+                displayWebpageImagesImageView.setSelected(false);
 
                 // Hide the display images text view.
                 displayImagesTextView.setVisibility(View.GONE);
@@ -912,22 +828,14 @@ public class DomainSettingsFragment extends Fragment {
             // Open the user agent spinner.
             displayWebpageImagesSpinner.performClick();
         });
-        
-        // Set the pinned SSL certificate icon.
-        if (pinnedSslCertificateInt == 1) {  // Pinned SSL certificate is enabled.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-            // Doing this makes no sense until it can also be done with the preferences.
-            // Check the switch.
-            pinnedSslCertificateSwitch.setChecked(true);
 
-            // Set the icon.
-            pinnedSslCertificateImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_enabled, null));
-        } else {  // Pinned SSL certificate is disabled.
-            // Uncheck the switch.
-            pinnedSslCertificateSwitch.setChecked(false);
+        // Set the switch positions.
+        pinnedSslCertificateSwitch.setChecked(pinnedSslCertificateInt == 1);
+        pinnedIpAddressesSwitch.setChecked(pinnedIpAddressesInt == 1);
 
-            // Set the icon.
-            pinnedSslCertificateImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_disabled, null));
-        }
+        // Set the switch icon colors.
+        pinnedSslCertificateImageView.setSelected(pinnedSslCertificateInt == 1);
+        pinnedIpAddressesImageView.setSelected(pinnedIpAddressesInt == 1);
 
         // Store the current date.
         Date currentDate = Calendar.getInstance().getTime();
@@ -1093,22 +1001,6 @@ public class DomainSettingsFragment extends Fragment {
             currentWebsiteCertificateRadioButton.setChecked(false);
         }
 
-        // Set the pinned IP addresses icon.
-        if (pinnedIpAddressesInt == 1) {  // Pinned IP addresses is enabled.  Once the minimum API >= 21 a selector can be sued as the tint mode instead of specifying different icons.
-            // Doing this makes no sense until it can also be done with the preferences.
-            // Check the switch.
-            pinnedIpAddressesSwitch.setChecked(true);
-
-            // Set the icon.
-            pinnedIpAddressesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_enabled, null));
-        } else {  // Pinned IP Addresses is disabled.
-            // Uncheck the switch.
-            pinnedIpAddressesSwitch.setChecked(false);
-
-            // Set the icon.
-            pinnedIpAddressesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_disabled, null));
-        }
-
         // Populate the saved and current IP addresses.
         savedIpAddressesTextView.setText(savedIpAddresses);
         currentIpAddressesTextView.setText(DomainsActivity.currentIpAddresses);
@@ -1221,91 +1113,51 @@ public class DomainSettingsFragment extends Fragment {
 
         // Set the EasyList switch listener.
         easyListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                easyListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_enabled, null));
-            } else {
-                easyListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_disabled, null));
-            }
+            // Update the icon color.
+            easyListImageView.setSelected(isChecked);
         });
 
         // Set the EasyPrivacy switch listener.
         easyPrivacySwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {  // EasyPrivacy is on.
-                // Set the icon.
-                easyPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_enabled, null));
-            } else {
-                easyPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_disabled, null));
-            }
+            // Update the icon color.
+            easyPrivacyImageView.setSelected(isChecked);
         });
 
         // Set the Fanboy's Annoyance List switch listener.
         fanboysAnnoyanceListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon and Fanboy's Social Blocking List.
-            if (isChecked) {  // Fanboy's Annoyance List is on.
-                // Set the icon.
-                fanboysAnnoyanceListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_enabled, null));
+            // Update the icon color.
+            fanboysAnnoyanceListImageView.setSelected(isChecked);
 
-                // Disable the Fanboy's Social Blocking List switch.
-                fanboysSocialBlockingListSwitch.setEnabled(false);
 
-                // Update the Fanboy's Social Blocking List icon.
-                fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_ghosted, null));
-            } else {  // Fanboy's Annoyance List is off.
-                // Set the icon.
-                fanboysAnnoyanceListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_disabled, null));
+            // Set Fanboy's Social Blocking List switch position.
+            fanboysSocialBlockingListSwitch.setEnabled(!isChecked);
 
-                // Enable the Fanboy's Social Blocking List switch.
-                fanboysSocialBlockingListSwitch.setEnabled(true);
-
-                // Update the Fanboy's Social Blocking List icon.
-                if (fanboysSocialBlockingListSwitch.isChecked()) {
-                    fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_enabled, null));
-                } else {
-                    fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_disabled, null));
-                }
-            }
+            // Set the Social Blocking List icon ghosted status.
+            fanboysSocialBlockingListImageView.setEnabled(!isChecked);
         });
 
         // Set the Fanboy's Social Blocking List switch listener.
         fanboysSocialBlockingListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_enabled, null));
-            } else {
-                fanboysSocialBlockingListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.social_media_disabled, null));
-            }
+            // Update the icon color.
+            fanboysSocialBlockingListImageView.setSelected(isChecked);
         });
 
         // Set the UltraList switch listener.
         ultraListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                ultraListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_enabled, null));
-            } else {
-                ultraListImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_ads_disabled, null));
-            }
+            // Update the icon color.
+            ultraListImageView.setSelected(isChecked);
         });
 
         // Set the UltraPrivacy switch listener.
         ultraPrivacySwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                ultraPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_enabled, null));
-            } else {
-                ultraPrivacyImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_tracking_disabled, null));
-            }
+            // Update the icon color.
+            ultraPrivacyImageView.setSelected(isChecked);
         });
 
         // Set the block all third-party requests switch listener.
         blockAllThirdPartyRequestsSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                blockAllThirdPartyRequestsImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_all_third_party_requests_enabled, null));
-            } else {
-                blockAllThirdPartyRequestsImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.block_all_third_party_requests_disabled, null));
-            }
+            // Update the icon color.
+            blockAllThirdPartyRequestsImageView.setSelected(isChecked);
         });
 
         // Set the user agent spinner listener.
@@ -1378,6 +1230,44 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
+        // Set the X-Requested-With header spinner listener.
+        xRequestedWithHeaderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Update the icon and the visibility of the text view.
+                switch (position) {
+                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
+                        // Set the icon color.
+                        xRequestedWithHeaderImageView.setSelected(defaultXRequestedWithHeader);
+
+                        // Show the X-Requested-With header text view.
+                        xRequestedWithHeaderTextView.setVisibility(View.VISIBLE);
+                        break;
+
+                    case DomainsDatabaseHelper.ENABLED:
+                        // Set the icon color.
+                        xRequestedWithHeaderImageView.setSelected(true);
+
+                        // Hide the X-Requested-With header text view.
+                        xRequestedWithHeaderTextView.setVisibility(View.GONE);
+                        break;
+
+                    case DomainsDatabaseHelper.DISABLED:
+                        // Set the icon color.
+                        xRequestedWithHeaderImageView.setSelected(false);
+
+                        // Hide the X-Requested-With header text view.
+                        xRequestedWithHeaderTextView.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing.
+            }
+        });
+
         // Set the font size spinner listener.
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1408,33 +1298,27 @@ public class DomainSettingsFragment extends Fragment {
         swipeToRefreshSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Update the icon and the visibility of the night mode text view.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-                // Doing this makes no sense until it can also be done with the preferences.
+                // Update the icon and the visibility of the text view.
                 switch (position) {
                     case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                        if (defaultSwipeToRefresh) {
-                            // Set the icon.
-                            swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_enabled, null));
-                        } else {
-                            // Set the icon.
-                            swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_disabled, null));
-                        }
+                        // Set the icon color.
+                        swipeToRefreshImageView.setSelected(defaultSwipeToRefresh);
 
                         // Show the swipe to refresh text view.
                         swipeToRefreshTextView.setVisibility(View.VISIBLE);
                         break;
 
                     case DomainsDatabaseHelper.ENABLED:
-                        // Set the icon.
-                        swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_enabled, null));
+                        // Set the icon color.
+                        swipeToRefreshImageView.setSelected(true);
 
                         // Hide the swipe to refresh text view.
                         swipeToRefreshTextView.setVisibility(View.GONE);
                         break;
 
                     case DomainsDatabaseHelper.DISABLED:
-                        // Set the icon.
-                        swipeToRefreshImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.refresh_disabled, null));
+                        // Set the icon color.
+                        swipeToRefreshImageView.setSelected(false);
 
                         // Hide the swipe to refresh text view.
                         swipeToRefreshTextView.setVisibility(View.GONE);
@@ -1451,31 +1335,24 @@ public class DomainSettingsFragment extends Fragment {
         webViewThemeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Update the icon and the visibility of the WebView theme text view.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-                // Doing this makes no sense until it can also be done with the preferences.
+                // Update the icon and the visibility of the WebView theme text view.
                 switch (position) {
                     case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // the domain WebView theme is system default.
                         // Set the icon according to the app WebView theme.
                         switch (appWebViewThemeEntryNumber) {
                             case DomainsDatabaseHelper.SYSTEM_DEFAULT:  // The default WebView theme is system default.
-                                // Set the icon according to the app theme.
-                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                                    // Set the light theme icon.
-                                    webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme, null));
-                                } else {
-                                    // Set the dark theme icon.
-                                    webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme, null));
-                                }
+                                // Set the icon color.
+                                webViewThemeImageView.setSelected(currentThemeStatus == Configuration.UI_MODE_NIGHT_NO);
                                 break;
 
                             case DomainsDatabaseHelper.LIGHT_THEME:  // The default WebView theme is light.
-                                // Set the icon.
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme, null));
+                                // Set the icon color.
+                                webViewThemeImageView.setSelected(true);
                                 break;
 
                             case DomainsDatabaseHelper.DARK_THEME:  // The default WebView theme is dark.
                                 // Set the icon.
-                                webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme, null));
+                                webViewThemeImageView.setSelected(false);
                                 break;
                         }
 
@@ -1484,16 +1361,16 @@ public class DomainSettingsFragment extends Fragment {
                         break;
 
                     case DomainsDatabaseHelper.LIGHT_THEME:  // The domain WebView theme is light.
-                        // Set the icon.
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_light_theme, null));
+                        // Set the icon color.
+                        webViewThemeImageView.setSelected(true);
 
                         // Hide the WebView theme text view.
                         webViewThemeTextView.setVisibility(View.GONE);
                         break;
 
                     case DomainsDatabaseHelper.DARK_THEME:  // The domain WebView theme is dark.
-                        // Set the icon.
-                        webViewThemeImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.webview_dark_theme, null));
+                        // Set the icon color.
+                        webViewThemeImageView.setSelected(false);
 
                         // Hide the WebView theme text view.
                         webViewThemeTextView.setVisibility(View.GONE);
@@ -1514,28 +1391,24 @@ public class DomainSettingsFragment extends Fragment {
                 // Update the icon and the visibility of the wide viewport text view.
                 switch (position) {
                     case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                        // Set the icon.
-                        if (defaultWideViewport) {  // Wide viewport is enabled by default.
-                            wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_enabled, null));
-                        } else {  // Wide viewport is disabled by default.
-                            wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_disabled, null));
-                        }
+                        // Set the icon color.
+                        wideViewportImageView.setSelected(defaultWideViewport);
 
                         // Show the wide viewport text view.
                         wideViewportTextView.setVisibility(View.VISIBLE);
                         break;
 
                     case DomainsDatabaseHelper.ENABLED:
-                        // Set the icon according to the theme.
-                        wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_enabled, null));
+                        // Set the icon color.
+                        wideViewportImageView.setSelected(true);
 
                         // Hide the wide viewport text view.
                         wideViewportTextView.setVisibility(View.GONE);
                         break;
 
                     case DomainsDatabaseHelper.DISABLED:
-                        // Set the icon.
-                        wideViewportImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.wide_viewport_disabled, null));
+                        // Set the icon color.
+                        wideViewportImageView.setSelected(false);
 
                         // Hid ethe wide viewport text view.
                         wideViewportTextView.setVisibility(View.GONE);
@@ -1556,29 +1429,24 @@ public class DomainSettingsFragment extends Fragment {
                 // Update the icon and the visibility of the display images text view.
                 switch (position) {
                     case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                        if (defaultDisplayWebpageImages) {  // Display webpage images is enabled by default.
-                            // Set the icon.
-                            displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_enabled, null));
-                        } else {  // Display webpage images is disabled by default.
-                            // Set the icon.
-                            displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_disabled, null));
-                        }
+                        // Set the icon color.
+                        displayWebpageImagesImageView.setSelected(defaultDisplayWebpageImages);
 
                         // Show the display images text view.
                         displayImagesTextView.setVisibility(View.VISIBLE);
                         break;
 
                     case DomainsDatabaseHelper.ENABLED:
-                        // Set the icon.
-                        displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_enabled, null));
+                        // Set the icon color.
+                        displayWebpageImagesImageView.setSelected(true);
 
                         // Hide the display images text view.
                         displayImagesTextView.setVisibility(View.GONE);
                         break;
 
                     case DomainsDatabaseHelper.DISABLED:
-                        // Set the icon.
-                        displayWebpageImagesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.images_disabled, null));
+                        // Set the icon color.
+                        displayWebpageImagesImageView.setSelected(false);
 
                         // Hide the display images text view.
                         displayImagesTextView.setVisibility(View.GONE);
@@ -1594,11 +1462,11 @@ public class DomainSettingsFragment extends Fragment {
         
         // Set the pinned SSL certificate switch listener.
         pinnedSslCertificateSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {  // SSL certificate pinning is enabled.
-                // Set the icon.
-                pinnedSslCertificateImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_enabled, null));
+            // Update the icon color.
+            pinnedSslCertificateImageView.setSelected(isChecked);
 
+            // Update the views.
+            if (isChecked) {  // SSL certificate pinning is enabled.
                 // Update the visibility of the saved SSL certificate.
                 if (savedSslIssuedToCNameString == null) {
                     savedSslCardView.setVisibility(View.GONE);
@@ -1669,9 +1537,6 @@ public class DomainSettingsFragment extends Fragment {
                     noCurrentWebsiteCertificateTextView.getParent().requestChildFocus(noCurrentWebsiteCertificateTextView, noCurrentWebsiteCertificateTextView);
                 }
             } else {  // SSL certificate pinning is disabled.
-                // Set the icon.
-                pinnedSslCertificateImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_disabled, null));
-
                 // Hide the SSl certificates and instructions.
                 savedSslCardView.setVisibility(View.GONE);
                 currentSslCardView.setVisibility(View.GONE);
@@ -1757,11 +1622,11 @@ public class DomainSettingsFragment extends Fragment {
 
         // Set the pinned IP addresses switch listener.
         pinnedIpAddressesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {  // IP addresses pinning is enabled.
-                // Set the icon.
-                pinnedIpAddressesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_enabled, null));
+            // Update the icon color.
+            pinnedIpAddressesImageView.setSelected(isChecked);
 
+            // Update the views.
+            if (isChecked) {  // IP addresses pinning is enabled.
                 // Update the visibility of the saved IP addresses card view.
                 if (savedIpAddresses == null) {  // There are no saved IP addresses.
                     savedIpAddressesCardView.setVisibility(View.GONE);
@@ -1810,9 +1675,6 @@ public class DomainSettingsFragment extends Fragment {
                 // Scroll to the bottom of the card views.
                 currentIpAddressesCardView.getParent().requestChildFocus(currentIpAddressesCardView, currentIpAddressesCardView);
             } else {  // IP addresses pinning is disabled.
-                // Set the icon.
-                pinnedIpAddressesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ssl_certificate_disabled, null));
-
                 // Hide the IP addresses card views.
                 savedIpAddressesCardView.setVisibility(View.GONE);
                 currentIpAddressesCardView.setVisibility(View.GONE);

@@ -20,9 +20,10 @@
 
 <resources>
     <!-- Nicknamed colors. -->
-    <color name="about_version_blue_text">@color/blue_700</color>
+    <color name="alt_blue_text">@color/blue_700</color>
     <color name="blue_icon">@color/blue_800</color>
     <color name="blue_text">@color/blue_700</color>
+    <color name="blue_title_text">@color/blue_900</color>
     <color name="disabled_icon">@color/gray_600</color>
     <color name="ghosted_icon">@color/gray_425</color>
     <color name="icon">@color/gray_925</color>

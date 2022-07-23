@@ -250,7 +250,7 @@ class ViewSslCertificateDialog : DialogFragment() {
             val endDateStringBuilder = SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate))
 
             // Define the color spans.
-            val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.blue_text))
+            val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
             val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
 
             // Format the domain string and issued to CName colors.

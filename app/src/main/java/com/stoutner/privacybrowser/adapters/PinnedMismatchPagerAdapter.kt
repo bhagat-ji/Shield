@@ -187,7 +187,7 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
         }
 
         // Create the color spans.
-        val blueColorSpan = ForegroundColorSpan(context.getColor(R.color.blue_text))
+        val blueColorSpan = ForegroundColorSpan(context.getColor(R.color.alt_blue_text))
         val redColorSpan = ForegroundColorSpan(context.getColor(R.color.red_text))
 
         // Set the domain name to be blue.
