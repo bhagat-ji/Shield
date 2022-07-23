@@ -502,6 +502,10 @@
         <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>
         <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
     <string name="url_modification">Модификация URL</string>
+        <string name="tracking_queries">Параметры отслеживания</string>
+        <string name="tracking_queries_summary">Удалять известные параметры отслеживания из URL.</string>
+        <string name="amp_redirects">Перенаправления AMP</string>
+        <string name="amp_redirects_summary">Удалять перенаправляющие параметры из URL известных AMP (Accelerated Mobil Pages).</string>
     <string name="search">Поиск</string>
         <string-array name="search_entries">
             <item>Mojeek</item>

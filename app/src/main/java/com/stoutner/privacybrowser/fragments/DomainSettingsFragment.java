@@ -363,82 +363,11 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the JavaScript switch status.
-        if (javaScriptInt == 1) {  // JavaScript is enabled.
-            javaScriptSwitch.setChecked(true);
-            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null));
-        } else {  // JavaScript is disabled.
-            javaScriptSwitch.setChecked(false);
-            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null));
-        }
-
-        // Set the cookies switch status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        // Doing this makes no sense until it can also be done with the preferences.
-        if (cookiesInt == 1) {  // Cookies are enabled.
-            // Turn the switch on.
-            cookiesSwitch.setChecked(true);
-
-            // Set the icon.
-            cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_enabled, null));
-        } else {  // Cookies are disabled.
-            // Turn the switch off
-            cookiesSwitch.setChecked(false);
-
-            // Set the icon.
-            cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled, null));
-        }
-
-        // Only enable DOM storage if JavaScript is enabled.
-        if (javaScriptInt == 1) {  // JavaScript is enabled.
-            // Enable the DOM storage switch.
-            domStorageSwitch.setEnabled(true);
-
-            // Set the DOM storage status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-            // Doing this makes no sense until it can also be done with the preferences.
-            if (domStorageInt == 1) {  // Both JavaScript and DOM storage are enabled.
-                domStorageSwitch.setChecked(true);
-                domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_enabled, null));
-            } else {  // JavaScript is enabled but DOM storage is disabled.
-                // Set the DOM storage switch to off.
-                domStorageSwitch.setChecked(false);
-
-                // Set the icon.
-                domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_disabled, null));
-            }
-        } else {  // JavaScript is disabled.
-            // Disable the DOM storage switch.
-            domStorageSwitch.setEnabled(false);
-
-            // Set the checked status of DOM storage.
-            domStorageSwitch.setChecked(domStorageInt == 1);
-
-            // Set the icon.
-            domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_ghosted, null));
-        }
-
-        // Set the form data visibility.  Form data can be removed once the minimum API >= 26.
-        if (Build.VERSION.SDK_INT >= 26) {  // Form data no longer applies to newer versions of Android.
-            // Hide the form data image view and switch.
-            formDataImageView.setVisibility(View.GONE);
-            formDataSwitch.setVisibility(View.GONE);
-        } else {  // Form data should be displayed because this is an older version of Android.
-            if (formDataInt == 1) {  // Form data is on.
-                // Turn the form data switch on.
-                formDataSwitch.setChecked(true);
-
-                // Set the form data icon.
-                formDataImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.form_data_enabled, null));
-            } else {  // Form data is off.
-                // Turn the form data switch to off.
-                formDataSwitch.setChecked(false);
-
-                // Set the icon.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-                // Doing this makes no sense until it can also be done with the preferences.
-                formDataImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.form_data_disabled, null));
-            }
-        }
-
         // Set the switch positions.
+        javaScriptSwitch.setChecked(javaScriptInt == 1);
+        cookiesSwitch.setChecked(cookiesInt == 1);
+        domStorageSwitch.setChecked(domStorageInt == 1);
+        formDataSwitch.setChecked(formDataInt == 1);  // Form data can be removed once the minimum API >= 26.
         easyListSwitch.setChecked(easyListInt == 1);
         easyPrivacySwitch.setChecked(easyPrivacyInt == 1);
         fanboysAnnoyanceListSwitch.setChecked(fanboysAnnoyanceListInt == 1);
@@ -446,8 +375,13 @@ public class DomainSettingsFragment extends Fragment {
         ultraListSwitch.setChecked(ultraListInt == 1);
         ultraPrivacySwitch.setChecked(ultraPrivacyInt == 1);
         blockAllThirdPartyRequestsSwitch.setChecked(blockAllThirdPartyRequestsInt == 1);
+        pinnedSslCertificateSwitch.setChecked(pinnedSslCertificateInt == 1);
+        pinnedIpAddressesSwitch.setChecked(pinnedIpAddressesInt == 1);
 
         // Set the switch icon colors.
+        cookiesImageView.setSelected(cookiesInt == 1);
+        domStorageImageView.setSelected(domStorageInt == 1);
+        formDataImageView.setSelected(formDataInt == 1);  // Form data can be removed once the minimum API >= 26.
         easyListImageView.setSelected(easyListInt == 1);
         easyPrivacyImageView.setSelected(easyPrivacyInt == 1);
         fanboysAnnoyanceListImageView.setSelected(fanboysAnnoyanceListInt == 1);
@@ -455,6 +389,27 @@ public class DomainSettingsFragment extends Fragment {
         ultraListImageView.setSelected(ultraListInt == 1);
         ultraPrivacyImageView.setSelected(ultraPrivacyInt == 1);
         blockAllThirdPartyRequestsImageView.setSelected(blockAllThirdPartyRequestsInt == 1);
+        pinnedSslCertificateImageView.setSelected(pinnedSslCertificateInt == 1);
+        pinnedIpAddressesImageView.setSelected(pinnedIpAddressesInt == 1);
+
+        // Set the JavaScript icon.
+        if (javaScriptInt == 1)
+            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null));
+        else
+            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null));
+
+        // Set the DOM storage switch status based on the JavaScript status.
+        domStorageSwitch.setEnabled(javaScriptInt == 1);
+
+        // Set the DOM storage icon ghosted status based on the JavaScript status.
+        domStorageImageView.setEnabled(javaScriptInt == 1);
+
+        // Set the form data visibility.  Form data can be removed once the minimum API >= 26.
+        if (Build.VERSION.SDK_INT >= 26) {
+            // Hide the form data image view and switch.
+            formDataImageView.setVisibility(View.GONE);
+            formDataSwitch.setVisibility(View.GONE);
+        }
 
         // Set Fanboy's Social Blocking List switch status based on the Annoyance List status.
         fanboysSocialBlockingListSwitch.setEnabled(fanboysAnnoyanceListInt == 0);
@@ -829,14 +784,6 @@ public class DomainSettingsFragment extends Fragment {
             displayWebpageImagesSpinner.performClick();
         });
 
-        // Set the switch positions.
-        pinnedSslCertificateSwitch.setChecked(pinnedSslCertificateInt == 1);
-        pinnedIpAddressesSwitch.setChecked(pinnedIpAddressesInt == 1);
-
-        // Set the switch icon colors.
-        pinnedSslCertificateImageView.setSelected(pinnedSslCertificateInt == 1);
-        pinnedIpAddressesImageView.setSelected(pinnedIpAddressesInt == 1);
-
         // Store the current date.
         Date currentDate = Calendar.getInstance().getTime();
 
@@ -1051,63 +998,36 @@ public class DomainSettingsFragment extends Fragment {
 
         // Set the JavaScript switch listener.
         javaScriptSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            if (isChecked) {  // JavaScript is enabled.
-                // Update the JavaScript icon.
+            // Update the JavaScript icon.
+            if (isChecked)
                 javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null));
-
-                // Enable the DOM storage `Switch`.
-                domStorageSwitch.setEnabled(true);
-
-                // Update the DOM storage icon.
-                if (domStorageSwitch.isChecked()) {  // DOM storage is enabled.
-                    domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_enabled, null));
-                } else {  // DOM storage is disabled.
-                    // Set the icon.
-                    domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_disabled, null));
-                }
-            } else {  // JavaScript is disabled.
-                // Update the JavaScript icon.
+            else
                 javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null));
 
-                // Disable the DOM storage switch.
-                domStorageSwitch.setEnabled(false);
+            // Set the DOM storage switch status.
+            domStorageSwitch.setEnabled(isChecked);
 
-                // Set the DOM storage icon.
-                domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_ghosted, null));
-            }
+            // Set the DOM storage ghosted icon status.
+            domStorageImageView.setEnabled(isChecked);
         });
 
         // Set the cookies switch listener.
         cookiesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the cookies icon.
-            if (isChecked) {
-                cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_enabled, null));
-            } else {
-                cookiesImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.cookies_disabled, null));
-            }
+            // Update the icon color.
+            cookiesImageView.setSelected(isChecked);
         });
 
         // Set the DOM Storage switch listener.
         domStorageSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_enabled, null));
-            } else {
-                // Set the icon.
-                domStorageImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.dom_storage_disabled, null));
-            }
+            // Update the icon color.
+            domStorageImageView.setSelected(isChecked);
         });
 
         // Set the form data switch listener.  It can be removed once the minimum API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
             formDataSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                // Update the icon.
-                if (isChecked) {
-                    formDataImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.form_data_enabled, null));
-                } else {
-                    // Set the icon.
-                    formDataImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.form_data_disabled, null));
-                }
+                // Update the icon color.
+                formDataImageView.setSelected(isChecked);
             });
         }
 

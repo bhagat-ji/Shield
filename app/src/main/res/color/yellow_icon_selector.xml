@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2018,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -18,8 +18,9 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- Set an background color for a button based on the state. -->
+<!-- Set the icon tint color based on the state. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_enabled="true" android:color="@color/blue_600" />
-    <item android:color="@color/gray_300" />
+    <item android:state_enabled="false" android:color="@color/ghosted_icon" />
+    <item android:state_selected="true" android:color="@color/yellow_900" />
+    <item android:state_selected="false" android:color="@color/disabled_icon" />
 </selector>

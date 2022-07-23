@@ -27,8 +27,6 @@
         <!-- Colors. -->
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
-        <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_day</item>
-        <item name="buttonTextColorSelector">@color/button_text_color_selector_day</item>
         <item name="colorAccent">@color/blue_700</item>
         <item name="redTextColor">@color/red_a700</item>
 

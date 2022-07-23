@@ -43,11 +43,12 @@
         <p>Почти все сайты с логинами требуют, чтобы для авторизации пользователя были включены cookie.
             Именно так они удостоверяются, что это все еще вы, когда переходите со страницы на страницу на сайте, и, на мой взгляд, это единственное законное использование файлов cookie.</p>
 
-        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
-            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
-            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
-            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
-            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+        <p>Android System WebView рассматривает cookie как настройку на уровне приложения, что означает, что cookie либо включены, либо выключены для всех вкладок в Privacy Browser.
+            В результате настройка cookie для той вкладки, которая отображается в данный момент, управляет настройками cookies для всех фоновых вкладок.
+            Если у вас есть фоновая вкладка, на которой включены cookie, чтобы вы могли войти на сайт, и вы переключаетесь на вкладку, на которой cookie не включены,
+            это приведет к отключению cookies для всех вкладок.
+            Если фоновая вкладка делает запрос, например, чтобы узнать, есть ли обновленная информация, этот запрос будет отправлен без файлов cookie, что приведет к разлогиниванию.
+            Это ограничение будет устранено с выходом <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> в версии 4.x.</p>
 
         <p>Если cookie включены и при этом JavaScript отключен, то значок конфиденциальности будет желтого цвета <img class="inline" src="../shared_images/warning.svg"> в качестве предупреждения.</p>
 
@@ -76,10 +77,10 @@
             Таким образом, элементы управления данными формы больше не отображаются на новых Android-устройствах.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Clear and Exit</h3>
+        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Очистить и выйти</h3>
 
-        <p>Clear and Exit runs every time the last tab is closed or Clear and Exit is selected from the navigation menu.
-            By default it clears the cookies, DOM storage, form data, the logcat, and the WebView cache. Then it manually deletes the entire <code>app_webview</code> and <code>cache</code> directories.
-            The behavior of Clear and Exit can be configured in the settings.</p>
+        <p>Функция Очистить и выйти запускается каждый раз при закрытии последней вкладки или выборе Очистить и выйти из меню навигации.
+            По умолчанию очищаются cookie, DOM-хранилище, данные формы, logcat и кэш WebView. Затем происходит ручное удаление всех каталогов <code>app_webview</code> и <code>cache</code>.
+            Поведение опции Очистить и выйти можно настроить в настройках.</p>
     </body>
 </html>

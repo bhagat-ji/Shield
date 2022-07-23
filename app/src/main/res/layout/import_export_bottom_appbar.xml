@@ -208,8 +208,8 @@
                             android:text="@string/import_button"
                             android:textSize="18sp"
                             android:onClick="importExport"
-                            app:backgroundTint="?attr/buttonBackgroundColorSelector"
-                            android:textColor="?attr/buttonTextColorSelector" />
+                            app:backgroundTint="@color/button_background_selector"
+                            android:textColor="@color/button_text_selector" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>

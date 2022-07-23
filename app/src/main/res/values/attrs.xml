@@ -21,8 +21,6 @@
     <!-- Colors. -->
     <attr name="aboutBackground" format="color" />
     <attr name="activatedListViewItemBackground" format="color" />
-    <attr name="buttonBackgroundColorSelector" format="color" />
-    <attr name="buttonTextColorSelector" format="color" />
     <attr name="redTextColor" format="color" />
 
     <!-- Tint Colors. -->

@@ -21,9 +21,13 @@
 <resources>
     <!-- Nicknamed colors. -->
     <color name="alt_blue_text">@color/blue_700</color>
+    <color name="blue_button">@color/blue_600</color>
     <color name="blue_icon">@color/blue_800</color>
     <color name="blue_text">@color/blue_700</color>
     <color name="blue_title_text">@color/blue_900</color>
+    <color name="button_text">@color/white</color>
+    <color name="disabled_button">@color/gray_300</color>
+    <color name="disabled_button_text">@color/gray_400</color>
     <color name="disabled_icon">@color/gray_600</color>
     <color name="ghosted_icon">@color/gray_425</color>
     <color name="icon">@color/gray_925</color>

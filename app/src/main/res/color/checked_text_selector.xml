@@ -18,8 +18,8 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- Set a background color for a button based on the state. -->
+<!-- Sets the color of non-checked items to be gray. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_enabled="true" android:color="@color/blue_600" />
-    <item android:color="@color/gray_750" />
+    <item android:state_checked="true" android:color="?android:attr/textColorPrimary" />
+    <item android:state_checked="false" android:color="@color/gray_500" />
 </selector>
