@@ -63,14 +63,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DomainSettingsFragment extends Fragment {
-    // Initialize the public class constants.  These are used by activities calling this fragment.
+    // Initialize the public class constants.
     public static final String DATABASE_ID = "database_id";
     public static final String SCROLL_Y = "scroll_y";
 
-    // Define the public variables.  `databaseId` is public static so it can be accessed from `DomainsActivity`. It is also used in `onCreate()` and `onCreateView()`.
+    // Declare the public variables.  `databaseId` is public static so it can be accessed from `DomainsActivity`.
     public static int databaseId;
 
-    // Define the class variables.
+    // Declare the class variables.
     private int scrollY;
 
     @Override
@@ -86,7 +86,6 @@ public class DomainSettingsFragment extends Fragment {
         scrollY = getArguments().getInt(SCROLL_Y);
     }
 
-    // The deprecated `getDrawable()` must be used until the minimum API >= 21.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate `domain_settings_fragment`.  `false` does not attach it to the root `container`.
@@ -142,6 +141,7 @@ public class DomainSettingsFragment extends Fragment {
         ImageView xRequestedWithHeaderImageView = domainSettingsView.findViewById(R.id.x_requested_with_header_imageview);
         Spinner xRequestedWithHeaderSpinner = domainSettingsView.findViewById(R.id.x_requested_with_header_spinner);
         TextView xRequestedWithHeaderTextView = domainSettingsView.findViewById(R.id.x_requested_with_header_textview);
+        TextView xRequestedWithHeaderExplanationTextView = domainSettingsView.findViewById(R.id.x_requested_with_header_explanation_textview);
         Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.font_size_spinner);
         TextView defaultFontSizeTextView = domainSettingsView.findViewById(R.id.default_font_size_textview);
         EditText customFontSizeEditText = domainSettingsView.findViewById(R.id.custom_font_size_edittext);
@@ -532,6 +532,12 @@ public class DomainSettingsFragment extends Fragment {
         // Open the X-Requested-With header spinner when the text view is clicked.
         xRequestedWithHeaderTextView.setOnClickListener((View v) -> {
             // Open the X-Requested-With header spinner.
+            xRequestedWithHeaderSpinner.performClick();
+        });
+
+        // Open the X-Requested-With header spinner when the explanation text view is clicked.
+        xRequestedWithHeaderExplanationTextView.setOnClickListener((View v) -> {
+            // Open the X-Requested header spinner.
             xRequestedWithHeaderSpinner.performClick();
         });
 

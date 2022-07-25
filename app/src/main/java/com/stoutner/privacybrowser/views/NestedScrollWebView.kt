@@ -137,6 +137,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     private var ultraListBlockedRequests = 0
     private var ultraPrivacyBlockedRequests = 0
     private var thirdPartyBlockedRequests = 0
+    private var xRequestedWithHeader = mutableMapOf<String, String>()
 
     init {
         // Enable nested scrolling by default.
@@ -292,6 +293,24 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         ultraListBlockedRequests = 0
         ultraPrivacyBlockedRequests = 0
         thirdPartyBlockedRequests = 0
+    }
+
+
+    // X-Requested-With header.
+    fun getXRequestedWithHeader() : MutableMap<String, String> {
+        // Return the X-Requested-With header.
+        return xRequestedWithHeader
+    }
+
+    fun setXRequestedWithHeader() {
+        // Set the X-Requested-With header to use a null value.
+        if (xRequestedWithHeader.isEmpty())
+            xRequestedWithHeader["X-Requested-With"] = ""
+    }
+
+    fun resetXRequestedWithHeader() {
+        // Clear the map, which resets the X-Requested-With header to use the default value of the application ID (com.stoutner.privacybrowser.standard).
+        xRequestedWithHeader.clear()
     }
 
 

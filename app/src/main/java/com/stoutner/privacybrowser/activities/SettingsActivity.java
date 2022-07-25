@@ -26,7 +26,6 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {

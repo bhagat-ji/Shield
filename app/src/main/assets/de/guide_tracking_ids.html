@@ -48,5 +48,17 @@
             Redirects aus URL-Anfragen (Queries).
             Eine Liste der aktuellen URL-Modifikationen kann einem <a href="https://www.stoutner.com/url-modification/">Blog-Post</a> entnommen werden.
             Die URL-Modifikationen können in den Einstellungen deaktiviert werden, sollten sie Probleme bereiten.</p>
+
+
+        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With Header</h3>
+
+        <p>Google programmed Android’s WebView to send an X-Requested-With header with every request.
+            The value of the X-Requested-With header is set to the application ID, which in the case of Privacy Browser is <code>com.stoutner.privacybrowser.standard</code>.
+            Currently, it isn't possible to remove this header, but the value can be changed. By default, Privacy Browser sends a null (empty) value for the X-Requested-With header.
+            Even though the spec allows for null header values, some web servers don't like them, so Privacy Browser has the option to revert to the default behavior of sending the app ID.
+            Because this setting is cached when a URL is first loaded, and isn't changed when reloading a page or navigating history,
+            changes to this setting may not be applied until Privacy Browser is restarted.
+            There is a <a href="https://www.stoutner.com/the-x-requested-with-header/">blog post</a> with additional information.
+            The X-Requested-With header will be <a href="https://redmine.stoutner.com/issues/37">completely removed</a> in the 4.x series with the release of Privacy WebView.</p>
     </body>
 </html>

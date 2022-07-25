@@ -483,6 +483,16 @@
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
                 android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/x_requested_with_header_explanation_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="11sp"
+                android:text="@string/x_requested_with_header_explanation" />
         </LinearLayout>
 
         <!-- Font Size. -->

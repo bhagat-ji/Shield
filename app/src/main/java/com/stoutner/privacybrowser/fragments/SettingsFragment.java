@@ -849,6 +849,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_enabled);
                     else
                         xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_disabled);
+
+                    // Restart Privacy Browser.
+                    restartPrivacyBrowser();
                     break;
 
                 case "incognito_mode":
