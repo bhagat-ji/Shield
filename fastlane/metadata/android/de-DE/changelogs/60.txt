@@ -1,0 +1,13 @@
+• Option hinzugefügt, um den Standard-X-Requested-With header zu verwenden.
+• Alle auf privacytests.org gelisteten Tracking-Anfragen / -Queries in URLs werden ab sofort blockiert.
+• Option für das Teilen von URLs als Nachricht hinzugefügt.
+• Problem behoben, durch welches ein Teil der angezeigten Webseite durch die untere App-Leiste abgedeckt wurde.
+• Problem behoben, durch welches manchmal Tabs beim Neustart doppelt geöffnet wurden.
+• Lesezeichen, die über die "Neuer Tab"-Leiste geöffnet werden, werden nun oberhalb des Lesezeichen-Menüs angezeigt.
+• Kernel-Version zu "Über > Version" hinzugefügt.
+• Aktueller Lesezeichen-Ordner wird nun beim Neustart beibehalten.
+• Standard-Wert der URL für einen benutzerdefinierten Proxy auf "socks://localhost:9050" geändert.
+• Einige verschiedene Aktualisierungen im Handbuch.
+• Einige kleine Verbesserungen an der Bediener-Oberfläche.
+• Ziel-API auf 32 (Android 12L) angehoben.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

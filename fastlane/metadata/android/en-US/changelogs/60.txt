@@ -1,1 +1,12 @@
-• Work around a scrolling bug in Android System Webview >= 99.0.4844.48.
+• Create an option to use the default X-Requested-With header.
+• Block all the URL query trackers listed at privacytests.org.
+• Add a Share Message option.
+• Fix a bug that caused the bottom app bar to cover part of the website.
+• Fix duplicate tabs sometimes being opened on restart.
+• Display the bookmark opened in new tab snackbar above the bookmarks drawer.
+• Add the kernel version to About > Version.
+• Preserve the current bookmarks folder on restart.
+• Change the default value of the custom proxy URL to socks://localhost:9050.
+• Add various updates to the Guide.
+• Make several small UI improvements.
+• Bump the target API to 32 (Android 12L).

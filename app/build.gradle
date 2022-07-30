@@ -28,8 +28,8 @@ android {
     defaultConfig {
         minSdk 23
         targetSdk 32
-        versionCode 59
-        versionName "3.10.1"
+        versionCode 60
+        versionName "3.11"
     }
 
     buildTypes {

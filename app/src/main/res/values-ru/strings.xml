@@ -314,6 +314,11 @@
     <string name="domain_name">Имя домена</string>
     <string name="domain_deleted">Домен удален</string>
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. *.stoutner.com)</string>
+    <string-array name="x_requested_with_header_array">
+        <item>Настройки по умолчанию</item>
+        <item>Заголовок X-Requested-With включен</item>
+        <item>Заголовок X-Requested-With отключен</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>Настройки по умолчанию</item>
         <item>Пользовательский размер шрифта</item>
@@ -481,6 +486,10 @@
             <item>Настраиваемый</item>
         </string-array>
         <string name="custom_user_agent">Настраиваемый user agent</string>
+        <string name="x_requested_with_header">Заголовок X-Requested-With</string>
+        <string name="x_requested_with_header_summary">При включении этой опции Privacy Browser отправляет нулевое значение для заголовка X-Requested-With.
+            Обычно это не проблема, но некоторым сайтам это не нравится. Изменение этой настройки приведет к перезапуску Privacy Browser.</string>
+        <string name="x_requested_with_header_explanation">Изменения в заголовке X-Requested-With могут не действовать до перезапуска Privacy Browser.</string>
         <string name="incognito_mode">Режим инкогнито</string>
         <string name="incognito_mode_summary">Очистка журнала и кэша по завершении загрузки каждой веб-страницы.
             В режиме инкогнито нажатие кнопки Назад приведет к закрытию вкладки (или приложения, если открыта только одна вкладка).</string>

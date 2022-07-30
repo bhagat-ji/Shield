@@ -43,15 +43,16 @@
             Модификация URL может быть отключена в настройках, если она вызывает проблемы.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With Header</h3>
+        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> Заголовок X-Requested-With</h3>
 
-        <p>Google programmed Android’s WebView to send an X-Requested-With header with every request.
-            The value of the X-Requested-With header is set to the application ID, which in the case of Privacy Browser is <code>com.stoutner.privacybrowser.standard</code>.
-            Currently, it isn't possible to remove this header, but the value can be changed. By default, Privacy Browser sends a null (empty) value for the X-Requested-With header.
-            Even though the spec allows for null header values, some web servers don't like them, so Privacy Browser has the option to revert to the default behavior of sending the app ID.
-            Because this setting is cached when a URL is first loaded, and isn't changed when reloading a page or navigating history,
-            changes to this setting may not be applied until Privacy Browser is restarted.
-            There is a <a href="https://www.stoutner.com/the-x-requested-with-header/">blog post</a> with additional information.
-            The X-Requested-With header will be <a href="https://redmine.stoutner.com/issues/37">completely removed</a> in the 4.x series with the release of Privacy WebView.</p>
+        <p>Google запрограммировал WebView в Android на отправку заголовка X-Requested-With при каждом запросе.
+            Значение заголовка X-Requested-With устанавливается как идентификатор приложения, который в случае Privacy Browser является <code>com.stoutner.privacybrowser.standard</code>.
+            В настоящее время невозможно удалить этот заголовок, но его значение можно изменить. По умолчанию Privacy Browser отправляет нулевое (пустое) значение для заголовка X-Requested-With.
+            Несмотря на то, что спецификация допускает нулевые значения заголовков, некоторые веб-серверы не приветствуют их, поэтому Privacy Browser имеет возможность вернуться к поведению по умолчанию,
+            отправляя идентификатор приложения.
+            Поскольку этот параметр кэшируется при первой загрузке URL-адреса и не изменяется при перезагрузке страницы или навигации по истории,
+            изменения этого параметра могут не действовать до перезапуска Privacy Browser.
+            В блоге есть <a href="https://www.stoutner.com/the-x-requested-with-header/">пост</a> с дополнительной информацией.
+            Заголовок X-Requested-With будет <a href="https://redmine.stoutner.com/issues/37">полностью удален</a> в версии 4.x после выпуска Privacy WebView.</p>
     </body>
 </html>

@@ -1,0 +1,13 @@
+• Crear una opción para usar la cabecera X-Requested-With predeterminada.
+• Bloquear todos los rastreadores de consultas de URL listados en privacytests.org.
+• Añadir una opción Compartir Mensaje.
+• Corregir un error que hacía que la barra inferior de la app cubriera parte de la página web.
+• Arreglar las pestañas duplicadas que a veces se abren al reiniciar.
+• Mostrar el marcador abierto en la snackbar de la nueva pestaña por encima del cajón de marcadores.
+• Añadir la versión del kernel a Acerca de > Versión.
+• Conservar la carpeta de marcadores actual al reiniciar.
+• Cambiar el valor por defecto de la URL del proxy personalizado a socks://localhost:9050.
+• Añadir varias actualizaciones a la Guía.
+• Realizar varias pequeñas UI mejoras.
+• Aumentar la API objetivo a 32 (Android 12L).
+• Actualizada la traducción al español proporcionada por Jose A. León.

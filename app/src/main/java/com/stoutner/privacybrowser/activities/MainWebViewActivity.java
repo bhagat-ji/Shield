@@ -5216,7 +5216,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Calculate the Y change.
                     float motionY = motionEvent2.getY() - motionEvent1.getY();
 
-                    // Scroll the app bar if the change is greater than 100 pixels.
+                    // Scroll the app bar if the change is greater than 50 pixels.
                     if (motionY > 50) {
                         // Animate the bottom app bar onto the screen.
                         objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0);

@@ -1,0 +1,13 @@
+• Aggiunta un'opzione per utilizzare l'intestazione X-Requested-With header di default.
+• Blocco di tutte le query di tracciamento delle URL elencate su privacytests.org.
+• Aggiunta una opzione di Condividi Messaggio.
+• Correzione di un baco che faceva in modo che la barra inferiore della app coprisse parte del sito web.
+• Sistemazione del problema dell'apertura di schede duplicate dopo un riavvio.
+• Indicazione del preferito aperto nella snackbar della nuova scheda al di sopra del cassetto dei preferiti.
+• Aggiunta della versione del kernel in Informazioni> Versione.
+• Mantenimento della cartella corrente dei preferiti al riavvio.
+• Modifica del valore di default della URL personalizzata del proxy in socks://localhost:9050.
+• Aggiunta diversi aggiornamenti alla Guida.
+• Introduzione di diversi piccoli UI miglioramenti.
+• Modifica della target API a 32 Android 12L).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

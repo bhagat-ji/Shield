@@ -50,15 +50,16 @@
             Die URL-Modifikationen können in den Einstellungen deaktiviert werden, sollten sie Probleme bereiten.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With Header</h3>
+        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With-Header</h3>
 
-        <p>Google programmed Android’s WebView to send an X-Requested-With header with every request.
-            The value of the X-Requested-With header is set to the application ID, which in the case of Privacy Browser is <code>com.stoutner.privacybrowser.standard</code>.
-            Currently, it isn't possible to remove this header, but the value can be changed. By default, Privacy Browser sends a null (empty) value for the X-Requested-With header.
-            Even though the spec allows for null header values, some web servers don't like them, so Privacy Browser has the option to revert to the default behavior of sending the app ID.
-            Because this setting is cached when a URL is first loaded, and isn't changed when reloading a page or navigating history,
-            changes to this setting may not be applied until Privacy Browser is restarted.
-            There is a <a href="https://www.stoutner.com/the-x-requested-with-header/">blog post</a> with additional information.
-            The X-Requested-With header will be <a href="https://redmine.stoutner.com/issues/37">completely removed</a> in the 4.x series with the release of Privacy WebView.</p>
+        <p>Die Android-Systemkomponente WebView sendet mit jeder Anfrage einen X-Requested-With-Header an den betreffenden Internet-Server.
+            Der Wert im X-Requested-With-Header entspricht dabei der Applikations-ID - im Fall von Privacy Browser <code>com.stoutner.privacybrowser.standard</code>.
+            Aktuell ist es nicht möglich, diesen Header gänzlich zu entfernen, es kann lediglich dessen Wert geändert werden. Standardmäßig sendet Privacy Browser einen leeren bzw.
+            Null-Wert für den X-Requested-With-Header. Obwohl dies den Spezifikationen zufolge erlaubt ist, kommen manche Internet-Server nicht damit zurecht.
+            Daher ist es möglich, das Standard-Verhalten (d.h. das Senden der App-ID) in den Einstellungen zu aktivieren.
+            Da diese Einstellung gecached wird, wenn eine URL zum ersten Mal geladen wird, ändert sie sich nicht beim Neu-Laden einer Seite oder bei deren Aufruf aus dem Verlauf,
+            sondern wird erst mit einem Neustart von Privacy Browser aktiv.
+            Weitere Informationen dazu können einem <a href="https://www.stoutner.com/the-x-requested-with-header/">Blog-Post</a> entnommen werden.
+            Mit <a href="https://redmine.stoutner.com/issues/37">Privacy WebView ab Version 4.x von Privacy Browser</a>kann der X-Requested-With-Header komplett entfernt werden.</p>
     </body>
 </html>

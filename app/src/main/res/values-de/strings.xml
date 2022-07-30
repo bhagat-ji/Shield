@@ -321,12 +321,17 @@
     <string name="domain_name">Domainname</string>
     <string name="domain_deleted">Domain gelöscht</string>
     <string name="domain_name_instructions">*. kann als Wildcard-Subdomain verwendet werden (z.B. *.stoutner.com)</string>
+    <string-array name="x_requested_with_header_array">
+        <item>System-Einstellung</item>
+        <item>X-Requested-With-Header aktiviert</item>
+        <item>X-Requested-With header deaktiviert</item>
+    </string-array>
     <string-array name="font_size_array">
-        <item>Standardeinstellung</item>
+        <item>System-Einstellung</item>
         <item>Benutzerdefinierte Schriftgröße</item>
     </string-array>
     <string-array name="swipe_to_refresh_array">
-        <item>Standardeinstellung</item>
+        <item>System-Einstellung</item>
         <item>Herunterziehen zum aktualisieren aktiviert</item>
         <item>Herunterziehen zum aktualisieren deaktiviert</item>
     </string-array>
@@ -336,12 +341,12 @@
         <item>Dunkles WebView-Erscheinungsbild</item>
     </string-array>
     <string-array name="wide_viewport_array">
-        <item>Standardeinstellung</item>
+        <item>System-Einstellung</item>
         <item>Breiter Anzeigebereich aktiviert</item>
         <item>Breiter Anzeigebereich deaktiviert</item>
     </string-array>
     <string-array name="display_webpage_images_array">
-        <item>Standardeinstellung</item>
+        <item>System-Einstellung</item>
         <item>Grafiken aktiviert</item>
         <item>Grafiken deaktiviert</item>
     </string-array>
@@ -488,6 +493,10 @@
             <item>Eigener</item>
         </string-array>
         <string name="custom_user_agent">Eigener User Agent</string>
+        <string name="x_requested_with_header">X-Requested-With-Header</string>
+        <string name="x_requested_with_header_summary">Ist diese Option aktiviert, sendet Privacy Browser einen Null-Wert im X-Requested-With-Header.
+            Normalerweise ist dies kein Problem, einige Internet-Seiten kommen damit jedoch nicht zurecht. Wird die Einstellung geändert, startet Privacy Browser neu.</string>
+        <string name="x_requested_with_header_explanation">Änderungen der Einstellung zum X-Requested-With-Header werden nicht übernommen, bis Privacy Browser neu gestartet wird.</string>
         <string name="incognito_mode">Inkognito-Modus</string>
         <string name="incognito_mode_summary">Löscht den Verlauf und den Cache nach jedem fertigen Laden einer Webseite.
             Im Incognito-Modus schließt \'Zurück\'-Button den aktive Tab (oder die App, wenn nur ein Tab geöffnet wurde).</string>

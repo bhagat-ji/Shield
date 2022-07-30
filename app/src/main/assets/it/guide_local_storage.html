@@ -1,7 +1,7 @@
 <!--
   Copyright © 2017-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018,2021 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2018,2021-2022 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -46,11 +46,13 @@
         <p>Quasi tutti i siti web con login richiedono che i cookies siano abilitati perché l'utente possa accedere.
             E' questo il metodo che utilizzano per essere sicuri che sia sempre lo stesso utente che si sposta da una pagina all'altra del sito ed è, a nostro parere, l'unico utilizzo legittimo dei cookies.</p>
 
-        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
-            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
-            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
-            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
-            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+        <p>WebView di Android gestisce i cookie come impostazione a livello di app, e questo implica che i cookie sono attivi o disattivi per tutte le schede in Privacy Browser.
+            Il risultato è che le impostazioni dei cookie per una scheda qualsiasi che è visualizzata regolano le impostazioni relative ai cookie anche per tutte le schede in background.
+            Nel caso in cui si abbia una scheda in background con i cookie abilitati ad esempio per essere loggati in un sito web e si passi a una scheda che non li ha abilitati,
+            vengono disabilitati i cookie per tutte le schede.
+            Se la scheda in background effettua una richiesta, ad esempio per verificare se qualche informazione è stata aggiornata,
+            quella richiesta sarà inviata senza cookie e questo provocherà il log out dal sito.
+            Questa è una limitazione che sarà rimossa con il rilascio di <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> nella serie 4.x.</p>
 
         <p>Se i cookies sono abilitati ma JavaScript è disabilitato, l'icona della privacy sarà gialla <img class="inline" src="../shared_images/warning.svg"> come avvertimento.</p>
 
@@ -81,10 +83,10 @@
             Per questo motivo i controlli dei dati dei moduli non sono presenti nei dispositivi Android più recenti.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Clear and Exit</h3>
+        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Elimina dati ed esci</h3>
 
-        <p>Clear and Exit runs every time the last tab is closed or Clear and Exit is selected from the navigation menu.
-            By default it clears the cookies, DOM storage, form data, the logcat, and the WebView cache. Then it manually deletes the entire <code>app_webview</code> and <code>cache</code> directories.
-            The behavior of Clear and Exit can be configured in the settings.</p>
+        <p>Elimina dati ed esci viene eseguito ogni volta che viene chiusa l'ultima scheda oppure quando viene selezionato il comando Elimina dati ed esci dal menù di navigazione.
+            Di default questo comando cancella i cookie, il DOM storage, i dati dei moduli, il logcat e la cache di WebView.
+            In sostanza elimina completamente le cartelle <code>app_webview</code> e <code>cache</code>. Il comportamento di Elimina dati ed esci può essere configurato nelle impostazioni.</p>
     </body>
 </html>

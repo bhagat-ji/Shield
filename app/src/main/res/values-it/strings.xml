@@ -317,6 +317,11 @@
     <string name="domain_name">Nome del Dominio</string>
     <string name="domain_deleted">Dominio Eliminato</string>
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
+    <string-array name="x_requested_with_header_array">
+        <item>Impostazioni di default</item>
+        <item>Intestazioni X-Requested-With abilitate</item>
+        <item>Intestazioni X-Requested-With disabilitate</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>Impostazioni di default</item>
         <item>Dimensione carattere personalizzata</item>
@@ -484,6 +489,10 @@
             <item>Personalizzato</item>
         </string-array>
         <string name="custom_user_agent">User agent personalizzato</string>
+        <string name="x_requested_with_header">Intestazioni X-Requested-With</string>
+        <string name="x_requested_with_header_summary">Quando è abilitata, Privacy Browser invia un valore nullo per le intestazioni X-Requested-With.
+            Solitamente questo non è un problema, ma ad alcuni siti web non piace. La modifica di questa impostazione provoca il riavvio di Privacy Browser.</string>
+        <string name="x_requested_with_header_explanation">Le modifiche alle intestazioni X-Requested-With non saranno applicate fino al riavvio di Privacy Browser.</string>
         <string name="incognito_mode">Modalità Incognito</string>
         <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina.
             In Modalità Incognito, il tasto "Indietro" chiude la scheda (o l\'applicazione se è aperta solo una scheda).</string>

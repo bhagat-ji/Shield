@@ -625,39 +625,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the swipe to refresh preference icon.
-        if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
+        if (sharedPreferences.getBoolean("swipe_to_refresh", true))
             swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
-        } else {
+        else
             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
-        }
 
         // Set the download with external app preference icon.
-        if (sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false)) {
+        if (sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false))
             downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled);
-        } else {
+        else
             downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled);
-        }
 
         // Set the scroll app bar preference icon.
-        if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true))
             scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled);
-        } else {
+        else
             scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled);
-        }
 
         // Set the bottom app bar preference icon.
-        if (sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)) {
+        if (sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false))
             bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled);
-        } else {
+        else
             bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled);
-        }
 
         // Set the display additional app bar icons preference icon.
-        if (sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false)) {
+        if (sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false))
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
-        } else {
+        else
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
-        }
 
         // Set the WebView theme preference icon.
         switch (webViewThemeEntryNumber) {
@@ -1194,42 +1189,43 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "open_intents_in_new_tab":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
+                    if (sharedPreferences.getBoolean("open_intents_in_new_tab", true))
                         openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled);
-                    } else {
+                    else
                         openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled);
-                    }
                     break;
 
                 case "swipe_to_refresh":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
+                    if (sharedPreferences.getBoolean("swipe_to_refresh", true))
                         swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
-                    } else {
+                    else
                         swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
-                    }
                     break;
 
                 case "download_with_external_app":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(context.getString(R.string.download_with_external_app_key), false)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.download_with_external_app_key), false))
                         downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled);
-                    } else {
+                    else
                         downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled);
-                    }
                     break;
 
                 case "scroll_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(context.getString(R.string.scroll_app_bar_key), true)) scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled);
-                    else scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled);
+                    if (sharedPreferences.getBoolean(context.getString(R.string.scroll_app_bar_key), true))
+                        scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled);
+                    else
+                        scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled);
 
                     break;
 
                 case "bottom_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(context.getString(R.string.bottom_app_bar_key), false)) bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled);
-                    else bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled);
+                    if (sharedPreferences.getBoolean(context.getString(R.string.bottom_app_bar_key), false))
+                        bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_enabled);
+                    else
+                        bottomAppBarPreference.setIcon(R.drawable.bottom_app_bar_disabled);
 
                     // Restart Privacy Browser.
                     restartPrivacyBrowser();
@@ -1237,11 +1233,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "display_additional_app_bar_icons":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(context.getString(R.string.display_additional_app_bar_icons_key), false)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.display_additional_app_bar_icons_key), false))
                         displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
-                    } else {
+                    else
                         displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
-                    }
                     break;
 
                 case "app_theme":

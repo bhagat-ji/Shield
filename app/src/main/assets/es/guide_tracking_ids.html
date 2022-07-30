@@ -45,15 +45,16 @@
             La modificación de la URL se puede desactivar en la configuración si está causando problemas.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With Header</h3>
+        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> Cabecera X-Requested-With</h3>
 
-        <p>Google programmed Android’s WebView to send an X-Requested-With header with every request.
-            The value of the X-Requested-With header is set to the application ID, which in the case of Privacy Browser is <code>com.stoutner.privacybrowser.standard</code>.
-            Currently, it isn't possible to remove this header, but the value can be changed. By default, Privacy Browser sends a null (empty) value for the X-Requested-With header.
-            Even though the spec allows for null header values, some web servers don't like them, so Privacy Browser has the option to revert to the default behavior of sending the app ID.
-            Because this setting is cached when a URL is first loaded, and isn't changed when reloading a page or navigating history,
-            changes to this setting may not be applied until Privacy Browser is restarted.
-            There is a <a href="https://www.stoutner.com/the-x-requested-with-header/">blog post</a> with additional information.
-            The X-Requested-With header will be <a href="https://redmine.stoutner.com/issues/37">completely removed</a> in the 4.x series with the release of Privacy WebView.</p>
+        <p>Google ha programado WebView de Android para que envíe una cabecera X-Requested-With con cada solicitud.
+            El valor de la cabecera X-Requested-With se establece con el ID de la aplicación, que en el caso de Navegador Privado es <code>com.stoutner.privacybrowser.standard</code>.
+            Actualmente, no es posible eliminar esta cabecera, pero el valor puede cambiarse. Por defecto, Navegador Privado envía un valor nulo (vacío) para la cabecera X-Requested-With.
+            Aunque la especificación permite valores de cabecera nulos, a algunos servidores web no les gustan,
+            por lo que Navegador Privado tiene la opción de volver al comportamiento por defecto de enviar el ID de la aplicación.
+            Dado que esta configuración se almacena en caché cuando se carga una URL por primera vez, y no se modifica al recargar una página o al navegar por el historial,
+            los cambios en esta configuración pueden no aplicarse hasta que se reinicie Navegador Privado.
+            Hay una <a href="https://www.stoutner.com/the-x-requested-with-header/">entrada en el blog</a> con información adicional.
+            La cabecera X-Requested-With será <a href="https://redmine.stoutner.com/issues/37">completamente eliminada</a> en la serie 4.x  con el lanzamiento de Privacy WebView.</p>
     </body>
 </html>

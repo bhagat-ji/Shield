@@ -318,6 +318,11 @@
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_deleted">Dominio borrado</string>
     <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
+    <string-array name="x_requested_with_header_array">
+        <item>Por defecto del sistema</item>
+        <item>Cabecera X-Requested-With habilitada</item>
+        <item>Cabecera X-Requested-With deshabilitada</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>Por defecto del sistema</item>
         <item>Tamaño de letra personalizado</item>
@@ -485,6 +490,10 @@
             <item>Personalizado</item>
         </string-array>
         <string name="custom_user_agent">Agente de usuario personalizado</string>
+        <string name="x_requested_with_header">Cabecera X-Requested-With</string>
+        <string name="x_requested_with_header_summary">Cuando se activa, Navegador Privado envía un valor nulo para la cabecera X-Requested-With.
+            Normalmente esto no es un problema, pero a algunos sitios web no les gusta. Al cambiar esta configuración se reiniciará Navegador Privado.</string>
+        <string name="x_requested_with_header_explanation">Los cambios en la cabecera X-Requested-With podrían no aplicarse hasta que se reinicie Navegador Privado.</string>
         <string name="incognito_mode">Modo incógnito</string>
         <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar.
             En el modo Incógnito, Atrás cierra la pestaña (o la app si hay solo una pestaña).</string>
