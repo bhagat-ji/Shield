@@ -62,7 +62,7 @@ class LogcatActivity : AppCompatActivity() {
     private lateinit var logcatTextView: TextView
 
     // Define the save logcat activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileUri: Uri? ->
+    private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri: Uri? ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             try {

@@ -1,7 +1,7 @@
 <!--
   Copyright © 2016-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019,2021 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019,2021-2022 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -46,11 +46,13 @@
         <p>La quasi-totalité des sites web avec des identifiants nécessitent que les cookies soient activés pour qu'un utilisateur puisse se connecter.
             C'est ainsi qu'ils s'assurent qu'il s'agit toujours de vous lorsque vous passez d'une page à l'autre du site, et c'est, à mon avis, la seule utilisation légitime des cookies.</p>
 
-        <p>Android's System WebView treats cookies as an app level setting, meaning that cookies are either on or off for all tabs in Privacy Browser.
-            The result is that the cookies setting for whatever tab is currently displayed controls the cookies setting for all the background tabs as well.
-            If you have a tab in that background that has cookies enabled so that you can be logged into a website, and switch to a tab that doesn't have cookies enabled, it disabled cookies for all the tabs.
-            If the background tab makes a request, for example, to see if there is updated information, that request will be sent without cookies, which will cause the website to log you out.
-            This is a limitation that will be removed with the release of <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in the 4.x series.</p>
+        <p>Le système WebView d'Android traite les cookies comme un paramètre au niveau de l'application,
+            ce qui signifie que les cookies sont soit activés soit désactivés pour tous les onglets de Privacy Browser.
+            Le résultat est que le paramètre des cookies pour l'onglet actuellement affiché contrôle également le paramètre des cookies pour tous les onglets en arrière-plan.
+            Si vous avez un onglet en arrière-plan dont les cookies sont activés pour que vous puissiez être connecté à un site Web, et que vous passez à un onglet dont les cookies ne sont pas activés,
+            les cookies sont désactivés pour tous les onglets.
+            Si l'onglet d'arrière-plan fait une demande, par exemple, pour voir s'il y a des informations mises à jour, cette demande sera envoyée sans cookies, ce qui fera que le site web vous déconnectera.
+            Il s'agit d'une limitation qui sera supprimée avec la sortie de <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> dans la série 4.x.</p>
 
         <p>Si les cookies sont activés mais que JavaScript est désactivé, l'icône de confidentialité sera jaune <img class="inline" src="../shared_images/warning.svg"> en guise d'avertissement.</p>
 
@@ -81,10 +83,10 @@
             Ainsi, les contrôles des données de formulaire n'apparaissent plus sur les appareils Android plus récents.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Clear and Exit</h3>
+        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Nettoyer et Quitter<</h3>
 
-        <p>Clear and Exit runs every time the last tab is closed or Clear and Exit is selected from the navigation menu.
-            By default it clears the cookies, DOM storage, form data, the logcat, and the WebView cache. Then it manually deletes the entire <code>app_webview</code> and <code>cache</code> directories.
-            The behavior of Clear and Exit can be configured in the settings.</p>
+        <p>La fonction Nettoyer et Quitter s'exécute chaque fois que le dernier onglet est fermé ou que Nettoyer et Quitter est sélectionnée dans le menu de navigation.
+            Par défaut, elle efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache WebView.
+            Ensuite, elle supprime manuellement l'ensemble des répertoires <code>app_webview</code> et <code>cache</code>. Le comportement de Nettoyer et Quitter peut être configuré dans les paramètres.</p>
     </body>
 </html>

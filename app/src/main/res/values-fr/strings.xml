@@ -318,6 +318,11 @@
     <string name="domain_name">Nom de demaine</string>
     <string name="domain_deleted">Domaine supprimé</string>
     <string name="domain_name_instructions">Faire précéder par *. pour inclure l\'ensemble des sous-domaines (ex. *.stoutner.com)</string>
+    <string-array name="x_requested_with_header_array">
+        <item>Réglages système</item>
+        <item>En-tête X-Requested-With activé</item>
+        <item>En-tête X-Requested-With désactivé</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>Réglages système</item>
         <item>Taille de police personnalisée</item>
@@ -485,6 +490,10 @@
             <item>Personnalisé</item>
         </string-array>
         <string name="custom_user_agent">User agent personnalisé</string>
+        <string name="x_requested_with_header">En-tête X-Requested-With</string>
+        <string name="x_requested_with_header_summary">Lorsque activé, Privacy Browser envoie une valeur nulle pour l\'en-tête X-Requested-With.
+            En général, ce n\'est pas un problème, mais certains sites Web ne l\'apprécient pas. La modification de ce paramètre entraînera le redémarrage de Privacy Browser.</string>
+        <string name="x_requested_with_header_explanation">Les modifications apportées à l\'en-tête X-Requested-With peuvent ne pas être appliquées avant le redémarrage de Privacy Browser.</string>
         <string name="incognito_mode">Mode Incognito</string>
         <string name="incognito_mode_summary">Vider l\'historique et le cache après le chargement de chaque page.
             Dans le mode Incognito, le bouton Retour ferme l\'onglet (ou l\'application s\'il n\'y a qu\'un seul onglet).</string>
@@ -506,6 +515,10 @@
         <string name="block_all_third_party_requests">Bloquer toutes les requêtes tierces</string>
         <string name="block_all_third_party_requests_summary">Le blocage de toutes les requêtes tierces augmente la vie privée, mais détruit de nombreux sites Web.</string>
     <string name="url_modification">Modifications d\'URL</string>
+        <string name="tracking_queries">Requêtes de pistage</string>
+        <string name="tracking_queries_summary">Supprimer les requêtes de suivi connues des URL.</string>
+        <string name="amp_redirects">Redirections AMP</string>
+        <string name="amp_redirects_summary">Supprimer les requêtes de redirection AMP (Accelerated Mobil Pages) connues des URLs.</string>
     <string name="search">Moteur de Recherche</string>
         <string-array name="search_entries">
             <item>Mojeek</item>

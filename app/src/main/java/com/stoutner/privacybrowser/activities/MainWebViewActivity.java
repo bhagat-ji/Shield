@@ -368,7 +368,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private Activity resultLauncherActivityHandle;
 
     // Define the save URL activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private final ActivityResultLauncher<String> saveUrlActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument(),
+    private final ActivityResultLauncher<String> saveUrlActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("text/*"),
             new ActivityResultCallback<Uri>() {
                 @Override
                 public void onActivityResult(Uri fileUri) {
@@ -383,7 +383,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             });
 
     // Define the save webpage archive activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private final ActivityResultLauncher<String> saveWebpageArchiveActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument(),
+    private final ActivityResultLauncher<String> saveWebpageArchiveActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("multipart/related"),
             new ActivityResultCallback<Uri>() {
                 @Override
                 public void onActivityResult(Uri fileUri) {
@@ -460,7 +460,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             });
 
     // Define the save webpage image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private final ActivityResultLauncher<String> saveWebpageImageActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument(),
+    private final ActivityResultLauncher<String> saveWebpageImageActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("image/png"),
             new ActivityResultCallback<Uri>() {
                 @Override
                 public void onActivityResult(Uri fileUri) {
@@ -4855,7 +4855,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Delete the secondary `Service Worker` cache directory.
                 // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                Process deleteServiceWorkerProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+                Process deleteServiceWorkerProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Default/Service Worker/"});
 
                 // Wait until the processes have finished.
                 deleteCacheProcess.waitFor();
@@ -6026,6 +6026,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
+                 // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,
+                // which links to `/data/data/com.stoutner.privacybrowser.standard`.
+                String privateDataDirectoryString = getApplicationInfo().dataDir;
+
                 // Clear the cache, history, and logcat if Incognito Mode is enabled.
                 if (incognitoModeEnabled) {
                     // Clear the cache.  `true` includes disk files.
@@ -6036,16 +6040,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Manually delete cache folders.
                     try {
-                        // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,
-                        // which links to `/data/data/com.stoutner.privacybrowser.standard`.
-                        String privateDataDirectoryString = getApplicationInfo().dataDir;
-
                         // Delete the main cache directory.
                         Runtime.getRuntime().exec("rm -rf " + privateDataDirectoryString + "/cache");
-
-                        // Delete the secondary `Service Worker` cache directory.
-                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
-                        Runtime.getRuntime().exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
                     } catch (IOException exception) {
                         // Do nothing if an error is thrown.
                     }
@@ -6057,6 +6053,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     } catch (IOException exception) {
                         // Do nothing.
                     }
+                }
+
+                // Clear the `Service Worker` directory.
+                try {
+                    // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                    Runtime.getRuntime().exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Default/Service Worker/"});
+                } catch (IOException exception) {
+                    // Do nothing.
                 }
 
                 // Get the current page position.

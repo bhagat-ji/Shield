@@ -1,0 +1,13 @@
+• Création d'une option pour utiliser l'en-tête X-Requested-With par défaut.
+• Blocage de toutes les requêtes URL de pistage listées dans privacytests.org.
+• Ajout d'une option Partager le message.
+• Correction d'un bug qui causait le masquage d'une partie d'un site web par la barre applicative du bas de l'écran.
+• Correction d'onglets parfois en double au redémarrage.
+• Affichage du signet ouvert dans un nouvel onglet au-dessus du dossier de signets.
+• Ajout de la version du noyau dans A propos > Version.
+• Conservation du dossier courant des signets au redémarrage.
+• Changement de la valeur par défaut de l'URL du proxy personnalisé en socks://localhost:9050.
+• Ajout de diverses mises à jour au Guide.
+• Développement de divers petites UI améliorations.
+• Passage de l'API cible à 32 (Android 12L).
+• Traduction française mise à jour fournie par Kévin L.

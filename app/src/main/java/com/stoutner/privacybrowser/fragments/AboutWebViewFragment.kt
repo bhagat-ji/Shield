@@ -22,6 +22,7 @@ package com.stoutner.privacybrowser.fragments
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -116,9 +117,10 @@ class AboutWebViewFragment : Fragment() {
         // Get the current theme status.
         val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
-        // Check to see if the app is in night mode.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES && WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {  // The app is in night mode.
+        // Check to see if the app is in night mode.  This can be removed once the minimum API >= 33.
+        if ((Build.VERSION.SDK_INT < 33) && (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES) && (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK))) {  // The app is in night mode.
             // Apply the dark WebView theme.
+            @Suppress("DEPRECATION")
             WebSettingsCompat.setForceDark(tabWebView.settings, WebSettingsCompat.FORCE_DARK_ON)
         }
 

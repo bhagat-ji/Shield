@@ -1,7 +1,7 @@
 <!--
   Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019,2021 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019,2021-2022 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -40,20 +40,21 @@
 
         <h3><svg class="header"><use href="../shared_images/link_off.svg#icon"/></svg> Modification d'URLs</h3>
 
-        <p>Privacy Browser removes tracking IDs and AMP (<a href="https://en.wikipedia.org/wiki/Accelerated_Mobile_Pages">Accelerated Mobile Pages</a>) redirects from URL queries.
-            There is a blog post that is updated with the <a href="https://www.stoutner.com/url-modification/">current list</a> of modifications.
-            URL modification can be turned off in the settings if it is causing issues.</p>
+        <p>Privacy Browser supprime les ID de suivi et les redirections AMP (<a href="https://en.wikipedia.org/wiki/Accelerated_Mobile_Pages">Accelerated Mobile Pages</a>) des requêtes URL.
+            Il existe un article de blog qui est mis à jour avec la <a href="https://www.stoutner.com/url-modification/">liste actuelle</a> des modifications.
+            La modification des URL peut être désactivée dans les paramètres si elle pose des problèmes.</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With Header</h3>
+        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> En-tête X-Requested-With</h3>
 
-        <p>Google programmed Android’s WebView to send an X-Requested-With header with every request.
-            The value of the X-Requested-With header is set to the application ID, which in the case of Privacy Browser is <code>com.stoutner.privacybrowser.standard</code>.
-            Currently, it isn't possible to remove this header, but the value can be changed. By default, Privacy Browser sends a null (empty) value for the X-Requested-With header.
-            Even though the spec allows for null header values, some web servers don't like them, so Privacy Browser has the option to revert to the default behavior of sending the app ID.
-            Because this setting is cached when a URL is first loaded, and isn't changed when reloading a page or navigating history,
-            changes to this setting may not be applied until Privacy Browser is restarted.
-            There is a <a href="https://www.stoutner.com/the-x-requested-with-header/">blog post</a> with additional information.
-            The X-Requested-With header will be <a href="https://redmine.stoutner.com/issues/37">completely removed</a> in the 4.x series with the release of Privacy WebView.</p>
+        <p>Google a programmé WebView d'Android pour envoyer un en-tête X-Requested-With avec chaque requête.
+            La valeur de l'en-tête X-Requested-With est définie par l'ID de l'application, qui dans le cas de Privacy Browser est <code>com.stoutner.privacybrowser.standard</code>.
+            Actuellement, il n'est pas possible de supprimer cet en-tête, mais la valeur peut être modifiée. Par défaut, Privacy Browser envoie une valeur nulle (vide) pour l'en-tête X-Requested-With.
+            Même si la spécification permet des valeurs d'en-tête nulles, certains serveurs web ne les aiment pas,
+            donc Privacy Browser a l'option de revenir au comportement par défaut d'envoyer l'ID de l'application.
+            Parce que ce paramètre est mis en cache lors du premier chargement d'une URL, et n'est pas modifié lors du rechargement d'une page ou de la navigation dans l'historique,
+            les modifications de ce paramètre peuvent ne pas être appliquées jusqu'à ce que Privacy Browser soit redémarré.
+            Il y a un <a href="https://www.stoutner.com/the-x-requested-with-header/">article de blog</a> avec des informations complémentaires.
+            L'en-tête X-Requested-With sera <a href="https://redmine.stoutner.com/issues/37">complètement supprimé</a> dans la série 4.x avec la sortie de Privacy WebView.</p>
     </body>
 </html>
