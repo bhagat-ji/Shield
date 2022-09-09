@@ -1056,8 +1056,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Enable DOM Storage if JavaScript is enabled.
             optionsDomStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
 
+            // Get the current theme status.
+            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+            // Enable dark WebView if the API is < 33 or if night mode is enabled.
+            optionsDarkWebViewMenuItem.setEnabled((Build.VERSION.SDK_INT < 33) || (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES));
+
             // Set the checkbox status for dark WebView if the WebView supports it.
-            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            if ((Build.VERSION.SDK_INT >= 33) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {  // The device is running API >= 33 and algorithmic darkening is supported.
+                optionsDarkWebViewMenuItem.setChecked(WebSettingsCompat.isAlgorithmicDarkeningAllowed(currentWebView.getSettings()));
+            } else if ((Build.VERSION.SDK_INT < 33) && WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {  // The device is running API < 33 and the WebView supports force dark.
+                //noinspection deprecation
                 optionsDarkWebViewMenuItem.setChecked(WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON);
             }
         }
@@ -1737,13 +1746,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.dark_webview) {  // Dark WebView.
             // Check to see if dark WebView is supported by this WebView.
-            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            if ((Build.VERSION.SDK_INT >= 33) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {  // The device is running API >= 33 and algorithmic darkening is supported.
+                // Toggle algorithmic darkening.
+                WebSettingsCompat.setAlgorithmicDarkeningAllowed(currentWebView.getSettings(), !WebSettingsCompat.isAlgorithmicDarkeningAllowed(currentWebView.getSettings()));
+            } else if ((Build.VERSION.SDK_INT < 33) && WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {  // The device is running API < 33 and the WebView supports force dark.
                 // Toggle the dark WebView setting.
+                //noinspection deprecation
                 if (WebSettingsCompat.getForceDark(currentWebView.getSettings()) == WebSettingsCompat.FORCE_DARK_ON) {  // Dark WebView is currently enabled.
                     // Turn off dark WebView.
+                    //noinspection deprecation
                     WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
                 } else {  // Dark WebView is currently disabled.
                     // Turn on dark WebView.
+                    //noinspection deprecation
                     WebSettingsCompat.setForceDark(currentWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                 }
             }
@@ -3975,16 +3990,48 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check to see if WebView themes are supported.
-                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                if ((Build.VERSION.SDK_INT >= 33) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {  // The device is running API >= 33 and algorithmic darkening is supported.
+                    // Set the WebView theme.
+                    switch (webViewThemeInt) {
+                        case DomainsDatabaseHelper.SYSTEM_DEFAULT:
+                            // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
+                            if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+                                // Turn off algorithmic darkening.
+                                WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), false);
+                            } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                                // Turn on algorithmic darkening.
+                                WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), true);
+                            } else {  // The system default theme is selected.
+                                // Get the current system theme status.
+                                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                                // Set the algorithmic darkening according to the current system theme status.
+                                WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES));
+                            }
+                            break;
+
+                        case DomainsDatabaseHelper.LIGHT_THEME:
+                            // Turn off algorithmic darkening.
+                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), false);
+                            break;
+
+                        case DomainsDatabaseHelper.DARK_THEME:
+                            // Turn on algorithmic darkening.
+                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), true);
+                            break;
+                    }
+                } else if ((Build.VERSION.SDK_INT < 33) && WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {  // The device is running API < 33 and the WebView supports force dark.
                     // Set the WebView theme.
                     switch (webViewThemeInt) {
                         case DomainsDatabaseHelper.SYSTEM_DEFAULT:
                             // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
                             if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
                                 // Turn off the WebView dark mode.
+                                //noinspection deprecation
                                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
                             } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
                                 // Turn on the WebView dark mode.
+                                //noinspection deprecation
                                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                             } else {  // The system default theme is selected.
                                 // Get the current system theme status.
@@ -3993,9 +4040,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Set the WebView theme according to the current system theme status.
                                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
                                     // Turn off the WebView dark mode.
+                                    //noinspection deprecation
                                     WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
                                 } else {  // The system is in night mode.
                                     // Turn on the WebView dark mode.
+                                    //noinspection deprecation
                                     WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                                 }
                             }
@@ -4003,11 +4052,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         case DomainsDatabaseHelper.LIGHT_THEME:
                             // Turn off the WebView dark mode.
+                            //noinspection deprecation
                             WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
                             break;
 
                         case DomainsDatabaseHelper.DARK_THEME:
                             // Turn on the WebView dark mode.
+                            //noinspection deprecation
                             WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                             break;
                     }
@@ -4123,13 +4174,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Apply the WebView theme if supported by the installed WebView.
-                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                if ((Build.VERSION.SDK_INT >= 33) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {  // The device is running API >= 33 and algorithmic darkening is supported.
+                    // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
+                    if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // the light theme is selected.
+                        // Turn off algorithmic darkening.
+                        WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), false);
+                    } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                        // Turn on algorithmic darkening.
+                        WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), true);
+                    } else {  // The system default theme is selected.
+                        // Get the current system theme status.
+                        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                        // Set the algorithmic darkening according to the current system theme status.
+                        WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), currentThemeStatus == Configuration.UI_MODE_NIGHT_YES);
+                    }
+                } else if ((Build.VERSION.SDK_INT < 33) && WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {  // The device is running API < 33 and the WebView supports force dark.
                     // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
                     if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
                         // Turn off the WebView dark mode.
+                        //noinspection deprecation
                         WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
                     } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
                         // Turn on the WebView dark mode.
+                        //noinspection deprecation
                         WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                     } else {  // The system default theme is selected.
                         // Get the current system theme status.
@@ -4138,9 +4206,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Set the WebView theme according to the current system theme status.
                         if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
                             // Turn off the WebView dark mode.
+                            //noinspection deprecation
                             WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
                         } else {  // The system is in night mode.
                             // Turn on the WebView dark mode.
+                            //noinspection deprecation
                             WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                         }
                     }
@@ -5033,10 +5103,40 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String[] webViewThemeEntryValuesStringArray = getResources().getStringArray(R.array.webview_theme_entry_values);
 
         // Apply the WebView theme if supported by the installed WebView.
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+        if ((Build.VERSION.SDK_INT >= 33) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {  // The device is running API >= 33 and algorithmic darkening is supported.
+            // Set the WebView them.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
+            if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
+                // Turn off algorithmic darkening.
+                WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), false);
+
+                // Make the WebView visible. The WebView was created invisible in `webview_framelayout` to prevent a white background splash in night mode.
+                // If the system is currently in night mode, showing the WebView will be handled in `onProgressChanged()`.
+                nestedScrollWebView.setVisibility(View.VISIBLE);
+            } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                // Turn on algorithmic darkening.
+                WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), true);
+            } else {
+                // The system default theme is selected.
+                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                // Set the algorithmic darkening according to the current system theme status.
+                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
+                    // Turn off algorithmic darkening.
+                    WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), false);
+
+                    // Make the WebView visible. The WebView was created invisible in `webview_framelayout` to prevent a white background splash in night mode.
+                    // If the system is currently in night mode, showing the WebView will be handled in `onProgressChanged()`.
+                    nestedScrollWebView.setVisibility(View.VISIBLE);
+                } else {  // The system is in night mode.
+                    // Turn on algorithmic darkening.
+                    WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.getSettings(), true);
+                }
+            }
+        } else if ((Build.VERSION.SDK_INT < 33) && WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {  // The device is running API < 33 and the WebView supports force dark.
             // Set the WebView theme.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
             if (webViewTheme.equals(webViewThemeEntryValuesStringArray[1])) {  // The light theme is selected.
                 // Turn off the WebView dark mode.
+                //noinspection deprecation
                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
 
                 // Make the WebView visible. The WebView was created invisible in `webview_framelayout` to prevent a white background splash in night mode.
@@ -5044,6 +5144,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.setVisibility(View.VISIBLE);
             } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
                 // Turn on the WebView dark mode.
+                //noinspection deprecation
                 WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
             } else {  // The system default theme is selected.
                 // Get the current system theme status.
@@ -5052,6 +5153,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the WebView theme according to the current system theme status.
                 if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {  // The system is in day mode.
                     // Turn off the WebView dark mode.
+                    //noinspection deprecation
                     WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_OFF);
 
                     // Make the WebView visible. The WebView was created invisible in `webview_framelayout` to prevent a white background splash in night mode.
@@ -5059,6 +5161,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.setVisibility(View.VISIBLE);
                 } else {  // The system is in night mode.
                     // Turn on the WebView dark mode.
+                    //noinspection deprecation
                     WebSettingsCompat.setForceDark(nestedScrollWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
                 }
             }

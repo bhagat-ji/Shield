@@ -48,7 +48,6 @@ import java.util.Objects;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     // Declare the class variables.
-    private int currentThemeStatus;
     private String defaultUserAgent;
     private ArrayAdapter<CharSequence> userAgentNamesArray;
     private String[] translatedUserAgentNamesArray;
@@ -116,9 +115,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Get a handle for the resources.
         Resources resources = getResources();
-
-        // Get the current theme status.
-        currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -362,7 +358,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Get the current app theme.
         String currentAppTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
 
-        // Define an app theme entry number.
+        // Declare an app theme entry number.
         int appThemeEntryNumber;
 
         // Get the app theme entry number that matches the current app theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
@@ -379,6 +375,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Set the current theme as the summary text for the preference.
         appThemePreference.setSummary(appThemeEntriesStringArray[appThemeEntryNumber]);
+
+        // Disable the WebView theme preference if the API >= 33 and the app theme is set to light.
+        webViewThemePreference.setEnabled((Build.VERSION.SDK_INT < 33) || (appThemeEntryNumber != 1));
 
 
         // Get the WebView theme string arrays.
@@ -655,25 +654,31 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
 
         // Set the WebView theme preference icon.
-        switch (webViewThemeEntryNumber) {
-            case 0:  // The system default WebView theme is selected.
-                // Set the icon according to the app theme.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
+        if (webViewThemePreference.isEnabled()) {  // The WebView theme preference is enabled.
+            switch (webViewThemeEntryNumber) {
+                case 0:  // The system default WebView theme is selected.
+                    // Get the current theme status.
+                    int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                    // Set the icon according to the app theme.
+                    if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)
+                        webViewThemePreference.setIcon(R.drawable.webview_light_theme);
+                    else
+                        webViewThemePreference.setIcon(R.drawable.webview_dark_theme);
+                    break;
+
+                case 1:  // The light WebView theme is selected.
+                    // Set the icon.
                     webViewThemePreference.setIcon(R.drawable.webview_light_theme);
-                } else {
+                    break;
+
+                case 2:  // The dark WebView theme is selected.
+                    // Set the icon.
                     webViewThemePreference.setIcon(R.drawable.webview_dark_theme);
-                }
-                break;
-
-            case 1:  // The light WebView theme is selected.
-                // Set the icon.
-                webViewThemePreference.setIcon(R.drawable.webview_light_theme);
-                break;
-
-            case 2:  // The dark WebView theme is selected.
-                // Set the icon.
-                webViewThemePreference.setIcon(R.drawable.webview_dark_theme);
-                break;
+                    break;
+            }
+        } else {  // The WebView theme preference is disabled.
+            webViewThemePreference.setIcon(R.drawable.webview_theme_ghosted);
         }
 
         // Set the wide viewport preference icon.
@@ -1243,42 +1248,109 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Get the new theme.
                     String newAppTheme = sharedPreferences.getString("app_theme", context.getString(R.string.app_theme_default_value));
 
-                    // Update the system according to the new theme.  A switch statement cannot be used because the theme entry values string array is not a compile-time constant.
+                    // Declare an app theme entry number.
+                    int appThemeEntryNumber;
+
+                    // Get the app theme entry number that matches the current app theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
                     if (newAppTheme.equals(appThemeEntryValuesStringArray[1])) {  // The light theme is selected.
-                        // Update the theme preference summary text.
-                        appThemePreference.setSummary(appThemeEntriesStringArray[1]);
-
-                        // Apply the new theme.
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        // Store the app theme entry number.
+                        appThemeEntryNumber = 1;
                     } else if (newAppTheme.equals(appThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
-                        // Update the theme preference summary text.
-                        appThemePreference.setSummary(appThemeEntriesStringArray[2]);
-
-                        // Apply the new theme.
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        // Store the app theme entry number.
+                        appThemeEntryNumber = 2;
                     } else {  // The system default theme is selected.
-                        // Update the theme preference summary text.
-                        appThemePreference.setSummary(appThemeEntriesStringArray[0]);
-
-                        // Apply the new theme.
-                        if (Build.VERSION.SDK_INT >= 28) {  // The system default theme is supported.
-                            // Follow the system default theme.
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                        } else {// The system default theme is not supported.
-                            // Follow the battery saver mode.
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
-                        }
+                        // Store the app theme entry number.
+                        appThemeEntryNumber = 0;
                     }
 
-                    // Update the current theme status.
-                    currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                    // Update the system according to the new theme.  A switch statement cannot be used because the theme entry values string array is not a compile-time constant.
+                    switch (appThemeEntryNumber) {
+                        case 0:  // The system default theme is selected.
+                            // Update the theme preference summary text.
+                            appThemePreference.setSummary(appThemeEntriesStringArray[0]);
+
+                            // Apply the new theme.
+                            if (Build.VERSION.SDK_INT >= 28) {  // The system default theme is supported.
+                                // Follow the system default theme.
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                            } else {// The system default theme is not supported.
+                                // Follow the battery saver mode.
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
+                            }
+                            break;
+
+                        case 1:  // The light theme is selected.
+                            // Update the theme preference summary text.
+                            appThemePreference.setSummary(appThemeEntriesStringArray[1]);
+
+                            // Apply the new theme.
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                            break;
+
+                        case 2:
+                            // Update the theme preference summary text.
+                            appThemePreference.setSummary(appThemeEntriesStringArray[2]);
+
+                            // Apply the new theme.
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                            break;
+                    }
+
+                    // Disable the WebView theme preference if the API >= 33 and the app theme is set to light.
+                    webViewThemePreference.setEnabled((Build.VERSION.SDK_INT < 33) || (appThemeEntryNumber != 1));
+
+                    // Get the WebView theme.
+                    String webViewTheme = sharedPreferences.getString("webview_theme", context.getString(R.string.webview_theme_default_value));
+
+                    // Declare a WebView theme entry number.
+                    int webViewThemeEntryNumber;
+
+                    // Get the webView theme entry number that matches the new WebView theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+                    if (webViewTheme.equals(webViewThemeEntriesStringArray[1])) {  // The light theme is selected.
+                        // Store the WebView theme entry number.
+                        webViewThemeEntryNumber = 1;
+                    } else if (webViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
+                        // Store the WebView theme entry number.
+                        webViewThemeEntryNumber = 2;
+                    } else {  // The system default theme is selected.
+                        // Store the WebView theme entry number.
+                        webViewThemeEntryNumber = 0;
+                    }
+
+                    // Update the WebView theme preference icon.
+                    if (webViewThemePreference.isEnabled()) {  // The WebView theme preference is enabled.
+                        switch (webViewThemeEntryNumber) {
+                            case 0:  // The system default WebView theme is selected.
+                                // Get the current theme status.
+                                int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                                // Set the icon according to the app theme.
+                                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)
+                                    webViewThemePreference.setIcon(R.drawable.webview_light_theme);
+                                else
+                                    webViewThemePreference.setIcon(R.drawable.webview_dark_theme);
+                                break;
+
+                            case 1:  // The light WebView theme is selected.
+                                // Set the icon.
+                                webViewThemePreference.setIcon(R.drawable.webview_light_theme);
+                                break;
+
+                            case 2:  // The dark WebView theme is selected.
+                                // Set the icon.
+                                webViewThemePreference.setIcon(R.drawable.webview_dark_theme);
+                                break;
+                        }
+                    } else {  // The WebView theme preference is disabled.
+                        webViewThemePreference.setIcon(R.drawable.webview_theme_ghosted);
+                    }
                     break;
 
                 case "webview_theme":
                     // Get the new WebView theme.
                     String newWebViewTheme = sharedPreferences.getString("webview_theme", context.getString(R.string.webview_theme_default_value));
 
-                    // Define a new WebView theme entry number.
+                    // Declare a new WebView theme entry number.
                     int newWebViewThemeEntryNumber;
 
                     // Get the webView theme entry number that matches the new WebView theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
@@ -1286,16 +1358,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         // Store the new WebView theme entry number.
                         newWebViewThemeEntryNumber = 1;
                     } else if (newWebViewTheme.equals(webViewThemeEntryValuesStringArray[2])) {  // The dark theme is selected.
-                        // Store the WebView theme entry number.
+                        // Store the new WebView theme entry number.
                         newWebViewThemeEntryNumber = 2;
                     } else {  // The system default theme is selected.
-                        // Store the WebView theme entry number.
+                        // Store the new WebView theme entry number.
                         newWebViewThemeEntryNumber = 0;
                     }
 
                     // Update the icon.
                     switch (newWebViewThemeEntryNumber) {
                         case 0:  // The system default WebView theme is selected.
+                            // Get the current theme status.
+                            int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
                             // Set the icon.
                             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
                                 webViewThemePreference.setIcon(R.drawable.webview_light_theme);
