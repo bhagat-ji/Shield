@@ -30,14 +30,9 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.adapters.AboutPagerAdapter
+import com.stoutner.privacybrowser.adapters.GuidePagerAdapter
 
-class AboutActivity : AppCompatActivity() {
-    companion object {
-        // Define the companion object constants.  These can be move to being public constants once MainWebViewActivity has been converted to Kotlin.
-        const val BLOCKLIST_VERSIONS = "blocklist_versions"
-    }
-
+class GuideActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -54,23 +49,17 @@ class AboutActivity : AppCompatActivity() {
         // Run the default commands.
         super.onCreate(savedInstanceState)
 
-        // Get the intent that launched the activity.
-        val launchingIntent = intent
-
-        // Store the blocklist versions.
-        val blocklistVersions = launchingIntent.getStringArrayExtra(BLOCKLIST_VERSIONS)!!
-
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.about_bottom_appbar)
+            setContentView(R.layout.guide_bottom_appbar)
         } else {
-            setContentView(R.layout.about_top_appbar)
+            setContentView(R.layout.guide_top_appbar)
         }
 
         // Get handles for the views.
-        val toolbar = findViewById<Toolbar>(R.id.about_toolbar)
-        val aboutTabLayout = findViewById<TabLayout>(R.id.about_tablayout)
-        val aboutViewPager = findViewById<ViewPager>(R.id.about_viewpager)
+        val toolbar = findViewById<Toolbar>(R.id.guide_toolbar)
+        val guideViewPager = findViewById<ViewPager>(R.id.guide_viewpager)
+        val guideTabLayout = findViewById<TabLayout>(R.id.guide_tablayout)
 
         // Set the support action bar.
         setSupportActionBar(toolbar)
@@ -81,16 +70,16 @@ class AboutActivity : AppCompatActivity() {
         // Display the home arrow on the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        // Initialize the about pager adapter.
-        val aboutPagerAdapter = AboutPagerAdapter(supportFragmentManager, applicationContext, blocklistVersions)
+        // Initialize the guide pager adapter.
+        val guidePagerAdapter = GuidePagerAdapter(supportFragmentManager, applicationContext)
 
         // Set the view pager adapter.
-        aboutViewPager.adapter = aboutPagerAdapter
+        guideViewPager.adapter = guidePagerAdapter
 
-        // Keep all the tabs in memory.  This prevents the memory usage updater from running multiple times.
-        aboutViewPager.offscreenPageLimit = 10
+        // Keep all the tabs in memory.  This prevents the memory usage adapter from running multiple times.
+        guideViewPager.offscreenPageLimit = 10
 
-        // Connect the tab layout to the view pager.
-        aboutTabLayout.setupWithViewPager(aboutViewPager)
+        // Link the tab layout to the view pager.
+        guideTabLayout.setupWithViewPager(guideViewPager)
     }
 }

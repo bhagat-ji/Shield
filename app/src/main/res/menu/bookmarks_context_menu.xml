@@ -54,7 +54,7 @@
         android:id="@+id/delete_bookmark"
         android:title="@string/delete"
         android:orderInCategory="50"
-        android:icon="@drawable/delete_enabled"
+        android:icon="@drawable/delete"
         app:showAsAction="ifRoom" />
 
     <item

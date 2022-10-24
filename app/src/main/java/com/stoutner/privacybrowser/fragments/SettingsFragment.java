@@ -127,7 +127,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         cookiesPreference = findPreference(getString(R.string.cookies_key));
         domStoragePreference = findPreference("dom_storage");
         formDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
-        userAgentPreference = findPreference("user_agent");
+        userAgentPreference = findPreference(getString(R.string.user_agent_key));
         customUserAgentPreference = findPreference("custom_user_agent");
         xRequestedWithHeaderPreference = findPreference(getString(R.string.x_requested_with_header_key));
         incognitoModePreference = findPreference("incognito_mode");
@@ -154,17 +154,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         clearLogcatPreference = findPreference(getString(R.string.clear_logcat_key));
         clearCachePreference = findPreference("clear_cache");
         homepagePreference = findPreference("homepage");
-        fontSizePreference = findPreference("font_size");
+        fontSizePreference = findPreference(getString(R.string.font_size_key));
         openIntentsInNewTabPreference = findPreference("open_intents_in_new_tab");
-        swipeToRefreshPreference = findPreference("swipe_to_refresh");
+        swipeToRefreshPreference = findPreference(getString(R.string.swipe_to_refresh_key));
         downloadWithExternalAppPreference = findPreference(getString(R.string.download_with_external_app_key));
         scrollAppBarPreference = findPreference(getString(R.string.scroll_app_bar_key));
         bottomAppBarPreference = findPreference(getString(R.string.bottom_app_bar_key));
         displayAdditionalAppBarIconsPreference = findPreference(getString(R.string.display_additional_app_bar_icons_key));
         appThemePreference = findPreference("app_theme");
-        webViewThemePreference = findPreference("webview_theme");
-        wideViewportPreference = findPreference("wide_viewport");
-        displayWebpageImagesPreference = findPreference("display_webpage_images");
+        webViewThemePreference = findPreference(getString(R.string.webview_theme_key));
+        wideViewportPreference = findPreference(getString(R.string.wide_viewport_key));
+        displayWebpageImagesPreference = findPreference(getString(R.string.display_webpage_images_key));
 
         // Remove the lint warnings below that the preferences might be null.
         assert javaScriptPreference != null;
@@ -215,7 +215,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         domStoragePreference.setDependency("javascript");
 
         // Get strings from the preferences.
-        String userAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+        String userAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value));
         String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
         String proxyString = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
 
@@ -288,7 +288,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the summary text for the custom user agent preference.
-        customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+        customUserAgentPreference.setSummary(sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value)));
 
         // Only enable the custom user agent preference if the user agent is set to `Custom`.
         customUserAgentPreference.setEnabled(Objects.equals(userAgentPreference.getSummary(), getString(R.string.custom_user_agent)));
@@ -348,7 +348,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 
         // Set the font size as the summary text for the preference.
-        fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
+        fontSizePreference.setSummary(sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value)) + "%");
 
 
         // Get the app theme string arrays.
@@ -385,7 +385,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values);
 
         // Get the current WebView theme.
-        String currentWebViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
+        String currentWebViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value));
 
         // Define a WebView theme entry number.
         int webViewThemeEntryNumber;
@@ -624,7 +624,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the swipe to refresh preference icon.
-        if (sharedPreferences.getBoolean("swipe_to_refresh", true))
+        if (sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true))
             swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
         else
             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
@@ -682,14 +682,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         // Set the wide viewport preference icon.
-        if (sharedPreferences.getBoolean("wide_viewport", true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true)) {
             wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled);
         } else {
             wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled);
         }
 
         // Set the display webpage images preference icon.
-        if (sharedPreferences.getBoolean("display_webpage_images", true)) {
+        if (sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true)) {
             displayWebpageImagesPreference.setIcon(R.drawable.images_enabled);
         } else {
             displayWebpageImagesPreference.setIcon(R.drawable.images_disabled);
@@ -794,7 +794,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "user_agent":
                     // Get the new user agent name.
-                    String newUserAgentName = sharedPreferences.getString("user_agent", context.getString(R.string.user_agent_default_value));
+                    String newUserAgentName = sharedPreferences.getString(context.getString(R.string.user_agent_key), context.getString(R.string.user_agent_default_value));
 
                     // Get the array position for the new user agent name.
                     int newUserAgentArrayPosition = userAgentNamesArray.getPosition(newUserAgentName);
@@ -840,7 +840,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "custom_user_agent":
                     // Set the new custom user agent as the summary text for the preference.
-                    customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", context.getString(R.string.custom_user_agent_default_value)));
+                    customUserAgentPreference.setSummary(sharedPreferences.getString(context.getString(R.string.custom_user_agent_key), context.getString(R.string.custom_user_agent_default_value)));
                     break;
 
                 case "x_requested_with_header":
@@ -1189,7 +1189,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "font_size":
                     // Update the font size summary text.
-                    fontSizePreference.setSummary(sharedPreferences.getString("font_size", context.getString(R.string.font_size_default_value)) + "%");
+                    fontSizePreference.setSummary(sharedPreferences.getString(context.getString(R.string.font_size_key), context.getString(R.string.font_size_default_value)) + "%");
                     break;
 
                 case "open_intents_in_new_tab":
@@ -1202,7 +1202,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "swipe_to_refresh":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("swipe_to_refresh", true))
+                    if (sharedPreferences.getBoolean(context.getString(R.string.swipe_to_refresh_key), true))
                         swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
                     else
                         swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
@@ -1300,7 +1300,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     webViewThemePreference.setEnabled((Build.VERSION.SDK_INT < 33) || (appThemeEntryNumber != 1));
 
                     // Get the WebView theme.
-                    String webViewTheme = sharedPreferences.getString("webview_theme", context.getString(R.string.webview_theme_default_value));
+                    String webViewTheme = sharedPreferences.getString(context.getString(R.string.webview_theme_key), context.getString(R.string.webview_theme_default_value));
 
                     // Declare a WebView theme entry number.
                     int webViewThemeEntryNumber;
@@ -1348,7 +1348,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "webview_theme":
                     // Get the new WebView theme.
-                    String newWebViewTheme = sharedPreferences.getString("webview_theme", context.getString(R.string.webview_theme_default_value));
+                    String newWebViewTheme = sharedPreferences.getString(context.getString(R.string.webview_theme_key), context.getString(R.string.webview_theme_default_value));
 
                     // Declare a new WebView theme entry number.
                     int newWebViewThemeEntryNumber;
@@ -1396,7 +1396,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "wide_viewport":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("wide_viewport", true)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.wide_viewport_key), true)) {
                         wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled);
                     } else {
                         wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled);
@@ -1405,7 +1405,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 case "display_webpage_images":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("display_webpage_images", true)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.display_webpage_images_key), true)) {
                         displayWebpageImagesPreference.setIcon(R.drawable.images_enabled);
                     } else {
                         displayWebpageImagesPreference.setIcon(R.drawable.images_disabled);

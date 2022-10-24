@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -18,15 +18,8 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
-    <item
-        android:id="@+id/delete_domain"
-        android:title="@string/delete"
-        android:orderInCategory="10"
-        android:icon="@drawable/delete"
-        app:showAsAction="ifRoom" />
-</menu>
+<!-- Set the icon tint color based on the state. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_enabled="true" android:color="@color/icon" />
+    <item android:state_enabled="false" android:color="@color/gray_500" />
+</selector>

@@ -155,7 +155,7 @@ class AboutVersionFragment : Fragment() {
     }
 
     // Define the save about version text activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileUri: Uri? ->
+    private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri: Uri? ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             try {
@@ -199,7 +199,7 @@ class AboutVersionFragment : Fragment() {
     }
 
     // Define the save about version image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveAboutVersionImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { fileUri: Uri? ->
+    private val saveAboutVersionImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { fileUri: Uri? ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             // Save the about version image.
@@ -320,7 +320,8 @@ class AboutVersionFragment : Fragment() {
 
         // Get the Orbot version name if Orbot is installed.
         val orbot: String = try {
-            // Store the version name.
+            // Store the version name.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
+            @Suppress("DEPRECATION")
             requireContext().packageManager.getPackageInfo("org.torproject.android", 0).versionName
         } catch (exception: PackageManager.NameNotFoundException) {  // Orbot is not installed.
             // Store an empty string.
@@ -329,7 +330,8 @@ class AboutVersionFragment : Fragment() {
 
         // Get the I2P version name if I2P is installed.
         val i2p: String = try {
-            // Store the version name.
+            // Store the version name.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
+            @Suppress("DEPRECATION")
             requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName
         } catch (exception: PackageManager.NameNotFoundException) {  // I2P is not installed.
             // Store an empty string.
@@ -338,7 +340,8 @@ class AboutVersionFragment : Fragment() {
 
         // Get the OpenKeychain version name if it is installed.
         val openKeychain: String = try {
-            // Store the version name.
+            // Store the version name.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
+            @Suppress("DEPRECATION")
             requireContext().packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName
         } catch (exception: PackageManager.NameNotFoundException) {  // OpenKeychain is not installed.
             // Store an empty string.
@@ -509,7 +512,8 @@ class AboutVersionFragment : Fragment() {
         // Display the package signature.
         try {
             // Get the first package signature.  Suppress the lint warning about the need to be careful in implementing comparison of certificates for security purposes.
-            // Once the minimum API >= 28, `GET_SIGNING_CERTIFICATES` can be used instead.
+            // Once the minimum API >= 28, `GET_SIGNING_CERTIFICATES` can be used instead.  Once the minimum API >= 33, the newer `getPackageInfo()` may be used.
+            @Suppress("DEPRECATION")
             @SuppressLint("PackageManagerGetSignatures") val packageSignature = requireContext().packageManager.getPackageInfo(requireContext().packageName,PackageManager.GET_SIGNATURES)
                 .signatures[0]
 

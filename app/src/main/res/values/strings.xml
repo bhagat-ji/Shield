@@ -663,11 +663,18 @@
     <string name="bottom_app_bar_key" translatable="false">bottom_app_bar</string>
     <string name="cookies_key" translatable="false">cookies</string>
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
-    <string name="download_with_external_app_key" translatable="false">download_with_external_app</string>
+    <string name="custom_user_agent_key" translatable="false">custom_user_agent</string>
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
+    <string name="display_webpage_images_key" translatable="false">display_webpage_images</string>
+    <string name="download_with_external_app_key" translatable="false">download_with_external_app</string>
+    <string name="font_size_key" translatable="false">font_size</string>
     <string name="proxy_custom_url_key" translatable="false">proxy_custom_url</string>
     <string name="scroll_app_bar_key" translatable="false">scroll_app_bar</string>
+    <string name="swipe_to_refresh_key" translatable="false">swipe_to_refresh</string>
     <string name="tracking_queries_key" translatable="false">tracking_queries</string>
+    <string name="user_agent_key" translatable="false">user_agent</string>
+    <string name="webview_theme_key" translatable="false">webview_theme</string>
+    <string name="wide_viewport_key" translatable="false">wide_viewport</string>
     <string name="x_requested_with_header_key" translatable="false">x_requested_with_header</string>
 
     <!-- Non-translatable preference default values. -->

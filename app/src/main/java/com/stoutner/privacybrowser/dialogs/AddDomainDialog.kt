@@ -60,9 +60,7 @@ class AddDomainDialog : DialogFragment() {
     }
 
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
-        fun addDomain(urlString: String): AddDomainDialog {
+        fun addDomain(urlString: String?): AddDomainDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
 

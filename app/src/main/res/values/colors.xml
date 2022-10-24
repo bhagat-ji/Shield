@@ -34,6 +34,7 @@
     <color name="domain_settings_url_background">@color/green_200</color>
     <color name="red_text">@color/red_a700</color>
     <color name="selected_icon_background">@color/gray_300</color>
+    <color name="translucent_background">@color/black_translucent_11</color>
 
     <!-- Raw colors. -->
     <color name="semi_transparent_black">#66000000</color>

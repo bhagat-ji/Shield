@@ -1692,7 +1692,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         } else if (menuItemId == R.id.user_agent_custom) {  // User Agent - Custom.
             // Update the user agent.
-            currentWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+            currentWebView.getSettings().setUserAgentString(sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value)));
 
             // Reload the current WebView.
             currentWebView.reload();
@@ -1915,19 +1915,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Consume the event.
             return true;
         } else if (menuItemId == R.id.add_or_edit_domain) {  // Add or edit domain.
+            // Reapply the domain settings on returning to `MainWebViewActivity`.
+            reapplyDomainSettingsOnRestart = true;
+
             // Check if domain settings currently exist.
             if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
-                // Reapply the domain settings on returning to `MainWebViewActivity`.
-                reapplyDomainSettingsOnRestart = true;
-
                 // Create an intent to launch the domains activity.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
                 // Add the extra information to the intent.
-                domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
-                domainsIntent.putExtra("close_on_back", true);
-                domainsIntent.putExtra("current_url", currentWebView.getUrl());
-                domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                domainsIntent.putExtra(DomainsActivity.LOAD_DOMAIN, currentWebView.getDomainSettingsDatabaseId());
+                domainsIntent.putExtra(DomainsActivity.CLOSE_ON_BACK, true);
+                domainsIntent.putExtra(DomainsActivity.CURRENT_URL, currentWebView.getUrl());
+                domainsIntent.putExtra(DomainsActivity.CURRENT_IP_ADDRESSES, currentWebView.getCurrentIpAddresses());
 
                 // Get the current certificate.
                 SslCertificate sslCertificate = currentWebView.getCertificate();
@@ -1945,25 +1945,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
 
                     // Add the certificate to the intent.
-                    domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                    domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                    domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                    domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                    domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                    domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                    domainsIntent.putExtra("ssl_start_date", startDateLong);
-                    domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_TO_CNAME, issuedToCName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_TO_ONAME, issuedToOName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_TO_UNAME, issuedToUName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_BY_CNAME, issuedByCName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_BY_ONAME, issuedByOName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_BY_UNAME, issuedByUName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_START_DATE, startDateLong);
+                    domainsIntent.putExtra(DomainsActivity.SSL_END_DATE, endDateLong);
                 }
 
                 // Make it so.
                 startActivity(domainsIntent);
             } else {  // Add a new domain.
-                // Apply the new domain settings on returning to `MainWebViewActivity`.
-                reapplyDomainSettingsOnRestart = true;
-
-                // Get the current domain
+                // Get the current URI.
                 Uri currentUri = Uri.parse(currentWebView.getUrl());
+
+                // Get the current domain from the URI.
                 String currentDomain = currentUri.getHost();
+
+                // Set an empty domain if it is null.
+                if (currentDomain == null)
+                    currentDomain = "";
 
                 // Create the domain and store the database ID.
                 int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
@@ -1972,10 +1975,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
                 // Add the extra information to the intent.
-                domainsIntent.putExtra("load_domain", newDomainDatabaseId);
-                domainsIntent.putExtra("close_on_back", true);
-                domainsIntent.putExtra("current_url", currentWebView.getUrl());
-                domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                domainsIntent.putExtra(DomainsActivity.LOAD_DOMAIN, newDomainDatabaseId);
+                domainsIntent.putExtra(DomainsActivity.CLOSE_ON_BACK, true);
+                domainsIntent.putExtra(DomainsActivity.CURRENT_URL, currentWebView.getUrl());
+                domainsIntent.putExtra(DomainsActivity.CURRENT_IP_ADDRESSES, currentWebView.getCurrentIpAddresses());
 
                 // Get the current certificate.
                 SslCertificate sslCertificate = currentWebView.getCertificate();
@@ -1993,14 +1996,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
 
                     // Add the certificate to the intent.
-                    domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                    domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                    domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                    domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                    domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                    domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                    domainsIntent.putExtra("ssl_start_date", startDateLong);
-                    domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_TO_CNAME, issuedToCName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_TO_ONAME, issuedToOName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_TO_UNAME, issuedToUName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_BY_CNAME, issuedByCName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_BY_ONAME, issuedByOName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_ISSUED_BY_UNAME, issuedByUName);
+                    domainsIntent.putExtra(DomainsActivity.SSL_START_DATE, startDateLong);
+                    domainsIntent.putExtra(DomainsActivity.SSL_END_DATE, endDateLong);
                 }
 
                 // Make it so.
@@ -2138,8 +2141,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
             // Add the extra information to the intent.
-            domainsIntent.putExtra("current_url", currentWebView.getUrl());
-            domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+            domainsIntent.putExtra(DomainsActivity.CURRENT_URL, currentWebView.getUrl());
+            domainsIntent.putExtra(DomainsActivity.CURRENT_IP_ADDRESSES, currentWebView.getCurrentIpAddresses());
 
             // Get the current certificate.
             SslCertificate sslCertificate = currentWebView.getCertificate();
@@ -3794,12 +3797,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Store the general preference information.
             boolean defaultXRequestedWithHeader = sharedPreferences.getBoolean(getString(R.string.x_requested_with_header_key), true);
-            String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
-            String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
-            boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
-            String webViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
-            boolean wideViewport = sharedPreferences.getBoolean("wide_viewport", true);
-            boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
+            String defaultFontSizeString = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value));
+            String defaultUserAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value));
+            boolean defaultSwipeToRefresh = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true);
+            String webViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value));
+            boolean wideViewport = sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true);
+            boolean displayWebpageImages = sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true);
 
             // Get the WebView theme entry values string array.
             String[] webViewThemeEntryValuesStringArray = getResources().getStringArray(R.array.webview_theme_entry_values);
@@ -3929,7 +3932,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         case SETTINGS_CUSTOM_USER_AGENT:
                             // Set the default custom user agent.
-                            nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+                            nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value)));
                             break;
 
                         default:
@@ -4165,7 +4168,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     case SETTINGS_CUSTOM_USER_AGENT:
                         // Set the default custom user agent.
-                        nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+                        nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value)));
                         break;
 
                     default:
@@ -5097,7 +5100,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the WebView theme.
-        String webViewTheme = sharedPreferences.getString("webview_theme", getString(R.string.webview_theme_default_value));
+        String webViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value));
 
         // Get the WebView theme entry values string array.
         String[] webViewThemeEntryValuesStringArray = getResources().getStringArray(R.array.webview_theme_entry_values);
