@@ -30,24 +30,24 @@ import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 
-// The private constants.
+// Define the class constants.
 private const val SCHEMA_VERSION = 14
 
 class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(appContext, DOMAINS_DATABASE, null, SCHEMA_VERSION) {
     // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
     companion object {
-        // The database constants.
+        // Define the public database constants.
         const val DOMAINS_DATABASE = "domains.db"
         const val DOMAINS_TABLE = "domains"
 
-        // The spinner constants.
+        // Define the public spinner constants.
         const val SYSTEM_DEFAULT = 0
         const val ENABLED = 1
         const val DISABLED = 2
         const val LIGHT_THEME = 1
         const val DARK_THEME = 2
 
-        // The schema constants.
+        // Define the public schema constants.
         const val ID = "_id"
         const val DOMAIN_NAME = "domainname"
         const val ENABLE_JAVASCRIPT = "enablejavascript"
@@ -80,7 +80,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         const val PINNED_IP_ADDRESSES = "pinned_ip_addresses"
         const val IP_ADDRESSES = "ip_addresses"
 
-        // The table creation constant.
+        // Define the public table creation constant.
         const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
                 "$ID INTEGER PRIMARY KEY, " +
                 "$DOMAIN_NAME TEXT, " +

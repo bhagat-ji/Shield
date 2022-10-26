@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -53,6 +53,7 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -149,6 +150,18 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Display the spinner and the back arrow in the action bar.
         actionBar.setCustomView(R.layout.spinner);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
+
+        // Control what the system back command does.
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Prepare to finish the activity.
+                prepareFinish();
+            }
+        };
+
+        // Register the on back pressed callback.
+        getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
         // Initialize the database handler.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
@@ -585,7 +598,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
                                     // Close the activity if back has been pressed.
                                     if (closeActivityAfterDismissingSnackbar) {
-                                        onBackPressed();
+                                        finish();
                                     }
                                 }
                             });
@@ -629,8 +642,8 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
         // Run the command that corresponds to the selected menu item.
         if (menuItemId == android.R.id.home) {  // Go Home.  The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
-            // Exit the activity.
-            onBackPressed();
+            // Prepare to finish the activity.
+            prepareFinish();
         } else if (menuItemId == R.id.sort) {  // Toggle the sort mode.
             // Update the sort by display order tracker.
             sortByDisplayOrder = !sortByDisplayOrder;
@@ -672,8 +685,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         savedInstanceState.putBoolean(SORT_BY_DISPLAY_ORDER, sortByDisplayOrder);
     }
 
-    @Override
-    public void onBackPressed() {
+    private void prepareFinish() {
         // Check to see if a snackbar is currently displayed.  If so, it must be closed before existing so that a pending delete is completed before reloading the list view in the bookmarks activity.
         if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) { // Close the bookmarks deleted snackbar before going home.
             // Set the close flag.
@@ -695,7 +707,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             BookmarksActivity.restartFromBookmarksDatabaseViewActivity = true;
 
             // Exit the bookmarks database view activity.
-            super.onBackPressed();
+            finish();
         }
     }
 

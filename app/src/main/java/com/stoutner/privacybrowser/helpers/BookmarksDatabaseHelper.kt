@@ -26,7 +26,7 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-// Define the private class constants.
+// Define the class constants.
 private const val SCHEMA_VERSION = 1
 
 class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOKMARKS_DATABASE, null, SCHEMA_VERSION) {

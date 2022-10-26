@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -48,6 +48,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -83,9 +84,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     private MenuItem moveBookmarkUpMenuItem;
     private MenuItem moveBookmarkDownMenuItem;
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`,
-    // `onMoveToFolder()`, `deleteBookmarkFolderContents()`, `loadFolder()`, and `onDestroy()`.
+    // Declare the class variables.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+    private Snackbar bookmarksDeletedSnackbar;
+    private boolean closeActivityAfterDismissingSnackbar;
 
     // `bookmarksListView` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
     // `updateMoveIcons()`, `scrollBookmarks()`, and `loadFolder()`.
@@ -106,12 +108,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     // `oldFolderName` is used in `onCreate()` and `onSaveBookmarkFolder()`.
     private String oldFolderNameString;
-
-    // `bookmarksDeletedSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
-    private Snackbar bookmarksDeletedSnackbar;
-
-    // `closeActivityAfterDismissingSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
-    private boolean closeActivityAfterDismissingSnackbar;
 
     // The favorite icon byte array is populated in `onCreate()` and used in `onOptionsItemSelected()`.
     private byte[] favoriteIconByteArray;
@@ -183,6 +179,18 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Display the home arrow on the app bar.
         appBar.setDisplayHomeAsUpEnabled(true);
+
+        // Control what the system back command does.
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Prepare to finish the activity.
+                prepareFinish();
+            }
+        };
+
+        // Register the on back pressed callback.
+        getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
         // Initialize the database helper.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
@@ -554,7 +562,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                                     // Close the activity if back has been pressed.
                                     if (closeActivityAfterDismissingSnackbar) {
-                                        onBackPressed();
+                                        finish();
                                     }
                                 }
                             });
@@ -687,8 +695,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Run the command according to the selected option.
         if (menuItemId == android.R.id.home) {  // Home.  The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
             if (currentFolder.isEmpty()) {  // Currently in the home folder.
-                // Run the back commands.
-                onBackPressed();
+                // Prepare to finish the activity.
+                prepareFinish();
             } else {  // Currently in a subfolder.
                 // Place the former parent folder in `currentFolder`.
                 currentFolder = bookmarksDatabaseHelper.getParentFolderName(currentFolder);
@@ -720,27 +728,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             startActivity(bookmarksDatabaseViewIntent);
         }
         return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Check to see if a snackbar is currently displayed.  If so, it must be closed before exiting so that a pending delete is completed before reloading the list view in the bookmarks drawer.
-        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) {  // Close the bookmarks deleted snackbar before going home.
-            // Set the close flag.
-            closeActivityAfterDismissingSnackbar = true;
-
-            // Dismiss the snackbar.
-            bookmarksDeletedSnackbar.dismiss();
-        } else {  // Go home immediately.
-            // Update the bookmarks folder for the bookmarks drawer in the main WebView activity.
-            MainWebViewActivity.currentBookmarksFolder = currentFolder;
-
-            // Close the bookmarks drawer and reload the bookmarks ListView when returning to the main WebView activity.
-            MainWebViewActivity.restartFromBookmarksActivity = true;
-
-            // Exit the bookmarks activity.
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -1091,6 +1078,26 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             // Delete the bookmark.
             bookmarksDatabaseHelper.deleteBookmark(itemDatabaseId);
+        }
+    }
+
+    private void prepareFinish() {
+        // Check to see if a snackbar is currently displayed.  If so, it must be closed before exiting so that a pending delete is completed before reloading the list view in the bookmarks drawer.
+        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) {  // Close the bookmarks deleted snackbar before going home.
+            // Set the close flag.
+            closeActivityAfterDismissingSnackbar = true;
+
+            // Dismiss the snackbar.
+            bookmarksDeletedSnackbar.dismiss();
+        } else {  // Go home immediately.
+            // Update the bookmarks folder for the bookmarks drawer in the main WebView activity.
+            MainWebViewActivity.currentBookmarksFolder = currentFolder;
+
+            // Close the bookmarks drawer and reload the bookmarks ListView when returning to the main WebView activity.
+            MainWebViewActivity.restartFromBookmarksActivity = true;
+
+            // Exit the bookmarks activity.
+            finish();
         }
     }
 

@@ -205,7 +205,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             addDomainDialog.show(supportFragmentManager, resources.getString(R.string.add_domain))
         }
 
-        // Control what the navigation bar back button does.
+        // Control what the system back command does.
         val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (twoPanedMode) {  // The device is in two-paned mode.

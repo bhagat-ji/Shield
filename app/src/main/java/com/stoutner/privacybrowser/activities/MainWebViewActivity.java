@@ -99,6 +99,7 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -608,6 +609,48 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Apply the app settings from the shared preferences.
         applyAppSettings();
+
+        // Control what the system back command does.
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Process the different back options.
+                if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
+                    // Close the navigation drawer.
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else if (drawerLayout.isDrawerVisible(GravityCompat.END)){  // The bookmarks drawer is open.
+                    // close the bookmarks drawer.
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                } else if (displayingFullScreenVideo) {  // A full screen video is shown.
+                    // Exit the full screen video.
+                    exitFullScreenVideo();
+                } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
+                    // Get the current web back forward list.
+                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+                    // Get the previous entry URL.
+                    String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
+                    // Apply the domain settings.
+                    applyDomainSettings(currentWebView, previousUrl, false, false, false);
+
+                    // Go back.
+                    currentWebView.goBack();
+                } else if (tabLayout.getTabCount() > 1) {  // There are at least two tabs.
+                    // Close the current tab.
+                    closeCurrentTab();
+                } else {  // There isn't anything to do in Privacy Browser.
+                    // Close Privacy Browser.  `finishAndRemoveTask()` also removes Privacy Browser from the recent app list.
+                    finishAndRemoveTask();
+
+                    // Manually kill Privacy Browser.  Otherwise, it is glitchy when restarted.
+                    System.exit(0);
+                }
+            }
+        };
+
+        // Register the on back pressed callback.
+        getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
         // Populate the blocklists.
         populateBlocklists = new PopulateBlocklists(this, this).execute();
@@ -2765,43 +2808,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
-    }
-
-    // Override `onBackPressed()` to handle the navigation drawer and and the WebViews.
-    @Override
-    public void onBackPressed() {
-        // Check the different options for processing `back`.
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
-            // Close the navigation drawer.
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (drawerLayout.isDrawerVisible(GravityCompat.END)){  // The bookmarks drawer is open.
-            // close the bookmarks drawer.
-            drawerLayout.closeDrawer(GravityCompat.END);
-        } else if (displayingFullScreenVideo) {  // A full screen video is shown.
-            // Exit the full screen video.
-            exitFullScreenVideo();
-        } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
-            // Get the current web back forward list.
-            WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
-
-            // Get the previous entry URL.
-            String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
-
-            // Apply the domain settings.
-            applyDomainSettings(currentWebView, previousUrl, false, false, false);
-
-            // Go back.
-            currentWebView.goBack();
-        } else if (tabLayout.getTabCount() > 1) {  // There are at least two tabs.
-            // Close the current tab.
-            closeCurrentTab();
-        } else {  // There isn't anything to do in Privacy Browser.
-            // Close Privacy Browser.  `finishAndRemoveTask()` also removes Privacy Browser from the recent app list.
-            finishAndRemoveTask();
-
-            // Manually kill Privacy Browser.  Otherwise, it is glitchy when restarted.
-            System.exit(0);
-        }
     }
 
     // Process the results of a file browse.
@@ -5090,7 +5096,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url, Boolean restoringState) {
+    public void initializeWebView(@NonNull NestedScrollWebView nestedScrollWebView, int pageNumber, @NonNull ProgressBar progressBar, @NonNull String url, boolean restoringState) {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
