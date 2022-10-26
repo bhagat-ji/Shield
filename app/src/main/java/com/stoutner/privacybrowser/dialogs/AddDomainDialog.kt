@@ -113,7 +113,7 @@ class AddDomainDialog : DialogFragment() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         // Get the screenshot preference.
-        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots), false)
+        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {

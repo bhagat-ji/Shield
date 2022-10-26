@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -278,6 +278,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // Declare the class variables
     private boolean bottomAppBar;
+    private boolean displayAdditionalAppBarIcons;
     private boolean displayingFullScreenVideo;
     private boolean downloadWithExternalApp;
     private boolean fullScreenBrowsingModeEnabled;
@@ -498,9 +499,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the preferences.
-        String appTheme = sharedPreferences.getString("app_theme", getString(R.string.app_theme_default_value));
+        String appTheme = sharedPreferences.getString(getString(R.string.app_theme_key), getString(R.string.app_theme_default_value));
         boolean allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false);
         bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false);
+        displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
 
         // Get the theme entry values string array.
         String[] appThemeEntryValuesStringArray = getResources().getStringArray(R.array.app_theme_entry_values);
@@ -666,7 +668,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Add a new tab if specified in the preferences.
-                if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                if (sharedPreferences.getBoolean(getString(R.string.open_intents_in_new_tab_key), true)) {  // Load the URL in a new tab.
                     // Set the loading new intent flag.
                     loadingNewIntent = true;
 
@@ -972,12 +974,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Disable the clear form data menu item if the API >= 26 so that the status of the main Clear Data is calculated correctly.
         optionsClearFormDataMenuItem.setEnabled(Build.VERSION.SDK_INT < 26);
-
-        // Get the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Get the dark theme and app bar preferences.
-        boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
 
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {
@@ -3523,13 +3519,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from the shared preferences in variables.
-        incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
+        incognitoModeEnabled = sharedPreferences.getBoolean(getString(R.string.incognito_mode_key), false);
         sanitizeTrackingQueries = sharedPreferences.getBoolean(getString(R.string.tracking_queries_key), true);
         sanitizeAmpRedirects = sharedPreferences.getBoolean(getString(R.string.amp_redirects_key), true);
-        proxyMode = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
-        fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
+        proxyMode = sharedPreferences.getString(getString(R.string.proxy_key), getString(R.string.proxy_default_value));
+        fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false);
+        hideAppBar = sharedPreferences.getBoolean(getString(R.string.hide_app_bar_key), true);
         downloadWithExternalApp = sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false);
-        hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
         scrollAppBar = sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true);
 
         // Apply the saved proxy mode if the app has been restarted.
@@ -3542,14 +3538,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Get the search string.
-        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
+        String searchString = sharedPreferences.getString(getString(R.string.search_key), getString(R.string.search_default_value));
 
         // Set the search string.
-        if (searchString.equals("Custom URL")) {  // A custom search string is used.
-            searchURL = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
-        } else {  // A custom search string is not used.
+        if (searchString.equals(getString(R.string.custom_url_item)))
+            searchURL = sharedPreferences.getString(getString(R.string.search_custom_url_key), getString(R.string.search_custom_url_default_value));
+        else
             searchURL = searchString;
-        }
 
         // Apply the proxy.
         applyProxy(false);
@@ -4101,17 +4096,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.domain_settings_url_background, null));
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from the shared preferences.
-                nestedScrollWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean("javascript", false));
+                nestedScrollWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean(getString(R.string.javascript_key), false));
                 nestedScrollWebView.setAcceptCookies(sharedPreferences.getBoolean(getString(R.string.cookies_key), false));
-                nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
-                boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
-                nestedScrollWebView.setEasyListEnabled(sharedPreferences.getBoolean("easylist", true));
-                nestedScrollWebView.setEasyPrivacyEnabled(sharedPreferences.getBoolean("easyprivacy", true));
-                nestedScrollWebView.setFanboysAnnoyanceListEnabled(sharedPreferences.getBoolean("fanboys_annoyance_list", true));
-                nestedScrollWebView.setFanboysSocialBlockingListEnabled(sharedPreferences.getBoolean("fanboys_social_blocking_list", true));
-                nestedScrollWebView.setUltraListEnabled(sharedPreferences.getBoolean("ultralist", true));
-                nestedScrollWebView.setUltraPrivacyEnabled(sharedPreferences.getBoolean("ultraprivacy", true));
-                nestedScrollWebView.setBlockAllThirdPartyRequests(sharedPreferences.getBoolean("block_all_third_party_requests", false));
+                nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false));
+                boolean saveFormData = sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false);  // Form data can be removed once the minimum API >= 26.
+                nestedScrollWebView.setEasyListEnabled(sharedPreferences.getBoolean(getString(R.string.easylist_key), true));
+                nestedScrollWebView.setEasyPrivacyEnabled(sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true));
+                nestedScrollWebView.setFanboysAnnoyanceListEnabled(sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true));
+                nestedScrollWebView.setFanboysSocialBlockingListEnabled(sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true));
+                nestedScrollWebView.setUltraListEnabled(sharedPreferences.getBoolean(getString(R.string.ultralist_key), true));
+                nestedScrollWebView.setUltraPrivacyEnabled(sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true));
+                nestedScrollWebView.setBlockAllThirdPartyRequests(sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false));
 
                 // Apply the default cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptCookies());
@@ -4685,7 +4680,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Add a new tab if specified in the preferences.
-                if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                if (sharedPreferences.getBoolean(getString(R.string.open_intents_in_new_tab_key), true)) {  // Load the URL in a new tab.
                     // Set the loading new intent flag.
                     loadingNewIntent = true;
 
@@ -4813,7 +4808,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         bookmarksDatabaseHelper.close();
 
         // Get the status of the clear everything preference.
-        boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
+        boolean clearEverything = sharedPreferences.getBoolean(getString(R.string.clear_everything_key), true);
 
         // Get a handle for the runtime.
         Runtime runtime = Runtime.getRuntime();
@@ -4823,7 +4818,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String privateDataDirectoryString = getApplicationInfo().dataDir;
 
         // Clear cookies.
-        if (clearEverything || sharedPreferences.getBoolean("clear_cookies", true)) {
+        if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_cookies_key), true)) {
             // Request the cookies be deleted.
             CookieManager.getInstance().removeAllCookies(null);
 
@@ -4842,7 +4837,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Clear DOM storage.
-        if (clearEverything || sharedPreferences.getBoolean("clear_dom_storage", true)) {
+        if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_dom_storage_key), true)) {
             // Ask `WebStorage` to clear the DOM storage.
             WebStorage webStorage = WebStorage.getInstance();
             webStorage.deleteAllData();
@@ -4870,7 +4865,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Clear form data if the API < 26.
-        if ((Build.VERSION.SDK_INT < 26) && (clearEverything || sharedPreferences.getBoolean("clear_form_data", true))) {
+        if ((Build.VERSION.SDK_INT < 26) && (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_form_data_key), true))) {
             WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
             webViewDatabase.clearFormData();
 
@@ -4902,7 +4897,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Clear the cache.
-        if (clearEverything || sharedPreferences.getBoolean("clear_cache", true)) {
+        if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_cache_key), true)) {
             // Clear the cache from each WebView.
             for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
                 // Get the WebView tab fragment.
@@ -6100,13 +6095,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Set the title.
                     optionsRefreshMenuItem.setTitle(R.string.stop);
 
-                    // Get the app bar and theme preferences.
-                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
-
-                    // Set the icon if it is displayed in the AppBar.  Once the minimum API is >= 26, the blue and black icons can be combined with a tint list.
-                    if (displayAdditionalAppBarIcons) {
+                    // Set the icon if it is displayed in the AppBar.
+                    if (displayAdditionalAppBarIcons)
                         optionsRefreshMenuItem.setIcon(R.drawable.close_blue);
-                    }
                 }
             }
 
@@ -6122,14 +6113,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reset the Refresh title.
                     optionsRefreshMenuItem.setTitle(R.string.refresh);
 
-                    // Get the app bar and theme preferences.
-                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false);
-
-                    // If the icon is displayed in the app bar, reset it according to the theme.
-                    if (displayAdditionalAppBarIcons) {
-                        // Set the icon.
+                    // Reset the icon if it is displayed in the app bar.
+                    if (displayAdditionalAppBarIcons)
                         optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled);
-                    }
                 }
 
                  // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,

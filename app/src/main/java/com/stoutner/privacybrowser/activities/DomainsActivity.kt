@@ -205,9 +205,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             addDomainDialog.show(supportFragmentManager, resources.getString(R.string.add_domain))
         }
 
-        // Get a handle for the activity.
-        val activity: Activity = this
-
         // Control what the navigation bar back button does.
         val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -225,14 +222,14 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
                         undoDeleteSnackbar!!.dismiss()
                     } else {
                         // Go home.
-                        NavUtils.navigateUpFromSameTask(activity)
+                        finish()
                     }
                 } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
                     // Save the current domain settings.
                     saveDomainSettings(coordinatorLayout)
 
                     // Go home.
-                    NavUtils.navigateUpFromSameTask(activity)
+                    finish()
                 } else if (findViewById<View?>(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and domain settings fragment is displayed.
                     // Save the current domain settings.
                     saveDomainSettings(coordinatorLayout)
@@ -261,7 +258,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
                         undoDeleteSnackbar!!.dismiss()
                     } else {
                         // Go home.
-                        NavUtils.navigateUpFromSameTask(activity)
+                        finish()
                     }
                 }
             }
@@ -394,14 +391,14 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
                         undoDeleteSnackbar!!.dismiss()
                     } else {
                         // Go home.
-                        NavUtils.navigateUpFromSameTask(this)
+                        finish()
                     }
                 } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
                     // Save the current domain settings.
                     saveDomainSettings(coordinatorLayout)
 
                     // Go home.
-                    NavUtils.navigateUpFromSameTask(this)
+                    finish()
                 } else if (findViewById<View?>(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and the domain settings fragment is displayed.
                     // Save the current domain settings.
                     saveDomainSettings(coordinatorLayout)
@@ -430,7 +427,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
                         undoDeleteSnackbar!!.dismiss()
                     } else {
                         // Go home.
-                        NavUtils.navigateUpFromSameTask(this)
+                        finish()
                     }
                 }
             }

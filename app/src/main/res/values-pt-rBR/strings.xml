@@ -422,8 +422,8 @@
             <string name="mebibyte">MiB</string>
             <string name="easylist_label">EasyList:</string>
             <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List:</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking List:</string>
             <string name="ultralist_label">UltraList:</string>
             <string name="ultraprivacy_label">UltraPrivacy:</string>
         <string name="package_signature">Assinatura do Pacote</string>

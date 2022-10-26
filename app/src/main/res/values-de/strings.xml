@@ -433,8 +433,8 @@
             <string name="mebibyte">MiB</string>
             <string name="easylist_label">EasyList:</string>
             <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance Sperrliste:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking Sperrliste:</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance Sperrliste:</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking Sperrliste:</string>
             <string name="ultralist_label">UltraList:</string>
             <string name="ultraprivacy_label">UltraPrivacy:</string>
         <string name="package_signature">Paket-Signatur</string>

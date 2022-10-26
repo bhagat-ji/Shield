@@ -318,17 +318,17 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
         // Get the default settings.
-        val javaScript = sharedPreferences.getBoolean("javascript", false)
+        val javaScript = sharedPreferences.getBoolean(appContext.getString(R.string.javascript_key), false)
         val cookies = sharedPreferences.getBoolean(appContext.getString(R.string.cookies_key), false)
-        val domStorage = sharedPreferences.getBoolean("dom_storage", false)
-        val saveFormData = sharedPreferences.getBoolean("save_form_data", false) // Form data can be removed once the minimum API >= 26.
-        val easyList = sharedPreferences.getBoolean("easylist", true)
-        val easyPrivacy = sharedPreferences.getBoolean("easyprivacy", true)
-        val fanboyAnnoyanceList = sharedPreferences.getBoolean("fanboys_annoyance_list", true)
-        val fanboySocialBlockingList = sharedPreferences.getBoolean("fanboys_social_blocking_list", true)
-        val ultraList = sharedPreferences.getBoolean("ultralist", true)
-        val ultraPrivacy = sharedPreferences.getBoolean("ultraprivacy", true)
-        val blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false)
+        val domStorage = sharedPreferences.getBoolean(appContext.getString(R.string.dom_storage_key), false)
+        val saveFormData = sharedPreferences.getBoolean(appContext.getString(R.string.save_form_data_key), false)  // Form data can be removed once the minimum API >= 26.
+        val easyList = sharedPreferences.getBoolean(appContext.getString(R.string.easylist_key), true)
+        val easyPrivacy = sharedPreferences.getBoolean(appContext.getString(R.string.easyprivacy_key), true)
+        val fanboyAnnoyanceList = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_annoyance_list_key), true)
+        val fanboySocialBlockingList = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_social_blocking_list_key), true)
+        val ultraList = sharedPreferences.getBoolean(appContext.getString(R.string.ultralist_key), true)
+        val ultraPrivacy = sharedPreferences.getBoolean(appContext.getString(R.string.ultraprivacy_key), true)
+        val blockAllThirdPartyRequests = sharedPreferences.getBoolean(appContext.getString(R.string.block_all_third_party_requests_key), false)
 
         // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
         domainContentValues.put(DOMAIN_NAME, domainName)
@@ -343,7 +343,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ULTRALIST, ultraList)
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
-        domainContentValues.put(USER_AGENT, "System default user agent")
+        domainContentValues.put(USER_AGENT, appContext.getString(R.string.user_agent_default_value))
         domainContentValues.put(X_REQUESTED_WITH_HEADER, 0)
         domainContentValues.put(FONT_SIZE, 0)
         domainContentValues.put(SWIPE_TO_REFRESH, 0)

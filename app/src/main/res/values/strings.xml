@@ -437,8 +437,8 @@
             <string name="mebibyte">MiB</string>
             <string name="easylist_label">EasyList:</string>
             <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List:</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking List:</string>
             <string name="ultralist_label">UltraList:</string>
             <string name="ultraprivacy_label">UltraPrivacy:</string>
         <string name="package_signature">Package Signature</string>
@@ -573,6 +573,7 @@
             <item>https://search.yahoo.com/mobile/s?p=</item>
             <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
+        <string name="custom_url_item" translatable="false">Custom URL</string>
         <string name="custom_url">Custom URL</string>
         <string name="search_custom_url">Search custom URL</string>
     <string name="proxy">Proxy</string>
@@ -660,18 +661,44 @@
     <!-- Non-translatable preference keys. -->
     <string name="allow_screenshots_key" translatable="false">allow_screenshots</string>
     <string name="amp_redirects_key" translatable="false">amp_redirects</string>
+    <string name="app_theme_key" translatable="false">app_theme</string>
+    <string name="block_all_third_party_requests_key" translatable="false">block_all_third_party_requests</string>
     <string name="bottom_app_bar_key" translatable="false">bottom_app_bar</string>
     <string name="cookies_key" translatable="false">cookies</string>
+    <string name="clear_and_exit_category_key" translatable="false">clear_and_exit</string>
+    <string name="clear_cache_key" translatable="false">clear_cache</string>
+    <string name="clear_cookies_key" translatable="false">clear_cookies</string>
+    <string name="clear_dom_storage_key" translatable="false">clear_dom_storage</string>
+    <string name="clear_everything_key" translatable="false">clear_everything</string>
+    <string name="clear_form_data_key" translatable="false">clear_form_data</string>  <!-- The clear form data string can be removed once the minimum API >= 26. -->
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
     <string name="custom_user_agent_key" translatable="false">custom_user_agent</string>
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
     <string name="display_webpage_images_key" translatable="false">display_webpage_images</string>
+    <string name="dom_storage_key" translatable="false">dom_storage</string>
     <string name="download_with_external_app_key" translatable="false">download_with_external_app</string>
+    <string name="easylist_key" translatable="false">easylist</string>
+    <string name="easyprivacy_key" translatable="false">easyprivacy</string>
+    <string name="fanboys_annoyance_list_key" translatable="false">fanboys_annoyance_list</string>
+    <string name="fanboys_social_blocking_list_key" translatable="false">fanboys_social_blocking_list</string>
     <string name="font_size_key" translatable="false">font_size</string>
+    <string name="full_screen_browsing_mode_key" translatable="false">full_screen_browsing_mode</string>
+    <string name="hide_app_bar_key" translatable="false">hide_app_bar</string>
+    <string name="homepage_key" translatable="false">homepage</string>
+    <string name="incognito_mode_key" translatable="false">incognito_mode</string>
+    <string name="javascript_key" translatable="false">javascript</string>
+    <string name="open_intents_in_new_tab_key" translatable="false">open_intents_in_new_tab</string>
+    <string name="privacy_category_key" translatable="false">privacy</string>
+    <string name="proxy_key" translatable="false">proxy</string>
     <string name="proxy_custom_url_key" translatable="false">proxy_custom_url</string>
+    <string name="save_form_data_key" translatable="false">save_form_data</string>  <!--The form data string can be removed once the minimum API >= 26. -->
     <string name="scroll_app_bar_key" translatable="false">scroll_app_bar</string>
+    <string name="search_custom_url_key" translatable="false">search_custom_url</string>
+    <string name="search_key" translatable="false">search</string>
     <string name="swipe_to_refresh_key" translatable="false">swipe_to_refresh</string>
     <string name="tracking_queries_key" translatable="false">tracking_queries</string>
+    <string name="ultralist_key" translatable="false">ultralist</string>
+    <string name="ultraprivacy_key" translatable="false">ultraprivacy</string>
     <string name="user_agent_key" translatable="false">user_agent</string>
     <string name="webview_theme_key" translatable="false">webview_theme</string>
     <string name="wide_viewport_key" translatable="false">wide_viewport</string>

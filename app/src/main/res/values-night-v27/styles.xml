@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -44,18 +44,6 @@
 
     <style name="PrivacyBrowserAppBar" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" >
         <item name="android:textColorHighlight">@color/violet_700</item>
-    </style>
-
-    <style name="PrivacyBrowserSettings" parent="Theme.AppCompat.DayNight" >
-        <!-- Main Items. -->
-        <item name="android:navigationBarColor">?android:attr/colorBackground</item>
-        <item name="android:statusBarColor">?android:attr/colorBackground</item>
-        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
-        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
-
-        <!-- Colors. -->
-        <item name="colorAccent">@color/violet_500</item>
-        <item name="colorPrimary">?android:attr/colorBackground</item>  <!-- `colorPrimary` sets the background color of the app bar. -->
     </style>
 
     <style name="PrivacyBrowserAlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert" >

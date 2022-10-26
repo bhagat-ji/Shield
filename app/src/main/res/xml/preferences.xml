@@ -22,11 +22,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory
-        android:key="privacy"
+        android:key="@string/privacy_category_key"
         android:title="@string/privacy" >
 
         <SwitchPreference
-            android:key="javascript"
+            android:key="@string/javascript_key"
             android:title="@string/javascript"
             android:summary="@string/javascript_preference_summary"
             android:defaultValue="false" />
@@ -38,14 +38,14 @@
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="dom_storage"
+            android:key="@string/dom_storage_key"
             android:title="@string/dom_storage_preference"
             android:summary="@string/dom_storage_preference_summary"
             android:defaultValue="false" />
 
         <!-- Save form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
-            android:key="save_form_data"
+            android:key="@string/save_form_data_key"
             android:title="@string/save_form_data_preference"
             android:summary="@string/save_form_data_preference_summary"
             android:defaultValue="false" />
@@ -72,7 +72,7 @@
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="incognito_mode"
+            android:key="@string/incognito_mode_key"
             android:title="@string/incognito_mode"
             android:summary="@string/incognito_mode_summary"
             android:defaultValue="false" />
@@ -89,43 +89,43 @@
         android:title="@string/blocklists" >
 
         <SwitchPreference
-            android:key="easylist"
+            android:key="@string/easylist_key"
             android:title="@string/easylist"
             android:summary="@string/easylist_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="easyprivacy"
+            android:key="@string/easyprivacy_key"
             android:title="@string/easyprivacy"
             android:summary="@string/easyprivacy_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="fanboys_annoyance_list"
+            android:key="@string/fanboys_annoyance_list_key"
             android:title="@string/fanboys_annoyance_list"
             android:summary="@string/fanboys_annoyance_list_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="fanboys_social_blocking_list"
+            android:key="@string/fanboys_social_blocking_list_key"
             android:title="@string/fanboys_social_blocking_list"
             android:summary="@string/fanboys_social_blocking_list_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="ultralist"
+            android:key="@string/ultralist_key"
             android:title="@string/ultralist"
             android:summary="@string/ultralist_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="ultraprivacy"
+            android:key="@string/ultraprivacy_key"
             android:title="@string/ultraprivacy"
             android:summary="@string/ultraprivacy_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="block_all_third_party_requests"
+            android:key="@string/block_all_third_party_requests_key"
             android:title="@string/block_all_third_party_requests"
             android:summary="@string/block_all_third_party_requests_summary"
             android:defaultValue="false" />
@@ -153,7 +153,7 @@
         android:title="@string/search" >
 
         <ListPreference
-            android:key="search"
+            android:key="@string/search_key"
             android:title="@string/search"
             android:entries="@array/search_entries"
             android:entryValues="@array/search_entry_values"
@@ -161,7 +161,7 @@
             android:icon="@drawable/search" />
 
         <EditTextPreference
-            android:key="search_custom_url"
+            android:key="@string/search_custom_url_key"
             android:title="@string/search_custom_url"
             android:defaultValue="@string/search_custom_url_default_value"
             android:inputType="textUri" />
@@ -172,7 +172,7 @@
         android:title="@string/proxy" >
 
         <ListPreference
-            android:key="proxy"
+            android:key="@string/proxy_key"
             android:title="@string/proxy"
             android:entries="@array/proxy_entries"
             android:entryValues="@array/proxy_entry_values"
@@ -190,43 +190,43 @@
         android:title="@string/full_screen" >
 
         <SwitchPreference
-            android:key="full_screen_browsing_mode"
+            android:key="@string/full_screen_browsing_mode_key"
             android:title="@string/full_screen_browsing_mode"
             android:summary="@string/full_screen_browsing_mode_summary"
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="hide_app_bar"
+            android:key="@string/hide_app_bar_key"
             android:title="@string/hide_app_bar"
             android:summary="@string/hide_app_bar_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="clear_and_exit"
+        android:key="@string/clear_and_exit_category_key"
         android:title="@string/clear_and_exit" >
 
         <SwitchPreference
-            android:key="clear_everything"
+            android:key="@string/clear_everything_key"
             android:title="@string/clear_everything"
             android:summary="@string/clear_everything_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="clear_cookies"
+            android:key="@string/clear_cookies_key"
             android:title="@string/clear_cookies_preference"
             android:summary="@string/clear_cookies_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="clear_dom_storage"
+            android:key="@string/clear_dom_storage_key"
             android:title="@string/clear_dom_storage_preference"
             android:summary="@string/clear_dom_storage_summary"
             android:defaultValue="true" />
 
         <!-- Clear form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
-            android:key="clear_form_data"
+            android:key="@string/clear_form_data_key"
             android:title="@string/clear_form_data_preference"
             android:summary="@string/clear_form_data_summary"
             android:defaultValue="true" />
@@ -238,7 +238,7 @@
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="clear_cache"
+            android:key="@string/clear_cache_key"
             android:title="@string/clear_cache"
             android:summary="@string/clear_cache_summary"
             android:defaultValue="true" />
@@ -249,7 +249,7 @@
         android:title="@string/general" >
 
         <EditTextPreference
-            android:key="homepage"
+            android:key="@string/homepage_key"
             android:title="@string/homepage"
             android:defaultValue="@string/homepage_default_value"
             android:inputType="textUri"
@@ -264,7 +264,7 @@
             android:icon="@drawable/font_size" />
 
         <SwitchPreference
-            android:key="open_intents_in_new_tab"
+            android:key="@string/open_intents_in_new_tab_key"
             android:title="@string/open_intents_in_new_tab"
             android:summary="@string/open_intents_in_new_tab_summary"
             android:defaultValue="true" />
@@ -300,7 +300,7 @@
             android:defaultValue="false" />
 
         <ListPreference
-            android:key="app_theme"
+            android:key="@string/app_theme_key"
             android:title="@string/app_theme"
             android:entries="@array/app_theme_entries"
             android:entryValues="@array/app_theme_entry_values"

@@ -20,57 +20,40 @@
 package com.stoutner.privacybrowser.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.WindowManager
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.PreferenceManager
-import androidx.viewpager.widget.ViewPager
-
-import com.google.android.material.tabs.TabLayout
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.adapters.AboutPagerAdapter
+import com.stoutner.privacybrowser.fragments.SettingsFragment
 
-class AboutActivity : AppCompatActivity() {
-    companion object {
-        // Define the companion object constants.  These can be move to being public constants once MainWebViewActivity has been converted to Kotlin.
-        const val BLOCKLIST_VERSIONS = "blocklist_versions"
-    }
-
+class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
-        // Get the preferences.
+        // Get the preference.
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
         val bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
 
         // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
+        if (!allowScreenshots) window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         // Run the default commands.
         super.onCreate(savedInstanceState)
 
-        // Get the intent that launched the activity.
-        val launchingIntent = intent
-
-        // Store the blocklist versions.
-        val blocklistVersions = launchingIntent.getStringArrayExtra(BLOCKLIST_VERSIONS)!!
-
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.about_bottom_appbar)
+            setContentView(R.layout.settings_bottom_appbar)
         } else {
-            setContentView(R.layout.about_top_appbar)
+            setContentView(R.layout.settings_top_appbar)
         }
 
-        // Get handles for the views.
-        val toolbar = findViewById<Toolbar>(R.id.about_toolbar)
-        val aboutTabLayout = findViewById<TabLayout>(R.id.about_tablayout)
-        val aboutViewPager = findViewById<ViewPager>(R.id.about_viewpager)
+        // Get a handle for the toolbar.
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
         // Set the support action bar.
         setSupportActionBar(toolbar)
@@ -81,16 +64,15 @@ class AboutActivity : AppCompatActivity() {
         // Display the home arrow on the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        // Initialize the about pager adapter.
-        val aboutPagerAdapter = AboutPagerAdapter(supportFragmentManager, applicationContext, blocklistVersions)
+        // Display the settings fragment.
+        supportFragmentManager.beginTransaction().replace(R.id.preferences_framelayout, SettingsFragment()).commit()
+    }
 
-        // Set the view pager adapter.
-        aboutViewPager.adapter = aboutPagerAdapter
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // As the back arrow is the only option, finish the activity.
+        finish()
 
-        // Keep all the tabs in memory.  This prevents the memory usage updater from running multiple times.
-        aboutViewPager.offscreenPageLimit = 10
-
-        // Connect the tab layout to the view pager.
-        aboutTabLayout.setupWithViewPager(aboutViewPager)
+        // Consume the event.
+        return true
     }
 }
