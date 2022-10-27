@@ -4335,27 +4335,31 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else {
                     appBarLayout.setBackgroundResource(R.color.dark_blue_30);
                 }
+                // Get the package manager.
+                PackageManager packageManager = getPackageManager();
 
                 // Check to see if I2P is installed.
                 try {
-                    // Get the package manager.
-                    PackageManager packageManager = getPackageManager();
-
-                    // Check to see if I2P is in the list.  This will throw an error and drop to the catch section if it isn't installed.
+                    // Check to see if the F-Droid flavor is installed.  This will throw an error and drop to the catch section if it isn't installed.
                     packageManager.getPackageInfo("net.i2p.android.router", 0);
-                } catch (PackageManager.NameNotFoundException exception) {  // I2P is not installed.
-                    // Sow the I2P not installed dialog if it is not already displayed.
-                    if (getSupportFragmentManager().findFragmentByTag(getString(R.string.proxy_not_installed_dialog)) == null) {
-                        // Get a handle for the waiting for proxy alert dialog.
-                        DialogFragment i2pNotInstalledDialogFragment = ProxyNotInstalledDialog.displayDialog(proxyMode);
+                } catch (PackageManager.NameNotFoundException fdroidException) {  // The F-Droid flavor is not installed.
+                    try {
+                        // Check to see if the Google Play flavor is installed.  This will throw an error and drop to the catch section if it isn't installed.
+                        packageManager.getPackageInfo("net.i2p.android", 0);
+                    } catch (PackageManager.NameNotFoundException googlePlayException) {  // The Google Play flavor is not installed.
+                        // Sow the I2P not installed dialog if it is not already displayed.
+                        if (getSupportFragmentManager().findFragmentByTag(getString(R.string.proxy_not_installed_dialog)) == null) {
+                            // Get a handle for the waiting for proxy alert dialog.
+                            DialogFragment i2pNotInstalledDialogFragment = ProxyNotInstalledDialog.displayDialog(proxyMode);
 
-                        // Try to show the dialog.  Sometimes the window is not yet active if returning from Settings.
-                        try {
-                            // Display the I2P not installed alert dialog.
-                            i2pNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
-                        } catch (Exception i2pNotInstalledException) {
-                            // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
-                            pendingDialogsArrayList.add(new PendingDialog(i2pNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
+                            // Try to show the dialog.  Sometimes the window is not yet active if returning from Settings.
+                            try {
+                                // Display the I2P not installed alert dialog.
+                                i2pNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
+                            } catch (Exception i2pNotInstalledException) {
+                                // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                                pendingDialogsArrayList.add(new PendingDialog(i2pNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
+                            }
                         }
                     }
                 }

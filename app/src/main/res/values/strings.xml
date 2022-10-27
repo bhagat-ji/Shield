@@ -425,6 +425,8 @@
             <string name="webview_version">WebView Version:</string>
             <string name="orbot">Orbot:</string>
             <string name="i2p">I2P:</string>
+                <string name="fdroid_flavor">(F-Droid flavor)</string>
+                <string name="google_play_flavor">(Google Play flavor)</string>
             <string name="openkeychain">OpenKeychain:</string>
         <string name="memory_usage">Memory Usage</string>
             <string name="app_consumed_memory">App Consumed Memory:</string>

@@ -330,12 +330,18 @@ class AboutVersionFragment : Fragment() {
 
         // Get the I2P version name if I2P is installed.
         val i2p: String = try {
-            // Store the version name.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
+            // Check to see if the F-Droid flavor is installed.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
             @Suppress("DEPRECATION")
-            requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName
-        } catch (exception: PackageManager.NameNotFoundException) {  // I2P is not installed.
-            // Store an empty string.
-            ""
+            requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName + " " + requireContext().getString(R.string.fdroid_flavor)
+        } catch (exception: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
+            try {
+                // Check to see if the F-Droid flavor is installed.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
+                @Suppress("DEPRECATION")
+                requireContext().packageManager.getPackageInfo("net.i2p.android", 0).versionName + " " + requireContext().getString(R.string.google_play_flavor)
+            } catch (exception: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed either.
+                // Store an empty string.
+                ""
+            }
         }
 
         // Get the OpenKeychain version name if it is installed.

@@ -36,7 +36,8 @@
     <!-- List the apps that Privacy Browser needs to query to see if they are installed. -->
     <queries>
         <!-- I2P. -->
-        <package android:name="net.i2p.android.router" />
+        <package android:name="net.i2p.android" />  <!-- Google Play flavor. -->
+        <package android:name="net.i2p.android.router" />  <!-- F-Droid flavor. -->
 
         <!-- Orbot. -->
         <package android:name="org.torproject.android" />
