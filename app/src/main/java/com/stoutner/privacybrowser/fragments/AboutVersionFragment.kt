@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -54,6 +54,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.BuildConfig
 import com.stoutner.privacybrowser.asynctasks.SaveAboutVersionImage
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -165,11 +170,16 @@ class AboutVersionFragment : Fragment() {
                 // Open an output stream.
                 val outputStream = requireActivity().contentResolver.openOutputStream(fileUri)!!
 
-                // Write the about version string to the output stream.
-                outputStream.write(aboutVersionString.toByteArray(StandardCharsets.UTF_8))
+                // Save about version using a coroutine with Dispatchers.IO.
+                CoroutineScope(Dispatchers.Main).launch {
+                    withContext(Dispatchers.IO) {
+                        // Write the about version string to the output stream.
+                        outputStream.write(aboutVersionString.toByteArray(StandardCharsets.UTF_8))
 
-                // Close the output stream.
-                outputStream.close()
+                        // Close the output stream.
+                        outputStream.close()
+                    }
+                }
 
                 // Initialize the file name string from the file URI last path segment.
                 var fileNameString = fileUri.lastPathSegment

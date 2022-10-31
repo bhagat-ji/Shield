@@ -43,6 +43,11 @@ import com.stoutner.privacybrowser.BuildConfig
 
 import com.stoutner.privacybrowser.R
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -72,11 +77,16 @@ class LogcatActivity : AppCompatActivity() {
                 // Open an output stream.
                 val outputStream = contentResolver.openOutputStream(fileUri)!!
 
-                // Write the logcat string to the output stream.
-                outputStream.write(logcatString.toByteArray(StandardCharsets.UTF_8))
+                // Save the logcat using a coroutine with Dispatchers.IO.
+                CoroutineScope(Dispatchers.Main).launch {
+                    withContext(Dispatchers.IO) {
+                        // Write the logcat string to the output stream.
+                        outputStream.write(logcatString.toByteArray(StandardCharsets.UTF_8))
 
-                // Close the output stream.
-                outputStream.close()
+                        // Close the output stream.
+                        outputStream.close()
+                    }
+                }
 
                 // Initialize the file name string from the file URI last path segment.
                 var fileNameString = fileUri.lastPathSegment
