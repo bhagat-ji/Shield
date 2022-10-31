@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -45,14 +45,8 @@
 
         <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> Заголовок X-Requested-With</h3>
 
-        <p>Google запрограммировал WebView в Android на отправку заголовка X-Requested-With при каждом запросе.
+        <p>Google запрограммировал WebView в Android на отправку <<a href="https://www.stoutner.com/the-x-requested-with-header/">заголовка X-Requested-With</a> при каждом запросе.
             Значение заголовка X-Requested-With устанавливается как идентификатор приложения, который в случае Privacy Browser является <code>com.stoutner.privacybrowser.standard</code>.
-            В настоящее время невозможно удалить этот заголовок, но его значение можно изменить. По умолчанию Privacy Browser отправляет нулевое (пустое) значение для заголовка X-Requested-With.
-            Несмотря на то, что спецификация допускает нулевые значения заголовков, некоторые веб-серверы не приветствуют их, поэтому Privacy Browser имеет возможность вернуться к поведению по умолчанию,
-            отправляя идентификатор приложения.
-            Поскольку этот параметр кэшируется при первой загрузке URL-адреса и не изменяется при перезагрузке страницы или навигации по истории,
-            изменения этого параметра могут не действовать до перезапуска Privacy Browser.
-            В блоге есть <a href="https://www.stoutner.com/the-x-requested-with-header/">пост</a> с дополнительной информацией.
-            Заголовок X-Requested-With будет <a href="https://redmine.stoutner.com/issues/37">полностью удален</a> в версии 4.x после выпуска Privacy WebView.</p>
+            This can be disabled by using <a href="https://www.stoutner.com/webview-devtools/">WebView's DevTools</a>.</p>
     </body>
 </html>

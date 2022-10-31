@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2019-2022 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -321,11 +321,6 @@
     <string name="domain_name">Domainname</string>
     <string name="domain_deleted">Domain gelöscht</string>
     <string name="domain_name_instructions">*. kann als Wildcard-Subdomain verwendet werden (z.B. *.stoutner.com)</string>
-    <string-array name="x_requested_with_header_array">
-        <item>System-Einstellung</item>
-        <item>X-Requested-With-Header aktiviert</item>
-        <item>X-Requested-With header deaktiviert</item>
-    </string-array>
     <string-array name="font_size_array">
         <item>System-Einstellung</item>
         <item>Benutzerdefinierte Schriftgröße</item>
@@ -493,10 +488,6 @@
             <item>Eigener</item>
         </string-array>
         <string name="custom_user_agent">Eigener User Agent</string>
-        <string name="x_requested_with_header">X-Requested-With-Header</string>
-        <string name="x_requested_with_header_summary">Ist diese Option aktiviert, sendet Privacy Browser einen Null-Wert im X-Requested-With-Header.
-            Normalerweise ist dies kein Problem, einige Internet-Seiten kommen damit jedoch nicht zurecht. Wird die Einstellung geändert, startet Privacy Browser neu.</string>
-        <string name="x_requested_with_header_explanation">Änderungen der Einstellung zum X-Requested-With-Header werden nicht übernommen, bis Privacy Browser neu gestartet wird.</string>
         <string name="incognito_mode">Inkognito-Modus</string>
         <string name="incognito_mode_summary">Löscht den Verlauf und den Cache nach jedem fertigen Laden einer Webseite.
             Im Incognito-Modus schließt \'Zurück\'-Button den aktive Tab (oder die App, wenn nur ein Tab geöffnet wurde).</string>
@@ -600,7 +591,4 @@
         <string name="wide_viewport_summary">Wird der breite Anzeigebereich verwendet, werden manche Webseiten eher wie am Desktop (Standrechner, Laptop) angezeigt.</string>
         <string name="display_webpage_images">Webseiten-Bilder anzeigen</string>
         <string name="display_webpage_images_summary">Bilder deaktivieren, um Bandbreite zu sparen.</string>
-
-    <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
-    <string name="ad_consent">Zustimmung zur Werbung</string>
 </resources>

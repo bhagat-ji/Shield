@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017,2019,2021-2022 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -47,14 +47,8 @@
 
         <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> Intestazioni X-Requested-With</h3>
 
-        <p>Google ha programmato la webview di Android per inviare un'intestazione X-Requested-With con ogni richiesta.
+        <p>Google ha programmato la webview di Android per inviare <a href="https://www.stoutner.com/the-x-requested-with-header/">un'intestazione X-Requested-With</a> con ogni richiesta.
             Il valore dell'intestazione X-Requested-With è impostato sulla ID della applicazione, ovvero nel caso di Privacy Browser, è <code>com.stoutner.privacybrowser.standard</code>.
-            Attualmente non è possibile rimuovere questa intestazione, è però possibile modificarne il valore. Di default Privacy Browser invia un valore nullo (vuoto) per l'intestazione X-Requested-With.
-            Anche se le specifiche ammettono valori nulli per l'intestazione, ad alcuni web server non piace,
-            per cui Privacy Browser ha l'opzione per modificare il comportamento a quello di default per inviare la ID dell'app.
-            Dal momento che questa impostazione è messa nella cache quando si carica per la prima volta una URL, e non viene modificata nel caso in cui una pagina venga ricaricata o ripresa dalla cronologia,
-            le modifiche a questa impostazione non vengono applicate fino al riavvio di Privacy Browser.
-            E' stato creato un <a href="https://www.stoutner.com/the-x-requested-with-header/">blog post</a> con informazioni aggiuntive.
-            Le intestazioni X-Requested-With saranno <a href="https://redmine.stoutner.com/issues/37">rimosse completamente</a> nella serie 4.x con il rilascio di Privacy WebView.</p>
+            This can be disabled by using <a href="https://www.stoutner.com/webview-devtools/">WebView's DevTools</a>.</p>
     </body>
 </html>

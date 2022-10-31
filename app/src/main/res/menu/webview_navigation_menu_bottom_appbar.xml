@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -34,28 +34,34 @@
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group android:id="@+id/settings_group" >
         <item
+            android:id="@+id/webview_devtools"
+            android:title="@string/webview_devtools"
+            android:icon="@drawable/webview_devtools"
+            android:orderInCategory="30" />
+
+        <item
             android:id="@+id/logcat"
             android:title="@string/logcat"
             android:icon="@drawable/clear_logcat_enabled"
-            android:orderInCategory="30" />
+            android:orderInCategory="40" />
 
         <item
             android:id="@+id/import_export"
             android:title="@string/import_export"
             android:icon="@drawable/import_export"
-            android:orderInCategory="40" />
+            android:orderInCategory="50" />
 
         <item
             android:id="@+id/settings"
             android:title="@string/settings"
             android:icon="@drawable/settings"
-            android:orderInCategory="50" />
+            android:orderInCategory="60" />
 
         <item
             android:id="@+id/domains"
             android:title="@string/domains"
             android:icon="@drawable/domains"
-            android:orderInCategory="60" />
+            android:orderInCategory="70" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -64,13 +70,13 @@
             android:id="@+id/downloads"
             android:title="@string/downloads"
             android:icon="@drawable/download"
-            android:orderInCategory="70" />
+            android:orderInCategory="80" />
 
         <item
             android:id="@+id/requests"
             android:title="@string/requests"
             android:icon="@drawable/block_ads_enabled"
-            android:orderInCategory="80" />
+            android:orderInCategory="90" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -79,31 +85,31 @@
             android:id="@+id/open"
             android:title="@string/open"
             android:icon="@drawable/proxy_enabled"
-            android:orderInCategory="90" />
+            android:orderInCategory="100" />
 
         <item
             android:id="@+id/history"
             android:title="@string/history"
             android:icon="@drawable/history"
-            android:orderInCategory="100" />
+            android:orderInCategory="110" />
 
         <item
             android:id="@+id/forward"
             android:title="@string/forward"
             android:icon="@drawable/forward"
-            android:orderInCategory="110" />
+            android:orderInCategory="120" />
 
         <item
             android:id="@+id/back"
             android:title="@string/back"
             android:icon="@drawable/back"
-            android:orderInCategory="120" />
+            android:orderInCategory="130" />
 
         <item
             android:id="@+id/home"
             android:title="@string/home"
             android:icon="@drawable/home"
-            android:orderInCategory="130" />
+            android:orderInCategory="140" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -112,6 +118,6 @@
             android:id="@+id/clear_and_exit"
             android:title="@string/clear_and_exit"
             android:icon="@drawable/download_with_external_app_enabled"
-            android:orderInCategory="140" />
+            android:orderInCategory="150" />
     </group>
 </menu>

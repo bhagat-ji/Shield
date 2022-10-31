@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2019,2021-2022 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -52,14 +52,8 @@
 
         <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With-Header</h3>
 
-        <p>Die Android-Systemkomponente WebView sendet mit jeder Anfrage einen X-Requested-With-Header an den betreffenden Internet-Server.
+        <p>Die Android-Systemkomponente WebView sendet mit jeder Anfrage einen <a href="https://www.stoutner.com/the-x-requested-with-header/">X-Requested-With-Header</a> an den betreffenden Internet-Server.
             Der Wert im X-Requested-With-Header entspricht dabei der Applikations-ID - im Fall von Privacy Browser <code>com.stoutner.privacybrowser.standard</code>.
-            Aktuell ist es nicht möglich, diesen Header gänzlich zu entfernen, es kann lediglich dessen Wert geändert werden. Standardmäßig sendet Privacy Browser einen leeren bzw.
-            Null-Wert für den X-Requested-With-Header. Obwohl dies den Spezifikationen zufolge erlaubt ist, kommen manche Internet-Server nicht damit zurecht.
-            Daher ist es möglich, das Standard-Verhalten (d.h. das Senden der App-ID) in den Einstellungen zu aktivieren.
-            Da diese Einstellung gecached wird, wenn eine URL zum ersten Mal geladen wird, ändert sie sich nicht beim Neu-Laden einer Seite oder bei deren Aufruf aus dem Verlauf,
-            sondern wird erst mit einem Neustart von Privacy Browser aktiv.
-            Weitere Informationen dazu können einem <a href="https://www.stoutner.com/the-x-requested-with-header/">Blog-Post</a> entnommen werden.
-            Mit <a href="https://redmine.stoutner.com/issues/37">Privacy WebView ab Version 4.x von Privacy Browser</a>kann der X-Requested-With-Header komplett entfernt werden.</p>
+            This can be disabled by using <a href="https://www.stoutner.com/webview-devtools/">WebView's DevTools</a>.</p>
     </body>
 </html>

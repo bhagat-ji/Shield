@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -35,7 +35,7 @@ import java.io.InputStream
 import java.io.OutputStream
 
 // Define the private class constants.
-private const val SCHEMA_VERSION = 15
+private const val SCHEMA_VERSION = 16
 private const val PREFERENCES_TABLE = "preferences"
 
 // Define the private preferences constants.
@@ -46,7 +46,6 @@ private const val DOM_STORAGE = "dom_storage"
 private const val SAVE_FORM_DATA = "save_form_data"
 private const val USER_AGENT = "user_agent"
 private const val CUSTOM_USER_AGENT = "custom_user_agent"
-private const val X_REQUESTED_WITH_HEADER = "x_requested_with_header"
 private const val INCOGNITO_MODE = "incognito_mode"
 private const val ALLOW_SCREENSHOTS = "allow_screenshots"
 private const val EASYLIST = "easylist"
@@ -137,6 +136,7 @@ class ImportExportDatabaseHelper {
 
             // Upgrade from schema version 2, first used in Privacy Browser 2.14, to schema version 3, first used in Privacy Browser 2.15.
             if (importDatabaseVersion < 3) {
+                // `default_font_size` was renamed `font_size`.
                 // Once the SQLite version is >= 3.25.0 (Android API >= 30) `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
@@ -166,7 +166,7 @@ class ImportExportDatabaseHelper {
                 val scrollAppBar = sharedPreferences.getBoolean(SCROLL_APP_BAR, true)
 
                 // Populate the preferences table with the current app bar values.
-                // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
+                // This can switch to using the variables directly once the minimum API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 if (hideAppBar)
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $HIDE_APP_BAR = 1")
@@ -347,7 +347,9 @@ class ImportExportDatabaseHelper {
             // Upgrade from schema version 13, first used in Privacy Browser 3.7, to schema version 14, first used in Privacy Browser 3.8.
             if (importDatabaseVersion < 14) {
                 // `enabledthirdpartycookies` was removed from the domains table.  `do_not_track` and `third_party_cookies` were removed from the preferences table.
+                // There is no need to delete the columns as they will simply be ignored by the import.
 
+                // `enablefirstpartycookies` was renamed `cookies`.
                 // Once the SQLite version is >= 3.25.0 (Android API >= 30) `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
@@ -386,10 +388,9 @@ class ImportExportDatabaseHelper {
             // Upgrade from schema version 14, first used in Privacy Browser 3.8, to schema version 15, first used in Privacy Browser 3.11.
             if (importDatabaseVersion < 15) {
                 // `facebook_click_ids` was removed from the preferences table.
+                // There is no need to delete the columns as they will simply be ignored by the import.
 
-                // Once the SQLite version is >= 3.25.0 (Android API >= 30) `ALTER TABLE RENAME COLUMN` can be used.  <https://www.sqlite.org/lang_altertable.html> <https://www.sqlite.org/changes.html>
-                // <https://developer.android.com/reference/android/database/sqlite/package-summary>
-                // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
+                // `x_requested_with_header` was previously added to the preferences and domains tables in this version, but it was removed later in schema version 16.
 
                 // Create the new URL modification columns.
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $TRACKING_QUERIES BOOLEAN")
@@ -398,22 +399,11 @@ class ImportExportDatabaseHelper {
                 // Copy the data from the old columns to the new ones.
                 importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $TRACKING_QUERIES = google_analytics")
                 importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $AMP_REDIRECTS = twitter_amp_redirects")
-
-                // Create the new X-Requested-with header columns.
-                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $X_REQUESTED_WITH_HEADER BOOLEAN")
-                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER} INTEGER")
-
-                // Get the current X-Requested-With header preferences value.
-                val xRequestedWithHeader = sharedPreferences.getBoolean(X_REQUESTED_WITH_HEADER, true)
-
-                // Populate the Preferences X-Requested-With header with the current value.  The domains X-Requested-With header will default to 0, which is `System default`.
-                // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
-                // <https://developer.android.com/reference/android/database/sqlite/package-summary>
-                if (xRequestedWithHeader)
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $X_REQUESTED_WITH_HEADER = 1")
-                else
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $X_REQUESTED_WITH_HEADER = 0")
             }
+
+            // Upgrade from schema version 15, first used in Privacy Browser 3.11, to schema version 16, first used in Privacy Browser 3.12.
+            // This upgrade removed the `x_requested_with_header` from the domains and preferences tables.
+            // There is no need to delete the columns as they will simply be ignored by the import.
 
             // Get a cursor for the bookmarks table.
             val importBookmarksCursor = importDatabase.rawQuery("SELECT * FROM ${BookmarksDatabaseHelper.BOOKMARKS_TABLE}", null)
@@ -486,7 +476,6 @@ class ImportExportDatabaseHelper {
                 domainContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS,
                     importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)))
                 domainContentValues.put(DomainsDatabaseHelper.USER_AGENT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT)))
-                domainContentValues.put(DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER)))
                 domainContentValues.put(DomainsDatabaseHelper.FONT_SIZE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE)))
                 domainContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH)))
                 domainContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME)))
@@ -536,7 +525,6 @@ class ImportExportDatabaseHelper {
                 .putBoolean(SAVE_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SAVE_FORM_DATA)) == 1)  // Save form data can be removed once the minimum API >= 26.
                 .putString(USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(USER_AGENT)))
                 .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(CUSTOM_USER_AGENT)))
-                .putBoolean(X_REQUESTED_WITH_HEADER, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(X_REQUESTED_WITH_HEADER)) == 1)
                 .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(INCOGNITO_MODE)) == 1)
                 .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ALLOW_SCREENSHOTS)) == 1)
                 .putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(EASYLIST)) == 1)
@@ -670,7 +658,6 @@ class ImportExportDatabaseHelper {
                 domainContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)))
                 domainContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)))
                 domainContentValues.put(DomainsDatabaseHelper.USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT)))
-                domainContentValues.put(DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER)))
                 domainContentValues.put(DomainsDatabaseHelper.FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE)))
                 domainContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH)))
                 domainContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME)))
@@ -711,7 +698,6 @@ class ImportExportDatabaseHelper {
                     "$SAVE_FORM_DATA BOOLEAN, " +
                     "$USER_AGENT TEXT, " +
                     "$CUSTOM_USER_AGENT TEXT, " +
-                    "$X_REQUESTED_WITH_HEADER BOOLEAN, " +
                     "$INCOGNITO_MODE BOOLEAN, " +
                     "$ALLOW_SCREENSHOTS BOOLEAN, " +
                     "$EASYLIST BOOLEAN, " +
@@ -764,7 +750,6 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean(SAVE_FORM_DATA, false))  // Save form data can be removed once the minimum API >= 26.
             preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)))
             preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)))
-            preferencesContentValues.put(X_REQUESTED_WITH_HEADER, sharedPreferences.getBoolean(X_REQUESTED_WITH_HEADER, true))
             preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false))
             preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false))
             preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true))

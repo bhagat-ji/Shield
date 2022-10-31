@@ -60,7 +60,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var formDataPreference: Preference  // The form data preference can be removed once the minimum API >= 26.
     private lateinit var userAgentPreference: Preference
     private lateinit var customUserAgentPreference: Preference
-    private lateinit var xRequestedWithHeaderPreference: Preference
     private lateinit var incognitoModePreference: Preference
     private lateinit var allowScreenshotsPreference: Preference
     private lateinit var easyListPreference: Preference
@@ -111,7 +110,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         formDataPreference = findPreference(getString(R.string.save_form_data_key))!!  // The form data preference can be removed once the minimum API >= 26.
         userAgentPreference = findPreference(getString(R.string.user_agent_key))!!
         customUserAgentPreference = findPreference(getString(R.string.custom_user_agent_key))!!
-        xRequestedWithHeaderPreference = findPreference(getString(R.string.x_requested_with_header_key))!!
         incognitoModePreference = findPreference(getString(R.string.incognito_mode_key))!!
         allowScreenshotsPreference = findPreference(getString(R.string.allow_screenshots_key))!!
         easyListPreference = findPreference(getString(R.string.easylist_key))!!
@@ -327,12 +325,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled)
         else
             customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted)
-
-        // Set the X-Requested With header icon.
-        if (sharedPreferences.getBoolean(getString(R.string.x_requested_with_header_key), true))
-            xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_enabled)
-        else
-            xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_disabled)
 
         // Set the incognito mode icon.
         if (sharedPreferences.getBoolean(getString(R.string.incognito_mode_key), false))
@@ -696,17 +688,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 getString(R.string.custom_user_agent_key) -> {
                     // Set the new custom user agent as the summary text for the preference.
                     customUserAgentPreference.summary = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
-                }
-
-                getString(R.string.x_requested_with_header_key) -> {
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.x_requested_with_header_key), true))
-                        xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_enabled)
-                    else
-                        xRequestedWithHeaderPreference.setIcon(R.drawable.x_requested_with_header_disabled)
-
-                    // Restart Privacy Browser.
-                    restartPrivacyBrowser()
                 }
 
                 getString(R.string.incognito_mode_key) -> {

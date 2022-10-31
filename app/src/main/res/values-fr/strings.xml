@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2019-2021 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -318,11 +318,6 @@
     <string name="domain_name">Nom de demaine</string>
     <string name="domain_deleted">Domaine supprimé</string>
     <string name="domain_name_instructions">Faire précéder par *. pour inclure l\'ensemble des sous-domaines (ex. *.stoutner.com)</string>
-    <string-array name="x_requested_with_header_array">
-        <item>Réglages système</item>
-        <item>En-tête X-Requested-With activé</item>
-        <item>En-tête X-Requested-With désactivé</item>
-    </string-array>
     <string-array name="font_size_array">
         <item>Réglages système</item>
         <item>Taille de police personnalisée</item>
@@ -490,10 +485,6 @@
             <item>Personnalisé</item>
         </string-array>
         <string name="custom_user_agent">User agent personnalisé</string>
-        <string name="x_requested_with_header">En-tête X-Requested-With</string>
-        <string name="x_requested_with_header_summary">Lorsque activé, Privacy Browser envoie une valeur nulle pour l\'en-tête X-Requested-With.
-            En général, ce n\'est pas un problème, mais certains sites Web ne l\'apprécient pas. La modification de ce paramètre entraînera le redémarrage de Privacy Browser.</string>
-        <string name="x_requested_with_header_explanation">Les modifications apportées à l\'en-tête X-Requested-With peuvent ne pas être appliquées avant le redémarrage de Privacy Browser.</string>
         <string name="incognito_mode">Mode Incognito</string>
         <string name="incognito_mode_summary">Vider l\'historique et le cache après le chargement de chaque page.
             Dans le mode Incognito, le bouton Retour ferme l\'onglet (ou l\'application s\'il n\'y a qu\'un seul onglet).</string>
@@ -598,7 +589,4 @@
         <string name="wide_viewport_summary">L\'utilisation d\'une fenêtre d\'affichage large fait que la mise en page de certaines pages Web ressemble davantage au site sur ordinateur.</string>
         <string name="display_webpage_images">Afficher images Web</string>
         <string name="display_webpage_images_summary">Désactiver pour conserver de la bande passante.</string>
-
-    <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
-    <string name="ad_consent">Consentement publicitaire</string>
 </resources>

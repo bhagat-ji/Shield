@@ -66,12 +66,6 @@
             android:inputType="textVisiblePassword|textMultiLine" />
 
         <SwitchPreference
-            android:key="@string/x_requested_with_header_key"
-            android:title="@string/x_requested_with_header"
-            android:summary="@string/x_requested_with_header_summary"
-            android:defaultValue="true" />
-
-        <SwitchPreference
             android:key="@string/incognito_mode_key"
             android:title="@string/incognito_mode"
             android:summary="@string/incognito_mode_summary"

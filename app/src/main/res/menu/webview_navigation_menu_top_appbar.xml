@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -99,6 +99,12 @@
             android:title="@string/logcat"
             android:icon="@drawable/clear_logcat_enabled"
             android:orderInCategory="120" />
+
+        <item
+            android:id="@+id/webview_devtools"
+            android:title="@string/webview_devtools"
+            android:icon="@drawable/webview_devtools"
+            android:orderInCategory="130" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -107,12 +113,12 @@
             android:id="@+id/guide"
             android:title="@string/guide"
             android:icon="@drawable/guide"
-            android:orderInCategory="130" />
+            android:orderInCategory="140" />
 
         <item
             android:id="@+id/about"
             android:title="@string/about"
             android:icon="@drawable/about"
-            android:orderInCategory="140" />
+            android:orderInCategory="150" />
     </group>
 </menu>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -482,7 +482,4 @@
         <string name="wide_viewport_summary">Geniş ekran kullanmak, bazı web sayfalarının düzenini masaüstü versiyonları gibi yapar.</string>
         <string name="display_webpage_images">Web sayfasının görsellerini göster</string>
         <string name="display_webpage_images_summary">Bant genişliği korumasını devre dışı bırakır.</string>
-
-    <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
-    <string name="ad_consent">Reklam Onayı</string>
 </resources>

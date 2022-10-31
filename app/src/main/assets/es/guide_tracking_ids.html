@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017,2019,2021-2022 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -47,14 +47,8 @@
 
         <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> Cabecera X-Requested-With</h3>
 
-        <p>Google ha programado WebView de Android para que envíe una cabecera X-Requested-With con cada solicitud.
+        <p>Google ha programado WebView de Android para que envíe una <a href="https://www.stoutner.com/the-x-requested-with-header/">cabecera X-Requested-With</a> con cada solicitud.
             El valor de la cabecera X-Requested-With se establece con el ID de la aplicación, que en el caso de Navegador Privado es <code>com.stoutner.privacybrowser.standard</code>.
-            Actualmente, no es posible eliminar esta cabecera, pero el valor puede cambiarse. Por defecto, Navegador Privado envía un valor nulo (vacío) para la cabecera X-Requested-With.
-            Aunque la especificación permite valores de cabecera nulos, a algunos servidores web no les gustan,
-            por lo que Navegador Privado tiene la opción de volver al comportamiento por defecto de enviar el ID de la aplicación.
-            Dado que esta configuración se almacena en caché cuando se carga una URL por primera vez, y no se modifica al recargar una página o al navegar por el historial,
-            los cambios en esta configuración pueden no aplicarse hasta que se reinicie Navegador Privado.
-            Hay una <a href="https://www.stoutner.com/the-x-requested-with-header/">entrada en el blog</a> con información adicional.
-            La cabecera X-Requested-With será <a href="https://redmine.stoutner.com/issues/37">completamente eliminada</a> en la serie 4.x  con el lanzamiento de Privacy WebView.</p>
+            This can be disabled by using <a href="https://www.stoutner.com/webview-devtools/">WebView's DevTools</a>.</p>
     </body>
 </html>

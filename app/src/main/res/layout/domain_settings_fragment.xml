@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -444,55 +444,6 @@
                 android:inputType="textUri"
                 android:hint="@string/custom_user_agent"
                 android:importantForAutofill="no" />
-        </LinearLayout>
-
-        <!-- X-Requested-With Header. -->
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp" >
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/x_requested_with_header_imageview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/x_requested_with_header_enabled"
-                    app:tint="@color/blue_icon_selector"
-                    android:contentDescription="@string/x_requested_with_header" />
-
-                <Spinner
-                    android:id="@+id/x_requested_with_header_spinner"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/x_requested_with_header_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="36dp"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/x_requested_with_header_explanation_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="36dp"
-                android:textSize="11sp"
-                android:text="@string/x_requested_with_header_explanation" />
         </LinearLayout>
 
         <!-- Font Size. -->

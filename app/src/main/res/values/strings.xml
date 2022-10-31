@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -123,6 +123,7 @@
     <string name="settings">Settings</string>
     <string name="import_export">Import/Export</string>
     <string name="logcat">Logcat</string>
+    <string name="webview_devtools">WebView DevTools</string>
     <string name="guide">Guide</string>
     <string name="about">About</string>
 
@@ -323,11 +324,6 @@
     <string name="domain_name">Domain name</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
-    <string-array name="x_requested_with_header_array">
-        <item>System default</item>
-        <item>X-Requested-With header enabled</item>
-        <item>X-Requested-With header disabled</item>
-    </string-array>
     <string-array name="font_size_array">
         <item>System default</item>
         <item>Custom font size</item>
@@ -528,10 +524,6 @@
         </string-array>
         <string name="custom_user_agent">Custom user agent</string>
         <string name="system_default_user_agent" translatable="false">System default user agent</string>  <!-- This item is referenced in code.  It is never displayed on the screen. -->
-        <string name="x_requested_with_header">X-Requested-With header</string>
-        <string name="x_requested_with_header_summary">When enabled, Privacy Browser send a null value for the X-Requested-With header. Usually this isn\'t a problem, but a few websites don\'t like it.
-            Changing this settings will restart Privacy Browser.</string>
-        <string name="x_requested_with_header_explanation">Changes to the X-Requested-With header might not be applied until Privacy Browser is restarted.</string>
         <string name="incognito_mode">Incognito Mode</string>
         <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading. In Incognito Mode, back closes the tab (or the app if there is only one tab).</string>
         <string name="allow_screenshots">Allow screenshots</string>
@@ -704,7 +696,6 @@
     <string name="user_agent_key" translatable="false">user_agent</string>
     <string name="webview_theme_key" translatable="false">webview_theme</string>
     <string name="wide_viewport_key" translatable="false">wide_viewport</string>
-    <string name="x_requested_with_header_key" translatable="false">x_requested_with_header</string>
 
     <!-- Non-translatable preference default values. -->
     <string name="app_theme_default_value" translatable="false">System default</string>
@@ -717,9 +708,4 @@
     <string name="search_default_value" translatable="false">https://www.mojeek.com/search?q=</string>
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="webview_theme_default_value" translatable="false">System default</string>
-
-    <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
-    <string name="google_app_id" translatable="false">Null</string>
-    <string name="ad_unit_id" translatable="false">Null</string>
-    <string name="ad_consent">Ad Consent</string>
 </resources>

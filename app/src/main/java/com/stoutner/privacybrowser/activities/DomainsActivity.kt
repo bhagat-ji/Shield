@@ -706,7 +706,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val blockAllThirdPartyRequestsSwitch = view.findViewById<SwitchCompat>(R.id.block_all_third_party_requests_switch)
         val userAgentSpinner = view.findViewById<Spinner>(R.id.user_agent_spinner)
         val customUserAgentEditText = view.findViewById<EditText>(R.id.custom_user_agent_edittext)
-        val xRequestedWithHeaderSpinner = view.findViewById<Spinner>(R.id.x_requested_with_header_spinner)
         val fontSizeSpinner = view.findViewById<Spinner>(R.id.font_size_spinner)
         val customFontSizeEditText = view.findViewById<EditText>(R.id.custom_font_size_edittext)
         val swipeToRefreshSpinner = view.findViewById<Spinner>(R.id.swipe_to_refresh_spinner)
@@ -732,7 +731,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val ultraPrivacy = ultraPrivacySwitch.isChecked
         val blockAllThirdPartyRequests = blockAllThirdPartyRequestsSwitch.isChecked
         val userAgentSwitchPosition = userAgentSpinner.selectedItemPosition
-        val xRequestedWithHeaderSwitchInt = xRequestedWithHeaderSpinner.selectedItemPosition
         val fontSizeSwitchPosition = fontSizeSpinner.selectedItemPosition
         val swipeToRefreshInt = swipeToRefreshSpinner.selectedItemPosition
         val webViewThemeInt = webViewThemeSpinner.selectedItemPosition
@@ -763,7 +761,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
 
         // Save the domain settings.
         domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScript, cookies, domStorage, formData, easyList, easyPrivacy, fanboysAnnoyance, fanboysSocialBlocking, ultraList,
-            ultraPrivacy, blockAllThirdPartyRequests, userAgentName, xRequestedWithHeaderSwitchInt, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
+            ultraPrivacy, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
             pinnedSslCertificate, pinnedIpAddress)
 
         // Update the pinned SSL certificate if a new one is checked.

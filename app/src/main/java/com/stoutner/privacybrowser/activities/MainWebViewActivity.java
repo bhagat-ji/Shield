@@ -2233,6 +2233,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Make it so.
             startActivity(logcatIntent);
+        } else if (menuItemId == R.id.webview_devtools) {  // WebView Dev.
+            // Create a WebView DevTools intent.
+            Intent webViewDevToolsIntent = new Intent("com.android.webview.SHOW_DEV_UI");
+
+            // Launch as a new task so that the WebView DevTools and Privacy Browser show as a separate windows in the recent tasks list.
+            webViewDevToolsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Make it so.
+            startActivity(webViewDevToolsIntent);
         } else if (menuItemId == R.id.guide) {  // Guide.
             // Create an intent to launch the guide activity.
             Intent guideIntent = new Intent(this, GuideActivity.class);
@@ -3797,7 +3806,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
             // Store the general preference information.
-            boolean defaultXRequestedWithHeader = sharedPreferences.getBoolean(getString(R.string.x_requested_with_header_key), true);
             String defaultFontSizeString = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true);
@@ -3843,7 +3851,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.setBlockAllThirdPartyRequests(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(
                         DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
                 String userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT));
-                int xRequestedWithHeaderInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER));
                 int fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
                 int webViewThemeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME));
@@ -3881,24 +3888,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
                     nestedScrollWebView.getSettings().setSaveFormData(saveFormData);
-                }
-
-                // Set the X-Requested-With header.
-                switch (xRequestedWithHeaderInt) {
-                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
-                        if (defaultXRequestedWithHeader)
-                            nestedScrollWebView.setXRequestedWithHeader();
-                        else
-                            nestedScrollWebView.resetXRequestedWithHeader();
-                        break;
-
-                    case DomainsDatabaseHelper.ENABLED:
-                        nestedScrollWebView.setXRequestedWithHeader();
-                        break;
-
-                    case DomainsDatabaseHelper.DISABLED:
-                        nestedScrollWebView.resetXRequestedWithHeader();
-                        break;
                 }
 
                 // Apply the font size.
@@ -4131,12 +4120,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setSaveFormData(saveFormData);
                 }
 
-                // Store the X-Requested-With header status in the nested scroll WebView.
-                if (defaultXRequestedWithHeader)
-                    nestedScrollWebView.setXRequestedWithHeader();
-                else
-                    nestedScrollWebView.resetXRequestedWithHeader();
-
                 // Store the swipe to refresh status in the nested scroll WebView.
                 nestedScrollWebView.setSwipeToRefresh(defaultSwipeToRefresh);
 
@@ -4244,7 +4227,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Load the URL if directed.  This makes sure that the domain settings are properly loaded before the URL.  By using `loadUrl()`, instead of `loadUrlFromBase()`, the Referer header will never be sent.
         if (loadUrl) {
-            nestedScrollWebView.loadUrl(url, nestedScrollWebView.getXRequestedWithHeader());
+            nestedScrollWebView.loadUrl(url);
         }
     }
 

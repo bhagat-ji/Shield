@@ -131,7 +131,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         requestHeadersTextView = findViewById(R.id.request_headers_textview)
         responseMessageTitleTextView = findViewById(R.id.response_message_title_textview)
         responseMessageTextView = findViewById(R.id.response_message_textview)
-        responseHeadersTitleTextView = findViewById(R.id.response_headers_title_textivew)
+        responseHeadersTitleTextView = findViewById(R.id.response_headers_title_textview)
         val responseHeadersTextView = findViewById<TextView>(R.id.response_headers_textview)
         responseBodyTitleTextView = findViewById(R.id.response_body_title_textview)
         val responseBodyTextView = findViewById<TextView>(R.id.response_body_textview)

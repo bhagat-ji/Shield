@@ -94,7 +94,6 @@ class DomainSettingsFragment : Fragment() {
         // Store the default settings.
         val defaultUserAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
         val defaultCustomUserAgentString = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
-        val defaultXRequestedWithHeader = sharedPreferences.getBoolean(getString(R.string.x_requested_with_header_key), true)
         val defaultFontSizeString = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))
         val defaultSwipeToRefresh = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true)
         val defaultWebViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))
@@ -129,10 +128,6 @@ class DomainSettingsFragment : Fragment() {
         val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
         val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
         val customUserAgentEditText = domainSettingsView.findViewById<EditText>(R.id.custom_user_agent_edittext)
-        val xRequestedWithHeaderImageView = domainSettingsView.findViewById<ImageView>(R.id.x_requested_with_header_imageview)
-        val xRequestedWithHeaderSpinner = domainSettingsView.findViewById<Spinner>(R.id.x_requested_with_header_spinner)
-        val xRequestedWithHeaderTextView = domainSettingsView.findViewById<TextView>(R.id.x_requested_with_header_textview)
-        val xRequestedWithHeaderExplanationTextView = domainSettingsView.findViewById<TextView>(R.id.x_requested_with_header_explanation_textview)
         val fontSizeSpinner = domainSettingsView.findViewById<Spinner>(R.id.font_size_spinner)
         val defaultFontSizeTextView = domainSettingsView.findViewById<TextView>(R.id.default_font_size_textview)
         val customFontSizeEditText = domainSettingsView.findViewById<EditText>(R.id.custom_font_size_edittext)
@@ -214,7 +209,6 @@ class DomainSettingsFragment : Fragment() {
         val ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY))
         val blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS))
         val currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT))
-        val xRequestedWithHeaderInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.X_REQUESTED_WITH_HEADER))
         val fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE))
         val swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH))
         val webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME))
@@ -246,7 +240,6 @@ class DomainSettingsFragment : Fragment() {
 
         // Create array adapters for the spinners.
         val translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item)
-        val xRequestedWithHeaderArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.x_requested_with_header_array, R.layout.spinner_item)
         val fontSizeArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.font_size_array, R.layout.spinner_item)
         val swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.swipe_to_refresh_array, R.layout.spinner_item)
         val webViewThemeArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.webview_theme_array, R.layout.spinner_item)
@@ -255,7 +248,6 @@ class DomainSettingsFragment : Fragment() {
 
         // Set the drop down view resource on the spinners.
         translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        xRequestedWithHeaderArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         webViewThemeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
@@ -264,7 +256,6 @@ class DomainSettingsFragment : Fragment() {
 
         // Set the array adapters for the spinners.
         userAgentSpinner.adapter = translatedUserAgentArrayAdapter
-        xRequestedWithHeaderSpinner.adapter = xRequestedWithHeaderArrayAdapter
         fontSizeSpinner.adapter = fontSizeArrayAdapter
         swipeToRefreshSpinner.adapter = swipeToRefreshArrayAdapter
         webViewThemeSpinner.adapter = webViewThemeArrayAdapter
@@ -467,48 +458,6 @@ class DomainSettingsFragment : Fragment() {
 
         // Open the user agent spinner when the text view is clicked.
         userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
-
-        // Select the X-Requested-With header selection in the spinner.
-        xRequestedWithHeaderSpinner.setSelection(xRequestedWithHeaderInt)
-
-        // Set the X-Requested-With header text.
-        if (defaultXRequestedWithHeader)
-            xRequestedWithHeaderTextView.text = xRequestedWithHeaderArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED)
-        else
-            xRequestedWithHeaderTextView.text = xRequestedWithHeaderArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED)
-
-        // Set the X-Requested-With header icon and text view settings.
-        when (xRequestedWithHeaderInt) {
-            DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                // Set the icon color.
-                xRequestedWithHeaderImageView.isSelected = defaultXRequestedWithHeader
-
-                // Show the X-Requested-With header text view.
-                xRequestedWithHeaderTextView.visibility = View.VISIBLE
-            }
-
-            DomainsDatabaseHelper.ENABLED -> {
-                // Set the icon color.
-                xRequestedWithHeaderImageView.isSelected = true
-
-                // Hide the X-Requested-With header text view.
-                xRequestedWithHeaderTextView.visibility = View.GONE
-            }
-
-            DomainsDatabaseHelper.DISABLED -> {
-                // Set the icon color.
-                xRequestedWithHeaderImageView.isSelected = false
-
-                // Hide the X-Requested-With header text view.
-                xRequestedWithHeaderTextView.visibility = View.GONE
-            }
-        }
-
-        // Open the X-Requested-With header spinner when the text view is clicked.
-        xRequestedWithHeaderTextView.setOnClickListener { xRequestedWithHeaderSpinner.performClick() }
-
-        // Open the X-Requested-With header spinner when the explanation text view is clicked.
-        xRequestedWithHeaderExplanationTextView.setOnClickListener { xRequestedWithHeaderSpinner.performClick() }
 
         // Display the font size settings.
         if (fontSizeInt == 0) {  // `0` is the code for system default font size.
@@ -1058,42 +1007,6 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the custom user agent edit text.
                         customUserAgentEditText.visibility = View.GONE
-                    }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing.
-            }
-        }
-
-        // Set the X-Requested-With header spinner listener.
-        xRequestedWithHeaderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the visibility of the text view.
-                when (position) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                        // Set the icon color.
-                        xRequestedWithHeaderImageView.isSelected = defaultXRequestedWithHeader
-
-                        // Show the X-Requested-With header text view.
-                        xRequestedWithHeaderTextView.visibility = View.VISIBLE
-                    }
-
-                    DomainsDatabaseHelper.ENABLED -> {
-                        // Set the icon color.
-                        xRequestedWithHeaderImageView.isSelected = true
-
-                        // Hide the X-Requested-With header text view.
-                        xRequestedWithHeaderTextView.visibility = View.GONE
-                    }
-
-                    DomainsDatabaseHelper.DISABLED -> {
-                        // Set the icon color.
-                        xRequestedWithHeaderImageView.isSelected = false
-
-                        // Hide the X-Requested-With header text view.
-                        xRequestedWithHeaderTextView.visibility = View.GONE
                     }
                 }
             }

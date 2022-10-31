@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -93,7 +93,7 @@
                     <!-- Response headers. -->
                     <!-- The title text is set programatically. -->
                     <TextView
-                        android:id="@+id/response_headers_title_textivew"
+                        android:id="@+id/response_headers_title_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:textAlignment="center"

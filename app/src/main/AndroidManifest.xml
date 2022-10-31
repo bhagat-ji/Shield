@@ -70,11 +70,6 @@
             android:name="android.webkit.WebView.EnableSafeBrowsing"
             android:value="false" />
 
-        <!-- Specify the Application ID used by the ads in the free flavor. -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/google_app_id" />
-
         <!-- The file provider is required to encrypt files with OpenKeychain. -->
         <provider
             android:name="androidx.core.content.FileProvider"

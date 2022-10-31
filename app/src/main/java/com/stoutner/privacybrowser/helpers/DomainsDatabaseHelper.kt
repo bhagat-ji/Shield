@@ -31,7 +31,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 
 // Define the class constants.
-private const val SCHEMA_VERSION = 14
+private const val SCHEMA_VERSION = 15
 
 class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(appContext, DOMAINS_DATABASE, null, SCHEMA_VERSION) {
     // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
@@ -62,7 +62,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         const val ENABLE_ULTRAPRIVACY = "enableultraprivacy"
         const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "blockallthirdpartyrequests"
         const val USER_AGENT = "useragent"
-        const val X_REQUESTED_WITH_HEADER = "x_requested_with_header"
         const val FONT_SIZE = "fontsize"
         const val SWIPE_TO_REFRESH = "swipetorefresh"
         const val WEBVIEW_THEME = "webview_theme"
@@ -96,7 +95,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
                 "$ENABLE_ULTRAPRIVACY BOOLEAN, " +
                 "$BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN, " +
                 "$USER_AGENT TEXT, " +
-                "$X_REQUESTED_WITH_HEADER INTEGER, " +
                 "$FONT_SIZE INTEGER, " +
                 "$SWIPE_TO_REFRESH INTEGER, " +
                 "$WEBVIEW_THEME INTEGER, " +
@@ -244,6 +242,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             // Add the WebView theme column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
             domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $WEBVIEW_THEME INTEGER")
 
+            // `night_mode` was removed.
             // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
             // It will be a while before that is supported in Android.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
             // Although a new table could be created and all the data copied to it, I think I will just leave the old night mode column.  It will be wiped out the next time an import is run.
@@ -259,10 +258,13 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         }
 
         // Upgrade from schema version 13, first used in Privacy Browser 3.8, to schema version 14, first used in Privacy Browser 3.11.
-        if (oldVersion < 14) {
-            // Add the X-Requested-With header column.  This defaults to `0`, which is `System default`, so a separate step isn't needed to populate the column.
-            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $X_REQUESTED_WITH_HEADER INTEGER")
-        }
+        // This upgrade used to add the X-Requested-With header, but that was removed in schema version 15.
+
+        // Upgrade from schema version 14, first used in Privacy Browser 3.11, to schema version 15, first used in Privacy Browser 3.12.
+        // This upgrade removed `x_requested_with_header`.
+        // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
+        // It will be a while before that is supported in Android.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
+        // Although a new table could be created and all the data copied to it, I think I will just leave the X-Requested-With column.  It will be wiped out the next time an import is run.
     }
 
     val completeCursorOrderedByDomain: Cursor
@@ -344,7 +346,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
         domainContentValues.put(USER_AGENT, appContext.getString(R.string.user_agent_default_value))
-        domainContentValues.put(X_REQUESTED_WITH_HEADER, 0)
         domainContentValues.put(FONT_SIZE, 0)
         domainContentValues.put(SWIPE_TO_REFRESH, 0)
         domainContentValues.put(WEBVIEW_THEME, 0)
@@ -376,7 +377,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
     }
 
     fun updateDomain(databaseId: Int, domainName: String, javaScript: Boolean, cookies: Boolean, domStorage: Boolean, formData: Boolean, easyList: Boolean, easyPrivacy: Boolean, fanboysAnnoyance: Boolean,
-                     fanboysSocialBlocking: Boolean, ultraList: Boolean, ultraPrivacy: Boolean, blockAllThirdPartyRequests: Boolean, userAgent: String, xRequestedWithHeader: Int, fontSize: Int,
+                     fanboysSocialBlocking: Boolean, ultraList: Boolean, ultraPrivacy: Boolean, blockAllThirdPartyRequests: Boolean, userAgent: String, fontSize: Int,
                      swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int, pinnedSslCertificate: Boolean, pinnedIpAddresses: Boolean) {
 
         // Instantiate a content values.
@@ -396,7 +397,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
         domainContentValues.put(USER_AGENT, userAgent)
-        domainContentValues.put(X_REQUESTED_WITH_HEADER, xRequestedWithHeader)
         domainContentValues.put(FONT_SIZE, fontSize)
         domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefresh)
         domainContentValues.put(WEBVIEW_THEME, webViewTheme)

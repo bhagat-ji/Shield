@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2020-2022 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -581,7 +581,4 @@
         <string name="wide_viewport_summary">Usar uma janela de visualização ampla torna o layout de algumas páginas da web mais parecido com o site para desktop.</string>
         <string name="display_webpage_images">Exibir imagens da página da web</string>
         <string name="display_webpage_images_summary">Desative para conservar a largura de banda.</string>
-
-    <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
-    <string name="ad_consent">Consentimento de Anúncio</string>
 </resources>
