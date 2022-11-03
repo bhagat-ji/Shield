@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -25,26 +25,26 @@
         android:key="@string/privacy_category_key"
         android:title="@string/privacy" >
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/javascript_key"
             android:title="@string/javascript"
             android:summary="@string/javascript_preference_summary"
             android:defaultValue="false" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/cookies_key"
             android:title="@string/cookies"
             android:summary="@string/cookies_preference_summary"
             android:defaultValue="false" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/dom_storage_key"
             android:title="@string/dom_storage_preference"
             android:summary="@string/dom_storage_preference_summary"
             android:defaultValue="false" />
 
         <!-- Save form data can be removed once the minimum API >= 26. -->
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/save_form_data_key"
             android:title="@string/save_form_data_preference"
             android:summary="@string/save_form_data_preference_summary"
@@ -65,13 +65,13 @@
             android:defaultValue="@string/custom_user_agent_default_value"
             android:inputType="textVisiblePassword|textMultiLine" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/incognito_mode_key"
             android:title="@string/incognito_mode"
             android:summary="@string/incognito_mode_summary"
             android:defaultValue="false" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/allow_screenshots_key"
             android:title="@string/allow_screenshots"
             android:summary="@string/allow_screenshots_summary"
@@ -82,43 +82,43 @@
         android:key="blocklists"
         android:title="@string/blocklists" >
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/easylist_key"
             android:title="@string/easylist"
             android:summary="@string/easylist_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/easyprivacy_key"
             android:title="@string/easyprivacy"
             android:summary="@string/easyprivacy_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/fanboys_annoyance_list_key"
             android:title="@string/fanboys_annoyance_list"
             android:summary="@string/fanboys_annoyance_list_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/fanboys_social_blocking_list_key"
             android:title="@string/fanboys_social_blocking_list"
             android:summary="@string/fanboys_social_blocking_list_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/ultralist_key"
             android:title="@string/ultralist"
             android:summary="@string/ultralist_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/ultraprivacy_key"
             android:title="@string/ultraprivacy"
             android:summary="@string/ultraprivacy_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/block_all_third_party_requests_key"
             android:title="@string/block_all_third_party_requests"
             android:summary="@string/block_all_third_party_requests_summary"
@@ -129,13 +129,13 @@
         android:key="url_modification"
         android:title="@string/url_modification" >
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/tracking_queries_key"
             android:title="@string/tracking_queries"
             android:summary="@string/tracking_queries_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/amp_redirects_key"
             android:title="@string/amp_redirects"
             android:summary="@string/amp_redirects_summary"
@@ -183,13 +183,13 @@
         android:key="full_screen"
         android:title="@string/full_screen" >
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/full_screen_browsing_mode_key"
             android:title="@string/full_screen_browsing_mode"
             android:summary="@string/full_screen_browsing_mode_summary"
             android:defaultValue="false" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/hide_app_bar_key"
             android:title="@string/hide_app_bar"
             android:summary="@string/hide_app_bar_summary"
@@ -200,38 +200,38 @@
         android:key="@string/clear_and_exit_category_key"
         android:title="@string/clear_and_exit" >
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/clear_everything_key"
             android:title="@string/clear_everything"
             android:summary="@string/clear_everything_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/clear_cookies_key"
             android:title="@string/clear_cookies_preference"
             android:summary="@string/clear_cookies_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/clear_dom_storage_key"
             android:title="@string/clear_dom_storage_preference"
             android:summary="@string/clear_dom_storage_summary"
             android:defaultValue="true" />
 
         <!-- Clear form data can be removed once the minimum API >= 26. -->
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/clear_form_data_key"
             android:title="@string/clear_form_data_preference"
             android:summary="@string/clear_form_data_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/clear_logcat_key"
             android:title="@string/clear_logcat"
             android:summary="@string/clear_logcat_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/clear_cache_key"
             android:title="@string/clear_cache"
             android:summary="@string/clear_cache_summary"
@@ -257,37 +257,37 @@
             android:inputType="number"
             android:icon="@drawable/font_size" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/open_intents_in_new_tab_key"
             android:title="@string/open_intents_in_new_tab"
             android:summary="@string/open_intents_in_new_tab_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/swipe_to_refresh_key"
             android:title="@string/swipe_to_refresh"
             android:summary="@string/swipe_to_refresh_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/download_with_external_app_key"
             android:title="@string/download_with_external_app"
             android:summary="@string/download_with_external_app_summary"
             android:defaultValue="false" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/scroll_app_bar_key"
             android:title="@string/scroll_app_bar"
             android:summary="@string/scroll_app_bar_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/bottom_app_bar_key"
             android:title="@string/bottom_app_bar"
             android:summary="@string/bottom_app_bar_summary"
             android:defaultValue="false" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/display_additional_app_bar_icons_key"
             android:title="@string/display_additional_app_bar_icons"
             android:summary="@string/display_additional_app_bar_icons_summary"
@@ -308,13 +308,13 @@
             android:entryValues="@array/webview_theme_entry_values"
             android:defaultValue="@string/webview_theme_default_value" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/wide_viewport_key"
             android:title="@string/wide_viewport_preference"
             android:summary="@string/wide_viewport_summary"
             android:defaultValue="true" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/display_webpage_images_key"
             android:title="@string/display_webpage_images"
             android:summary="@string/display_webpage_images_summary"

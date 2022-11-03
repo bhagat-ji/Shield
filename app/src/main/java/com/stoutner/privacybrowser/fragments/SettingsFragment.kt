@@ -1050,7 +1050,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
 
                 getString(R.string.app_theme_key) -> {
-                    // Get the app theme entry number that matches the current app theme.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
+                    // Get the app theme entry number that matches the current app theme.
                     val appThemeEntryNumber: Int = when (sharedPreferences.getString(getString(R.string.app_theme_key), getString(R.string.app_theme_default_value))) {
                         appThemeEntryValuesStringArray[1] -> 1  // The light theme is selected.
                         appThemeEntryValuesStringArray[2] -> 2  // The dark theme is selected.
