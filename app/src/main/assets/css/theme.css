@@ -106,7 +106,7 @@ svg.links {
 }
 
 @media (prefers-color-scheme: dark) {
-  svg.header {
+  svg.links {
     fill: #8AB4F8;  /* Violet 500 */
   }
 }
