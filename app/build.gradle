@@ -30,6 +30,7 @@ android {
         targetSdk 33
         versionCode 60
         versionName "3.11"
+        resConfigs "en", "de", "es", "fr", "it", "pt-rBR", "ru", "tr"
     }
 
     buildTypes {
@@ -80,7 +81,7 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.5.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20'
 
     // Include the Google material library.
     implementation 'com.google.android.material:material:1.7.0'
