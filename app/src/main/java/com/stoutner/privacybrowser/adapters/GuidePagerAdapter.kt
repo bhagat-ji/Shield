@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2020,2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2020,2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -31,7 +31,7 @@ import com.stoutner.privacybrowser.fragments.GuideWebViewFragment
 class GuidePagerAdapter(fragmentManager: FragmentManager, private val context: Context) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     // Get the count of the number of tabs.
     override fun getCount(): Int {
-        return 9
+        return 10
     }
 
     // Get the name of each tab.  Tab numbers start at 0.
@@ -46,6 +46,7 @@ class GuidePagerAdapter(fragmentManager: FragmentManager, private val context: C
             6 -> context.getString(R.string.ssl_certificates)
             7 -> context.getString(R.string.proxies)
             8 -> context.getString(R.string.tracking_ids)
+            9 -> context.getString(R.string.gui)
             else -> ""
         }
     }

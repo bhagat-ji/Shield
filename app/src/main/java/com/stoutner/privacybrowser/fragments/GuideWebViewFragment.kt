@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -134,6 +134,7 @@ class GuideWebViewFragment : Fragment() {
             6 -> tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates.html")
             7 -> tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/guide_proxies.html")
             8 -> tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/guide_tracking_ids.html")
+            9 -> tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/guide_interface.html")
         }
 
         // Scroll the WebView if the saved instance state is not null.

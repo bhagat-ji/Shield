@@ -230,7 +230,6 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Favoritos</string>
     <string name="database_view">Vista de base de datos</string>
-    <string name="bookmark_opened_in_background">El favorito se abrió en una pestaña de fondo.</string>
     <string name="create_bookmark">Crear favorito</string>
     <string name="create_folder">Crear carpeta</string>
     <string name="current_bookmark_icon">Icono de favorito actual</string>

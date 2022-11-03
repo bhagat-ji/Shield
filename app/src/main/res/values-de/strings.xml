@@ -233,7 +233,6 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Lesezeichen</string>
     <string name="database_view">Lesezeichen-Übersicht</string>
-    <string name="bookmark_opened_in_background">Das Lesezeichen wurde in einem Tab im Hintergrund geöffnet.</string>
     <string name="create_bookmark">Lesezeichen erstellen</string>
     <string name="create_folder">Ordner erstellen</string>
     <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>
@@ -416,6 +415,8 @@
             <string name="webview_version">WebView-Version:</string>
             <string name="orbot">Orbot:</string>
             <string name="i2p">I2P:</string>
+                <string name="fdroid_flavor">(F-Droid-Version)</string>
+                <string name="google_play_flavor">(Google-Play-Version)</string>
             <string name="openkeychain">OpenKeychain:</string>
         <string name="memory_usage">Speicher-Nutzung</string>
             <string name="app_consumed_memory">von der App genutzter Speicher:</string>

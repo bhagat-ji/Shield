@@ -370,7 +370,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private Activity resultLauncherActivityHandle;
 
     // Define the save URL activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private final ActivityResultLauncher<String> saveUrlActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("text/*"),
+    private final ActivityResultLauncher<String> saveUrlActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("*/*"),
             new ActivityResultCallback<Uri>() {
                 @Override
                 public void onActivityResult(Uri fileUri) {
@@ -2721,7 +2721,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update the bookmarks cursor with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
-        // Update the `ListView`.
+        // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
         // Scroll to the new folder.
@@ -2815,7 +2815,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update the bookmarks cursor with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
-        // Update the `ListView`.
+        // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
@@ -3463,11 +3463,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Move the bookmark cursor to the first row.
                 bookmarkCursor.moveToFirst();
 
-                // Load the bookmark in a new tab but do not switch to the tab or close the drawer.
-                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), false);
+                // Load the bookmark in a new tab.
+                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), true);
 
-                // Display a snackbar.
-                Snackbar.make(drawerLayout, R.string.bookmark_opened_in_background, Snackbar.LENGTH_SHORT).show();
+                // Close the bookmarks drawer.
+                drawerLayout.closeDrawer(GravityCompat.END);
             }
 
             // Consume the event.

@@ -236,7 +236,6 @@
     <!-- Bookmarks. -->
     <string name="bookmarks">Bookmarks</string>
     <string name="database_view">Database View</string>
-    <string name="bookmark_opened_in_background">The bookmark was opened in a background tab.</string>
     <string name="create_bookmark">Create Bookmark</string>
     <string name="create_folder">Create Folder</string>
     <string name="current_bookmark_icon">Current bookmark icon</string>
@@ -389,6 +388,7 @@
     <string name="ssl_certificates">SSL Certificates</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">Tracking IDs</string>
+    <string name="gui">Interface</string>
 
     <!-- Proxy. -->
     <string name="proxy_not_installed_dialog" translatable="false">Proxy not installed dialog</string>  <!-- This string is used to tag the proxy not installed dialog.  It is never displayed to the user. -->
