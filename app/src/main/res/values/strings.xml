@@ -194,7 +194,8 @@
     <string name="file_is_mht">The file is an MHT web archive.</string>
     <string name="mht_checkbox_explanation">Sometimes MIME Encapsulated HTML (MHT) web archives need to be manually specified to be opened correctly.</string>
 
-    <!-- Save Dialog. -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
     <string name="save_url">Save URL</string>
     <string name="save_archive">Save Archive</string>
@@ -209,7 +210,7 @@
     <string name="file_saved">File saved:</string>
     <string name="processing_image">Processing image… :</string>
     <string name="image_saved">Image saved:</string>
-    <string name="error_saving_file">Error saving file:</string>
+    <string name="error_saving_file">Error saving file: \u0020 %1$s</string>
 
     <!-- View Source. -->
     <string name="request_headers">Request Headers</string>
@@ -374,7 +375,7 @@
     <string name="import_failed">Import failed:</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="copy_string">Copy</string>
     <string name="clear">Clear</string>
     <string name="logcat_copied">Logcat copied.</string>
@@ -400,10 +401,10 @@
     <string name="waiting_for_orbot">Waiting for Orbot to connect.</string>
     <string name="custom_proxy_invalid">The custom proxy URL is invalid.</string>
 
-    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
+    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">About Privacy Browser</string>
     <string name="version">Version</string>
-        <string name="version_code">version code</string>
+        <string name="version_code">Version %1$s (version code %2$d)</string>
         <string name="hardware">Hardware</string>
             <string name="brand">Brand:</string>
             <string name="manufacturer">Manufacturer:</string>
@@ -413,7 +414,7 @@
             <string name="radio">Radio:</string>
         <string name="software">Software</string>
             <string name="android">Android:</string>
-            <string name="api">API</string>
+            <string name="api">%1$s (API %2$d)</string>
             <string name="security_patch">Security Patch:</string>
             <string name="build">Build:</string>
             <string name="kernel">Kernel:</string>
@@ -421,8 +422,8 @@
             <string name="webview_version">WebView Version:</string>
             <string name="orbot">Orbot:</string>
             <string name="i2p">I2P:</string>
-                <string name="fdroid_flavor">(F-Droid flavor)</string>
-                <string name="google_play_flavor">(Google Play flavor)</string>
+                <string name="fdroid_flavor">%1$s (F-Droid flavor)</string>
+                <string name="google_play_flavor">%1$s (Google Play flavor)</string>
             <string name="openkeychain">OpenKeychain:</string>
         <string name="memory_usage">Memory Usage</string>
             <string name="app_consumed_memory">App Consumed Memory:</string>

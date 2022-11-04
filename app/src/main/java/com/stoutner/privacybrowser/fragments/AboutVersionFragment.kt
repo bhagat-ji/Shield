@@ -203,7 +203,7 @@ class AboutVersionFragment : Fragment() {
                 Snackbar.make(aboutVersionLayout, getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show()
             } catch (exception: Exception) {
                 // Display a snackbar with the error message.
-                Snackbar.make(aboutVersionLayout, getString(R.string.error_saving_file) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show()
+                Snackbar.make(aboutVersionLayout, getString(R.string.error_saving_file, exception.toString()), Snackbar.LENGTH_INDEFINITE).show()
             }
         }
     }
@@ -277,7 +277,7 @@ class AboutVersionFragment : Fragment() {
         certificateSignatureAlgorithmTextView = aboutVersionLayout.findViewById(R.id.certificate_signature_algorithm)
 
         // Setup the labels.
-        val version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + BuildConfig.VERSION_CODE + ")"
+        val version = getString(R.string.version_code, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
         val brandLabel = getString(R.string.brand) + "  "
         val manufacturerLabel = getString(R.string.manufacturer) + "  "
         val modelLabel = getString(R.string.model) + "  "
@@ -321,7 +321,7 @@ class AboutVersionFragment : Fragment() {
         val device = Build.DEVICE
         val bootloader = Build.BOOTLOADER
         val radio = Build.getRadioVersion()
-        val android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Build.VERSION.SDK_INT + ")"
+        val android = getString(R.string.api, Build.VERSION.RELEASE, Build.VERSION.SDK_INT)
         val build = Build.DISPLAY
         val kernel = System.getProperty("os.version")
 
@@ -342,12 +342,12 @@ class AboutVersionFragment : Fragment() {
         val i2p: String = try {
             // Check to see if the F-Droid flavor is installed.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
             @Suppress("DEPRECATION")
-            requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName + " " + requireContext().getString(R.string.fdroid_flavor)
+            requireContext().getString(R.string.fdroid_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName)
         } catch (exception: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
             try {
                 // Check to see if the F-Droid flavor is installed.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
                 @Suppress("DEPRECATION")
-                requireContext().packageManager.getPackageInfo("net.i2p.android", 0).versionName + " " + requireContext().getString(R.string.google_play_flavor)
+                requireContext().getString(R.string.google_play_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android", 0).versionName)
             } catch (exception: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed either.
                 // Store an empty string.
                 ""

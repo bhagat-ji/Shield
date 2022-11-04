@@ -172,7 +172,8 @@
     <string name="previous">Önceki</string>
     <string name="next">Sonraki</string>
 
-    <!-- Save Dialog. -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_image">Resmi kaydet</string>
     <string name="file_name">Dosya adı</string>
     <string name="unknown_size">Bilinmeyen boyut</string>
@@ -330,7 +331,7 @@
     <string name="import_failed">İçe aktarım başarısız:</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="copy_string">Kopyala</string>
     <string name="clear">Temizle</string>
     <string name="logcat_copied">Logcat kopyalandı.</string>
@@ -345,10 +346,10 @@
     <!-- Orbot. -->
     <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor.</string>
 
-    <!-- About Activity. -->
+    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">Privacy Browser Hakkında</string>
     <string name="version">Versiyon</string>
-        <string name="version_code">versiyon kodu</string>
+        <string name="version_code">Versiyon %1$s (versiyon kodu %2$d)</string>
         <string name="hardware">Donanım</string>
             <string name="brand">Marka:</string>
             <string name="manufacturer">Üretici:</string>
@@ -358,7 +359,7 @@
             <string name="radio">Donanım Yazılımı:</string>
         <string name="software">Yazılım</string>
             <string name="android">Android:</string>
-            <string name="api">API</string>
+            <string name="api">%1$s (API %2$d)</string>
             <string name="security_patch">Güvenlik Yaması:</string>
             <string name="build">Derleme:</string>
             <string name="webview_provider">WebView Sağlayıcısı:</string>

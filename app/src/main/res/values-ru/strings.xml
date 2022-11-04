@@ -185,7 +185,8 @@
     <string name="file_is_mht">Файл представляет собой веб-архив MHT.</string>
     <string name="mht_checkbox_explanation">Иногда для корректного открытия веб-архивов MIME Encapsulated HTML (MHT) необходимо указать вручную.</string>
 
-    <!-- Save Dialog. -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Сохранить URL</string>
     <string name="save_archive">Сохранить архив</string>
     <string name="save_text">Сохранить текст</string>
@@ -199,7 +200,7 @@
     <string name="file_saved">Файл сохранен:</string>
     <string name="processing_image">Обработка изображения… :</string>
     <string name="image_saved">Изображение сохранено:</string>
-    <string name="error_saving_file">Ошибка сохранения файла:</string>
+    <string name="error_saving_file">Ошибка сохранения файла: \u0020 %1$s</string>
 
     <!-- View Source. -->
     <string name="request_headers">Заголовки запроса</string>
@@ -364,7 +365,7 @@
     <string name="import_failed">Сбой при импорте:</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="copy_string">Копировать</string>
     <string name="clear">Очистить</string>
     <string name="logcat_copied">Logcat скопирован.</string>
@@ -378,6 +379,7 @@
     <string name="ssl_certificates">Сертификаты SSL</string>
     <string name="proxies">Прокси</string>
     <string name="tracking_ids">Идентификаторы отслеживания</string>
+    <string name="gui">Интерфейс</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot не установлен</string>
@@ -387,10 +389,10 @@
     <string name="waiting_for_orbot">Ожидание подключения Orbot.</string>
     <string name="custom_proxy_invalid">URL пользовательского прокси недействителен.</string>
 
-    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
+    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">О Privacy Browser</string>
     <string name="version">Версия</string>
-        <string name="version_code">код версии</string>
+        <string name="version_code">Версия %1$s (код версии %2$d)</string>
         <string name="hardware">Оборудование</string>
             <string name="brand">Бренд:</string>
             <string name="manufacturer">Производитель:</string>
@@ -400,7 +402,7 @@
             <string name="radio">Радио:</string>
         <string name="software">Программное обеспечение</string>
             <string name="android">Android:</string>
-            <string name="api">API</string>
+            <string name="api">%1$s (API %2$d)</string>
             <string name="security_patch">Патч безопасности:</string>
             <string name="build">Сборка:</string>
             <string name="kernel">Ядро:</string>
@@ -408,8 +410,8 @@
             <string name="webview_version">Версия WebView:</string>
             <string name="orbot">Orbot:</string>
             <string name="i2p">I2P:</string>
-                <string name="fdroid_flavor">(F-Droid-версия)</string>
-                <string name="google_play_flavor">(Google Play-версия)</string>
+                <string name="fdroid_flavor">%1$s (F-Droid-версия)</string>
+                <string name="google_play_flavor">%1$s (Google Play-версия)</string>
             <string name="openkeychain">OpenKeychain:</string>
         <string name="memory_usage">Использование памяти</string>
             <string name="app_consumed_memory">Потребляемая приложением память:</string>

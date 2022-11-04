@@ -189,7 +189,8 @@
     <string name="file_is_mht">Le fichier est une archive web MHT.</string>
     <string name="mht_checkbox_explanation">Parfois, les archives web MHT (MIME Encapsulated HTML) doivent être spécifiées manuellement pour être ouvertes correctement.</string>
 
-    <!-- Save Dialog. -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Enregistrer l\'URL</string>
     <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_text">Sauvegarder le texte</string>
@@ -203,7 +204,7 @@
     <string name="file_saved">Fichier enregistré :</string>
     <string name="processing_image">Traitement de l\'image… :</string>
     <string name="image_saved">Image sauvegardée :</string>
-    <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier :</string>
+    <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier : \u0020 %1$s</string>
 
     <!-- View Source. -->
     <string name="request_headers">En-tête de la requête</string>
@@ -368,7 +369,7 @@
     <string name="import_failed">L\'import a échoué :</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="copy_string">Copie</string>
     <string name="clear">Vider</string>
     <string name="logcat_copied">Journal système copié.</string>
@@ -391,10 +392,10 @@
     <string name="waiting_for_orbot">En attente de la connexion d\'Orbot.</string>
     <string name="custom_proxy_invalid">L\'URL du proxy personnalisé n\'est pas valide.</string>
 
-    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
+    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">À propos</string>
     <string name="version">Version</string>
-        <string name="version_code">Code de la version</string>
+        <string name="version_code">Version %1$s (Code de la version %2$d)</string>
         <string name="hardware">Matériel</string>
             <string name="brand">Marque :</string>
             <string name="manufacturer">Constructeur :</string>
@@ -404,7 +405,7 @@
             <string name="radio">Radio :</string>
         <string name="software">Logiciel</string>
             <string name="android">Android :</string>
-            <string name="api">API</string>
+            <string name="api">%1$s (API %2$d)</string>
             <string name="security_patch">MAJ de sécurité :</string>
             <string name="build">Version :</string>
             <string name="kernel">Noyau:</string>

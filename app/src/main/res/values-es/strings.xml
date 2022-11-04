@@ -188,7 +188,8 @@
     <string name="file_is_mht">El archivo es un archivo de web MHT.</string>
     <string name="mht_checkbox_explanation">A veces se necesita especificar manualmente los archivos web MIME Encapsulated HTML (MHT) para que se abran correctamente.</string>
 
-    <!-- Save Dialog. -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Guardar URL</string>
     <string name="save_archive">Guardar archivo</string>
     <string name="save_text">Guardar texto</string>
@@ -202,7 +203,7 @@
     <string name="file_saved">Archivo guardado:</string>
     <string name="processing_image">Procesando imagen… :</string>
     <string name="image_saved">Imagen guardada:</string>
-    <string name="error_saving_file">Error guardando archivo:</string>
+    <string name="error_saving_file">Error guardando archivo: \u0020 %1$s</string>
 
     <!-- View Source. -->
     <string name="request_headers">Cabeceras de solicitud</string>
@@ -368,7 +369,7 @@
     <string name="import_failed">Importación fallida:</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.-->
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="copy_string">Copiar</string>
     <string name="clear">Borrar</string>
     <string name="logcat_copied">Logcat copiado.</string>
@@ -382,6 +383,7 @@
     <string name="ssl_certificates">Certificados SSL</string>
     <string name="proxies">Proxis</string>
     <string name="tracking_ids">Rastreo de IDs</string>
+    <string name="gui">Interfaz</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot No Instalado</string>
@@ -391,10 +393,10 @@
     <string name="waiting_for_orbot">Esperando a que Orbot se conecte.</string>
     <string name="custom_proxy_invalid">La URL del proxy personalizado no es válida.</string>
 
-    <!-- About Activity.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation. -->
+    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>
     <string name="version">Versión</string>
-        <string name="version_code">código de versión</string>
+        <string name="version_code">Versión %1$s (código de versión %2$d)</string>
         <string name="hardware">Hardware</string>
             <string name="brand">Marca:</string>
             <string name="manufacturer">Fabricante:</string>
@@ -404,7 +406,7 @@
             <string name="radio">Radio:</string>
         <string name="software">Software</string>
             <string name="android">Android:</string>
-            <string name="api">API</string>
+            <string name="api">%1$s (API %2$d)</string>
             <string name="security_patch">Parche de seguridad:</string>
             <string name="build">Versión de compilación:</string>
             <string name="kernel">Kernel:</string>
@@ -412,8 +414,8 @@
             <string name="webview_version">Versión de WebView:</string>
             <string name="orbot">Orbot:</string>
             <string name="i2p">I2P:</string>
-                <string name="fdroid_flavor">(variante de F-Droid)</string>
-                <string name="google_play_flavor">(variante de Google Play)</string>
+                <string name="fdroid_flavor">%1$s (variante de F-Droid)</string>
+                <string name="google_play_flavor">%1$s (variante de Google Play)</string>
             <string name="openkeychain">OpenKeychain:</string>
         <string name="memory_usage">Uso de memoria</string>
             <string name="app_consumed_memory">Memoria conumida de la app:</string>
