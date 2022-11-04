@@ -24,7 +24,6 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
@@ -233,8 +232,9 @@ public class GetSourceBackgroundTask {
                         return true;
                     };
 
-                    // Create a new trust manager.
-                    TrustManager[] trustManager = new TrustManager[] {
+                    // Create a new trust manager.  Lint wants to warn us that it is hard to securely implement an X509 trust manager.
+                    // But the point of this trust manager is that it should accept all certificates no matter what, so that isn't an issue in our case.
+                    @SuppressLint("CustomX509TrustManager") TrustManager[] trustManager = new TrustManager[] {
                             new X509TrustManager() {
                                 @SuppressLint("TrustAllX509TrustManager")
                                 @Override

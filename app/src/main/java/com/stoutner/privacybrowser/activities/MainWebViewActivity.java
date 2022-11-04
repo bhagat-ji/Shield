@@ -190,9 +190,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         WebViewTabFragment.NewTabListener {
 
     // Define the public static variables.
-    public static ExecutorService executorService = Executors.newFixedThreadPool(4);
+    public static final ExecutorService executorService = Executors.newFixedThreadPool(4);
     public static String orbotStatus = "unknown";
-    public static ArrayList<PendingDialog> pendingDialogsArrayList =  new ArrayList<>();
+    public static final ArrayList<PendingDialog> pendingDialogsArrayList =  new ArrayList<>();
     public static String proxyMode = ProxyHelper.NONE;
 
     // Declare the public static variables.

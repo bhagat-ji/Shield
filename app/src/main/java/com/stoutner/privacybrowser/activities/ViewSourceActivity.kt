@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -274,10 +274,10 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl, userAgent, localeString, proxy, contentResolver, MainWebViewActivity.executorService)
 
         // Instantiate the WebView source view model class.
-        webViewSource = ViewModelProvider(this, webViewSourceFactory).get(WebViewSource::class.java)
+        webViewSource = ViewModelProvider(this, webViewSourceFactory)[WebViewSource::class.java]
 
         // Create a source observer.
-        webViewSource.observeSource().observe(this, { sourceStringArray: Array<SpannableStringBuilder> ->
+        webViewSource.observeSource().observe(this) { sourceStringArray: Array<SpannableStringBuilder> ->
             // Populate the text views.  This can take a long time, and freezes the user interface, if the response body is particularly large.
             requestHeadersTextView.text = sourceStringArray[0]
             responseMessageTextView.text = sourceStringArray[1]
@@ -290,10 +290,10 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
 
             //Stop the swipe to refresh indicator if it is running
             swipeRefreshLayout.isRefreshing = false
-        })
+        }
 
         // Create an error observer.
-        webViewSource.observeErrors().observe(this, { errorString: String ->
+        webViewSource.observeErrors().observe(this) { errorString: String ->
             // Display an error snackbar if the string is not `""`.
             if (errorString != "") {
                 if (errorString.startsWith("javax.net.ssl.SSLHandshakeException")) {
@@ -307,7 +307,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
                     Snackbar.make(swipeRefreshLayout, errorString, Snackbar.LENGTH_LONG).show()
                 }
             }
-        })
+        }
 
         // Implement swipe to refresh.
         swipeRefreshLayout.setOnRefreshListener {

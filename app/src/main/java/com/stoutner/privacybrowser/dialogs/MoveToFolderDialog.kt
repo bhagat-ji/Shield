@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -47,6 +47,11 @@ import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 import java.io.ByteArrayOutputStream
 import java.lang.StringBuilder
@@ -188,8 +193,13 @@ class MoveToFolderDialog : DialogFragment() {
             // Create a home folder icon byte array output stream.
             val homeFolderIconByteArrayOutputStream = ByteArrayOutputStream()
 
-            // Convert the home folder bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            homeFolderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, homeFolderIconByteArrayOutputStream)
+            // Compress the bitmap using a coroutine with Dispatchers.Default.
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Default) {
+                    // Convert the home folder bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+                    homeFolderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, homeFolderIconByteArrayOutputStream)
+                }
+            }
 
             // Convert the home folder icon byte array output stream to a byte array.
             val homeFolderIconByteArray = homeFolderIconByteArrayOutputStream.toByteArray()
