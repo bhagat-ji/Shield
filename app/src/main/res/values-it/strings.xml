@@ -382,6 +382,7 @@
     <string name="ssl_certificates">Certificati SSL</string>
     <string name="proxies">Proxy</string>
     <string name="tracking_ids">Tracciamento utenti</string>
+    <string name="gui">Interfaccia</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot Non Installato</string>
