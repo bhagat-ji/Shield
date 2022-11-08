@@ -23,11 +23,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.stoutner.privacybrowser.R;
@@ -74,13 +72,7 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
         }
 
         // Get handles for the views.
-        Toolbar toolbar = activity.findViewById(R.id.toolbar);
-        LinearLayout tabsLinearLayout = activity.findViewById(R.id.tabs_linearlayout);
         RelativeLayout loadingBlocklistsRelativeLayout = activity.findViewById(R.id.loading_blocklists_relativelayout);
-
-        // Hide the toolbar and tabs linear layout, which will be visible if this is being run after the app process has been killed in the background.
-        toolbar.setVisibility(View.GONE);
-        tabsLinearLayout.setVisibility(View.GONE);
 
         // Show the loading blocklists screen.
         loadingBlocklistsRelativeLayout.setVisibility(View.VISIBLE);
@@ -222,14 +214,11 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
         }
 
         // Get handles for the views.
-        Toolbar toolbar = activity.findViewById(R.id.toolbar);
         DrawerLayout drawerLayout = activity.findViewById(R.id.drawerlayout);
-        LinearLayout tabsLinearLayout = activity.findViewById(R.id.tabs_linearlayout);
         RelativeLayout loadingBlocklistsRelativeLayout = activity.findViewById(R.id.loading_blocklists_relativelayout);
 
-        // Show the toolbar and tabs linear layout.
-        toolbar.setVisibility(View.VISIBLE);
-        tabsLinearLayout.setVisibility(View.VISIBLE);
+        // Show the drawer layout.
+        drawerLayout.setVisibility(View.VISIBLE);
 
         // Hide the loading blocklists screen.
         loadingBlocklistsRelativeLayout.setVisibility(View.GONE);

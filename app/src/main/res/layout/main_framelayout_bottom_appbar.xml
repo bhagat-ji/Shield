@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017,2019-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2017,2019-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -60,14 +60,12 @@
                     android:layout_gravity="bottom"
                     app:layout_dodgeInsetEdges="bottom" >
 
-                    <!-- The tab linear layout.  It sets the background to the right of the add tab button.
-                        It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
+                    <!-- The tab linear layout.  It sets the background to the right of the add tab button. -->
                     <LinearLayout
                         android:id="@+id/tabs_linearlayout"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:orientation="horizontal"
-                        android:visibility="gone" >
+                        android:orientation="horizontal" >
 
                         <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
@@ -101,7 +99,7 @@
                             android:contentDescription="@string/add_tab" />
                     </LinearLayout>
 
-                    <!-- The find on page linear layout.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
+                    <!-- The find on page linear layout.  It is initially `visibility="gone"` and is only displayed when requested. -->
                     <LinearLayout
                         android:id="@+id/find_on_page_linearlayout"
                         android:layout_height="wrap_content"
@@ -174,12 +172,11 @@
                             app:tint="?attr/findOnPageIconTintColor" />
                     </LinearLayout>
 
-                    <!-- The toolbar.  It is initially `visibility="gone"` so it doesn't display while the blocklists are loading. -->
+                    <!-- The toolbar. -->
                     <androidx.appcompat.widget.Toolbar
                         android:id="@+id/toolbar"
                         android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:visibility="gone" />
+                        android:layout_width="match_parent" />
                 </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

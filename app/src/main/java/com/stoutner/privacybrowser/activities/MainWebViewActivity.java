@@ -589,6 +589,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
+        // Initially hide the user interface so that only the blocklist loading screen is shown (if reloading).
+        drawerLayout.setVisibility(View.GONE);
+
         // Initialize the web view pager adapter.
         webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
 
