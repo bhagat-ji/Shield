@@ -3118,19 +3118,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the lint warning below that the input method manager might be null.
         assert inputMethodManager != null;
 
-        // Initialize the gray foreground color spans for highlighting the URLs.
+        // Initialize the color spans for highlighting the URLs.
         initialGrayColorSpan = new ForegroundColorSpan(getColor(R.color.gray_500));
         finalGrayColorSpan = new ForegroundColorSpan(getColor(R.color.gray_500));
-
-        // Get the current theme status.
-        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-        // Set the red color span according to the theme.
-        if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            redColorSpan = new ForegroundColorSpan(getColor(R.color.red_a700));
-        } else {
-            redColorSpan = new ForegroundColorSpan(getColor(R.color.red_900));
-        }
+        redColorSpan = new ForegroundColorSpan(getColor(R.color.red_text));
 
         // Remove the formatting from the URL edit text when the user is editing the text.
         urlEditText.setOnFocusChangeListener((View v, boolean hasFocus) -> {

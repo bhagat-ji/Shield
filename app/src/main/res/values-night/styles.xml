@@ -28,7 +28,6 @@
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
         <item name="android:textColorHighlight">@color/violet_700</item>
         <item name="colorAccent">@color/violet_500</item>
-        <item name="redTextColor">@color/red_900</item>
 
         <!-- Tints. -->
         <item name="fabIconTintColor">@color/gray_875</item>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017,2020,2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -21,6 +21,7 @@
 <resources>
     <!-- Nicknamed colors. -->
     <color name="alt_blue_text">@color/blue_700</color>
+    <color name="blue_background">@color/blue_100</color>
     <color name="blue_button">@color/blue_600</color>
     <color name="blue_icon">@color/blue_800</color>
     <color name="blue_text">@color/blue_700</color>
@@ -29,12 +30,14 @@
     <color name="disabled_button">@color/gray_300</color>
     <color name="disabled_button_text">@color/gray_400</color>
     <color name="disabled_icon">@color/gray_600</color>
+    <color name="domain_settings_url_background">@color/green_200</color>
     <color name="ghosted_icon">@color/gray_425</color>
     <color name="icon">@color/gray_925</color>
-    <color name="domain_settings_url_background">@color/green_200</color>
+    <color name="red_background">@color/red_100</color>
     <color name="red_text">@color/red_a700</color>
     <color name="selected_icon_background">@color/gray_300</color>
     <color name="translucent_background">@color/black_translucent_11</color>
+    <color name="yellow_background">@color/yellow_100</color>
 
     <!-- Raw colors. -->
     <color name="semi_transparent_black">#66000000</color>
@@ -110,6 +113,7 @@
     <color name="red_1000">#FFA21212</color>
     <color name="red_1100">#FF930606</color>
     <color name="red_a700">#FFD50000</color>
+    <color name="red_night">#FFE24B4C</color>
 
     <color name="transparent">#00000000</color>
 

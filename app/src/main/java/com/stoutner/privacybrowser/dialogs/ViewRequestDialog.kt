@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -22,13 +22,13 @@ package com.stoutner.privacybrowser.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -92,9 +92,6 @@ class ViewRequestDialog : DialogFragment() {
 
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
-
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Set the icon.
         dialogBuilder.setIcon(R.drawable.block_ads_enabled)
@@ -164,50 +161,31 @@ class ViewRequestDialog : DialogFragment() {
                 // Set the text.
                 requestDisposition.setText(R.string.default_allowed)
 
-                // Set the background color.  The deprecated `getColor()` must be used until the minimum API >= 23.
-                @Suppress("DEPRECATION")
-                requestDisposition.setBackgroundColor(resources.getColor(R.color.transparent))
+                // Set the background color to be transparent.
+                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.transparent))
             }
 
             BlocklistHelper.REQUEST_ALLOWED -> {
                 // Set the text.
                 requestDisposition.setText(R.string.allowed)
 
-                // Set the background color according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    @Suppress("DEPRECATION")
-                    requestDisposition.setBackgroundColor(resources.getColor(R.color.blue_100))
-                } else {
-                    @Suppress("DEPRECATION")
-                    requestDisposition.setBackgroundColor(resources.getColor(R.color.blue_700_50))
-                }
+                // Set the background color to be blue.
+                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
 
             BlocklistHelper.REQUEST_THIRD_PARTY -> {
                 // Set the text.
                 requestDisposition.setText(R.string.third_party_blocked)
 
-                // Set the background color according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    @Suppress("DEPRECATION")
-                    requestDisposition.setBackgroundColor(resources.getColor(R.color.yellow_100))
-                } else {
-                    @Suppress("DEPRECATION")
-                    requestDisposition.setBackgroundColor(resources.getColor(R.color.yellow_700_50))
-                }
+                // Set the background color to be yellow.
+                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.yellow_background))
             }
             BlocklistHelper.REQUEST_BLOCKED -> {
                 // Set the text.
                 requestDisposition.setText(R.string.blocked)
 
-                // Set the background color according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-                if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-                    @Suppress("DEPRECATION")
-                    requestDisposition.setBackgroundColor(resources.getColor(R.color.red_100))
-                } else {
-                    @Suppress("DEPRECATION")
-                    requestDisposition.setBackgroundColor(resources.getColor(R.color.red_700_40))
-                }
+                // Set the background color to be red.
+                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.red_background))
             }
         }
 

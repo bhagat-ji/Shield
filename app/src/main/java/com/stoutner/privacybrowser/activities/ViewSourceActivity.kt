@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.activities
 
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -139,23 +138,10 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         // Populate the URL text box.
         urlEditText.setText(currentUrl)
 
-        // Initialize the gray foreground color spans for highlighting the URLs.  The deprecated `getColor()` must be used until the minimum API >= 23.
-        @Suppress("DEPRECATION")
-        initialGrayColorSpan = ForegroundColorSpan(resources.getColor(R.color.gray_500))
-        @Suppress("DEPRECATION")
-        finalGrayColorSpan = ForegroundColorSpan(resources.getColor(R.color.gray_500))
-
-        // Get the current theme status.
-        val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
-        // Set the red color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-        redColorSpan = if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) {
-            @Suppress("DEPRECATION")
-            ForegroundColorSpan(resources.getColor(R.color.red_a700))
-        } else {
-            @Suppress("DEPRECATION")
-            ForegroundColorSpan(resources.getColor(R.color.red_900))
-        }
+        // Initialize the gray foreground color spans for highlighting the URLs.
+        initialGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
+        finalGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
+        redColorSpan = ForegroundColorSpan(getColor(R.color.red_text))
 
         // Apply text highlighting to the URL.
         highlightUrlText()

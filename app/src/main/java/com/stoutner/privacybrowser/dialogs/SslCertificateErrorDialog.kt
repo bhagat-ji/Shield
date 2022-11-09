@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -136,7 +136,7 @@ class SslCertificateErrorDialog : DialogFragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the icon.
-        dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled)
+        dialogBuilder.setIcon(R.drawable.ssl_certificate)
 
         // Set the title.
         dialogBuilder.setTitle(R.string.ssl_certificate_error)

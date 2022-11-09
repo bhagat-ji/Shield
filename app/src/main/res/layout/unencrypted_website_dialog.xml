@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017,2020,2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -23,5 +23,5 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:padding="15dp"
-    android:textColor="?attr/redTextColor"
+    android:textColor="@color/red_text"
     android:text="@string/no_ssl_certificate" />

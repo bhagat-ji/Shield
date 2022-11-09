@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -17,11 +17,11 @@
 
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+
 <resources>
     <!-- Colors. -->
     <attr name="aboutBackground" format="color" />
     <attr name="activatedListViewItemBackground" format="color" />
-    <attr name="redTextColor" format="color" />
 
     <!-- Tint Colors. -->
     <attr name="fabIconTintColor" format="color" />

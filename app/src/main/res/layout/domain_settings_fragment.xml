@@ -672,7 +672,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ssl_certificate_enabled"
+                    android:src="@drawable/ssl_certificate"
                     app:tint="@color/blue_icon_selector"
                     tools:ignore="contentDescription" />
 
@@ -927,7 +927,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ssl_certificate_enabled"
+                    android:src="@drawable/ssl_certificate"
                     app:tint="@color/blue_icon_selector"
                     tools:ignore="contentDescription" />
 

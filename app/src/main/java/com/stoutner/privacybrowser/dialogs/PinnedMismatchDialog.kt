@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -116,7 +116,7 @@ class PinnedMismatchDialog : DialogFragment() {
         // Set the favorite icon as the dialog icon if it exists.
         if (favoriteIconBitmap.sameAs(defaultFavoriteIconBitmap)) {  // There is no website favorite icon.
             // Set the icon.
-            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled)
+            dialogBuilder.setIcon(R.drawable.ssl_certificate)
         } else {  // There is a favorite icon.
             // Create a drawable version of the favorite icon.
             val favoriteIconDrawable: Drawable = BitmapDrawable(resources, favoriteIconBitmap)
