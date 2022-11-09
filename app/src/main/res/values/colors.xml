@@ -34,6 +34,7 @@
     <color name="ghosted_icon">@color/gray_425</color>
     <color name="icon">@color/gray_925</color>
     <color name="red_background">@color/red_100</color>
+    <color name="red_icon">@color/red_900</color>
     <color name="red_text">@color/red_a700</color>
     <color name="selected_icon_background">@color/gray_300</color>
     <color name="translucent_background">@color/black_translucent_11</color>
