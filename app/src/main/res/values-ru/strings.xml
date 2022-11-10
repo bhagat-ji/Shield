@@ -197,10 +197,7 @@
     <string name="unknown_size">неизвестный размер</string>
     <string name="invalid_url">неправильный URL</string>
     <string name="saving_file">Сохранение файла:</string>
-    <string name="file_saved">Файл сохранен:</string>
     <string name="processing_image">Обработка изображения… :</string>
-    <string name="image_saved">Изображение сохранено:</string>
-    <string name="error_saving_file">Ошибка сохранения файла: \u0020 %1$s</string>
 
     <!-- View Source. -->
     <string name="request_headers">Заголовки запроса</string>
@@ -563,7 +560,6 @@
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
         <string name="download_with_external_app">Загрузка во внешнем приложении</string>
-        <string name="download_with_external_app_summary">Использовать внешнее приложение для загрузки файлов.</string>
         <string name="scroll_app_bar">Прокручивать панель приложения</string>
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="bottom_app_bar">Нижняя панель приложения</string>

@@ -279,10 +279,10 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         // Display a save disposition snackbar.
         if (saveDisposition.equals(SUCCESS)) {
             // Display the file saved snackbar.
-            Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(noSwipeViewPager, activity.getString(R.string.saved, fileNameString), Snackbar.LENGTH_LONG).show();
         } else {
             // Display the file saving error.
-            Snackbar.make(noSwipeViewPager, activity.getString(R.string.error_saving_file) + "  " + saveDisposition, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(noSwipeViewPager, activity.getString(R.string.error_saving_file, fileNameString, saveDisposition), Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 }

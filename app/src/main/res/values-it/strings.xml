@@ -200,10 +200,7 @@
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="invalid_url">URL non valida</string>
     <string name="saving_file">Salvataggio file:</string>
-    <string name="file_saved">File salvato:</string>
     <string name="processing_image">Creazione immagine… :</string>
-    <string name="image_saved">Immagine salvata:</string>
-    <string name="error_saving_file">Errore salvataggio file: \u0020 %1$s</string>
 
     <!-- View Source. -->
     <string name="request_headers">Richiesta Intestazioni</string>
@@ -567,7 +564,6 @@
         <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="download_with_external_app">Scarica con una applicazione esterna</string>
-        <string name="download_with_external_app_summary">Utilizza una applicazione esterna per scaricare i file.</string>
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>
         <string name="scroll_app_bar_summary">Permette lo scorrere della barra dell\'applicazione dalla parte alta dello schermo quando si effettua lo scrolling.</string>
         <string name="bottom_app_bar">Barra dell\'app in basso</string>

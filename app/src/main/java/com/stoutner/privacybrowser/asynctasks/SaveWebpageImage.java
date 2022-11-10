@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright0 2019-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -159,10 +159,10 @@ public class SaveWebpageImage extends AsyncTask<Void, Void, String> {
         // Display a file creation disposition snackbar.
         if (fileCreationDisposition.equals(SUCCESS)) {
             // Display the image saved snackbar.
-            Snackbar.make(nestedScrollWebView, activity.getString(R.string.image_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(nestedScrollWebView, activity.getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show();
         } else {
             // Display the file saving error.
-            Snackbar.make(nestedScrollWebView, activity.getString(R.string.error_saving_file) + "  " + fileCreationDisposition, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(nestedScrollWebView, activity.getString(R.string.error_saving_file, fileNameString, fileCreationDisposition), Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 }

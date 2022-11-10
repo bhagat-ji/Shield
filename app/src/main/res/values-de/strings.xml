@@ -204,10 +204,7 @@
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="invalid_url">Ungültige URL</string>
     <string name="saving_file">Speichere Datei:</string>
-    <string name="file_saved">Datei gespeichert:</string>
     <string name="processing_image">Bild wird bearbeitet… :</string>
-    <string name="image_saved">Bild gespeichert:</string>
-    <string name="error_saving_file">Fehler beim Speichern der Datei: \u0020 %1$sFf</string>
 
     <!-- View Source. -->
     <string name="request_headers">Anfragekopfzeilen</string>
@@ -569,7 +566,6 @@
         <string name="swipe_to_refresh">Herunterziehen zum Aktualisieren</string>
         <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
         <string name="download_with_external_app">Mit einer externen App herunterladen</string>
-        <string name="download_with_external_app_summary">Eine externe App verwenden, um Dateien herunterzuladen.</string>
         <string name="scroll_app_bar">App-Leiste scrollen</string>
         <string name="scroll_app_bar_summary">Scrollt die App-Leiste mit der URL nach oben, wenn die Webseite gescrollt wird.</string>
         <string name="bottom_app_bar">Untere Anwendungs-Leiste</string>

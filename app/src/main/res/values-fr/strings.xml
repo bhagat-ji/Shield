@@ -201,10 +201,7 @@
     <string name="unknown_size">taille inconnue</string>
     <string name="invalid_url">URL invalide</string>
     <string name="saving_file">Enregistrement du fichier :</string>
-    <string name="file_saved">Fichier enregistré :</string>
     <string name="processing_image">Traitement de l\'image… :</string>
-    <string name="image_saved">Image sauvegardée :</string>
-    <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier : \u0020 %1$s</string>
 
     <!-- View Source. -->
     <string name="request_headers">En-tête de la requête</string>
@@ -565,7 +562,6 @@
         <string name="swipe_to_refresh">Glisser pour rafraîchir</string>
         <string name="swipe_to_refresh_summary">Certains sites Web ne fonctionnent pas bien lorsque "Glisser pour rafraîchir" est activé.</string>
         <string name="download_with_external_app">Téléchargement avec une app externe</string>
-        <string name="download_with_external_app_summary">Utiliser une application externe pour télécharger des fichiers.</string>
         <string name="bottom_app_bar">Barre d\'application en bas</string>
         <string name="bottom_app_bar_summary">Déplacer la barre d\'application vers le bas de l\'écran. La modification de ce paramètre entraîne le redémarrage de Privacy Browser.</string>
         <string name="scroll_app_bar">Défilement barre d\'applications</string>

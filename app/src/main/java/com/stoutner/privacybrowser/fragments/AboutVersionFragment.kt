@@ -163,6 +163,24 @@ class AboutVersionFragment : Fragment() {
     private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri: Uri? ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
+            // Initialize the file name string from the file URI last path segment.
+            var fileNameString = fileUri.lastPathSegment
+
+            // Query the exact file name if the API >= 26.
+            if (Build.VERSION.SDK_INT >= 26) {
+                // Get a cursor from the content resolver.
+                val contentResolverCursor = requireActivity().contentResolver.query(fileUri, null, null, null)!!
+
+                // Move to the first row.
+                contentResolverCursor.moveToFirst()
+
+                // Get the file name from the cursor.
+                fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+
+                // Close the cursor.
+                contentResolverCursor.close()
+            }
+
             try {
                 // Get the about version string.
                 val aboutVersionString = getAboutVersionString()
@@ -181,29 +199,11 @@ class AboutVersionFragment : Fragment() {
                     }
                 }
 
-                // Initialize the file name string from the file URI last path segment.
-                var fileNameString = fileUri.lastPathSegment
-
-                // Query the exact file name if the API >= 26.
-                if (Build.VERSION.SDK_INT >= 26) {
-                    // Get a cursor from the content resolver.
-                    val contentResolverCursor = requireActivity().contentResolver.query(fileUri, null, null, null)!!
-
-                    // Move to the first row.
-                    contentResolverCursor.moveToFirst()
-
-                    // Get the file name from the cursor.
-                    fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
-                    // Close the cursor.
-                    contentResolverCursor.close()
-                }
-
                 // Display a snackbar with the saved logcat information.
                 Snackbar.make(aboutVersionLayout, getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show()
             } catch (exception: Exception) {
                 // Display a snackbar with the error message.
-                Snackbar.make(aboutVersionLayout, getString(R.string.error_saving_file, exception.toString()), Snackbar.LENGTH_INDEFINITE).show()
+                Snackbar.make(aboutVersionLayout, getString(R.string.error_saving_file, fileNameString, exception.toString()), Snackbar.LENGTH_INDEFINITE).show()
             }
         }
     }

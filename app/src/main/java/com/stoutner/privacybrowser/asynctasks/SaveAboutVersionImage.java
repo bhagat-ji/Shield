@@ -163,9 +163,9 @@ public class SaveAboutVersionImage extends AsyncTask<Void, Void, String> {
         // Display a file creation disposition snackbar.
         if (fileCreationDisposition.equals(SUCCESS)) {
             // Create a file saved snackbar.
-            Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.error_saving_file) + "  " + fileCreationDisposition, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(aboutVersionLinearLayout, activity.getString(R.string.error_saving_file, fileNameString, fileCreationDisposition), Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 }

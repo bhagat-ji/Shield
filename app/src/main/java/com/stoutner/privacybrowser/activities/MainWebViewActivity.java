@@ -391,11 +391,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 public void onActivityResult(Uri fileUri) {
                     // Only save the webpage archive if the file URI is not null, which happens if the user exited the file picker by pressing back.
                     if (fileUri != null) {
+                        // Initialize the file name string from the file URI last path segment.
+                        String temporaryFileNameString = fileUri.getLastPathSegment();
+
+                        // Query the exact file name if the API >= 26.
+                        if (Build.VERSION.SDK_INT >= 26) {
+                            // Get a cursor from the content resolver.
+                            Cursor contentResolverCursor = resultLauncherActivityHandle.getContentResolver().query(fileUri, null, null, null);
+
+                            // Move to the fist row.
+                            contentResolverCursor.moveToFirst();
+
+                            // Get the file name from the cursor.
+                            temporaryFileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+
+                            // Close the cursor.
+                            contentResolverCursor.close();
+                        }
+
+                        // Save the final file name string so it can be used inside the lambdas.  This will no longer be needed once this activity has transitioned to Kotlin.
+                        String finalFileNameString = temporaryFileNameString;
+
                         try {
                             // Create a temporary MHT file.
                             File temporaryMhtFile = File.createTempFile("temporary_mht_file", ".mht", getCacheDir());
-
-                            // Save the temporary MHT file.
                             currentWebView.saveWebArchive(temporaryMhtFile.toString(), false, callbackValue -> {
                                 if (callbackValue != null) {  // The temporary MHT file was saved successfully.
                                     try {
@@ -420,29 +439,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                         mhtOutputStream.close();
                                         temporaryMhtFileInputStream.close();
 
-                                        // Initialize the file name string from the file URI last path segment.
-                                        String fileNameString = fileUri.getLastPathSegment();
-
-                                        // Query the exact file name if the API >= 26.
-                                        if (Build.VERSION.SDK_INT >= 26) {
-                                            // Get a cursor from the content resolver.
-                                            Cursor contentResolverCursor = resultLauncherActivityHandle.getContentResolver().query(fileUri, null, null, null);
-
-                                            // Move to the fist row.
-                                            contentResolverCursor.moveToFirst();
-
-                                            // Get the file name from the cursor.
-                                            fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
-
-                                            // Close the cursor.
-                                            contentResolverCursor.close();
-                                        }
-
                                         // Display a snackbar.
-                                        Snackbar.make(currentWebView, getString(R.string.file_saved) + "  " + fileNameString, Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(currentWebView, getString(R.string.saved, finalFileNameString), Snackbar.LENGTH_SHORT).show();
                                     } catch (Exception exception) {
                                         // Display a snackbar with the exception.
-                                        Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                                        Snackbar.make(currentWebView, getString(R.string.error_saving_file, finalFileNameString, exception), Snackbar.LENGTH_INDEFINITE).show();
                                     } finally {
                                         // Delete the temporary MHT file.
                                         //noinspection ResultOfMethodCallIgnored
@@ -450,12 +451,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                     }
                                 } else {  // There was an unspecified error while saving the temporary MHT file.
                                     // Display an error snackbar.
-                                    Snackbar.make(currentWebView, getString(R.string.error_saving_file), Snackbar.LENGTH_INDEFINITE).show();
+                                    Snackbar.make(currentWebView, getString(R.string.error_saving_file, finalFileNameString, getString(R.string.unknown_error)), Snackbar.LENGTH_INDEFINITE).show();
                                 }
                             });
                         } catch (IOException ioException) {
                             // Display a snackbar with the IO exception.
-                            Snackbar.make(currentWebView, getString(R.string.error_saving_file) + "  " + ioException, Snackbar.LENGTH_INDEFINITE).show();
+                            Snackbar.make(currentWebView, getString(R.string.error_saving_file, finalFileNameString, ioException), Snackbar.LENGTH_INDEFINITE).show();
                         }
                     }
                 }
