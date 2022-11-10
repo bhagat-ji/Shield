@@ -116,6 +116,7 @@
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
     <string name="logcat">Logcat</string>
+    <string name="webview_devtools">Инструменты разработчика WebView</string>
     <string name="guide">Руководство</string>
     <string name="about">О Privacy Browser</string>
 
@@ -186,7 +187,7 @@
     <string name="mht_checkbox_explanation">Иногда для корректного открытия веб-архивов MIME Encapsulated HTML (MHT) необходимо указать вручную.</string>
 
     <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+        The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Сохранить URL</string>
     <string name="save_archive">Сохранить архив</string>
     <string name="save_text">Сохранить текст</string>
@@ -198,6 +199,8 @@
     <string name="invalid_url">неправильный URL</string>
     <string name="saving_file">Сохранение файла:</string>
     <string name="processing_image">Обработка изображения… :</string>
+    <string name="error_saving_file">Ошибка сохранения %1$s: \u0020 %2$s</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
 
     <!-- View Source. -->
     <string name="request_headers">Заголовки запроса</string>
@@ -560,6 +563,8 @@
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
         <string name="download_with_external_app">Загрузка во внешнем приложении</string>
+        <string name="download_with_external_app_summary">Внешние приложения не будут учитывать настройки прокси Privacy Browser и не будут иметь доступа к cookie
+            (это означает, что файлы, загруженные с сайтов, для которых требуется авторизация, вряд ли будут работать).</string>
         <string name="scroll_app_bar">Прокручивать панель приложения</string>
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="bottom_app_bar">Нижняя панель приложения</string>

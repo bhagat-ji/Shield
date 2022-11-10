@@ -190,7 +190,7 @@
     <string name="mht_checkbox_explanation">Parfois, les archives web MHT (MIME Encapsulated HTML) doivent être spécifiées manuellement pour être ouvertes correctement.</string>
 
     <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+        The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Enregistrer l\'URL</string>
     <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_text">Sauvegarder le texte</string>

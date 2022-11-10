@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -105,6 +105,7 @@ public class ImportExportActivity extends AppCompatActivity {
     Button importExportButton;
 
     // Define the class variables.
+    private File fileProviderDirectory;
     private boolean openKeychainInstalled;
     private File temporaryPgpEncryptedImportFile;
     private File temporaryPreEncryptedExportFile;
@@ -499,6 +500,13 @@ public class ImportExportActivity extends AppCompatActivity {
                     //noinspection ResultOfMethodCallIgnored
                     temporaryPgpEncryptedImportFile.delete();
                 }
+
+                // Delete the file provider directory if it exists.
+                if (fileProviderDirectory.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    fileProviderDirectory.delete();
+                }
+
                 break;
 
             case OPENPGP_EXPORT_RESULT_CODE:
@@ -507,6 +515,13 @@ public class ImportExportActivity extends AppCompatActivity {
                     //noinspection ResultOfMethodCallIgnored
                     temporaryPreEncryptedExportFile.delete();
                 }
+
+                // Delete the file provider directory if it exists.
+                if (fileProviderDirectory.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    fileProviderDirectory.delete();
+                }
+
                 break;
         }
     }
@@ -657,8 +672,15 @@ public class ImportExportActivity extends AppCompatActivity {
 
                 case OPENPGP_ENCRYPTION:
                     try {
+                        // Get a handle for the file provider directory.
+                        fileProviderDirectory = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.file_provider_directory));
+
+                        // Create the file provider directory.  Any errors will be handled by the catch statement below.
+                        //noinspection ResultOfMethodCallIgnored
+                        fileProviderDirectory.mkdir();
+
                         // Set the temporary PGP encrypted import file.
-                        temporaryPgpEncryptedImportFile = File.createTempFile("temporary_pgp_encrypted_import_file", null, getApplicationContext().getCacheDir());
+                        temporaryPgpEncryptedImportFile = File.createTempFile("temporary_pgp_encrypted_import_file", null, fileProviderDirectory);
 
                         // Create a temporary PGP encrypted import file output stream.
                         FileOutputStream temporaryPgpEncryptedImportFileOutputStream = new FileOutputStream(temporaryPgpEncryptedImportFile);
@@ -858,8 +880,15 @@ public class ImportExportActivity extends AppCompatActivity {
 
                 case OPENPGP_ENCRYPTION:
                     try {
+                        // Get a handle for the file provider directory.
+                        fileProviderDirectory = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.file_provider_directory));
+
+                        // Create the file provider directory.  Any errors will be handled by the catch statement below.
+                        //noinspection ResultOfMethodCallIgnored
+                        fileProviderDirectory.mkdir();
+
                         // Set the temporary pre-encrypted export file.
-                        temporaryPreEncryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
+                        temporaryPreEncryptedExportFile = new File(fileProviderDirectory + "/" + getString(R.string.settings) + " " + BuildConfig.VERSION_NAME + ".pbs");
 
                         // Delete the temporary pre-encrypted export file if it already exists.
                         if (temporaryPreEncryptedExportFile.exists()) {

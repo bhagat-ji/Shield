@@ -25,6 +25,7 @@
 
     <!-- Providers. -->
     <string name="file_provider" translatable="false">com.stoutner.privacybrowser.fileprovider.standard</string>
+    <string name="file_provider_directory" translatable="false">file_provider</string>
 
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
@@ -195,7 +196,7 @@
     <string name="mht_checkbox_explanation">Sometimes MIME Encapsulated HTML (MHT) web archives need to be manually specified to be opened correctly.</string>
 
     <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+        The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
     <string name="save_url">Save URL</string>
     <string name="save_archive">Save Archive</string>
@@ -209,7 +210,7 @@
     <string name="saving_file">Saving file:</string>
     <string name="saved">%1$s saved.</string>
     <string name="processing_image">Processing image… :</string>
-    <string name="error_saving_file">Error saving %1$s: \u0020 %2$s</string> -->
+    <string name="error_saving_file">Error saving %1$s: \u0020 %2$s</string>
     <string name="unknown_error">Unknown error</string>
 
     <!-- View Source. -->
