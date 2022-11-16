@@ -120,6 +120,7 @@
     <string name="settings">Paramètres</string>
     <string name="import_export">Importer/Exporter</string>
     <string name="logcat">Journal système</string>
+    <string name="webview_devtools">WebView DevTools</string>
     <string name="guide">Guide</string>
     <string name="about">À propos</string>
 
@@ -202,6 +203,8 @@
     <string name="invalid_url">URL invalide</string>
     <string name="saving_file">Enregistrement du fichier :</string>
     <string name="processing_image">Traitement de l\'image… :</string>
+    <string name="error_saving_file">Erreur lors de l\'enregistrement de %1$s: \u0020 %2$s</string>
+    <string name="unknown_error">Erreur inconnue</string>
 
     <!-- View Source. -->
     <string name="request_headers">En-tête de la requête</string>
@@ -380,6 +383,7 @@
     <string name="ssl_certificates">Certificats SSL</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">ID de suivi</string>
+    <string name="gui">Interface</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot non installé</string>
@@ -410,6 +414,8 @@
             <string name="webview_version">Version WebView :</string>
             <string name="orbot">Orbot :</string>
             <string name="i2p">I2P :</string>
+                <string name="fdroid_flavor">%1$s (Version F-Droid)</string>
+                <string name="google_play_flavor">%1$s (Version Google Play)</string>
             <string name="openkeychain">OpenKeychain :</string>
         <string name="memory_usage">Utilisation de la mémoire</string>
             <string name="app_consumed_memory">Mémoire consommée par l\'application :</string>
@@ -562,6 +568,8 @@
         <string name="swipe_to_refresh">Glisser pour rafraîchir</string>
         <string name="swipe_to_refresh_summary">Certains sites Web ne fonctionnent pas bien lorsque "Glisser pour rafraîchir" est activé.</string>
         <string name="download_with_external_app">Téléchargement avec une app externe</string>
+        <string name="download_with_external_app_summary">Les applications externes ne tiendront pas compte des paramètres proxy de Privacy Browseret n\'auront pas accès aux cookies
+            (ce qui signifie qu\'il est peu probable que les fichiers téléchargés à partir de sites nécessitant une identification fonctionnent).</string>
         <string name="bottom_app_bar">Barre d\'application en bas</string>
         <string name="bottom_app_bar_summary">Déplacer la barre d\'application vers le bas de l\'écran. La modification de ce paramètre entraîne le redémarrage de Privacy Browser.</string>
         <string name="scroll_app_bar">Défilement barre d\'applications</string>

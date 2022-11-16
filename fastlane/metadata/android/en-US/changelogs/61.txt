@@ -1,0 +1,13 @@
+• Add WebView DevTools to the navigation menu.
+• Make long-pressing a bookmark open it in a new foreground tab.
+• Add per-app language support.
+• Fix a crash if Add Domain Settings is called on an empty tab.
+• Improve the night mode red text and icon color.
+• Detect I2P installations from Google Play.
+• Implement a bottom app bar in Settings.
+• Delete the Service Worker directory after every page load.
+• Restrict the file provider to a subdirectory of the cache directory.
+• Bump the target API to 33 (Android 13).
+• Implement forcing WebView's dark mode on Android 13.
+• Implement a number of minor improvements.
+• Fix a number of minor bugs.

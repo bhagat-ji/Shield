@@ -146,15 +146,6 @@ public class GetSourceBackgroundTask {
                 requestHeadersBuilder.append(userAgent);
 
 
-                // Set the `x-requested-with` header property.
-                httpUrlConnection.setRequestProperty("x-requested-with", "");
-
-                // Add the `x-requested-with` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"));
-                requestHeadersBuilder.append("x-requested-with", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                requestHeadersBuilder.append(":  ");
-
-
                 // Set the `Sec-Fetch-Site` header property.
                 httpUrlConnection.setRequestProperty("Sec-Fetch-Site", "none");
 

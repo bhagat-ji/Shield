@@ -1,0 +1,14 @@
+• Añadir DevTools de WebView al menú de navegación.
+• Hacer que al pulsar prolongadamente un marcador se abra en una nueva pestaña de primer plano.
+• Añadir soporte de idiomas por aplicación.
+• Corregir un fallo si se llama a Añadir Configuración de Dominio en una pestaña vacía.
+• Mejorar el texto rojo del modo nocturno y el color del icono.
+• Detectar las instalaciones de I2P de la Google Play.
+• Implementar una barra inferior de aplicaciones en Ajustes.
+• Borrar el directorio del Service Worker después de cada carga de página.
+• Restringir el proveedor de archivos a un subdirectorio del directorio de la caché.
+• Aumentar la API objetivo a 33 (Android 13).
+• Implementar el forzar el modo oscuro de WebView en Android 13.
+• Implementar un número de pequeñas mejoras.
+• Arreglar un número de pequeños errores.
+• Actualizada la traducción al español proporcionada por Jose A. León.

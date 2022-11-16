@@ -116,7 +116,7 @@
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
     <string name="logcat">Logcat</string>
-    <string name="webview_devtools">Инструменты разработчика WebView</string>
+    <string name="webview_devtools">WebView DevTools</string>
     <string name="guide">Руководство</string>
     <string name="about">О Privacy Browser</string>
 

@@ -119,6 +119,7 @@
     <string name="settings">Configuración</string>
     <string name="import_export">Importar/Exportar</string>
     <string name="logcat">Logcat</string>
+    <string name="webview_devtools">DevTools de WebView</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
 
@@ -201,6 +202,8 @@
     <string name="invalid_url">URL inválida</string>
     <string name="saving_file">Guardando archivo:</string>
     <string name="processing_image">Procesando imagen… :</string>
+    <string name="error_saving_file">Error al guardar %1$s: \u0020 %2$s</string>
+    <string name="unknown_error">Error desconocido</string>
 
     <!-- View Source. -->
     <string name="request_headers">Cabeceras de solicitud</string>
@@ -565,6 +568,8 @@
         <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="download_with_external_app">Descargar con una app externa</string>
+        <string name="download_with_external_app_summary">Las aplicaciones externas no respetarán la configuración del proxy del Navegador de Privacidad y no tendrán acceso a las cookies
+            (lo que significa que es poco probable que funcionen los archivos descargados de sitios que requieren un inicio de sesión).</string>
         <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
         <string name="bottom_app_bar">Barra inferior de la app</string>

@@ -1,0 +1,14 @@
+• Ajout de l'accès aux outils de développement Webview dans le menu de navigation.
+• Une pression longue sur un favori permet de l'ouvrir dans un nouvel onglet au premier plan.
+• Prise en charge de la langue par application.
+• Correction d'un crash si "Ajouter un domaine" est appelé dans un onglet vierge.
+• Amélioration du mode nuit avec du texte et des icônes en rouge.
+• Détection de l'installation d'I2P depuis le Google Play Store.
+• Implémentation d'une barre d'application inférieure dans les paramètres.
+• Suppression du dossier Service Worker après chaque chargement de page.
+• Limitation du fournisseur de fichiers à un sous-répertoire du répertoire de cache.
+• Passage de l'API optimale à 33 (Android 13).
+• Implémentation du forçage du mode sombre de WebView sur Android 13.
+• Développement d'un nombre réduit d'améliorations mineures.
+• Correction d'un nombre de bugs mineurs.
+• Traduction française mise à jour fournie par Kévin L.
