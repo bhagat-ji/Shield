@@ -1,0 +1,14 @@
+• Aggiunta di WebView DevToolsal menù di navigazione.
+• Ora una pressione prolungata su un segnalibro fa sì che venga aperto in una nuova scheda in primo piano.
+• Aggiunta del supporto della lingua per-app.
+• Sistemazione di un crash nel caso in cui l'impostazione di aggiunta del dominio venga chiamata per una scheda vuota.
+• Miglioramento nella modalità notturna per i testi rossi e il colore delle icone.
+• Rilevamento dell'installazione di I2P da Google Play.
+• Aggiunta la possibilità di avere la barra dell'app in basso nelle impostazioni.
+• Eliminazione della cartella Service Worker dopo il caricamento di ogni pagina.
+• Restrizione del file provider a una sottocartella della cartella della cache.
+• Modifica della target API a 33 (Android 13).
+• Implementazione della forzatura della modalità scura di WebView per Android 13.
+• Implementazione di un certo numero di miglioramenti.
+• Correzione di piccoli bachi.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

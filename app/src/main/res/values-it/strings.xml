@@ -119,6 +119,7 @@
     <string name="settings">Impostazioni</string>
     <string name="import_export">Importa/Esporta</string>
     <string name="logcat">Logcat</string>
+    <string name="webview_devtools">WebView DevTools</string>
     <string name="guide">Guida</string>
     <string name="about">Informazioni</string>
 
@@ -201,6 +202,8 @@
     <string name="invalid_url">URL non valida</string>
     <string name="saving_file">Salvataggio file:</string>
     <string name="processing_image">Creazione immagine… :</string>
+    <string name="error_saving_file">Error di salvataggio di %1$s: \u0020 %2$s</string>
+    <string name="unknown_error">Errore sconosciuto</string>
 
     <!-- View Source. -->
     <string name="request_headers">Richiesta Intestazioni</string>
@@ -564,6 +567,8 @@
         <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="download_with_external_app">Scarica con una applicazione esterna</string>
+        <string name="download_with_external_app_summary">Le applicazioni esterne non rispetteranno le impostazioni proxy di Privacy Browser’s proxy e non accederanno ai cookie
+            (ovvero è improbabile che un download di file da siti che richiedano il login funzioni).</string>
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>
         <string name="scroll_app_bar_summary">Permette lo scorrere della barra dell\'applicazione dalla parte alta dello schermo quando si effettua lo scrolling.</string>
         <string name="bottom_app_bar">Barra dell\'app in basso</string>
