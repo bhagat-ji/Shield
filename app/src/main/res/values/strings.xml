@@ -619,7 +619,7 @@
         <string name="swipe_to_refresh">Swipe to refresh</string>
         <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
         <string name="download_with_external_app">Download with external app</string>
-        <string name="download_with_external_app_summary">External apps will not honor Privacy Browser’s proxy settings and will not have access to cookies
+        <string name="download_with_external_app_summary">External apps do not honor Privacy Browser’s proxy settings and do not have access to cookies
             (meaning that it is unlikely that files downloaded from sites that require a login will work).</string>
         <string name="scroll_app_bar">Scroll the app bar</string>
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>

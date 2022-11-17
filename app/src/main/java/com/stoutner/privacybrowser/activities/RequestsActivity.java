@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -40,6 +39,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.RequestsArrayAdapter;

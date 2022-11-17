@@ -51,8 +51,8 @@ import androidx.webkit.WebViewCompat
 
 import com.google.android.material.snackbar.Snackbar
 
-import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.BuildConfig
+import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.asynctasks.SaveAboutVersionImage
 
 import kotlinx.coroutines.CoroutineScope
