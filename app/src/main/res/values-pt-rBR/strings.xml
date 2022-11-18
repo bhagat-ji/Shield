@@ -118,6 +118,7 @@
     <string name="settings">Configurações</string>
     <string name="import_export">Importar/Exportar</string>
     <string name="logcat">Logcat</string>
+    <string name="webview_devtools">WebView DevTools</string>
     <string name="guide">Guia</string>
     <string name="about">Sobre</string>
 
@@ -199,6 +200,8 @@
     <string name="invalid_url">URL inválida</string>
     <string name="saving_file">Salvando file:</string>
     <string name="processing_image">Processando imagem… :</string>
+    <string name="error_saving_file">Erro ao salvar %1$s: \u0020 %2$s</string>
+    <string name="unknown_error">Erro desconhecido</string>
 
     <!-- View Source. -->
     <string name="request_headers">Solicitar cabeçalhos</string>
@@ -377,6 +380,7 @@
     <string name="ssl_certificates">Certificados SSL</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">IDs de rastreamento</string>
+    <string name="gui">Interface</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot Não  Instalado</string>
@@ -407,6 +411,8 @@
             <string name="webview_version">Versão do WebView:</string>
             <string name="orbot">Orbot:</string>
             <string name="i2p">I2P:</string>
+                <string name="fdroid_flavor">%1$s (Derivação do F-Droid)</string>
+                <string name="google_play_flavor">%1$s (Derivação do Google Play)</string>
             <string name="openkeychain">OpenKeychain:</string>
         <string name="memory_usage">Uso da Memória</string>
             <string name="app_consumed_memory">Consumo da Memória do Aplicativo:</string>
@@ -501,6 +507,10 @@
         <string name="block_all_third_party_requests">Bloquear todas as solicitações de terceiros</string>
         <string name="block_all_third_party_requests_summary">Bloquear todas as solicitações de terceiros aumenta a privacidade, mas quebra muitos sites.</string>
     <string name="url_modification">Modificação de URL</string>
+        <string name="tracking_queries">Consultas de rastreamento</string>
+        <string name="tracking_queries_summary">Remova consultas de rastreamento conhecidas de URLs.</string>
+        <string name="amp_redirects">Redirecionamentos de AMP</string>
+        <string name="amp_redirects_summary">Remova consultas de redirecionamento AMP (páginas aceleradas para dispositivos móveis) conhecidas de URLs.</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
@@ -555,6 +565,8 @@
         <string name="swipe_to_refresh">Deslize para atualizar</string>
         <string name="swipe_to_refresh_summary">Alguns sites não funcionam bem se deslizar para atualizar estiver habilitado.</string>
         <string name="download_with_external_app">Download com aplicativo externo</string>
+        <string name="download_with_external_app_summary">Aplicativos externos não respeitarão as configurações de proxy do Privacy Browser e não terão acesso a cookies
+            (o que significa que é improvável que os arquivos baixados de sites que exigem login funcionem).</string>
         <string name="scroll_app_bar">Role a barra de aplicativos</string>
         <string name="scroll_app_bar_summary">Role a barra de aplicativos para fora da parte superior da tela quando o WebView rola para baixo.</string>
         <string name="bottom_app_bar">Barra de aplicativos inferior</string>

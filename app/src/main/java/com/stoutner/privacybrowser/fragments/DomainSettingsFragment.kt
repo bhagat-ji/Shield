@@ -134,6 +134,7 @@ class DomainSettingsFragment : Fragment() {
         val swipeToRefreshImageView = domainSettingsView.findViewById<ImageView>(R.id.swipe_to_refresh_imageview)
         val swipeToRefreshSpinner = domainSettingsView.findViewById<Spinner>(R.id.swipe_to_refresh_spinner)
         val swipeToRefreshTextView = domainSettingsView.findViewById<TextView>(R.id.swipe_to_refresh_textview)
+        val webViewThemeLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.webview_theme_linearlayout)
         val webViewThemeImageView = domainSettingsView.findViewById<ImageView>(R.id.webview_theme_imageview)
         val webViewThemeSpinner = domainSettingsView.findViewById<Spinner>(R.id.webview_theme_spinner)
         val webViewThemeTextView = domainSettingsView.findViewById<TextView>(R.id.webview_theme_textview)
@@ -178,6 +179,10 @@ class DomainSettingsFragment : Fragment() {
         val currentIpAddressesLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.current_ip_addresses_linearlayout)
         val currentIpAddressesRadioButton = domainSettingsView.findViewById<RadioButton>(R.id.current_ip_addresses_radiobutton)
         val currentIpAddressesTextView = domainSettingsView.findViewById<TextView>(R.id.current_ip_addresses_textview)
+
+        // Hide the WebView theme linear layout if the API < 29.
+        if (Build.VERSION.SDK_INT < 29)
+            webViewThemeLinearLayout.visibility = View.GONE
 
         // Setup the pinned labels.
         val cNameLabel = getString(R.string.common_name) + "  "

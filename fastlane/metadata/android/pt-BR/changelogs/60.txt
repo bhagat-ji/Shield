@@ -1,0 +1,13 @@
+• Cria uma opção para usar o cabeçalho padrão X-Requested-With.
+• Bloqueia todos os rastreadores de consulta de URL listados em privacytests.org.
+• Adiciona uma opção Compartilhar mensagem.
+• Corrigido um bug que fazia com que a barra inferior do aplicativo cobrisse parte do site.
+• Corrigido guias duplicadas que às vezes são abertas na reinicialização.
+• Exibe o favorito aberto na nova guia snackbar acima da gaveta de favoritos.
+• Adiciona a versão do kernel a Sobre > Versão.
+• Preserva a pasta de favoritos atual ao reiniciar.
+• Altera o valor padrão do URL de proxy personalizado para socks://localhost:9050.
+• Adiciona várias atualizações do Guia.
+• Feitas diversas pequenas melhorias na IU.
+• Alterada a API de destino para 32 (Android 12L).
+• Tradução atualizada para o português do Brasil fornecida por Thiago Nazareno Conceição Silva de Jesus.

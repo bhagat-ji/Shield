@@ -173,6 +173,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             clearAndExitCategory.removePreference(clearFormDataPreference)
         }
 
+        // Remove the WebView theme preference if the API < 29.
+        if (Build.VERSION.SDK_INT < 29) {
+            // Get a handle for the general category.
+            val generalCategory = findPreference<PreferenceCategory>(getString(R.string.general_category_key))!!
+
+            // Remove the WebView theme preference.
+            generalCategory.removePreference(webViewThemePreference)
+        }
+
         // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
         fanboySocialBlockingListPreference.isEnabled = !fanboyAnnoyanceListEnabled
 
@@ -273,8 +282,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Set the current theme as the summary text for the preference.
         appThemePreference.summary = appThemeEntriesStringArray[appThemeEntryNumber]
 
-        // Enable the WebView theme preference if the API < 33 or the app theme is not set to light.  Google no longer allows light themes to display dark WebViews.
-        webViewThemePreference.isEnabled = ((Build.VERSION.SDK_INT < 33) || (appThemeEntryNumber != 1))
+        // Enable the WebView theme preference if the app theme is not set to light.  Google does not allow light themes to display dark WebViews.
+        webViewThemePreference.isEnabled = (appThemeEntryNumber != 1)
 
         // Get the WebView theme string arrays.
         webViewThemeEntriesStringArray = resources.getStringArray(R.array.webview_theme_entries)
@@ -1090,8 +1099,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         }
                     }
 
-                    // Enable the WebView theme preference if the API < 33 or the app theme is set to light.
-                    webViewThemePreference.isEnabled = ((Build.VERSION.SDK_INT < 33) || (appThemeEntryNumber != 1))
+                    // Enable the WebView theme preference if the app theme is not set to light.  Google does not allow light themes to display dark WebViews.
+                    webViewThemePreference.isEnabled = (appThemeEntryNumber != 1)
 
                     // Get the webView theme entry number that matches the new WebView theme.
                     val webViewThemeEntryNumber: Int = when (sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))) {

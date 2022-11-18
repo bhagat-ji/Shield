@@ -1,0 +1,1 @@
+• Correzione di un crash per le nuove installazioni di Privacy Browser.

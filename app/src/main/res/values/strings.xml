@@ -679,6 +679,7 @@
     <string name="fanboys_social_blocking_list_key" translatable="false">fanboys_social_blocking_list</string>
     <string name="font_size_key" translatable="false">font_size</string>
     <string name="full_screen_browsing_mode_key" translatable="false">full_screen_browsing_mode</string>
+    <string name="general_category_key" translatable="false">general</string>
     <string name="hide_app_bar_key" translatable="false">hide_app_bar</string>
     <string name="homepage_key" translatable="false">homepage</string>
     <string name="incognito_mode_key" translatable="false">incognito_mode</string>
