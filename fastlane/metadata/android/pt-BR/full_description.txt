@@ -1,0 +1,17 @@
+A única maneira de evitar que os dados sejam mal-usados é, em primeiro lugar, impedir que eles sejam coletados. O Privacy Browser tem dois objetivos principais.
+
+1. Minimizar os dados que são enviados para a internet.
+
+2. Minimizar os dados armazenados no dispositivo.
+
+A maioria dos navegadores fornece silenciosamente aos sites grandes quantidades de informações que permitem que eles rastreiem você e comprometam sua privacidade. Sites e redes de anúncios usam tecnologias como JavaScript, cookies, armazenamento DOM, agentes de usuário e muitas outras coisas para identificar exclusivamente cada usuário e rastreá-los entre as visitas e na web.
+
+Por outro lado, funcionalidades sensíveis à privacidade são desativados por padrão no Privacy Browser. Se uma dessas tecnologias for necessária para um site funcionar corretamente, o usuário pode optar por ativá-la apenas para essa visita. Ou podem usar as configurações de domínio para ativar automaticamente determinados recursos ao entrar em um site específico e desativá-los novamente ao sair.
+
+Atualmente, o Privacy Browser usa o WebView integrado do Android para renderizar páginas da web. Como tal, funciona melhor quando a versão mais recente do WebView está instalada (consulte https://www.stoutner.com/privacy-browser/common-settings/webview/). Na série 4.x, o Privacy Browser mudará para uma versão bifurcada do WebView do Android chamada Privacy WebView, que permitirá recursos avançados de privacidade.
+
+Características:
+• Bloqueio de anúncios EasyList integrado.
+• Suporte de proxy Tor Orbot.
+• Fixação de certificado SSL.
+• Importação/exportação de configurações e favoritos.

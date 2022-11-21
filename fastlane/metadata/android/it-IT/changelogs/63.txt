@@ -1,0 +1,1 @@
+• Correzione della modalità scura di WebView per le API 29 - 32 (Android 10 - Android 12L).

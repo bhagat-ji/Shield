@@ -1,0 +1,1 @@
+• Fix WebView's dark mode on API 29 - 32 (Android 10 - Android 12L).

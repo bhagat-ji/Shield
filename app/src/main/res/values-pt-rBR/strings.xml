@@ -41,7 +41,7 @@
     <string name="dom_storage_deleted">Armazenamento DOM excluído</string>
     <string name="form_data_deleted">Dados do formulário excluídos</string>
     <string name="open_navigation_drawer">Abrir a caixa de navegação</string>
-    <string name="close_navigation_drawer">Fechar  a caixa de navegação</string>
+    <string name="close_navigation_drawer">Fechar a caixa de navegação</string>
     <string name="unrecognized_url">URL desconhecida:</string>
     <string name="add_tab">Adicionar aba</string>
     <string name="close_tab">Fechar aba</string>

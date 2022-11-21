@@ -1,0 +1,1 @@
+• Fehler bei WebViews dunklem Modus für API 29 - 32 (Android 10 - Android 12L) behoben.

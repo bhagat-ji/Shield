@@ -33,36 +33,42 @@
     </head>
 
     <body>
+        <h3>3.12.2 (version code 63)</h3>
+        <p>21. November 2022 - Mindest-API 23, Ziel-API 33</p>
+        <ul>
+            <li>Fehler bei <a href="https://redmine.stoutner.com/issues/927">WebViews dunklem Modus</a> für API 29 - 32 (Android 10 - Android 12L) behoben.</li>
+        </ul>
+
         <h3><a href="https://www.stoutner.com/privacy-browser-3-12-1/">3.12.1</a> (Version Code 62)</h3>
         <p><a href="https://gitweb.stoutner.com/?p=PrivacyBrowserAndroid.git;a=commitdiff;h=6b2cf168a9c3697be63dee603d05a88506c380a1">17. November 2022</a> - Mindest-API 23, Ziel-API 33</p>
         <ul>
-            <li>Fix a crash on <a href="https://redmine.stoutner.com/issues/925">new installs</a> of Privacy Browser.</li>
+            <li>Fehler behoben, durch den Privacy Browser <a href="https://redmine.stoutner.com/issues/925">nach neuer Installation</a> abstürzte.</li>
         </ul>
 
         <h3><a href="https://www.stoutner.com/privacy-browser-3-12/">3.12</a> (Version Code 61)</h3>
         <p><a href="https://gitweb.stoutner.com/?p=PrivacyBrowserAndroid.git;a=commitdiff;h=60846bcbf234ed7452af94f080f3da3133ce674c">16. November 2022</a> - Mindest-API 23, Ziel-API 33</p>
         <ul>
-            <li>Add <a href="https://redmine.stoutner.com/issues/893">WebView DevTools</a> to the navigation menu.</li>
-            <li>Make long-pressing a bookmark open it in a new <a href="https://redmine.stoutner.com/issues/912">foreground tab</a>.</li>
-            <li>Add <a href="https://redmine.stoutner.com/issues/910">per-app language support</a>.</li>
-            <li>Fix a crash if Add Domain Settings is called on an <a href="https://redmine.stoutner.com/issues/906">empty tab</a>.</li>
-            <li>Improve the night mode red <a href="https://redmine.stoutner.com/issues/691">text</a> and <a href="https://redmine.stoutner.com/issues/805">icon</a> color.</li>
-            <li>Detect <a href="https://redmine.stoutner.com/issues/895">I2P installations</a> from Google Play.</li>
-            <li>Implement a <a href="https://redmine.stoutner.com/issues/716">bottom app bar</a> in Settings.</li>
-            <li>Delete the <a href="https://redmine.stoutner.com/issues/885">Service Worker directory</a> after every page load.</li>
-            <li>Restrict the file provider to a <a href="https://redmine.stoutner.com/issues/779">subdirectory</a> of the cache directory.</li>
-            <li>Bump the <a href="https://redmine.stoutner.com/issues/902">target API to 33</a> (Android 13).</li>
-            <li>Implement forcing <a href="https://redmine.stoutner.com/issues/903">WebView’s dark mode</a> on Android 13.</li>
-            <li><a href="https://redmine.stoutner.com/issues/921">Implement</a>
-                <a href="https://redmine.stoutner.com/issues/917">a</a>
-                <a href="https://redmine.stoutner.com/issues/922">number</a>
-                <a href="https://redmine.stoutner.com/issues/778">of</a>
-                <a href="https://redmine.stoutner.com/issues/759">minor</a>
-                <a href="https://redmine.stoutner.com/issues/757">improvements</a>.</li>
-            <li>Fix a <a href="https://redmine.stoutner.com/issues/621">number</a>
-                <a href="https://redmine.stoutner.com/issues/766">of</a>
-                <a href="https://redmine.stoutner.com/issues/904">minor</a>
-                <a href="https://redmine.stoutner.com/issues/914">bugs</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/893">WebView DevTools</a> zum Navigations-Menü hinzugefügt.</li>
+            <li>Langes Drücken eines Lesezeichens öffnet dieses nun in einem neuen <a href="https://redmine.stoutner.com/issues/912">Vordergrund-Tab</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/910">App-Sprachauswahl</a> zur Auswahl der Sprache von Privacy Browser hinzugefügt.</li>
+            <li>Fehler behoben, der zum Absturz beim <a href="https://redmine.stoutner.com/issues/906">Speichern von Domain-Einstellungen eines leeren Tabs</a> führte.</li>
+            <li><a href="https://redmine.stoutner.com/issues/691">Roter Text</a> und <a href="https://redmine.stoutner.com/issues/805">Symbol-Farbe</a> im Nachtmodus verbessert.</li>
+            <li>Erkennung von <a href="https://redmine.stoutner.com/issues/895">I2P-Installationen</a> aus Google Play implementiert.</li>
+            <li><a href="https://redmine.stoutner.com/issues/716">Untere App-Leiste</a> in Einstellungen implementiert.</li>
+            <li><a href="https://redmine.stoutner.com/issues/885">Service-Worker-Verzeichnis</a> wird nun nach jedem Laden einer Seite gelöscht.</li>
+            <li>Zugriff des Datei-Dialogs auf <a href="https://redmine.stoutner.com/issues/779">Unterverzeichnis</a> des Cache-Verzeichnisses beschränkt.</li>
+            <li><a href="https://redmine.stoutner.com/issues/902">Ziel-API auf 33</a> (Android 13) angehoben.</li>
+            <li>Unter Android 13 wird nun <a href="https://redmine.stoutner.com/issues/903">bevorzugt WebViews dunkler Modus</a> verwendet.</li>
+            <li><a href="https://redmine.stoutner.com/issues/921">Eine</a>
+                <a href="https://redmine.stoutner.com/issues/917">Anzahl</a>
+                <a href="https://redmine.stoutner.com/issues/922">von</a>
+                <a href="https://redmine.stoutner.com/issues/778">kleinen</a>
+                <a href="https://redmine.stoutner.com/issues/759">Verbesserungen</a>
+                <a href="https://redmine.stoutner.com/issues/757">implementiert</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/621">Einige</a>
+                <a href="https://redmine.stoutner.com/issues/766">kleine</a>
+                <a href="https://redmine.stoutner.com/issues/904">Fehler</a>
+                <a href="https://redmine.stoutner.com/issues/914">behoben</a>.</li>
             <li>Aktualisierte deutsche Übersetzung von Bernhard G. Keller.</li>
         </ul>
 

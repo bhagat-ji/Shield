@@ -1,0 +1,1 @@
+• Исправлена ошибка темного режима WebView в API 29 - 32 (Android 10 - Android 12L).

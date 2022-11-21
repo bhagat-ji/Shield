@@ -1,0 +1,14 @@
+• WebView DevTools zum Navigations-Menü hinzugefügt.
+• Langes Drücken eines Lesezeichens öffnet dieses nun in einem neuen Vordergrund-Tab.
+• App-Sprachauswahl zur Auswahl der Sprache von Privacy Browser hinzugefügt.
+• Fehler behoben, der zum Absturz beim Speichern von Domain-Einstellungen eines leeren Tabs führte.
+• Roter Text und Symbol-Farbe im Nachtmodus verbessert.
+• Erkennung von I2P-Installationen aus Google Play implementiert.
+• Untere App-Leiste in Einstellungen implementiert.
+• Service-Worker-Verzeichnis wird nun nach jedem Laden einer Seite gelöscht.
+• Zugriff des Datei-Dialogs auf Unterverzeichnis des Cache-Verzeichnisses beschränkt.
+• Ziel-API auf 33 (Android 13) angehoben.
+• Unter Android 13 wird nun bevorzugt WebViews dunkler Modus verwendet.
+• Eine Anzahl von kleinen Verbesserungen implementiert.
+• Einige kleine Fehler behoben.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

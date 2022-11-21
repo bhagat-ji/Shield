@@ -1,0 +1,14 @@
+• Adiciona WebView DevTools ao menu de navegação.
+• Faça um pressionamento longo de um marcador para abri-lo em uma nova guia de primeiro plano.
+• Adiciona suporte a idiomas por aplicativo.
+• Corrijida uma falha se o Adicionar Configurações de Domínio for chamado em uma guia vazia.
+• Melhorar o modo noturno vermelho texto e cor do ícone.
+• Detectar instalações I2P do Google Play.
+• Implemente uma barra de aplicativos inferior em Configurações.
+• Exclua o diretório do Service Worker após cada carregamento de página.
+• Restringir o provedor de arquivos a um subdiretório do diretório de cache.
+• Elevada a API de destino para 33 (Android 13).
+• Implementar a imposição do modo escuro do WebView no Android 13.
+• Implementado um número menor de melhorias.
+• Corrigido um número menor de bugs.
+• Tradução atualizada para o português do Brasil fornecida por Thiago Nazareno Conceição Silva de Jesus.

@@ -1,0 +1,1 @@
+• Corrigido o modo escuro do WebView no API 29 - 32 (Android 10 - Android 12L).

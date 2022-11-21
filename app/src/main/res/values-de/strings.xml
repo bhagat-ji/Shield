@@ -123,6 +123,7 @@
     <string name="settings">Einstellungen</string>
     <string name="import_export">Importieren/Exportieren</string>
     <string name="logcat">Logcat</string>
+    <string name="webview_devtools">WebView DevTools</string>
     <string name="guide">Handbuch</string>
     <string name="about">Infos</string>
 
@@ -205,6 +206,8 @@
     <string name="invalid_url">Ungültige URL</string>
     <string name="saving_file">Speichere Datei:</string>
     <string name="processing_image">Bild wird bearbeitet… :</string>
+    <string name="error_saving_file">Fehler beim Speichern der Datei %1$s: \u0020 %2$s</string>
+    <string name="unknown_error">Unbekannter Fehler</string>
 
     <!-- View Source. -->
     <string name="request_headers">Anfragekopfzeilen</string>
@@ -383,6 +386,7 @@
     <string name="ssl_certificates">SSL-Zertifikate</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">Verolgungs-IDs</string>
+    <string name="gui">Benutzer-Oberfläche</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot ist nicht installiert</string>
@@ -566,6 +570,8 @@
         <string name="swipe_to_refresh">Herunterziehen zum Aktualisieren</string>
         <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
         <string name="download_with_external_app">Mit einer externen App herunterladen</string>
+        <string name="download_with_external_app_summary">Externe Apps befolgen die Proxy-Einstellungen von Privacy Browser nicht und haben keinen Zugriff auf Cookies
+            (daher werden Dateien, die von Websites heruntergeladen geladen werden, die eine Anmeldung erfordern, vermutlich nicht funkitionieren).</string>
         <string name="scroll_app_bar">App-Leiste scrollen</string>
         <string name="scroll_app_bar_summary">Scrollt die App-Leiste mit der URL nach oben, wenn die Webseite gescrollt wird.</string>
         <string name="bottom_app_bar">Untere Anwendungs-Leiste</string>
