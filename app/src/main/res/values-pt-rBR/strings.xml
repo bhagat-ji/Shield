@@ -163,6 +163,7 @@
         <string name="add_to_home_screen">Adicionar à tela inicial</string>
         <string name="view_source">Ver fonte</string>
     <string name="share">Compartilhar</string>
+        <string name="share_message">Compartilhar mensagem</string>
         <string name="share_url">Compartilhar URL</string>
         <string name="open_with_app">Abrir com aplicativo</string>
         <string name="open_with_browser">Abrir com navegador</string>

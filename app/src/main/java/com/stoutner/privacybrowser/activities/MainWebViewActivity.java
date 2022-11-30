@@ -644,11 +644,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Close the current tab.
                     closeCurrentTab();
                 } else {  // There isn't anything to do in Privacy Browser.
-                    // Close Privacy Browser.  `finishAndRemoveTask()` also removes Privacy Browser from the recent app list.
-                    finishAndRemoveTask();
-
-                    // Manually kill Privacy Browser.  Otherwise, it is glitchy when restarted.
-                    System.exit(0);
+                    // Run clear and exit.
+                    clearAndExit();
                 }
             }
         };
