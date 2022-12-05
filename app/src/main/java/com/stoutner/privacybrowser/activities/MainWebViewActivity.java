@@ -3934,8 +3934,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Update the swipe refresh layout.
                         if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
-                            // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                            swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
+                            // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it sometimes is null).
+                            if (currentWebView != null) {
+                                // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                                swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
+                            }
                         } else {  // Swipe to refresh is disabled.
                             // Disable the swipe refresh layout.
                             swipeRefreshLayout.setEnabled(false);
@@ -3946,8 +3949,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.setSwipeToRefresh(true);
 
-                        // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                        swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
+
+                        // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it sometimes is null).
+                        if (currentWebView != null) {
+                            // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                            swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
+                        }
                         break;
 
                     case DomainsDatabaseHelper.DISABLED:
@@ -4060,8 +4067,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Update the swipe refresh layout.
                 if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
-                    // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
-                    swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
+                    // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it sometimes is null).
+                    if (currentWebView != null) {
+                        // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                        swipeRefreshLayout.setEnabled(currentWebView.getScrollY() == 0);
+                    }
                 } else {  // Swipe to refresh is disabled.
                     // Disable the swipe refresh layout.
                     swipeRefreshLayout.setEnabled(false);
