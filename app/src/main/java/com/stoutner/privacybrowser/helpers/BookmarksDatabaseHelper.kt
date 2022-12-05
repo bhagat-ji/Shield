@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -65,6 +65,36 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         // Code for upgrading the database will be added here when the schema version > 1.
     }
 
+    // Get a cursor of all the folders.
+    val allFolders: Cursor
+        get() {
+            // Get a readable database handle.
+            val bookmarksDatabase = this.readableDatabase
+
+            // Return the cursor with the all the folders.  The cursor cannot be closed because it is used in the parent activity.
+            return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $IS_FOLDER = 1 ORDER BY $BOOKMARK_NAME ASC", null)
+        }
+
+    // Get a cursor for all bookmarks and folders.
+    val allBookmarks: Cursor
+        get() {
+            // Get a readable database handle.
+            val bookmarksDatabase = this.readableDatabase
+
+            // Return a cursor with the entire contents of the bookmarks table.  The cursor cannot be closed because it is used in the parent activity.
+            return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE", null)
+        }
+
+    // Get a cursor for all bookmarks and folders ordered by display order.
+    val allBookmarksByDisplayOrder: Cursor
+        get() {
+            // Get a readable database handle.
+            val bookmarksDatabase = this.readableDatabase
+
+            // Return a cursor with the entire contents of the bookmarks table ordered by the display order.  The cursor cannot be closed because it is used in the parent activity.
+            return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE ORDER BY $DISPLAY_ORDER ASC", null)
+        }
+
     // Create a bookmark.
     fun createBookmark(bookmarkName: String, bookmarkURL: String, parentFolder: String, displayOrder: Int, favoriteIcon: ByteArray) {
         // Store the bookmark data in a content values.
@@ -122,6 +152,18 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         bookmarksDatabase.close()
     }
 
+    // Delete one bookmark.
+    fun deleteBookmark(databaseId: Int) {
+        // Get a writable database handle.
+        val bookmarksDatabase = this.writableDatabase
+
+        // Deletes the row with the given database ID.
+        bookmarksDatabase.delete(BOOKMARKS_TABLE, "$ID = $databaseId", null)
+
+        // Close the database handle.
+        bookmarksDatabase.close()
+    }
+
     // Get a cursor for the bookmark with the specified database ID.
     fun getBookmark(databaseId: Int): Cursor {
         // Get a readable database handle.
@@ -131,26 +173,170 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID = $databaseId", null)
     }
 
-    // Get the folder name for the specified database ID.
-    fun getFolderName(databaseId: Int): String {
+    // Get a cursor for all bookmarks and folders by display order except those with the specified IDs.
+    fun getAllBookmarksByDisplayOrderExcept(exceptIdLongArray: LongArray): Cursor {
         // Get a readable database handle.
         val bookmarksDatabase = this.readableDatabase
 
-        // Get the cursor for the folder with the specified database ID.
-        val folderCursor = bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID = $databaseId", null)
+        // Prepare a string builder to contain the comma-separated list of IDs not to get.
+        val idsNotToGetStringBuilder = StringBuilder()
 
-        // Move to the first record.
-        folderCursor.moveToFirst()
+        // Extract the array of IDs not to get to the string builder.
+        for (databaseIdLong in exceptIdLongArray) {
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.isNotEmpty()) {
+                // This is not the first number, so place a `,` before the new number.
+                idsNotToGetStringBuilder.append(",")
+            }
 
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong)
+        }
+
+        // Return a cursor with all the bookmarks except those specified ordered by display order.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID NOT IN ($idsNotToGetStringBuilder) ORDER BY $DISPLAY_ORDER ASC", null)
+    }
+
+    // Get a cursor for all bookmarks and folders except those with the specified IDs.
+    fun getAllBookmarksExcept(exceptIdLongArray: LongArray): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // Prepare a string builder to contain the comma-separated list of IDs not to get.
+        val idsNotToGetStringBuilder = StringBuilder()
+
+        // Extract the array of IDs not to get to the string builder.
+        for (databaseIdLong in exceptIdLongArray) {
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.isNotEmpty()) {
+                // This is not the first number, so place a `,` before the new number.
+                idsNotToGetStringBuilder.append(",")
+            }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong)
+        }
+
+        // Return a cursor with all the bookmarks except those specified.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID NOT IN ($idsNotToGetStringBuilder)", null)
+    }
+
+    // Get a cursor with just database ID of bookmarks and folders in the specified folder.  This is useful for deleting folders with bookmarks that have favorite icons too large to fit in a cursor.
+    fun getBookmarkIds(folderName: String): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // SQL escape the folder name.
+        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
+
+        // Return a cursor with all the database IDs.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT $ID FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName", null)
+    }
+
+    // Get a cursor for bookmarks and folders in the specified folder.
+    fun getBookmarks(folderName: String): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // SQL escape the folder name.
+        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
+
+        // Return a cursor with all the bookmarks in a specified folder.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName", null)
+    }
+
+    // Get a cursor for bookmarks and folders in the specified folder ordered by display order.
+    fun getBookmarksByDisplayOrder(folderName: String): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // SQL escape the folder name.
+        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
+
+        // Return a cursor with all the bookmarks in the specified folder ordered by display order.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName ORDER BY $DISPLAY_ORDER ASC", null)
+    }
+
+    // Get a cursor for bookmarks and folders in the specified folder by display order except those with the specified IDs.
+    fun getBookmarksByDisplayOrderExcept(exceptIdLongArray: LongArray, folderName: String): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // Prepare a string builder to contain the comma-separated list of IDs not to get.
+        val idsNotToGetStringBuilder = StringBuilder()
+
+        // Extract the array of IDs not to get to the string builder.
+        for (databaseIdLong in exceptIdLongArray) {
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.isNotEmpty()) {
+                // This is not the first number, so place a `,` before the new number.
+                idsNotToGetStringBuilder.append(",")
+            }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong)
+        }
+
+        // SQL escape the folder name.
+        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
+
+        // Return a cursor with all the bookmarks in the specified folder except for those database IDs specified ordered by display order.
+        // The cursor cannot be closed because it will be used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName AND $ID NOT IN ($idsNotToGetStringBuilder) ORDER BY $DISPLAY_ORDER ASC",
+            null)
+    }
+
+    // Get a cursor for bookmarks and folders in the specified folder except those with the specified IDs.
+    fun getBookmarksExcept(exceptIdLongArray: LongArray, folderName: String): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // Prepare a string builder to contain the comma-separated list of IDs not to get.
+        val idsNotToGetStringBuilder = StringBuilder()
+
+        // Extract the array of IDs not to get to the string builder.
+        for (databaseIdLong in exceptIdLongArray) {
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.isNotEmpty()) {
+                // This is not the first number, so place a `,` before the new number.
+                idsNotToGetStringBuilder.append(",")
+            }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong)
+        }
+
+        // SQL escape the folder name.
+        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
+
+        // Return a cursor with all the bookmarks in the specified folder except for those database IDs specified.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName AND $ID NOT IN ($idsNotToGetStringBuilder)", null)
+    }
+
+    // Get a cursor for the specified folder name.
+    fun getFolder(folderName: String): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // SQL escape the folder name.
+        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
+
+        // Return the cursor for the specified folder.  The cursor can't be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $BOOKMARK_NAME = $sqlEscapedFolderName AND $IS_FOLDER = 1", null)
+    }
+
+    fun getFolderBookmarks(folderDatabaseId: Int): Cursor {
         // Get the folder name.
-        val folderName = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BOOKMARK_NAME))
+        val folderName = getFolderName(folderDatabaseId)
 
-        // Close the cursor and the database handle.
-        folderCursor.close()
-        bookmarksDatabase.close()
+        // SQL escape the folder name.
+        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
 
-        // Return the folder name.
-        return folderName
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // Return a cursor with all the bookmarks in the folder.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName AND $IS_FOLDER = 0 ORDER BY $DISPLAY_ORDER ASC", null)
     }
 
     // Get the database ID for the specified folder name.
@@ -178,16 +364,26 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         return databaseId
     }
 
-    // Get a cursor for the specified folder name.
-    fun getFolder(folderName: String): Cursor {
+    // Get the folder name for the specified database ID.
+    fun getFolderName(databaseId: Int): String {
         // Get a readable database handle.
         val bookmarksDatabase = this.readableDatabase
 
-        // SQL escape the folder name.
-        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
+        // Get the cursor for the folder with the specified database ID.
+        val folderCursor = bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID = $databaseId", null)
 
-        // Return the cursor for the specified folder.  The cursor can't be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $BOOKMARK_NAME = $sqlEscapedFolderName AND $IS_FOLDER = 1", null)
+        // Move to the first record.
+        folderCursor.moveToFirst()
+
+        // Get the folder name.
+        val folderName = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BOOKMARK_NAME))
+
+        // Close the cursor and the database handle.
+        folderCursor.close()
+        bookmarksDatabase.close()
+
+        // Return the folder name.
+        return folderName
     }
 
     // Get a cursor of all the folders except those specified.
@@ -197,18 +393,6 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
 
         // Return the cursor of all folders except those specified.  Each individual folder in the list has already been SQL escaped.  The cursor can't be closed because it is used in the parent activity.
         return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $IS_FOLDER = 1 AND $BOOKMARK_NAME NOT IN ($exceptFolders) ORDER BY $BOOKMARK_NAME ASC", null)
-    }
-
-    // Get a cursor with all the subfolders of the specified folder.
-    fun getSubfolders(currentFolder: String): Cursor {
-        // Get a readable database handle.
-        val bookmarksDatabase = this.readableDatabase
-
-        // SQL escape the current folder.
-        val sqlEscapedCurrentFolder = DatabaseUtils.sqlEscapeString(currentFolder)
-
-        // Return the cursor with the subfolders.  The cursor can't be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedCurrentFolder AND $IS_FOLDER = 1", null)
     }
 
     // Get the name of the parent folder.
@@ -258,174 +442,16 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         return parentFolder
     }
 
-    // Get a cursor of all the folders.
-    val allFolders: Cursor
-        get() {
-            // Get a readable database handle.
-            val bookmarksDatabase = this.readableDatabase
-
-            // Return the cursor with the all the folders.  The cursor cannot be closed because it is used in the parent activity.
-            return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $IS_FOLDER = 1 ORDER BY $BOOKMARK_NAME ASC", null)
-        }
-
-    // Get a cursor for all bookmarks and folders.
-    val allBookmarks: Cursor
-        get() {
-            // Get a readable database handle.
-            val bookmarksDatabase = this.readableDatabase
-
-            // Return a cursor with the entire contents of the bookmarks table.  The cursor cannot be closed because it is used in the parent activity.
-            return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE", null)
-        }
-
-    // Get a cursor for all bookmarks and folders ordered by display order.
-    val allBookmarksByDisplayOrder: Cursor
-        get() {
-            // Get a readable database handle.
-            val bookmarksDatabase = this.readableDatabase
-
-            // Return a cursor with the entire contents of the bookmarks table ordered by the display order.  The cursor cannot be closed because it is used in the parent activity.
-            return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE ORDER BY $DISPLAY_ORDER ASC", null)
-        }
-
-    // Get a cursor for all bookmarks and folders except those with the specified IDs.
-    fun getAllBookmarksExcept(exceptIdLongArray: LongArray): Cursor {
+    // Get a cursor with all the subfolders of the specified folder.
+    fun getSubfolders(currentFolder: String): Cursor {
         // Get a readable database handle.
         val bookmarksDatabase = this.readableDatabase
 
-        // Prepare a string builder to contain the comma-separated list of IDs not to get.
-        val idsNotToGetStringBuilder = StringBuilder()
+        // SQL escape the current folder.
+        val sqlEscapedCurrentFolder = DatabaseUtils.sqlEscapeString(currentFolder)
 
-        // Extract the array of IDs not to get to the string builder.
-        for (databaseIdLong in exceptIdLongArray) {
-            // Check to see if there is already a number in the builder.
-            if (idsNotToGetStringBuilder.isNotEmpty()) {
-                // This is not the first number, so place a `,` before the new number.
-                idsNotToGetStringBuilder.append(",")
-            }
-
-            // Add the new number to the builder.
-            idsNotToGetStringBuilder.append(databaseIdLong)
-        }
-
-        // Return a cursor with all the bookmarks except those specified.  The cursor cannot be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID NOT IN ($idsNotToGetStringBuilder)", null)
-    }
-
-    // Get a cursor for all bookmarks and folders by display order except those with the specified IDs.
-    fun getAllBookmarksByDisplayOrderExcept(exceptIdLongArray: LongArray): Cursor {
-        // Get a readable database handle.
-        val bookmarksDatabase = this.readableDatabase
-
-        // Prepare a string builder to contain the comma-separated list of IDs not to get.
-        val idsNotToGetStringBuilder = StringBuilder()
-
-        // Extract the array of IDs not to get to the string builder.
-        for (databaseIdLong in exceptIdLongArray) {
-            // Check to see if there is already a number in the builder.
-            if (idsNotToGetStringBuilder.isNotEmpty()) {
-                // This is not the first number, so place a `,` before the new number.
-                idsNotToGetStringBuilder.append(",")
-            }
-
-            // Add the new number to the builder.
-            idsNotToGetStringBuilder.append(databaseIdLong)
-        }
-
-        // Return a cursor with all the bookmarks except those specified ordered by display order.  The cursor cannot be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID NOT IN ($idsNotToGetStringBuilder) ORDER BY $DISPLAY_ORDER ASC", null)
-    }
-
-    // Get a cursor for bookmarks and folders in the specified folder.
-    fun getBookmarks(folderName: String): Cursor {
-        // Get a readable database handle.
-        val bookmarksDatabase = this.readableDatabase
-
-        // SQL escape the folder name.
-        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
-
-        // Return a cursor with all the bookmarks in a specified folder.  The cursor cannot be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName", null)
-    }
-
-    // Get a cursor for bookmarks and folders in the specified folder ordered by display order.
-    fun getBookmarksByDisplayOrder(folderName: String): Cursor {
-        // Get a readable database handle.
-        val bookmarksDatabase = this.readableDatabase
-
-        // SQL escape the folder name.
-        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
-
-        // Return a cursor with all the bookmarks in the specified folder ordered by display order.  The cursor cannot be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName ORDER BY $DISPLAY_ORDER ASC", null)
-    }
-
-    // Get a cursor with just database ID of bookmarks and folders in the specified folder.  This is useful for deleting folders with bookmarks that have favorite icons too large to fit in a cursor.
-    fun getBookmarkIds(folderName: String): Cursor {
-        // Get a readable database handle.
-        val bookmarksDatabase = this.readableDatabase
-
-        // SQL escape the folder name.
-        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
-
-        // Return a cursor with all the database IDs.  The cursor cannot be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT $ID FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName", null)
-    }
-
-    // Get a cursor for bookmarks and folders in the specified folder except those with the specified IDs.
-    fun getBookmarksExcept(exceptIdLongArray: LongArray, folderName: String): Cursor {
-        // Get a readable database handle.
-        val bookmarksDatabase = this.readableDatabase
-
-        // Prepare a string builder to contain the comma-separated list of IDs not to get.
-        val idsNotToGetStringBuilder = StringBuilder()
-
-        // Extract the array of IDs not to get to the string builder.
-        for (databaseIdLong in exceptIdLongArray) {
-            // Check to see if there is already a number in the builder.
-            if (idsNotToGetStringBuilder.isNotEmpty()) {
-                // This is not the first number, so place a `,` before the new number.
-                idsNotToGetStringBuilder.append(",")
-            }
-
-            // Add the new number to the builder.
-            idsNotToGetStringBuilder.append(databaseIdLong)
-        }
-
-        // SQL escape the folder name.
-        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
-
-        // Return a cursor with all the bookmarks in the specified folder except for those database IDs specified.  The cursor cannot be closed because it is used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName AND $ID NOT IN ($idsNotToGetStringBuilder)", null)
-    }
-
-    // Get a cursor for bookmarks and folders in the specified folder by display order except those with the specified IDs.
-    fun getBookmarksByDisplayOrderExcept(exceptIdLongArray: LongArray, folderName: String): Cursor {
-        // Get a readable database handle.
-        val bookmarksDatabase = this.readableDatabase
-
-        // Prepare a string builder to contain the comma-separated list of IDs not to get.
-        val idsNotToGetStringBuilder = StringBuilder()
-
-        // Extract the array of IDs not to get to the string builder.
-        for (databaseIdLong in exceptIdLongArray) {
-            // Check to see if there is already a number in the builder.
-            if (idsNotToGetStringBuilder.isNotEmpty()) {
-                // This is not the first number, so place a `,` before the new number.
-                idsNotToGetStringBuilder.append(",")
-            }
-
-            // Add the new number to the builder.
-            idsNotToGetStringBuilder.append(databaseIdLong)
-        }
-
-        // SQL escape the folder name.
-        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(folderName)
-
-        // Return a cursor with all the bookmarks in the specified folder except for those database IDs specified ordered by display order.
-        // The cursor cannot be closed because it will be used in the parent activity.
-        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedFolderName AND $ID NOT IN ($idsNotToGetStringBuilder) ORDER BY $DISPLAY_ORDER ASC",
-            null)
+        // Return the cursor with the subfolders.  The cursor can't be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedCurrentFolder AND $IS_FOLDER = 1", null)
     }
 
     // Check if a database ID is a folder.
@@ -448,6 +474,46 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
 
         // Return the folder status.
         return isFolder
+    }
+
+    // Move one bookmark or folder to a new folder.
+    fun moveToFolder(databaseId: Int, newFolder: String) {
+        // Get a writable database handle.
+        val bookmarksDatabase = this.writableDatabase
+
+        // SQL escape the new folder name.
+        val sqlEscapedNewFolder = DatabaseUtils.sqlEscapeString(newFolder)
+
+        // Get a cursor for all the bookmarks in the new folder ordered by display order.
+        val newFolderCursor = bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedNewFolder ORDER BY $DISPLAY_ORDER ASC", null)
+
+        // Set the new display order.
+        val displayOrder: Int = if (newFolderCursor.count > 0) {  // There are already bookmarks in the folder.
+            // Move to the last bookmark.
+            newFolderCursor.moveToLast()
+
+            // Set the display order to be one greater that the last bookmark.
+            newFolderCursor.getInt(newFolderCursor.getColumnIndexOrThrow(DISPLAY_ORDER)) + 1
+        } else {  // There are no bookmarks in the new folder.
+            // Set the display order to be `0`.
+            0
+        }
+
+        // Close the cursor.
+        newFolderCursor.close()
+
+        // Create a content values.
+        val bookmarkContentValues = ContentValues()
+
+        // Store the new values.
+        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder)
+        bookmarkContentValues.put(PARENT_FOLDER, newFolder)
+
+        // Update the database.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, "$ID = $databaseId", null)
+
+        // Close the database handle.
+        bookmarksDatabase.close()
     }
 
     // Update the bookmark name and URL.
@@ -526,6 +592,24 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         val bookmarksDatabase = this.writableDatabase
 
         // Update the bookmark.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, "$ID = $databaseId", null)
+
+        // Close the database handle.
+        bookmarksDatabase.close()
+    }
+
+    // Update the display order for one bookmark or folder.
+    fun updateDisplayOrder(databaseId: Int, displayOrder: Int) {
+        // Get a writable database handle.
+        val bookmarksDatabase = this.writableDatabase
+
+        // Create a content values.
+        val bookmarkContentValues = ContentValues()
+
+        // Store the new display order.
+        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder)
+
+        // Update the database.
         bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, "$ID = $databaseId", null)
 
         // Close the database handle.
@@ -671,76 +755,6 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
 
         // Run the update on all the bookmarks that currently list the old folder name as their parent folder.
         bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, "$PARENT_FOLDER = $sqlEscapedOldFolderName", null)
-
-        // Close the database handle.
-        bookmarksDatabase.close()
-    }
-
-    // Update the display order for one bookmark or folder.
-    fun updateDisplayOrder(databaseId: Int, displayOrder: Int) {
-        // Get a writable database handle.
-        val bookmarksDatabase = this.writableDatabase
-
-        // Create a content values.
-        val bookmarkContentValues = ContentValues()
-
-        // Store the new display order.
-        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder)
-
-        // Update the database.
-        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, "$ID = $databaseId", null)
-
-        // Close the database handle.
-        bookmarksDatabase.close()
-    }
-
-    // Move one bookmark or folder to a new folder.
-    fun moveToFolder(databaseId: Int, newFolder: String) {
-        // Get a writable database handle.
-        val bookmarksDatabase = this.writableDatabase
-
-        // SQL escape the new folder name.
-        val sqlEscapedNewFolder = DatabaseUtils.sqlEscapeString(newFolder)
-
-        // Get a cursor for all the bookmarks in the new folder ordered by display order.
-        val newFolderCursor = bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER = $sqlEscapedNewFolder ORDER BY $DISPLAY_ORDER ASC", null)
-
-        // Set the new display order.
-        val displayOrder: Int = if (newFolderCursor.count > 0) {  // There are already bookmarks in the folder.
-            // Move to the last bookmark.
-            newFolderCursor.moveToLast()
-
-            // Set the display order to be one greater that the last bookmark.
-            newFolderCursor.getInt(newFolderCursor.getColumnIndexOrThrow(DISPLAY_ORDER)) + 1
-        } else {  // There are no bookmarks in the new folder.
-            // Set the display order to be `0`.
-            0
-        }
-
-        // Close the cursor.
-        newFolderCursor.close()
-
-        // Create a content values.
-        val bookmarkContentValues = ContentValues()
-
-        // Store the new values.
-        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder)
-        bookmarkContentValues.put(PARENT_FOLDER, newFolder)
-
-        // Update the database.
-        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, "$ID = $databaseId", null)
-
-        // Close the database handle.
-        bookmarksDatabase.close()
-    }
-
-    // Delete one bookmark.
-    fun deleteBookmark(databaseId: Int) {
-        // Get a writable database handle.
-        val bookmarksDatabase = this.writableDatabase
-
-        // Deletes the row with the given database ID.
-        bookmarksDatabase.delete(BOOKMARKS_TABLE, "$ID = $databaseId", null)
 
         // Close the database handle.
         bookmarksDatabase.close()

@@ -3425,14 +3425,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Check to see if the bookmark is a folder.
             if (isFolder) {  // The bookmark is a folder.
-                // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
-                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                // Get a cursor of all the bookmarks in the folder.
+                Cursor bookmarksCursor = bookmarksDatabaseHelper.getFolderBookmarks(databaseId);
 
-                // Instantiate the edit folder bookmark dialog.
-                DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
+                // Move to the first entry in the cursor.
+                bookmarksCursor.moveToFirst();
 
-                // Show the edit folder bookmark dialog.
-                editBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.edit_folder));
+                // Open each bookmark
+                for (int i = 0; i < bookmarksCursor.getCount(); i++) {
+                    // Load the bookmark in a new tab, moving to the tab for the first bookmark (i == 0).
+                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), (i == 0));
+
+                    // Move to the next bookmark.
+                    bookmarksCursor.moveToNext();
+                }
+
+                // Close the cursor.
+                bookmarksCursor.close();
+
+                // Close the bookmarks drawer.
+                drawerLayout.closeDrawer(GravityCompat.END);
             } else {  // The bookmark is not a folder.
                 // Get the bookmark cursor for this ID.
                 Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseId);
@@ -3442,6 +3454,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Load the bookmark in a new tab.
                 addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), true);
+
+                // Close the cursor.
+                bookmarkCursor.close();
 
                 // Close the bookmarks drawer.
                 drawerLayout.closeDrawer(GravityCompat.END);
