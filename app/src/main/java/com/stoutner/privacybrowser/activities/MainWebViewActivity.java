@@ -137,7 +137,6 @@ import com.stoutner.privacybrowser.dataclasses.PendingDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
-import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.FontSizeDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.OpenDialog;
@@ -185,9 +184,8 @@ import java.util.concurrent.Executors;
 import kotlin.Pair;
 
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener,
-        PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveListener, UrlHistoryDialog.NavigateHistoryListener,
-        WebViewTabFragment.NewTabListener {
+        FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener, PinnedMismatchDialog.PinnedMismatchListener,
+        PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     // Define the public static variables.
     public static final ExecutorService executorService = Executors.newFixedThreadPool(4);
@@ -216,10 +214,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int BROWSE_OPEN_REQUEST_CODE = 1;
 
     // Define the saved instance state constants.
+    private final String BOOKMARKS_DRAWER_PINNED = "bookmarks_drawer_pinned";
+    private final String PROXY_MODE = "proxy_mode";
     private final String SAVED_STATE_ARRAY_LIST = "saved_state_array_list";
     private final String SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST = "saved_nested_scroll_webview_state_array_list";
     private final String SAVED_TAB_POSITION = "saved_tab_position";
-    private final String PROXY_MODE = "proxy_mode";
 
     // Define the saved instance state variables.
     private ArrayList<Bundle> savedStateArrayList;
@@ -260,9 +259,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `bookmarksCursorAdapter` is used in `onCreateBookmark()`, `onCreateBookmarkFolder()` `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private CursorAdapter bookmarksCursorAdapter;
 
-    // `oldFolderNameString` is used in `onCreate()` and `onSaveEditBookmarkFolder()`.
-    private String oldFolderNameString;
-
     // `fileChooserCallback` is used in `onCreate()` and `onActivityResult()`.
     private ValueCallback<Uri[]> fileChooserCallback;
 
@@ -278,6 +274,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private SanitizeUrlHelper sanitizeUrlHelper;
 
     // Declare the class variables
+    private boolean bookmarksDrawerPinned;
     private boolean bottomAppBar;
     private boolean displayAdditionalAppBarIcons;
     private boolean displayingFullScreenVideo;
@@ -301,19 +298,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private String saveUrlString = "";
 
     // Declare the class views.
-    private FrameLayout rootFrameLayout;
-    private DrawerLayout drawerLayout;
-    private CoordinatorLayout coordinatorLayout;
-    private Toolbar toolbar;
-    private RelativeLayout urlRelativeLayout;
-    private EditText urlEditText;
     private ActionBar actionBar;
+    private CoordinatorLayout coordinatorLayout;
+    private ImageView bookmarksDrawerPinnedImageView;
+    private DrawerLayout drawerLayout;
     private LinearLayout findOnPageLinearLayout;
+    private FrameLayout fullScreenVideoFrameLayout;
+    private FrameLayout rootFrameLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout tabsLinearLayout;
     private TabLayout tabLayout;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private Toolbar toolbar;
+    private EditText urlEditText;
+    private RelativeLayout urlRelativeLayout;
     private ViewPager webViewPager;
-    private FrameLayout fullScreenVideoFrameLayout;
 
     // Declare the class menus.
     private Menu optionsMenu;
@@ -488,6 +486,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Check to see if the activity has been restarted.
         if (savedInstanceState != null) {
             // Store the saved instance state variables.
+            bookmarksDrawerPinned = savedInstanceState.getBoolean(BOOKMARKS_DRAWER_PINNED);
             savedStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_STATE_ARRAY_LIST);
             savedNestedScrollWebViewStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST);
             savedTabPosition = savedInstanceState.getInt(SAVED_TAB_POSITION);
@@ -550,6 +549,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         webViewPager = findViewById(R.id.webviewpager);
         NavigationView navigationView = findViewById(R.id.navigationview);
+        bookmarksDrawerPinnedImageView = findViewById(R.id.bookmarks_drawer_pinned_imageview);
         fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
 
         // Get a handle for the navigation menu.
@@ -607,6 +607,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         domainsDatabaseHelper = new DomainsDatabaseHelper(this);
         proxyHelper = new ProxyHelper();
         sanitizeUrlHelper = new SanitizeUrlHelper();
+
+        // Update the bookmarks drawer pinned image view.
+        updateBookmarksDrawerPinnedImageView();
 
         // Initialize the app.
         initializeApp();
@@ -924,10 +927,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         int currentTabPosition = tabLayout.getSelectedTabPosition();
 
         // Store the saved states in the bundle.
+        savedInstanceState.putBoolean(BOOKMARKS_DRAWER_PINNED, bookmarksDrawerPinned);
+        savedInstanceState.putString(PROXY_MODE, proxyMode);
         savedInstanceState.putParcelableArrayList(SAVED_STATE_ARRAY_LIST, savedStateArrayList);
         savedInstanceState.putParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST, savedNestedScrollWebViewStateArrayList);
         savedInstanceState.putInt(SAVED_TAB_POSITION, currentTabPosition);
-        savedInstanceState.putString(PROXY_MODE, proxyMode);
     }
 
     @Override
@@ -2714,97 +2718,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         bookmarksListView.setSelection(0);
     }
 
-    @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, @NonNull Bitmap favoriteIconBitmap) {
-        // Remove the incorrect lint warning below that the dialog fragment might be null.
-        assert dialogFragment != null;
-
-        // Get the dialog.
-        Dialog dialog = dialogFragment.getDialog();
-
-        // Remove the incorrect lint warning below that the dialog might be null.
-        assert dialog != null;
-
-        // Get handles for the views from the dialog.
-        RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.default_icon_radiobutton);
-        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.default_icon_imageview);
-        EditText editFolderNameEditText = dialog.findViewById(R.id.folder_name_edittext);
-
-        // Get the new folder name.
-        String newFolderNameString = editFolderNameEditText.getText().toString();
-
-        // Check if the favorite icon has changed.
-        if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.
-            // Update the name in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
-        } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
-            // Create the new folder icon Bitmap.
-            Bitmap folderIconBitmap;
-
-            // Populate the new folder icon bitmap.
-            if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon drawable.
-                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
-
-                // Convert the folder icon drawable to a bitmap drawable.
-                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-
-                // Convert the folder icon bitmap drawable to a bitmap.
-                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
-                // Copy the favorite icon bitmap to the folder icon bitmap.
-                folderIconBitmap = favoriteIconBitmap;
-            }
-
-            // Create a folder icon byte array output stream.
-            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
-
-            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
-
-            // Convert the folder icon byte array stream to a byte array.
-            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
-
-            // Update the folder icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderIconByteArray);
-        } else {  // The folder icon and the name have changed.
-            // Get the new folder icon bitmap.
-            Bitmap folderIconBitmap;
-            if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon drawable.
-                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
-
-                // Convert the folder icon drawable to a bitmap drawable.
-                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-
-                // Convert the folder icon bitmap drawable to a bitmap.
-                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
-                // Copy the favorite icon bitmap to the folder icon bitmap.
-                folderIconBitmap = favoriteIconBitmap;
-            }
-
-            // Create a folder icon byte array output stream.
-            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
-
-            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
-
-            // Convert the folder icon byte array stream to a byte array.
-            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
-
-            // Update the folder name and icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, newFolderIconByteArray);
-        }
-
-        // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
-
-        // Update the list view.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
-    }
-
     // Process the results of a file browse.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
@@ -3408,14 +3321,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Load the bookmark URL.
                 loadUrl(currentWebView, bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)));
 
-                // Close the bookmarks drawer.
-                drawerLayout.closeDrawer(GravityCompat.END);
+                // Close the bookmarks drawer if it is not pinned.
+                if (!bookmarksDrawerPinned)
+                    drawerLayout.closeDrawer(GravityCompat.END);
             }
 
-            // Close the `Cursor`.
+            // Close the cursor.
             bookmarkCursor.close();
         });
 
+        // Handle long-presses on bookmarks.
         bookmarksListView.setOnItemLongClickListener((parent, view, position, id) -> {
             // Convert the database ID from `long` to `int`.
             int databaseId = (int) id;
@@ -3433,8 +3348,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Open each bookmark
                 for (int i = 0; i < bookmarksCursor.getCount(); i++) {
-                    // Load the bookmark in a new tab, moving to the tab for the first bookmark (i == 0).
-                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), (i == 0));
+                    // Load the bookmark in a new tab, moving to the tab for the first bookmark if the drawer is not pinned.
+                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), (!bookmarksDrawerPinned && (i == 0)));
 
                     // Move to the next bookmark.
                     bookmarksCursor.moveToNext();
@@ -3442,9 +3357,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Close the cursor.
                 bookmarksCursor.close();
-
-                // Close the bookmarks drawer.
-                drawerLayout.closeDrawer(GravityCompat.END);
             } else {  // The bookmark is not a folder.
                 // Get the bookmark cursor for this ID.
                 Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseId);
@@ -3452,15 +3364,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Move the bookmark cursor to the first row.
                 bookmarkCursor.moveToFirst();
 
-                // Load the bookmark in a new tab.
-                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), true);
+                // Load the bookmark in a new tab and move to the tab if the drawer is not pinned.
+                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), !bookmarksDrawerPinned);
 
                 // Close the cursor.
                 bookmarkCursor.close();
-
-                // Close the bookmarks drawer.
-                drawerLayout.closeDrawer(GravityCompat.END);
             }
+
+            // Close the bookmarks drawer if it is not pinned.
+            if (!bookmarksDrawerPinned)
+                drawerLayout.closeDrawer(GravityCompat.END);
 
             // Consume the event.
             return true;
@@ -4920,6 +4833,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Load the new folder.
             loadBookmarksFolder();
         }
+    }
+
+    public void toggleBookmarksDrawerPinned(View view) {
+        // Toggle the bookmarks drawer pinned tracker.
+        bookmarksDrawerPinned = !bookmarksDrawerPinned;
+
+        // Update the bookmarks drawer pinned image view.
+        updateBookmarksDrawerPinnedImageView();
+    }
+
+    private void updateBookmarksDrawerPinnedImageView() {
+        // Set the current icon.
+        if (bookmarksDrawerPinned)
+            bookmarksDrawerPinnedImageView.setImageResource(R.drawable.pin_selected);
+        else
+            bookmarksDrawerPinnedImageView.setImageResource(R.drawable.pin);
     }
 
     private void setCurrentWebView(int pageNumber) {

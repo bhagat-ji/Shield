@@ -1,0 +1,13 @@
+<!-- This file comes from the Android Material icon set, where it is called `push_pin_filled`.  It is released under the Apache License 2.0. -->
+
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="24"
+    android:viewportWidth="24" >
+
+    <path
+        android:fillColor="@color/icon"
+        android:pathData="m16,12 l2,2v2h-5v6l-1,1 -1,-1v-6H6v-2l2,-2V5H7V3h10v2h-1Z" />
+</vector>

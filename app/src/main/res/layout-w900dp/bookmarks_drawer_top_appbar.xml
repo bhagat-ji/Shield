@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017,2019-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017,2019-2020,2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -41,6 +41,7 @@
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables" >
 
+            <!-- Back arrow. -->
             <ImageView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
@@ -48,18 +49,30 @@
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:src="@drawable/back"
-                android:background="?attr/selectableItemBackground"
                 android:onClick="bookmarksBack"
                 android:contentDescription="@string/back" />
 
+            <!-- Bookmarks folder title. -->
             <TextView
                 android:id="@+id/bookmarks_title_textview"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:textColor="?android:attr/textColorPrimary"
                 android:layout_margin="10dp" />
+
+            <!-- Pin. -->
+            <ImageView
+                android:id="@+id/bookmarks_drawer_pinned_imageview"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:paddingEnd="20dp"
+                android:onClick="toggleBookmarksDrawerPinned"
+                android:contentDescription="@string/pin_drawer" />
         </LinearLayout>
 
         <ListView

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017,2019-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017,2019-2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -49,6 +49,7 @@
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables" >
 
+            <!-- Back arrow. -->
             <ImageView
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
@@ -56,18 +57,30 @@
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:src="@drawable/back"
-                android:background="?attr/selectableItemBackground"
                 android:onClick="bookmarksBack"
                 android:contentDescription="@string/back" />
 
+            <!-- Bookmarks folder title. -->
             <TextView
                 android:id="@+id/bookmarks_title_textview"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:textColor="?android:attr/textColorPrimary"
                 android:layout_margin="10dp" />
+
+            <!-- Pin. -->
+            <ImageView
+                android:id="@+id/bookmarks_drawer_pinned_imageview"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:paddingEnd="20dp"
+                android:onClick="toggleBookmarksDrawerPinned"
+                android:contentDescription="@string/pin_drawer" />
         </LinearLayout>
     </LinearLayout>
 
@@ -77,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="155dp"
+        android:layout_marginBottom="200dp"
         android:src="@drawable/bookmarks"
         android:tint="?attr/fabIconTintColor"
         android:contentDescription="@string/bookmarks" />
@@ -88,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="85dp"
+        android:layout_marginBottom="130dp"
         android:src="@drawable/create_folder"
         android:tint="?attr/fabIconTintColor"
         android:contentDescription="@string/create_folder" />
@@ -98,7 +111,8 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="60dp"
         android:src="@drawable/create_bookmark"
         android:tint="?attr/fabIconTintColor"
         android:contentDescription="@string/create_bookmark" />
