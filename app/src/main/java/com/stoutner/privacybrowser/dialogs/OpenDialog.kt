@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -22,7 +22,7 @@ package com.stoutner.privacybrowser.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -33,12 +33,12 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.activities.MainWebViewActivity
 
 // Define the class constants.
 private const val MHT_EXPLANATION_VISIBILITY = "mht_explanation_visibility"
@@ -48,6 +48,7 @@ class OpenDialog : DialogFragment() {
     private lateinit var openListener: OpenListener
 
     // Declare the class views.
+    private lateinit var fileNameEditText: EditText
     private lateinit var mhtExplanationTextView: TextView
 
     // The public interface is used to send information back to the parent activity.
@@ -61,6 +62,21 @@ class OpenDialog : DialogFragment() {
 
         // Get a handle for the open listener from the launching context.
         openListener = context as OpenListener
+    }
+
+    // Define the browse activity result launcher.
+    private val browseActivityResultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { fileUri: Uri? ->
+        // Only do something if the user didn't press back from the file picker.
+        if (fileUri != null) {
+            // Get the file name string from the URI.
+            val fileNameString = fileUri.toString()
+
+            // Set the file name text.
+            fileNameEditText.setText(fileNameString)
+
+            // Move the cursor to the end of the file name edit text.
+            fileNameEditText.setSelection(fileNameString.length)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -103,7 +119,7 @@ class OpenDialog : DialogFragment() {
         alertDialog.show()
 
         // Get handles for the layout items.
-        val fileNameEditText = alertDialog.findViewById<EditText>(R.id.file_name_edittext)!!
+        fileNameEditText = alertDialog.findViewById(R.id.file_name_edittext)!!
         val browseButton = alertDialog.findViewById<Button>(R.id.browse_button)!!
         val mhtCheckBox = alertDialog.findViewById<CheckBox>(R.id.mht_checkbox)!!
         mhtExplanationTextView = alertDialog.findViewById(R.id.mht_explanation_textview)!!
@@ -133,17 +149,8 @@ class OpenDialog : DialogFragment() {
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener {
-            // Create the file picker intent.
-            val browseIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-
-            // Only display files that can be opened.
-            browseIntent.addCategory(Intent.CATEGORY_OPENABLE)
-
-            // Set the intent MIME type to include all files so that everything is visible.
-            browseIntent.type = "*/*"
-
-            // Start the file picker.  This must be started under `activity` to that the request code is returned correctly.
-            requireActivity().startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_OPEN_REQUEST_CODE)
+            // Launch the file picker.
+            browseActivityResultLauncher.launch("*/*")
         }
 
         // Handle clicks on the MHT checkbox.

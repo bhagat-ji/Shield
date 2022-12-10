@@ -99,6 +99,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -208,10 +209,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_SYSTEM_DEFAULT_USER_AGENT = 0;
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
     public final static int DOMAINS_CUSTOM_USER_AGENT = 12;
-
-    // Define the start activity for result request codes.  The public static entry is accessed from `OpenDialog()`.
-    private final int BROWSE_FILE_UPLOAD_REQUEST_CODE = 0;
-    public final static int BROWSE_OPEN_REQUEST_CODE = 1;
 
     // Define the saved instance state constants.
     private final String BOOKMARKS_DRAWER_PINNED = "bookmarks_drawer_pinned";
@@ -470,6 +467,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Save the webpage image.
                         new SaveWebpageImage(resultLauncherActivityHandle, fileUri, currentWebView).execute();
                     }
+                }
+            });
+
+    // Define the save webpage image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    private final ActivityResultLauncher<Intent> browseFileUploadActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult activityResult) {
+                    // Pass the file to the WebView.
+                    fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(activityResult.getResultCode(), activityResult.getData()));
                 }
             });
 
@@ -2716,53 +2723,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Scroll to the new folder.
         bookmarksListView.setSelection(0);
-    }
-
-    // Process the results of a file browse.
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
-        // Run the default commands.
-        super.onActivityResult(requestCode, resultCode, returnedIntent);
-
-        // Run the commands that correlate to the specified request code.
-        switch (requestCode) {
-            case BROWSE_FILE_UPLOAD_REQUEST_CODE:
-                // Pass the file to the WebView.
-                fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, returnedIntent));
-                break;
-
-            case BROWSE_OPEN_REQUEST_CODE:
-                // Don't do anything if the user pressed back from the file picker.
-                if (resultCode == Activity.RESULT_OK) {
-                    // Get a handle for the open dialog fragment.
-                    DialogFragment openDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.open));
-
-                    // Only update the file name if the dialog still exists.
-                    if (openDialogFragment != null) {
-                        // Get a handle for the open dialog.
-                        Dialog openDialog = openDialogFragment.getDialog();
-
-                        // Remove the incorrect lint warning below that the dialog might be null.
-                        assert openDialog != null;
-
-                        // Get a handle for the file name edit text.
-                        EditText fileNameEditText = openDialog.findViewById(R.id.file_name_edittext);
-
-                        // Get the file name URI from the intent.
-                        Uri fileNameUri = returnedIntent.getData();
-
-                        // Get the file name string from the URI.
-                        String fileNameString = fileNameUri.toString();
-
-                        // Set the file name text.
-                        fileNameEditText.setText(fileNameString);
-
-                        // Move the cursor to the end of the file name edit text.
-                        fileNameEditText.setSelection(fileNameString.length());
-                    }
-                }
-                break;
-        }
     }
 
     private void loadUrlFromTextBox() {
@@ -5396,8 +5356,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check to see if the file chooser intent resolves to an installed package.
                 if (fileChooserIntent.resolveActivity(packageManager) != null) {  // The file chooser intent is fine.
-                    // Start the file chooser intent.
-                    startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    // Launch the file chooser intent.
+                    browseFileUploadActivityResultLauncher.launch(fileChooserIntent);
                 } else {  // The file chooser intent will cause a crash.
                     // Create a generic intent to open a chooser.
                     Intent genericFileChooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -5408,8 +5368,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Set the file type to everything.
                     genericFileChooserIntent.setType("*/*");
 
-                    // Start the generic file chooser intent.
-                    startActivityForResult(genericFileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    // Launch the generic file chooser intent.
+                    browseFileUploadActivityResultLauncher.launch(genericFileChooserIntent);
                 }
                 return true;
             }
