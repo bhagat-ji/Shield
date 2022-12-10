@@ -638,7 +638,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else if (displayingFullScreenVideo) {  // A full screen video is shown.
                     // Exit the full screen video.
                     exitFullScreenVideo();
-                } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
+                    // It shouldn't be possible for the currentWebView to be null, but crash logs indicate it sometimes happens.
+                } else if ((currentWebView != null) && (currentWebView.canGoBack())) {  // There is at least one item in the current WebView history.
                     // Get the current web back forward list.
                     WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
 
