@@ -15869,7 +15869,6 @@ $third-party,xmlhttprequest,domain=opensubtitles.org
 ||stapewithadblock.monster/stat/
 ||stapewithadblock.xyz/stat/
 ||starfiles.co/analytics.php
-||startpage.com/sp/$ping
 ||startpage.com/sp/elp
 ||startpage.com/sp/jst
 ||stat.livesportbar.net^
