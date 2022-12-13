@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2021-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -22,4 +22,4 @@ package com.stoutner.privacybrowser.dataclasses
 import androidx.fragment.app.DialogFragment
 
 // Define the pending dialogs data class.  The `@JvmField` notation can be remove once all the code has migrated to Kotlin.
-data class PendingDialog (@JvmField val dialogFragment: DialogFragment, @JvmField val tag: String)
+data class PendingDialogDataClass (@JvmField val dialogFragment: DialogFragment, @JvmField val tag: String)

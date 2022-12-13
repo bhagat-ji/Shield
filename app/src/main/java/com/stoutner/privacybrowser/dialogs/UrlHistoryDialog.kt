@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -39,7 +39,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
 import com.stoutner.privacybrowser.adapters.HistoryArrayAdapter
-import com.stoutner.privacybrowser.dataclasses.History
+import com.stoutner.privacybrowser.dataclasses.HistoryDataClass
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
 // Define the class constants.
@@ -115,7 +115,7 @@ class UrlHistoryDialog : DialogFragment() {
         val defaultFavoriteIcon = defaultFavoriteIconBitmapDrawable.bitmap
 
         // Create a history array list.
-        val historyArrayList = ArrayList<History>()
+        val historyDataClassArrayList = ArrayList<HistoryDataClass>()
 
         // Populate the history array list, descending from the end of the list so that the newest entries are at the top.  `-1` is needed because the history array list is zero-based.
         for (i in webBackForwardList.size - 1 downTo 0) {
@@ -128,10 +128,10 @@ class UrlHistoryDialog : DialogFragment() {
             }
 
             // Store the favorite icon and the URL in history entry.
-            val historyEntry = History(favoriteIconBitmap!!, webBackForwardList.getItemAtIndex(i).url)
+            val historyDataClassEntry = HistoryDataClass(favoriteIconBitmap!!, webBackForwardList.getItemAtIndex(i).url)
 
             // Add this history entry to the history array list.
-            historyArrayList.add(historyEntry)
+            historyDataClassArrayList.add(historyDataClassEntry)
         }
 
         // Subtract the original current page ID from the array size because the order of the array is reversed so that the newest entries are at the top.  `-1` is needed because the array is zero-based.
@@ -174,7 +174,7 @@ class UrlHistoryDialog : DialogFragment() {
         alertDialog.show()
 
         // Instantiate a history array adapter.
-        val historyArrayAdapter = HistoryArrayAdapter(requireContext(), historyArrayList, currentPageId)
+        val historyArrayAdapter = HistoryArrayAdapter(requireContext(), historyDataClassArrayList, currentPageId)
 
         // Get a handle for the list view.
         val listView = alertDialog.findViewById<ListView>(R.id.history_listview)!!

@@ -46,7 +46,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -129,12 +128,12 @@ import com.google.android.material.tabs.TabLayout;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
-import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
-import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
-import com.stoutner.privacybrowser.asynctasks.PrepareSaveDialog;
 import com.stoutner.privacybrowser.asynctasks.SaveUrl;
 import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
-import com.stoutner.privacybrowser.dataclasses.PendingDialog;
+import com.stoutner.privacybrowser.coroutines.GetHostIpAddressesCoroutine;
+import com.stoutner.privacybrowser.coroutines.PopulateBlocklistsCoroutine;
+import com.stoutner.privacybrowser.coroutines.PrepareSaveDialogCoroutine;
+import com.stoutner.privacybrowser.dataclasses.PendingDialogDataClass;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
@@ -186,12 +185,12 @@ import kotlin.Pair;
 
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener, PinnedMismatchDialog.PinnedMismatchListener,
-        PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
+        PopulateBlocklistsCoroutine.PopulateBlocklistsListener, SaveDialog.SaveListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     // Define the public static variables.
     public static final ExecutorService executorService = Executors.newFixedThreadPool(4);
     public static String orbotStatus = "unknown";
-    public static final ArrayList<PendingDialog> pendingDialogsArrayList =  new ArrayList<>();
+    public static final ArrayList<PendingDialogDataClass> pendingDialogsArrayList =  new ArrayList<>();
     public static String proxyMode = ProxyHelper.NONE;
 
     // Declare the public static variables.
@@ -222,10 +221,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ArrayList<Bundle> savedNestedScrollWebViewStateArrayList;
     private int savedTabPosition;
     private String savedProxyMode;
-
-    // Define the class variables.
-    @SuppressWarnings("rawtypes")
-    AsyncTask populateBlocklists;
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxy()`, and `applyDomainSettings()`.
@@ -664,8 +659,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Register the on back pressed callback.
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
 
+        // Instantiate the populate blocklists coroutine.
+        PopulateBlocklistsCoroutine populateBlocklistsCoroutine = new PopulateBlocklistsCoroutine(this);
+
         // Populate the blocklists.
-        populateBlocklists = new PopulateBlocklists(this, this).execute();
+        populateBlocklistsCoroutine.populateBlocklists(this);
     }
 
     @Override
@@ -858,10 +856,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Show any pending dialogs.
         for (int i = 0; i < pendingDialogsArrayList.size(); i++) {
             // Get the pending dialog from the array list.
-            PendingDialog pendingDialog = pendingDialogsArrayList.get(i);
+            PendingDialogDataClass pendingDialogDataClass = pendingDialogsArrayList.get(i);
 
             // Show the pending dialog.
-            pendingDialog.dialogFragment.show(getSupportFragmentManager(), pendingDialog.tag);
+            pendingDialogDataClass.dialogFragment.show(getSupportFragmentManager(), pendingDialogDataClass.tag);
         }
 
         // Clear the pending dialogs array list.
@@ -957,11 +955,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Close the bookmarks database if it exists.
         if (bookmarksDatabaseHelper != null) {
             bookmarksDatabaseHelper.close();
-        }
-
-        // Stop populating the blocklists if the AsyncTask is running in the background.
-        if (populateBlocklists != null) {
-            populateBlocklists.cancel(true);
         }
 
         // Run the default commands.
@@ -1856,8 +1849,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 downloadUrlWithExternalApp(currentWebView.getCurrentUrl());
             } else {  // Handle the download inside of Privacy Browser.
                 // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptCookies()).execute(currentWebView.getCurrentUrl());
+                PrepareSaveDialogCoroutine.prepareSaveDialog(this, getSupportFragmentManager(), currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptCookies());
             }
 
             // Consume the event.
@@ -2353,8 +2346,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(linkUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
-                                currentWebView.getAcceptCookies()).execute(linkUrl);
+                        PrepareSaveDialogCoroutine.prepareSaveDialog(this, getSupportFragmentManager(), linkUrl, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies());
                     }
 
                     // Consume the event.
@@ -2425,8 +2417,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(imageUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
-                                currentWebView.getAcceptCookies()).execute(imageUrl);
+                        PrepareSaveDialogCoroutine.prepareSaveDialog(this, getSupportFragmentManager(), imageUrl, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies());
                     }
 
                     // Consume the event.
@@ -2530,8 +2521,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(imageUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
-                                currentWebView.getAcceptCookies()).execute(imageUrl);
+                        PrepareSaveDialogCoroutine.prepareSaveDialog(this, getSupportFragmentManager(), imageUrl, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies());
                     }
 
                     // Consume the event.
@@ -2557,8 +2547,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadUrlWithExternalApp(linkUrl);
                     } else {  // Handle the download inside of Privacy Browser.
                         // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
-                        new PrepareSaveDialog(this, this, getSupportFragmentManager(), currentWebView.getSettings().getUserAgentString(),
-                                currentWebView.getAcceptCookies()).execute(linkUrl);
+                        PrepareSaveDialogCoroutine.prepareSaveDialog(this, getSupportFragmentManager(), linkUrl, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies());
                     }
 
                     // Consume the event.
@@ -4098,7 +4087,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 waitingForProxyDialogFragment.show(getSupportFragmentManager(), getString(R.string.waiting_for_proxy_dialog));
                             } catch (Exception waitingForTorException) {
                                 // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
-                                pendingDialogsArrayList.add(new PendingDialog(waitingForProxyDialogFragment, getString(R.string.waiting_for_proxy_dialog)));
+                                pendingDialogsArrayList.add(new PendingDialogDataClass(waitingForProxyDialogFragment, getString(R.string.waiting_for_proxy_dialog)));
                             }
                         }
                     }
@@ -4114,7 +4103,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             orbotNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
                         } catch (Exception orbotNotInstalledException) {
                             // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
-                            pendingDialogsArrayList.add(new PendingDialog(orbotNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
+                            pendingDialogsArrayList.add(new PendingDialogDataClass(orbotNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
                         }
                     }
                 }
@@ -4150,7 +4139,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 i2pNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
                             } catch (Exception i2pNotInstalledException) {
                                 // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
-                                pendingDialogsArrayList.add(new PendingDialog(i2pNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
+                                pendingDialogsArrayList.add(new PendingDialogDataClass(i2pNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)));
                             }
                         }
                     }
@@ -5151,7 +5140,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Get the file name from the content disposition.
-                String fileNameString = PrepareSaveDialog.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
+                String fileNameString = PrepareSaveDialogCoroutine.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
 
                 // Instantiate the save dialog.
                 DialogFragment saveDialogFragment = SaveDialog.saveUrl(downloadUrl, formattedFileSizeString, fileNameString, userAgent,
@@ -5163,7 +5152,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
                 } catch (Exception exception) {  // The dialog could not be shown.
                     // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
-                    pendingDialogsArrayList.add(new PendingDialog(saveDialogFragment, getString(R.string.save_dialog)));
+                    pendingDialogsArrayList.add(new PendingDialogDataClass(saveDialogFragment, getString(R.string.save_dialog)));
                 }
             }
         });
@@ -5872,8 +5861,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get a URI for the current URL.
                 Uri currentUri = Uri.parse(url);
 
-                // Get the IP addresses for the host.
-                new GetHostIpAddresses(activity, getSupportFragmentManager(), nestedScrollWebView).execute(currentUri.getHost());
+                // Get the current domain name.
+                String currentDomainName = currentUri.getHost();
+
+                if ((currentDomainName != null) && !currentDomainName.isEmpty()) {
+                    // Get the IP addresses for the current URI.
+                    GetHostIpAddressesCoroutine.getAddresses(currentDomainName, nestedScrollWebView, getSupportFragmentManager(), getString(R.string.pinned_mismatch));
+                }
 
                 // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)
                 if (optionsMenu != null) {
@@ -6060,7 +6054,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
                     } catch (Exception exception) {
                         // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
-                        pendingDialogsArrayList.add(new PendingDialog(sslCertificateErrorDialogFragment, getString(R.string.ssl_certificate_error)));
+                        pendingDialogsArrayList.add(new PendingDialogDataClass(sslCertificateErrorDialogFragment, getString(R.string.ssl_certificate_error)));
                     }
                 }
             }

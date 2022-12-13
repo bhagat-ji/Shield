@@ -210,7 +210,7 @@
     <string name="invalid_url">invalid URL</string>
     <string name="saving_file">Saving file:</string>
     <string name="saved">%1$s saved.</string>
-    <string name="processing_image">Processing image… :</string>
+    <string name="processing_image">Processing image: \u0020 %1$s</string>
     <string name="error_saving_file">Error saving %1$s: \u0020 %2$s</string>
     <string name="unknown_error">Unknown error</string>
 
@@ -358,7 +358,8 @@
         <string name="saved_ip_addresses">Saved IP addresses</string>
         <string name="current_ip_addresses">Current IP addresses</string>
 
-    <!-- Import/Export.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Import/Export.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+      The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="encryption">Encryption</string>
     <string-array name="encryption_type">
         <item>None</item>
@@ -375,8 +376,8 @@
     <string name="privacy_browser_settings_pbs">Privacy Browser Settings %1$s.pbs</string>
     <string name="privacy_browser_settings_pbs_aes">Privacy Browser Settings %1$s.pbs.aes</string>
     <string name="export_successful">Export successful.</string>
-    <string name="export_failed">Export failed:  %1$s</string>
-    <string name="import_failed">Import failed:  %1$s</string>
+    <string name="export_failed">Export failed: \u0020 %1$s</string>
+    <string name="import_failed">Import failed: \u0020 %1$s</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->

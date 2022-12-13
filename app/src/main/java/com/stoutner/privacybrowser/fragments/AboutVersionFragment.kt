@@ -53,7 +53,7 @@ import com.google.android.material.snackbar.Snackbar
 
 import com.stoutner.privacybrowser.BuildConfig
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.asynctasks.SaveAboutVersionImage
+import com.stoutner.privacybrowser.coroutines.SaveAboutVersionImageCoroutine
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -210,11 +210,9 @@ class AboutVersionFragment : Fragment() {
 
     // Define the save about version image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
     private val saveAboutVersionImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { fileUri: Uri? ->
-        // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
-        if (fileUri != null) {
-            // Save the about version image.
-            SaveAboutVersionImage(requireActivity(), fileUri, aboutVersionLayout.findViewById(R.id.about_version_linearlayout)).execute()
-        }
+        // Save the file if the URI is not null, which happens if the user exits the file picker by pressing back.
+        if (fileUri != null)
+            SaveAboutVersionImageCoroutine.saveImage(requireActivity(), fileUri, aboutVersionLayout.findViewById(R.id.about_version_linearlayout))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

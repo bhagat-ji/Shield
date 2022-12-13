@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017,2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2017,2021-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -22,4 +22,4 @@ package com.stoutner.privacybrowser.dataclasses
 import android.graphics.Bitmap
 
 // Define the history data class.  The `@JvmField` notation can be remove once all the code has migrated to Kotlin.
-data class History(@JvmField val favoriteIcon: Bitmap, @JvmField val url: String)
+data class HistoryDataClass(@JvmField val favoriteIcon: Bitmap, @JvmField val url: String)

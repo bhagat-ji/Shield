@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -22,7 +22,6 @@ package com.stoutner.privacybrowser.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -36,7 +35,14 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.asynctasks.GetUrlSize
+import com.stoutner.privacybrowser.helpers.GetUrlSizeHelper
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+import java.net.URL
 
 // Define the class constants.
 private const val URL_STRING = "url_string"
@@ -48,9 +54,6 @@ private const val COOKIES_ENABLED = "cookies_enabled"
 class SaveDialog : DialogFragment() {
     // Declare the class variables.
     private lateinit var saveListener: SaveListener
-
-    // Define the class variables.
-    private var getUrlSize: AsyncTask<*, *, *>? = null
 
     // The public interface is used to send information back to the parent activity.
     interface SaveListener {
@@ -170,22 +173,25 @@ class SaveDialog : DialogFragment() {
             }
 
             override fun afterTextChanged(editable: Editable) {
-                // Cancel the get URL size AsyncTask if it is running.
-                if (getUrlSize != null) {
-                    getUrlSize!!.cancel(true)
-                }
-
                 // Get the current URL to save.
                 val urlToSave = urlEditText.text.toString()
 
-                // Wipe the file size text view.
-                fileSizeTextView.text = ""
-
-                // Get the file size for the current URL.
-                getUrlSize = GetUrlSize(context, alertDialog, userAgentString, cookiesEnabled).execute(urlToSave)
-
                 // Enable the save button if the URL is populated.
                 saveButton.isEnabled = urlToSave.isNotEmpty()
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    // Create a URL size string.
+                    var urlSize: String
+
+                    // Get the URL size on the IO thread.
+                    withContext(Dispatchers.IO) {
+                        // Get the URL size.
+                        urlSize = GetUrlSizeHelper.getUrl(requireContext(), URL(urlToSave), userAgentString, cookiesEnabled)
+                    }
+
+                    // Display the updated URL.
+                    fileSizeTextView.text = urlSize
+                }
             }
         })
 

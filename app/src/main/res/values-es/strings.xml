@@ -202,7 +202,7 @@
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="invalid_url">URL inválida</string>
     <string name="saving_file">Guardando archivo:</string>
-    <string name="processing_image">Procesando imagen… :</string>
+    <string name="processing_image">Procesando imagen: \u0020 %1$s</string>
     <string name="error_saving_file">Error al guardar %1$s: \u0020 %2$s</string>
     <string name="unknown_error">Error desconocido</string>
 
@@ -351,7 +351,8 @@
         <string name="saved_ip_addresses">Direcciones IP guardadas</string>
         <string name="current_ip_addresses">Direcciones IP actuales</string>
 
-    <!-- Import/Export.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Import/Export.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+      The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="encryption">Cifrado</string>
     <string-array name="encryption_type">
         <item>Ninguno</item>
@@ -366,8 +367,8 @@
     <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Descifrar</string>
     <string name="export_successful">Exportación exitosa.</string>
-    <string name="export_failed">Exportación fallida:  %1$s</string>
-    <string name="import_failed">Importación fallida:  %1$s</string>
+    <string name="export_failed">Exportación fallida: \u0020 %1$s</string>
+    <string name="import_failed">Importación fallida: \u0020 %1$s</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->

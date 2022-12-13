@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -19,14 +19,11 @@
 
 package com.stoutner.privacybrowser.helpers
 
-import android.app.Activity
-
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 
-import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
-import com.stoutner.privacybrowser.dataclasses.PendingDialog
+import com.stoutner.privacybrowser.dataclasses.PendingDialogDataClass
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog.Companion.displayDialog
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
@@ -36,7 +33,7 @@ import java.util.Date
 
 object CheckPinnedMismatchHelper {
     @JvmStatic
-    fun checkPinnedMismatch(activity: Activity, fragmentManager: FragmentManager, nestedScrollWebView: NestedScrollWebView) {
+    fun checkPinnedMismatch(nestedScrollWebView: NestedScrollWebView, supportFragmentManager: FragmentManager, pinnedMismatchString: String) {
         // Initialize the current SSL certificate variables.
         var currentWebsiteIssuedToCName = ""
         var currentWebsiteIssuedToOName = ""
@@ -127,10 +124,10 @@ object CheckPinnedMismatchHelper {
             // Try to show the dialog.  Sometimes the window is not active.
             try {
                 // Show the pinned mismatch alert dialog.
-                pinnedMismatchDialogFragment.show(fragmentManager, activity.getString(R.string.pinned_mismatch))
+                pinnedMismatchDialogFragment.show(supportFragmentManager, pinnedMismatchString)
             } catch (exception: Exception) {
                 // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
-                MainWebViewActivity.pendingDialogsArrayList.add(PendingDialog(pinnedMismatchDialogFragment, activity.getString(R.string.pinned_mismatch)))
+                MainWebViewActivity.pendingDialogsArrayList.add(PendingDialogDataClass(pinnedMismatchDialogFragment, pinnedMismatchString))
             }
         }
     }

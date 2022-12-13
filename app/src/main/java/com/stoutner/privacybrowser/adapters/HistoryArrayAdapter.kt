@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -29,11 +29,11 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.dataclasses.History
+import com.stoutner.privacybrowser.dataclasses.HistoryDataClass
 
 import java.util.ArrayList
 
-class HistoryArrayAdapter(context: Context, historyArrayList: ArrayList<History>, private val currentPageId: Int) : ArrayAdapter<History>(context, 0, historyArrayList) {
+class HistoryArrayAdapter(context: Context, historyDataClassArrayList: ArrayList<HistoryDataClass>, private val currentPageId: Int) : ArrayAdapter<HistoryDataClass>(context, 0, historyDataClassArrayList) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         // Initialize a populated view from the convert view.
         var populatedView = convertView

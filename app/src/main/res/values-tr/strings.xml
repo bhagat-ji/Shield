@@ -312,7 +312,8 @@
         <string name="saved_ip_addresses">Kayıtlı IP adresleri</string>
         <string name="current_ip_addresses">Geçerli IP adresleri</string>
 
-    <!-- Import/Export.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Import/Export.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+      The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="encryption">Şifreleme</string>
     <string-array name="encryption_type">
         <item>Hiçbiri</item>
@@ -327,8 +328,8 @@
     <string name="import_button">İçeri aktar</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Şifre çöz (Decrypt)</string>
     <string name="export_successful">Dışa aktarım başarılı</string>
-    <string name="export_failed">Dışa aktarım başarısız:  %1$s</string>
-    <string name="import_failed">İçe aktarım başarısız:  %1$s</string>
+    <string name="export_failed">Dışa aktarım başarısız: \u0020 %1$s</string>
+    <string name="import_failed">İçe aktarım başarısız: \u0020 %1$s</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
