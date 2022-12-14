@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *

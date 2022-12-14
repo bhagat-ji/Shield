@@ -5232,7 +5232,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the favorite icon when it changes.
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
-                // Only update the favorite icon if the website has finished loading and the new favorite icon height is greater than the current favorite icon height.  This prevents low resolution icons from replacing high resolution one.
+                // Only update the favorite icon if the website has finished loading and the new favorite icon height is greater than the current favorite icon height.
+                // This prevents low resolution icons from replacing high resolution one.
+                // The check for the visibility of the progress bar can possibly be removed once https://redmine.stoutner.com/issues/747 is fixed.
                 if ((progressBar.getVisibility() == View.GONE) && (icon.getHeight() > nestedScrollWebView.getFavoriteIconHeight())) {
                     // Store the new favorite icon.
                     nestedScrollWebView.setFavoriteIcon(icon);
