@@ -102,7 +102,7 @@ class PinnedMismatchDialog : DialogFragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Get the favorite icon.
-        val favoriteIconBitmap = nestedScrollWebView.getFavoriteOrDefaultIcon()
+        val favoriteIconBitmap = nestedScrollWebView.getFavoriteIcon()
 
         // Get the default favorite icon drawable.  `ContextCompat` must be used until API >= 21.
         val defaultFavoriteIconDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.world)

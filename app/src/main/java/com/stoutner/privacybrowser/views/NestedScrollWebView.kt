@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2022 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -31,7 +31,7 @@ import android.webkit.HttpAuthHandler
 import android.webkit.SslErrorHandler
 import android.webkit.WebView
 
-import androidx.core.content.ContextCompat
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.view.NestedScrollingChild2
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
@@ -117,7 +117,8 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
 
     // Define the private variables.
     private val nestedScrollingChildHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
-    private lateinit var favoriteOrDefaultIcon: Bitmap
+    private lateinit var favoriteIcon: Bitmap
+    private var favoriteIconHeight = 0
     private var previousYPosition = 0  // The previous Y position needs to be tracked between motion events.
     private var hasPinnedSslCertificate = false
     private var pinnedSslIssuedToCName = ""
@@ -149,19 +150,25 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
 
     // Favorite or default icon.
     fun initializeFavoriteIcon() {
-        // Get the default favorite icon drawable.  `ContextCompat` must be used until API >= 21.
-        val favoriteIconDrawable = ContextCompat.getDrawable(context, R.drawable.world)
+        // Get the default favorite icon drawable.
+        val favoriteIconDrawable = getDrawable(context, R.drawable.world)
 
         // Cast the favorite icon drawable to a bitmap drawable.
         val favoriteIconBitmapDrawable = (favoriteIconDrawable as BitmapDrawable?)!!
 
         // Store the default icon bitmap.
-        favoriteOrDefaultIcon = favoriteIconBitmapDrawable.bitmap
+        favoriteIcon = favoriteIconBitmapDrawable.bitmap
+
+        // Set the favorite icon height to be 0.  This way any favorite icons presented by the website will overwrite it.
+        favoriteIconHeight = 0
     }
 
-    fun setFavoriteOrDefaultIcon(icon: Bitmap) {
+    fun setFavoriteIcon(icon: Bitmap) {
+        // Store the current favorite icon height.
+        favoriteIconHeight = icon.height
+
         // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        favoriteOrDefaultIcon = if (icon.height > 256 || icon.width > 256) {
+        favoriteIcon = if (icon.height > 256 || icon.width > 256) {
             Bitmap.createScaledBitmap(icon, 256, 256, true)
         } else {
             // Store the icon as presented.
@@ -169,11 +176,15 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         }
     }
 
-    fun getFavoriteOrDefaultIcon(): Bitmap {
-        // Return the favorite or default icon.  This is the only way to return a non-nullable variable while retaining the custom initialization and setter functions above.
-        return favoriteOrDefaultIcon
+    fun getFavoriteIcon(): Bitmap {
+        // Return the favorite icon.  This is the only way to return a non-nullable variable while retaining the custom initialization and setter functions above.
+        return favoriteIcon
     }
 
+    fun getFavoriteIconHeight(): Int {
+        // Return the favorite icon height.
+        return favoriteIconHeight
+    }
 
     // Reset the handlers.
     fun resetSslErrorHandler() {

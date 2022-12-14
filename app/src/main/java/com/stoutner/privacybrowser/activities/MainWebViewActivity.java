@@ -1870,7 +1870,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else if (menuItemId == R.id.add_to_homescreen) {  // Add to homescreen.
             // Instantiate the create home screen shortcut dialog.
             DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), currentWebView.getUrl(),
-                    currentWebView.getFavoriteOrDefaultIcon());
+                    currentWebView.getFavoriteIcon());
 
             // Show the create home screen shortcut dialog.
             createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
@@ -3124,7 +3124,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 // Instantiate the View SSL Certificate dialog.
-                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId(), currentWebView.getFavoriteOrDefaultIcon());
+                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId(), currentWebView.getFavoriteIcon());
 
                 // Display the View SSL Certificate dialog.
                 viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
@@ -3140,7 +3140,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
         launchBookmarksActivityFab.setOnClickListener(v -> {
             // Get a copy of the favorite icon bitmap.
-            Bitmap favoriteIconBitmap = currentWebView.getFavoriteOrDefaultIcon();
+            Bitmap favoriteIconBitmap = currentWebView.getFavoriteIcon();
 
             // Create a favorite icon byte array output stream.
             ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
@@ -3167,7 +3167,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the create new bookmark folder FAB to display an alert dialog.
         createBookmarkFolderFab.setOnClickListener(v -> {
             // Create a create bookmark folder dialog.
-            DialogFragment createBookmarkFolderDialog = CreateBookmarkFolderDialog.createBookmarkFolder(currentWebView.getFavoriteOrDefaultIcon());
+            DialogFragment createBookmarkFolderDialog = CreateBookmarkFolderDialog.createBookmarkFolder(currentWebView.getFavoriteIcon());
 
             // Show the create bookmark folder dialog.
             createBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.create_folder));
@@ -3176,7 +3176,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
             // Instantiate the create bookmark dialog.
-            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), currentWebView.getFavoriteOrDefaultIcon());
+            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), currentWebView.getFavoriteIcon());
 
             // Display the create bookmark dialog.
             createBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.create_bookmark));
@@ -3599,7 +3599,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     TextView tabTitleTextView = tabCustomView.findViewById(R.id.title_textview);
 
                     // Set the default favorite icon as the favorite icon for this tab.
-                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteOrDefaultIcon(), 64, 64, true));
+                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteIcon(), 64, 64, true));
 
                     // Set the loading title text.
                     tabTitleTextView.setText(R.string.loading);
@@ -5232,10 +5232,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the favorite icon when it changes.
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
-                // Only update the favorite icon if the website has finished loading.
-                if (progressBar.getVisibility() == View.GONE) {
+                // Only update the favorite icon if the website has finished loading and the new favorite icon height is greater than the current favorite icon height.  This prevents low resolution icons from replacing high resolution one.
+                if ((progressBar.getVisibility() == View.GONE) && (icon.getHeight() > nestedScrollWebView.getFavoriteIconHeight())) {
                     // Store the new favorite icon.
-                    nestedScrollWebView.setFavoriteOrDefaultIcon(icon);
+                    nestedScrollWebView.setFavoriteIcon(icon);
 
                     // Get the current page position.
                     int currentPosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
