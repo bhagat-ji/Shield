@@ -1,13 +1,16 @@
-<!-- This file comes from the Android Material icon set, where it is called `bug_report`.  It is released under the Apache License 2.0. -->
+<!-- This file comes from the Android Material icon set, where it is called `list_alt_rounded_24`.  It is released under the Apache License 2.0. -->
 
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:height="24dp"
     android:width="24dp"
     android:viewportHeight="24"
-    android:viewportWidth="24" >
+    android:viewportWidth="24"
+    android:autoMirrored="true" >
 
     <path
         android:fillColor="@color/red_icon"
-        android:pathData="M20,8h-2.81c-0.45,-0.78 -1.07,-1.45 -1.82,-1.96L17,4.41 15.59,3l-2.17,2.17C12.96,5.06 12.49,5 12,5c-0.49,0 -0.96,0.06 -1.41,0.17L8.41,3 7,4.41l1.62,1.63C7.88,6.55 7.26,7.22 6.81,8L4,8v2h2.09c-0.05,0.33 -0.09,0.66 -0.09,1v1L4,12v2h2v1c0,0.34 0.04,0.67 0.09,1L4,16v2h2.81c1.04,1.79 2.97,3 5.19,3s4.15,-1.21 5.19,-3L20,18v-2h-2.09c0.05,-0.33 0.09,-0.66 0.09,-1v-1h2v-2h-2v-1c0,-0.34 -0.04,-0.67 -0.09,-1L20,10L20,8zM14,16h-4v-2h4v2zM14,12h-4v-2h4v2z"/>
+        android:pathData="M5,21q-0.825,0 -1.413,-0.587Q3,19.825 3,19L3,5q0,-0.825 0.587,-1.413Q4.175,3 5,3h14q0.825,0 1.413,0.587Q21,4.175 21,5v14q0,0.825 -0.587,1.413Q19.825,21 19,21ZM5,19h14L19,5L5,5v14ZM8,17q0.425,0 0.713,-0.288Q9,16.425 9,16t-0.287,-0.713Q8.425,15 8,15t-0.713,0.287Q7,15.575 7,16t0.287,0.712Q7.575,17 8,17ZM8,13q0.425,0 0.713,-0.288Q9,12.425 9,12t-0.287,-0.713Q8.425,11 8,11t-0.713,0.287Q7,11.575 7,12t0.287,0.712Q7.575,13 8,13ZM8,9q0.425,0 0.713,-0.288Q9,8.425 9,8t-0.287,-0.713Q8.425,7 8,7t-0.713,0.287Q7,7.575 7,8t0.287,0.712Q7.575,9 8,9ZM12,17h4q0.425,0 0.712,-0.288Q17,16.425 17,16t-0.288,-0.713Q16.425,15 16,15h-4q-0.425,0 -0.712,0.287Q11,15.575 11,16t0.288,0.712Q11.575,17 12,17ZM12,13h4q0.425,0 0.712,-0.288Q17,12.425 17,12t-0.288,-0.713Q16.425,11 16,11h-4q-0.425,0 -0.712,0.287Q11,11.575 11,12t0.288,0.712Q11.575,13 12,13ZM12,9h4q0.425,0 0.712,-0.288Q17,8.425 17,8t-0.288,-0.713Q16.425,7 16,7h-4q-0.425,0 -0.712,0.287Q11,7.575 11,8t0.288,0.712Q11.575,9 12,9ZM5,19L5,5v14Z"
+        tools:ignore="VectorPath" />
 </vector>
