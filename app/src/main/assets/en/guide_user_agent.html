@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2020,2022 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -45,11 +45,9 @@
 
         <p>There is enough information in the user agent that sometimes only a few visitors to a website will be the same.
             If the user agent is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
-            The Electronic Frontier Foundation created a tool called <a href="https://panopticlick.eff.org/">Panopticlick</a> to demonstrate how much information can be gleaned from these sources.
+            The Electronic Frontier Foundation created a tool called <a href="https://coveryourtracks.eff.org/">Cover Your Tracks</a> to demonstrate how much information can be gleaned from these sources.
             If this test is run with JavaScript enabled the amount of information that is disclosed increases greatly.
             <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information on this topic.</p>
-
-        <img class="center" src="../shared_images/panopticlick.png">
 
         <p>There are several preset user agents that match common browsers and operating systems. For browser fingerprinting purposes, anything that is rare is easier to track.
             If Privacy Browser becomes common and many people use <code>PrivacyBrowser/1.0</code> as their user agent, it will be a good choice for privacy.
@@ -58,6 +56,6 @@
 
         <p>Some websites <a href="https://www.stoutner.com/user-agent-problems/">do not function correctly</a> if they do not recognize the user agent.
             Using domain settings to set the user agent to <strong>WebView Default</strong>, or another user agent that is commonly recognized, usually resolves the problem.
-            Android’s WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
+            Android’s WebView does not allow the user agent to be blank. If it is, WebView sends the default user agent to the server instead.</p>
     </body>
 </html>

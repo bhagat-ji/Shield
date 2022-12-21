@@ -112,12 +112,13 @@ object CheckPinnedMismatchHelper {
         }
 
         // Check to see if the pinned information matches the current information.
-        if (((nestedScrollWebView.pinnedIpAddresses != "") && (nestedScrollWebView.currentIpAddresses != nestedScrollWebView.pinnedIpAddresses)) ||
-            (nestedScrollWebView.hasPinnedSslCertificate() && ((currentWebsiteIssuedToCName != pinnedSslIssuedToCName) ||
-                    (currentWebsiteIssuedToOName != pinnedSslIssuedToOName) || (currentWebsiteIssuedToUName != pinnedSslIssuedToUName) ||
-                    (currentWebsiteIssuedByCName != pinnedSslIssuedByCName) || (currentWebsiteIssuedByOName != pinnedSslIssuedByOName) ||
-                    (currentWebsiteIssuedByUName != pinnedSslIssuedByUName) || (currentWebsiteSslStartDateString != pinnedSslStartDateString) ||
-                    (currentWebsiteSslEndDateString != pinnedSslEndDateString)))) {
+        if (((nestedScrollWebView.pinnedIpAddresses.isNotEmpty()) && (nestedScrollWebView.currentIpAddresses != nestedScrollWebView.pinnedIpAddresses)) ||
+             (nestedScrollWebView.hasPinnedSslCertificate() && ((currentWebsiteIssuedToCName != pinnedSslIssuedToCName) ||
+             (currentWebsiteIssuedToOName != pinnedSslIssuedToOName) || (currentWebsiteIssuedToUName != pinnedSslIssuedToUName) ||
+             (currentWebsiteIssuedByCName != pinnedSslIssuedByCName) || (currentWebsiteIssuedByOName != pinnedSslIssuedByOName) ||
+             (currentWebsiteIssuedByUName != pinnedSslIssuedByUName) || (currentWebsiteSslStartDateString != pinnedSslStartDateString) ||
+             (currentWebsiteSslEndDateString != pinnedSslEndDateString)))) {
+
             // Get a handle for the pinned mismatch alert dialog.
             val pinnedMismatchDialogFragment: DialogFragment = displayDialog(nestedScrollWebView.webViewFragmentId)
 

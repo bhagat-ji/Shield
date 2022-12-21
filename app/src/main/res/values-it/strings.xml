@@ -42,6 +42,7 @@
     <string name="form_data_deleted">Dati dei Moduli eliminati</string>
     <string name="open_navigation_drawer">Apri il menu di navigazione</string>
     <string name="close_navigation_drawer">Chiudi il menu di navigazione</string>
+    <string name="pin_drawer">Fissa il cassetto</string>
     <string name="unrecognized_url">URL non riconosciuta:</string>
     <string name="add_tab">Aggiungi Scheda</string>
     <string name="close_tab">Chiudi Scheda</string>

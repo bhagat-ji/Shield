@@ -60,15 +60,17 @@ object GetHostIpAddressesCoroutine {
 
                     // Store the IP addresses.
                     nestedScrollWebView.currentIpAddresses = ipAddresses.toString()
+
+                    // Checked for pinned mismatches if there is pinned information and it is not ignored.  This must be done on the UI thread because checking the pinned mismatch interacts with the WebView.
+                    withContext(Dispatchers.Main) {
+                        if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.pinnedIpAddresses.isNotEmpty()) && !nestedScrollWebView.ignorePinnedDomainInformation) {
+                            CheckPinnedMismatchHelper.checkPinnedMismatch(nestedScrollWebView, supportFragmentManager, pinnedMismatchString)
+                        }
+                    }
                 } catch (exception: UnknownHostException) {
                     // Do nothing.
                 }
             }
-        }
-
-        // Checked for pinned mismatches if there is pinned information and it is not ignored.
-        if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.pinnedIpAddresses != "") && !nestedScrollWebView.ignorePinnedDomainInformation) {
-            CheckPinnedMismatchHelper.checkPinnedMismatch(nestedScrollWebView, supportFragmentManager, pinnedMismatchString)
         }
     }
 }
