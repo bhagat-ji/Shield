@@ -153,6 +153,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 import com.stoutner.privacybrowser.helpers.SanitizeUrlHelper;
+import com.stoutner.privacybrowser.helpers.UrlHelper;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayInputStream;
@@ -263,7 +264,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
     private DomainsDatabaseHelper domainsDatabaseHelper;
     private ProxyHelper proxyHelper;
-    private SanitizeUrlHelper sanitizeUrlHelper;
 
     // Declare the class variables
     private boolean bookmarksDrawerPinned;
@@ -608,7 +608,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
         domainsDatabaseHelper = new DomainsDatabaseHelper(this);
         proxyHelper = new ProxyHelper();
-        sanitizeUrlHelper = new SanitizeUrlHelper();
 
         // Update the bookmarks drawer pinned image view.
         updateBookmarksDrawerPinnedImageView();
@@ -4371,11 +4370,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private String sanitizeUrl(String url) {
         // Sanitize tracking queries.
         if (sanitizeTrackingQueries)
-            url = sanitizeUrlHelper.sanitizeTrackingQueries(url);
+            url = SanitizeUrlHelper.sanitizeTrackingQueries(url);
 
         // Sanitize AMP redirects.
         if (sanitizeAmpRedirects)
-            url = sanitizeUrlHelper.sanitizeAmpRedirects(url);
+            url = SanitizeUrlHelper.sanitizeAmpRedirects(url);
 
         // Return the sanitized URL.
         return url;
@@ -5140,10 +5139,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Get the file name from the content disposition.
-                String fileNameString = PrepareSaveDialogCoroutine.getFileNameFromHeaders(this, contentDisposition, mimetype, downloadUrl);
+                String fileNameString = UrlHelper.getFileName(this, contentDisposition, mimetype, downloadUrl);
 
                 // Instantiate the save dialog.
-                DialogFragment saveDialogFragment = SaveDialog.saveUrl(downloadUrl, formattedFileSizeString, fileNameString, userAgent,
+                DialogFragment saveDialogFragment = SaveDialog.saveUrl(downloadUrl, fileNameString, formattedFileSizeString, userAgent,
                         nestedScrollWebView.getAcceptCookies());
 
                 // Try to show the dialog.  The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.

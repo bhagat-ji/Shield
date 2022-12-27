@@ -35,14 +35,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.GetUrlSizeHelper
+import com.stoutner.privacybrowser.helpers.UrlHelper
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-import java.net.URL
 
 // Define the class constants.
 private const val URL_STRING = "url_string"
@@ -71,14 +69,14 @@ class SaveDialog : DialogFragment() {
     companion object {
         // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
         @JvmStatic
-        fun saveUrl(urlString: String, fileSizeString: String, fileNameString: String, userAgentString: String, cookiesEnabled: Boolean): SaveDialog {
+        fun saveUrl(urlString: String, fileNameString: String, fileSizeString: String, userAgentString: String, cookiesEnabled: Boolean): SaveDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
 
             // Store the arguments in the bundle.
             argumentsBundle.putString(URL_STRING, urlString)
-            argumentsBundle.putString(FILE_SIZE_STRING, fileSizeString)
             argumentsBundle.putString(FILE_NAME_STRING, fileNameString)
+            argumentsBundle.putString(FILE_SIZE_STRING, fileSizeString)
             argumentsBundle.putString(USER_AGENT_STRING, userAgentString)
             argumentsBundle.putBoolean(COOKIES_ENABLED, cookiesEnabled)
 
@@ -96,8 +94,8 @@ class SaveDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments from the bundle.
         val originalUrlString = requireArguments().getString(URL_STRING)!!
+        var fileNameString = requireArguments().getString(FILE_NAME_STRING)!!
         val fileSizeString = requireArguments().getString(FILE_SIZE_STRING)!!
-        val fileNameString = requireArguments().getString(FILE_NAME_STRING)!!
         val userAgentString = requireArguments().getString(USER_AGENT_STRING)!!
         val cookiesEnabled = requireArguments().getBoolean(COOKIES_ENABLED)
 
@@ -181,16 +179,19 @@ class SaveDialog : DialogFragment() {
 
                 CoroutineScope(Dispatchers.Main).launch {
                     // Create a URL size string.
-                    var urlSize: String
+                    var fileNameAndSize: Pair<String, String>
 
                     // Get the URL size on the IO thread.
                     withContext(Dispatchers.IO) {
-                        // Get the URL size.
-                        urlSize = GetUrlSizeHelper.getUrl(requireContext(), URL(urlToSave), userAgentString, cookiesEnabled)
+                        // Get the updated file name and size.
+                        fileNameAndSize = UrlHelper.getNameAndSize(requireContext(), urlToSave, userAgentString, cookiesEnabled)
+
+                        // Save the updated file name.
+                        fileNameString = fileNameAndSize.first
                     }
 
                     // Display the updated URL.
-                    fileSizeTextView.text = urlSize
+                    fileSizeTextView.text = fileNameAndSize.second
                 }
             }
         })
