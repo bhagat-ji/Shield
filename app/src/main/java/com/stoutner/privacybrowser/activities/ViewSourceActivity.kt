@@ -22,7 +22,6 @@ package com.stoutner.privacybrowser.activities
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.KeyEvent
@@ -52,6 +51,7 @@ import com.stoutner.privacybrowser.dialogs.AboutViewSourceDialog
 import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog
 import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog.UntrustedSslCertificateListener
 import com.stoutner.privacybrowser.helpers.ProxyHelper
+import com.stoutner.privacybrowser.helpers.UrlHelper
 import com.stoutner.privacybrowser.viewmodelfactories.WebViewSourceFactory
 import com.stoutner.privacybrowser.viewmodels.WebViewSource
 
@@ -144,7 +144,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         redColorSpan = ForegroundColorSpan(getColor(R.color.red_text))
 
         // Apply text highlighting to the URL.
-        highlightUrlText()
+        UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
 
         // Get a handle for the input method manager, which is used to hide the keyboard.
         val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -164,7 +164,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
                 urlEditText.setSelection(0)
 
                 // Reapply the highlighting.
-                highlightUrlText()
+                UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
             }
         }
 
@@ -375,64 +375,6 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
     override fun loadAnyway() {
         // Load the URL anyway.
         webViewSource.updateSource(urlEditText.text.toString(), true)
-    }
-
-    private fun highlightUrlText() {
-        // Get a handle for the URL edit text.
-        val urlEditText = findViewById<EditText>(R.id.url_edittext)
-
-        // Get the URL string.
-        val urlString = urlEditText.text.toString()
-
-        // Highlight the URL according to the protocol.
-        if (urlString.startsWith("file://")) {  // This is a file URL.
-            // De-emphasize only the protocol.
-            urlEditText.text.setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        } else if (urlString.startsWith("content://")) {
-            // De-emphasize only the protocol.
-            urlEditText.text.setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        } else {  // This is a web URL.
-            // Get the index of the `/` immediately after the domain name.
-            val endOfDomainName = urlString.indexOf("/", urlString.indexOf("//") + 2)
-
-            // Get the base URL.
-            val baseUrl = if (endOfDomainName > 0) {  // There is at least one character after the base URL.
-                // Get the base URL.
-                urlString.substring(0, endOfDomainName)
-            } else {  // There are no characters after the base URL.
-                // Set the base URL to be the entire URL string.
-                urlString
-            }
-
-            // Get the index of the last `.` in the domain.
-            val lastDotIndex = baseUrl.lastIndexOf(".")
-
-            // Get the index of the penultimate `.` in the domain.
-            val penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1)
-
-            // Markup the beginning of the URL.
-            if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-                urlEditText.text.setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-                // De-emphasize subdomains.
-                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                }
-            } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
-                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                    // De-emphasize the protocol and the additional subdomains.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                } else {  // There is only one subdomain in the domain name.
-                    // De-emphasize only the protocol.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                }
-            }
-
-            // De-emphasize the text after the domain name.
-            if (endOfDomainName > 0) {
-                urlEditText.text.setSpan(finalGrayColorSpan, endOfDomainName, urlString.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            }
-        }
     }
 
     private fun updateLayout(urlString: String) {

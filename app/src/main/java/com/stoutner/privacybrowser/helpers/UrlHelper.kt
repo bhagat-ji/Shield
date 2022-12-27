@@ -21,12 +21,14 @@ package com.stoutner.privacybrowser.helpers
 
 import android.content.Context
 import android.net.Uri
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.webkit.CookieManager
 import android.webkit.MimeTypeMap
+import android.widget.EditText
 
 import com.stoutner.privacybrowser.R
 
-import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.NumberFormat
@@ -257,5 +259,52 @@ object UrlHelper {
 
         // Return the formatted file size.
         return formattedFileSize
+    }
+
+    @JvmStatic
+    fun highlightSyntax(urlEditText: EditText, initialGrayColorSpan: ForegroundColorSpan, finalGrayColorSpan: ForegroundColorSpan, redColorSpan: ForegroundColorSpan) {
+        // Get the URL string.
+        val urlString: String = urlEditText.text.toString()
+
+        // Highlight the URL according to the protocol.
+        if (urlString.startsWith("file://") || urlString.startsWith("content://")) {  // This is a file or content URL.
+            // De-emphasize everything before the file name.
+            urlEditText.text.setSpan(initialGrayColorSpan, 0, urlString.lastIndexOf("/") + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        } else {  // This is a web URL.
+            // Get the index of the `/` immediately after the domain name.
+            val endOfDomainName = urlString.indexOf("/", urlString.indexOf("//") + 2)
+
+            // Get the base URL.
+            val baseUrl: String = if (endOfDomainName > 0)  // There is at least one character after the base URL.
+                urlString.substring(0, endOfDomainName)
+            else  // There are no characters after the base URL.
+                urlString
+
+            // Get the index of the last `.` in the domain.
+            val lastDotIndex = baseUrl.lastIndexOf(".")
+
+            // Get the index of the penultimate `.` in the domain.
+            val penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1)
+
+            // Markup the beginning of the URL.
+            if (urlString.startsWith("http://")) {  // The protocol is not encrypted.
+                // Highlight the protocol in red.
+                urlEditText.text.setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+                // De-emphasize subdomains.
+                if (penultimateDotIndex > 0) // There is more than one subdomain in the domain name.
+                    urlEditText.text.setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            } else if (urlString.startsWith("https://")) {  // The protocol is encrypted.
+                // De-emphasize the protocol of connections that are encrypted.
+                if (penultimateDotIndex > 0)  // There is more than one subdomain in the domain name.  De-emphasize the protocol and the additional subdomains.
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                else  // There is only one subdomain in the domain name.  De-emphasize only the protocol.
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            }
+
+            // De-emphasize the text after the domain name.
+            if (endOfDomainName > 0)
+                urlEditText.text.setSpan(finalGrayColorSpan, endOfDomainName, urlString.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        }
     }
 }

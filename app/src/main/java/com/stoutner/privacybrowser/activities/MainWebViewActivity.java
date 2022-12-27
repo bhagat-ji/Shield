@@ -56,7 +56,6 @@ import android.print.PrintManager;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.text.Editable;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Patterns;
@@ -241,11 +240,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
-    // The color spans are used in `onCreate()` and `highlightUrlText()`.
-    private ForegroundColorSpan redColorSpan;
-    private ForegroundColorSpan initialGrayColorSpan;
-    private ForegroundColorSpan finalGrayColorSpan;
-
     // `bookmarksCursor` is used in `onDestroy()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private Cursor bookmarksCursor;
 
@@ -271,14 +265,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean displayAdditionalAppBarIcons;
     private boolean displayingFullScreenVideo;
     private boolean downloadWithExternalApp;
+    private ForegroundColorSpan finalGrayColorSpan;
     private boolean fullScreenBrowsingModeEnabled;
     private boolean hideAppBar;
-    private boolean incognitoModeEnabled;
     private boolean inFullScreenBrowsingMode;
+    private boolean incognitoModeEnabled;
+    private ForegroundColorSpan initialGrayColorSpan;
     private boolean loadingNewIntent;
     private BroadcastReceiver orbotStatusBroadcastReceiver;
     private boolean reapplyAppSettingsOnRestart;
     private boolean reapplyDomainSettingsOnRestart;
+    private ForegroundColorSpan redColorSpan;
     private boolean sanitizeAmpRedirects;
     private boolean sanitizeTrackingQueries;
     private boolean scrollAppBar;
@@ -2971,7 +2968,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the formatting from the URL edit text when the user is editing the text.
         urlEditText.setOnFocusChangeListener((View v, boolean hasFocus) -> {
             if (hasFocus) {  // The user is editing the URL text box.
-                // Remove the highlighting.
+                // Remove the syntax highlighting.
                 urlEditText.getText().removeSpan(redColorSpan);
                 urlEditText.getText().removeSpan(initialGrayColorSpan);
                 urlEditText.getText().removeSpan(finalGrayColorSpan);
@@ -2979,8 +2976,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Move to the beginning of the string.
                 urlEditText.setSelection(0);
 
-                // Reapply the highlighting.
-                highlightUrlText();
+                // Reapply the syntax highlighting.
+                UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan);
             }
         });
 
@@ -4212,64 +4209,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    private void highlightUrlText() {
-        // Only highlight the URL text if the box is not currently selected.
-        if (!urlEditText.hasFocus()) {
-            // Get the URL string.
-            String urlString = urlEditText.getText().toString();
-
-            // Highlight the URL according to the protocol.
-            if (urlString.startsWith("file://") || urlString.startsWith("content://")) {  // This is a file or content URL.
-                // De-emphasize everything before the file name.
-                urlEditText.getText().setSpan(initialGrayColorSpan, 0, urlString.lastIndexOf("/") + 1,Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else {  // This is a web URL.
-                // Get the index of the `/` immediately after the domain name.
-                int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
-
-                // Create a base URL string.
-                String baseUrl;
-
-                // Get the base URL.
-                if (endOfDomainName > 0) {  // There is at least one character after the base URL.
-                    // Get the base URL.
-                    baseUrl = urlString.substring(0, endOfDomainName);
-                } else {  // There are no characters after the base URL.
-                    // Set the base URL to be the entire URL string.
-                    baseUrl = urlString;
-                }
-
-                // Get the index of the last `.` in the domain.
-                int lastDotIndex = baseUrl.lastIndexOf(".");
-
-                // Get the index of the penultimate `.` in the domain.
-                int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
-
-                // Markup the beginning of the URL.
-                if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-                    urlEditText.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-                    // De-emphasize subdomains.
-                    if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                        urlEditText.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    }
-                } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
-                    if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                        // De-emphasize the protocol and the additional subdomains.
-                        urlEditText.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    } else {  // There is only one subdomain in the domain name.
-                        // De-emphasize only the protocol.
-                        urlEditText.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    }
-                }
-
-                // De-emphasize the text after the domain name.
-                if (endOfDomainName > 0) {
-                    urlEditText.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                }
-            }
-        }
-    }
-
     private void loadBookmarksFolder() {
         // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
         bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
@@ -4863,8 +4802,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Display the current URL in the URL text box.
                     urlEditText.setText(url);
 
-                    // Highlight the URL text.
-                    highlightUrlText();
+                    // Highlight the URL syntax.
+                    UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan);
                 }
             } else {  // A new intent is being loaded.
                 // Reset the loading new intent tracker.
@@ -5849,8 +5788,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Display the formatted URL text.
                     urlEditText.setText(url);
 
-                    // Apply text highlighting to the URL text box.
-                    highlightUrlText();
+                    // Highlight the URL syntax.
+                    UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan);
 
                     // Hide the keyboard.
                     inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.getWindowToken(), 0);
@@ -5985,8 +5924,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
                             urlEditText.setText(sanitizedUrl);
 
-                            // Apply text highlighting to the URL.
-                            highlightUrlText();
+                            // Highlight the URL syntax.
+                            UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan);
                         }
 
                         // Only populate the title text view if the tab has been fully created.
