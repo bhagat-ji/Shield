@@ -1,0 +1,11 @@
+• Fehler behoben, der manchmal zum Absturz führte, wenn WebView versuchte, eine Scroll-Position zu errechnen, wenn keine existierte.
+• Fehler behoben, der manchmal zum Absturz führte, wenn WebView versuchte, den Verlauf zu prüfen, wenn keiner existierte.
+• Bereinigen und Schließen wird nun auch ausgeführt, wenn der letzte Tab durch den System-Zurück-Button geschlossen wird.
+• Langes Drücken eines Lesezeichen-Ordners öffnet nun alle Lesezeichen des betreffenden Ordners.
+• Möglichkeit hinzugefügt, das Lesezeichen-Menü anzupinnen.
+• Favoriten-Symbol wird nun immer in der höchstmöglichen Auflösung angezeigt.
+• Dokumentation für Android-Berechtigung DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION hinzugefügt.
+• Fehler behoben, durch den EasyPrivacy unbeabsichtigt alle Inhalte von startpage.com blockte.
+• Fehler behoben, durch den Fanboy’s Annoyance List unbeabsichtigt alle Inhalte von shopify.om blockte.
+• Einige kleine Verbesserungen eingebaut.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

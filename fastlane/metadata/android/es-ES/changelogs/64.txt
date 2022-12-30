@@ -1,0 +1,11 @@
+• Corregir un fallo causado por WebView que a veces intenta calcular la posición de desplazamiento cuando no existe.
+• Corregir un error causado por WebView que a veces intenta comprobar el historial cuando no existe.
+• Ejecutar Borrar y Salir cuando el botón de retroceso del sistema cierre la última pestaña.
+• Hacer que al pulsar prolongadamente una carpeta de marcadores se abran todos los marcadores que contiene.
+• Añadir la capacidad de anclar el cajón de marcadores.
+• Mostrar siempre el icono favorito de mayor resolución.
+• Añadir documentación para DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION.
+• Corregir EasyPrivacy para que no bloquee involuntariamente todo startpage.com.
+• Corregir la Lista Fanboy’s Annoyance para que no bloquee involuntariamente todos los recursos en shopify.com.
+• Incluir varias menores mejoras.
+• Actualizada la traducción al español proporcionada por Jose A. León.

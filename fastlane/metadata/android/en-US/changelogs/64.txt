@@ -1,0 +1,10 @@
+• Fix a crash caused by the WebView sometimes trying to calculate the scroll position when it doesn’t exist.
+• Fix a crash caused by the WebView sometimes trying to check the history when it doesn’t exist.
+• Run Clear and Exit when the system back button closes the last tab.
+• Make long-pressing a bookmark folder open all the bookmarks it contains.
+• Add the ability to pin the bookmarks drawer.
+• Always display the highest resolution favorite icon.
+• Add documentation for DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION.
+• Fix EasyPrivacy so it doesn’t unintentionally block all of startpage.com.
+• Fix Fanboy’s Annoyance List so it doesn’t unintentionally block all resources on shopify.com.
+• Include several minor improvements.
