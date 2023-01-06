@@ -482,16 +482,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Populate the result launcher activity.  This will no longer be needed once the activity has transitioned to Kotlin.
         resultLauncherActivityHandle = this;
 
-        // Check to see if the activity has been restarted.
-        if (savedInstanceState != null) {
-            // Store the saved instance state variables.
-            bookmarksDrawerPinned = savedInstanceState.getBoolean(BOOKMARKS_DRAWER_PINNED);
-            savedStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_STATE_ARRAY_LIST);
-            savedNestedScrollWebViewStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST);
-            savedTabPosition = savedInstanceState.getInt(SAVED_TAB_POSITION);
-            savedProxyMode = savedInstanceState.getString(PROXY_MODE);
-        }
-
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -506,6 +496,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get the theme entry values string array.
         String[] appThemeEntryValuesStringArray = getResources().getStringArray(R.array.app_theme_entry_values);
+
+        // Get the current theme status.
+        int currentThemeStatus = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
         // Set the app theme according to the preference.  A switch statement cannot be used because the theme entry values string array is not a compile time constant.
         if (appTheme.equals(appThemeEntryValuesStringArray[1])) {  // The light theme is selected.
@@ -524,142 +517,161 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         }
 
-        // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        }
+        // Do not continue if the app theme is different than the OS theme.  The app always initially starts in the OS theme.
+        // If the user has specified the opposite theme should be used, the app will restart in that mode after the above `setDefaultNightMode()` code processes.  However, the restart is delayed.
+        // If the blacklist coroutine starts below it will continue to run during the restart, which leads to indeterminate behavior, with the system often not knowing how many tabs exist.
+        // See https://redmine.stoutner.com/issues/952.
+        if (appTheme.equals(appThemeEntryValuesStringArray[0]) ||  // The system default theme is used.
+                (appTheme.equals(appThemeEntryValuesStringArray[1]) && currentThemeStatus == Configuration.UI_MODE_NIGHT_NO) ||  // The app is running in day theme as desired.
+                (appTheme.equals(appThemeEntryValuesStringArray[2]) && currentThemeStatus == Configuration.UI_MODE_NIGHT_YES)) {  // The app is running in night theme as desired.
 
-        // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
-        WebView.enableSlowWholeDocumentDraw();
-
-        // Set the content view according to the position of the app bar.
-        if (bottomAppBar) setContentView(R.layout.main_framelayout_bottom_appbar);
-        else setContentView(R.layout.main_framelayout_top_appbar);
-
-        // Get handles for the views.
-        rootFrameLayout = findViewById(R.id.root_framelayout);
-        drawerLayout = findViewById(R.id.drawerlayout);
-        coordinatorLayout = findViewById(R.id.coordinatorlayout);
-        appBarLayout = findViewById(R.id.appbar_layout);
-        toolbar = findViewById(R.id.toolbar);
-        findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
-        tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
-        tabLayout = findViewById(R.id.tablayout);
-        swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-        webViewPager = findViewById(R.id.webviewpager);
-        NavigationView navigationView = findViewById(R.id.navigationview);
-        bookmarksDrawerPinnedImageView = findViewById(R.id.bookmarks_drawer_pinned_imageview);
-        fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
-
-        // Get a handle for the navigation menu.
-        Menu navigationMenu = navigationView.getMenu();
-
-        // Get handles for the navigation menu items.
-        navigationBackMenuItem = navigationMenu.findItem(R.id.back);
-        navigationForwardMenuItem = navigationMenu.findItem(R.id.forward);
-        navigationHistoryMenuItem = navigationMenu.findItem(R.id.history);
-        navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
-
-        // Listen for touches on the navigation menu.
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Get a handle for the app compat delegate.
-        AppCompatDelegate appCompatDelegate = getDelegate();
-
-        // Set the support action bar.
-        appCompatDelegate.setSupportActionBar(toolbar);
-
-        // Get a handle for the action bar.
-        actionBar = appCompatDelegate.getSupportActionBar();
-
-        // Remove the incorrect lint warning below that the action bar might be null.
-        assert actionBar != null;
-
-        // Add the custom layout, which shows the URL text bar.
-        actionBar.setCustomView(R.layout.url_app_bar);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-
-        // Get handles for the views in the URL app bar.
-        urlRelativeLayout = findViewById(R.id.url_relativelayout);
-        urlEditText = findViewById(R.id.url_edittext);
-
-        // Create the hamburger icon at the start of the AppBar.
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
-
-        // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        // Initially hide the user interface so that only the blocklist loading screen is shown (if reloading).
-        drawerLayout.setVisibility(View.GONE);
-
-        // Initialize the web view pager adapter.
-        webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
-
-        // Set the pager adapter on the web view pager.
-        webViewPager.setAdapter(webViewPagerAdapter);
-
-        // Store up to 100 tabs in memory.
-        webViewPager.setOffscreenPageLimit(100);
-
-        // Instantiate the helpers.
-        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
-        domainsDatabaseHelper = new DomainsDatabaseHelper(this);
-        proxyHelper = new ProxyHelper();
-
-        // Update the bookmarks drawer pinned image view.
-        updateBookmarksDrawerPinnedImageView();
-
-        // Initialize the app.
-        initializeApp();
-
-        // Apply the app settings from the shared preferences.
-        applyAppSettings();
-
-        // Control what the system back command does.
-        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                // Process the different back options.
-                if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
-                    // Close the navigation drawer.
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else if (drawerLayout.isDrawerVisible(GravityCompat.END)){  // The bookmarks drawer is open.
-                    // close the bookmarks drawer.
-                    drawerLayout.closeDrawer(GravityCompat.END);
-                } else if (displayingFullScreenVideo) {  // A full screen video is shown.
-                    // Exit the full screen video.
-                    exitFullScreenVideo();
-                    // It shouldn't be possible for the currentWebView to be null, but crash logs indicate it sometimes happens.
-                } else if ((currentWebView != null) && (currentWebView.canGoBack())) {  // There is at least one item in the current WebView history.
-                    // Get the current web back forward list.
-                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
-
-                    // Get the previous entry URL.
-                    String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
-
-                    // Apply the domain settings.
-                    applyDomainSettings(currentWebView, previousUrl, false, false, false);
-
-                    // Go back.
-                    currentWebView.goBack();
-                } else if (tabLayout.getTabCount() > 1) {  // There are at least two tabs.
-                    // Close the current tab.
-                    closeCurrentTab();
-                } else {  // There isn't anything to do in Privacy Browser.
-                    // Run clear and exit.
-                    clearAndExit();
-                }
+            // Disable screenshots if not allowed.
+            if (!allowScreenshots) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
             }
-        };
 
-        // Register the on back pressed callback.
-        getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+            // Check to see if the activity has been restarted.
+            if (savedInstanceState != null) {
+                // Store the saved instance state variables.
+                bookmarksDrawerPinned = savedInstanceState.getBoolean(BOOKMARKS_DRAWER_PINNED);
+                savedStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_STATE_ARRAY_LIST);
+                savedNestedScrollWebViewStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST);
+                savedTabPosition = savedInstanceState.getInt(SAVED_TAB_POSITION);
+                savedProxyMode = savedInstanceState.getString(PROXY_MODE);
+            }
 
-        // Instantiate the populate blocklists coroutine.
-        PopulateBlocklistsCoroutine populateBlocklistsCoroutine = new PopulateBlocklistsCoroutine(this);
+            // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
+            WebView.enableSlowWholeDocumentDraw();
 
-        // Populate the blocklists.
-        populateBlocklistsCoroutine.populateBlocklists(this);
+            // Set the content view according to the position of the app bar.
+            if (bottomAppBar) setContentView(R.layout.main_framelayout_bottom_appbar);
+            else setContentView(R.layout.main_framelayout_top_appbar);
+
+            // Get handles for the views.
+            rootFrameLayout = findViewById(R.id.root_framelayout);
+            drawerLayout = findViewById(R.id.drawerlayout);
+            coordinatorLayout = findViewById(R.id.coordinatorlayout);
+            appBarLayout = findViewById(R.id.appbar_layout);
+            toolbar = findViewById(R.id.toolbar);
+            findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+            tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
+            tabLayout = findViewById(R.id.tablayout);
+            swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+            webViewPager = findViewById(R.id.webviewpager);
+            NavigationView navigationView = findViewById(R.id.navigationview);
+            bookmarksDrawerPinnedImageView = findViewById(R.id.bookmarks_drawer_pinned_imageview);
+            fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
+
+            // Get a handle for the navigation menu.
+            Menu navigationMenu = navigationView.getMenu();
+
+            // Get handles for the navigation menu items.
+            navigationBackMenuItem = navigationMenu.findItem(R.id.back);
+            navigationForwardMenuItem = navigationMenu.findItem(R.id.forward);
+            navigationHistoryMenuItem = navigationMenu.findItem(R.id.history);
+            navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests);
+
+            // Listen for touches on the navigation menu.
+            navigationView.setNavigationItemSelectedListener(this);
+
+            // Get a handle for the app compat delegate.
+            AppCompatDelegate appCompatDelegate = getDelegate();
+
+            // Set the support action bar.
+            appCompatDelegate.setSupportActionBar(toolbar);
+
+            // Get a handle for the action bar.
+            actionBar = appCompatDelegate.getSupportActionBar();
+
+            // Remove the incorrect lint warning below that the action bar might be null.
+            assert actionBar != null;
+
+            // Add the custom layout, which shows the URL text bar.
+            actionBar.setCustomView(R.layout.url_app_bar);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+            // Get handles for the views in the URL app bar.
+            urlRelativeLayout = findViewById(R.id.url_relativelayout);
+            urlEditText = findViewById(R.id.url_edittext);
+
+            // Create the hamburger icon at the start of the AppBar.
+            actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
+
+            // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+            // Initially hide the user interface so that only the blocklist loading screen is shown (if reloading).
+            drawerLayout.setVisibility(View.GONE);
+
+            // Initialize the web view pager adapter.
+            webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
+
+            // Set the pager adapter on the web view pager.
+            webViewPager.setAdapter(webViewPagerAdapter);
+
+            // Store up to 100 tabs in memory.
+            webViewPager.setOffscreenPageLimit(100);
+
+            // Instantiate the helpers.
+            bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this);
+            domainsDatabaseHelper = new DomainsDatabaseHelper(this);
+            proxyHelper = new ProxyHelper();
+
+            // Update the bookmarks drawer pinned image view.
+            updateBookmarksDrawerPinnedImageView();
+
+            // Initialize the app.
+            initializeApp();
+
+            // Apply the app settings from the shared preferences.
+            applyAppSettings();
+
+            // Control what the system back command does.
+            OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    // Process the different back options.
+                    if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
+                        // Close the navigation drawer.
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                    } else if (drawerLayout.isDrawerVisible(GravityCompat.END)) {  // The bookmarks drawer is open.
+                        // close the bookmarks drawer.
+                        drawerLayout.closeDrawer(GravityCompat.END);
+                    } else if (displayingFullScreenVideo) {  // A full screen video is shown.
+                        // Exit the full screen video.
+                        exitFullScreenVideo();
+                        // It shouldn't be possible for the currentWebView to be null, but crash logs indicate it sometimes happens.
+                    } else if ((currentWebView != null) && (currentWebView.canGoBack())) {  // There is at least one item in the current WebView history.
+                        // Get the current web back forward list.
+                        WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+                        // Get the previous entry URL.
+                        String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
+                        // Apply the domain settings.
+                        applyDomainSettings(currentWebView, previousUrl, false, false, false);
+
+                        // Go back.
+                        currentWebView.goBack();
+                    } else if (tabLayout.getTabCount() > 1) {  // There are at least two tabs.
+                        // Close the current tab.
+                        closeCurrentTab();
+                    } else {  // There isn't anything to do in Privacy Browser.
+                        // Run clear and exit.
+                        clearAndExit();
+                    }
+                }
+            };
+
+            // Register the on back pressed callback.
+            getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+
+            // Instantiate the populate blocklists coroutine.
+            PopulateBlocklistsCoroutine populateBlocklistsCoroutine = new PopulateBlocklistsCoroutine(this);
+
+            // Populate the blocklists.
+            populateBlocklistsCoroutine.populateBlocklists(this);
+        }
     }
 
     @Override
@@ -809,21 +821,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onStart();
 
-        // Resume any WebViews.
-        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-            // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+        // Resume any WebViews if the pager adapter exists.  If the app is restarting to change the initial app theme it won't have been populated yet.
+        if (webViewPagerAdapter != null) {
+            for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-            // Get the fragment view.
-            View fragmentView = webViewTabFragment.getView();
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
 
-            // Only resume the WebViews if they exist (they won't when the app is first created).
-            if (fragmentView != null) {
-                // Get the nested scroll WebView from the tab fragment.
-                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+                // Only resume the WebViews if they exist (they won't when the app is first created).
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
-                // Resume the nested scroll WebView.
-                nestedScrollWebView.onResume();
+                    // Resume the nested scroll WebView.
+                    nestedScrollWebView.onResume();
+                }
             }
         }
 
@@ -868,20 +882,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onStop();
 
-        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-            // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+        // Only pause the WebViews if the pager adapter is not null, which is the case if the app is restarting to change the initial app theme.
+        if (webViewPagerAdapter != null) {
+            // Pause each web view.
+            for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-            // Get the fragment view.
-            View fragmentView = webViewTabFragment.getView();
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
 
-            // Only pause the WebViews if they exist (they won't when the app is first created).
-            if (fragmentView != null) {
-                // Get the nested scroll WebView from the tab fragment.
-                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+                // Only pause the WebViews if they exist (they won't when the app is first created).
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
-                // Pause the nested scroll WebView.
-                nestedScrollWebView.onPause();
+                    // Pause the nested scroll WebView.
+                    nestedScrollWebView.onPause();
+                }
             }
         }
 
@@ -896,44 +914,47 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState);
 
-        // Create the saved state array lists.
-        ArrayList<Bundle> savedStateArrayList = new ArrayList<>();
-        ArrayList<Bundle> savedNestedScrollWebViewStateArrayList = new ArrayList<>();
+        // Only save the instance state if the WebView pager adapter is not null, which will be the case if the app is restarting to change the initial app theme.
+        if (webViewPagerAdapter != null) {
+            // Create the saved state array lists.
+            ArrayList<Bundle> savedStateArrayList = new ArrayList<>();
+            ArrayList<Bundle> savedNestedScrollWebViewStateArrayList = new ArrayList<>();
 
-        // Get the URLs from each tab.
-        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-            // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+            // Get the URLs from each tab.
+            for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-            // Get the fragment view.
-            View fragmentView = webViewTabFragment.getView();
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
 
-            if (fragmentView != null) {
-                // Get the nested scroll WebView from the tab fragment.
-                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
-                // Create saved state bundle.
-                Bundle savedStateBundle = new Bundle();
+                    // Create saved state bundle.
+                    Bundle savedStateBundle = new Bundle();
 
-                // Get the current states.
-                nestedScrollWebView.saveState(savedStateBundle);
-                Bundle savedNestedScrollWebViewStateBundle = nestedScrollWebView.saveNestedScrollWebViewState();
+                    // Get the current states.
+                    nestedScrollWebView.saveState(savedStateBundle);
+                    Bundle savedNestedScrollWebViewStateBundle = nestedScrollWebView.saveNestedScrollWebViewState();
 
-                // Store the saved states in the array lists.
-                savedStateArrayList.add(savedStateBundle);
-                savedNestedScrollWebViewStateArrayList.add(savedNestedScrollWebViewStateBundle);
+                    // Store the saved states in the array lists.
+                    savedStateArrayList.add(savedStateBundle);
+                    savedNestedScrollWebViewStateArrayList.add(savedNestedScrollWebViewStateBundle);
+                }
             }
+
+            // Get the current tab position.
+            int currentTabPosition = tabLayout.getSelectedTabPosition();
+
+            // Store the saved states in the bundle.
+            savedInstanceState.putBoolean(BOOKMARKS_DRAWER_PINNED, bookmarksDrawerPinned);
+            savedInstanceState.putString(PROXY_MODE, proxyMode);
+            savedInstanceState.putParcelableArrayList(SAVED_STATE_ARRAY_LIST, savedStateArrayList);
+            savedInstanceState.putParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST, savedNestedScrollWebViewStateArrayList);
+            savedInstanceState.putInt(SAVED_TAB_POSITION, currentTabPosition);
         }
-
-        // Get the current tab position.
-        int currentTabPosition = tabLayout.getSelectedTabPosition();
-
-        // Store the saved states in the bundle.
-        savedInstanceState.putBoolean(BOOKMARKS_DRAWER_PINNED, bookmarksDrawerPinned);
-        savedInstanceState.putString(PROXY_MODE, proxyMode);
-        savedInstanceState.putParcelableArrayList(SAVED_STATE_ARRAY_LIST, savedStateArrayList);
-        savedInstanceState.putParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST, savedNestedScrollWebViewStateArrayList);
-        savedInstanceState.putInt(SAVED_TAB_POSITION, currentTabPosition);
     }
 
     @Override
@@ -2261,7 +2282,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         super.onPostCreate(savedInstanceState);
 
         // Sync the state of the DrawerToggle after the default `onRestoreInstanceState()` has finished.  This creates the navigation drawer icon.
-        actionBarDrawerToggle.syncState();
+        // If the app is restarting to change the app theme the action bar drawer toggle will not yet be populated.
+        if (actionBarDrawerToggle != null)
+            actionBarDrawerToggle.syncState();
     }
 
     @Override

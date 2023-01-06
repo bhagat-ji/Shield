@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019-2022 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2023 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -46,6 +46,7 @@
     <string name="form_data_deleted">Formulardaten gelöscht</string>
     <string name="open_navigation_drawer">Navigationspanel öffnen</string>
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
+    <string name="pin_drawer">Menü anpinnen</string>
     <string name="unrecognized_url">Unbekannte URL:</string>
     <string name="add_tab">Tab hinzufügen</string>
     <string name="close_tab">Tab schließen</string>

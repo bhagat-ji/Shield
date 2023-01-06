@@ -1,0 +1,11 @@
+• Correction d'un crash causé par WebView qui essaie parfois de calculer la position de scroll quand elle n'existe pas.
+• Correction d'un crash causé par WebView qui essaie parfois de vérifier l'historique alors qu'il n'existe pas.
+• Lancement de Nettoyer et Quitter lorsque le bouton retour du système ferme le dernier onglet.
+• Une pression longue sur un dossier de signets ouvre tous les signets qu'il contient.
+• Ajout de la possibilité d'épingler le gestionnaire de signets.
+• Affichage permanent de l'icône de favori à la plus haute résolution.
+• Ajout de documentation pour la permission DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION.
+• Correction de EasyPrivacy pour qu'il ne bloque pas involontairement tout le site startpage.com.
+• Correction de Fanboy’s Annoyance List pour qu'il ne bloque pas involontairement toutes les ressources sur shopify.com.
+• Inclu quelques améliorations mineures.
+• Traduction française mise à jour fournie par Kévin L.
