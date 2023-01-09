@@ -1,0 +1,1 @@
+• Correction de problèmes avec les onglets lorsque les thèmes de l'application et du système d'exploitation sont différents.

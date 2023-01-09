@@ -1,0 +1,1 @@
+• Probleme mit Tabs behoben, die entstanden, wenn in Privacy Browser und Android unterschiedliche Themes genutzt wurden.

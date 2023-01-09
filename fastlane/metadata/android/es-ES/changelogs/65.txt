@@ -1,0 +1,1 @@
+• Solucionar problemas con las pestañas cuando el tema de la aplicación y el tema del SO son diferentes.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -28,8 +28,8 @@ android {
     defaultConfig {
         minSdk 23
         targetSdk 33
-        versionCode 64
-        versionName "3.13"
+        versionCode 65
+        versionName "3.13.1"
         resConfigs "en", "de", "es", "fr", "it", "pt-rBR", "ru", "tr"
     }
 

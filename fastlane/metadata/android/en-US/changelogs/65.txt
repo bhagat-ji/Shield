@@ -1,0 +1,1 @@
+• Fix problems with the tabs when the app theme and the OS theme are different.
