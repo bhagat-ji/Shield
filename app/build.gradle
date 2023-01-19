@@ -30,7 +30,7 @@ android {
         targetSdk 33
         versionCode 65
         versionName "3.13.1"
-        resConfigs "en", "de", "es", "fr", "it", "pt-rBR", "ru", "tr"
+        resConfigs "en", "de", "es", "fr", "it", "pt-rBR", "ru", "tr", "zh-rCN"
     }
 
     buildTypes {
@@ -66,10 +66,10 @@ android {
 
 dependencies {
     // Include the following AndroidX libraries.
-    implementation "androidx.activity:activity-ktx:1.7.0-alpha02"
+    implementation "androidx.activity:activity-ktx:1.7.0-alpha03"
     implementation 'androidx.arch.core:core-common:2.1.0'
     implementation 'androidx.arch.core:core-runtime:2.1.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'androidx.core:core-ktx:1.9.0'

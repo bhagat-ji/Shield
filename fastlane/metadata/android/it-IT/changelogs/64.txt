@@ -1,0 +1,11 @@
+• Correzione di un crash provocato da WebView che a volte cerca di calcolare la posizione dello scroll anche quando non esiste.
+• Correzione di un crash provocato da WebView che a volte cerca di controllare la cronologia anche quando non esiste.
+• Esecuzione di Elimina dati ed Esci quando il tasto indietro del sistema chiude l'ultima scheda.
+• Ora una pressione prolungata su una cartella dei segnalibri apre tutti i segnalibri che contiene.
+• Aggiunta la possibilità di fissare il cassetto dei segnalibri.
+• Ora mostra sempre con la risoluzione più alta l'icona preferita.
+• Aggiunta la documentazione per l'autorizzazione DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION.
+• Sistemazione di EasyPrivacy in modo che non blocchi per errore tutto startpage.com.
+• Sistemazione della Fanboy’s Annoyance List in modo che non blocchi per errore tutte le risorse su shopify.com.
+• Implementazione di diversi piccoli miglioramenti.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

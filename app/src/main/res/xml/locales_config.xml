@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -28,4 +28,5 @@
     <locale android:name="pt-BR"/>  <!-- Brazilian Portuguese. -->
     <locale android:name="ru"/>  <!-- Russian. -->
     <locale android:name="tr"/>  <!-- Turkish. -->
+    <locale android:name="zh-CN"/>  <!-- Simplified Chinese. -->
 </locale-config>

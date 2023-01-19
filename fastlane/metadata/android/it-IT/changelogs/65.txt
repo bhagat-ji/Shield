@@ -1,0 +1,1 @@
+• Sistemazione dei problemi relativi alle schede quando il tema della app e quello del sistema operativo sono diversi.

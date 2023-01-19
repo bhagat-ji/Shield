@@ -1,0 +1,54 @@
+<!--
+  Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2023 Xin.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+
+  Privacy Browser Android is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser Android is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/theme.css">
+
+        <!-- Setting the color scheme instructs the WebView to respect `prefers-color-scheme` @media CSS. -->
+        <meta name="color-scheme" content="light dark">
+    </head>
+
+    <body>
+        <h3><svg class="header"><use href="../shared_images/location_off.svg#icon"/></svg> Do Not Track</h3>
+
+        <p>A few years ago the W3C (World Wide Web Consortium) created a mechanism for browsers to inform web servers that they would not like to be tracked.
+            This is accomplished by including a <a href="https://en.wikipedia.org/wiki/Do_Not_Track">DNT (Do Not Track) header</a> with web requests.</p>
+
+        <p>The DNT header doesn't really provide any privacy because most web servers ignore it. For example, Yahoo, Google, Microsoft, and Facebook all ignore at least some DNT headers.
+            Beginning with version 3.8, Privacy Browser no longer has the option to send a DNT header.</p>
+
+
+        <h3><svg class="header"><use href="../shared_images/link_off.svg#icon"/></svg> URL Modification</h3>
+
+        <p>Privacy Browser removes tracking IDs and AMP (<a href="https://en.wikipedia.org/wiki/Accelerated_Mobile_Pages">Accelerated Mobile Pages</a>) redirects from URL queries.
+            There is a blog post that is updated with the <a href="https://www.stoutner.com/url-modification/">current list</a> of modifications.
+            URL modification can be turned off in the settings if it is causing issues.</p>
+
+
+        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With Header</h3>
+
+        <p>Google programmed Android’s WebView to send an <a href="https://www.stoutner.com/the-x-requested-with-header/">X-Requested-With header</a> with every request.
+            The value of the X-Requested-With header is set to the application ID, which in the case of Privacy Browser is <code>com.stoutner.privacybrowser.standard</code>.
+            This can be disabled using <a href="https://www.stoutner.com/webview-devtools/">WebView's DevTools</a>.</p>
+    </body>
+</html>
