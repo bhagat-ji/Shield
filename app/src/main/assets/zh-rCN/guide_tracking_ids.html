@@ -29,26 +29,23 @@
     </head>
 
     <body>
-        <h3><svg class="header"><use href="../shared_images/location_off.svg#icon"/></svg> Do Not Track</h3>
+        <h3><svg class="header"><use href="../shared_images/location_off.svg#icon"/></svg> 不要追踪</h3>
 
-        <p>A few years ago the W3C (World Wide Web Consortium) created a mechanism for browsers to inform web servers that they would not like to be tracked.
-            This is accomplished by including a <a href="https://en.wikipedia.org/wiki/Do_Not_Track">DNT (Do Not Track) header</a> with web requests.</p>
+        <p>多年前，万维网创造了一种不希望追踪的方式，通常通过在网页请求中包含<a href="https://en.wikipedia.org/wiki/Do_Not_Track">DNT (Do Not Track) header</a>来实现。</p>
 
-        <p>The DNT header doesn't really provide any privacy because most web servers ignore it. For example, Yahoo, Google, Microsoft, and Facebook all ignore at least some DNT headers.
-            Beginning with version 3.8, Privacy Browser no longer has the option to send a DNT header.</p>
+        <p>这个DNT头不提供真正的保护隐私，因为大部分网站会忽略它。例如，Yahoo,Google,Microsoft和Facebook全都忽略了DNT请求，从3.8开始隐私浏览器不再提供发送DNT请求的选项。</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/link_off.svg#icon"/></svg> URL Modification</h3>
+        <h3><svg class="header"><use href="../shared_images/link_off.svg#icon"/></svg> URL 修改</h3>
 
-        <p>Privacy Browser removes tracking IDs and AMP (<a href="https://en.wikipedia.org/wiki/Accelerated_Mobile_Pages">Accelerated Mobile Pages</a>) redirects from URL queries.
-            There is a blog post that is updated with the <a href="https://www.stoutner.com/url-modification/">current list</a> of modifications.
-            URL modification can be turned off in the settings if it is causing issues.</p>
+        <p>隐私浏览器从URL查询中删除IDs and AMP (<a href="https://en.wikipedia.org/wiki/Accelerated_Mobile_Pages">Accelerated Mobile Pages</a>)。
+            有一篇博客更新了<a href="https://www.stoutner.com/url-modification/">当前列表</a>的修改。URL修改出现错误可以在设置中关闭。</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With Header</h3>
+        <h3><svg class="header"><use href="../shared_images/disabled_by_default.svg#icon"/></svg> X-Requested-With 请求头</h3>
 
-        <p>Google programmed Android’s WebView to send an <a href="https://www.stoutner.com/the-x-requested-with-header/">X-Requested-With header</a> with every request.
-            The value of the X-Requested-With header is set to the application ID, which in the case of Privacy Browser is <code>com.stoutner.privacybrowser.standard</code>.
-            This can be disabled using <a href="https://www.stoutner.com/webview-devtools/">WebView's DevTools</a>.</p>
+        <p>Google对Android’s WebView进行编程，通过所有请求产生<a href="https://www.stoutner.com/the-x-requested-with-header/">X-Requested-With header</a>。
+            X-Requested-With请求头的值被设置为应用程序的ID，在隐私浏览器的情况下为<code>com.stoutner.privacybrowser.standard</code>。
+            这可以在<a href="https://www.stoutner.com/webview-devtools/">WebView's 开发者工具</a>.</p>
     </body>
 </html>

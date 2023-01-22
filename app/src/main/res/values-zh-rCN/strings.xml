@@ -436,7 +436,7 @@
             <string name="fanboys_social_label">Fanboy’s Social Blocking List:</string>
             <string name="ultralist_label">UltraList:</string>
             <string name="ultraprivacy_label">UltraPrivacy:</string>
-        <string name="package_signature">Package Signature</string>
+        <string name="package_signature">包名</string>
             <string name="issuer_dn">发行人 DN:</string>
             <string name="subject_dn">主题 DN:</string>
             <string name="certificate_version">证书版本:</string>
@@ -515,7 +515,7 @@
         <string name="tracking_queries_summary">移除已知网址的追踪器</string>
         <string name="amp_redirects">AMP 重定向</string>
         <string name="amp_redirects_summary">移除已知AMP (Accelerated Mobil Pages) 网址中的重定向选项.</string>
-    <string name="search">Search</string>
+    <string name="search">搜索</string>
         <string-array name="search_entries">
             <item>Mojeek</item>
             <item>Monocles</item>

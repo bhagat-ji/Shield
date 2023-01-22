@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2023 Xin.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -29,53 +29,38 @@
     </head>
 
     <body>
-        <h3><svg class="header"><use href="../shared_images/vpn_key.svg#icon"/></svg> Proxies and Their Limits</h3>
+        <h3><svg class="header"><use href="../shared_images/vpn_key.svg#icon"/></svg> 代理以及他们的限制</h3>
 
-        <p>There are two general categories of bad actors that want to infringe on the privacy of the web:
-            malicious governments with access to ISPs (Internet Service Providers) and mega corporations that run social and advertising networks.
-            Proxies like TOR (The Onion Router) and I2P (the Invisible Internet Project) are useful in protecting privacy from malicious governments (which spy on traffic in transit)
-            but not from mega corporations (which embed malicious code on web servers).</p>
+        <p>想要侵犯网页的隐私的通常分为两种。一种是通过访问IPS(互联网提供商)的政府，一种是经营社交和广告的大型公司。像TOR浏览器和I2P在防止政府(监视网络传输)获得隐私是有用的，但是阻止大型公司(通过在网页中嵌入恶意代码)不是很有作用。</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> Malicious Governments</h3>
+        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> 恶意的政府</h3>
 
-        <p>Malicious governments often spy on their citizens to punish dissent or human rights activity.
-            They commonly either operate the local ISPs or they can force them to disclose information showing every IP address that is visited by each user.
-            Layered proxies are designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through multiple servers on the internet
-            before sending it on to the final destination.
-            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address of the user’s device</a> and the IP address of the final web server.
-            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using a layered proxy service.
-            In some parts of the world, using proxies could be construed as an evidence of illegal behavior (“If you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
-            and users could be punished because governments assume they are doing something that is prohibited. Thus, proxies can be helpful, but they aren’t a panacea.</p>
+        <p>恶意政府经常监视其公民以惩罚持不同政见者或人权活动。他们通常要么运营本地 ISP，要么强制他们披露显示每个用户访问的每个 IP 地址的信息。
+            分层代理旨在通过加密来自用户设备的流量并在将其发送到最终目的地之前通过 Internet 上的多个服务器路由它来阻止这种对隐私的侵犯。这意味着任何 ISP、
+            服务器或网站都无法知道<a href="https://ipleak.net">用户设备的IP地址</a>以及最终 Web 服务器的 IP 地址。恶意政府及其控制的 ISP 无法判断用户正在访问哪些 Web 服务器，尽管他们可以判断用户正在使用分层代理服务。
+            在世界的某些地方，使用代理可以被解释为非法行为的证据（“如果你没有什么可隐藏的，你就不会加密你的流量”）并且用户可能会受到惩罚，因为政府认为他们正在做被禁止的东西。因此，代理可能会有帮助，但它们不是灵丹妙药。</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> Mega Corporations</h3>
+        <h3><svg class="header"><use href="../shared_images/language.svg#icon"/></svg> 大型公司</h3>
 
-        <p>When a user connects to a web server, the web server can see the user’s IP address.
-            Although it isn’t a perfect science, IP addresses can be turned into physical addresses with a <a href="https://www.whatismyip.com/">fair amount of accuracy</a>.
-            Small web servers typically rely on IP addresses to identify the location of the users visiting their site. Proxies are a good solution to mask the user’s location from these servers.
-            But large mega corporations that own social media and advertising networks use a whole profile of information that is designed to track users across devices and IP addresses.
-            These profiles employ a variety of techniques to identify users, including JavaScript, cookies, tracking IDs, and <a href="https://panopticlick.eff.org/">browser fingerprinting</a>.
-            Because the vast majority of the websites on the internet either load an ad from one of the major networks or embed social media icons with their associated JavaScript,
-            these corporations have built profiles for almost every online user and can track their internet activity across unrelated sites.</p>
+        <p>当用户连接到 Web 服务器时，Web 服务器可以看到用户的 IP 地址。虽然这不是一门完美的科学，但 IP 地址可以<a href="https://www.whatismyip.com/">相当准确</a>地转换为物理地址。
+            小型 Web 服务器通常依靠 IP 地址来识别访问其站点的用户的位置。代理是一个很好的解决方案，可以从这些服务器中隐藏用户的位置。但拥有社交媒体和广告网络的大型企业使用旨在跨设备和 IP 地址跟踪用户的完整信息配置文件。
+            这些配置文件采用多种技术来识别用户，包括 JavaScript、cookie、跟踪 ID 和<a href="https://panopticlick.eff.org/">浏览器指纹识别</a>。
+            由于互联网上的绝大多数网站要么从主要网络之一加载广告，要么将社交媒体图标与相关的 JavaScript 嵌入在一起，因此这些公司已经为几乎每个在线用户建立了个人资料，并且可以跟踪他们在不相关网站上的互联网活动。</p>
 
-        <p>They track every site that is visited, everything that is purchased, every credit card that is used to make a purchase, every address that items are shipped to,
-            and the GPS metadata of every picture that is uploaded to the internet.
-            They build a profile of a user’s age, gender, marital status, address, political affiliations, religious affiliations, family circumstances, number of pets,
-            and everything else they can get their hands on.
-            They even buy up databases of credit card transactions at local stores, so they can track the off-line purchasing patterns of the users in their profiles.
-            Because they already have much more accurate address information about a user than an IP address discloses, proxies provides no real privacy protection against mega corporations.</p>
+        <p>他们跟踪访问过的每个站点、购买的所有物品、用于购买的每张信用卡、物品运送到的每个地址以及上传到互联网的每张图片的 GPS 元数据。
+            他们建立了用户的年龄、性别、婚姻状况、地址、政治派别、宗教派别、家庭情况、宠物数量以及他们可以得到的所有其他信息的档案。他们甚至购买当地商店的信用卡交易数据库，这样他们就可以在他们的个人资料中跟踪用户的离线购买模式。
+            因为他们已经拥有比 IP 地址公开的更准确的用户地址信息，所以代理无法提供针对大型公司的真正隐私保护。</p>
 
-        <p>The single best privacy protection against mega corporations is to browse the web with JavaScript disabled, followed by blocking ad networks, disabling cookies and DOM storage,
-            and using a browser that is difficult to fingerprint.</p>
+        <p>针对大公司的最佳隐私保护措施是在禁用 JavaScript 的情况下浏览网页，然后阻止广告网络、禁用 cookie 和 DOM 存储，并使用难以识别指纹的浏览器。</p>
 
 
-        <h3><svg class="header"><use href="../shared_images/open_in_browser.svg#icon"/></svg> Using Proxies</h3>
+        <h3><svg class="header"><use href="../shared_images/open_in_browser.svg#icon"/></svg> 使用代理</h3>
 
-        <p>Despite their limitations, proxies can be useful in some circumstances.
-            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>
-            have Android apps that make it easy to use their proxy networks. When proxying is turned on in Privacy Browser, the app bar will have a light blue background instead of the default light grey.
-            Because traffic is being routed through several proxy nodes, using a layered proxy is often much slower than connecting directly to the internet.</p>
+        <p>尽管代理有限制，但是他们在某些方面还是很有用。
+            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>有安卓应用，可以轻松的使用他们代理网络，
+            在隐私浏览器中打开代理，新中考会变成蓝色，而不是默认的灰色。因为使用了多层的节点，所以访问速度会比直连慢很多。</p>
 
         <img class="center" src="images/tor.png"/>
     </body>

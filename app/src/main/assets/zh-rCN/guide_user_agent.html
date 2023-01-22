@@ -29,35 +29,24 @@
     </head>
 
     <body>
-        <h3><svg class="header"><use href="../shared_images/devices_other.svg#icon"/></svg> Browser Identification</h3>
+        <h3><svg class="header"><use href="../shared_images/devices_other.svg#icon"/></svg> 浏览器识别</h3>
 
-        <p>When web browsers connect to websites, they send a user agent, which identifies the browser and the rendering capabilities it possesses.
-            The web server can use this information to decide which version of the website to send to the browser.
-            For example, many websites have different versions for desktop and mobile browsers.</p>
+        <p>当 Web 浏览器连接到网站时，它们会发送一个UA，用于标识浏览器及其拥有的呈现功能。Web 服务器可以使用此信息来决定将哪个版本的网站发送给浏览器。例如，许多网站都有不同的桌面和移动浏览版本。</p>
 
-        <p>By default, Privacy Browser uses its own user agent, which is <code>PrivacyBrowser/1.0</code>. This sends a minimum of information to the web server.
-            Because web servers do not recognize this to be a mobile user agent, they typically display the desktop version of the site.</p>
+        <p>隐私浏览器默认使用自己的用户代理<code>PrivacyBrowser/1.0</code>。这发送最小的信息给网页提供商。因为网页提供商不能识别移动用户代理，他们会显示桌面浏览版本。</p>
 
-        <p>By comparison, WebView’s default user agent divulges a large amount of information about the hardware and software of the device.
-            On the <strong>Settings</strong> screen, selecting <strong>WebView Default</strong> as the <strong>User agent</strong> displays the user agent that will be sent.
-            The screenshot below shows a Pixel 2 XL running Android 10 with Android System WebView 84.0.4147.125 installed.
-            Most web servers will recognize this as a mobile browser and will display the mobile version of the site if they have one.</p>
+        <p>相比之下，WebView默认的UA暴露了设备的硬件和软件的大量信息。可以在<strong>设置</strong>，选择<strong>WebView默认设置</strong>作为<strong>UA</strong>显示将要被发送的UA。
+            下面的截图会显示Pixel 5在安卓13上下载的WebView110.0.5481.40。许多的网页提供商会当成移动浏览器来分析，并在他们有移动浏览页面时展示它。</p>
 
         <img class="center" src="images/user_agent.png">
 
-        <p>There is enough information in the user agent that sometimes only a few visitors to a website will be the same.
-            If the user agent is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
-            The Electronic Frontier Foundation created a tool called <a href="https://coveryourtracks.eff.org/">Cover Your Tracks</a> to demonstrate how much information can be gleaned from these sources.
-            If this test is run with JavaScript enabled the amount of information that is disclosed increases greatly.
-            <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information on this topic.</p>
+        <p>仅有很少一部分用户访问网页的UA相同。如果UA结合其他不特定的信息，通常能得到一个特定的指纹。EFF创立了一个叫<a href="https://coveryourtracks.eff.org/">Cover Your Tracks</a>的工具来展示可以从这些资源收集到多少信息。
+            <a href="https://www.browserleaks.com">Browser Leaks</a>和<a href="https://amiunique.org/">Am I Unique</a>也是一个很好的信息来源。</p>
 
-        <p>There are several preset user agents that match common browsers and operating systems. For browser fingerprinting purposes, anything that is rare is easier to track.
-            If Privacy Browser becomes common and many people use <code>PrivacyBrowser/1.0</code> as their user agent, it will be a good choice for privacy.
-            Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly that it is likely the user agents included in Privacy Browser
-            will often be out of step with the majority of user agents in the server logs.</p>
+        <p>有几个预设的UA可以匹配常见的浏览器和开源系统，出于浏览器指纹识别的目的，任何罕见的都更容易追踪。如果很多人使用隐私浏览器，并且使用<code>PrivacyBrowser/1.0</code>作为他们的UA，是对保护隐私的一个好选择。
+            Firefox or Chrome是最常见的UA，但是他们会自动升级并且他们的版本更新的如此快，以致会和隐私浏览器的UA的日志产生冲突。</p>
 
-        <p>Some websites <a href="https://www.stoutner.com/user-agent-problems/">do not function correctly</a> if they do not recognize the user agent.
-            Using domain settings to set the user agent to <strong>WebView Default</strong>, or another user agent that is commonly recognized, usually resolves the problem.
-            Android’s WebView does not allow the user agent to be blank. If it is, WebView sends the default user agent to the server instead.</p>
+        <p>有的网页如果没识别到UA<a href="https://www.stoutner.com/user-agent-problems/">就不能正确打开</a>。使用域名设置UA<strong>WebView 默认设置</strong>，或其他常见的UA，通常能解决这个问题。
+            Android’s WebView 不允许UA为空，如果为空的话会发送默认的UA给服务器。</p>
     </body>
 </html>
