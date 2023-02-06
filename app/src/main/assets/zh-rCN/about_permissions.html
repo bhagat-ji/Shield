@@ -29,16 +29,16 @@
     </head>
 
     <body>
-        <h3>Have full network access</h3>
+        <h3>完整的网络访问权限</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INTERNET">android.permission.INTERNET</a></p>
-        <p>Required for the WebView to access the internet. Without this permission, Privacy Browser would be “No Browser: Protecting Your Privacy by Staying Completely Off the Internet”.</p>
+        <p>网络访问权限是访问网页必需的，没有这个权限，Privacy Browser会成为“无浏览器”，把你的隐私从互联网隔离开。</p>
 
-        <h3>Install shortcuts</h3>
+        <h3>安装快捷方式</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.<wbr>INSTALL_SHORTCUT</a></p>
-        <p>Required to add shortcuts for websites to the launcher desktop.</p>
+        <p>在桌面添加网页的快捷方式。</p>
 
         <h3><a href="https://developer.android.com/about/versions/13/features#runtime-receivers">
             com.stoutner.privacybrowser.<wbr>standard.<wbr>DYNAMIC_<wbr>RECEIVER_<wbr>NOT_<wbr>EXPORTED_<wbr>PERMISSION</a></h3>
-        <p>Automatically added to all apps targeting API >= 33 (Android 13) to prevent other apps from connecting to dynamic receivers without explicit permission.</p>
+        <p>自动添加到所有API33(安卓13)，防止其他应用在没有允许的情况下连接到动态接收器。</p>
     </body>
 </html>

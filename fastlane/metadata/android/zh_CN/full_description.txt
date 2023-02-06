@@ -1,0 +1,12 @@
+保护隐私不被滥用的唯一方法是首先防止隐私被收集。Privacy Browser有两个目标。 
+1.减少在互联网中发送的数据。
+2.减少数据储存到设备。
+大多数浏览器默默的像网页提供大量信息，允许他们追踪你，损害你的隐私。网站和广告网络使用JavaScript，cookies，DOM存储，UA和其他的特定的身份鉴别技术来在用户访问时识别用户追踪他们。
+相比之下，Privacy Browser默认禁用隐私相关的功能，如果网页合法的请求这些功能，用户可以选择在这个访问时打开相应的功能，或者可以使用域设置来在他们访问特定网页时自动打开某些功能，并在离开时关闭。
+
+Privacy Browser目前使用安卓内置的WebView来呈现网页，因此它在最新版本的WebView效果最好。(see https://www.stoutner.com/privacy-browser/common-settings/webview/). 在4.x系列中，Privacy Browser将切换到叫Privacy WebView的安卓WebView的分支，它允许更高的隐私功能。
+功能:
+集成EasyList拦截广告
+支持Tor Orbot通道
+固定SSL证书
+支持导入/导出设置和书签
