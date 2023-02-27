@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -4382,7 +4382,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (savedTabPosition == 0) {  // The first tab is selected.
                 // Set the first page as the current WebView.
                 setCurrentWebView(0);
-            } else {  // the first tab is not selected.
+            } else {  // The first tab is not selected.
                 // Move to the selected tab.
                 webViewPager.setCurrentItem(savedTabPosition);
             }
@@ -4841,7 +4841,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Remove any background on the URL relative layout.
                 urlRelativeLayout.setBackground(ResourcesCompat.getDrawable(getResources(), R.color.transparent, null));
             }
-        } else {  // The fragment has not been populated.  Try again in 100 milliseconds.
+        } else if (pageNumber == savedTabPosition){  // The app is being restored but the saved tab position fragment has not been populated yet.  Try again in 100 milliseconds.
             // Create a handler to set the current WebView.
             Handler setCurrentWebViewHandler = new Handler();
 
