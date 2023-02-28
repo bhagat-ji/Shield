@@ -1,0 +1,1 @@
+• Fix a race condition that sometimes caused the current tab to not be the active tab.

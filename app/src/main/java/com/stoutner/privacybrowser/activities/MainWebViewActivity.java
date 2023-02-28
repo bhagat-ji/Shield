@@ -751,6 +751,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
         } else {  // The app has been restarted.
+            // Set the saved tab position to be the size of the saved state array list.  The tab position is 0 based, meaning the at the new tab will be the tab position that is restored.
+            savedTabPosition = savedStateArrayList.size();
+
             // Replace the intent that started the app with this one.  This will load the tab after the others have been restored.
             setIntent(intent);
         }

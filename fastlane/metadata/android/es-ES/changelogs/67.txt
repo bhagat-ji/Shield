@@ -1,0 +1,1 @@
+• Corregir una condición de carrera que a veces provocaba que la pestaña actual no fuera la pestaña activa.
