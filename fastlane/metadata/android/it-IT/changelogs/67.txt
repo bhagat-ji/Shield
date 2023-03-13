@@ -1,0 +1,1 @@
+• Correzione di una "situazione di corsa" che talvolta faceva in modo che la scheda in uso non fosse la scheda attiva.

@@ -1,0 +1,1 @@
+• Fehler behoben, durch welchen der aktuelle Tab manchmal nicht der aktive Tab war.
