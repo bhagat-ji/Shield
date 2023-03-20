@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -625,12 +625,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 // Get the checked bookmarks array list.
                 ArrayList<Integer> checkedBookmarksArrayList = savedInstanceState.getIntegerArrayList(CHECKED_BOOKMARKS_ARRAY_LIST);
 
-                // Check each previously checked bookmark in the list view.  When the minimum API >= 24 a `forEach()` command can be used instead.
-                if (checkedBookmarksArrayList != null) {
-                    for (int i = 0; i < checkedBookmarksArrayList.size(); i++) {
-                        bookmarksListView.setItemChecked(checkedBookmarksArrayList.get(i), true);
-                    }
-                }
+                // Check each previously checked bookmark in the list view.
+                if (checkedBookmarksArrayList != null)
+                    checkedBookmarksArrayList.forEach((position) -> bookmarksListView.setItemChecked(position, true));
             });
         }
 

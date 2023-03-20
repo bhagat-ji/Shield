@@ -4359,7 +4359,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Add the first tab.
             addNewTab("", true);
         } else {  // The activity has been restarted.
-            // Restore each tab.  Once the minimum API >= 24, a `forEach()` command can be used.
+            // Restore each tab.
             for (int i = 0; i < savedStateArrayList.size(); i++) {
                 // Add a new tab.
                 tabLayout.addTab(tabLayout.newTab());
@@ -5333,9 +5333,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         nestedScrollWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this WebView the default handler for URLs inside the app, so that links are not kicked out to other apps.
-            // The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest webResourceRequest) {
+                // Get the URL from the web resource request.
+                String url = webResourceRequest.getUrl().toString();
+
                 // Sanitize the url.
                 url = sanitizeUrl(url);
 

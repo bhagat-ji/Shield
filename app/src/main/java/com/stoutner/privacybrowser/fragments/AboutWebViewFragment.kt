@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -21,7 +21,6 @@ package com.stoutner.privacybrowser.fragments
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -91,14 +90,13 @@ class AboutWebViewFragment : Fragment() {
 
         // Set a WebView client.
         tabWebView.webViewClient = object : WebViewClient() {
-            // // Send external links back to the main Privacy Browser WebView.  The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
-            @Deprecated("Deprecated in Java")
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+            // Send external links back to the main Privacy Browser WebView.
+            override fun shouldOverrideUrlLoading(view: WebView, webResourceRequest: WebResourceRequest): Boolean {
                 // Create an intent to view the URL.
                 val urlIntent = Intent(Intent.ACTION_VIEW)
 
                 // Add the URL to the intent.
-                urlIntent.data = Uri.parse(url)
+                urlIntent.data = webResourceRequest.url
 
                 // Make it so.
                 startActivity(urlIntent)

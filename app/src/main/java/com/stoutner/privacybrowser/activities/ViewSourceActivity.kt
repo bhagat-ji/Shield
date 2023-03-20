@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.activities
 
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -54,8 +53,6 @@ import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.helpers.UrlHelper
 import com.stoutner.privacybrowser.viewmodelfactories.WebViewSourceFactory
 import com.stoutner.privacybrowser.viewmodels.WebViewSource
-
-import java.util.Locale
 
 // Define the public constants.
 const val CURRENT_URL = "current_url"
@@ -183,62 +180,53 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         // Set the swipe refresh background color.
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt)
 
-        // Populate the locale string.
-        val localeString = if (Build.VERSION.SDK_INT >= 24) {  // SDK >= 24 has a list of locales.
-            // Get the list of locales.
-            val localeList = resources.configuration.locales
+        // Get the list of locales.
+        val localeList = resources.configuration.locales
 
-            // Initialize a string builder to extract the locales from the list.
-            val localesStringBuilder = StringBuilder()
+        // Initialize a string builder to extract the locales from the list.
+        val localesStringBuilder = StringBuilder()
 
-            // Initialize a `q` value, which is used by `WebView` to indicate the order of importance of the languages.
-            var q = 10
+        // Initialize a `q` value, which is used by `WebView` to indicate the order of importance of the languages.
+        var q = 10
 
-            // Populate the string builder with the contents of the locales list.
-            for (i in 0 until localeList.size()) {
-                // Append a comma if there is already an item in the string builder.
-                if (i > 0) {
-                    localesStringBuilder.append(",")
-                }
-
-                // Get the locale from the list.
-                val locale = localeList[i]
-
-                // Add the locale to the string.  `locale` by default displays as `en_US`, but WebView uses the `en-US` format.
-                localesStringBuilder.append(locale.language)
-                localesStringBuilder.append("-")
-                localesStringBuilder.append(locale.country)
-
-                // If not the first locale, append `;q=0.x`, which drops by .1 for each removal from the main locale until q=0.1.
-                if (q < 10) {
-                    localesStringBuilder.append(";q=0.")
-                    localesStringBuilder.append(q)
-                }
-
-                // Decrement `q` if it is greater than 1.
-                if (q > 1) {
-                    q--
-                }
-
-                // Add a second entry for the language only portion of the locale.
+        // Populate the string builder with the contents of the locales list.
+        for (i in 0 until localeList.size()) {
+            // Append a comma if there is already an item in the string builder.
+            if (i > 0) {
                 localesStringBuilder.append(",")
-                localesStringBuilder.append(locale.language)
-
-                // Append `1;q=0.x`, which drops by .1 for each removal form the main locale until q=0.1.
-                localesStringBuilder.append(";q=0.")
-                localesStringBuilder.append(q)
-
-                // Decrement `q` if it is greater than 1.
-                if (q > 1) {
-                    q--
-                }
             }
 
-            // Store the populated string builder in the locale string.
-            localesStringBuilder.toString()
-        } else {  // SDK < 24 only has a primary locale.
-            // Store the locale in the locale string.
-            Locale.getDefault().toString()
+            // Get the locale from the list.
+            val locale = localeList[i]
+
+            // Add the locale to the string.  `locale` by default displays as `en_US`, but WebView uses the `en-US` format.
+            localesStringBuilder.append(locale.language)
+            localesStringBuilder.append("-")
+            localesStringBuilder.append(locale.country)
+
+            // If not the first locale, append `;q=0.x`, which drops by .1 for each removal from the main locale until q=0.1.
+            if (q < 10) {
+                localesStringBuilder.append(";q=0.")
+                localesStringBuilder.append(q)
+            }
+
+            // Decrement `q` if it is greater than 1.
+            if (q > 1) {
+                q--
+            }
+
+            // Add a second entry for the language only portion of the locale.
+            localesStringBuilder.append(",")
+            localesStringBuilder.append(locale.language)
+
+            // Append `1;q=0.x`, which drops by .1 for each removal form the main locale until q=0.1.
+            localesStringBuilder.append(";q=0.")
+            localesStringBuilder.append(q)
+
+            // Decrement `q` if it is greater than 1.
+            if (q > 1) {
+                q--
+            }
         }
 
         // Instantiate the proxy helper.
@@ -257,7 +245,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         updateLayout(currentUrl)
 
         // Instantiate the WebView source factory.
-        val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl, userAgent, localeString, proxy, contentResolver, MainWebViewActivity.executorService)
+        val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl, userAgent, localesStringBuilder.toString(), proxy, contentResolver, MainWebViewActivity.executorService)
 
         // Instantiate the WebView source view model class.
         webViewSource = ViewModelProvider(this, webViewSourceFactory)[WebViewSource::class.java]
