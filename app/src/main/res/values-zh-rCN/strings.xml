@@ -193,7 +193,7 @@
     <string name="file_is_mht">本文件是MHT存档.</string>
     <string name="mht_checkbox_explanation">有时需要手动选择MIME封装才能正确打开.</string>
 
-    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.  `%%` writes a literal `%`.
         The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">保存链接</string>
     <string name="save_archive">保存存档</string>
@@ -204,7 +204,9 @@
     <string name="bytes">字节</string>
     <string name="unknown_size">未知大小</string>
     <string name="invalid_url">错误的网址</string>
-    <string name="saving_file">保存文件:</string>
+    <string name="saving_file">保存文件: \u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">保存文件: \u0020 %1$s 字节 - %2$s</string>
+    <string name="saving_file_percentage_progress">保存文件: \u0020 %1$d%% - %2$s 字节 / %3$s 字节 - %4$s</string>
     <string name="saved">%1$s 保存.</string>
     <string name="processing_image">处理图片: \u0020 %1$s</string>
     <string name="error_saving_file">保存失败 %1$s: \u0020 %2$s</string>
@@ -279,10 +281,12 @@
         <string name="default_label">默认</string>
         <string name="default_allowed">默认允许</string>
         <string name="allowed">允许</string>
+        <string name="request_allowed">%1$d. 允许</string>
         <string name="allowed_plural">允许</string>
         <string name="third_party_plural">第三方</string>
         <string name="third_party_blocked">不允许第三方</string>
         <string name="blocked">不允许</string>
+        <string name="request_blocked">%1$d. 不允许</string>
         <string name="blocked_plural">不允许</string>
     <string name="blocklist">不允许名单</string>
     <string name="sublist">子表</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -187,7 +187,7 @@
     <string name="file_is_mht">Файл представляет собой веб-архив MHT.</string>
     <string name="mht_checkbox_explanation">Иногда для корректного открытия веб-архивов MIME Encapsulated HTML (MHT) необходимо указать вручную.</string>
 
-    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.  `%%` writes a literal `%`.
         The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Сохранить URL</string>
     <string name="save_archive">Сохранить архив</string>
@@ -198,7 +198,9 @@
     <string name="bytes">байтов</string>
     <string name="unknown_size">неизвестный размер</string>
     <string name="invalid_url">неправильный URL</string>
-    <string name="saving_file">Сохранение файла:</string>
+    <string name="saving_file">Сохранение файла: \u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Сохранение файла: \u0020 %1$s байтов - %2$s</string>
+    <string name="saving_file_percentage_progress">Сохранение файла: \u0020 %1$d%% - %2$s байтов / %3$s байтов - %4$s</string>
     <string name="processing_image">Обработка изображения: \u0020 %1$s</string>
     <string name="error_saving_file">Ошибка сохранения %1$s: \u0020 %2$s</string>
     <string name="unknown_error">Неизвестная ошибка</string>
@@ -274,10 +276,12 @@
         <string name="default_label">По умолчанию</string>
         <string name="default_allowed">По умолчанию - Разрешен</string>
         <string name="allowed">Разрешен</string>
+        <string name="request_allowed">%1$d. Разрешен</string>
         <string name="allowed_plural">Разрешено</string>
         <string name="third_party_plural">Сторонние</string>
         <string name="third_party_blocked">Сторонние - Блокировано</string>
         <string name="blocked">Блокирован</string>
+        <string name="request_blocked">%1$d. Блокирован</string>
         <string name="blocked_plural">Блокировано</string>
     <string name="blocklist">Список блокировки</string>
     <string name="sublist">Подсписок</string>

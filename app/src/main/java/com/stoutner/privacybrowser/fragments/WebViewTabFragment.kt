@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020,2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -43,7 +43,6 @@ private const val SAVED_NESTED_SCROLL_WEBVIEW_STATE = "saved_nested_scroll_webvi
 
 class WebViewTabFragment : Fragment() {
     // Define the public variables.
-    @JvmField  // TODO.  `@JvmField` can be removed once the entire project has been converted to Kotlin.
     var fragmentId = Calendar.getInstance().timeInMillis
 
     // The public interface is used to send information back to the parent activity.
@@ -59,7 +58,6 @@ class WebViewTabFragment : Fragment() {
     private lateinit var nestedScrollWebView: NestedScrollWebView
 
     companion object {
-        @JvmStatic  // TODO.  `@JvmStatic` can be removed once the entire project has been converted to Kotlin.
         fun createPage(pageNumber: Int, url: String?): WebViewTabFragment {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -79,8 +77,7 @@ class WebViewTabFragment : Fragment() {
             return webViewTabFragment
         }
 
-        @JvmStatic  // TODO.  `@JvmStatic` can be removed once the entire project has been converted to Kotlin.
-        fun restorePage(savedState: Bundle?, savedNestedScrollWebViewState: Bundle?): WebViewTabFragment {
+        fun restorePage(savedState: Bundle, savedNestedScrollWebViewState: Bundle): WebViewTabFragment {
             // Create an arguments bundle
             val argumentsBundle = Bundle()
 

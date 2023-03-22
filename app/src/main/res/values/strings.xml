@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -196,8 +196,8 @@
     <string name="file_is_mht">The file is an MHT web archive.</string>
     <string name="mht_checkbox_explanation">Sometimes MIME Encapsulated HTML (MHT) web archives need to be manually specified to be opened correctly.</string>
 
-    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.  `%%` writes a literal `%`.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
     <string name="save_url">Save URL</string>
     <string name="save_archive">Save Archive</string>
@@ -208,7 +208,9 @@
     <string name="bytes">bytes</string>
     <string name="unknown_size">unknown size</string>
     <string name="invalid_url">invalid URL</string>
-    <string name="saving_file">Saving file:</string>
+    <string name="saving_file">Saving file: \u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Saving file: \u0020 %1$s bytes - %2$s</string>
+    <string name="saving_file_percentage_progress">Saving file: \u0020 %1$d%% - %2$s bytes / %3$s bytes - %4$s</string>
     <string name="saved">%1$s saved.</string>
     <string name="processing_image">Processing image: \u0020 %1$s</string>
     <string name="error_saving_file">Error saving %1$s: \u0020 %2$s</string>
@@ -285,10 +287,12 @@
         <string name="default_label">Default</string>
         <string name="default_allowed">Default - Allowed</string>
         <string name="allowed">Allowed</string>
+        <string name="request_allowed">%1$d. Allowed</string>
         <string name="allowed_plural">Allowed</string>
         <string name="third_party_plural">Third-party</string>
         <string name="third_party_blocked">Third-party - Blocked</string>
         <string name="blocked">Blocked</string>
+        <string name="request_blocked">%1$d. Blocked</string>
         <string name="blocked_plural">Blocked</string>
     <string name="blocklist">Blocklist</string>
     <string name="sublist">Sublist</string>

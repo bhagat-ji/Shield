@@ -194,8 +194,8 @@
     <string name="file_is_mht">Die Datei ist ein MHT-Web-Archiv.</string>
     <string name="mht_checkbox_explanation">Manchmal müssen MIME-gekapselte HTML-Web-Archive (MHT) manuell festgelegt werden, um korrekt geöffnet zu werden.</string>
 
-    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.  `%%` writes a literal `%`.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">URL speichern</string>
     <string name="save_archive">Archiv speichern</string>
     <string name="save_text">Text speichern</string>
@@ -205,7 +205,9 @@
     <string name="bytes">Bytes</string>
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="invalid_url">Ungültige URL</string>
-    <string name="saving_file">Speichere Datei:</string>
+    <string name="saving_file">Speichere Datei: \u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Speichere Datei: \u0020 %1$s Bytes - %2$s</string>
+    <string name="saving_file_percentage_progress">Speichere Datei: \u0020 %1$d%% - %2$s Bytes / %3$s Bytes - %4$s</string>
     <string name="processing_image">Bild wird bearbeitet: \u0020 %1$s</string>
     <string name="error_saving_file">Fehler beim Speichern der Datei %1$s: \u0020 %2$s</string>
     <string name="unknown_error">Unbekannter Fehler</string>
@@ -281,10 +283,12 @@
         <string name="default_label">Standard</string>
         <string name="default_allowed">Standard - erlaubt</string>
         <string name="allowed">erlaubt</string>
+        <string name="request_allowed">%1$d. erlaubt</string>
         <string name="allowed_plural">erlaubt</string>
         <string name="third_party_plural">Drittanbieter</string>
         <string name="third_party_blocked">Drittanbieter - blockiert</string>
         <string name="blocked">blockiert</string>
+        <string name="request_blocked">%1$d. blockiert</string>
         <string name="blocked_plural">blockiert</string>
     <string name="blocklist">Filterliste</string>
     <string name="sublist">Unterliste</string>

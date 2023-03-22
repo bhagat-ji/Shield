@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -716,7 +716,7 @@ class AboutVersionFragment : Fragment() {
         updateMemoryUsageBoolean = true
     }
 
-    fun updateMemoryUsage(activity: Activity) {
+    private fun updateMemoryUsage(activity: Activity) {
         try {
             // Update the memory usage if enabled.
             if (updateMemoryUsageBoolean) {
@@ -797,7 +797,7 @@ class AboutVersionFragment : Fragment() {
         }
     }
 
-    fun getAboutVersionString(): String {
+    private fun getAboutVersionString(): String {
         // Initialize an about version string builder.
         val aboutVersionStringBuilder = StringBuilder()
 

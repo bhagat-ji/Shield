@@ -127,11 +127,11 @@ import com.google.android.material.tabs.TabLayout;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
-import com.stoutner.privacybrowser.asynctasks.SaveUrl;
-import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
 import com.stoutner.privacybrowser.coroutines.GetHostIpAddressesCoroutine;
 import com.stoutner.privacybrowser.coroutines.PopulateBlocklistsCoroutine;
 import com.stoutner.privacybrowser.coroutines.PrepareSaveDialogCoroutine;
+import com.stoutner.privacybrowser.coroutines.SaveUrlCoroutine;
+import com.stoutner.privacybrowser.coroutines.SaveWebpageImageCoroutine;
 import com.stoutner.privacybrowser.dataclasses.PendingDialogDataClass;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
@@ -363,7 +363,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 public void onActivityResult(Uri fileUri) {
                     // Only save the URL if the file URI is not null, which happens if the user exited the file picker by pressing back.
                     if (fileUri != null) {
-                        new SaveUrl(getApplicationContext(), resultLauncherActivityHandle, fileUri, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptCookies()).execute(saveUrlString);
+                        // Instantiate the save URL coroutine.
+                        SaveUrlCoroutine saveUrlCoroutine = new SaveUrlCoroutine();
+
+                        // Save the URL.
+                        saveUrlCoroutine.save(getApplicationContext(), resultLauncherActivityHandle, saveUrlString, fileUri, currentWebView.getSettings().getUserAgentString(),
+                                currentWebView.getAcceptCookies());
                     }
 
                     // Reset the save URL string.
@@ -456,8 +461,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 public void onActivityResult(Uri fileUri) {
                     // Only save the webpage image if the file URI is not null, which happens if the user exited the file picker by pressing back.
                     if (fileUri != null) {
+                        // Instantiate the save webpage image coroutine.
+                        SaveWebpageImageCoroutine saveWebpageImageCoroutine = new SaveWebpageImageCoroutine();
+
                         // Save the webpage image.
-                        new SaveWebpageImage(resultLauncherActivityHandle, fileUri, currentWebView).execute();
+                        saveWebpageImageCoroutine.save(resultLauncherActivityHandle, fileUri, currentWebView);
                     }
                 }
             });

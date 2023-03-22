@@ -1,5 +1,5 @@
 /*
- * Copyright 2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019,2021-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -77,6 +77,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
             // Advertise the loading of EasyList.
             loadingBlocklistTextView.text = context.getString(R.string.loading_easylist)
 
+            // Populate the blocklists on the IO thread.
             withContext(Dispatchers.IO) {
                 // Populate EasyList.
                 val easyList = blocklistHelper.parseBlocklist(context.assets, "blocklists/easylist.txt")

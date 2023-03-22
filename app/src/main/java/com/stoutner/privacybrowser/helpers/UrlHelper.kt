@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2020-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -196,6 +196,7 @@ object UrlHelper {
         return Pair(fileNameString, formattedFileSize)
     }
 
+    /*  This entire method might not be needed.
     fun getSize(context: Context, url: URL, userAgent: String, cookiesEnabled: Boolean): String {
         // Initialize the formatted file size string.
         var formattedFileSize = context.getString(R.string.unknown_size)
@@ -260,6 +261,7 @@ object UrlHelper {
         // Return the formatted file size.
         return formattedFileSize
     }
+    */
 
     @JvmStatic
     fun highlightSyntax(urlEditText: EditText, initialGrayColorSpan: ForegroundColorSpan, finalGrayColorSpan: ForegroundColorSpan, redColorSpan: ForegroundColorSpan) {

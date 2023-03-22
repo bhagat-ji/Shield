@@ -191,7 +191,8 @@
     <string name="file_is_mht">Le fichier est une archive web MHT.</string>
     <string name="mht_checkbox_explanation">Parfois, les archives web MHT (MIME Encapsulated HTML) doivent être spécifiées manuellement pour être ouvertes correctement.</string>
 
-    <!-- Save Dialog.  The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Save Dialog.  `%%` writes a literal `%`.
+      The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Enregistrer l\'URL</string>
     <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_text">Sauvegarder le texte</string>
@@ -201,7 +202,9 @@
     <string name="bytes">octets</string>
     <string name="unknown_size">taille inconnue</string>
     <string name="invalid_url">URL invalide</string>
-    <string name="saving_file">Enregistrement du fichier :</string>
+    <string name="saving_file">Enregistrement du fichier : %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Enregistrement du fichier : \u0020 %1$s octets - %2$s</string>
+    <string name="saving_file_percentage_progress">Enregistrement du fichier : \u0020 %1$d%% - %2$s octets / %3$s octets - %4$s</string>
     <string name="processing_image">Traitement de l\'image : %1$s</string>
     <string name="error_saving_file">Erreur lors de l\'enregistrement de %1$s : %2$s</string>
     <string name="unknown_error">Erreur inconnue</string>
@@ -277,10 +280,12 @@
         <string name="default_label">Par défaut</string>
         <string name="default_allowed">Par défaut - Autorisées</string>
         <string name="allowed">Autorisée</string>
+        <string name="request_allowed">%1$d. Autorisée</string>
         <string name="allowed_plural">Autorisées</string>
         <string name="third_party_plural">Tiers</string>
         <string name="third_party_blocked">Tiers - Bloquées</string>
         <string name="blocked">Bloquée</string>
+        <string name="request_blocked">%1$d. Bloquée</string>
         <string name="blocked_plural">Bloquées</string>
     <string name="blocklist">Liste noires</string>
     <string name="sublist">Sous-listes</string>

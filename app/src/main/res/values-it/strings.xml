@@ -190,7 +190,7 @@
     <string name="file_is_mht">Questo file è un archivio web MHT.</string>
     <string name="mht_checkbox_explanation">Talvolta gli archivi web del tipo MIME Encapsulated HTML (MHT) devono essere specificati manualmente per essere aperti correttamente.</string>
 
-    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.  `%%` writes a literal `%`.
         The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Salva URL</string>
     <string name="save_archive">Salva Archivio</string>
@@ -201,7 +201,9 @@
     <string name="bytes">byte</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="invalid_url">URL non valida</string>
-    <string name="saving_file">Salvataggio file:</string>
+    <string name="saving_file">Salvataggio file: \u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Salvataggio file: \u0020 %1$s byte - %2$s</string>
+    <string name="saving_file_percentage_progress">Salvataggio file: \u0020 %1$d%% - %2$s byte / %3$s byte - %4$s</string>
     <string name="processing_image">Creazione immagine: \u0020 %1$s</string>
     <string name="error_saving_file">Error di salvataggio di %1$s: \u0020 %2$s</string>
     <string name="unknown_error">Errore sconosciuto</string>
@@ -277,10 +279,12 @@
         <string name="default_label">Default</string>
         <string name="default_allowed">Default - Permessa</string>
         <string name="allowed">Permessa</string>
+        <string name="request_allowed">%1$d. Permessa</string>
         <string name="allowed_plural">Permesse</string>
         <string name="third_party_plural">Terze parti</string>
         <string name="third_party_blocked">Terze parti - Bloccate</string>
         <string name="blocked">Bloccata</string>
+        <string name="request_blocked">%1$d. Bloccata</string>
         <string name="blocked_plural">Bloccate</string>
     <string name="blocklist">Blocklist</string>
     <string name="sublist">Sublist</string>

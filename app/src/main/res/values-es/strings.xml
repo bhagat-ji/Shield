@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017-2022 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -190,8 +190,8 @@
     <string name="file_is_mht">El archivo es un archivo de web MHT.</string>
     <string name="mht_checkbox_explanation">A veces se necesita especificar manualmente los archivos web MIME Encapsulated HTML (MHT) para que se abran correctamente.</string>
 
-    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-        The `%*$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Save Dialog.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.  `%%` writes a literal `%`.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="save_url">Guardar URL</string>
     <string name="save_archive">Guardar archivo</string>
     <string name="save_text">Guardar texto</string>
@@ -201,7 +201,9 @@
     <string name="bytes">bytes</string>
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="invalid_url">URL inválida</string>
-    <string name="saving_file">Guardando archivo:</string>
+    <string name="saving_file">Guardando archivo: \u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Guardando archivo: \u0020 %1$s bytes - %2$s</string>
+    <string name="saving_file_percentage_progress">Guardando archivo: \u0020 %1$d%% - %2$s bytes / %3$s bytes - %4$s</string>
     <string name="processing_image">Procesando imagen: \u0020 %1$s</string>
     <string name="error_saving_file">Error al guardar %1$s: \u0020 %2$s</string>
     <string name="unknown_error">Error desconocido</string>
@@ -278,10 +280,12 @@
         <string name="default_label">Por defecto</string>
         <string name="default_allowed">Por defecto - Permitida</string>
         <string name="allowed">Permitida</string>
+        <string name="request_allowed">%1$d. Permitida</string>
         <string name="allowed_plural">Permitidas</string>
         <string name="third_party_plural">Terceras partes</string>
         <string name="third_party_blocked">Tercera parte - Bloqueada</string>
         <string name="blocked">Bloqueada</string>
+        <string name="request_blocked">%1$d. Bloqueada</string>
         <string name="blocked_plural">Bloqueadas</string>
     <string name="blocklist">Lista de bloqueo</string>
     <string name="sublist">Sublista</string>

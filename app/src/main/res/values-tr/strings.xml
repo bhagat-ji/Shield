@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -244,10 +244,12 @@
         <string name="default_label">Varsayılan</string>
         <string name="default_allowed">Varsayılan - İzin verildi</string>
         <string name="allowed">İzin verildi</string>
+        <string name="request_allowed">%1$d. İzin verildi</string>
         <string name="allowed_plural">İzin verildi</string>
         <string name="third_party_plural">Üçüncü Taraflar</string>
         <string name="third_party_blocked">Üçüncü Taraf - Engellendi</string>
         <string name="blocked">Engellendi</string>
+        <string name="request_blocked">%1$d. Engellendi</string>
         <string name="blocked_plural">Engellendi</string>
     <string name="blocklist">Engel listesi</string>
     <string name="sublist">Alt liste</string>
