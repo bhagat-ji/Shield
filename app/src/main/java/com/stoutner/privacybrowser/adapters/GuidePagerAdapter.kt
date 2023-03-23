@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020,2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -34,6 +34,11 @@ class GuidePagerAdapter(fragmentManager: FragmentManager, private val context: C
         return 10
     }
 
+    // Setup each tab.
+    override fun getItem(tabNumber: Int): Fragment {
+        return GuideWebViewFragment.createTab(tabNumber)
+    }
+
     // Get the name of each tab.  Tab numbers start at 0.
     override fun getPageTitle(tab: Int): CharSequence {
         return when (tab) {
@@ -49,10 +54,5 @@ class GuidePagerAdapter(fragmentManager: FragmentManager, private val context: C
             9 -> context.getString(R.string.gui)
             else -> ""
         }
-    }
-
-    // Setup each tab.
-    override fun getItem(tabNumber: Int): Fragment {
-        return GuideWebViewFragment.createTab(tabNumber)
     }
 }

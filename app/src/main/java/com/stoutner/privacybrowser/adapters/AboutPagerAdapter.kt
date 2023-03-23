@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -32,7 +32,8 @@ import com.stoutner.privacybrowser.fragments.AboutWebViewFragment
 import java.util.LinkedList
 
 class AboutPagerAdapter(fragmentManager: FragmentManager, private val context: Context, private val blocklistVersions: Array<String>) :
-        FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
     // Define the class variables.
     private val aboutFragmentList = LinkedList<Fragment>()
 
@@ -40,20 +41,6 @@ class AboutPagerAdapter(fragmentManager: FragmentManager, private val context: C
     override fun getCount(): Int {
         // There are seven tabs.
         return 7
-    }
-
-    // Get the name of each tab.  Tab numbers start at 0.
-    override fun getPageTitle(tab: Int): CharSequence {
-        return when (tab) {
-            0 -> context.getString(R.string.version)
-            1 -> context.getString(R.string.permissions)
-            2 -> context.getString(R.string.privacy_policy)
-            3 -> context.getString(R.string.changelog)
-            4 -> context.getString(R.string.licenses)
-            5 -> context.getString(R.string.contributors)
-            6 -> context.getString(R.string.links)
-            else -> ""
-        }
     }
 
     // Setup each tab.
@@ -71,9 +58,17 @@ class AboutPagerAdapter(fragmentManager: FragmentManager, private val context: C
         return aboutFragmentList[tabNumber]
     }
 
-    // Get a tab.
-    fun getTabFragment(tabNumber: Int): Fragment {
-        // Return the tab fragment.
-        return aboutFragmentList[tabNumber]
+    // Get the name of each tab.  Tab numbers start at 0.
+    override fun getPageTitle(tab: Int): CharSequence {
+        return when (tab) {
+            0 -> context.getString(R.string.version)
+            1 -> context.getString(R.string.permissions)
+            2 -> context.getString(R.string.privacy_policy)
+            3 -> context.getString(R.string.changelog)
+            4 -> context.getString(R.string.licenses)
+            5 -> context.getString(R.string.contributors)
+            6 -> context.getString(R.string.links)
+            else -> ""
+        }
     }
 }
