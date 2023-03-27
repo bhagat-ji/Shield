@@ -1,0 +1,3 @@
+• Problem mit gelegentlich bei Neustarts auftretenden Abstürzen, die durch eine in Version 3.13.3. Fehlerbehebung verursacht wurden, behoben.
+• Schwarzweiß-Icon-Option hinzugefügt.
+• Mindest-API auf 24 (Android 7) angehoben.

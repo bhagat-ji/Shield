@@ -1,0 +1,3 @@
+• Fix an intermittent crash on restart caused by the race condition fix introduced in 3.13.3.
+• Add a monochrome icon option.
+• Bump the minimum API to 24 (Android 7).

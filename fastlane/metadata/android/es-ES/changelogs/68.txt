@@ -1,0 +1,3 @@
+• Corregir una caída intermitente en el reinicio causada por la corrección de la condición de carrera introducida en 3.13.3.
+• Añadir una opción de icono monocromo.
+• Aumentar el API mínimo a 24 (Android 7).

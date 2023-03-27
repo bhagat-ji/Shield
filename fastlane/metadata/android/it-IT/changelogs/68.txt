@@ -1,0 +1,3 @@
+• Correzione di un crash intermittente al riavvio provocato da una correzione per una "situazione di corsa" introdotta nella versione 3.13.3.
+• Aggiunta una opzione per l'icona monocromatica.
+• Spostamento della API minima a 24 (Android 7).
