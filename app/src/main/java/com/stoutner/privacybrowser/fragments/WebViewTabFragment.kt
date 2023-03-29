@@ -105,8 +105,8 @@ class WebViewTabFragment : Fragment() {
     }
 
     override fun onCreateView(layoutInflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Check to see if the fragment is being restarted.
-        return if (savedInstanceState == null) {  // The fragment is not being restarted.  Load and configure a new fragment.
+        // Check to see if the fragment is being restarted without the app being killed.
+        return if (savedInstanceState == null) {  // The fragment is not being restarted.  It is either new or is being restored after the app was killed.
             // Check to see if a new page is being created.
             if (requireArguments().getBoolean(CREATE_NEW_PAGE)) {  // A new page is being created.
                 // Get the variables from the arguments
@@ -129,9 +129,9 @@ class WebViewTabFragment : Fragment() {
 
                 // Return the new page view.
                 newPageView
-            } else {  // A page is being restored.
+            } else {  // A page is being restored after the app was killed.
                 // Get the saved states from the arguments.
-                val savedState = requireArguments().getBundle(SAVED_STATE)
+                val savedState = requireArguments().getBundle(SAVED_STATE)!!
                 val savedNestedScrollWebViewState = requireArguments().getBundle(SAVED_NESTED_SCROLL_WEBVIEW_STATE)!!
 
                 // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
@@ -149,7 +149,7 @@ class WebViewTabFragment : Fragment() {
                 nestedScrollWebView.restoreNestedScrollWebViewState(savedNestedScrollWebViewState)
 
                 // Restore the WebView state.
-                nestedScrollWebView.restoreState(savedState!!)
+                nestedScrollWebView.restoreState(savedState)
 
                 // Initialize the WebView.
                 newTabListener.initializeWebView(nestedScrollWebView, 0, progressBar, "", true)

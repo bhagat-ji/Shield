@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -185,11 +185,11 @@ class DomainSettingsFragment : Fragment() {
             webViewThemeLinearLayout.visibility = View.GONE
 
         // Setup the pinned labels.
-        val cNameLabel = getString(R.string.common_name) + "  "
-        val oNameLabel = getString(R.string.organization) + "  "
-        val uNameLabel = getString(R.string.organizational_unit) + "  "
-        val startDateLabel = getString(R.string.start_date) + "  "
-        val endDateLabel = getString(R.string.end_date) + "  "
+        val cNameLabel = getString(R.string.common_name)
+        val oNameLabel = getString(R.string.organization)
+        val uNameLabel = getString(R.string.organizational_unit)
+        val startDateLabel = getString(R.string.start_date)
+        val endDateLabel = getString(R.string.end_date)
 
         // Initialize the database handler.
         val domainsDatabaseHelper = DomainsDatabaseHelper(requireContext())

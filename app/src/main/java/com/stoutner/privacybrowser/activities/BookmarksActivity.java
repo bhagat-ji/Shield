@@ -287,7 +287,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Adjust the ActionMode and the menu according to the number of selected bookmarks.
                     if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
                         // List the number of selected bookmarks in the subtitle.
-                        mode.setSubtitle(getString(R.string.selected) + "  1");
+                        mode.setSubtitle(getString(R.string.selected) + "1");
 
                         // Show the `Move Up`, `Move Down`, and  `Edit` options.
                         moveBookmarkUpMenuItem.setVisible(true);
@@ -298,7 +298,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         updateMoveIcons();
                     } else {  // More than one bookmark is selected.
                         // List the number of selected bookmarks in the subtitle.
-                        mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
+                        mode.setSubtitle(getString(R.string.selected) + numberOfSelectedBookmarks);
 
                         // Hide non-applicable `MenuItems`.
                         moveBookmarkUpMenuItem.setVisible(false);
@@ -504,7 +504,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
                     // Create a Snackbar with the number of deleted bookmarks.
-                    bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.bookmarks_deleted) + "  " + numberOfBookmarksToDelete,
+                    bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.bookmarks_deleted) + numberOfBookmarksToDelete,
                             Snackbar.LENGTH_LONG)
                             .setAction(R.string.undo, view -> {
                                 // Do nothing because everything will be handled by `onDismissed()` below.

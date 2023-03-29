@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -394,7 +394,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     }
 
 
-    // Save and restore state.
+    // Save the state.
     fun saveNestedScrollWebViewState(): Bundle {
         // Create a saved state bundle.
         val savedState = Bundle()
@@ -434,6 +434,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         return savedState
     }
 
+    // Restore the state.
     fun restoreNestedScrollWebViewState(savedState: Bundle) {
         // Restore the class variables.
         domainSettingsApplied = savedState.getBoolean(DOMAIN_SETTINGS_APPLIED)

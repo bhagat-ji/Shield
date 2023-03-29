@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -164,7 +164,7 @@ class HttpAuthenticationDialog : DialogFragment() {
             realmTextView.text = httpAuthRealm
 
             // Initialize the host label and the spannable string builder.
-            val hostLabel = getString(R.string.host) + "  "
+            val hostLabel = getString(R.string.host)
             val hostStringBuilder = SpannableStringBuilder(hostLabel + httpAuthHost)
 
             // Set the blue color span.

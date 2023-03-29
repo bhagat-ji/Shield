@@ -28,7 +28,7 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">fr</string>
 
-    <!-- MainWebView. -->
+    <!-- MainWebView.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="privacy_mode">Mode privé</string>
     <string name="javascript_enabled">JavaScript activé</string>
     <string name="javascript_disabled">JavaScript désactivé</string>
@@ -44,12 +44,12 @@
     <string name="open_navigation_drawer">Ouvrir le panneau de navigation</string>
     <string name="close_navigation_drawer">Fermer le panneau de navigation</string>
     <string name="pin_drawer">Épingler le panneau</string>
-    <string name="unrecognized_url">URL inconnue :</string>
+    <string name="unrecognized_url">URL inconnue :\u0020</string>
     <string name="add_tab">Ajouter un onglet</string>
     <string name="close_tab">Fermer l\'onglet</string>
     <string name="new_tab">Nouvel onglet</string>
     <string name="loading">Chargement…</string>
-    <string name="error">Erreur :</string>
+    <string name="error">Erreur :\u0020</string>
     <string name="apply">Appliquer</string>
 
     <!-- Loading Blocklists. -->
@@ -64,7 +64,7 @@
     <string name="favorite_icon">Icône de Favoris</string>
     <string name="url_or_search_terms">Rechercher ou saisir adresse</string>
 
-    <!-- View SSL Certificate. -->
+    <!-- View SSL Certificate.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="view_ssl_certificate">Voir le certificat SSL</string>
     <string name="unencrypted_website">Site Web non-chiffré</string>
     <string name="no_ssl_certificate">La communication avec ce site n\'est pas chiffrée. Cela permet à des tiers d\'intercepter des informations, traquer votre activité,
@@ -72,18 +72,18 @@
     <string name="ssl_certificate">Certificat SSL</string>
     <string name="close">Fermer</string>
     <string name="domain">Domaine</string>
-    <string name="domain_label">Domaine :</string>
-    <string name="ip_addresses">Addresse(s) IP :</string>
+    <string name="domain_label">Domaine :\u0020</string>
+    <string name="ip_addresses">Addresse(s) IP :\u0020</string>
     <string name="issued_to">Delivré à</string>
     <string name="issued_by">Délivré par</string>
-    <string name="common_name">Nom courant (CN) :</string>
-    <string name="organization">Organisation (O) :</string>
-    <string name="organizational_unit">Unité Organisationelle (OU) :</string>
+    <string name="common_name">Nom courant (CN) :\u0020</string>
+    <string name="organization">Organisation (O) :\u0020</string>
+    <string name="organizational_unit">Unité Organisationelle (OU) :\u0020</string>
     <string name="valid_dates">Dates de validités</string>
-    <string name="start_date">Début :</string>
-    <string name="end_date">Fin :</string>
+    <string name="start_date">Début :\u0020</string>
+    <string name="end_date">Fin :\u0020</string>
 
-    <!-- SSL Certificate Error. -->
+    <!-- SSL Certificate Error.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="ssl_certificate_error">Erreur de certificat SSL</string>
     <string name="proceed">Continuer</string>
     <string name="future_certificate">La date de début du certificat est dans le futur</string>
@@ -93,7 +93,7 @@
     <string name="invalid_date">La date du certificat est invalide</string>
     <string name="invalid_certificate">Le certificat est invalide</string>
     <string name="url">URL</string>
-    <string name="url_label">URL :</string>
+    <string name="url_label">URL :\u0020</string>
 
     <!-- Pinned Mismatch. -->
     <string name="pinned_mismatch">Problème de localisation</string>
@@ -101,9 +101,9 @@
     <string name="current">Actuelle</string>
     <string name="pinned">Localisé</string>
 
-    <!-- HTTP Authentication. -->
+    <!-- HTTP Authentication.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="http_authentication">Authentification HTTP</string>
-    <string name="host">Nom d\'hôte :</string>
+    <string name="host">Nom d\'hôte :\u0020</string>
     <string name="username">Nom d\'utilisateur</string>
     <string name="password">Mot de passe</string>
 
@@ -249,14 +249,14 @@
     <string name="move_to_folder">Déplacer vers dossier</string>
     <string name="move">Déplacer</string>
 
-    <!-- Bookmarks Contextual App Bar. -->
-    <string name="selected">Selectionnés :</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting. -->
+    <string name="selected">Selectionnés :\u0020</string>  <!--This is a plural adjective.-->
     <string name="move_up">Monter</string>
     <string name="move_down">Descendre</string>
     <string name="edit">Modifier</string>
     <string name="delete">Supprimer</string>
     <string name="select_all">Tout sélectionner</string>
-    <string name="bookmarks_deleted">Favoris supprimés :</string>
+    <string name="bookmarks_deleted">Favoris supprimés :\u0020</string>
     <string name="undo">Annuler</string>
 
     <!-- Bookmarks Database View. -->
@@ -399,51 +399,52 @@
     <string name="waiting_for_orbot">En attente de la connexion d\'Orbot.</string>
     <string name="custom_proxy_invalid">L\'URL du proxy personnalisé n\'est pas valide.</string>
 
-    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- About Activity.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">À propos</string>
     <string name="version">Version</string>
         <string name="version_code">Version %1$s (Code de la version %2$d)</string>
         <string name="hardware">Matériel</string>
-            <string name="brand">Marque :</string>
-            <string name="manufacturer">Constructeur :</string>
-            <string name="model">Modèle :</string>
-            <string name="device">Terminal :</string>
-            <string name="bootloader">Bootloader :</string>
-            <string name="radio">Radio :</string>
+            <string name="brand">Marque :\u0020</string>
+            <string name="manufacturer">Constructeur :\u0020</string>
+            <string name="model">Modèle :\u0020</string>
+            <string name="device">Terminal :\u0020</string>
+            <string name="bootloader">Bootloader :\u0020</string>
+            <string name="radio">Radio :\u0020</string>
         <string name="software">Logiciel</string>
-            <string name="android">Android :</string>
+            <string name="android">Android :\u0020</string>
             <string name="api">%1$s (API %2$d)</string>
-            <string name="security_patch">MAJ de sécurité :</string>
-            <string name="build">Version :</string>
-            <string name="kernel">Noyau:</string>
-            <string name="webview_provider">Fournisseur WebView :</string>
-            <string name="webview_version">Version WebView :</string>
-            <string name="orbot">Orbot :</string>
-            <string name="i2p">I2P :</string>
+            <string name="security_patch">MAJ de sécurité :\u0020</string>
+            <string name="build">Version :\u0020</string>
+            <string name="kernel">Noyau :\u0020</string>
+            <string name="webview_provider">Fournisseur WebView :\u0020</string>
+            <string name="webview_version">Version WebView :\u0020</string>
+            <string name="orbot">Orbot :\u0020</string>
+            <string name="i2p">I2P :\u0020</string>
                 <string name="fdroid_flavor">%1$s (Version F-Droid)</string>
                 <string name="google_play_flavor">%1$s (Version Google Play)</string>
-            <string name="openkeychain">OpenKeychain :</string>
+            <string name="openkeychain">OpenKeychain :\u0020</string>
         <string name="memory_usage">Utilisation de la mémoire</string>
-            <string name="app_consumed_memory">Mémoire consommée par l\'application :</string>
-            <string name="app_available_memory">Mémoire disponible de l\'application :</string>
-            <string name="app_total_memory">Mémoire totale de l\'application :</string>
-            <string name="app_maximum_memory">Mémoire maximale de l\'application :</string>
-            <string name="system_consumed_memory">Mémoire consommée par le système :</string>
-            <string name="system_available_memory">Mémoire système disponible :</string>
-            <string name="system_total_memory">Mémoire totale du système :</string>
+            <string name="app_consumed_memory">Mémoire consommée par l\'application :\u0020</string>
+            <string name="app_available_memory">Mémoire disponible de l\'application :\u0020</string>
+            <string name="app_total_memory">Mémoire totale de l\'application :\u0020</string>
+            <string name="app_maximum_memory">Mémoire maximale de l\'application :\u0020</string>
+            <string name="system_consumed_memory">Mémoire consommée par le système :\u0020</string>
+            <string name="system_available_memory">Mémoire système disponible :\u0020</string>
+            <string name="system_total_memory">Mémoire totale du système :\u0020</string>
             <string name="mebibyte">Mio</string>
-            <string name="easylist_label">EasyList :</string>
-            <string name="easyprivacy_label">EasyPrivacy :</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List :</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List :</string>
-            <string name="ultralist_label">UltraList :</string>
-            <string name="ultraprivacy_label">UltraPrivacy :</string>
+            <string name="easylist_label">EasyList :\u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy :\u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List :\u0020</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking List :\u0020</string>
+            <string name="ultralist_label">UltraList :\u0020</string>
+            <string name="ultraprivacy_label">UltraPrivacy :\u0020</string>
         <string name="package_signature">Signature de paquets</string>
-            <string name="issuer_dn">DN émetteur :</string>
-            <string name="subject_dn">Dn sujet :</string>
-            <string name="certificate_version">Version du certificat :</string>
-            <string name="serial_number">Numéro de série :</string>
-            <string name="signature_algorithm">Algorithme de chiffrement :</string>
+            <string name="issuer_dn">DN émetteur :\u0020</string>
+            <string name="subject_dn">Dn sujet :\u0020</string>
+            <string name="certificate_version">Version du certificat :\u0020</string>
+            <string name="serial_number">Numéro de série :\u0020</string>
+            <string name="signature_algorithm">Algorithme de chiffrement :\u0020</string>
         <string name="version_info_copied">Informations de version copiées.</string>
         <string name="privacy_browser_version_txt">Privacy Browser Version %1$s.txt</string>
         <string name="privacy_browser_version_png">Privacy Browser Version %1$s.png</string>

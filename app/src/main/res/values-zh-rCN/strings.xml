@@ -31,7 +31,7 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">zh-rCN</string>
 
-    <!-- MainWebView. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="privacy_mode">隐私模式</string>
     <string name="javascript_enabled">开启 JavaScript</string>
     <string name="javascript_disabled">关闭 JavaScript</string>
@@ -47,12 +47,12 @@
     <string name="open_navigation_drawer">打开导航栏</string>
     <string name="close_navigation_drawer">关闭导航栏</string>
     <string name="pin_drawer">引脚栏</string>
-    <string name="unrecognized_url">无法识别的链接:</string>
+    <string name="unrecognized_url">无法识别的链接: \u0020</string>
     <string name="add_tab">增加新的窗口</string>
     <string name="close_tab">关闭窗口</string>
     <string name="new_tab">新窗口</string>
     <string name="loading">加载中…</string>
-    <string name="error">错误:</string>
+    <string name="error">错误: \u0020</string>
     <string name="apply">请求</string>
 
     <!-- Loading Blocklists. -->
@@ -67,25 +67,25 @@
     <string name="favorite_icon">喜爱的图标</string>
     <string name="url_or_search_terms">输入网址或关键词</string>
 
-    <!-- View SSL Certificate. -->
+    <!-- View SSL Certificate. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="view_ssl_certificate">查看 SSL 证书</string>
     <string name="unencrypted_website">未加密的网站</string>
     <string name="no_ssl_certificate">该网站未加密. 这将允许第三方拦截信息, 攻击你的浏览器并注入恶意的病毒.</string>
     <string name="ssl_certificate">SSL 证书</string>
     <string name="close">关闭</string>
     <string name="domain">域名</string>
-    <string name="domain_label">域名:</string>
-    <string name="ip_addresses">IP 地址:</string>
+    <string name="domain_label">域名: \u0020</string>
+    <string name="ip_addresses">IP 地址: \u0020</string>
     <string name="issued_to">接收者</string>
     <string name="issued_by">发送者</string>
-    <string name="common_name">常用名 (CN):</string>
-    <string name="organization">组织 (O):</string>
-    <string name="organizational_unit">组织单位 (OU):</string>
+    <string name="common_name">常用名 (CN): \u0020</string>
+    <string name="organization">组织 (O): \u0020</string>
+    <string name="organizational_unit">组织单位 (OU): \u0020</string>
     <string name="valid_dates">有效期</string>
-    <string name="start_date">开始时间:</string>
-    <string name="end_date">结束时间:</string>
+    <string name="start_date">开始时间: \u0020</string>
+    <string name="end_date">结束时间: \u0020</string>
 
-    <!-- SSL Certificate Error. -->
+    <!-- SSL Certificate Error.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="ssl_certificate_error">SSL 证书错误</string>
     <string name="proceed">继续</string>
     <string name="future_certificate">这个证书还未开始</string>
@@ -95,7 +95,7 @@
     <string name="invalid_date">证书日期无效</string>
     <string name="invalid_certificate">证书无效</string>
     <string name="url">链接</string>
-    <string name="url_label">链接:</string>
+    <string name="url_label">链接: \u0020</string>
 
     <!-- Pinned Mismatch. -->
     <string name="pinned_mismatch">固定不匹配</string>
@@ -103,9 +103,9 @@
     <string name="current">当前的</string>
     <string name="pinned">固定</string>
 
-    <!-- HTTP Authentication. -->
+    <!-- HTTP Authentication. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="http_authentication">HTTP 验证</string>
-    <string name="host">Host:</string>
+    <string name="host">Host: \u0020</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
 
@@ -250,14 +250,14 @@
     <string name="move_to_folder">移动到文件夹</string>
     <string name="move">移动</string>
 
-    <!-- Bookmarks Contextual App Bar. -->
-    <string name="selected">选中:</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <string name="selected">选中: \u0020</string>  <!--This is a plural adjective.-->
     <string name="move_up">向上</string>
     <string name="move_down">向下</string>
     <string name="edit">编辑</string>
     <string name="delete">删除</string>
     <string name="select_all">选中所有</string>
-    <string name="bookmarks_deleted">书签已删除:</string>
+    <string name="bookmarks_deleted">书签已删除: \u0020</string>
     <string name="undo">取消</string>
 
     <!-- Bookmarks Database View. -->
@@ -401,45 +401,46 @@
     <string name="waiting_for_orbot">等待Orbot链接.</string>
     <string name="custom_proxy_invalid">自定义代理无效.</string>
 
-    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- About Activity.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">关于 Privacy Browser</string>
     <string name="version">版本</string>
         <string name="version_code">版本 %1$s (版本代码 %2$d)</string>
         <string name="hardware">硬件</string>
-            <string name="brand">品牌:</string>
-            <string name="manufacturer">制造商:</string>
-            <string name="model">型号:</string>
-            <string name="device">设备:</string>
-            <string name="bootloader">Bootloader:</string>
-            <string name="radio">Radio:</string>
+            <string name="brand">品牌: \u0020</string>
+            <string name="manufacturer">制造商: \u0020</string>
+            <string name="model">型号: \u0020</string>
+            <string name="device">设备: \u0020</string>
+            <string name="bootloader">Bootloader: \u0020</string>
+            <string name="radio">Radio: \u0020</string>
         <string name="software">软件</string>
-            <string name="android">安卓:</string>
+            <string name="android">安卓: \u0020</string>
             <string name="api">%1$s (API %2$d)</string>
-            <string name="security_patch">安全补丁:</string>
-            <string name="build">Build:</string>
-            <string name="kernel">内核:</string>
-            <string name="webview_provider">WebView Provider:</string>
-            <string name="webview_version">WebView Version:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="i2p">I2P:</string>
+            <string name="security_patch">安全补丁: \u0020</string>
+            <string name="build">Build: \u0020</string>
+            <string name="kernel">内核: \u0020</string>
+            <string name="webview_provider">WebView Provider: \u0020</string>
+            <string name="webview_version">WebView Version: \u0020</string>
+            <string name="orbot">Orbot: \u0020</string>
+            <string name="i2p">I2P: \u0020</string>
                 <string name="fdroid_flavor">%1$s (F-Droid flavor)</string>
                 <string name="google_play_flavor">%1$s (Google Play flavor)</string>
-            <string name="openkeychain">OpenKeychain:</string>
+            <string name="openkeychain">OpenKeychain: \u0020</string>
         <string name="memory_usage">内存使用情况</string>
-            <string name="app_consumed_memory">应用程序占用内存:</string>
-            <string name="app_available_memory">应用可用内存:</string>
-            <string name="app_total_memory">应用所有内存:</string>
-            <string name="app_maximum_memory">应用最大内存:</string>
-            <string name="system_consumed_memory">系统占用内存:</string>
-            <string name="system_available_memory">系统可用内存:</string>
-            <string name="system_total_memory">系统所有内存:</string>
+            <string name="app_consumed_memory">应用程序占用内存: \u0020</string>
+            <string name="app_available_memory">应用可用内存: \u0020</string>
+            <string name="app_total_memory">应用所有内存: \u0020</string>
+            <string name="app_maximum_memory">应用最大内存: \u0020</string>
+            <string name="system_consumed_memory">系统占用内存: \u0020</string>
+            <string name="system_available_memory">系统可用内存: \u0020</string>
+            <string name="system_total_memory">系统所有内存: \u0020</string>
             <string name="mebibyte">兆</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List:</string>
-            <string name="ultralist_label">UltraList:</string>
-            <string name="ultraprivacy_label">UltraPrivacy:</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
         <string name="package_signature">包名</string>
             <string name="issuer_dn">发行人 DN:</string>
             <string name="subject_dn">主题 DN:</string>

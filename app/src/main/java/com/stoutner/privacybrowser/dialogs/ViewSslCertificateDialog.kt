@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -229,13 +229,13 @@ class ViewSslCertificateDialog : DialogFragment() {
             val endDateTextView = alertDialog.findViewById<TextView>(R.id.end_date)!!
 
             // Setup the labels.
-            val domainLabel = getString(R.string.domain_label) + "  "
-            val ipAddressesLabel = getString(R.string.ip_addresses) + "  "
-            val cNameLabel = getString(R.string.common_name) + "  "
-            val oNameLabel = getString(R.string.organization) + "  "
-            val uNameLabel = getString(R.string.organizational_unit) + "  "
-            val startDateLabel = getString(R.string.start_date) + "  "
-            val endDateLabel = getString(R.string.end_date) + "  "
+            val domainLabel = getString(R.string.domain_label)
+            val ipAddressesLabel = getString(R.string.ip_addresses)
+            val cNameLabel = getString(R.string.common_name)
+            val oNameLabel = getString(R.string.organization)
+            val uNameLabel = getString(R.string.organizational_unit)
+            val startDateLabel = getString(R.string.start_date)
+            val endDateLabel = getString(R.string.end_date)
 
             // Create spannable string builders for each text view that needs multiple colors of text.
             val domainStringBuilder = SpannableStringBuilder(domainLabel + domainString)

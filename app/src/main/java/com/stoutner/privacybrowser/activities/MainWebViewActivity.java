@@ -2621,7 +2621,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         startActivity(emailIntent);
                     } catch (ActivityNotFoundException exception) {
                         // Display a snackbar.
-                        Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                        Snackbar.make(currentWebView, getString(R.string.error) + exception, Snackbar.LENGTH_INDEFINITE).show();
                     }
 
                     // Consume the event.
@@ -2950,7 +2950,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 currentWebView.loadUrl(temporaryMhtFile.toString());
             } catch (Exception exception) {
                 // Display a snackbar.
-                Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(currentWebView, getString(R.string.error) + exception, Snackbar.LENGTH_INDEFINITE).show();
             }
         } else {  // Let the WebView handle opening of the file.
             // Open the file.
@@ -4326,7 +4326,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             startActivity(openWithAppIntent);
         } catch (ActivityNotFoundException exception) {  // There are no apps available to open the URL.
             // Show a snackbar with the error.
-            Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(currentWebView, getString(R.string.error) + exception, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -4346,7 +4346,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             startActivity(openWithBrowserIntent);
         } catch (ActivityNotFoundException exception) {  // There are no browsers available to open the URL.
             // Show a snackbar with the error.
-            Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(currentWebView, getString(R.string.error) + exception, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -5382,7 +5382,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         startActivity(emailIntent);
                     } catch (ActivityNotFoundException exception) {
                         // Display a snackbar.
-                        Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                        Snackbar.make(currentWebView, getString(R.string.error) + exception, Snackbar.LENGTH_INDEFINITE).show();
                     }
 
 
@@ -5403,7 +5403,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         startActivity(dialIntent);
                     } catch (ActivityNotFoundException exception) {
                         // Display a snackbar.
-                        Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                        Snackbar.make(currentWebView, getString(R.string.error) + exception, Snackbar.LENGTH_INDEFINITE).show();
                     }
 
                     // Returning true indicates Privacy Browser is handling the URL by creating an intent.
@@ -5425,7 +5425,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     try {
                         startActivity(genericIntent);
                     } catch (ActivityNotFoundException exception) {
-                        Snackbar.make(nestedScrollWebView, getString(R.string.unrecognized_url) + "  " + url, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(nestedScrollWebView, getString(R.string.unrecognized_url) + url, Snackbar.LENGTH_SHORT).show();
                     }
 
                     // Returning true indicates Privacy Browser is handling the URL by creating an intent.
@@ -5852,7 +5852,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 if ((currentDomainName != null) && !currentDomainName.isEmpty()) {
                     // Get the IP addresses for the current URI.
-                    GetHostIpAddressesCoroutine.getAddresses(currentDomainName, nestedScrollWebView, getSupportFragmentManager(), getString(R.string.pinned_mismatch));
+                    GetHostIpAddressesCoroutine.checkPinnedMismatch(currentDomainName, nestedScrollWebView, getSupportFragmentManager(), getString(R.string.pinned_mismatch));
                 }
 
                 // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)

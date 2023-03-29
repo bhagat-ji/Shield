@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2021-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -90,13 +90,13 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
         val endDateTextView = tabLayout.findViewById<TextView>(R.id.end_date)
 
         // Setup the labels.
-        val domainNameLabel = context.getString(R.string.domain_label) + "  "
-        val ipAddressesLabel = context.getString(R.string.ip_addresses) + "  "
-        val cNameLabel = context.getString(R.string.common_name) + "  "
-        val oNameLabel = context.getString(R.string.organization) + "  "
-        val uNameLabel = context.getString(R.string.organizational_unit) + "  "
-        val startDateLabel = context.getString(R.string.start_date) + "  "
-        val endDateLabel = context.getString(R.string.end_date) + "  "
+        val domainNameLabel = context.getString(R.string.domain_label)
+        val ipAddressesLabel = context.getString(R.string.ip_addresses)
+        val cNameLabel = context.getString(R.string.common_name)
+        val oNameLabel = context.getString(R.string.organization)
+        val uNameLabel = context.getString(R.string.organizational_unit)
+        val startDateLabel = context.getString(R.string.start_date)
+        val endDateLabel = context.getString(R.string.end_date)
 
         // Convert the URL to a URI.
         val currentUri = Uri.parse(nestedScrollWebView.url)

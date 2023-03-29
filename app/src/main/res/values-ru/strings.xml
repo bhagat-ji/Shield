@@ -25,7 +25,7 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">ru</string> -->
 
-    <!-- MainWebView. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="privacy_mode">Режим приватности</string>
     <string name="javascript_enabled">JavaScript включен</string>
     <string name="javascript_disabled">JavaScript отключен</string>
@@ -41,12 +41,12 @@
     <string name="open_navigation_drawer">Открыть панель навигации</string>
     <string name="close_navigation_drawer">Закрыть панель навигации</string>
     <string name="pin_drawer">Закрепить панель</string>
-    <string name="unrecognized_url">Нераспознанный URL:</string>
+    <string name="unrecognized_url">Нераспознанный URL: \u0020</string>
     <string name="add_tab">Добавить вкладку</string>
     <string name="close_tab">Закрыть вкладку</string>
     <string name="new_tab">Новая вкладка</string>
     <string name="loading">Загрузка…</string>
-    <string name="error">Ошибка:</string>
+    <string name="error">Ошибка: \u0020</string>
     <string name="apply">Применить</string>
 
     <!-- Loading Blocklists. -->
@@ -61,25 +61,25 @@
     <string name="favorite_icon">Значок сайта</string>
     <string name="url_or_search_terms">URL или поисковый запрос</string>
 
-    <!-- View SSL Certificate. -->
+    <!-- View SSL Certificate. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="view_ssl_certificate">Просмотр сертификата SSL</string>
     <string name="unencrypted_website">Незашифрованный веб-сайт</string>
     <string name="no_ssl_certificate">Соединение с этим сайтом не зашифровано. Это позволяет третьим сторонам перехватывать информацию, отслеживать просмотр и внедрять вредоносный контент.</string>
     <string name="ssl_certificate">Сертификат SSL</string>
     <string name="close">Закрыть</string>
     <string name="domain">Домен</string>
-    <string name="domain_label">Домен:</string>
-    <string name="ip_addresses">IP-адреса:</string>
+    <string name="domain_label">Домен: \u0020</string>
+    <string name="ip_addresses">IP-адреса: \u0020</string>
     <string name="issued_to">Кому выдан</string>
     <string name="issued_by">Кем выдан</string>
-    <string name="common_name">Общепринятое имя (CN):</string>
-    <string name="organization">Организация (O):</string>
-    <string name="organizational_unit">Подразделение (OU):</string>
+    <string name="common_name">Общепринятое имя (CN): \u0020</string>
+    <string name="organization">Организация (O): \u0020</string>
+    <string name="organizational_unit">Подразделение (OU): \u0020</string>
     <string name="valid_dates">Срок действия</string>
-    <string name="start_date">Начало:</string>
-    <string name="end_date">Конец:</string>
+    <string name="start_date">Начало: \u0020</string>
+    <string name="end_date">Конец: \u0020</string>
 
-    <!-- SSL Certificate Error. -->
+    <!-- SSL Certificate Error.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="ssl_certificate_error">Ошибка сертификата SSL</string>
     <string name="proceed">Продолжить</string>
     <string name="future_certificate">Дата начала действия сертификата еще не наступила</string>
@@ -89,7 +89,7 @@
     <string name="invalid_date">Недопустимая дата сертификата</string>
     <string name="invalid_certificate">Недопустимый сертификат.</string>
     <string name="url">URL</string>
-    <string name="url_label">URL:</string>
+    <string name="url_label">URL: \u0020</string>
 
     <!-- Pinned Mismatch. -->
     <string name="pinned_mismatch">Несоответствие закрепленных</string>
@@ -97,9 +97,9 @@
     <string name="current">Текущий</string>
     <string name="pinned">Закрепленный</string>
 
-    <!-- HTTP Authentication. -->
+    <!-- HTTP Authentication. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="http_authentication">Аутентификация HTTP</string>
-    <string name="host">Host:</string>
+    <string name="host">Host: \u0020</string>
     <string name="username">Имя пользователя</string>
     <string name="password">Пароль</string>
 
@@ -245,14 +245,14 @@
     <string name="move_to_folder">Переместить в папку</string>
     <string name="move">Переместить</string>
 
-    <!-- Bookmarks Contextual App Bar. -->
-    <string name="selected">выбраны:</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <string name="selected">выбраны: \u0020</string>  <!--This is a plural adjective.-->
     <string name="move_up">Вверх</string>
     <string name="move_down">Вниз</string>
     <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="select_all">Выбрать все</string>
-    <string name="bookmarks_deleted">Закладок удалены:</string>
+    <string name="bookmarks_deleted">Закладок удалены: \u0020</string>
     <string name="undo">Вернуть</string>
 
     <!-- Bookmarks Database View. -->
@@ -397,51 +397,52 @@
     <string name="waiting_for_orbot">Ожидание подключения Orbot.</string>
     <string name="custom_proxy_invalid">URL пользовательского прокси недействителен.</string>
 
-    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- About Activity.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">О Privacy Browser</string>
     <string name="version">Версия</string>
         <string name="version_code">Версия %1$s (код версии %2$d)</string>
         <string name="hardware">Оборудование</string>
-            <string name="brand">Бренд:</string>
-            <string name="manufacturer">Производитель:</string>
-            <string name="model">Модель:</string>
-            <string name="device">Устройство:</string>
-            <string name="bootloader">Загрузчик:</string>
-            <string name="radio">Радио:</string>
+            <string name="brand">Бренд: \u0020</string>
+            <string name="manufacturer">Производитель: \u0020</string>
+            <string name="model">Модель: \u0020</string>
+            <string name="device">Устройство: \u0020</string>
+            <string name="bootloader">Загрузчик: \u0020</string>
+            <string name="radio">Радио: \u0020</string>
         <string name="software">Программное обеспечение</string>
-            <string name="android">Android:</string>
+            <string name="android">Android: \u0020</string>
             <string name="api">%1$s (API %2$d)</string>
-            <string name="security_patch">Патч безопасности:</string>
-            <string name="build">Сборка:</string>
-            <string name="kernel">Ядро:</string>
-            <string name="webview_provider">Провайдер WebView:</string>
-            <string name="webview_version">Версия WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="i2p">I2P:</string>
+            <string name="security_patch">Патч безопасности: \u0020</string>
+            <string name="build">Сборка: \u0020</string>
+            <string name="kernel">Ядро: \u0020</string>
+            <string name="webview_provider">Провайдер WebView: \u0020</string>
+            <string name="webview_version">Версия WebView: \u0020</string>
+            <string name="orbot">Orbot: \u0020</string>
+            <string name="i2p">I2P: \u0020</string>
                 <string name="fdroid_flavor">%1$s (F-Droid-версия)</string>
                 <string name="google_play_flavor">%1$s (Google Play-версия)</string>
-            <string name="openkeychain">OpenKeychain:</string>
+            <string name="openkeychain">OpenKeychain: \u0020</string>
         <string name="memory_usage">Использование памяти</string>
-            <string name="app_consumed_memory">Потребляемая приложением память:</string>
-            <string name="app_available_memory">Доступная приложению память:</string>
-            <string name="app_total_memory">Общая память приложения:</string>
-            <string name="app_maximum_memory">Максимальная память приложения:</string>
-            <string name="system_consumed_memory">Потребляемая системой память:</string>
-            <string name="system_available_memory">Доступная системе память:</string>
-            <string name="system_total_memory">Общая память системы:</string>
+            <string name="app_consumed_memory">Потребляемая приложением память: \u0020</string>
+            <string name="app_available_memory">Доступная приложению память: \u0020</string>
+            <string name="app_total_memory">Общая память приложения: \u0020</string>
+            <string name="app_maximum_memory">Максимальная память приложения: \u0020</string>
+            <string name="system_consumed_memory">Потребляемая системой память: \u0020</string>
+            <string name="system_available_memory">Доступная системе память: \u0020</string>
+            <string name="system_total_memory">Общая память системы: \u0020</string>
             <string name="mebibyte">МиБ</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List:</string>
-            <string name="ultralist_label">UltraList:</string>
-            <string name="ultraprivacy_label">UltraPrivacy:</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
         <string name="package_signature">Подпись пакета</string>
-            <string name="issuer_dn">DN эмитента:</string>
-            <string name="subject_dn">DN субъекта:</string>
-            <string name="certificate_version">Версия сертификата:</string>
-            <string name="serial_number">Серийный номер:</string>
-            <string name="signature_algorithm">Алгоритм подписи:</string>
+            <string name="issuer_dn">DN эмитента: \u0020</string>
+            <string name="subject_dn">DN субъекта: \u0020</string>
+            <string name="certificate_version">Версия сертификата: \u0020</string>
+            <string name="serial_number">Серийный номер: \u0020</string>
+            <string name="signature_algorithm">Алгоритм подписи: \u0020</string>
         <string name="version_info_copied">Информация о версии скопирована.</string>
         <string name="privacy_browser_version_txt">Версия Privacy Browser %1$s.txt</string>
         <string name="privacy_browser_version_png">Версия Privacy Browser %1$s.png</string>

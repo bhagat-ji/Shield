@@ -276,35 +276,35 @@ class AboutVersionFragment : Fragment() {
 
         // Setup the labels.
         val version = getString(R.string.version_code, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
-        val brandLabel = getString(R.string.brand) + "  "
-        val manufacturerLabel = getString(R.string.manufacturer) + "  "
-        val modelLabel = getString(R.string.model) + "  "
-        val deviceLabel = getString(R.string.device) + "  "
-        val bootloaderLabel = getString(R.string.bootloader) + "  "
-        val androidLabel = getString(R.string.android) + "  "
-        val buildLabel = getString(R.string.build) + "  "
-        val kernelLabel = getString(R.string.kernel) + "  "
-        val webViewVersionLabel = getString(R.string.webview_version) + "  "
-        appConsumedMemoryLabel = getString(R.string.app_consumed_memory) + "  "
-        appAvailableMemoryLabel = getString(R.string.app_available_memory) + "  "
-        appTotalMemoryLabel = getString(R.string.app_total_memory) + "  "
-        appMaximumMemoryLabel = getString(R.string.app_maximum_memory) + "  "
-        systemConsumedMemoryLabel = getString(R.string.system_consumed_memory) + "  "
-        systemAvailableMemoryLabel = getString(R.string.system_available_memory) + "  "
-        systemTotalMemoryLabel = getString(R.string.system_total_memory) + "  "
-        val easyListLabel = getString(R.string.easylist_label) + "  "
-        val easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  "
-        val fanboyAnnoyanceLabel = getString(R.string.fanboys_annoyance_label) + "  "
-        val fanboySocialLabel = getString(R.string.fanboys_social_label) + "  "
-        val ultraListLabel = getString(R.string.ultralist_label) + "  "
-        val ultraPrivacyLabel = getString(R.string.ultraprivacy_label) + "  "
-        val issuerDNLabel = getString(R.string.issuer_dn) + "  "
-        val subjectDNLabel = getString(R.string.subject_dn) + "  "
-        val startDateLabel = getString(R.string.start_date) + "  "
-        val endDateLabel = getString(R.string.end_date) + "  "
-        val certificateVersionLabel = getString(R.string.certificate_version) + "  "
-        val serialNumberLabel = getString(R.string.serial_number) + "  "
-        val signatureAlgorithmLabel = getString(R.string.signature_algorithm) + "  "
+        val brandLabel = getString(R.string.brand)
+        val manufacturerLabel = getString(R.string.manufacturer)
+        val modelLabel = getString(R.string.model)
+        val deviceLabel = getString(R.string.device)
+        val bootloaderLabel = getString(R.string.bootloader)
+        val androidLabel = getString(R.string.android)
+        val buildLabel = getString(R.string.build)
+        val kernelLabel = getString(R.string.kernel)
+        val webViewVersionLabel = getString(R.string.webview_version)
+        appConsumedMemoryLabel = getString(R.string.app_consumed_memory)
+        appAvailableMemoryLabel = getString(R.string.app_available_memory)
+        appTotalMemoryLabel = getString(R.string.app_total_memory)
+        appMaximumMemoryLabel = getString(R.string.app_maximum_memory)
+        systemConsumedMemoryLabel = getString(R.string.system_consumed_memory)
+        systemAvailableMemoryLabel = getString(R.string.system_available_memory)
+        systemTotalMemoryLabel = getString(R.string.system_total_memory)
+        val easyListLabel = getString(R.string.easylist_label)
+        val easyPrivacyLabel = getString(R.string.easyprivacy_label)
+        val fanboyAnnoyanceLabel = getString(R.string.fanboys_annoyance_label)
+        val fanboySocialLabel = getString(R.string.fanboys_social_label)
+        val ultraListLabel = getString(R.string.ultralist_label)
+        val ultraPrivacyLabel = getString(R.string.ultraprivacy_label)
+        val issuerDNLabel = getString(R.string.issuer_dn)
+        val subjectDNLabel = getString(R.string.subject_dn)
+        val startDateLabel = getString(R.string.start_date)
+        val endDateLabel = getString(R.string.end_date)
+        val certificateVersionLabel = getString(R.string.certificate_version)
+        val serialNumberLabel = getString(R.string.serial_number)
+        val signatureAlgorithmLabel = getString(R.string.signature_algorithm)
 
         // The WebView layout is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
         // Once the minimum API >= 26 this can be accomplished with the WebView package info.
@@ -421,7 +421,7 @@ class AboutVersionFragment : Fragment() {
         // Null must be checked because some Samsung tablets report a null value for the radio instead of an empty string.  Grrrr.  <https://redmine.stoutner.com/issues/701>
         if (radio != null && radio.isNotEmpty()) {
             // Setup the label.
-            val radioLabel = getString(R.string.radio) + "  "
+            val radioLabel = getString(R.string.radio)
 
             // Create a spannable string builder.
             val radioStringBuilder = SpannableStringBuilder(radioLabel + radio)
@@ -437,7 +437,7 @@ class AboutVersionFragment : Fragment() {
         }
 
         // Setup the label.
-        val securityPatchLabel = getString(R.string.security_patch) + "  "
+        val securityPatchLabel = getString(R.string.security_patch)
 
         // Get the security patch version.
         val securityPatch = Build.VERSION.SECURITY_PATCH
@@ -452,7 +452,7 @@ class AboutVersionFragment : Fragment() {
         securityPatchTextView.text = securityPatchStringBuilder
 
         // Create the WebView provider label.
-        val webViewProviderLabel = getString(R.string.webview_provider) + "  "
+        val webViewProviderLabel = getString(R.string.webview_provider)
 
         // Get the current WebView package info.
         val webViewPackageInfo = WebViewCompat.getCurrentWebViewPackage(requireContext())!!
@@ -472,7 +472,7 @@ class AboutVersionFragment : Fragment() {
         // Only populate the Orbot text view if it is installed.
         if (orbot.isNotEmpty()) {
             // Setup the label.
-            val orbotLabel = getString(R.string.orbot) + "  "
+            val orbotLabel = getString(R.string.orbot)
 
             // Create a spannable string builder.
             val orbotStringBuilder = SpannableStringBuilder(orbotLabel + orbot)
@@ -490,7 +490,7 @@ class AboutVersionFragment : Fragment() {
         // Only populate the I2P text view if it is installed.
         if (i2p.isNotEmpty()) {
             // Setup the label.
-            val i2pLabel = getString(R.string.i2p) + "  "
+            val i2pLabel = getString(R.string.i2p)
 
             // Create a spannable string builder.
             val i2pStringBuilder = SpannableStringBuilder(i2pLabel + i2p)
@@ -508,7 +508,7 @@ class AboutVersionFragment : Fragment() {
         // Only populate the OpenKeychain text view if it is installed.
         if (openKeychain.isNotEmpty()) {
             // Setup the label.
-            val openKeychainLabel = getString(R.string.openkeychain) + "  "
+            val openKeychainLabel = getString(R.string.openkeychain)
 
             // Create a spannable string builder.
             val openKeychainStringBuilder = SpannableStringBuilder(openKeychainLabel + openKeychain)

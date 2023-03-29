@@ -27,7 +27,7 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">pt-rBR</string>
 
-    <!-- MainWebView. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="privacy_mode">Modo Privado</string>
     <string name="javascript_enabled">JavaScript ativado</string>
     <string name="javascript_disabled">JavaScript desativado</string>
@@ -42,12 +42,12 @@
     <string name="form_data_deleted">Dados do formulário excluídos</string>
     <string name="open_navigation_drawer">Abrir a caixa de navegação</string>
     <string name="close_navigation_drawer">Fechar a caixa de navegação</string>
-    <string name="unrecognized_url">URL desconhecida:</string>
+    <string name="unrecognized_url">URL desconhecida: \u0020</string>
     <string name="add_tab">Adicionar aba</string>
     <string name="close_tab">Fechar aba</string>
     <string name="new_tab">Nova aba</string>
     <string name="loading">Carregando...</string>
-    <string name="error">Erro:</string>
+    <string name="error">Erro: \u0020</string>
     <string name="apply">Aplicar</string>
 
     <!-- Loading Blocklists. -->
@@ -62,25 +62,25 @@
     <string name="favorite_icon">Ícone dos Favoritos</string>
     <string name="url_or_search_terms">URL ou termos de pesquisa</string>
 
-    <!-- View SSL Certificate. -->
+    <!-- View SSL Certificate. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="view_ssl_certificate">Ver certificado SSL</string>
     <string name="unencrypted_website">Site não criptografado</string>
     <string name="no_ssl_certificate">A comunicação com este site não é criptografada. Isso permite que terceiros interceptem informações, rastreiem sua navegação e insiram conteúdo malicioso.</string>
     <string name="ssl_certificate">Certificado SSL</string>
     <string name="close">Fecha</string>
     <string name="domain">Domínio</string>
-    <string name="domain_label">Domínio:</string>
-    <string name="ip_addresses">Endereço de IP:</string>
+    <string name="domain_label">Domínio: \u0020</string>
+    <string name="ip_addresses">Endereço de IP: \u0020</string>
     <string name="issued_to">Emitido para</string>
     <string name="issued_by">Emitido por</string>
-    <string name="common_name">Nome Comum:</string>
-    <string name="organization">Organização:</string>
-    <string name="organizational_unit">Unidade da  Organização:</string>
+    <string name="common_name">Nome Comum: \u0020</string>
+    <string name="organization">Organização: \u0020</string>
+    <string name="organizational_unit">Unidade da  Organização: \u0020</string>
     <string name="valid_dates">Datas Válidas</string>
-    <string name="start_date">Data Inicial:</string>
-    <string name="end_date">Data Final:</string>
+    <string name="start_date">Data Inicial: \u0020</string>
+    <string name="end_date">Data Final: \u0020</string>
 
-    <!-- SSL Certificate Error. -->
+    <!-- SSL Certificate Error.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="ssl_certificate_error">Erro de certificado SSL</string>
     <string name="proceed">Prosseguir</string>
     <string name="future_certificate">A data de início do certificado está no futuro</string>
@@ -90,7 +90,7 @@
     <string name="invalid_date">A data do certificado é inválida</string>
     <string name="invalid_certificate">O certificado é inválido</string>
     <string name="url">URL</string>
-    <string name="url_label">URL:</string>
+    <string name="url_label">URL: \u0020</string>
 
     <!-- Pinned Mismatch. -->
     <string name="pinned_mismatch">Incompatibilidade fixada</string>
@@ -98,9 +98,9 @@
     <string name="current">Atual</string>
     <string name="pinned">Fixada</string>
 
-    <!-- HTTP Authentication. -->
+    <!-- HTTP Authentication. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="http_authentication">Autenticação HTTP</string>
-    <string name="host">Host:</string>
+    <string name="host">Host: \u0020</string>
     <string name="username">Nome do usuário</string>
     <string name="password">Senha</string>
 
@@ -246,14 +246,14 @@
     <string name="move_to_folder">Mover para a pasta</string>
     <string name="move">Mover</string>
 
-    <!-- Bookmarks Contextual App Bar. -->
-    <string name="selected">Selecionados:</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <string name="selected">Selecionados: \u0020</string>  <!--This is a plural adjective.-->
     <string name="move_up">Subir</string>
     <string name="move_down">Descer</string>
     <string name="edit">Editar</string>
     <string name="delete">Apagar</string>
     <string name="select_all">Selecionar Tudo</string>
-    <string name="bookmarks_deleted">Favoritos excluídos:</string>
+    <string name="bookmarks_deleted">Favoritos excluídos: \u0020</string>
     <string name="undo">Desfazer</string>
 
     <!-- Bookmarks Database View. -->
@@ -396,51 +396,52 @@
     <string name="waiting_for_orbot">Esperando que o Orbot se conecte.</string>
     <string name="custom_proxy_invalid">O URL do proxy personalizado é inválido.</string>
 
-    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- About Activity.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">Sobre o Privacy Browser</string>
     <string name="version">Versão</string>
         <string name="version_code">Versão %1$s (Código da Versão %2$d)</string>
         <string name="hardware">Hardware</string>
-            <string name="brand">Marca:</string>
-            <string name="manufacturer">Fabricante:</string>
-            <string name="model">Modelo:</string>
-            <string name="device">Dispositivo:</string>
-            <string name="bootloader">Bootloader:</string>
-            <string name="radio">Rádio:</string>
+            <string name="brand">Marca: \u0020</string>
+            <string name="manufacturer">Fabricante: \u0020</string>
+            <string name="model">Modelo: \u0020</string>
+            <string name="device">Dispositivo: \u0020</string>
+            <string name="bootloader">Bootloader: \u0020</string>
+            <string name="radio">Rádio: \u0020</string>
         <string name="software">Software</string>
-            <string name="android">Android:</string>
+            <string name="android">Android: \u0020</string>
             <string name="api">%1$s (API %2$d)</string>
-            <string name="security_patch">Patch de segurança:</string>
-            <string name="build">Build:</string>
-            <string name="kernel">Kernel:</string>
-            <string name="webview_provider">Fornecedor WebView:</string>
-            <string name="webview_version">Versão do WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="i2p">I2P:</string>
+            <string name="security_patch">Patch de segurança: \u0020</string>
+            <string name="build">Build: \u0020</string>
+            <string name="kernel">Kernel: \u0020</string>
+            <string name="webview_provider">Fornecedor WebView: \u0020</string>
+            <string name="webview_version">Versão do WebView: \u0020</string>
+            <string name="orbot">Orbot: \u0020</string>
+            <string name="i2p">I2P: \u0020</string>
                 <string name="fdroid_flavor">%1$s (Derivação do F-Droid)</string>
                 <string name="google_play_flavor">%1$s (Derivação do Google Play)</string>
-            <string name="openkeychain">OpenKeychain:</string>
+            <string name="openkeychain">OpenKeychain: \u0020</string>
         <string name="memory_usage">Uso da Memória</string>
-            <string name="app_consumed_memory">Consumo da Memória do Aplicativo:</string>
-            <string name="app_available_memory">Memória Disponível do Aplicativo:</string>
-            <string name="app_total_memory">Memória Total do Aplicativo:</string>
-            <string name="app_maximum_memory">Memória Máxima do Aplicativo:</string>
-            <string name="system_consumed_memory">Memória Consumida do Sistema:</string>
-            <string name="system_available_memory">Memória Disponível do Sistema:</string>
-            <string name="system_total_memory">Memória Total do Sistema:</string>
+            <string name="app_consumed_memory">Consumo da Memória do Aplicativo: \u0020</string>
+            <string name="app_available_memory">Memória Disponível do Aplicativo: \u0020</string>
+            <string name="app_total_memory">Memória Total do Aplicativo: \u0020</string>
+            <string name="app_maximum_memory">Memória Máxima do Aplicativo: \u0020</string>
+            <string name="system_consumed_memory">Memória Consumida do Sistema: \u0020</string>
+            <string name="system_available_memory">Memória Disponível do Sistema: \u0020</string>
+            <string name="system_total_memory">Memória Total do Sistema: \u0020</string>
             <string name="mebibyte">MiB</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List:</string>
-            <string name="ultralist_label">UltraList:</string>
-            <string name="ultraprivacy_label">UltraPrivacy:</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
         <string name="package_signature">Assinatura do Pacote</string>
-            <string name="issuer_dn">DN do emissor:</string>
-            <string name="subject_dn">Assunto DN:</string>
-            <string name="certificate_version">Versão do certificado:</string>
-            <string name="serial_number">Número de série:</string>
-            <string name="signature_algorithm">Algoritmo de Assinatura:</string>
+            <string name="issuer_dn">DN do emissor: \u0020</string>
+            <string name="subject_dn">Assunto DN: \u0020</string>
+            <string name="certificate_version">Versão do certificado: \u0020</string>
+            <string name="serial_number">Número de série: \u0020</string>
+            <string name="signature_algorithm">Algoritmo de Assinatura: \u0020</string>
         <string name="version_info_copied">Informações de versão copiada.</string>
         <string name="privacy_browser_version_txt">Privacy Browser Versão %1$s.txt</string>
         <string name="privacy_browser_version_png">Privacy Browser Versão %1$s.png</string>

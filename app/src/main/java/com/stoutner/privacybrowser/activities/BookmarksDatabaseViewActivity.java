@@ -429,7 +429,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                     int numberOfSelectedBookmarks = bookmarksListView.getCheckedItemCount();
 
                     // Set the action mode subtitle according to the number of selected bookmarks.  This must be set here or it will be missing if the activity is restarted.
-                    mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
+                    mode.setSubtitle(getString(R.string.selected) + numberOfSelectedBookmarks);
 
                     // Do not show the select all menu item if all the bookmarks are already checked.
                     if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {
@@ -454,7 +454,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                     // Only run the commands if at least one bookmark is selected.  Otherwise, a context menu with 0 selected bookmarks is briefly displayed.
                     if (numberOfSelectedBookmarks > 0) {
                         // Update the action mode subtitle according to the number of selected bookmarks.
-                        mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
+                        mode.setSubtitle(getString(R.string.selected) + numberOfSelectedBookmarks);
 
                         // Only show the select all menu item if all of the bookmarks are not already selected.
                         selectAllMenuItem.setVisible(bookmarksListView.getCheckedItemCount() != bookmarksListView.getCount());
@@ -567,7 +567,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
                         // Create a Snackbar with the number of deleted bookmarks.
                         bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_databaseview_coordinatorlayout),
-                                        getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length, Snackbar.LENGTH_LONG)
+                                        getString(R.string.bookmarks_deleted) + selectedBookmarksIdsLongArray.length, Snackbar.LENGTH_LONG)
                                 .setAction(R.string.undo, view -> {
                                     // Do nothing because everything will be handled by `onDismissed()` below.
                                 })

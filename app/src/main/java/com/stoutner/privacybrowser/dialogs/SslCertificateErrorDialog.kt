@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -19,12 +19,10 @@
 
 package com.stoutner.privacybrowser.dialogs
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.net.Uri
 import android.net.http.SslError
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -38,11 +36,9 @@ import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
+import com.stoutner.privacybrowser.coroutines.GetHostIpAddressesCoroutine
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
-import java.lang.ref.WeakReference
-import java.net.InetAddress
-import java.net.UnknownHostException
 import java.text.DateFormat
 
 // Define the class constants.
@@ -186,15 +182,13 @@ class SslCertificateErrorDialog : DialogFragment() {
         // Get a URI for the URL with errors.
         val uriWithErrors = Uri.parse(urlWithErrors)
 
-        // Get the IP addresses for the URI.
-        GetIpAddresses(requireActivity(), alertDialog).execute(uriWithErrors.host)
-
         // The alert dialog must be shown before the contents can be modified.
         alertDialog.show()
 
         // Get handles for the views.
         val primaryErrorTextView = alertDialog.findViewById<TextView>(R.id.primary_error)!!
         val urlTextView = alertDialog.findViewById<TextView>(R.id.url)!!
+        val ipAddressesTextView = alertDialog.findViewById<TextView>(R.id.ip_addresses)!!
         val issuedToCNameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_cname)!!
         val issuedToONameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_oname)!!
         val issuedToUNameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_uname)!!
@@ -206,13 +200,20 @@ class SslCertificateErrorDialog : DialogFragment() {
         val startDateTextView = alertDialog.findViewById<TextView>(R.id.start_date)!!
         val endDateTextView = alertDialog.findViewById<TextView>(R.id.end_date)!!
 
+        // Define the color spans.
+        val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
+        val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
+
+        // Get the IP Addresses for the URI.
+        GetHostIpAddressesCoroutine.getAddresses(uriWithErrors.host!!, getString(R.string.ip_addresses), blueColorSpan, ipAddressesTextView)
+
         // Setup the common strings.
-        val urlLabel = getString(R.string.url_label) + "  "
-        val cNameLabel = getString(R.string.common_name) + "  "
-        val oNameLabel = getString(R.string.organization) + "  "
-        val uNameLabel = getString(R.string.organizational_unit) + "  "
-        val startDateLabel = getString(R.string.start_date) + "  "
-        val endDateLabel = getString(R.string.end_date) + "  "
+        val urlLabel = getString(R.string.url_label)
+        val cNameLabel = getString(R.string.common_name)
+        val oNameLabel = getString(R.string.organization)
+        val uNameLabel = getString(R.string.organizational_unit)
+        val startDateLabel = getString(R.string.start_date)
+        val endDateLabel = getString(R.string.end_date)
 
         // Create a spannable string builder for each text view that needs multiple colors of text.
         val urlStringBuilder = SpannableStringBuilder(urlLabel + urlWithErrors)
@@ -224,10 +225,6 @@ class SslCertificateErrorDialog : DialogFragment() {
         val issuedByUNameStringBuilder = SpannableStringBuilder(uNameLabel + issuedByUName)
         val startDateStringBuilder = SpannableStringBuilder(startDateLabel + startDate)
         val endDateStringBuilder = SpannableStringBuilder(endDateLabel + endDate)
-
-        // Define the color spans.
-        val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
-        val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         urlStringBuilder.setSpan(blueColorSpan, urlLabel.length, urlStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -314,81 +311,5 @@ class SslCertificateErrorDialog : DialogFragment() {
 
         // Return the alert dialog.
         return alertDialog
-    }
-
-    // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `SpannableStringBuilder` contains the results.
-    private class GetIpAddresses constructor(activity: Activity, alertDialog: AlertDialog) : AsyncTask<String, Void?, SpannableStringBuilder>() {
-        // Define the weak references.
-        private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
-        private val alertDialogWeakReference: WeakReference<AlertDialog> = WeakReference(alertDialog)
-
-        @Deprecated("Deprecated in Java")
-        override fun doInBackground(vararg domainName: String): SpannableStringBuilder {
-            // Get handles for the activity and the alert dialog.
-            val activity = activityWeakReference.get()
-            val alertDialog = alertDialogWeakReference.get()
-
-            // Abort if the activity or the dialog is gone.
-            if (activity == null || activity.isFinishing || alertDialog == null) {
-                return SpannableStringBuilder()
-            }
-
-            // Initialize an IP address string builder.
-            val ipAddresses = StringBuilder()
-
-            // Get an array with the IP addresses for the host.
-            try {
-                // Get an array with all the IP addresses for the domain.
-                val inetAddressesArray = InetAddress.getAllByName(domainName[0])
-
-                // Add each IP address to the string builder.
-                for (inetAddress in inetAddressesArray) {
-                    // Check to see if this is not the first IP address.
-                    if (ipAddresses.isNotEmpty()) {
-                        // Add a line break to the string builder first.
-                        ipAddresses.append("\n")
-                    }
-
-                    // Add the IP Address to the string builder.
-                    ipAddresses.append(inetAddress.hostAddress)
-                }
-            } catch (exception: UnknownHostException) {
-                // Do nothing.
-            }
-
-            // Set the label.
-            val ipAddressesLabel = activity.getString(R.string.ip_addresses) + "  "
-
-            // Create a spannable string builder.
-            val ipAddressesStringBuilder = SpannableStringBuilder(ipAddressesLabel + ipAddresses)
-
-            // Create a blue color span according to the theme.
-            val blueColorSpan = ForegroundColorSpan(activity.getColor(R.color.alt_blue_text))
-
-            // Set the string builder to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-            ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length, ipAddressesStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-            // Return the formatted string.
-            return ipAddressesStringBuilder
-        }
-
-        // `onPostExecute()` operates on the UI thread.
-        @Deprecated("Deprecated in Java")
-        override fun onPostExecute(ipAddresses: SpannableStringBuilder) {
-            // Get handles for the activity and the alert dialog.
-            val activity = activityWeakReference.get()
-            val alertDialog = alertDialogWeakReference.get()
-
-            // Abort if the activity or the alert dialog is gone.
-            if (activity == null || activity.isFinishing || alertDialog == null) {
-                return
-            }
-
-            // Get a handle for the IP addresses text view.
-            val ipAddressesTextView = alertDialog.findViewById<TextView>(R.id.ip_addresses)!!
-
-            // Populate the IP addresses text view.
-            ipAddressesTextView.text = ipAddresses
-        }
     }
 }

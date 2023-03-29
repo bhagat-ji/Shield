@@ -1,5 +1,5 @@
 /*
- * Copyright 2019,2021-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019,2021-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -19,7 +19,13 @@
 
 package com.stoutner.privacybrowser.coroutines
 
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.widget.TextView
+
 import androidx.fragment.app.FragmentManager
+
 import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
@@ -33,8 +39,7 @@ import java.net.InetAddress
 import java.net.UnknownHostException
 
 object GetHostIpAddressesCoroutine {
-    @JvmStatic
-    fun getAddresses(domainName: String, nestedScrollWebView: NestedScrollWebView, supportFragmentManager: FragmentManager, pinnedMismatchString: String) {
+    fun getAddresses(domainName: String, ipAddressesLabel: String, blueColorSpan: ForegroundColorSpan, ipAddressesTextView: TextView) {
         // Get the IP addresses using a coroutine.
         CoroutineScope(Dispatchers.Main).launch {
             // Get the IP addresses on the IO thread.
@@ -42,7 +47,7 @@ object GetHostIpAddressesCoroutine {
                 // Get an array with the IP addresses for the host.
                 try {
                     // Initialize an IP address string builder.
-                    val ipAddresses = StringBuilder()
+                    val ipAddressesStringBuilder = StringBuilder()
 
                     // Get an array with all the IP addresses for the domain.
                     val inetAddressesArray = InetAddress.getAllByName(domainName)
@@ -50,16 +55,59 @@ object GetHostIpAddressesCoroutine {
                     // Add each IP address to the string builder.
                     for (inetAddress in inetAddressesArray) {
                         // Add a line break to the string builder if this is not the first IP address.
-                        if (ipAddresses.isNotEmpty()) {
-                            ipAddresses.append("\n")
+                        if (ipAddressesStringBuilder.isNotEmpty()) {
+                            ipAddressesStringBuilder.append("\n")
                         }
 
                         // Add the IP address to the string builder.
-                        ipAddresses.append(inetAddress.hostAddress)
+                        ipAddressesStringBuilder.append(inetAddress.hostAddress)
+                    }
+
+                    // Create a spannable string builder.
+                    val addressesStringBuilder = SpannableStringBuilder(ipAddressesLabel + ipAddressesStringBuilder)
+
+                    // Set the string builder to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+                    addressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length, addressesStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    // Populate the IP addresses text view on the UI thread.
+                    withContext(Dispatchers.Main) {
+                        // Populate the IP addresses text view.
+                        ipAddressesTextView.text = addressesStringBuilder
+                    }
+                } catch (exception: UnknownHostException) {
+                    // Do nothing.
+                }
+            }
+        }
+    }
+
+    @JvmStatic
+    fun checkPinnedMismatch(domainName: String, nestedScrollWebView: NestedScrollWebView, supportFragmentManager: FragmentManager, pinnedMismatchString: String) {
+        // Get the IP addresses using a coroutine.
+        CoroutineScope(Dispatchers.Main).launch {
+            // Get the IP addresses on the IO thread.
+            withContext(Dispatchers.IO) {
+                // Get an array with the IP addresses for the host.
+                try {
+                    // Initialize an IP address string builder.
+                    val ipAddressesStringBuilder = StringBuilder()
+
+                    // Get an array with all the IP addresses for the domain.
+                    val inetAddressesArray = InetAddress.getAllByName(domainName)
+
+                    // Add each IP address to the string builder.
+                    for (inetAddress in inetAddressesArray) {
+                        // Add a line break to the string builder if this is not the first IP address.
+                        if (ipAddressesStringBuilder.isNotEmpty()) {
+                            ipAddressesStringBuilder.append("\n")
+                        }
+
+                        // Add the IP address to the string builder.
+                        ipAddressesStringBuilder.append(inetAddress.hostAddress)
                     }
 
                     // Store the IP addresses.
-                    nestedScrollWebView.currentIpAddresses = ipAddresses.toString()
+                    nestedScrollWebView.currentIpAddresses = ipAddressesStringBuilder.toString()
 
                     // Checked for pinned mismatches if there is pinned information and it is not ignored.  This must be done on the UI thread because checking the pinned mismatch interacts with the WebView.
                     withContext(Dispatchers.Main) {

@@ -24,7 +24,7 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">tr</string>
 
-    <!-- MainWebView. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="privacy_mode">Gizlilik Modu</string>
     <string name="javascript_enabled">JavaScript etkin</string>
     <string name="javascript_disabled">JavaScript devre dışı</string>
@@ -37,12 +37,12 @@
     <string name="form_data_deleted">Form Verisi silindi</string>
     <string name="open_navigation_drawer">Gezinti Menüsünü aç</string>
     <string name="close_navigation_drawer">Gezinti Menüsünü kapa</string>
-    <string name="unrecognized_url">Onaylanmamış URL:</string>
+    <string name="unrecognized_url">Onaylanmamış URL: \u0020</string>
     <string name="add_tab">Sekme ekle</string>
     <string name="close_tab">Sekmeyi kapa</string>
     <string name="new_tab">Yeni sekme</string>
     <string name="loading">Yükleniyor…</string>
-    <string name="error">Hata:</string>
+    <string name="error">Hata: \u0020</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">EasyList yükleniyor</string>
@@ -56,7 +56,7 @@
     <string name="favorite_icon">Site Simgesi</string>
     <string name="url_or_search_terms">URL veya Arama Terimleri</string>
 
-    <!-- View SSL Certificate. -->
+    <!-- View SSL Certificate. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="view_ssl_certificate">SSL Sertifika görüntüle</string>
     <string name="unencrypted_website">Şifrelenmemiş web sitesi</string>
     <string name="no_ssl_certificate">Bu web sitesiyle bağlantınız şifrelenmemiştir.
@@ -64,18 +64,18 @@
     <string name="ssl_certificate">SSL Sertifika</string>
     <string name="close">Kapat</string>
     <string name="domain">Domain</string>
-    <string name="domain_label">Domain:</string>
-    <string name="ip_addresses">IP Adresleri:</string>
+    <string name="domain_label">Domain: \u0020</string>
+    <string name="ip_addresses">IP Adresleri: \u0020</string>
     <string name="issued_to">Verilen</string>
     <string name="issued_by">Veren</string>
-    <string name="common_name">Ortak Ad (CN):</string>
-    <string name="organization">Organizasyon (O):</string>
-    <string name="organizational_unit">Organizasyon Birimi (OU):</string>
+    <string name="common_name">Ortak Ad (CN): \u0020</string>
+    <string name="organization">Organizasyon (O): \u0020</string>
+    <string name="organizational_unit">Organizasyon Birimi (OU): \u0020</string>
     <string name="valid_dates">Geçerli Tarihler</string>
-    <string name="start_date">Başlangıç Tarihi:</string>
-    <string name="end_date">Bitiş Tarihi:</string>
+    <string name="start_date">Başlangıç Tarihi: \u0020</string>
+    <string name="end_date">Bitiş Tarihi: \u0020</string>
 
-    <!-- SSL Certificate Error. -->
+    <!-- SSL Certificate Error.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="ssl_certificate_error">SSL Sertifika Hatası</string>
     <string name="proceed">İlerle</string>
     <string name="future_certificate">Bu sertifika henüz geçerli değil</string>
@@ -85,7 +85,7 @@
     <string name="invalid_date">Bu sertifikanın tarihi geçerli değil</string>
     <string name="invalid_certificate">Bu sertifika geçerli değil</string>
     <string name="url">URL</string>
-    <string name="url_label">URL:</string>
+    <string name="url_label">URL: \u0020</string>
 
     <!-- Pinned Mismatch. -->
     <string name="pinned_mismatch">Sabit Uyumsuzluğu</string>
@@ -93,9 +93,9 @@
     <string name="current">Geçerli</string>
     <string name="pinned">Sabit</string>
 
-    <!-- HTTP Authentication. -->
+    <!-- HTTP Authentication. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
     <string name="http_authentication">HTTP Kimlik Doğrulama</string>
-    <string name="host">Ana makine:</string>
+    <string name="host">Ana makine: \u0020</string>
     <string name="username">Kullanıcı Adı</string>
     <string name="password">Şifre</string>
 
@@ -213,14 +213,14 @@
     <string name="move_to_folder">Klasöre taşı</string>
     <string name="move">Taşı</string>
 
-    <!-- Bookmarks Contextual App Bar. -->
-    <string name="selected">Seçili:</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <string name="selected">Seçili: \u0020</string>  <!--This is a plural adjective.-->
     <string name="move_up">Yukarı taşı</string>
     <string name="move_down">Aşağı taşı</string>
     <string name="edit">Düzenle</string>
     <string name="delete">Sil</string>
     <string name="select_all">Hepsini seç</string>
-    <string name="bookmarks_deleted">Yer imleri silindi:</string>
+    <string name="bookmarks_deleted">Yer imleri silindi: \u0020</string>
     <string name="undo">Geri al</string>
 
     <!-- Bookmarks Database View. -->
@@ -349,38 +349,39 @@
     <!-- Orbot. -->
     <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor.</string>
 
-    <!-- About Activity.  The `%*$*` code inserts variables into the displayed text and should be preserved in translation. <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- About Activity.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%*$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="about_privacy_browser">Privacy Browser Hakkında</string>
     <string name="version">Versiyon</string>
         <string name="version_code">Versiyon %1$s (versiyon kodu %2$d)</string>
         <string name="hardware">Donanım</string>
-            <string name="brand">Marka:</string>
-            <string name="manufacturer">Üretici:</string>
-            <string name="model">Model:</string>
-            <string name="device">Cihaz:</string>
-            <string name="bootloader">Bootloader:</string>
-            <string name="radio">Donanım Yazılımı:</string>
+            <string name="brand">Marka: \u0020</string>
+            <string name="manufacturer">Üretici: \u0020</string>
+            <string name="model">Model: \u0020</string>
+            <string name="device">Cihaz: \u0020</string>
+            <string name="bootloader">Bootloader: \u0020</string>
+            <string name="radio">Donanım Yazılımı: \u0020</string>
         <string name="software">Yazılım</string>
-            <string name="android">Android:</string>
+            <string name="android">Android: \u0020</string>
             <string name="api">%1$s (API %2$d)</string>
-            <string name="security_patch">Güvenlik Yaması:</string>
-            <string name="build">Derleme:</string>
-            <string name="webview_provider">WebView Sağlayıcısı:</string>
-            <string name="webview_version">WebView Versiyonu:</string>
+            <string name="security_patch">Güvenlik Yaması: \u0020</string>
+            <string name="build">Derleme: \u0020</string>
+            <string name="webview_provider">WebView Sağlayıcısı: \u0020</string>
+            <string name="webview_version">WebView Versiyonu: \u0020</string>
             <string name="orbot">Orbot:</string>
-            <string name="openkeychain">OpenKeychain:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List:</string>
-            <string name="ultralist_label">UltraList:</string>
-            <string name="ultraprivacy_label">UltraPrivacy:</string>
+            <string name="openkeychain">OpenKeychain: \u0020</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
+            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
         <string name="package_signature">Paket İmzası</string>
-            <string name="issuer_dn">Yayınlayan DN:</string>
-            <string name="subject_dn">Özne DN:</string>
-            <string name="certificate_version">Sertifika Versiyonu:</string>
-            <string name="serial_number">Seri Numarası:</string>
-            <string name="signature_algorithm">İmza Algoritması:</string>
+            <string name="issuer_dn">Yayınlayan DN: \u0020</string>
+            <string name="subject_dn">Özne DN: \u0020</string>
+            <string name="certificate_version">Sertifika Versiyonu: \u0020</string>
+            <string name="serial_number">Seri Numarası: \u0020</string>
+            <string name="signature_algorithm">İmza Algoritması: \u0020</string>
     <string name="permissions">İzinler</string>
     <string name="privacy_policy">Privacy Politikası</string>
     <string name="changelog">Değişiklik Günlüğü</string>
