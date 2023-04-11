@@ -310,6 +310,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var displayAdditionalAppBarIcons = false
     private var displayingFullScreenVideo = false
     private var domainsDatabaseHelper: DomainsDatabaseHelper? = null
+    private var domainsSettingsSet: MutableSet<String> = HashSet()
     private var downloadWithExternalApp = false
     private var fullScreenBrowsingModeEnabled = false
     private var hideAppBar = false
@@ -734,6 +735,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Reset the reapply domain settings on restart flag.
             reapplyDomainSettingsOnRestart = false
 
+            // Update the domains settings set.
+            updateDomainsSettingsSet()
+
             // Reapply the domain settings for each tab.
             for (i in 0 until webViewPagerAdapter!!.count) {
                 // Get the WebView tab fragment.
@@ -919,11 +923,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         }
 
         // Close the bookmarks cursor if it exists.
-        if (bookmarksCursor != null) {
-            bookmarksCursor!!.close()
-        }
+        bookmarksCursor?.close()
 
-        // Close the databases database if it exists.
+        // Close the databases if they exist.
         bookmarksDatabaseHelper?.close()
         domainsDatabaseHelper?.close()
 
@@ -3361,6 +3363,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Destroy the bare WebView.
         bareWebView.destroy()
+
+        // Update the domains settings set.
+        updateDomainsSettingsSet()
     }
 
     private fun applyAppSettings() {
@@ -3579,32 +3584,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
             }
 
-            // Get a full domain name cursor.
-            val domainNameCursor = domainsDatabaseHelper!!.domainNameCursorOrderedByDomain
-
-            // Initialize the domain settings set.
-            val domainSettingsSet: MutableSet<String> = HashSet()
-
-            // Get the domain name column index.
-            val domainNameColumnIndex = domainNameCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME)
-
-            // Populate the domain settings set.
-            for (i in 0 until domainNameCursor.count) {
-                // Move the domains cursor to the current row.
-                domainNameCursor.moveToPosition(i)
-
-                // Store the domain name in the domain settings set.
-                domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex))
-            }
-
-            // Close the domain name cursor.
-            domainNameCursor.close()
-
             // Initialize the domain name in database variable.
             var domainNameInDatabase: String? = null
 
             // Check the hostname against the domain settings set.
-            if (domainSettingsSet.contains(newHostName)) {  // The hostname is contained in the domain settings set.
+            if (domainsSettingsSet.contains(newHostName)) {  // The hostname is contained in the domain settings set.
                 // Record the domain name in the database.
                 domainNameInDatabase = newHostName
 
@@ -3617,7 +3601,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Check all the subdomains of the host name against wildcard domains in the domain cursor.
             while (!nestedScrollWebView.domainSettingsApplied && newHostName!!.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the hostname.
-                if (domainSettingsSet.contains("*.$newHostName")) {  // Check the host name prepended by `*.`.
+                if (domainsSettingsSet.contains("*.$newHostName")) {  // Check the host name prepended by `*.`.
                     // Set the domain settings applied tracker to true.
                     nestedScrollWebView.domainSettingsApplied = true
 
@@ -4409,8 +4393,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     private fun clearAndExit() {
-        // Close the cursor and databases.  TODO:  Also domains cursor.
+        // Close the bookmarks cursor if it exists.
         bookmarksCursor?.close()
+
+        // Close the databases helpers if they exist.
         bookmarksDatabaseHelper?.close()
         domainsDatabaseHelper?.close()
 
@@ -5913,5 +5899,31 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 displayKeyboardHandler.postDelayed(displayKeyboardRunnable, 100)
             }
         }
+    }
+
+    private fun updateDomainsSettingsSet() {
+        // Reset the domains settings set.
+        domainsSettingsSet = HashSet()
+
+        // Get a domains cursor.
+        val domainsCursor = domainsDatabaseHelper!!.domainNameCursorOrderedByDomain
+
+        // Get the current count of domains.
+        val domainsCount = domainsCursor.count
+
+        // Get the domain name column index.
+        val domainNameColumnIndex = domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME)
+
+        // Populate the domain settings set.
+        for (i in 0 until domainsCount) {
+            // Move the domains cursor to the current row.
+            domainsCursor.moveToPosition(i)
+
+            // Store the domain name in the domain settings set.
+            domainsSettingsSet.add(domainsCursor.getString(domainNameColumnIndex))
+        }
+
+        // Close the domains cursor.
+        domainsCursor.close()
     }
 }

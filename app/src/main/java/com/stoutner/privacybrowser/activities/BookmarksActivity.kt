@@ -127,16 +127,6 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkListener, CreateBoo
         val currentUrl = launchingIntent.getStringExtra(CURRENT_URL)!!
         currentFavoriteIconByteArray = launchingIntent.getByteArrayExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY)!!
 
-        /*  TODO.  Test if not needed.
-        // Set the current folder variable.
-        if (launchingIntent.getStringExtra(CURRENT_FOLDER) != null) {  // Set the current folder from the intent.
-            currentFolder = launchingIntent.getStringExtra(CURRENT_FOLDER)
-        } else {  // Set the current folder to be `""`, which is the home folder.
-            currentFolder = ""
-        }
-
-         */
-
         // Convert the favorite icon byte array to a bitmap.
         val currentFavoriteIconBitmap = BitmapFactory.decodeByteArray(currentFavoriteIconByteArray, 0, currentFavoriteIconByteArray.size)
 
@@ -829,7 +819,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkListener, CreateBoo
         if (currentFolderIconRadioButton.isChecked) {  // Only the name has changed.
             // Update the name in the database.
             bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString)
-        } else {  // The icon has changed.  TODO:  Test.
+        } else {  // The icon has changed.
             // Populate the new folder icon bitmap.
             val folderIconBitmap: Bitmap = if (defaultFolderIconRadioButton.isChecked) {
                 // Get the default folder icon drawable.
