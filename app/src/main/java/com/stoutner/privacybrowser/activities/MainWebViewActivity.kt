@@ -217,12 +217,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     // Declare the class variables.
     private lateinit var appBar: ActionBar
+    private lateinit var blocklistHelper: BlocklistHelper
     private lateinit var bookmarksCursorAdapter: CursorAdapter
     private lateinit var bookmarksListView: ListView
     private lateinit var bookmarksDrawerPinnedImageView: ImageView
     private lateinit var bookmarksTitleTextView: TextView
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var cookieManager: CookieManager
+    private lateinit var domainsSettingsSet: MutableSet<String>
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var easyList: ArrayList<List<Array<String>>>
     private lateinit var easyPrivacy: ArrayList<List<Array<String>>>
@@ -310,7 +312,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var displayAdditionalAppBarIcons = false
     private var displayingFullScreenVideo = false
     private var domainsDatabaseHelper: DomainsDatabaseHelper? = null
-    private var domainsSettingsSet: MutableSet<String> = HashSet()
     private var downloadWithExternalApp = false
     private var fullScreenBrowsingModeEnabled = false
     private var hideAppBar = false
@@ -3366,6 +3367,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Update the domains settings set.
         updateDomainsSettingsSet()
+
+        // Instantiate the blocklist helper.
+        blocklistHelper = BlocklistHelper()
     }
 
     private fun applyAppSettings() {
@@ -4740,9 +4744,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Get a handle for the input method manager.
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-
-        // Instantiate the blocklist helper.  TODO.  Make a class instance.
-        val blocklistHelper = BlocklistHelper()
 
         // Set the app bar scrolling.
         nestedScrollWebView.isNestedScrollingEnabled = scrollAppBar
