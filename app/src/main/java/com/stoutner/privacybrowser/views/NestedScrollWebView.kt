@@ -44,9 +44,17 @@ import java.util.Date
 
 import kotlin.collections.ArrayList
 
-import kotlin.jvm.JvmOverloads
+// Define the public constants.
+const val BLOCKED_REQUESTS = 0
+const val EASYLIST = 1
+const val EASYPRIVACY = 2
+const val FANBOYS_ANNOYANCE_LIST = 3
+const val FANBOYS_SOCIAL_BLOCKING_LIST = 4
+const val ULTRALIST = 5
+const val ULTRAPRIVACY = 6
+const val THIRD_PARTY_REQUESTS = 7
 
-// Define the saved state constants.
+// Define the private class constants.
 private const val DOMAIN_SETTINGS_APPLIED = "domain_settings_applied"
 private const val DOMAIN_SETTINGS_DATABASE_ID = "domain_settings_database_id"
 private const val CURRENT_DOMAIN_NAME = "current_domain_name"
@@ -80,17 +88,6 @@ private const val FONT_SIZE = "font_size"
 // NestedScrollWebView extends WebView to handle nested scrolls (scrolling the app bar off the screen).  It also stores extra information about the state of the WebView used by Privacy Browser.
 class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defaultStyle: Int = android.R.attr.webViewStyle) : WebView(context, attributeSet, defaultStyle),
     NestedScrollingChild2 {
-    companion object {
-        // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
-        const val BLOCKED_REQUESTS = 0
-        const val EASYLIST = 1
-        const val EASYPRIVACY = 2
-        const val FANBOYS_ANNOYANCE_LIST = 3
-        const val FANBOYS_SOCIAL_BLOCKING_LIST = 4
-        const val ULTRALIST = 5
-        const val ULTRAPRIVACY = 6
-        const val THIRD_PARTY_REQUESTS = 7
-    }
 
     // Define the public variables.
     var acceptCookies = false
@@ -113,7 +110,6 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     var ultraPrivacyEnabled = true
     var waitingForProxyUrlString = ""
     var webViewFragmentId: Long = 0
-
 
     // Define the private variables.
     private val nestedScrollingChildHelper: NestedScrollingChildHelper = NestedScrollingChildHelper(this)
@@ -146,7 +142,6 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         // Initialize the favorite icon.
         initializeFavoriteIcon()
     }
-
 
     // Favorite or default icon.
     fun initializeFavoriteIcon() {

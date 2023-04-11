@@ -27,7 +27,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -160,7 +159,7 @@ class AboutVersionFragment : Fragment() {
     }
 
     // Define the save about version text activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri: Uri? ->
+    private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             // Initialize the file name string from the file URI last path segment.
@@ -209,7 +208,7 @@ class AboutVersionFragment : Fragment() {
     }
 
     // Define the save about version image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveAboutVersionImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { fileUri: Uri? ->
+    private val saveAboutVersionImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { fileUri ->
         // Save the file if the URI is not null, which happens if the user exits the file picker by pressing back.
         if (fileUri != null)
             SaveAboutVersionImageCoroutine.saveImage(requireActivity(), fileUri, aboutVersionLayout.findViewById(R.id.about_version_linearlayout))

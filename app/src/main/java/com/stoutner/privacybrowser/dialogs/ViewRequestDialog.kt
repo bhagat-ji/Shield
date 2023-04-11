@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -41,29 +41,7 @@ private const val IS_LAST_REQUEST = "is_last_request"
 private const val REQUEST_DETAILS = "request_details"
 
 class ViewRequestDialog : DialogFragment() {
-    // Define the class variables.
-    private lateinit var viewRequestListener: ViewRequestListener
-
-    // The public interface is used to send information back to the parent activity.
-    interface ViewRequestListener {
-        // Show the previous request.
-        fun onPrevious(currentId: Int)
-
-        // Show the next request.
-        fun onNext(currentId: Int)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the listener from the launching context.
-        viewRequestListener = context as ViewRequestListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun request(id: Int, isLastRequest: Boolean, requestDetails: Array<String>): ViewRequestDialog {
             // Create a bundle.
             val bundle = Bundle()
@@ -82,6 +60,26 @@ class ViewRequestDialog : DialogFragment() {
             // Return the new dialog.
             return viewRequestDialog
         }
+    }
+
+    // Define the class variables.
+    private lateinit var viewRequestListener: ViewRequestListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface ViewRequestListener {
+        // Show the previous request.
+        fun onPrevious(currentId: Int)
+
+        // Show the next request.
+        fun onNext(currentId: Int)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the listener from the launching context.
+        viewRequestListener = context as ViewRequestListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

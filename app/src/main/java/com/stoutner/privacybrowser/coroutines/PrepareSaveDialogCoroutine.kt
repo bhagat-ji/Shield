@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2020-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -38,7 +38,6 @@ import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 object PrepareSaveDialogCoroutine {
-    @JvmStatic
     fun prepareSaveDialog(context: Context, supportFragmentManager: FragmentManager, urlString: String, userAgent: String, cookiesEnabled: Boolean) {
         // Use a coroutine to prepare the save dialog.
         CoroutineScope(Dispatchers.Main).launch {

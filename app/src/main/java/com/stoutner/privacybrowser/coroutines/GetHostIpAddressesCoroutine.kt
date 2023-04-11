@@ -81,7 +81,6 @@ object GetHostIpAddressesCoroutine {
         }
     }
 
-    @JvmStatic
     fun checkPinnedMismatch(domainName: String, nestedScrollWebView: NestedScrollWebView, supportFragmentManager: FragmentManager, pinnedMismatchString: String) {
         // Get the IP addresses using a coroutine.
         CoroutineScope(Dispatchers.Main).launch {

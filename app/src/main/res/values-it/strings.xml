@@ -27,7 +27,8 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">it</string>
 
-    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="privacy_mode">Modalità privata</string>
     <string name="javascript_enabled">JavaScript abilitato</string>
     <string name="javascript_disabled">JavaScript disabilitato</string>
@@ -43,12 +44,12 @@
     <string name="open_navigation_drawer">Apri il menu di navigazione</string>
     <string name="close_navigation_drawer">Chiudi il menu di navigazione</string>
     <string name="pin_drawer">Fissa il cassetto</string>
-    <string name="unrecognized_url">URL non riconosciuta: \u0020</string>
+    <string name="unrecognized_url">URL non riconosciuta:\u0020 %1$s</string>
     <string name="add_tab">Aggiungi Scheda</string>
     <string name="close_tab">Chiudi Scheda</string>
     <string name="new_tab">Nuova Scheda</string>
     <string name="loading">Caricamento…</string>
-    <string name="error">Errore: \u0020</string>
+    <string name="error">Errore:\u0020 %1$s</string>
     <string name="apply">Applica</string>
 
     <!-- Loading Blocklists. -->
@@ -201,11 +202,11 @@
     <string name="bytes">byte</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="invalid_url">URL non valida</string>
-    <string name="saving_file">Salvataggio file: \u0020 %1$d%% - %2$s</string>
-    <string name="saving_file_progress">Salvataggio file: \u0020 %1$s byte - %2$s</string>
-    <string name="saving_file_percentage_progress">Salvataggio file: \u0020 %1$d%% - %2$s byte / %3$s byte - %4$s</string>
-    <string name="processing_image">Creazione immagine: \u0020 %1$s</string>
-    <string name="error_saving_file">Error di salvataggio di %1$s: \u0020 %2$s</string>
+    <string name="saving_file">Salvataggio file:\u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Salvataggio file:\u0020 %1$s byte - %2$s</string>
+    <string name="saving_file_percentage_progress">Salvataggio file:\u0020 %1$d%% - %2$s byte / %3$s byte - %4$s</string>
+    <string name="processing_image">Creazione immagine:\u0020 %1$s</string>
+    <string name="error_saving_file">Error di salvataggio di %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Errore sconosciuto</string>
 
     <!-- View Source. -->
@@ -248,14 +249,15 @@
     <string name="move_to_folder">Sposta nella Cartella</string>
     <string name="move">Sposta</string>
 
-    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
-    <string name="selected">Selezionato: \u0020</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <string name="selected">Selezionato:\u0020 %1$d</string>
     <string name="move_up">Sposta sopra</string>
     <string name="move_down">Sposta sotto</string>
     <string name="edit">Modifica</string>
     <string name="delete">Elimina</string>
     <string name="select_all">Seleziona tutto</string>
-    <string name="bookmarks_deleted">Segnalibri eliminati: \u0020</string>
+    <string name="bookmarks_deleted">Segnalibri eliminati:\u0020 %1$d</string>
     <string name="undo">Annulla</string>
 
     <!-- Bookmarks Database View. -->
@@ -271,7 +273,7 @@
     <string name="display_order">Ordine di visualizzazione:</string>
     <string name="cannot_deselect_bookmark">Non è possibile deselezionare un segnalibro mentre la cartella di appartenenza è selezionate.</string>
 
-    <!-- Requests. -->
+    <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">Richieste</string>
     <string name="request_details">Dettagli sulle richieste</string>
     <string name="disposition">Scelta</string>
@@ -372,8 +374,8 @@
     <string name="privacy_browser_settings_pbs">Privacy Browser Settings %1$s.pbs</string>
     <string name="privacy_browser_settings_pbs_aes">Privacy Browser Settings %1$s.pbs.aes</string>
     <string name="export_successful">Esportazione riuscita</string>
-    <string name="export_failed">Esportazione fallita: \u0020 %1$s</string>
-    <string name="import_failed">Importazione fallita: \u0020 %1$s</string>
+    <string name="export_failed">Esportazione fallita:\u0020 %1$s</string>
+    <string name="import_failed">Importazione fallita:\u0020 %1$s</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
@@ -382,7 +384,7 @@
     <string name="logcat_copied">Logcat copiato.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
     <string name="saved">%1$s salvato.</string>
-    <string name="error_saving_logcat">Errore salvataggio logcat: \u0020 %1$s</string>
+    <string name="error_saving_logcat">Errore salvataggio logcat:\u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Descrizione</string>
@@ -584,7 +586,7 @@
         <string name="bottom_app_bar_summary">Sposta la barra dell\'app nella parte bassa dello schermo. La modifica di questa impostazione provocherà il riavvio di Privacy Browser.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento della pagina e, se lo spazio è disponibile,
-            per aprire i preferiti e per abilitare o disabilitare i cookie.</string>
+            per aprire i preferiti e per abilitare o disabilitare i cookie. La modifica di questa impostazione provocherà il riavvio di Privacy Browser.</string>
         <string name="app_theme">Tema Applicazione</string>
         <string-array name="app_theme_entries">
             <item>Predefinito</item>

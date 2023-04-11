@@ -31,7 +31,8 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">zh-rCN</string>
 
-    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="privacy_mode">隐私模式</string>
     <string name="javascript_enabled">开启 JavaScript</string>
     <string name="javascript_disabled">关闭 JavaScript</string>
@@ -47,12 +48,12 @@
     <string name="open_navigation_drawer">打开导航栏</string>
     <string name="close_navigation_drawer">关闭导航栏</string>
     <string name="pin_drawer">引脚栏</string>
-    <string name="unrecognized_url">无法识别的链接: \u0020</string>
+    <string name="unrecognized_url">无法识别的链接:\u0020 %1$s</string>
     <string name="add_tab">增加新的窗口</string>
     <string name="close_tab">关闭窗口</string>
     <string name="new_tab">新窗口</string>
     <string name="loading">加载中…</string>
-    <string name="error">错误: \u0020</string>
+    <string name="error">错误:\u0020 %1$s</string>
     <string name="apply">请求</string>
 
     <!-- Loading Blocklists. -->
@@ -204,12 +205,12 @@
     <string name="bytes">字节</string>
     <string name="unknown_size">未知大小</string>
     <string name="invalid_url">错误的网址</string>
-    <string name="saving_file">保存文件: \u0020 %1$d%% - %2$s</string>
-    <string name="saving_file_progress">保存文件: \u0020 %1$s 字节 - %2$s</string>
-    <string name="saving_file_percentage_progress">保存文件: \u0020 %1$d%% - %2$s 字节 / %3$s 字节 - %4$s</string>
+    <string name="saving_file">保存文件:\u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">保存文件:\u0020 %1$s 字节 - %2$s</string>
+    <string name="saving_file_percentage_progress">保存文件:\u0020 %1$d%% - %2$s 字节 / %3$s 字节 - %4$s</string>
     <string name="saved">%1$s 保存.</string>
-    <string name="processing_image">处理图片: \u0020 %1$s</string>
-    <string name="error_saving_file">保存失败 %1$s: \u0020 %2$s</string>
+    <string name="processing_image">处理图片:\u0020 %1$s</string>
+    <string name="error_saving_file">保存失败 %1$s:\u0020 %2$s</string>
     <string name="unknown_error">未知错误</string>
 
     <!-- View Source. -->
@@ -250,14 +251,15 @@
     <string name="move_to_folder">移动到文件夹</string>
     <string name="move">移动</string>
 
-    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
-    <string name="selected">选中: \u0020</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <string name="selected">选中:\u0020 %1$d</string>
     <string name="move_up">向上</string>
     <string name="move_down">向下</string>
     <string name="edit">编辑</string>
     <string name="delete">删除</string>
     <string name="select_all">选中所有</string>
-    <string name="bookmarks_deleted">书签已删除: \u0020</string>
+    <string name="bookmarks_deleted">书签已删除:\u0020 %1$d</string>
     <string name="undo">取消</string>
 
     <!-- Bookmarks Database View. -->
@@ -273,7 +275,7 @@
     <string name="display_order">文件名:</string>
     <string name="cannot_deselect_bookmark">主文件夹被选中时不能删除书签.</string>
 
-    <!-- Requests. -->
+    <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">请求</string>
     <string name="request_details">请求内容</string>
     <string name="disposition">处理</string>
@@ -374,8 +376,8 @@
     <string name="privacy_browser_settings_pbs">Privacy Browser设置 %1$s.pbs</string>
     <string name="privacy_browser_settings_pbs_aes">Privacy Browser设置 %1$s.pbs.aes</string>
     <string name="export_successful">导出成功.</string>
-    <string name="export_failed">导出失败: \u0020 %1$s</string>
-    <string name="import_failed">导入失败: \u0020 %1$s</string>
+    <string name="export_failed">导出失败:\u0020 %1$s</string>
+    <string name="import_failed">导入失败:\u0020 %1$s</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
@@ -383,7 +385,7 @@
     <string name="clear">清除</string>
     <string name="logcat_copied">复制日志.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
-    <string name="error_saving_logcat">保存日志失败: \u0020 %1$s</string>
+    <string name="error_saving_logcat">保存日志失败:\u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">预览</string>

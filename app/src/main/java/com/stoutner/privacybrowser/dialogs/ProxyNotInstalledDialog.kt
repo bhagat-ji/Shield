@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -30,13 +30,11 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 
-// Define the class constants.
+// Define the private class constants.
 private const val PROXY_MODE = "proxy_mode"
 
 class ProxyNotInstalledDialog : DialogFragment() {
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun displayDialog(proxyMode: String): ProxyNotInstalledDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()

@@ -55,7 +55,6 @@ import com.stoutner.privacybrowser.viewmodelfactories.WebViewSourceFactory
 import com.stoutner.privacybrowser.viewmodels.WebViewSource
 
 // Define the public constants.
-const val CURRENT_URL = "current_url"
 const val USER_AGENT = "user_agent"
 
 class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {

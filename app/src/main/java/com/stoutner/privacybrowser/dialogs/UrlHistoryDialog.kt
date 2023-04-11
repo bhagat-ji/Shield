@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -46,25 +46,7 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView
 private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
 
 class UrlHistoryDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var navigateHistoryListener: NavigateHistoryListener
-
-    // The public interface is used to send information back to the parent activity.
-    interface NavigateHistoryListener {
-        fun navigateHistory(url: String, steps: Int)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the listener from the launching context.
-        navigateHistoryListener = context as NavigateHistoryListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun loadBackForwardList(webViewFragmentId: Long): UrlHistoryDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -83,15 +65,31 @@ class UrlHistoryDialog : DialogFragment() {
         }
     }
 
+    // Declare the class variables.
+    private lateinit var navigateHistoryListener: NavigateHistoryListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface NavigateHistoryListener {
+        fun navigateHistory(url: String, steps: Int)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the listener from the launching context.
+        navigateHistoryListener = context as NavigateHistoryListener
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the WebView fragment ID from the arguments.
         val webViewFragmentId = requireArguments().getLong(WEBVIEW_FRAGMENT_ID)
 
         // Get the current position of this WebView fragment.
-        val webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId)
+        val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(webViewFragmentId)
 
         // Get the WebView tab fragment.
-        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition)
+        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
 
         // Get the fragment view.
         val fragmentView = webViewTabFragment.requireView()

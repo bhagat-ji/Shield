@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -45,25 +45,7 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView
 private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
 
 class PinnedMismatchDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var pinnedMismatchListener: PinnedMismatchListener
-
-    // The public interface is used to send information back to the parent activity.
-    interface PinnedMismatchListener {
-        fun pinnedErrorGoBack()
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the listener from the launching context.
-        pinnedMismatchListener = context as PinnedMismatchListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.  Also, the function can then be moved out of a companion object and just become a package-level function.
-        @JvmStatic
         fun displayDialog(webViewFragmentId: Long): PinnedMismatchDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -82,15 +64,31 @@ class PinnedMismatchDialog : DialogFragment() {
         }
     }
 
+    // Declare the class variables.
+    private lateinit var pinnedMismatchListener: PinnedMismatchListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface PinnedMismatchListener {
+        fun pinnedErrorGoBack()
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the listener from the launching context.
+        pinnedMismatchListener = context as PinnedMismatchListener
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the WebView fragment ID.
         val webViewFragmentId = requireArguments().getLong(WEBVIEW_FRAGMENT_ID)
 
         // Get the current position of this WebView fragment.
-        val webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId)
+        val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(webViewFragmentId)
 
         // Get the WebView tab fragment.
-        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition)
+        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
 
         // Get the fragment view.
         val fragmentView = webViewTabFragment.requireView()

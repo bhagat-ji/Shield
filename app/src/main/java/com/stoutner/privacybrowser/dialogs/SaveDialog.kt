@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -42,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// Define the class constants.
+// Define the private class constants.
 private const val URL_STRING = "url_string"
 private const val FILE_SIZE_STRING = "file_size_string"
 private const val FILE_NAME_STRING = "file_name_string"
@@ -50,25 +50,7 @@ private const val USER_AGENT_STRING = "user_agent_string"
 private const val COOKIES_ENABLED = "cookies_enabled"
 
 class SaveDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var saveListener: SaveListener
-
-    // The public interface is used to send information back to the parent activity.
-    interface SaveListener {
-        fun onSaveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the save webpage listener from the launching context.
-        saveListener = context as SaveListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun saveUrl(urlString: String, fileNameString: String, fileSizeString: String, userAgentString: String, cookiesEnabled: Boolean): SaveDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -89,6 +71,22 @@ class SaveDialog : DialogFragment() {
             // Return the new dialog.
             return saveDialog
         }
+    }
+
+    // Declare the class variables.
+    private lateinit var saveListener: SaveListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface SaveListener {
+        fun onSaveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the save webpage listener from the launching context.
+        saveListener = context as SaveListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

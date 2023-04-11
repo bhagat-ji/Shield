@@ -28,7 +28,7 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">fr</string>
 
-    <!-- MainWebView.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting. -->
+    <!-- MainWebView.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="privacy_mode">Mode privé</string>
     <string name="javascript_enabled">JavaScript activé</string>
     <string name="javascript_disabled">JavaScript désactivé</string>
@@ -44,12 +44,12 @@
     <string name="open_navigation_drawer">Ouvrir le panneau de navigation</string>
     <string name="close_navigation_drawer">Fermer le panneau de navigation</string>
     <string name="pin_drawer">Épingler le panneau</string>
-    <string name="unrecognized_url">URL inconnue :\u0020</string>
+    <string name="unrecognized_url">URL inconnue : %1$s</string>
     <string name="add_tab">Ajouter un onglet</string>
     <string name="close_tab">Fermer l\'onglet</string>
     <string name="new_tab">Nouvel onglet</string>
     <string name="loading">Chargement…</string>
-    <string name="error">Erreur :\u0020</string>
+    <string name="error">Erreur : %1$s</string>
     <string name="apply">Appliquer</string>
 
     <!-- Loading Blocklists. -->
@@ -203,8 +203,8 @@
     <string name="unknown_size">taille inconnue</string>
     <string name="invalid_url">URL invalide</string>
     <string name="saving_file">Enregistrement du fichier : %1$d%% - %2$s</string>
-    <string name="saving_file_progress">Enregistrement du fichier : \u0020 %1$s octets - %2$s</string>
-    <string name="saving_file_percentage_progress">Enregistrement du fichier : \u0020 %1$d%% - %2$s octets / %3$s octets - %4$s</string>
+    <string name="saving_file_progress">Enregistrement du fichier : %1$s octets - %2$s</string>
+    <string name="saving_file_percentage_progress">Enregistrement du fichier : %1$d%% - %2$s octets / %3$s octets - %4$s</string>
     <string name="processing_image">Traitement de l\'image : %1$s</string>
     <string name="error_saving_file">Erreur lors de l\'enregistrement de %1$s : %2$s</string>
     <string name="unknown_error">Erreur inconnue</string>
@@ -249,14 +249,15 @@
     <string name="move_to_folder">Déplacer vers dossier</string>
     <string name="move">Déplacer</string>
 
-    <!-- Bookmarks Contextual App Bar.  Android removes final spaces, but they can be manually specified with the Unicode `\u0020` formatting. -->
-    <string name="selected">Selectionnés :\u0020</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.
+        The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <string name="selected">Selectionnés : %1$d</string>
     <string name="move_up">Monter</string>
     <string name="move_down">Descendre</string>
     <string name="edit">Modifier</string>
     <string name="delete">Supprimer</string>
     <string name="select_all">Tout sélectionner</string>
-    <string name="bookmarks_deleted">Favoris supprimés :\u0020</string>
+    <string name="bookmarks_deleted">Favoris supprimés : %1$d</string>
     <string name="undo">Annuler</string>
 
     <!-- Bookmarks Database View. -->
@@ -272,7 +273,7 @@
     <string name="display_order">Mode d\'affichage :</string>
     <string name="cannot_deselect_bookmark">Un favori ne peut être déselectionné alors que le dossier parent est sélectionné.</string>
 
-    <!-- Requests. -->
+    <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">Requêtes</string>
     <string name="request_details">Détails</string>
     <string name="disposition">Disposition</string>
@@ -577,13 +578,13 @@
         <string name="download_with_external_app">Téléchargement avec une app externe</string>
         <string name="download_with_external_app_summary">Les applications externes ne tiendront pas compte des paramètres proxy de Privacy Browseret n\'auront pas accès aux cookies
             (ce qui signifie qu\'il est peu probable que les fichiers téléchargés à partir de sites nécessitant une identification fonctionnent).</string>
-        <string name="bottom_app_bar">Barre d\'application en bas</string>
-        <string name="bottom_app_bar_summary">Déplacer la barre d\'application vers le bas de l\'écran. La modification de ce paramètre entraîne le redémarrage de Privacy Browser.</string>
         <string name="scroll_app_bar">Défilement barre d\'applications</string>
         <string name="scroll_app_bar_summary">Faites défiler la barre d\'applications en haut de l\'écran lorsque WebView défile vers le bas.</string>
+        <string name="bottom_app_bar">Barre d\'application en bas</string>
+        <string name="bottom_app_bar_summary">Déplacer la barre d\'application vers le bas de l\'écran. La modification de ce paramètre entraîne le redémarrage de Privacy Browser.</string>
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>
         <string name="display_additional_app_bar_icons_summary">Afficher les icônes dans la barre des applications pour actualiser WebView et, s\'il y a de la place,
-            pour ouvrir les signets et la gestion des cookies.</string>
+            pour ouvrir les signets et la gestion des cookies. La modification de ce paramètre entraîne le redémarrage de Privacy Browser.</string>
         <string name="app_theme">Thème de l\'application</string>
         <string-array name="app_theme_entries">
             <item>Par défaut</item>

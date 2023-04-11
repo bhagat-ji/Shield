@@ -31,7 +31,8 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">de</string>
 
-    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="privacy_mode">Privater Modus</string>
     <string name="javascript_enabled">JavaScript aktiviert</string>
     <string name="javascript_disabled">JavaScript deaktiviert</string>
@@ -47,12 +48,12 @@
     <string name="open_navigation_drawer">Navigationspanel öffnen</string>
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
     <string name="pin_drawer">Menü anpinnen</string>
-    <string name="unrecognized_url">Unbekannte URL: \u0020</string>
+    <string name="unrecognized_url">Unbekannte URL:\u0020 %1$s</string>
     <string name="add_tab">Tab hinzufügen</string>
     <string name="close_tab">Tab schließen</string>
     <string name="new_tab">Neuer Tab</string>
     <string name="loading">Laden…</string>
-    <string name="error">Fehler: \u0020</string>
+    <string name="error">Fehler:\u0020 %1$s</string>
     <string name="apply">Anwenden</string>
 
     <!-- Loading Blocklists. -->
@@ -205,11 +206,11 @@
     <string name="bytes">Bytes</string>
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="invalid_url">Ungültige URL</string>
-    <string name="saving_file">Speichere Datei: \u0020 %1$d%% - %2$s</string>
-    <string name="saving_file_progress">Speichere Datei: \u0020 %1$s Bytes - %2$s</string>
-    <string name="saving_file_percentage_progress">Speichere Datei: \u0020 %1$d%% - %2$s Bytes / %3$s Bytes - %4$s</string>
-    <string name="processing_image">Bild wird bearbeitet: \u0020 %1$s</string>
-    <string name="error_saving_file">Fehler beim Speichern der Datei %1$s: \u0020 %2$s</string>
+    <string name="saving_file">Speichere Datei:\u0020 %1$d%% - %2$s</string>
+    <string name="saving_file_progress">Speichere Datei:\u0020 %1$s Bytes - %2$s</string>
+    <string name="saving_file_percentage_progress">Speichere Datei:\u0020 %1$d%% - %2$s Bytes / %3$s Bytes - %4$s</string>
+    <string name="processing_image">Bild wird bearbeitet:\u0020 %1$s</string>
+    <string name="error_saving_file">Fehler beim Speichern der Datei %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unbekannter Fehler</string>
 
     <!-- View Source. -->
@@ -252,14 +253,15 @@
     <string name="move_to_folder">In Ordner verschieben</string>
     <string name="move">Verschieben</string>
 
-    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
-    <string name="selected">Ausgewählt: \u0020</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <string name="selected">Ausgewählt:\u0020 %1$d</string>
     <string name="move_up">Nach oben verschieben</string>
     <string name="move_down">Nach unten verschieben</string>
     <string name="edit">Bearbeiten</string>
     <string name="delete">Löschen</string>
     <string name="select_all">Alle auswählen</string>
-    <string name="bookmarks_deleted">Lesezeichen gelöscht: \u0020</string>
+    <string name="bookmarks_deleted">Lesezeichen gelöscht:\u0020 %1$d</string>
     <string name="undo">Rückgängig</string>
 
     <!-- Bookmarks Database View. -->
@@ -275,7 +277,7 @@
     <string name="display_order">Sortierung:</string>
     <string name="cannot_deselect_bookmark">Ein Lesezeichen kann nicht abgewählt werden, solange der übergeordnete Ordner ausgewählt ist.</string>
 
-    <!-- Requests. -->
+    <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">Zugriffe</string>
     <string name="request_details">Zugriffs-Details</string>
     <string name="disposition">Einteilung</string>
@@ -376,8 +378,8 @@
     <string name="privacy_browser_settings_pbs">Privacy Browser Einstellungen %1$s.pbs</string>
     <string name="privacy_browser_settings_pbs_aes">Privacy Browser Einstellungen %1$s.pbs.aes</string>
     <string name="export_successful">Export erfolgreich.</string>
-    <string name="export_failed">Export fehlgeschlagen: \u0020 %1$s</string>
-    <string name="import_failed">Import fehlgeschlagen: \u0020 %1$s</string>
+    <string name="export_failed">Export fehlgeschlagen:\u0020 %1$s</string>
+    <string name="import_failed">Import fehlgeschlagen:\u0020 %1$s</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
@@ -386,7 +388,7 @@
     <string name="logcat_copied">Logcat kopiert.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
     <string name="saved">%1$s gespeichert.</string>
-    <string name="error_saving_logcat">Fehler beim Speichern von Logcat: \u0020 %1$s</string>
+    <string name="error_saving_logcat">Fehler beim Speichern von Logcat:\u0020 %1$s</string>
 
     <!-- Guide. -->
     <string name="overview">Übersicht</string>
@@ -587,7 +589,7 @@
         <string name="bottom_app_bar_summary">Zeigt die Anwendungs-Leiste am unteren Bildschirmrand an. Nach Ändern dieser Einstellung wird Privacy Browser neu gestartet.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Icons zum Neu-Laden von WebView und - so genug Platz zur Verfügung steht -
-            zum Öffnen der Lesezeichen und zum Umschalten von Cookies in der App-Leiste anzeigen.</string>
+            zum Öffnen der Lesezeichen und zum Umschalten von Cookies in der App-Leiste anzeigen. Nach Ändern dieser Einstellung wird Privacy Browser neu gestartet.</string>
         <string name="app_theme">Erscheinungsbild</string>
         <string-array name="app_theme_entries">
             <item>System-Einstellung</item>

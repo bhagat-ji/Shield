@@ -45,43 +45,23 @@ import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
 
-// Define the class constants.
-private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
+// Define the private class constants.
+private const val DOMAIN = "domain"
+private const val END_DATE = "end_date"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 private const val HAS_SSL_CERTIFICATE = "has_ssl_certificate"
-private const val DOMAIN = "domain"
 private const val IP_ADDRESSES = "ip_addresses"
-private const val ISSUED_TO_CNAME = "issued_to_cname"
-private const val ISSUED_TO_ONAME = "issued_to_oname"
-private const val ISSUED_TO_UNAME = "issued_to_uname"
 private const val ISSUED_BY_CNAME = "issued_by_cname"
 private const val ISSUED_BY_ONAME = "issued_by_oname"
 private const val ISSUED_BY_UNAME = "issued_by_uname"
+private const val ISSUED_TO_CNAME = "issued_to_cname"
+private const val ISSUED_TO_ONAME = "issued_to_oname"
+private const val ISSUED_TO_UNAME = "issued_to_uname"
 private const val START_DATE = "start_date"
-private const val END_DATE = "end_date"
+private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
 
 class ViewSslCertificateDialog : DialogFragment() {
-    // Define the class variables.
-    private var hasSslCertificate: Boolean = false
-
-    // Declare the class variables.
-    private lateinit var domainString: String
-    private lateinit var ipAddresses: String
-    private lateinit var issuedToCName: String
-    private lateinit var issuedToOName: String
-    private lateinit var issuedToUName: String
-    private lateinit var issuedByCName: String
-    private lateinit var issuedByOName: String
-    private lateinit var issuedByUName: String
-    private lateinit var startDate: Date
-    private lateinit var endDate: Date
-
-    // Declare the class views.
-    private lateinit var nestedScrollWebView: NestedScrollWebView
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun displayDialog(webViewFragmentId: Long, favoriteIconBitmap: Bitmap): ViewSslCertificateDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -110,6 +90,22 @@ class ViewSslCertificateDialog : DialogFragment() {
         }
     }
 
+    // Define the class variables.
+    private var hasSslCertificate: Boolean = false
+
+    // Declare the class variables.
+    private lateinit var domainString: String
+    private lateinit var endDate: Date
+    private lateinit var ipAddresses: String
+    private lateinit var issuedByCName: String
+    private lateinit var issuedByOName: String
+    private lateinit var issuedByUName: String
+    private lateinit var issuedToCName: String
+    private lateinit var issuedToOName: String
+    private lateinit var issuedToUName: String
+    private lateinit var nestedScrollWebView: NestedScrollWebView
+    private lateinit var startDate: Date
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -117,10 +113,10 @@ class ViewSslCertificateDialog : DialogFragment() {
         // Populate the class variables.
         if (savedInstanceState == null) {  // The dialog is starting for the first time.
             // Get the current position of this WebView fragment.
-            val webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(requireArguments().getLong(WEBVIEW_FRAGMENT_ID))
+            val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(requireArguments().getLong(WEBVIEW_FRAGMENT_ID))
 
             // Get the WebView tab fragment.
-            val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition)
+            val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
 
             // Get the fragment view.
             val fragmentView = webViewTabFragment.requireView()

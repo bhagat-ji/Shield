@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -49,20 +49,13 @@ import com.stoutner.privacybrowser.R
 
 import java.io.ByteArrayOutputStream
 
-// Define the class constants.
+// Define the private class constants.
 private const val SHORTCUT_NAME = "shortcut_name"
 private const val URL_STRING = "url_string"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class CreateHomeScreenShortcutDialog : DialogFragment() {
-    // Declare the class views.
-    private lateinit var shortcutNameEditText: EditText
-    private lateinit var urlEditText: EditText
-    private lateinit var openWithPrivacyBrowserRadioButton: RadioButton
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun createDialog(shortcutName: String, urlString: String, favoriteIconBitmap: Bitmap): CreateHomeScreenShortcutDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -91,6 +84,11 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
             return createHomeScreenShortcutDialog
         }
     }
+
+    // Declare the class variables.
+    private lateinit var shortcutNameEditText: EditText
+    private lateinit var urlEditText: EditText
+    private lateinit var openWithPrivacyBrowserRadioButton: RadioButton
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.

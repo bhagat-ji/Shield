@@ -36,7 +36,6 @@ import java.text.NumberFormat
 object UrlHelper {
     // Content dispositions can contain other text besides the file name, and they can be in any order.
     // Elements are separated by semicolons.  Sometimes the file names are contained in quotes.
-    @JvmStatic
     fun getFileName(context: Context, contentDispositionString: String?, contentTypeString: String?, urlString: String): String {
         // Define a file name string.
         var fileNameString: String
@@ -196,7 +195,6 @@ object UrlHelper {
         return Pair(fileNameString, formattedFileSize)
     }
 
-    @JvmStatic
     fun highlightSyntax(urlEditText: EditText, initialGrayColorSpan: ForegroundColorSpan, finalGrayColorSpan: ForegroundColorSpan, redColorSpan: ForegroundColorSpan) {
         // Get the URL string.
         val urlString: String = urlEditText.text.toString()

@@ -25,10 +25,7 @@ import android.view.MotionEvent
 
 import androidx.viewpager.widget.ViewPager
 
-import kotlin.jvm.JvmOverloads
-
-class NoSwipeViewPager
-@JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : ViewPager(context, attributeSet) {
+class NoSwipeViewPager @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : ViewPager(context, attributeSet) {
     // It is necessary to override `performClick()` when overriding `onTouchEvent()`
     override fun performClick(): Boolean {
         // Run the default commands.

@@ -63,10 +63,10 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
     // Setup each tab.
     override fun instantiateItem(container: ViewGroup, tabNumber: Int): Any {
         // Get the current position of this WebView fragment.
-        val webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId)
+        val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(webViewFragmentId)
 
         // Get the WebView tab fragment.
-        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition)
+        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
 
         // Get the WebView fragment view.
         val webViewFragmentView = webViewTabFragment.requireView()

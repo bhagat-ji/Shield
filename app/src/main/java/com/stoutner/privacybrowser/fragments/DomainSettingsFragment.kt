@@ -50,8 +50,13 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.activities.DOMAINS_CUSTOM_USER_AGENT
+import com.stoutner.privacybrowser.activities.DOMAINS_SYSTEM_DEFAULT_USER_AGENT
+import com.stoutner.privacybrowser.activities.DOMAINS_WEBVIEW_DEFAULT_USER_AGENT
+import com.stoutner.privacybrowser.activities.SETTINGS_CUSTOM_USER_AGENT
+import com.stoutner.privacybrowser.activities.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT
+import com.stoutner.privacybrowser.activities.UNRECOGNIZED_USER_AGENT
 import com.stoutner.privacybrowser.activities.DomainsActivity
-import com.stoutner.privacybrowser.activities.MainWebViewActivity
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 
 import java.lang.IndexOutOfBoundsException
@@ -419,21 +424,21 @@ class DomainSettingsFragment : Fragment() {
             // Set the user agent according to the system default.
             when (defaultUserAgentArrayPosition) {
                 // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                MainWebViewActivity.UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = defaultUserAgentName
+                UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = defaultUserAgentName
 
                 // Display the WebView default user agent.
-                MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
+                SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
 
                 // Display the custom user agent.
-                MainWebViewActivity.SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = defaultCustomUserAgentString
+                SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = defaultCustomUserAgentString
 
                 // Get the user agent string from the user agent data array.
                 else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
             }
-        } else if (userAgentArrayPosition == MainWebViewActivity.UNRECOGNIZED_USER_AGENT || currentUserAgentName == getString(R.string.custom_user_agent)) {
+        } else if (userAgentArrayPosition == UNRECOGNIZED_USER_AGENT || currentUserAgentName == getString(R.string.custom_user_agent)) {
             // A custom user agent is stored in the current user agent name.  The second check is necessary in case the user did not change the default custom text.
             // Set the user agent spinner to `Custom user agent`.
-            userAgentSpinner.setSelection(MainWebViewActivity.DOMAINS_CUSTOM_USER_AGENT)
+            userAgentSpinner.setSelection(DOMAINS_CUSTOM_USER_AGENT)
 
             // Hide the user agent text view.
             userAgentTextView.visibility = View.GONE
@@ -452,7 +457,7 @@ class DomainSettingsFragment : Fragment() {
             customUserAgentEditText.visibility = View.GONE
 
             // Set the user agent text.
-            if (userAgentArrayPosition == MainWebViewActivity.DOMAINS_WEBVIEW_DEFAULT_USER_AGENT) {  // The WebView default user agent is selected.
+            if (userAgentArrayPosition == DOMAINS_WEBVIEW_DEFAULT_USER_AGENT) {  // The WebView default user agent is selected.
                 // Display the WebView default user agent.
                 userAgentTextView.text = webViewDefaultUserAgentString
             } else {  // A user agent besides the default is selected.
@@ -958,7 +963,7 @@ class DomainSettingsFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Set the new user agent.
                 when (position) {
-                    MainWebViewActivity.DOMAINS_SYSTEM_DEFAULT_USER_AGENT -> {
+                    DOMAINS_SYSTEM_DEFAULT_USER_AGENT -> {
                         // Show the user agent text view.
                         userAgentTextView.visibility = View.VISIBLE
 
@@ -968,20 +973,20 @@ class DomainSettingsFragment : Fragment() {
                         // Set the user text.
                         when (defaultUserAgentArrayPosition) {
                             // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                            MainWebViewActivity.UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = defaultUserAgentName
+                            UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = defaultUserAgentName
 
                             // Display the `WebView` default user agent.
-                            MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
+                            SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
 
                             // Display the custom user agent.
-                            MainWebViewActivity.SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = defaultCustomUserAgentString
+                            SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = defaultCustomUserAgentString
 
                             // Get the user agent string from the user agent data array.
                             else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
                         }
                     }
 
-                    MainWebViewActivity.DOMAINS_WEBVIEW_DEFAULT_USER_AGENT -> {
+                    DOMAINS_WEBVIEW_DEFAULT_USER_AGENT -> {
                         // Show the user agent text view.
                         userAgentTextView.visibility = View.VISIBLE
 
@@ -992,7 +997,7 @@ class DomainSettingsFragment : Fragment() {
                         customUserAgentEditText.visibility = View.GONE
                     }
 
-                    MainWebViewActivity.DOMAINS_CUSTOM_USER_AGENT -> {
+                    DOMAINS_CUSTOM_USER_AGENT -> {
                         // Hide the user agent TextView.
                         userAgentTextView.visibility = View.GONE
 

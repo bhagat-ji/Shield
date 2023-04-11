@@ -46,16 +46,7 @@ private const val REALM = "realm"
 private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
 
 class HttpAuthenticationDialog : DialogFragment() {
-    // Define the class variables.
-    private var dismissDialog: Boolean = false
-
-    // Declare the class views.
-    private lateinit var usernameEditText: EditText
-    private lateinit var passwordEditText: EditText
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun displayDialog(host: String, realm: String, webViewFragmentId: Long): HttpAuthenticationDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -76,6 +67,13 @@ class HttpAuthenticationDialog : DialogFragment() {
         }
     }
 
+    // Define the class variables.
+    private var dismissDialog: Boolean = false
+
+    // Declare the class views.
+    private lateinit var usernameEditText: EditText
+    private lateinit var passwordEditText: EditText
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get a handle for the arguments.
         val arguments = requireArguments()
@@ -88,10 +86,10 @@ class HttpAuthenticationDialog : DialogFragment() {
         // Try to populate the alert dialog.
         try {  // Getting the WebView tab fragment will fail if Privacy Browser has been restarted.
             // Get the current position of this WebView fragment.
-            val webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId)
+            val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(webViewFragmentId)
 
             // Get the WebView tab fragment.
-            val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition)
+            val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
 
             // Get the fragment view.
             val fragmentView = webViewTabFragment.requireView()

@@ -56,8 +56,6 @@ private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
 
 class SslCertificateErrorDialog : DialogFragment() {
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun displayDialog(sslError: SslError, webViewFragmentId: Long): SslCertificateErrorDialog {
             // Get the various components of the SSL error message.
             val primaryErrorInt = sslError.primaryError
@@ -114,10 +112,10 @@ class SslCertificateErrorDialog : DialogFragment() {
         val webViewFragmentId = requireArguments().getLong(WEBVIEW_FRAGMENT_ID)
 
         // Get the current position of this WebView fragment.
-        val webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId)
+        val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(webViewFragmentId)
 
         // Get the WebView tab fragment.
-        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition)
+        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
 
         // Get the fragment view.
         val fragmentView = webViewTabFragment.requireView()

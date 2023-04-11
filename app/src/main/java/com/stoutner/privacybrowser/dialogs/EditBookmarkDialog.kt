@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -50,31 +50,7 @@ private const val DATABASE_ID = "database_id"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class EditBookmarkDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var editBookmarkListener: EditBookmarkListener
-
-    // Declare the class views.
-    private lateinit var webpageFavoriteIconRadioButton: RadioButton
-    private lateinit var nameEditText: EditText
-    private lateinit var urlEditText: EditText
-    private lateinit var saveButton: Button
-
-    // The public interface is used to send information back to the parent activity.
-    interface EditBookmarkListener {
-        fun onSaveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the edit bookmark listener from the launching context.
-        editBookmarkListener = context as EditBookmarkListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun bookmarkDatabaseId(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -101,6 +77,28 @@ class EditBookmarkDialog : DialogFragment() {
             // Return the new dialog.
             return editBookmarkDialog
         }
+    }
+
+    // Declare the class variables.
+    private lateinit var editBookmarkListener: EditBookmarkListener
+
+    // Declare the class views.
+    private lateinit var webpageFavoriteIconRadioButton: RadioButton
+    private lateinit var nameEditText: EditText
+    private lateinit var urlEditText: EditText
+    private lateinit var saveButton: Button
+
+    // The public interface is used to send information back to the parent activity.
+    interface EditBookmarkListener {
+        fun onSaveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the edit bookmark listener from the launching context.
+        editBookmarkListener = context as EditBookmarkListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

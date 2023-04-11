@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -46,25 +46,7 @@ private const val TITLE = "title"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class CreateBookmarkDialog : DialogFragment() {
-    // Declare the class variables
-    private lateinit var createBookmarkListener: CreateBookmarkListener
-
-    // The public interface is used to send information back to the parent activity.
-    interface CreateBookmarkListener {
-        fun onCreateBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the create bookmark listener from the launching context.
-        createBookmarkListener = context as CreateBookmarkListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun createBookmark(urlString: String, title: String, favoriteIconBitmap: Bitmap): CreateBookmarkDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -92,6 +74,22 @@ class CreateBookmarkDialog : DialogFragment() {
             // Return the new dialog.
             return createBookmarkDialog
         }
+    }
+
+    // Declare the class variables
+    private lateinit var createBookmarkListener: CreateBookmarkListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface CreateBookmarkListener {
+        fun onCreateBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the create bookmark listener from the launching context.
+        createBookmarkListener = context as CreateBookmarkListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -24,7 +24,8 @@
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">tr</string>
 
-    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
+    <!-- MainWebView.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="privacy_mode">Gizlilik Modu</string>
     <string name="javascript_enabled">JavaScript etkin</string>
     <string name="javascript_disabled">JavaScript devre dışı</string>
@@ -37,12 +38,12 @@
     <string name="form_data_deleted">Form Verisi silindi</string>
     <string name="open_navigation_drawer">Gezinti Menüsünü aç</string>
     <string name="close_navigation_drawer">Gezinti Menüsünü kapa</string>
-    <string name="unrecognized_url">Onaylanmamış URL: \u0020</string>
+    <string name="unrecognized_url">Onaylanmamış URL:\u0020 %1$s</string>
     <string name="add_tab">Sekme ekle</string>
     <string name="close_tab">Sekmeyi kapa</string>
     <string name="new_tab">Yeni sekme</string>
     <string name="loading">Yükleniyor…</string>
-    <string name="error">Hata: \u0020</string>
+    <string name="error">Hata:\u0020 %1$s</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">EasyList yükleniyor</string>
@@ -213,14 +214,15 @@
     <string name="move_to_folder">Klasöre taşı</string>
     <string name="move">Taşı</string>
 
-    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting. -->
-    <string name="selected">Seçili: \u0020</string>  <!--This is a plural adjective.-->
+    <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <string name="selected">Seçili:\u0020 %1$d</string>
     <string name="move_up">Yukarı taşı</string>
     <string name="move_down">Aşağı taşı</string>
     <string name="edit">Düzenle</string>
     <string name="delete">Sil</string>
     <string name="select_all">Hepsini seç</string>
-    <string name="bookmarks_deleted">Yer imleri silindi: \u0020</string>
+    <string name="bookmarks_deleted">Yer imleri silindi:\u0020 %1$d</string>
     <string name="undo">Geri al</string>
 
     <!-- Bookmarks Database View. -->
@@ -236,7 +238,7 @@
     <string name="display_order">Görüntüleme düzeni:</string>
     <string name="cannot_deselect_bookmark">Üst klasör seçiliyken bir yer iminin seçimi kaldırılamaz.</string>
 
-    <!-- Requests. -->
+    <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">İstekler</string>
     <string name="request_details">İstek detayları</string>
     <string name="disposition">Eğilim</string>
@@ -330,8 +332,8 @@
     <string name="import_button">İçeri aktar</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Şifre çöz (Decrypt)</string>
     <string name="export_successful">Dışa aktarım başarılı</string>
-    <string name="export_failed">Dışa aktarım başarısız: \u0020 %1$s</string>
-    <string name="import_failed">İçe aktarım başarısız: \u0020 %1$s</string>
+    <string name="export_failed">Dışa aktarım başarısız:\u0020 %1$s</string>
+    <string name="import_failed">İçe aktarım başarısız:\u0020 %1$s</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->

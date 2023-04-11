@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -48,25 +48,7 @@ import java.io.ByteArrayOutputStream
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class CreateBookmarkFolderDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var createBookmarkFolderListener: CreateBookmarkFolderListener
-
-    // The public interface is used to send information back to the parent activity.
-    interface CreateBookmarkFolderListener {
-        fun onCreateBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the create bookmark folder listener from the launching context.
-        createBookmarkFolderListener = context as CreateBookmarkFolderListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun createBookmarkFolder(favoriteIconBitmap: Bitmap): CreateBookmarkFolderDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -92,6 +74,22 @@ class CreateBookmarkFolderDialog : DialogFragment() {
             // Return the new dialog.
             return createBookmarkFolderDialog
         }
+    }
+
+    // Declare the class variables.
+    private lateinit var createBookmarkFolderListener: CreateBookmarkFolderListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface CreateBookmarkFolderListener {
+        fun onCreateBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the create bookmark folder listener from the launching context.
+        createBookmarkFolderListener = context as CreateBookmarkFolderListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

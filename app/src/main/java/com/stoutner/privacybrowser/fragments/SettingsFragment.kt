@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -37,7 +37,9 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.activities.MainWebViewActivity
+import com.stoutner.privacybrowser.activities.SETTINGS_CUSTOM_USER_AGENT
+import com.stoutner.privacybrowser.activities.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT
+import com.stoutner.privacybrowser.activities.UNRECOGNIZED_USER_AGENT
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 import kotlin.system.exitProcess
 
@@ -207,13 +209,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         when (val userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName)) {
             // The user agent name is not on the canonical list.
             // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.  Use the current user agent entry name as the summary.
-            MainWebViewActivity.UNRECOGNIZED_USER_AGENT -> userAgentPreference.summary = userAgentName
+            UNRECOGNIZED_USER_AGENT -> userAgentPreference.summary = userAgentName
 
             // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
-            MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentPreference.summary = "${translatedUserAgentNamesArray[userAgentArrayPosition]}:\n$defaultUserAgent"
+            SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentPreference.summary = "${translatedUserAgentNamesArray[userAgentArrayPosition]}:\n$defaultUserAgent"
 
             // Display the custom user agent.
-            MainWebViewActivity.SETTINGS_CUSTOM_USER_AGENT -> userAgentPreference.setSummary(R.string.custom_user_agent)
+            SETTINGS_CUSTOM_USER_AGENT -> userAgentPreference.setSummary(R.string.custom_user_agent)
 
             // Get the user agent summary from the user agent data array.
             else -> userAgentPreference.summary = "${translatedUserAgentNamesArray[userAgentArrayPosition]}:\n${userAgentDataArray[userAgentArrayPosition]}"
@@ -659,7 +661,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
                     // Populate the user agent summary.
                     when (newUserAgentArrayPosition) {
-                        MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> {
+                        SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> {
                             // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
                             userAgentPreference.summary = "$translatedNewUserAgentName:\n$defaultUserAgent"
 
@@ -670,7 +672,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                             customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted)
                         }
 
-                        MainWebViewActivity.SETTINGS_CUSTOM_USER_AGENT -> {
+                        SETTINGS_CUSTOM_USER_AGENT -> {
                             // Set the summary text.
                             userAgentPreference.setSummary(R.string.custom_user_agent)
 
@@ -1056,6 +1058,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled)
                     else
                         displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled)
+
+                    // Restart Privacy Browser.
+                    restartPrivacyBrowser()
                 }
 
                 getString(R.string.app_theme_key) -> {

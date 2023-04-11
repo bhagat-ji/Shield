@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2022-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -49,7 +49,6 @@ private val trackingQueriesList = listOf(
 )
 
 object SanitizeUrlHelper {
-    @JvmStatic
     fun sanitizeTrackingQueries(inputUrl: String): String {
         // Make a copy of the input URL so that it can be modified.
         var url = inputUrl
@@ -70,7 +69,6 @@ object SanitizeUrlHelper {
         return url
     }
 
-    @JvmStatic
     fun sanitizeAmpRedirects(inputUrl: String): String {
         // Make a copy of the input URL so that it can be modified.
         var url = inputUrl

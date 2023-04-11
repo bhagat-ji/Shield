@@ -48,7 +48,7 @@ class WebViewTabFragment : Fragment() {
     // The public interface is used to send information back to the parent activity.
     interface NewTabListener {
         @SuppressLint("ClickableViewAccessibility")
-        fun initializeWebView(nestedScrollWebView: NestedScrollWebView, pageNumber: Int, progressBar: ProgressBar, url: String, restoringState: Boolean)
+        fun initializeWebView(nestedScrollWebView: NestedScrollWebView, pageNumber: Int, progressBar: ProgressBar, urlString: String, restoringState: Boolean)
     }
 
     // Declare the class variables.

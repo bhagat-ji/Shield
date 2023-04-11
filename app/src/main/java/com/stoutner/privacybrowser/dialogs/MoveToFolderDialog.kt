@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -61,27 +61,7 @@ private const val CURRENT_FOLDER = "current_folder"
 private const val SELECTED_BOOKMARKS_LONG_ARRAY = "selected_bookmarks_long_array"
 
 class MoveToFolderDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var moveToFolderListener: MoveToFolderListener
-    private lateinit var bookmarksDatabaseHelper: BookmarksDatabaseHelper
-    private lateinit var exceptFolders: StringBuilder
-
-    // The public interface is used to send information back to the parent activity.
-    interface MoveToFolderListener {
-        fun onMoveToFolder(dialogFragment: DialogFragment)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the move to folder listener from the launching context.
-        moveToFolderListener = context as MoveToFolderListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun moveBookmarks(currentFolder: String, selectedBookmarksLongArray: LongArray): MoveToFolderDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -99,6 +79,24 @@ class MoveToFolderDialog : DialogFragment() {
             // Return the new dialog.
             return moveToFolderDialog
         }
+    }
+
+    // Declare the class variables.
+    private lateinit var moveToFolderListener: MoveToFolderListener
+    private lateinit var bookmarksDatabaseHelper: BookmarksDatabaseHelper
+    private lateinit var exceptFolders: StringBuilder
+
+    // The public interface is used to send information back to the parent activity.
+    interface MoveToFolderListener {
+        fun onMoveToFolder(dialogFragment: DialogFragment)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the move to folder listener from the launching context.
+        moveToFolderListener = context as MoveToFolderListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

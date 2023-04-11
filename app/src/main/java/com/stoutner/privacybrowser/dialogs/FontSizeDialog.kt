@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -39,25 +39,7 @@ import com.stoutner.privacybrowser.R
 private const val FONT_SIZE = "font_size"
 
 class FontSizeDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var updateFontSizeListener: UpdateFontSizeListener
-
-    // The public interface is used to send information back to the parent activity.
-    interface UpdateFontSizeListener {
-        fun onApplyNewFontSize(dialogFragment: DialogFragment?)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the update font size listener from the launching context.
-        updateFontSizeListener = context as UpdateFontSizeListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun displayDialog(fontSize: Int): FontSizeDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
@@ -74,6 +56,22 @@ class FontSizeDialog : DialogFragment() {
             // Return the new dialog.
             return fontSizeDialog
         }
+    }
+
+    // Declare the class variables.
+    private lateinit var updateFontSizeListener: UpdateFontSizeListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface UpdateFontSizeListener {
+        fun onApplyNewFontSize(dialogFragment: DialogFragment)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the update font size listener from the launching context.
+        updateFontSizeListener = context as UpdateFontSizeListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -21,7 +21,6 @@ package com.stoutner.privacybrowser.activities
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -67,7 +66,7 @@ class LogcatActivity : AppCompatActivity() {
     private lateinit var logcatTextView: TextView
 
     // Define the save logcat activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri: Uri? ->
+    private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             try {

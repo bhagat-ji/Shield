@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -50,32 +50,7 @@ private const val DATABASE_ID = "database_id"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class EditBookmarkFolderDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var editBookmarkFolderListener: EditBookmarkFolderListener
-    private lateinit var bookmarksDatabaseHelper: BookmarksDatabaseHelper
-    private lateinit var currentFolderName: String
-
-    // Declare the class views.
-    private lateinit var currentIconRadioButton: RadioButton
-    private lateinit var folderNameEditText: EditText
-    private lateinit var saveButton: Button
-
-    // The public interface is used to send information back to the parent activity.
-    interface EditBookmarkFolderListener {
-        fun onSaveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for the edit bookmark folder listener from the launching context.
-        editBookmarkFolderListener = context as EditBookmarkFolderListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun folderDatabaseId(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkFolderDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -102,6 +77,29 @@ class EditBookmarkFolderDialog : DialogFragment() {
             // Return the new dialog.
             return editBookmarkFolderDialog
         }
+    }
+
+    // Declare the class variables.
+    private lateinit var editBookmarkFolderListener: EditBookmarkFolderListener
+    private lateinit var bookmarksDatabaseHelper: BookmarksDatabaseHelper
+    private lateinit var currentFolderName: String
+
+    // Declare the class views.
+    private lateinit var currentIconRadioButton: RadioButton
+    private lateinit var folderNameEditText: EditText
+    private lateinit var saveButton: Button
+
+    // The public interface is used to send information back to the parent activity.
+    interface EditBookmarkFolderListener {
+        fun onSaveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the edit bookmark folder listener from the launching context.
+        editBookmarkFolderListener = context as EditBookmarkFolderListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

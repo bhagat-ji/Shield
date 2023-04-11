@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -57,6 +57,19 @@ import com.stoutner.privacybrowser.fragments.DomainsListFragment.DismissSnackbar
 import com.stoutner.privacybrowser.fragments.DomainsListFragment.SaveDomainSettingsInterface
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 
+// Define the public constants.
+const val CLOSE_ON_BACK = "close_on_back"
+const val CURRENT_IP_ADDRESSES = "current_ip_addresses"
+const val LOAD_DOMAIN = "load_domain"
+const val SSL_END_DATE = "ssl_end_date"
+const val SSL_ISSUED_BY_CNAME = "ssl_issued_by_cname"
+const val SSL_ISSUED_BY_ONAME = "ssl_issued_by_oname"
+const val SSL_ISSUED_BY_UNAME = "ssl_issued_by_uname"
+const val SSL_ISSUED_TO_CNAME = "ssl_issued_to_cname"
+const val SSL_ISSUED_TO_ONAME = "ssl_issued_to_oname"
+const val SSL_ISSUED_TO_UNAME = "ssl_issued_to_uname"
+const val SSL_START_DATE = "ssl_start_date"
+
 // Define the class constants.
 private const val DOMAIN_SETTINGS_DATABASE_ID = "domain_settings_database_id"
 private const val DOMAIN_SETTINGS_DISPLAYED = "domain_settings_displayed"
@@ -65,20 +78,6 @@ private const val LISTVIEW_POSITION = "listview_position"
 
 class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarInterface, SaveDomainSettingsInterface {
     companion object {
-        // Define the public constants.
-        const val CLOSE_ON_BACK = "close_on_back"
-        const val CURRENT_IP_ADDRESSES = "current_ip_addresses"
-        const val CURRENT_URL = "current_url"
-        const val LOAD_DOMAIN = "load_domain"
-        const val SSL_END_DATE = "ssl_end_date"
-        const val SSL_ISSUED_BY_CNAME = "ssl_issued_by_cname"
-        const val SSL_ISSUED_BY_ONAME = "ssl_issued_by_oname"
-        const val SSL_ISSUED_BY_UNAME = "ssl_issued_by_uname"
-        const val SSL_ISSUED_TO_CNAME = "ssl_issued_to_cname"
-        const val SSL_ISSUED_TO_ONAME = "ssl_issued_to_oname"
-        const val SSL_ISSUED_TO_UNAME = "ssl_issued_to_uname"
-        const val SSL_START_DATE = "ssl_start_date"
-
         // Define the public variables.
         var currentDomainDatabaseId = 0  // Used in `DomainsListFragment`.
         var dismissingSnackbar = false  // Used in `DomainsListFragment`.
@@ -741,8 +740,12 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
 
         // Get the user agent name.
         val userAgentName: String = when (userAgentSwitchPosition) {
-            MainWebViewActivity.DOMAINS_SYSTEM_DEFAULT_USER_AGENT -> resources.getString(R.string.system_default_user_agent)  // Set the user agent name to be `System default user agent`.
-            MainWebViewActivity.DOMAINS_CUSTOM_USER_AGENT -> customUserAgentEditText.text.toString()  // Set the user agent name to be the custom user agent.
+            // Set the user agent name to be `System default user agent`.
+            DOMAINS_SYSTEM_DEFAULT_USER_AGENT -> resources.getString(R.string.system_default_user_agent)
+
+            // Set the user agent name to be the custom user agent.
+            DOMAINS_CUSTOM_USER_AGENT -> customUserAgentEditText.text.toString()
+
             else -> {
                 // Get the array of user agent names.
                 val userAgentNameArray = resources.getStringArray(R.array.user_agent_names)

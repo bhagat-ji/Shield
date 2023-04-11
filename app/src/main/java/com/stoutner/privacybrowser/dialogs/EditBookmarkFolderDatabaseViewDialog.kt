@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -34,8 +34,14 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
-import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.AdapterView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.Spinner
+import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -54,32 +60,7 @@ private const val DATABASE_ID = "database_id"
 private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
-    // Declare the class variables.
-    private lateinit var editBookmarkFolderDatabaseViewListener: EditBookmarkFolderDatabaseViewListener
-
-    // Declare the class views.
-    private lateinit var currentIconRadioButton: RadioButton
-    private lateinit var nameEditText: EditText
-    private lateinit var parentFolderSpinner: Spinner
-    private lateinit var displayOrderEditText: EditText
-    private lateinit var saveButton: Button
-
-    // The public interface is used to send information back to the parent activity.
-    interface EditBookmarkFolderDatabaseViewListener {
-        fun onSaveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap)
-    }
-
-    override fun onAttach(context: Context) {
-        // Run the default commands.
-        super.onAttach(context)
-
-        // Get a handle for edit bookmark database view listener from the launching context.
-        editBookmarkFolderDatabaseViewListener = context as EditBookmarkFolderDatabaseViewListener
-    }
-
     companion object {
-        // `@JvmStatic` will no longer be required once all the code has transitioned to Kotlin.
-        @JvmStatic
         fun folderDatabaseId(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkFolderDatabaseViewDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -106,6 +87,29 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
             // Return the new dialog.
             return editBookmarkFolderDatabaseViewDialog
         }
+    }
+
+    // Declare the class variables.
+    private lateinit var editBookmarkFolderDatabaseViewListener: EditBookmarkFolderDatabaseViewListener
+
+    // Declare the class views.
+    private lateinit var currentIconRadioButton: RadioButton
+    private lateinit var nameEditText: EditText
+    private lateinit var parentFolderSpinner: Spinner
+    private lateinit var displayOrderEditText: EditText
+    private lateinit var saveButton: Button
+
+    // The public interface is used to send information back to the parent activity.
+    interface EditBookmarkFolderDatabaseViewListener {
+        fun onSaveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap)
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for edit bookmark database view listener from the launching context.
+        editBookmarkFolderDatabaseViewListener = context as EditBookmarkFolderDatabaseViewListener
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -349,7 +353,7 @@ class EditBookmarkFolderDatabaseViewDialog : DialogFragment() {
         // Wait to set the on item selected listener until the spinner has been inflated.  Otherwise the dialog will crash on restart.
         parentFolderSpinner.post {
             // Update the save button if the parent folder changes.
-            parentFolderSpinner.onItemSelectedListener = object: OnItemSelectedListener {
+            parentFolderSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     // Update the save button.
                     updateSaveButton(bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder)
