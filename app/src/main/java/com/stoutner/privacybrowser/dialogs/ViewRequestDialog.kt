@@ -33,7 +33,38 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.BlocklistHelper
+import com.stoutner.privacybrowser.helpers.DOMAIN_BLACKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_BLACKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_WHITELIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_BLACKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_WHITELIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_REGULAR_EXPRESSION_BLACKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_WHITELIST
+import com.stoutner.privacybrowser.helpers.INITIAL_BLACKLIST
+import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
+import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
+import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST_ENTRIES
+import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST_ORIGINAL_ENTRY
+import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
+import com.stoutner.privacybrowser.helpers.REQUEST_DISPOSITION
+import com.stoutner.privacybrowser.helpers.FINAL_BLACKLIST
+import com.stoutner.privacybrowser.helpers.FINAL_WHITELIST
+import com.stoutner.privacybrowser.helpers.MAIN_BLACKLIST
+import com.stoutner.privacybrowser.helpers.MAIN_WHITELIST
+import com.stoutner.privacybrowser.helpers.REGULAR_EXPRESSION_BLACKLIST
+import com.stoutner.privacybrowser.helpers.REQUEST_SUBLIST
+import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
+import com.stoutner.privacybrowser.helpers.REQUEST_URL
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_BLACKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_BLACKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_WHITELIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_INITIAL_BLACKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_WHITELIST
 
 // Define the class constants.
 private const val ID = "id"
@@ -154,8 +185,8 @@ class ViewRequestDialog : DialogFragment() {
         nextButton.isEnabled = !isLastRequest
 
         // Set the request action text.
-        when (requestDetails[BlocklistHelper.REQUEST_DISPOSITION]) {
-            BlocklistHelper.REQUEST_DEFAULT -> {
+        when (requestDetails[REQUEST_DISPOSITION]) {
+            REQUEST_DEFAULT -> {
                 // Set the text.
                 requestDisposition.setText(R.string.default_allowed)
 
@@ -163,7 +194,7 @@ class ViewRequestDialog : DialogFragment() {
                 requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.transparent))
             }
 
-            BlocklistHelper.REQUEST_ALLOWED -> {
+            REQUEST_ALLOWED -> {
                 // Set the text.
                 requestDisposition.setText(R.string.allowed)
 
@@ -171,14 +202,15 @@ class ViewRequestDialog : DialogFragment() {
                 requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
 
-            BlocklistHelper.REQUEST_THIRD_PARTY -> {
+            REQUEST_THIRD_PARTY -> {
                 // Set the text.
                 requestDisposition.setText(R.string.third_party_blocked)
 
                 // Set the background color to be yellow.
                 requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.yellow_background))
             }
-            BlocklistHelper.REQUEST_BLOCKED -> {
+
+            REQUEST_BLOCKED -> {
                 // Set the text.
                 requestDisposition.setText(R.string.blocked)
 
@@ -188,7 +220,7 @@ class ViewRequestDialog : DialogFragment() {
         }
 
         // Display the request URL.
-        requestUrl.text = requestDetails[BlocklistHelper.REQUEST_URL]
+        requestUrl.text = requestDetails[REQUEST_URL]
 
         // Modify the dialog based on the request action.
         if (requestDetails.size == 2) {  // A default request.
@@ -203,32 +235,32 @@ class ViewRequestDialog : DialogFragment() {
             requestBlockListOriginalEntry.visibility = View.GONE
         } else {  // A blocked or allowed request.
             // Set the text on the text views.
-            requestBlockList.text = requestDetails[BlocklistHelper.REQUEST_BLOCKLIST]
-            requestBlockListEntries.text = requestDetails[BlocklistHelper.REQUEST_BLOCKLIST_ENTRIES]
-            requestBlockListOriginalEntry.text = requestDetails[BlocklistHelper.REQUEST_BLOCKLIST_ORIGINAL_ENTRY]
-            when (requestDetails[BlocklistHelper.REQUEST_SUBLIST]) {
-                BlocklistHelper.MAIN_WHITELIST -> requestSubList.setText(R.string.main_whitelist)
-                BlocklistHelper.FINAL_WHITELIST -> requestSubList.setText(R.string.final_whitelist)
-                BlocklistHelper.DOMAIN_WHITELIST -> requestSubList.setText(R.string.domain_whitelist)
-                BlocklistHelper.DOMAIN_INITIAL_WHITELIST -> requestSubList.setText(R.string.domain_initial_whitelist)
-                BlocklistHelper.DOMAIN_FINAL_WHITELIST -> requestSubList.setText(R.string.domain_final_whitelist)
-                BlocklistHelper.THIRD_PARTY_WHITELIST -> requestSubList.setText(R.string.third_party_whitelist)
-                BlocklistHelper.THIRD_PARTY_DOMAIN_WHITELIST -> requestSubList.setText(R.string.third_party_domain_whitelist)
-                BlocklistHelper.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST -> requestSubList.setText(R.string.third_party_domain_initial_whitelist)
-                BlocklistHelper.MAIN_BLACKLIST -> requestSubList.setText(R.string.main_blacklist)
-                BlocklistHelper.INITIAL_BLACKLIST -> requestSubList.setText(R.string.initial_blacklist)
-                BlocklistHelper.FINAL_BLACKLIST -> requestSubList.setText(R.string.final_blacklist)
-                BlocklistHelper.DOMAIN_BLACKLIST -> requestSubList.setText(R.string.domain_blacklist)
-                BlocklistHelper.DOMAIN_INITIAL_BLACKLIST -> requestSubList.setText(R.string.domain_initial_blacklist)
-                BlocklistHelper.DOMAIN_FINAL_BLACKLIST -> requestSubList.setText(R.string.domain_final_blacklist)
-                BlocklistHelper.DOMAIN_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.domain_regular_expression_blacklist)
-                BlocklistHelper.THIRD_PARTY_BLACKLIST -> requestSubList.setText(R.string.third_party_blacklist)
-                BlocklistHelper.THIRD_PARTY_INITIAL_BLACKLIST -> requestSubList.setText(R.string.third_party_initial_blacklist)
-                BlocklistHelper.THIRD_PARTY_DOMAIN_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_blacklist)
-                BlocklistHelper.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_initial_blacklist)
-                BlocklistHelper.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.third_party_regular_expression_blacklist)
-                BlocklistHelper.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_regular_expression_blacklist)
-                BlocklistHelper.REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.regular_expression_blacklist)
+            requestBlockList.text = requestDetails[REQUEST_BLOCKLIST]
+            requestBlockListEntries.text = requestDetails[REQUEST_BLOCKLIST_ENTRIES]
+            requestBlockListOriginalEntry.text = requestDetails[REQUEST_BLOCKLIST_ORIGINAL_ENTRY]
+            when (requestDetails[REQUEST_SUBLIST]) {
+                MAIN_WHITELIST -> requestSubList.setText(R.string.main_whitelist)
+                FINAL_WHITELIST -> requestSubList.setText(R.string.final_whitelist)
+                DOMAIN_WHITELIST -> requestSubList.setText(R.string.domain_whitelist)
+                DOMAIN_INITIAL_WHITELIST -> requestSubList.setText(R.string.domain_initial_whitelist)
+                DOMAIN_FINAL_WHITELIST -> requestSubList.setText(R.string.domain_final_whitelist)
+                THIRD_PARTY_WHITELIST -> requestSubList.setText(R.string.third_party_whitelist)
+                THIRD_PARTY_DOMAIN_WHITELIST -> requestSubList.setText(R.string.third_party_domain_whitelist)
+                THIRD_PARTY_DOMAIN_INITIAL_WHITELIST -> requestSubList.setText(R.string.third_party_domain_initial_whitelist)
+                MAIN_BLACKLIST -> requestSubList.setText(R.string.main_blacklist)
+                INITIAL_BLACKLIST -> requestSubList.setText(R.string.initial_blacklist)
+                FINAL_BLACKLIST -> requestSubList.setText(R.string.final_blacklist)
+                DOMAIN_BLACKLIST -> requestSubList.setText(R.string.domain_blacklist)
+                DOMAIN_INITIAL_BLACKLIST -> requestSubList.setText(R.string.domain_initial_blacklist)
+                DOMAIN_FINAL_BLACKLIST -> requestSubList.setText(R.string.domain_final_blacklist)
+                DOMAIN_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.domain_regular_expression_blacklist)
+                THIRD_PARTY_BLACKLIST -> requestSubList.setText(R.string.third_party_blacklist)
+                THIRD_PARTY_INITIAL_BLACKLIST -> requestSubList.setText(R.string.third_party_initial_blacklist)
+                THIRD_PARTY_DOMAIN_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_blacklist)
+                THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_initial_blacklist)
+                THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.third_party_regular_expression_blacklist)
+                THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_regular_expression_blacklist)
+                REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.regular_expression_blacklist)
             }
         }
 

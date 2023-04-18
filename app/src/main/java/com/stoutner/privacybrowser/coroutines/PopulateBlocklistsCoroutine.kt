@@ -27,7 +27,7 @@ import android.widget.TextView
 import androidx.drawerlayout.widget.DrawerLayout
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.BlocklistHelper
+import com.stoutner.privacybrowser.helpers.ParseBlocklistHelper
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +69,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
             loadingBlocklistsRelativeLayout.visibility = View.VISIBLE
 
             // Instantiate the blocklist helper.
-            val blocklistHelper = BlocklistHelper()
+            val parseBlocklistHelper = ParseBlocklistHelper()
 
             // Create a combined array list.
             val combinedBlocklists = ArrayList<ArrayList<List<Array<String>>>>()
@@ -80,7 +80,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
             // Populate the blocklists on the IO thread.
             withContext(Dispatchers.IO) {
                 // Populate EasyList.
-                val easyList = blocklistHelper.parseBlocklist(context.assets, "blocklists/easylist.txt")
+                val easyList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/easylist.txt")
 
                 // Advertise the loading of EasyPrivacy.
                 withContext(Dispatchers.Main) {
@@ -88,7 +88,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
                 }
 
                 // Populate EasyPrivacy.
-                val easyPrivacy = blocklistHelper.parseBlocklist(context.assets, "blocklists/easyprivacy.txt")
+                val easyPrivacy = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/easyprivacy.txt")
 
                 // Advertise the loading of Fanboy's Annoyance List.
                 withContext(Dispatchers.Main) {
@@ -96,7 +96,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
                 }
 
                 // Populate Fanboy's Annoyance List.
-                val fanboysAnnoyanceList = blocklistHelper.parseBlocklist(context.assets, "blocklists/fanboy-annoyance.txt")
+                val fanboysAnnoyanceList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/fanboy-annoyance.txt")
 
                 // Advertise the loading of Fanboy's social blocking list.
                 withContext(Dispatchers.Main) {
@@ -104,7 +104,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
                 }
 
                 // Populate Fanboy's Social Blocking List.
-                val fanboysSocialList = blocklistHelper.parseBlocklist(context.assets, "blocklists/fanboy-social.txt")
+                val fanboysSocialList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/fanboy-social.txt")
 
                 // Advertise the loading of UltraList
                 withContext(Dispatchers.Main) {
@@ -112,7 +112,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
                 }
 
                 // Populate UltraList.
-                val ultraList = blocklistHelper.parseBlocklist(context.assets, "blocklists/ultralist.txt")
+                val ultraList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/ultralist.txt")
 
                 // Advertise the loading of UltraPrivacy.
                 withContext(Dispatchers.Main) {
@@ -120,7 +120,7 @@ class PopulateBlocklistsCoroutine(context: Context) {
                 }
 
                 // Populate UltraPrivacy.
-                val ultraPrivacy = blocklistHelper.parseBlocklist(context.assets, "blocklists/ultraprivacy.txt")
+                val ultraPrivacy = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/ultraprivacy.txt")
 
                 // Populate the combined array list.
                 combinedBlocklists.add(easyList)

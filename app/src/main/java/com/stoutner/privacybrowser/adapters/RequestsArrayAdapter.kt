@@ -28,7 +28,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.BlocklistHelper
+import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
+import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
+import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
+import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
 
 // `0` is the `textViewResourceId`, which is unused in this implementation.
 class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<String>>) : ArrayAdapter<Array<String>>(context, 0, resourceRequestsList) {
@@ -54,7 +57,7 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
 
         // Set the action text and the background color.
         when (entryStringArray[0]) {
-            BlocklistHelper.REQUEST_DEFAULT -> {
+            REQUEST_DEFAULT -> {
                 // Set the disposition text.
                 dispositionTextView.text = context.resources.getString(R.string.request_allowed, id)
 
@@ -62,7 +65,7 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
                 linearLayout.setBackgroundColor(context.getColor(R.color.transparent))
             }
 
-            BlocklistHelper.REQUEST_ALLOWED -> {
+            REQUEST_ALLOWED -> {
                 // Set the disposition text.
                 dispositionTextView.text = context.resources.getString(R.string.request_allowed, id)
 
@@ -70,7 +73,7 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
                 linearLayout.setBackgroundColor(context.getColor(R.color.blue_background))
             }
 
-            BlocklistHelper.REQUEST_THIRD_PARTY -> {
+            REQUEST_THIRD_PARTY -> {
                 // Set the disposition text.
                 dispositionTextView.text = context.resources.getString(R.string.request_blocked, id)
 
@@ -78,7 +81,7 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
                 linearLayout.setBackgroundColor(context.getColor(R.color.yellow_background))
             }
 
-            BlocklistHelper.REQUEST_BLOCKED -> {
+            REQUEST_BLOCKED -> {
                 // Set the disposition text.
                 dispositionTextView.text = context.resources.getString(R.string.request_blocked, id)
 

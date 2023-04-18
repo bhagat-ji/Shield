@@ -42,7 +42,11 @@ import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.adapters.RequestsArrayAdapter
 import com.stoutner.privacybrowser.dialogs.ViewRequestDialog.Companion.request
 import com.stoutner.privacybrowser.dialogs.ViewRequestDialog.ViewRequestListener
-import com.stoutner.privacybrowser.helpers.BlocklistHelper
+import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
+import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
+import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
+import com.stoutner.privacybrowser.helpers.REQUEST_DISPOSITION
+import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
 
 // Define the public constants.
 const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
@@ -119,23 +123,23 @@ class RequestsActivity : AppCompatActivity(), ViewRequestListener {
             // Add the request to the list of all requests.
             allResourceRequests.add(request)
 
-            when (request[BlocklistHelper.REQUEST_DISPOSITION]) {
-                BlocklistHelper.REQUEST_DEFAULT -> {
+            when (request[REQUEST_DISPOSITION]) {
+                REQUEST_DEFAULT -> {
                     // Add the request to the list of default requests.
                     defaultResourceRequests.add(request)
                 }
 
-                BlocklistHelper.REQUEST_ALLOWED -> {
+                REQUEST_ALLOWED -> {
                     // Add the request to the list of allowed requests.
                     allowedResourceRequests.add(request)
                 }
 
-                BlocklistHelper.REQUEST_THIRD_PARTY -> {
+                REQUEST_THIRD_PARTY -> {
                     // Add the request to the list of third-party requests.
                     thirdPartyResourceRequests.add(request)
                 }
 
-                BlocklistHelper.REQUEST_BLOCKED -> {
+               REQUEST_BLOCKED -> {
                     // Add the request to the list of blocked requests.
                     blockedResourceRequests.add(request)
                 }

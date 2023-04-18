@@ -137,8 +137,12 @@ import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog
 import com.stoutner.privacybrowser.dialogs.WaitingForProxyDialog
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment
-import com.stoutner.privacybrowser.helpers.BlocklistHelper
+import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
+import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
+import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
+import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
+import com.stoutner.privacybrowser.helpers.CheckBlocklistHelper
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.helpers.SanitizeUrlHelper
@@ -215,7 +219,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     // Declare the class variables.
     private lateinit var appBar: ActionBar
-    private lateinit var blocklistHelper: BlocklistHelper
+    private lateinit var checkBlocklistHelper: CheckBlocklistHelper
     private lateinit var bookmarksCursorAdapter: CursorAdapter
     private lateinit var bookmarksListView: ListView
     private lateinit var bookmarksDrawerPinnedImageView: ImageView
@@ -4261,8 +4265,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Update the domains settings set.
         updateDomainsSettingsSet()
 
-        // Instantiate the blocklist helper.
-        blocklistHelper = BlocklistHelper()
+        // Instantiate the check blocklist helper.
+        checkBlocklistHelper = CheckBlocklistHelper()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -4859,7 +4863,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Block third-party requests if enabled.
                 if (isThirdPartyRequest && nestedScrollWebView.blockAllThirdPartyRequests) {
                     // Add the result to the resource requests.
-                    nestedScrollWebView.addResourceRequest(arrayOf(BlocklistHelper.REQUEST_THIRD_PARTY, requestUrlString))
+                    nestedScrollWebView.addResourceRequest(arrayOf(REQUEST_THIRD_PARTY, requestUrlString))
 
                     // Increment the blocked requests counters.
                     nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
@@ -4888,10 +4892,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check UltraList if it is enabled.
                 if (nestedScrollWebView.ultraListEnabled) {
                     // Check the URL against UltraList.
-                    val ultraListResults = blocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, ultraList)
+                    val ultraListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, ultraList)
 
                     // Process the UltraList results.
-                    if (ultraListResults[0] == BlocklistHelper.REQUEST_BLOCKED) {  // The resource request matched UltraList's blacklist.
+                    if (ultraListResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraList's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]))
 
@@ -4916,7 +4920,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (ultraListResults[0] == BlocklistHelper.REQUEST_ALLOWED) {  // The resource request matched UltraList's whitelist.
+                    } else if (ultraListResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraList's whitelist.
                         // Add a whitelist entry to the resource requests array.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]))
 
@@ -4928,10 +4932,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check UltraPrivacy if it is enabled.
                 if (nestedScrollWebView.ultraPrivacyEnabled) {
                     // Check the URL against UltraPrivacy.
-                    val ultraPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, ultraPrivacy!!)
+                    val ultraPrivacyResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, ultraPrivacy!!)
 
                     // Process the UltraPrivacy results.
-                    if (ultraPrivacyResults[0] == BlocklistHelper.REQUEST_BLOCKED) {  // The resource request matched UltraPrivacy's blacklist.
+                    if (ultraPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraPrivacy's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
                             ultraPrivacyResults[5]))
@@ -4957,7 +4961,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (ultraPrivacyResults[0] == BlocklistHelper.REQUEST_ALLOWED) {  // The resource request matched UltraPrivacy's whitelist.
+                    } else if (ultraPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraPrivacy's whitelist.
                         // Add a whitelist entry to the resource requests array.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
                             ultraPrivacyResults[5]))
@@ -4970,10 +4974,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check EasyList if it is enabled.
                 if (nestedScrollWebView.easyListEnabled) {
                     // Check the URL against EasyList.
-                    val easyListResults = blocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, easyList)
+                    val easyListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, easyList)
 
                     // Process the EasyList results.
-                    if (easyListResults[0] == BlocklistHelper.REQUEST_BLOCKED) {  // The resource request matched EasyList's blacklist.
+                    if (easyListResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyList's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5]))
 
@@ -4998,7 +5002,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (easyListResults[0] == BlocklistHelper.REQUEST_ALLOWED) {  // The resource request matched EasyList's whitelist.
+                    } else if (easyListResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyList's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = arrayOf(easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5])
                     }
@@ -5007,10 +5011,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check EasyPrivacy if it is enabled.
                 if (nestedScrollWebView.easyPrivacyEnabled) {
                     // Check the URL against EasyPrivacy.
-                    val easyPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, easyPrivacy)
+                    val easyPrivacyResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, easyPrivacy)
 
                     // Process the EasyPrivacy results.
-                    if (easyPrivacyResults[0] == BlocklistHelper.REQUEST_BLOCKED) {  // The resource request matched EasyPrivacy's blacklist.
+                    if (easyPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyPrivacy's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5]))
 
@@ -5035,7 +5039,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (easyPrivacyResults[0] == BlocklistHelper.REQUEST_ALLOWED) {  // The resource request matched EasyPrivacy's whitelist.
+                    } else if (easyPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyPrivacy's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = arrayOf(easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5])
                     }
@@ -5044,10 +5048,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (nestedScrollWebView.fanboysAnnoyanceListEnabled) {
                     // Check the URL against Fanboy's Annoyance List.
-                    val fanboysAnnoyanceListResults = blocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, fanboysAnnoyanceList)
+                    val fanboysAnnoyanceListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, fanboysAnnoyanceList)
 
                     // Process the Fanboy's Annoyance List results.
-                    if (fanboysAnnoyanceListResults[0] == BlocklistHelper.REQUEST_BLOCKED) {  // The resource request matched Fanboy's Annoyance List's blacklist.
+                    if (fanboysAnnoyanceListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Annoyance List's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                             fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]))
@@ -5073,17 +5077,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (fanboysAnnoyanceListResults[0] == BlocklistHelper.REQUEST_ALLOWED) {  // The resource request matched Fanboy's Annoyance List's whitelist.
+                    } else if (fanboysAnnoyanceListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Annoyance List's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                             fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5])
                     }
                 } else if (nestedScrollWebView.fanboysSocialBlockingListEnabled) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     // Check the URL against Fanboy's Annoyance List.
-                    val fanboysSocialListResults = blocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, fanboysSocialList)
+                    val fanboysSocialListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, fanboysSocialList)
 
                     // Process the Fanboy's Social Blocking List results.
-                    if (fanboysSocialListResults[0] == BlocklistHelper.REQUEST_BLOCKED) {  // The resource request matched Fanboy's Social Blocking List's blacklist.
+                    if (fanboysSocialListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Social Blocking List's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3],
                             fanboysSocialListResults[4], fanboysSocialListResults[5]))
@@ -5110,7 +5114,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (fanboysSocialListResults[0] == BlocklistHelper.REQUEST_ALLOWED) {  // The resource request matched Fanboy's Social Blocking List's whitelist.
+                    } else if (fanboysSocialListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Social Blocking List's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = arrayOf(fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3], fanboysSocialListResults[4],
                             fanboysSocialListResults[5])
@@ -5121,7 +5125,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 if (whitelistResultStringArray != null) {  // The request was processed by a whitelist.
                     nestedScrollWebView.addResourceRequest(whitelistResultStringArray)
                 } else {  // The request didn't match any blocklist entry.  Log it as a default request.
-                    nestedScrollWebView.addResourceRequest(arrayOf(BlocklistHelper.REQUEST_DEFAULT, requestUrlString))
+                    nestedScrollWebView.addResourceRequest(arrayOf(REQUEST_DEFAULT, requestUrlString))
                 }
 
                 // The resource request has not been blocked.  `return null` loads the requested resource.
