@@ -81,7 +81,7 @@ class CreateBookmarkDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface CreateBookmarkListener {
-        fun onCreateBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
+        fun createBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
     }
 
     override fun onAttach(context: Context) {
@@ -125,7 +125,7 @@ class CreateBookmarkDialog : DialogFragment() {
         // Set a listener on the create button.
         dialogBuilder.setPositiveButton(R.string.create) { _: DialogInterface, _: Int ->
             // Return the dialog fragment and the favorite icon bitmap to the parent activity.
-            createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap)
+            createBookmarkListener.createBookmark(this, favoriteIconBitmap)
         }
 
         // Create an alert dialog from the builder.
@@ -159,7 +159,7 @@ class CreateBookmarkDialog : DialogFragment() {
             // Check the key code and event.
             if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {  // The event is a key-down on the enter key.
                 // Trigger the create bookmark listener and return the dialog fragment and the favorite icon bitmap to the parent activity.
-                createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap)
+                createBookmarkListener.createBookmark(this, favoriteIconBitmap)
 
                 // Manually dismiss the alert dialog.
                 alertDialog.dismiss()
@@ -177,7 +177,7 @@ class CreateBookmarkDialog : DialogFragment() {
             // Check the key code and event.
             if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {  // The event is a key-down on the enter key.
                 // Trigger the create bookmark listener and return the dialog fragment and the favorite icon bitmap to the parent activity.
-                createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap)
+                createBookmarkListener.createBookmark(this, favoriteIconBitmap)
 
                 // Manually dismiss the alert dialog.
                 alertDialog.dismiss()

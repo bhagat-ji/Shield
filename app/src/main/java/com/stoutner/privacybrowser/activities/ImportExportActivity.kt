@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -457,9 +457,9 @@ class ImportExportActivity : AppCompatActivity() {
         } else {  // Export is selected
             // Open the file picker with the export name according to the encryption type.
             if (encryptionSpinner.selectedItemPosition == NO_ENCRYPTION)  // No encryption is selected.
-                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME))
+                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, ImportExportDatabaseHelper.SCHEMA_VERSION))
             else  // Password encryption is selected.
-                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs_aes, BuildConfig.VERSION_NAME))
+                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs_aes, BuildConfig.VERSION_NAME, ImportExportDatabaseHelper.SCHEMA_VERSION))
         }
     }
 
@@ -829,7 +829,8 @@ class ImportExportActivity : AppCompatActivity() {
                         fileProviderDirectory.mkdir()
 
                         // Set the temporary pre-encrypted export file.
-                        temporaryPreEncryptedExportFile = File(fileProviderDirectory.toString() + "/" + getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME))
+                        temporaryPreEncryptedExportFile = File(fileProviderDirectory.toString() + "/" +
+                                getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, ImportExportDatabaseHelper.SCHEMA_VERSION))
 
                         // Delete the temporary pre-encrypted export file if it already exists.
                         if (temporaryPreEncryptedExportFile.exists())

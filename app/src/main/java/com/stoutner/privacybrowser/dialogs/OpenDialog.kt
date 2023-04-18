@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -53,7 +53,7 @@ class OpenDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface OpenListener {
-        fun onOpen(dialogFragment: DialogFragment)
+        fun openFile(dialogFragment: DialogFragment)
     }
 
     override fun onAttach(context: Context) {
@@ -98,7 +98,7 @@ class OpenDialog : DialogFragment() {
         // Set the open button listener.
         dialogBuilder.setPositiveButton(R.string.open) { _: DialogInterface?, _: Int ->
             // Return the dialog fragment to the parent activity.
-            openListener.onOpen(this)
+            openListener.openFile(this)
         }
 
         // Create an alert dialog from the builder.

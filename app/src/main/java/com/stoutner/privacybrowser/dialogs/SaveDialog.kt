@@ -78,7 +78,7 @@ class SaveDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface SaveListener {
-        fun onSaveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment)
+        fun saveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment)
     }
 
     override fun onAttach(context: Context) {
@@ -115,7 +115,7 @@ class SaveDialog : DialogFragment() {
         // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save) { _: DialogInterface, _: Int ->
             // Return the dialog fragment to the parent activity.
-            saveListener.onSaveUrl(originalUrlString, fileNameString, this)
+            saveListener.saveUrl(originalUrlString, fileNameString, this)
         }
 
         // Create an alert dialog from the builder.

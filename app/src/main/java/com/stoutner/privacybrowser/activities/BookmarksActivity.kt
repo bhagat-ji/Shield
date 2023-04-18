@@ -670,7 +670,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkListener, CreateBoo
         return true
     }
 
-    override fun onCreateBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+    override fun createBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
         // Get the alert dialog from the fragment.
         val dialog = dialogFragment.dialog!!
 
@@ -707,7 +707,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkListener, CreateBoo
         bookmarksListView.setSelection(newBookmarkDisplayOrder)
     }
 
-    override fun onCreateBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+    override fun createBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 

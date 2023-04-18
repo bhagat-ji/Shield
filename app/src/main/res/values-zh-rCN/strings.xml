@@ -373,8 +373,8 @@
     <string name="export">导出</string>
     <string name="import_button">导入</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">解密</string>
-    <string name="privacy_browser_settings_pbs">Privacy Browser设置 %1$s.pbs</string>
-    <string name="privacy_browser_settings_pbs_aes">Privacy Browser设置 %1$s.pbs.aes</string>
+    <string name="privacy_browser_settings_pbs">Privacy Browser Android %1$s 设置 - Schema %2$d.pbs</string>
+    <string name="privacy_browser_settings_pbs_aes">Privacy Browser Android %1$s 设置 - Schema %2$d.pbs.aes</string>
     <string name="export_successful">导出成功.</string>
     <string name="export_failed">导出失败:\u0020 %1$s</string>
     <string name="import_failed">导入失败:\u0020 %1$s</string>
@@ -384,7 +384,7 @@
     <string name="copy_string">复制</string>
     <string name="clear">清除</string>
     <string name="logcat_copied">复制日志.</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
     <string name="error_saving_logcat">保存日志失败:\u0020 %1$s</string>
 
     <!-- Guide. -->
@@ -450,8 +450,8 @@
             <string name="serial_number">序列号:</string>
             <string name="signature_algorithm">>签名算法:</string>
         <string name="version_info_copied">复制版本信息.</string>
-        <string name="privacy_browser_version_txt">Privacy Browser 版本 %1$s.txt</string>
-        <string name="privacy_browser_version_png">Privacy Browser 版本 %1$s.png</string>
+        <string name="privacy_browser_version_txt">Privacy Browser Android %1$s 版本.txt</string>
+        <string name="privacy_browser_version_png">Privacy Browser Android %1$s 版本.png</string>
     <string name="permissions">许可权限</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="changelog">更新内容</string>
@@ -582,7 +582,7 @@
         <string name="bottom_app_bar">底部状态栏</string>
         <string name="bottom_app_bar_summary">移动应用栏到底部，更改这个设置会重启Privacy Browser</string>
         <string name="display_additional_app_bar_icons">>显示额外的应用栏图标</string>
-        <string name="display_additional_app_bar_icons_summary">应用栏显示图标有刷新网页，如果这里有空间，打开书签并切换cookies</string>
+        <string name="display_additional_app_bar_icons_summary">更改在导航栏的刷新网页和在页面打开书签和cookies管理的图标，改变这个设置会重启浏览器。</string>
         <string name="app_theme">应用主题</string>
         <string-array name="app_theme_entries">
             <item>系统默认设置</item>

@@ -63,7 +63,7 @@ class FontSizeDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface UpdateFontSizeListener {
-        fun onApplyNewFontSize(dialogFragment: DialogFragment)
+        fun updateFontSize(dialogFragment: DialogFragment)
     }
 
     override fun onAttach(context: Context) {
@@ -96,7 +96,7 @@ class FontSizeDialog : DialogFragment() {
         // Set the apply button listener.
         dialogBuilder.setPositiveButton(R.string.apply) { _: DialogInterface?, _: Int ->
             // Return the dialog fragment to the parent activity.
-            updateFontSizeListener.onApplyNewFontSize(this)
+            updateFontSizeListener.updateFontSize(this)
         }
 
         // Create an alert dialog from the builder.
@@ -136,7 +136,7 @@ class FontSizeDialog : DialogFragment() {
             // Check the key code, event, and button status.
             if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {  // The enter key was pressed.
                 // Trigger the update font size listener and return the dialog fragment to the parent activity.
-                updateFontSizeListener.onApplyNewFontSize(this)
+                updateFontSizeListener.updateFontSize(this)
 
                 // Manually dismiss the alert dialog.
                 alertDialog.dismiss()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -35,52 +35,49 @@ import java.io.InputStream
 import java.io.OutputStream
 
 // Define the private class constants.
-private const val SCHEMA_VERSION = 16
-private const val PREFERENCES_TABLE = "preferences"
-
-// Define the private preferences constants.
-private const val ID = "_id"
-private const val JAVASCRIPT = "javascript"
-private const val COOKIES = "cookies"
-private const val DOM_STORAGE = "dom_storage"
-private const val SAVE_FORM_DATA = "save_form_data"
-private const val USER_AGENT = "user_agent"
-private const val CUSTOM_USER_AGENT = "custom_user_agent"
-private const val INCOGNITO_MODE = "incognito_mode"
 private const val ALLOW_SCREENSHOTS = "allow_screenshots"
+private const val AMP_REDIRECTS = "amp_redirects"
+private const val APP_THEME = "app_theme"
+private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
+private const val BOTTOM_APP_BAR = "bottom_app_bar"
+private const val CLEAR_CACHE = "clear_cache"
+private const val CLEAR_COOKIES = "clear_cookies"
+private const val CLEAR_DOM_STORAGE = "clear_dom_storage"
+private const val CLEAR_EVERYTHING = "clear_everything"
+private const val CLEAR_FORM_DATA = "clear_form_data"  // Clear form data can be removed once the minimum API >= 26.
+private const val CLEAR_LOGCAT = "clear_logcat"
+private const val COOKIES = "cookies"
+private const val CUSTOM_USER_AGENT = "custom_user_agent"
+private const val DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons"
+private const val DISPLAY_WEBPAGE_IMAGES = "display_webpage_images"
+private const val DOM_STORAGE = "dom_storage"
+private const val DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app"
 private const val EASYLIST = "easylist"
 private const val EASYPRIVACY = "easyprivacy"
 private const val FANBOYS_ANNOYANCE_LIST = "fanboys_annoyance_list"
 private const val FANBOYS_SOCIAL_BLOCKING_LIST = "fanboys_social_blocking_list"
-private const val ULTRALIST = "ultralist"
-private const val ULTRAPRIVACY = "ultraprivacy"
-private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
-private const val TRACKING_QUERIES = "tracking_queries"
-private const val AMP_REDIRECTS = "amp_redirects"
-private const val SEARCH = "search"
-private const val SEARCH_CUSTOM_URL = "search_custom_url"
-private const val PROXY = "proxy"
-private const val PROXY_CUSTOM_URL = "proxy_custom_url"
+private const val FONT_SIZE = "font_size"
 private const val FULL_SCREEN_BROWSING_MODE = "full_screen_browsing_mode"
 private const val HIDE_APP_BAR = "hide_app_bar"
-private const val CLEAR_EVERYTHING = "clear_everything"
-private const val CLEAR_COOKIES = "clear_cookies"
-private const val CLEAR_DOM_STORAGE = "clear_dom_storage"
-private const val CLEAR_FORM_DATA = "clear_form_data"
-private const val CLEAR_LOGCAT = "clear_logcat"
-private const val CLEAR_CACHE = "clear_cache"
 private const val HOMEPAGE = "homepage"
-private const val FONT_SIZE = "font_size"
+private const val ID = "_id"
+private const val INCOGNITO_MODE = "incognito_mode"
+private const val JAVASCRIPT = "javascript"
 private const val OPEN_INTENTS_IN_NEW_TAB = "open_intents_in_new_tab"
-private const val SWIPE_TO_REFRESH = "swipe_to_refresh"
-private const val DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app"
+private const val PREFERENCES_TABLE = "preferences"
+private const val PROXY = "proxy"
+private const val PROXY_CUSTOM_URL = "proxy_custom_url"
+private const val SAVE_FORM_DATA = "save_form_data"
+private const val SEARCH = "search"
+private const val SEARCH_CUSTOM_URL = "search_custom_url"
 private const val SCROLL_APP_BAR = "scroll_app_bar"
-private const val BOTTOM_APP_BAR = "bottom_app_bar"
-private const val DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons"
-private const val APP_THEME = "app_theme"
+private const val SWIPE_TO_REFRESH = "swipe_to_refresh"
+private const val TRACKING_QUERIES = "tracking_queries"
+private const val ULTRALIST = "ultralist"
+private const val ULTRAPRIVACY = "ultraprivacy"
+private const val USER_AGENT = "user_agent"
 private const val WEBVIEW_THEME = "webview_theme"
 private const val WIDE_VIEWPORT = "wide_viewport"
-private const val DISPLAY_WEBPAGE_IMAGES = "display_webpage_images"
 
 class ImportExportDatabaseHelper {
     // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
@@ -88,6 +85,7 @@ class ImportExportDatabaseHelper {
         // Define the public class constants.
         const val EXPORT_SUCCESSFUL = "Export Successful"
         const val IMPORT_SUCCESSFUL = "Import Successful"
+        const val SCHEMA_VERSION = 16
     }
 
     fun importUnencrypted(importFileInputStream: InputStream, context: Context): String {

@@ -81,7 +81,7 @@ class CreateBookmarkFolderDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface CreateBookmarkFolderListener {
-        fun onCreateBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
+        fun createBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap)
     }
 
     override fun onAttach(context: Context) {
@@ -117,7 +117,7 @@ class CreateBookmarkFolderDialog : DialogFragment() {
         // Set the create button listener.
         dialogBuilder.setPositiveButton(R.string.create) { _: DialogInterface, _: Int ->
             // Return the dialog fragment to the parent activity on create.
-            createBookmarkFolderListener.onCreateBookmarkFolder(this, favoriteIconBitmap)
+            createBookmarkFolderListener.createBookmarkFolder(this, favoriteIconBitmap)
         }
 
         // Create an alert dialog from the builder.
@@ -207,7 +207,7 @@ class CreateBookmarkFolderDialog : DialogFragment() {
             // Check the key code, event, and button status.
             if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && createButton.isEnabled) {  // The event is a key-down on the enter key and the create button is enabled.
                 // Trigger the create bookmark folder listener and return the dialog fragment to the parent activity.
-                createBookmarkFolderListener.onCreateBookmarkFolder(this, favoriteIconBitmap)
+                createBookmarkFolderListener.createBookmarkFolder(this, favoriteIconBitmap)
 
                 // Manually dismiss the alert dialog.
                 alertDialog.dismiss()

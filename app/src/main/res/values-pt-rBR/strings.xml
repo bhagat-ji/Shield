@@ -378,7 +378,7 @@
     <string name="copy_string">Cópia</string>
     <string name="clear">Limpar</string>
     <string name="logcat_copied">Logcat copiado.</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
     <string name="saved">%1$s salvo.</string>
     <string name="error_saving_logcat">Erro ao salvar logcat:\u0020 %1$s</string>
 
@@ -445,8 +445,8 @@
             <string name="serial_number">Número de série: \u0020</string>
             <string name="signature_algorithm">Algoritmo de Assinatura: \u0020</string>
         <string name="version_info_copied">Informações de versão copiada.</string>
-        <string name="privacy_browser_version_txt">Privacy Browser Versão %1$s.txt</string>
-        <string name="privacy_browser_version_png">Privacy Browser Versão %1$s.png</string>
+        <string name="privacy_browser_version_txt">Privacy Browser Android %1$s Versão.txt</string>
+        <string name="privacy_browser_version_png">Privacy Browser Android %1$s Versão.png</string>
     <string name="permissions">Permissões</string>
     <string name="privacy_policy">Política de Privacidade</string>
     <string name="changelog">Changelog</string>

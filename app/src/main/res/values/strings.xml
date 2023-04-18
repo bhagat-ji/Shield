@@ -365,7 +365,7 @@
         <string name="current_ip_addresses">Current IP addresses</string>
 
     <!-- Import/Export.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
-      The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+      The `%1$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="encryption">Encryption</string>
     <string-array name="encryption_type">
         <item>None</item>
@@ -379,8 +379,8 @@
     <string name="export">Export</string>
     <string name="import_button">Import</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Decrypt</string>
-    <string name="privacy_browser_settings_pbs">Privacy Browser Settings %1$s.pbs</string>
-    <string name="privacy_browser_settings_pbs_aes">Privacy Browser Settings %1$s.pbs.aes</string>
+    <string name="privacy_browser_settings_pbs">Privacy Browser Android %1$s Settings - Schema %2$d.pbs</string>
+    <string name="privacy_browser_settings_pbs_aes">Privacy Browser Android %1$s Settings - Schema %2$d.pbs.aes</string>
     <string name="export_successful">Export successful.</string>
     <string name="export_failed">Export failed:\u0020 %1$s</string>
     <string name="import_failed">Import failed:\u0020 %1$s</string>
@@ -390,7 +390,7 @@
     <string name="copy_string">Copy</string>
     <string name="clear">Clear</string>
     <string name="logcat_copied">Logcat copied.</string>
-    <string name="privacy_browser_logcat_txt">Privacy Browser %1$s Logcat.txt</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
     <string name="error_saving_logcat">Error saving logcat:\u0020 %1$s</string>
 
     <!-- Guide. -->
@@ -458,8 +458,8 @@
             <string name="serial_number">Serial Number: \u0020</string>
             <string name="signature_algorithm">Signature Algorithm: \u0020</string>
         <string name="version_info_copied">Version info copied.</string>
-        <string name="privacy_browser_version_txt">Privacy Browser Version %1$s.txt</string>
-        <string name="privacy_browser_version_png">Privacy Browser Version %1$s.png</string>
+        <string name="privacy_browser_version_txt">Privacy Browser Android %1$s Version.txt</string>
+        <string name="privacy_browser_version_png">Privacy Browser Android %1$s Version.png</string>
     <string name="permissions">Permissions</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="changelog">Changelog</string>

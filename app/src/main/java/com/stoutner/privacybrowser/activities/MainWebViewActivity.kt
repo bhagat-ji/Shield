@@ -195,8 +195,6 @@ private const val SAVED_STATE_ARRAY_LIST = "saved_state_array_list"
 private const val SAVED_TAB_POSITION = "saved_tab_position"
 private const val TEMPORARY_MHT_FILE = "temporary_mht_file"
 
-// TODO.  Reorder methods alphabetically.
-
 class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener,
     NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklistsCoroutine.PopulateBlocklistsListener, SaveDialog.SaveListener,
     UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
@@ -333,6 +331,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var ultraPrivacy: ArrayList<List<Array<String>>>? = null
     private var waitingForProxy = false
 
+    // Define the save webpage image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    private val browseFileUploadActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+        // Pass the file to the WebView.
+        fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(activityResult.resultCode, activityResult.data))
+    }
+
     // Define the save URL activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
     private val saveUrlActivityResultLauncher = registerForActivityResult<String, Uri>(ActivityResultContracts.CreateDocument("*/*")) { fileUri ->
         // Only save the URL if the file URI is not null, which happens if the user exited the file picker by pressing back.
@@ -437,12 +441,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Save the webpage image.
             saveWebpageImageCoroutine.save(this, fileUri, currentWebView!!)
         }
-    }
-
-    // Define the save webpage image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val browseFileUploadActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
-        // Pass the file to the WebView.
-        fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(activityResult.resultCode, activityResult.data))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -626,12 +624,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // Go back.
                         currentWebView!!.goBack()
-                    } else if (tabLayout.tabCount > 1) {  // There are at least two tabs.
-                        // Close the current tab.
-                        closeCurrentTab()
-                    } else {  // There isn't anything to do in Privacy Browser.
-                        // Run clear and exit.
-                        clearAndExit()
+                    } else {  // Close the current tab.
+                        // A view is required because the method is also called by an XML `onClick`.
+                        closeTab(null)
                     }
                 }
             }
@@ -645,6 +640,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Populate the blocklists.
             populateBlocklistsCoroutine.populateBlocklists(this)
         }
+    }
+
+    public override fun onPostCreate(savedInstanceState: Bundle?) {
+        // Run the default commands.
+        super.onPostCreate(savedInstanceState)
+
+        // Sync the state of the DrawerToggle after the default `onRestoreInstanceState()` has finished.  This creates the navigation drawer icon.
+        // If the app is restarting to change the app theme the action bar drawer toggle will not yet be populated.
+        actionBarDrawerToggle?.syncState()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -838,37 +842,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         pendingDialogsArrayList.clear()
     }
 
-    // `onStop()` runs after `onPause()`.  It is used instead of `onPause()` so the commands are not called every time the screen is partially hidden.
-    public override fun onStop() {
-        // Run the default commands.
-        super.onStop()
-
-        // Only pause the WebViews if the pager adapter is not null, which is the case if the app is restarting to change the initial app theme.
-        if (webViewPagerAdapter != null) {
-            // Pause each web view.
-            for (i in 0 until webViewPagerAdapter!!.count) {
-                // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
-
-                // Get the fragment view.
-                val fragmentView = webViewTabFragment.view
-
-                // Only pause the WebViews if they exist (they won't when the app is first created).
-                if (fragmentView != null) {
-                    // Get the nested scroll WebView from the tab fragment.
-                    val nestedScrollWebView = fragmentView.findViewById<NestedScrollWebView>(R.id.nestedscroll_webview)
-
-                    // Pause the nested scroll WebView.
-                    nestedScrollWebView.onPause()
-                }
-            }
-        }
-
-        // Pause the WebView JavaScript timers.  This is a global command that pauses JavaScript on all WebViews.
-        if (currentWebView != null)
-            currentWebView!!.pauseTimers()
-    }
-
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState)
@@ -915,6 +888,37 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             savedInstanceState.putParcelableArrayList(SAVED_STATE_ARRAY_LIST, savedStateArrayList)
             savedInstanceState.putInt(SAVED_TAB_POSITION, currentTabPosition)
         }
+    }
+
+    // `onStop()` runs after `onPause()`.  It is used instead of `onPause()` so the commands are not called every time the screen is partially hidden.
+    public override fun onStop() {
+        // Run the default commands.
+        super.onStop()
+
+        // Only pause the WebViews if the pager adapter is not null, which is the case if the app is restarting to change the initial app theme.
+        if (webViewPagerAdapter != null) {
+            // Pause each web view.
+            for (i in 0 until webViewPagerAdapter!!.count) {
+                // Get the WebView tab fragment.
+                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+
+                // Get the fragment view.
+                val fragmentView = webViewTabFragment.view
+
+                // Only pause the WebViews if they exist (they won't when the app is first created).
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    val nestedScrollWebView = fragmentView.findViewById<NestedScrollWebView>(R.id.nestedscroll_webview)
+
+                    // Pause the nested scroll WebView.
+                    nestedScrollWebView.onPause()
+                }
+            }
+        }
+
+        // Pause the WebView JavaScript timers.  This is a global command that pauses JavaScript on all WebViews.
+        if (currentWebView != null)
+            currentWebView!!.pauseTimers()
     }
 
     public override fun onDestroy() {
@@ -2337,15 +2341,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         return true
     }
 
-    public override fun onPostCreate(savedInstanceState: Bundle?) {
-        // Run the default commands.
-        super.onPostCreate(savedInstanceState)
-
-        // Sync the state of the DrawerToggle after the default `onRestoreInstanceState()` has finished.  This creates the navigation drawer icon.
-        // If the app is restarting to change the app theme the action bar drawer toggle will not yet be populated.
-        actionBarDrawerToggle?.syncState()
-    }
-
     override fun onCreateContextMenu(contextMenu: ContextMenu, view: View, contextMenuInfo: ContextMenu.ContextMenuInfo?) {
         // Get the hit test result.
         val hitTestResult = currentWebView!!.hitTestResult
@@ -2669,707 +2664,39 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         }
     }
 
-    override fun onCreateBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
-        // Get the dialog.
-        val dialog = dialogFragment.dialog!!
-
-        // Get the views from the dialog fragment.
-        val createBookmarkNameEditText = dialog.findViewById<EditText>(R.id.create_bookmark_name_edittext)
-        val createBookmarkUrlEditText = dialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)
-
-        // Extract the strings from the edit texts.
-        val bookmarkNameString = createBookmarkNameEditText.text.toString()
-        val bookmarkUrlString = createBookmarkUrlEditText.text.toString()
-
-        // Create a favorite icon byte array output stream.
-        val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
-
-        // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream)
-
-        // Convert the favorite icon byte array stream to a byte array.
-        val favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray()
-
-        // Display the new bookmark below the current items in the (0 indexed) list.
-        val newBookmarkDisplayOrder = bookmarksListView.count
-
-        // Create the bookmark.
-        bookmarksDatabaseHelper!!.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolder, newBookmarkDisplayOrder, favoriteIconByteArray)
-
-        // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
-
-        // Update the list view.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor)
-
-        // Scroll to the new bookmark.
-        bookmarksListView.setSelection(newBookmarkDisplayOrder)
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun addTab(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Add a new tab with a blank URL.
+        addNewTab("", true)
     }
 
-    override fun onCreateBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
-        // Get the dialog.
-        val dialog = dialogFragment.dialog!!
-
-        // Get handles for the views in the dialog fragment.
-        val folderNameEditText = dialog.findViewById<EditText>(R.id.folder_name_edittext)
-        val defaultIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)
-        val defaultIconImageView = dialog.findViewById<ImageView>(R.id.default_icon_imageview)
-
-        // Get new folder name string.
-        val folderNameString = folderNameEditText.text.toString()
-
-        // Set the folder icon bitmap according to the dialog.
-        val folderIconBitmap: Bitmap = if (defaultIconRadioButton.isChecked) {  // Use the default folder icon.
-            // Get the default folder icon drawable.
-            val folderIconDrawable = defaultIconImageView.drawable
-
-            // Convert the folder icon drawable to a bitmap drawable.
-            val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
-
-            // Convert the folder icon bitmap drawable to a bitmap.
-            folderIconBitmapDrawable.bitmap
-        } else {  // Use the WebView favorite icon.
-            // Copy the favorite icon bitmap to the folder icon bitmap.
-            favoriteIconBitmap
-        }
-
-        // Create a folder icon byte array output stream.
-        val folderIconByteArrayOutputStream = ByteArrayOutputStream()
-
-        // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-        folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream)
-
-        // Convert the folder icon byte array stream to a byte array.
-        val folderIconByteArray = folderIconByteArrayOutputStream.toByteArray()
-
-        // Move all the bookmarks down one in the display order.
-        for (i in 0 until bookmarksListView.count) {
-            // Get the bookmark database id.
-            val databaseId = bookmarksListView.getItemIdAtPosition(i).toInt()
-
-            // Move the bookmark down one slot.
-            bookmarksDatabaseHelper!!.updateDisplayOrder(databaseId, i + 1)
-        }
-
-        // Create the folder, which will be placed at the top of the list view.
-        bookmarksDatabaseHelper!!.createFolder(folderNameString, currentBookmarksFolder, folderIconByteArray)
-
-        // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
-
-        // Update the list view.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor)
-
-        // Scroll to the new folder.
-        bookmarksListView.setSelection(0)
-    }
-
-    private fun loadUrlFromTextBox() {
-        // Get the text from URL text box and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
-        var unformattedUrlString = urlEditText.text.toString().trim { it <= ' ' }
-
-        // Create the formatted URL string.
-        var urlString = ""
-
-        // Check to see if the unformatted URL string is a valid URL.  Otherwise, convert it into a search.
-        if (unformattedUrlString.startsWith("content://")) {  // This is a content URL.
-            // Load the entire content URL.
-            urlString = unformattedUrlString
-        } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://") ||
-            unformattedUrlString.startsWith("file://")) {  // This is a standard URL.
-
-            // Add `https://` at the beginning if there is no protocol.  Otherwise the app will segfault.
-            if (!unformattedUrlString.startsWith("http") && !unformattedUrlString.startsWith("file://"))
-                unformattedUrlString = "https://$unformattedUrlString"
-
-            // Initialize the unformatted URL.
-            var unformattedUrl: URL? = null
-
-            // Convert the unformatted URL string to a URL.
-            try {
-                unformattedUrl = URL(unformattedUrlString)
-            } catch (exception: MalformedURLException) {
-                exception.printStackTrace()
-            }
-
-            // Get the components of the URL.
-            val scheme = unformattedUrl?.protocol
-            val authority = unformattedUrl?.authority
-            val path = unformattedUrl?.path
-            val query = unformattedUrl?.query
-            val fragment = unformattedUrl?.ref
-
-            // Create a URI.
-            val uri = Uri.Builder()
-
-            // Build the URI from the components of the URL.
-            uri.scheme(scheme).authority(authority).path(path).query(query).fragment(fragment)
-
-            // Decode the URI as a UTF-8 string in.
-            try {
-                urlString = URLDecoder.decode(uri.build().toString(), "UTF-8")
-            } catch (exception: UnsupportedEncodingException) {
-                // Do nothing.  The formatted URL string will remain blank.
-            }
-        } else if (unformattedUrlString.isNotEmpty()) {  // This is not a URL, but rather a search string.
-            // Sanitize the search input.
-            val encodedSearchString = try {
-                URLEncoder.encode(unformattedUrlString, "UTF-8")
-            } catch (exception: UnsupportedEncodingException) {
-                ""
-            }
-
-            // Add the base search URL.
-            urlString = searchURL + encodedSearchString
-        }
-
-        // Clear the focus from the URL edit text.  Otherwise, proximate typing in the box will retain the colorized formatting instead of being reset during refocus.
+    private fun addNewTab(urlString: String, moveToTab: Boolean) {
+        // Clear the focus from the URL edit text, so that it will be populated with the information from the new tab.
         urlEditText.clearFocus()
 
-        // Make it so.
-        loadUrl(currentWebView!!, urlString)
-    }
+        // Get the new page number.  The page numbers are 0 indexed, so the new page number will match the current count.
+        val newTabNumber = tabLayout.tabCount
 
-    private fun loadUrl(nestedScrollWebView: NestedScrollWebView, url: String) {
-        // Sanitize the URL.
-        val urlString = sanitizeUrl(url)
+        // Add a new tab.
+        tabLayout.addTab(tabLayout.newTab())
 
-        // Apply the domain settings and load the URL.
-        applyDomainSettings(nestedScrollWebView, urlString, resetTab = true, reloadWebsite = false, loadUrl = true)
-    }
+        // Get the new tab.
+        val newTab = tabLayout.getTabAt(newTabNumber)!!
 
-    // The view parameter cannot be removed because it is called from the layout onClick.
-    fun findPreviousOnPage(@Suppress("UNUSED_PARAMETER")view: View?) {
-        // Go to the previous highlighted phrase on the page.  `false` goes backwards instead of forwards.
-        currentWebView!!.findNext(false)
-    }
+        // Set a custom view on the new tab.
+        newTab.setCustomView(R.layout.tab_custom_view)
 
-    // The view parameter cannot be removed because it is called from the layout onClick.
-    fun findNextOnPage(@Suppress("UNUSED_PARAMETER")view: View?) {
-        // Go to the next highlighted phrase on the page. `true` goes forwards instead of backwards.
-        currentWebView!!.findNext(true)
-    }
+        // Add the new WebView page.
+        webViewPagerAdapter!!.addPage(newTabNumber, webViewPager, urlString, moveToTab)
 
-    // The view parameter cannot be removed because it is called from the layout onClick.
-    fun closeFindOnPage(@Suppress("UNUSED_PARAMETER")view: View?) {
-        // Delete the contents of the find on page edit text.
-        findOnPageEditText.text = null
-
-        // Clear the highlighted phrases if the WebView is not null.
-        currentWebView?.clearMatches()
-
-        // Hide the find on page linear layout.
-        findOnPageLinearLayout.visibility = View.GONE
-
-        // Show the toolbar.
-        toolbar.visibility = View.VISIBLE
-
-        // Get a handle for the input method manager.
-        val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
-
-        // Hide the keyboard.
-        inputMethodManager.hideSoftInputFromWindow(toolbar.windowToken, 0)
-    }
-
-    override fun onApplyNewFontSize(dialogFragment: DialogFragment) {
-        // Get the dialog.
-        val dialog = dialogFragment.dialog!!
-
-        // Get a handle for the font size edit text.
-        val fontSizeEditText = dialog.findViewById<EditText>(R.id.font_size_edittext)
-
-        // Initialize the new font size variable with the current font size.
-        var newFontSize = currentWebView!!.settings.textZoom
-
-        // Get the font size from the edit text.
-        try {
-            newFontSize = fontSizeEditText.text.toString().toInt()
-        } catch (exception: Exception) {
-            // If the edit text does not contain a valid font size do nothing.
-        }
-
-        // Apply the new font size.
-        currentWebView!!.settings.textZoom = newFontSize
-    }
-
-    override fun onOpen(dialogFragment: DialogFragment) {
-        // Get the dialog.
-        val dialog = dialogFragment.dialog!!
-
-        // Get handles for the views.
-        val fileNameEditText = dialog.findViewById<EditText>(R.id.file_name_edittext)
-        val mhtCheckBox = dialog.findViewById<CheckBox>(R.id.mht_checkbox)
-
-        // Get the file path string.
-        val openFilePath = fileNameEditText.text.toString()
-
-        // Apply the domain settings.  This resets the favorite icon and removes any domain settings.
-        applyDomainSettings(currentWebView!!, openFilePath, resetTab = true, reloadWebsite = false, loadUrl = false)
-
-        // Open the file according to the type.
-        if (mhtCheckBox.isChecked) {  // Force opening of an MHT file.
-            try {
-                // Get the MHT file input stream.
-                val mhtFileInputStream = contentResolver.openInputStream(Uri.parse(openFilePath))
-
-                // Create a temporary MHT file.
-                val temporaryMhtFile = File.createTempFile(TEMPORARY_MHT_FILE, ".mht", cacheDir)
-
-                // Get a file output stream for the temporary MHT file.
-                val temporaryMhtFileOutputStream = FileOutputStream(temporaryMhtFile)
-
-                // Create a transfer byte array.
-                val transferByteArray = ByteArray(1024)
-
-                // Create an integer to track the number of bytes read.
-                var bytesRead: Int
-
-                // Copy the temporary MHT file input stream to the MHT output stream.
-                while (mhtFileInputStream!!.read(transferByteArray).also { bytesRead = it } > 0)
-                    temporaryMhtFileOutputStream.write(transferByteArray, 0, bytesRead)
-
-                // Flush the temporary MHT file output stream.
-                temporaryMhtFileOutputStream.flush()
-
-                // Close the streams.
-                temporaryMhtFileOutputStream.close()
-                mhtFileInputStream.close()
-
-                // Load the temporary MHT file.
-                currentWebView!!.loadUrl(temporaryMhtFile.toString())
-            } catch (exception: Exception) {
-                // Display a snackbar.
-                Snackbar.make(currentWebView!!, getString(R.string.error, exception), Snackbar.LENGTH_INDEFINITE).show()
-            }
-        } else {  // Let the WebView handle opening of the file.
-            // Open the file.
-            currentWebView!!.loadUrl(openFilePath)
-        }
-    }
-
-    private fun downloadUrlWithExternalApp(url: String) {
-        // Create a download intent.  Not specifying the action type will display the maximum number of options.
-        val downloadIntent = Intent()
-
-        // Set the URI and the mime type.
-        downloadIntent.setDataAndType(Uri.parse(url), "text/html")
-
-        // Flag the intent to open in a new task.
-        downloadIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-        // Show the chooser.
-        startActivity(Intent.createChooser(downloadIntent, getString(R.string.download_with_external_app)))
-    }
-
-    override fun onSaveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment) {
-        // Store the URL.  This will be used in the save URL activity result launcher.
-        saveUrlString = if (originalUrlString.startsWith("data:")) {
-            // Save the original URL.
-            originalUrlString
-        } else {
-            // Get the dialog.
-            val dialog = dialogFragment.dialog!!
-
-            // Get a handle for the dialog URL edit text.
-            val dialogUrlEditText = dialog.findViewById<EditText>(R.id.url_edittext)
-
-            // Get the URL from the edit text, which may have been modified.
-            dialogUrlEditText.text.toString()
-        }
-
-        // Open the file picker.
-        saveUrlActivityResultLauncher.launch(fileNameString)
-    }
-
-    // Remove the warning that `OnTouchListener()` needs to override `performClick()`, as the only purpose of setting the `OnTouchListener()` is to make it do nothing.
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initializeApp() {
-        // Get a handle for the input method.
-        val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
-
-        // Initialize the color spans for highlighting the URLs.
-        initialGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
-        finalGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
-        redColorSpan = ForegroundColorSpan(getColor(R.color.red_text))
-
-        // Remove the formatting from the URL edit text when the user is editing the text.
-        urlEditText.onFocusChangeListener = View.OnFocusChangeListener { _: View?, hasFocus: Boolean ->
-            if (hasFocus) {  // The user is editing the URL text box.
-                // Remove the syntax highlighting.
-                urlEditText.text.removeSpan(redColorSpan)
-                urlEditText.text.removeSpan(initialGrayColorSpan)
-                urlEditText.text.removeSpan(finalGrayColorSpan)
-            } else {  // The user has stopped editing the URL text box.
-                // Move to the beginning of the string.
-                urlEditText.setSelection(0)
-
-                // Reapply the syntax highlighting.
-                UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
-            }
-        }
-
-        // Set the go button on the keyboard to load the URL in url text box.
-        urlEditText.setOnKeyListener { _: View?, keyCode: Int, keyEvent: KeyEvent ->
-            // If the event is a key-down event on the `enter` button, load the URL.
-            if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The enter key was pressed.
-                // Load the URL.
-                loadUrlFromTextBox()
-
-                // Consume the event.
-                return@setOnKeyListener true
-            } else {  // Some other key was pressed.
-                // Do not consume the event.
-                return@setOnKeyListener false
-            }
-        }
-
-        // Create an Orbot status broadcast receiver.
-        orbotStatusBroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                // Get the content of the status message.
-                orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS")!!
-
-                // If Privacy Browser is waiting on the proxy, load the website now that Orbot is connected.
-                if ((orbotStatus == ProxyHelper.ORBOT_STATUS_ON) && waitingForProxy) {
-                    // Reset the waiting for proxy status.
-                    waitingForProxy = false
-
-                    // Get a list of the current fragments.
-                    val fragmentList = supportFragmentManager.fragments
-
-                    // Check each fragment to see if it is a waiting for proxy dialog.  Sometimes more than one is displayed.
-                    for (i in fragmentList.indices) {
-                        // Get the fragment tag.
-                        val fragmentTag = fragmentList[i].tag
-
-                        // Check to see if it is the waiting for proxy dialog.
-                        if (fragmentTag != null && fragmentTag == getString(R.string.waiting_for_proxy_dialog)) {
-                            // Dismiss the waiting for proxy dialog.
-                            (fragmentList[i] as DialogFragment).dismiss()
-                        }
-                    }
-
-                    // Reload existing URLs and load any URLs that are waiting for the proxy.
-                    for (i in 0 until webViewPagerAdapter!!.count) {
-                        // Get the WebView tab fragment.
-                        val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
-
-                        // Get the fragment view.
-                        val fragmentView = webViewTabFragment.view
-
-                        // Only process the WebViews if they exist.
-                        if (fragmentView != null) {
-                            // Get the nested scroll WebView from the tab fragment.
-                            val nestedScrollWebView = fragmentView.findViewById<NestedScrollWebView>(R.id.nestedscroll_webview)
-
-                            // Get the waiting for proxy URL string.
-                            val waitingForProxyUrlString = nestedScrollWebView.waitingForProxyUrlString
-
-                            // Load the pending URL if it exists.
-                            if (waitingForProxyUrlString.isNotEmpty()) {  // A URL is waiting to be loaded.
-                                // Load the URL.
-                                loadUrl(nestedScrollWebView, waitingForProxyUrlString)
-
-                                // Reset the waiting for proxy URL string.
-                                nestedScrollWebView.waitingForProxyUrlString = ""
-                            } else {  // No URL is waiting to be loaded.
-                                // Reload the existing URL.
-                                nestedScrollWebView.reload()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Register the Orbot status broadcast receiver.
-        registerReceiver(orbotStatusBroadcastReceiver, IntentFilter("org.torproject.android.intent.action.STATUS"))
-
-        // Get handles for views that need to be modified.
-        val bookmarksHeaderLinearLayout = findViewById<LinearLayout>(R.id.bookmarks_header_linearlayout)
-        val launchBookmarksActivityFab = findViewById<FloatingActionButton>(R.id.launch_bookmarks_activity_fab)
-        val createBookmarkFolderFab = findViewById<FloatingActionButton>(R.id.create_bookmark_folder_fab)
-        val createBookmarkFab = findViewById<FloatingActionButton>(R.id.create_bookmark_fab)
-
-        // Update the WebView pager every time a tab is modified.
-        webViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                // Close the find on page bar if it is open.
-                closeFindOnPage(null)
-
-                // Set the current WebView.
-                setCurrentWebView(position)
-
-                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled by creating a new tab.
-                if (tabLayout.selectedTabPosition != position) {
-                    // Wait until the new tab has been created.
-                    tabLayout.post {
-                        // Get a handle for the tab.
-                        val tab = tabLayout.getTabAt(position)!!
-
-                        // Select the tab.
-                        tab.select()
-                    }
-                }
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
-
-        // Handle tab selections.
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                // Select the same page in the view pager.
-                webViewPager.currentItem = tab.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                // Instantiate the View SSL Certificate dialog.
-                val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
-
-                // Display the View SSL Certificate dialog.
-                viewSslCertificateDialogFragment.show(supportFragmentManager, getString(R.string.view_ssl_certificate))
-            }
-        })
-
-        // Set a touch listener on the bookmarks header linear layout so that touches don't pass through to the button underneath.
-        bookmarksHeaderLinearLayout.setOnTouchListener { _: View?, _: MotionEvent? -> true }
-
-        // Set the launch bookmarks activity floating action button to launch the bookmarks activity.
-        launchBookmarksActivityFab.setOnClickListener {
-            // Get a copy of the favorite icon bitmap.
-            val currentFavoriteIconBitmap = currentWebView!!.getFavoriteIcon()
-
-            // Create a favorite icon byte array output stream.
-            val currentFavoriteIconByteArrayOutputStream = ByteArrayOutputStream()
-
-            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            currentFavoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, currentFavoriteIconByteArrayOutputStream)
-
-            // Convert the favorite icon byte array stream to a byte array.
-            val currentFavoriteIconByteArray = currentFavoriteIconByteArrayOutputStream.toByteArray()
-
-            // Create an intent to launch the bookmarks activity.
-            val bookmarksIntent = Intent(applicationContext, BookmarksActivity::class.java)
-
-            // Add the extra information to the intent.
-            bookmarksIntent.putExtra(CURRENT_FOLDER, currentBookmarksFolder)
-            bookmarksIntent.putExtra(CURRENT_TITLE, currentWebView!!.title)
-            bookmarksIntent.putExtra(CURRENT_URL, currentWebView!!.url)
-            bookmarksIntent.putExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY, currentFavoriteIconByteArray)
+        // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
+        if (bottomAppBar && moveToTab && appBarLayout.translationY != 0f) {
+            // Animate the bottom app bar onto the screen.
+            objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0f)
 
             // Make it so.
-            startActivity(bookmarksIntent)
+            objectAnimator.start()
         }
-
-        // Set the create new bookmark folder floating action button to display an alert dialog.
-        createBookmarkFolderFab.setOnClickListener {
-            // Create a create bookmark folder dialog.
-            val createBookmarkFolderDialog: DialogFragment = CreateBookmarkFolderDialog.createBookmarkFolder(currentWebView!!.getFavoriteIcon())
-
-            // Show the create bookmark folder dialog.
-            createBookmarkFolderDialog.show(supportFragmentManager, getString(R.string.create_folder))
-        }
-
-        // Set the create new bookmark floating action button to display an alert dialog.
-        createBookmarkFab.setOnClickListener {
-            // Instantiate the create bookmark dialog.
-            val createBookmarkDialog: DialogFragment = CreateBookmarkDialog.createBookmark(currentWebView!!.url!!, currentWebView!!.title!!, currentWebView!!.getFavoriteIcon())
-
-            // Display the create bookmark dialog.
-            createBookmarkDialog.show(supportFragmentManager, getString(R.string.create_bookmark))
-        }
-
-        // Search for the string on the page whenever a character changes in the find on page edit text.
-        findOnPageEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable) {
-                // Search for the text in the WebView if it is not null.  Sometimes on resume after a period of non-use the WebView will be null.
-                currentWebView?.findAllAsync(findOnPageEditText.text.toString())
-            }
-        })
-
-        // Set the `check mark` button for the find on page edit text keyboard to close the soft keyboard.
-        findOnPageEditText.setOnKeyListener { _: View?, keyCode: Int, keyEvent: KeyEvent ->
-            if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
-                // Hide the soft keyboard.
-                inputMethodManager.hideSoftInputFromWindow(currentWebView!!.windowToken, 0)
-
-                // Consume the event.
-                return@setOnKeyListener true
-            } else {  // A different key was pressed.
-                // Do not consume the event.
-                return@setOnKeyListener false
-            }
-        }
-
-        // Implement swipe to refresh.
-        swipeRefreshLayout.setOnRefreshListener {
-            // Reload the website.
-            currentWebView!!.reload()
-        }
-
-        // Store the default progress view offsets.
-        defaultProgressViewStartOffset = swipeRefreshLayout.progressViewStartOffset
-        defaultProgressViewEndOffset = swipeRefreshLayout.progressViewEndOffset
-
-        // Set the refresh color scheme according to the theme.
-        swipeRefreshLayout.setColorSchemeResources(R.color.blue_text)
-
-        // Initialize a color background typed value.
-        val colorBackgroundTypedValue = TypedValue()
-
-        // Get the color background from the theme.
-        theme.resolveAttribute(android.R.attr.colorBackground, colorBackgroundTypedValue, true)
-
-        // Get the color background int from the typed value.
-        val colorBackgroundInt = colorBackgroundTypedValue.data
-
-        // Set the swipe refresh background color.
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt)
-
-        // Set the drawer titles, which identify the drawer layouts in accessibility mode.
-        drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer))
-        drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks))
-
-        // Load the bookmarks folder.
-        loadBookmarksFolder()
-
-        // Handle clicks on bookmarks.
-        bookmarksListView.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, id: Long ->
-            // Convert the id from long to int to match the format of the bookmarks database.
-            val databaseId = id.toInt()
-
-            // Get the bookmark cursor for this ID.
-            val bookmarkCursor = bookmarksDatabaseHelper!!.getBookmark(databaseId)
-
-            // Move the bookmark cursor to the first row.
-            bookmarkCursor.moveToFirst()
-
-            // Act upon the bookmark according to the type.
-            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
-                // Store the folder name.
-                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
-
-                // Load the new folder.
-                loadBookmarksFolder()
-            } else {  // The selected bookmark is not a folder.
-                // Load the bookmark URL.
-                loadUrl(currentWebView!!, bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)))
-
-                // Close the bookmarks drawer if it is not pinned.
-                if (!bookmarksDrawerPinned)
-                    drawerLayout.closeDrawer(GravityCompat.END)
-            }
-
-            // Close the cursor.
-            bookmarkCursor.close()
-        }
-
-        // Handle long-presses on bookmarks.
-        bookmarksListView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _: AdapterView<*>?, _: View?, _: Int, id: Long ->
-            // Convert the database ID from `long` to `int`.
-            val databaseId = id.toInt()
-
-            // Run the commands associated with the type.
-            if (bookmarksDatabaseHelper!!.isFolder(databaseId)) {  // The bookmark is a folder.
-                // Get a cursor of all the bookmarks in the folder.
-                val bookmarksCursor = bookmarksDatabaseHelper!!.getFolderBookmarks(databaseId)
-
-                // Move to the first entry in the cursor.
-                bookmarksCursor.moveToFirst()
-
-                // Open each bookmark
-                for (i in 0 until bookmarksCursor.count) {
-                    // Load the bookmark in a new tab, moving to the tab for the first bookmark if the drawer is not pinned.
-                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), !bookmarksDrawerPinned && (i == 0))
-
-                    // Move to the next bookmark.
-                    bookmarksCursor.moveToNext()
-                }
-
-                // Close the cursor.
-                bookmarksCursor.close()
-            } else {  // The bookmark is not a folder.
-                // Get the bookmark cursor for this ID.
-                val bookmarkCursor = bookmarksDatabaseHelper!!.getBookmark(databaseId)
-
-                // Move the bookmark cursor to the first row.
-                bookmarkCursor.moveToFirst()
-
-                // Load the bookmark in a new tab and move to the tab if the drawer is not pinned.
-                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), !bookmarksDrawerPinned)
-
-                // Close the cursor.
-                bookmarkCursor.close()
-            }
-
-            // Close the bookmarks drawer if it is not pinned.
-            if (!bookmarksDrawerPinned)
-                drawerLayout.closeDrawer(GravityCompat.END)
-
-            // Consume the event.
-            true
-        }
-
-        // The drawer listener is used to update the navigation menu.
-        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-
-            override fun onDrawerOpened(drawerView: View) {}
-
-            override fun onDrawerClosed(drawerView: View) {
-                // Reset the drawer icon when the drawer is closed.  Otherwise, it remains an arrow if the drawer is open when the app is restarted.
-                actionBarDrawerToggle!!.syncState()
-            }
-
-            override fun onDrawerStateChanged(newState: Int) {
-                if (newState == DrawerLayout.STATE_SETTLING || newState == DrawerLayout.STATE_DRAGGING) {  // A drawer is opening or closing.
-                    // Update the navigation menu items if the WebView is not null.
-                    if (currentWebView != null) {
-                        navigationBackMenuItem.isEnabled = currentWebView!!.canGoBack()
-                        navigationForwardMenuItem.isEnabled = currentWebView!!.canGoForward()
-                        navigationHistoryMenuItem.isEnabled = currentWebView!!.canGoBack() || currentWebView!!.canGoForward()
-                        navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + currentWebView!!.getRequestsCount(BLOCKED_REQUESTS)
-
-                        // Hide the keyboard (if displayed).
-                        inputMethodManager.hideSoftInputFromWindow(currentWebView!!.windowToken, 0)
-                    }
-
-                    // Clear the focus from from the URL text box.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
-                    urlEditText.clearFocus()
-
-                    // Clear the focus from from the WebView if it is not null, which can happen if a user opens a drawer while the browser is being resumed.
-                    // Clearing the focus from the WebView removes any text selection markers and context menus, which otherwise draw above the open drawers.
-                    currentWebView?.clearFocus()
-                }
-            }
-        })
-
-        // Inflate a bare WebView to get the default user agent.  It is not used to render content on the screen.
-        @SuppressLint("InflateParams") val webViewLayout = layoutInflater.inflate(R.layout.bare_webview, null, false)
-
-        // Get a handle for the WebView.
-        val bareWebView = webViewLayout.findViewById<WebView>(R.id.bare_webview)
-
-        // Store the default user agent.
-        webViewDefaultUserAgent = bareWebView.settings.userAgentString
-
-        // Destroy the bare WebView.
-        bareWebView.destroy()
-
-        // Update the domains settings set.
-        updateDomainsSettingsSet()
-
-        // Instantiate the blocklist helper.
-        blocklistHelper = BlocklistHelper()
     }
 
     private fun applyAppSettings() {
@@ -3508,28 +2835,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             @Suppress("DEPRECATION")
             rootFrameLayout.systemUiVisibility = 0
         }
-    }
-
-    override fun navigateHistory(url: String, steps: Int) {
-        // Apply the domain settings.
-        applyDomainSettings(currentWebView!!, url, resetTab = false, reloadWebsite = false, loadUrl = false)
-
-        // Load the history entry.
-        currentWebView!!.goBackOrForward(steps)
-    }
-
-    override fun pinnedErrorGoBack() {
-        // Get the current web back forward list.
-        val webBackForwardList = currentWebView!!.copyBackForwardList()
-
-        // Get the previous entry URL.
-        val previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
-
-        // Apply the domain settings.
-        applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
-
-        // Go back.
-        currentWebView!!.goBack()
     }
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
@@ -4071,328 +3376,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         }
     }
 
-    private fun updatePrivacyIcons(runInvalidateOptionsMenu: Boolean) {
-        // Only update the privacy icons if the options menu and the current WebView have already been populated.
-        if ((optionsMenu != null) && (currentWebView != null)) {
-            // Update the privacy icon.
-            if (currentWebView!!.settings.javaScriptEnabled)  // JavaScript is enabled.
-                optionsPrivacyMenuItem.setIcon(R.drawable.javascript_enabled)
-            else if (currentWebView!!.acceptCookies)  // JavaScript is disabled but cookies are enabled.
-                optionsPrivacyMenuItem.setIcon(R.drawable.warning)
-            else  // All the dangerous features are disabled.
-                optionsPrivacyMenuItem.setIcon(R.drawable.privacy_mode)
-
-            // Update the cookies icon.
-            if (currentWebView!!.acceptCookies)
-                optionsCookiesMenuItem.setIcon(R.drawable.cookies_enabled)
-            else
-                optionsCookiesMenuItem.setIcon(R.drawable.cookies_disabled)
-
-            // Update the refresh icon.
-            if (optionsRefreshMenuItem.title == getString(R.string.refresh))  // The refresh icon is displayed.
-                optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled)
-            else  // The stop icon is displayed.
-                optionsRefreshMenuItem.setIcon(R.drawable.close_blue)
-
-            // `invalidateOptionsMenu()` calls `onPrepareOptionsMenu()` and redraws the icons in the app bar.
-            if (runInvalidateOptionsMenu)
-                invalidateOptionsMenu()
-        }
-    }
-
-    private fun loadBookmarksFolder() {
-        // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
-
-        // Populate the bookmarks cursor adapter.
-        bookmarksCursorAdapter = object : CursorAdapter(this, bookmarksCursor, false) {
-            override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
-                // Inflate the individual item layout.
-                return layoutInflater.inflate(R.layout.bookmarks_drawer_item_linearlayout, parent, false)
-            }
-
-            override fun bindView(view: View, context: Context, cursor: Cursor) {
-                // Get handles for the views.
-                val bookmarkFavoriteIcon = view.findViewById<ImageView>(R.id.bookmark_favorite_icon)
-                val bookmarkNameTextView = view.findViewById<TextView>(R.id.bookmark_name)
-
-                // Get the favorite icon byte array from the cursor.
-                val favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
-
-                // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
-                val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
-
-                // Display the bitmap in the bookmark favorite icon.
-                bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap)
-
-                // Display the bookmark name from the cursor in the bookmark name text view.
-                bookmarkNameTextView.text = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
-
-                // Make the font bold for folders.
-                if (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1)
-                    bookmarkNameTextView.typeface = Typeface.DEFAULT_BOLD
-                else  // Reset the font to default for normal bookmarks.
-                    bookmarkNameTextView.typeface = Typeface.DEFAULT
-            }
-        }
-
-        // Populate the list view with the adapter.
-        bookmarksListView.adapter = bookmarksCursorAdapter
-
-        // Set the bookmarks drawer title.
-        if (currentBookmarksFolder.isEmpty())
-            bookmarksTitleTextView.setText(R.string.bookmarks)
-        else
-            bookmarksTitleTextView.text = currentBookmarksFolder
-    }
-
-    private fun openWithApp(url: String) {
-        // Create an open with app intent with `ACTION_VIEW`.
-        val openWithAppIntent = Intent(Intent.ACTION_VIEW)
-
-        // Set the URI but not the MIME type.  This should open all available apps.
-        openWithAppIntent.data = Uri.parse(url)
-
-        // Flag the intent to open in a new task.
-        openWithAppIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-        // Try the intent.
-        try {
-            // Show the chooser.
-            startActivity(openWithAppIntent)
-        } catch (exception: ActivityNotFoundException) {  // There are no apps available to open the URL.
-            // Show a snackbar with the error.
-            Snackbar.make(currentWebView!!, getString(R.string.error, exception), Snackbar.LENGTH_INDEFINITE).show()
-        }
-    }
-
-    private fun openWithBrowser(url: String) {
-
-        // Create an open with browser intent with `ACTION_VIEW`.
-        val openWithBrowserIntent = Intent(Intent.ACTION_VIEW)
-
-        // Set the URI and the MIME type.  `"text/html"` should load browser options.
-        openWithBrowserIntent.setDataAndType(Uri.parse(url), "text/html")
-
-        // Flag the intent to open in a new task.
-        openWithBrowserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-        // Try the intent.
-        try {
-            // Show the chooser.
-            startActivity(openWithBrowserIntent)
-        } catch (exception: ActivityNotFoundException) {  // There are no browsers available to open the URL.
-            // Show a snackbar with the error.
-            Snackbar.make(currentWebView!!, getString(R.string.error, exception), Snackbar.LENGTH_INDEFINITE).show()
-        }
-    }
-
-    private fun sanitizeUrl(urlString: String): String {
-        // Initialize a sanitized URL string.
-        var sanitizedUrlString = urlString
-
-        // Sanitize tracking queries.
-        if (sanitizeTrackingQueries)
-            sanitizedUrlString = SanitizeUrlHelper.sanitizeTrackingQueries(sanitizedUrlString)
-
-        // Sanitize AMP redirects.
-        if (sanitizeAmpRedirects)
-            sanitizedUrlString = SanitizeUrlHelper.sanitizeAmpRedirects(sanitizedUrlString)
-
-        // Return the sanitized URL string.
-        return sanitizedUrlString
-    }
-
-    override fun finishedPopulatingBlocklists(combinedBlocklists: ArrayList<ArrayList<List<Array<String>>>>) {
-        // Store the blocklists.
-        easyList = combinedBlocklists[0]
-        easyPrivacy = combinedBlocklists[1]
-        fanboysAnnoyanceList = combinedBlocklists[2]
-        fanboysSocialList = combinedBlocklists[3]
-        ultraList = combinedBlocklists[4]
-        ultraPrivacy = combinedBlocklists[5]
-
-        // Check to see if the activity has been restarted with a saved state.
-        if ((savedStateArrayList == null) || (savedStateArrayList!!.size == 0)) {  // The activity has not been restarted or it was restarted on start to change the theme.
-            // Add the first tab.
-            addNewTab("", true)
-        } else {  // The activity has been restarted.
-            // Restore each tab.
-            for (i in savedStateArrayList!!.indices) {
-                // Add a new tab.
-                tabLayout.addTab(tabLayout.newTab())
-
-                // Get the new tab.
-                val newTab = tabLayout.getTabAt(i)!!
-
-                // Set a custom view on the new tab.
-                newTab.setCustomView(R.layout.tab_custom_view)
-
-                // Add the new page.
-                webViewPagerAdapter!!.restorePage(savedStateArrayList!![i], savedNestedScrollWebViewStateArrayList!![i])
-            }
-
-            // Reset the saved state variables.
-            savedStateArrayList = null
-            savedNestedScrollWebViewStateArrayList = null
-
-            // Restore the selected tab position.
-            if (savedTabPosition == 0) {  // The first tab is selected.
-                // Set the first page as the current WebView.
-                setCurrentWebView(0)
-            } else {  // The first tab is not selected.
-                // Move to the selected tab.
-                webViewPager.currentItem = savedTabPosition
-            }
-
-            // Get the intent that started the app.
-            val intent = intent
-
-            // Reset the intent.  This prevents a duplicate tab from being created on restart.
-            setIntent(Intent())
-
-            // Get the information from the intent.
-            val intentAction = intent.action
-            val intentUriData = intent.data
-            val intentStringExtra = intent.getStringExtra(Intent.EXTRA_TEXT)
-
-            // Determine if this is a web search.
-            val isWebSearch = (intentAction != null) && (intentAction == Intent.ACTION_WEB_SEARCH)
-
-            // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
-            if ((intentUriData != null) || (intentStringExtra != null) || isWebSearch) {
-                // Get the URL string.
-                val urlString = if (isWebSearch) {  // The intent is a web search.
-                    // Sanitize the search input.
-                    val encodedSearchString: String = try {
-                        URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8")
-                    } catch (exception: UnsupportedEncodingException) {
-                        ""
-                    }
-
-                    // Add the base search URL.
-                    searchURL + encodedSearchString
-                } else { // The intent contains a URL formatted as a URI or a URL in the string extra.
-                    // Get the URL string.
-                    intentUriData?.toString() ?: intentStringExtra!!
-                }
-
-                // Add a new tab if specified in the preferences.
-                if (sharedPreferences.getBoolean(getString(R.string.open_intents_in_new_tab_key), true)) {  // Load the URL in a new tab.
-                    // Set the loading new intent flag.
-                    loadingNewIntent = true
-
-                    // Add a new tab.
-                    addNewTab(urlString, true)
-                } else {  // Load the URL in the current tab.
-                    // Make it so.
-                    loadUrl(currentWebView!!, urlString)
-                }
-            }
-        }
-    }
-
     // The view parameter cannot be removed because it is called from the layout onClick.
-    fun addTab(@Suppress("UNUSED_PARAMETER")view: View?) {
-        // Add a new tab with a blank URL.
-        addNewTab("", true)
-    }
+    fun bookmarksBack(@Suppress("UNUSED_PARAMETER")view: View?) {
+        if (currentBookmarksFolder.isEmpty()) {  // The home folder is displayed.
+            // close the bookmarks drawer.
+            drawerLayout.closeDrawer(GravityCompat.END)
+        } else {  // A subfolder is displayed.
+            // Set the former parent folder as the current folder.
+            currentBookmarksFolder = bookmarksDatabaseHelper!!.getParentFolderName(currentBookmarksFolder)
 
-    private fun addNewTab(urlString: String, moveToTab: Boolean) {
-        // Clear the focus from the URL edit text, so that it will be populated with the information from the new tab.
-        urlEditText.clearFocus()
-
-        // Get the new page number.  The page numbers are 0 indexed, so the new page number will match the current count.
-        val newTabNumber = tabLayout.tabCount
-
-        // Add a new tab.
-        tabLayout.addTab(tabLayout.newTab())
-
-        // Get the new tab.
-        val newTab = tabLayout.getTabAt(newTabNumber)!!
-
-        // Set a custom view on the new tab.
-        newTab.setCustomView(R.layout.tab_custom_view)
-
-        // Add the new WebView page.
-        webViewPagerAdapter!!.addPage(newTabNumber, webViewPager, urlString, moveToTab)
-
-        // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
-        if (bottomAppBar && moveToTab && appBarLayout.translationY != 0f) {
-            // Animate the bottom app bar onto the screen.
-            objectAnimator = ObjectAnimator.ofFloat(appBarLayout, "translationY", 0f)
-
-            // Make it so.
-            objectAnimator.start()
-        }
-    }
-
-    // The view parameter cannot be removed because it is called from the layout onClick.
-    fun closeTab(@Suppress("UNUSED_PARAMETER")view: View?) {
-        // Run the command according to the number of tabs.
-        if (tabLayout.tabCount > 1)  // There is more than one tab open.
-            closeCurrentTab()
-        else  // There is only one tab open.
-            clearAndExit()
-    }
-
-    private fun closeCurrentTab() {
-        // Get the current tab number.
-        val currentTabNumber = tabLayout.selectedTabPosition
-
-        // Delete the current tab.
-        tabLayout.removeTabAt(currentTabNumber)
-
-        // Delete the current page.  If the selected page number did not change during the delete (because the newly selected tab has has same number as the previously deleted tab), it will return true,
-        // meaning that the current WebView must be reset.  Otherwise it will happen automatically as the selected tab number changes.
-        if (webViewPagerAdapter!!.deletePage(currentTabNumber, webViewPager))
-            setCurrentWebView(currentTabNumber)
-    }
-
-    private fun exitFullScreenVideo() {
-        // Re-enable the screen timeout.
-        fullScreenVideoFrameLayout.keepScreenOn = false
-
-        // Unset the full screen video flag.
-        displayingFullScreenVideo = false
-
-        // Remove all the views from the full screen video frame layout.
-        fullScreenVideoFrameLayout.removeAllViews()
-
-        // Hide the full screen video frame layout.
-        fullScreenVideoFrameLayout.visibility = View.GONE
-
-        // Enable the sliding drawers.
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-
-        // Show the coordinator layout.
-        coordinatorLayout.visibility = View.VISIBLE
-
-        // Apply the appropriate full screen mode flags.
-        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-            // Hide the app bar if specified.
-            if (hideAppBar) {
-                // Hide the tab linear layout.
-                tabsLinearLayout.visibility = View.GONE
-
-                // Hide the app bar.
-                appBar.hide()
-            }
-
-            /* Hide the system bars.
-             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-             */
-
-            // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-            @Suppress("DEPRECATION")
-            rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        } else {  // Switch to normal viewing mode.
-            // Remove the `SYSTEM_UI` flags from the root frame layout.  The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-            @Suppress("DEPRECATION")
-            rootFrameLayout.systemUiVisibility = 0
+            // Load the new folder.
+            loadBookmarksFolder()
         }
     }
 
@@ -4584,122 +3578,691 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     // The view parameter cannot be removed because it is called from the layout onClick.
-    fun bookmarksBack(@Suppress("UNUSED_PARAMETER")view: View?) {
-        if (currentBookmarksFolder.isEmpty()) {  // The home folder is displayed.
-            // close the bookmarks drawer.
-            drawerLayout.closeDrawer(GravityCompat.END)
-        } else {  // A subfolder is displayed.
-            // Set the former parent folder as the current folder.
-            currentBookmarksFolder = bookmarksDatabaseHelper!!.getParentFolderName(currentBookmarksFolder)
+    fun closeFindOnPage(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Delete the contents of the find on page edit text.
+        findOnPageEditText.text = null
 
-            // Load the new folder.
-            loadBookmarksFolder()
+        // Clear the highlighted phrases if the WebView is not null.
+        currentWebView?.clearMatches()
+
+        // Hide the find on page linear layout.
+        findOnPageLinearLayout.visibility = View.GONE
+
+        // Show the toolbar.
+        toolbar.visibility = View.VISIBLE
+
+        // Get a handle for the input method manager.
+        val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+
+        // Hide the keyboard.
+        inputMethodManager.hideSoftInputFromWindow(toolbar.windowToken, 0)
+    }
+
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun closeTab(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Run the command according to the number of tabs.
+        if (tabLayout.tabCount > 1) {  // There is more than one tab open.
+            // Get the current tab number.
+            val currentTabNumber = tabLayout.selectedTabPosition
+
+            // Delete the current tab.
+            tabLayout.removeTabAt(currentTabNumber)
+
+            // Delete the current page.  If the selected page number did not change during the delete (because the newly selected tab has has same number as the previously deleted tab), it will return true,
+            // meaning that the current WebView must be reset.  Otherwise it will happen automatically as the selected tab number changes.
+            if (webViewPagerAdapter!!.deletePage(currentTabNumber, webViewPager))
+                setCurrentWebView(currentTabNumber)
+        } else {  // There is only one tab open.
+            clearAndExit()
         }
     }
 
-        // The view parameter cannot be removed because it is called from the layout onClick.
-    fun toggleBookmarksDrawerPinned(@Suppress("UNUSED_PARAMETER")view: View?) {
-        // Toggle the bookmarks drawer pinned tracker.
-        bookmarksDrawerPinned = !bookmarksDrawerPinned
+    override fun createBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+        // Get the dialog.
+        val dialog = dialogFragment.dialog!!
 
-        // Update the bookmarks drawer pinned image view.
-        updateBookmarksDrawerPinnedImageView()
+        // Get the views from the dialog fragment.
+        val createBookmarkNameEditText = dialog.findViewById<EditText>(R.id.create_bookmark_name_edittext)
+        val createBookmarkUrlEditText = dialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)
+
+        // Extract the strings from the edit texts.
+        val bookmarkNameString = createBookmarkNameEditText.text.toString()
+        val bookmarkUrlString = createBookmarkUrlEditText.text.toString()
+
+        // Create a favorite icon byte array output stream.
+        val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
+
+        // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream)
+
+        // Convert the favorite icon byte array stream to a byte array.
+        val favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray()
+
+        // Display the new bookmark below the current items in the (0 indexed) list.
+        val newBookmarkDisplayOrder = bookmarksListView.count
+
+        // Create the bookmark.
+        bookmarksDatabaseHelper!!.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolder, newBookmarkDisplayOrder, favoriteIconByteArray)
+
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
+
+        // Update the list view.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor)
+
+        // Scroll to the new bookmark.
+        bookmarksListView.setSelection(newBookmarkDisplayOrder)
     }
 
-    private fun updateBookmarksDrawerPinnedImageView() {
-        // Set the current icon.
-        if (bookmarksDrawerPinned)
-            bookmarksDrawerPinnedImageView.setImageResource(R.drawable.pin_selected)
-        else
-            bookmarksDrawerPinnedImageView.setImageResource(R.drawable.pin)
+    override fun createBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+        // Get the dialog.
+        val dialog = dialogFragment.dialog!!
+
+        // Get handles for the views in the dialog fragment.
+        val folderNameEditText = dialog.findViewById<EditText>(R.id.folder_name_edittext)
+        val defaultIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)
+        val defaultIconImageView = dialog.findViewById<ImageView>(R.id.default_icon_imageview)
+
+        // Get new folder name string.
+        val folderNameString = folderNameEditText.text.toString()
+
+        // Set the folder icon bitmap according to the dialog.
+        val folderIconBitmap: Bitmap = if (defaultIconRadioButton.isChecked) {  // Use the default folder icon.
+            // Get the default folder icon drawable.
+            val folderIconDrawable = defaultIconImageView.drawable
+
+            // Convert the folder icon drawable to a bitmap drawable.
+            val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
+
+            // Convert the folder icon bitmap drawable to a bitmap.
+            folderIconBitmapDrawable.bitmap
+        } else {  // Use the WebView favorite icon.
+            // Copy the favorite icon bitmap to the folder icon bitmap.
+            favoriteIconBitmap
+        }
+
+        // Create a folder icon byte array output stream.
+        val folderIconByteArrayOutputStream = ByteArrayOutputStream()
+
+        // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream)
+
+        // Convert the folder icon byte array stream to a byte array.
+        val folderIconByteArray = folderIconByteArrayOutputStream.toByteArray()
+
+        // Move all the bookmarks down one in the display order.
+        for (i in 0 until bookmarksListView.count) {
+            // Get the bookmark database id.
+            val databaseId = bookmarksListView.getItemIdAtPosition(i).toInt()
+
+            // Move the bookmark down one slot.
+            bookmarksDatabaseHelper!!.updateDisplayOrder(databaseId, i + 1)
+        }
+
+        // Create the folder, which will be placed at the top of the list view.
+        bookmarksDatabaseHelper!!.createFolder(folderNameString, currentBookmarksFolder, folderIconByteArray)
+
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
+
+        // Update the list view.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor)
+
+        // Scroll to the new folder.
+        bookmarksListView.setSelection(0)
     }
 
-    private fun setCurrentWebView(pageNumber: Int) {
-        // Stop the swipe to refresh indicator if it is running
-        swipeRefreshLayout.isRefreshing = false
+    private fun downloadUrlWithExternalApp(url: String) {
+        // Create a download intent.  Not specifying the action type will display the maximum number of options.
+        val downloadIntent = Intent()
 
-        // Get the WebView tab fragment.
-        val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(pageNumber)
+        // Set the URI and the mime type.
+        downloadIntent.setDataAndType(Uri.parse(url), "text/html")
 
-        // Get the fragment view.
-        val webViewFragmentView = webViewTabFragment.view
+        // Flag the intent to open in a new task.
+        downloadIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-        // Set the current WebView if the fragment view is not null.
-        if (webViewFragmentView != null) {  // The fragment has been populated.
-            // Store the current WebView.
-            currentWebView = webViewFragmentView.findViewById(R.id.nestedscroll_webview)
+        // Show the chooser.
+        startActivity(Intent.createChooser(downloadIntent, getString(R.string.download_with_external_app)))
+    }
 
-            // Update the status of swipe to refresh.
-            if (currentWebView!!.swipeToRefresh) {  // Swipe to refresh is enabled.
-                // Enable the swipe refresh layout if the WebView is scrolled all the way to the top.  It is updated every time the scroll changes.
-                swipeRefreshLayout.isEnabled = (currentWebView!!.scrollY == 0)
-            } else {  // Swipe to refresh is disabled.
-                // Disable the swipe refresh layout.
-                swipeRefreshLayout.isEnabled = false
+    private fun exitFullScreenVideo() {
+        // Re-enable the screen timeout.
+        fullScreenVideoFrameLayout.keepScreenOn = false
+
+        // Unset the full screen video flag.
+        displayingFullScreenVideo = false
+
+        // Remove all the views from the full screen video frame layout.
+        fullScreenVideoFrameLayout.removeAllViews()
+
+        // Hide the full screen video frame layout.
+        fullScreenVideoFrameLayout.visibility = View.GONE
+
+        // Enable the sliding drawers.
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+
+        // Show the coordinator layout.
+        coordinatorLayout.visibility = View.VISIBLE
+
+        // Apply the appropriate full screen mode flags.
+        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+            // Hide the app bar if specified.
+            if (hideAppBar) {
+                // Hide the tab linear layout.
+                tabsLinearLayout.visibility = View.GONE
+
+                // Hide the app bar.
+                appBar.hide()
             }
 
-            // Set the cookie status.
-            cookieManager.setAcceptCookie(currentWebView!!.acceptCookies)
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+             */
 
-            // Update the privacy icons.  `true` redraws the icons in the app bar.
-            updatePrivacyIcons(true)
+            // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
+            @Suppress("DEPRECATION")
+            rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        } else {  // Switch to normal viewing mode.
+            // Remove the `SYSTEM_UI` flags from the root frame layout.  The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
+            @Suppress("DEPRECATION")
+            rootFrameLayout.systemUiVisibility = 0
+        }
+    }
 
-            // Get a handle for the input method manager.
-            val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun findNextOnPage(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Go to the next highlighted phrase on the page. `true` goes forwards instead of backwards.
+        currentWebView!!.findNext(true)
+    }
 
-            // Get the current URL.
-            val urlString = currentWebView!!.url
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun findPreviousOnPage(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Go to the previous highlighted phrase on the page.  `false` goes backwards instead of forwards.
+        currentWebView!!.findNext(false)
+    }
 
-            // Update the URL edit text if not loading a new intent.  Otherwise, this will be handled by `onPageStarted()` (if called) and `onPageFinished()`.
-            if (!loadingNewIntent) {  // A new intent is not being loaded.
-                if ((urlString == null) || (urlString == "about:blank")) {  // The WebView is blank.
-                    // Display the hint in the URL edit text.
-                    urlEditText.setText("")
+    override fun finishedPopulatingBlocklists(combinedBlocklists: ArrayList<ArrayList<List<Array<String>>>>) {
+        // Store the blocklists.
+        easyList = combinedBlocklists[0]
+        easyPrivacy = combinedBlocklists[1]
+        fanboysAnnoyanceList = combinedBlocklists[2]
+        fanboysSocialList = combinedBlocklists[3]
+        ultraList = combinedBlocklists[4]
+        ultraPrivacy = combinedBlocklists[5]
 
-                    // Request focus for the URL text box.
-                    urlEditText.requestFocus()
+        // Check to see if the activity has been restarted with a saved state.
+        if ((savedStateArrayList == null) || (savedStateArrayList!!.size == 0)) {  // The activity has not been restarted or it was restarted on start to change the theme.
+            // Add the first tab.
+            addNewTab("", true)
+        } else {  // The activity has been restarted.
+            // Restore each tab.
+            for (i in savedStateArrayList!!.indices) {
+                // Add a new tab.
+                tabLayout.addTab(tabLayout.newTab())
 
-                    // Display the keyboard.
-                    inputMethodManager.showSoftInput(urlEditText, 0)
-                } else {  // The WebView has a loaded URL.
-                    // Clear the focus from the URL text box.
+                // Get the new tab.
+                val newTab = tabLayout.getTabAt(i)!!
+
+                // Set a custom view on the new tab.
+                newTab.setCustomView(R.layout.tab_custom_view)
+
+                // Add the new page.
+                webViewPagerAdapter!!.restorePage(savedStateArrayList!![i], savedNestedScrollWebViewStateArrayList!![i])
+            }
+
+            // Reset the saved state variables.
+            savedStateArrayList = null
+            savedNestedScrollWebViewStateArrayList = null
+
+            // Restore the selected tab position.
+            if (savedTabPosition == 0) {  // The first tab is selected.
+                // Set the first page as the current WebView.
+                setCurrentWebView(0)
+            } else {  // The first tab is not selected.
+                // Move to the selected tab.
+                webViewPager.currentItem = savedTabPosition
+            }
+
+            // Get the intent that started the app.
+            val intent = intent
+
+            // Reset the intent.  This prevents a duplicate tab from being created on restart.
+            setIntent(Intent())
+
+            // Get the information from the intent.
+            val intentAction = intent.action
+            val intentUriData = intent.data
+            val intentStringExtra = intent.getStringExtra(Intent.EXTRA_TEXT)
+
+            // Determine if this is a web search.
+            val isWebSearch = (intentAction != null) && (intentAction == Intent.ACTION_WEB_SEARCH)
+
+            // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
+            if ((intentUriData != null) || (intentStringExtra != null) || isWebSearch) {
+                // Get the URL string.
+                val urlString = if (isWebSearch) {  // The intent is a web search.
+                    // Sanitize the search input.
+                    val encodedSearchString: String = try {
+                        URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8")
+                    } catch (exception: UnsupportedEncodingException) {
+                        ""
+                    }
+
+                    // Add the base search URL.
+                    searchURL + encodedSearchString
+                } else { // The intent contains a URL formatted as a URI or a URL in the string extra.
+                    // Get the URL string.
+                    intentUriData?.toString() ?: intentStringExtra!!
+                }
+
+                // Add a new tab if specified in the preferences.
+                if (sharedPreferences.getBoolean(getString(R.string.open_intents_in_new_tab_key), true)) {  // Load the URL in a new tab.
+                    // Set the loading new intent flag.
+                    loadingNewIntent = true
+
+                    // Add a new tab.
+                    addNewTab(urlString, true)
+                } else {  // Load the URL in the current tab.
+                    // Make it so.
+                    loadUrl(currentWebView!!, urlString)
+                }
+            }
+        }
+    }
+
+    // Remove the warning that `OnTouchListener()` needs to override `performClick()`, as the only purpose of setting the `OnTouchListener()` is to make it do nothing.
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initializeApp() {
+        // Get a handle for the input method.
+        val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+
+        // Initialize the color spans for highlighting the URLs.
+        initialGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
+        finalGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
+        redColorSpan = ForegroundColorSpan(getColor(R.color.red_text))
+
+        // Remove the formatting from the URL edit text when the user is editing the text.
+        urlEditText.onFocusChangeListener = View.OnFocusChangeListener { _: View?, hasFocus: Boolean ->
+            if (hasFocus) {  // The user is editing the URL text box.
+                // Remove the syntax highlighting.
+                urlEditText.text.removeSpan(redColorSpan)
+                urlEditText.text.removeSpan(initialGrayColorSpan)
+                urlEditText.text.removeSpan(finalGrayColorSpan)
+            } else {  // The user has stopped editing the URL text box.
+                // Move to the beginning of the string.
+                urlEditText.setSelection(0)
+
+                // Reapply the syntax highlighting.
+                UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
+            }
+        }
+
+        // Set the go button on the keyboard to load the URL in url text box.
+        urlEditText.setOnKeyListener { _: View?, keyCode: Int, keyEvent: KeyEvent ->
+            // If the event is a key-down event on the `enter` button, load the URL.
+            if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The enter key was pressed.
+                // Load the URL.
+                loadUrlFromTextBox()
+
+                // Consume the event.
+                return@setOnKeyListener true
+            } else {  // Some other key was pressed.
+                // Do not consume the event.
+                return@setOnKeyListener false
+            }
+        }
+
+        // Create an Orbot status broadcast receiver.
+        orbotStatusBroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                // Get the content of the status message.
+                orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS")!!
+
+                // If Privacy Browser is waiting on the proxy, load the website now that Orbot is connected.
+                if ((orbotStatus == ProxyHelper.ORBOT_STATUS_ON) && waitingForProxy) {
+                    // Reset the waiting for proxy status.
+                    waitingForProxy = false
+
+                    // Get a list of the current fragments.
+                    val fragmentList = supportFragmentManager.fragments
+
+                    // Check each fragment to see if it is a waiting for proxy dialog.  Sometimes more than one is displayed.
+                    for (i in fragmentList.indices) {
+                        // Get the fragment tag.
+                        val fragmentTag = fragmentList[i].tag
+
+                        // Check to see if it is the waiting for proxy dialog.
+                        if (fragmentTag != null && fragmentTag == getString(R.string.waiting_for_proxy_dialog)) {
+                            // Dismiss the waiting for proxy dialog.
+                            (fragmentList[i] as DialogFragment).dismiss()
+                        }
+                    }
+
+                    // Reload existing URLs and load any URLs that are waiting for the proxy.
+                    for (i in 0 until webViewPagerAdapter!!.count) {
+                        // Get the WebView tab fragment.
+                        val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+
+                        // Get the fragment view.
+                        val fragmentView = webViewTabFragment.view
+
+                        // Only process the WebViews if they exist.
+                        if (fragmentView != null) {
+                            // Get the nested scroll WebView from the tab fragment.
+                            val nestedScrollWebView = fragmentView.findViewById<NestedScrollWebView>(R.id.nestedscroll_webview)
+
+                            // Get the waiting for proxy URL string.
+                            val waitingForProxyUrlString = nestedScrollWebView.waitingForProxyUrlString
+
+                            // Load the pending URL if it exists.
+                            if (waitingForProxyUrlString.isNotEmpty()) {  // A URL is waiting to be loaded.
+                                // Load the URL.
+                                loadUrl(nestedScrollWebView, waitingForProxyUrlString)
+
+                                // Reset the waiting for proxy URL string.
+                                nestedScrollWebView.waitingForProxyUrlString = ""
+                            } else {  // No URL is waiting to be loaded.
+                                // Reload the existing URL.
+                                nestedScrollWebView.reload()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Register the Orbot status broadcast receiver.
+        registerReceiver(orbotStatusBroadcastReceiver, IntentFilter("org.torproject.android.intent.action.STATUS"))
+
+        // Get handles for views that need to be modified.
+        val bookmarksHeaderLinearLayout = findViewById<LinearLayout>(R.id.bookmarks_header_linearlayout)
+        val launchBookmarksActivityFab = findViewById<FloatingActionButton>(R.id.launch_bookmarks_activity_fab)
+        val createBookmarkFolderFab = findViewById<FloatingActionButton>(R.id.create_bookmark_folder_fab)
+        val createBookmarkFab = findViewById<FloatingActionButton>(R.id.create_bookmark_fab)
+
+        // Update the WebView pager every time a tab is modified.
+        webViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                // Close the find on page bar if it is open.
+                closeFindOnPage(null)
+
+                // Set the current WebView.
+                setCurrentWebView(position)
+
+                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled by creating a new tab.
+                if (tabLayout.selectedTabPosition != position) {
+                    // Wait until the new tab has been created.
+                    tabLayout.post {
+                        // Get a handle for the tab.
+                        val tab = tabLayout.getTabAt(position)!!
+
+                        // Select the tab.
+                        tab.select()
+                    }
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+
+        // Handle tab selections.
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                // Select the same page in the view pager.
+                webViewPager.currentItem = tab.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // Instantiate the View SSL Certificate dialog.
+                val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
+
+                // Display the View SSL Certificate dialog.
+                viewSslCertificateDialogFragment.show(supportFragmentManager, getString(R.string.view_ssl_certificate))
+            }
+        })
+
+        // Set a touch listener on the bookmarks header linear layout so that touches don't pass through to the button underneath.
+        bookmarksHeaderLinearLayout.setOnTouchListener { _: View?, _: MotionEvent? -> true }
+
+        // Set the launch bookmarks activity floating action button to launch the bookmarks activity.
+        launchBookmarksActivityFab.setOnClickListener {
+            // Get a copy of the favorite icon bitmap.
+            val currentFavoriteIconBitmap = currentWebView!!.getFavoriteIcon()
+
+            // Create a favorite icon byte array output stream.
+            val currentFavoriteIconByteArrayOutputStream = ByteArrayOutputStream()
+
+            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            currentFavoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, currentFavoriteIconByteArrayOutputStream)
+
+            // Convert the favorite icon byte array stream to a byte array.
+            val currentFavoriteIconByteArray = currentFavoriteIconByteArrayOutputStream.toByteArray()
+
+            // Create an intent to launch the bookmarks activity.
+            val bookmarksIntent = Intent(applicationContext, BookmarksActivity::class.java)
+
+            // Add the extra information to the intent.
+            bookmarksIntent.putExtra(CURRENT_FOLDER, currentBookmarksFolder)
+            bookmarksIntent.putExtra(CURRENT_TITLE, currentWebView!!.title)
+            bookmarksIntent.putExtra(CURRENT_URL, currentWebView!!.url)
+            bookmarksIntent.putExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY, currentFavoriteIconByteArray)
+
+            // Make it so.
+            startActivity(bookmarksIntent)
+        }
+
+        // Set the create new bookmark folder floating action button to display an alert dialog.
+        createBookmarkFolderFab.setOnClickListener {
+            // Create a create bookmark folder dialog.
+            val createBookmarkFolderDialog: DialogFragment = CreateBookmarkFolderDialog.createBookmarkFolder(currentWebView!!.getFavoriteIcon())
+
+            // Show the create bookmark folder dialog.
+            createBookmarkFolderDialog.show(supportFragmentManager, getString(R.string.create_folder))
+        }
+
+        // Set the create new bookmark floating action button to display an alert dialog.
+        createBookmarkFab.setOnClickListener {
+            // Instantiate the create bookmark dialog.
+            val createBookmarkDialog: DialogFragment = CreateBookmarkDialog.createBookmark(currentWebView!!.url!!, currentWebView!!.title!!, currentWebView!!.getFavoriteIcon())
+
+            // Display the create bookmark dialog.
+            createBookmarkDialog.show(supportFragmentManager, getString(R.string.create_bookmark))
+        }
+
+        // Search for the string on the page whenever a character changes in the find on page edit text.
+        findOnPageEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable) {
+                // Search for the text in the WebView if it is not null.  Sometimes on resume after a period of non-use the WebView will be null.
+                currentWebView?.findAllAsync(findOnPageEditText.text.toString())
+            }
+        })
+
+        // Set the `check mark` button for the find on page edit text keyboard to close the soft keyboard.
+        findOnPageEditText.setOnKeyListener { _: View?, keyCode: Int, keyEvent: KeyEvent ->
+            if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
+                // Hide the soft keyboard.
+                inputMethodManager.hideSoftInputFromWindow(currentWebView!!.windowToken, 0)
+
+                // Consume the event.
+                return@setOnKeyListener true
+            } else {  // A different key was pressed.
+                // Do not consume the event.
+                return@setOnKeyListener false
+            }
+        }
+
+        // Implement swipe to refresh.
+        swipeRefreshLayout.setOnRefreshListener {
+            // Reload the website.
+            currentWebView!!.reload()
+        }
+
+        // Store the default progress view offsets.
+        defaultProgressViewStartOffset = swipeRefreshLayout.progressViewStartOffset
+        defaultProgressViewEndOffset = swipeRefreshLayout.progressViewEndOffset
+
+        // Set the refresh color scheme according to the theme.
+        swipeRefreshLayout.setColorSchemeResources(R.color.blue_text)
+
+        // Initialize a color background typed value.
+        val colorBackgroundTypedValue = TypedValue()
+
+        // Get the color background from the theme.
+        theme.resolveAttribute(android.R.attr.colorBackground, colorBackgroundTypedValue, true)
+
+        // Get the color background int from the typed value.
+        val colorBackgroundInt = colorBackgroundTypedValue.data
+
+        // Set the swipe refresh background color.
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt)
+
+        // Set the drawer titles, which identify the drawer layouts in accessibility mode.
+        drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer))
+        drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks))
+
+        // Load the bookmarks folder.
+        loadBookmarksFolder()
+
+        // Handle clicks on bookmarks.
+        bookmarksListView.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, id: Long ->
+            // Convert the id from long to int to match the format of the bookmarks database.
+            val databaseId = id.toInt()
+
+            // Get the bookmark cursor for this ID.
+            val bookmarkCursor = bookmarksDatabaseHelper!!.getBookmark(databaseId)
+
+            // Move the bookmark cursor to the first row.
+            bookmarkCursor.moveToFirst()
+
+            // Act upon the bookmark according to the type.
+            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+                // Store the folder name.
+                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+
+                // Load the new folder.
+                loadBookmarksFolder()
+            } else {  // The selected bookmark is not a folder.
+                // Load the bookmark URL.
+                loadUrl(currentWebView!!, bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)))
+
+                // Close the bookmarks drawer if it is not pinned.
+                if (!bookmarksDrawerPinned)
+                    drawerLayout.closeDrawer(GravityCompat.END)
+            }
+
+            // Close the cursor.
+            bookmarkCursor.close()
+        }
+
+        // Handle long-presses on bookmarks.
+        bookmarksListView.onItemLongClickListener = AdapterView.OnItemLongClickListener { _: AdapterView<*>?, _: View?, _: Int, id: Long ->
+            // Convert the database ID from `long` to `int`.
+            val databaseId = id.toInt()
+
+            // Run the commands associated with the type.
+            if (bookmarksDatabaseHelper!!.isFolder(databaseId)) {  // The bookmark is a folder.
+                // Get a cursor of all the bookmarks in the folder.
+                val bookmarksCursor = bookmarksDatabaseHelper!!.getFolderBookmarks(databaseId)
+
+                // Move to the first entry in the cursor.
+                bookmarksCursor.moveToFirst()
+
+                // Open each bookmark
+                for (i in 0 until bookmarksCursor.count) {
+                    // Load the bookmark in a new tab, moving to the tab for the first bookmark if the drawer is not pinned.
+                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), !bookmarksDrawerPinned && (i == 0))
+
+                    // Move to the next bookmark.
+                    bookmarksCursor.moveToNext()
+                }
+
+                // Close the cursor.
+                bookmarksCursor.close()
+            } else {  // The bookmark is not a folder.
+                // Get the bookmark cursor for this ID.
+                val bookmarkCursor = bookmarksDatabaseHelper!!.getBookmark(databaseId)
+
+                // Move the bookmark cursor to the first row.
+                bookmarkCursor.moveToFirst()
+
+                // Load the bookmark in a new tab and move to the tab if the drawer is not pinned.
+                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), !bookmarksDrawerPinned)
+
+                // Close the cursor.
+                bookmarkCursor.close()
+            }
+
+            // Close the bookmarks drawer if it is not pinned.
+            if (!bookmarksDrawerPinned)
+                drawerLayout.closeDrawer(GravityCompat.END)
+
+            // Consume the event.
+            true
+        }
+
+        // The drawer listener is used to update the navigation menu.
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+
+            override fun onDrawerOpened(drawerView: View) {}
+
+            override fun onDrawerClosed(drawerView: View) {
+                // Reset the drawer icon when the drawer is closed.  Otherwise, it remains an arrow if the drawer is open when the app is restarted.
+                actionBarDrawerToggle!!.syncState()
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+                if (newState == DrawerLayout.STATE_SETTLING || newState == DrawerLayout.STATE_DRAGGING) {  // A drawer is opening or closing.
+                    // Update the navigation menu items if the WebView is not null.
+                    if (currentWebView != null) {
+                        navigationBackMenuItem.isEnabled = currentWebView!!.canGoBack()
+                        navigationForwardMenuItem.isEnabled = currentWebView!!.canGoForward()
+                        navigationHistoryMenuItem.isEnabled = currentWebView!!.canGoBack() || currentWebView!!.canGoForward()
+                        navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + currentWebView!!.getRequestsCount(BLOCKED_REQUESTS)
+
+                        // Hide the keyboard (if displayed).
+                        inputMethodManager.hideSoftInputFromWindow(currentWebView!!.windowToken, 0)
+                    }
+
+                    // Clear the focus from from the URL text box.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     urlEditText.clearFocus()
 
-                    // Hide the soft keyboard.
-                    inputMethodManager.hideSoftInputFromWindow(currentWebView!!.windowToken, 0)
-
-                    // Display the current URL in the URL text box.
-                    urlEditText.setText(urlString)
-
-                    // Highlight the URL syntax.
-                    UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
+                    // Clear the focus from from the WebView if it is not null, which can happen if a user opens a drawer while the browser is being resumed.
+                    // Clearing the focus from the WebView removes any text selection markers and context menus, which otherwise draw above the open drawers.
+                    currentWebView?.clearFocus()
                 }
-            } else {  // A new intent is being loaded.
-                // Reset the loading new intent flag.
-                loadingNewIntent = false
             }
+        })
 
-            // Set the background to indicate the domain settings status.
-            if (currentWebView!!.domainSettingsApplied) {
-                // Set a background on the URL relative layout to indicate that custom domain settings are being used.
-                urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.drawable.domain_settings_url_background)
-            } else {
-                // Remove any background on the URL relative layout.
-                urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
-            }
-        } else if (pageNumber == savedTabPosition) {  // The app is being restored but the saved tab position fragment has not been populated yet.  Try again in 100 milliseconds.
-            // Create a handler to set the current WebView.
-            val setCurrentWebViewHandler = Handler(Looper.getMainLooper())
+        // Inflate a bare WebView to get the default user agent.  It is not used to render content on the screen.
+        @SuppressLint("InflateParams") val webViewLayout = layoutInflater.inflate(R.layout.bare_webview, null, false)
 
-            // Create a runnable to set the current WebView.
-            val setCurrentWebWebRunnable = Runnable {
-                // Set the current WebView.
-                setCurrentWebView(pageNumber)
-            }
+        // Get a handle for the WebView.
+        val bareWebView = webViewLayout.findViewById<WebView>(R.id.bare_webview)
 
-            // Try setting the current WebView again after 100 milliseconds.
-            setCurrentWebViewHandler.postDelayed(setCurrentWebWebRunnable, 100)
-        }
+        // Store the default user agent.
+        webViewDefaultUserAgent = bareWebView.settings.userAgentString
+
+        // Destroy the bare WebView.
+        bareWebView.destroy()
+
+        // Update the domains settings set.
+        updateDomainsSettingsSet()
+
+        // Instantiate the blocklist helper.
+        blocklistHelper = BlocklistHelper()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -5487,7 +5050,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     if (fanboysAnnoyanceListResults[0] == BlocklistHelper.REQUEST_BLOCKED) {  // The resource request matched Fanboy's Annoyance List's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
-                                fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]))
+                            fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]))
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
@@ -5902,6 +5465,385 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         }
     }
 
+    private fun loadBookmarksFolder() {
+        // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
+        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
+
+        // Populate the bookmarks cursor adapter.
+        bookmarksCursorAdapter = object : CursorAdapter(this, bookmarksCursor, false) {
+            override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
+                // Inflate the individual item layout.
+                return layoutInflater.inflate(R.layout.bookmarks_drawer_item_linearlayout, parent, false)
+            }
+
+            override fun bindView(view: View, context: Context, cursor: Cursor) {
+                // Get handles for the views.
+                val bookmarkFavoriteIcon = view.findViewById<ImageView>(R.id.bookmark_favorite_icon)
+                val bookmarkNameTextView = view.findViewById<TextView>(R.id.bookmark_name)
+
+                // Get the favorite icon byte array from the cursor.
+                val favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
+
+                // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
+                val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
+
+                // Display the bitmap in the bookmark favorite icon.
+                bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap)
+
+                // Display the bookmark name from the cursor in the bookmark name text view.
+                bookmarkNameTextView.text = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+
+                // Make the font bold for folders.
+                if (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1)
+                    bookmarkNameTextView.typeface = Typeface.DEFAULT_BOLD
+                else  // Reset the font to default for normal bookmarks.
+                    bookmarkNameTextView.typeface = Typeface.DEFAULT
+            }
+        }
+
+        // Populate the list view with the adapter.
+        bookmarksListView.adapter = bookmarksCursorAdapter
+
+        // Set the bookmarks drawer title.
+        if (currentBookmarksFolder.isEmpty())
+            bookmarksTitleTextView.setText(R.string.bookmarks)
+        else
+            bookmarksTitleTextView.text = currentBookmarksFolder
+    }
+
+    private fun loadUrl(nestedScrollWebView: NestedScrollWebView, url: String) {
+        // Sanitize the URL.
+        val urlString = sanitizeUrl(url)
+
+        // Apply the domain settings and load the URL.
+        applyDomainSettings(nestedScrollWebView, urlString, resetTab = true, reloadWebsite = false, loadUrl = true)
+    }
+
+    private fun loadUrlFromTextBox() {
+        // Get the text from URL text box and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
+        var unformattedUrlString = urlEditText.text.toString().trim { it <= ' ' }
+
+        // Create the formatted URL string.
+        var urlString = ""
+
+        // Check to see if the unformatted URL string is a valid URL.  Otherwise, convert it into a search.
+        if (unformattedUrlString.startsWith("content://")) {  // This is a content URL.
+            // Load the entire content URL.
+            urlString = unformattedUrlString
+        } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://") ||
+            unformattedUrlString.startsWith("file://")) {  // This is a standard URL.
+
+            // Add `https://` at the beginning if there is no protocol.  Otherwise the app will segfault.
+            if (!unformattedUrlString.startsWith("http") && !unformattedUrlString.startsWith("file://"))
+                unformattedUrlString = "https://$unformattedUrlString"
+
+            // Initialize the unformatted URL.
+            var unformattedUrl: URL? = null
+
+            // Convert the unformatted URL string to a URL.
+            try {
+                unformattedUrl = URL(unformattedUrlString)
+            } catch (exception: MalformedURLException) {
+                exception.printStackTrace()
+            }
+
+            // Get the components of the URL.
+            val scheme = unformattedUrl?.protocol
+            val authority = unformattedUrl?.authority
+            val path = unformattedUrl?.path
+            val query = unformattedUrl?.query
+            val fragment = unformattedUrl?.ref
+
+            // Create a URI.
+            val uri = Uri.Builder()
+
+            // Build the URI from the components of the URL.
+            uri.scheme(scheme).authority(authority).path(path).query(query).fragment(fragment)
+
+            // Decode the URI as a UTF-8 string in.
+            try {
+                urlString = URLDecoder.decode(uri.build().toString(), "UTF-8")
+            } catch (exception: UnsupportedEncodingException) {
+                // Do nothing.  The formatted URL string will remain blank.
+            }
+        } else if (unformattedUrlString.isNotEmpty()) {  // This is not a URL, but rather a search string.
+            // Sanitize the search input.
+            val encodedSearchString = try {
+                URLEncoder.encode(unformattedUrlString, "UTF-8")
+            } catch (exception: UnsupportedEncodingException) {
+                ""
+            }
+
+            // Add the base search URL.
+            urlString = searchURL + encodedSearchString
+        }
+
+        // Clear the focus from the URL edit text.  Otherwise, proximate typing in the box will retain the colorized formatting instead of being reset during refocus.
+        urlEditText.clearFocus()
+
+        // Make it so.
+        loadUrl(currentWebView!!, urlString)
+    }
+
+    override fun navigateHistory(url: String, steps: Int) {
+        // Apply the domain settings.
+        applyDomainSettings(currentWebView!!, url, resetTab = false, reloadWebsite = false, loadUrl = false)
+
+        // Load the history entry.
+        currentWebView!!.goBackOrForward(steps)
+    }
+
+    override fun openFile(dialogFragment: DialogFragment) {
+        // Get the dialog.
+        val dialog = dialogFragment.dialog!!
+
+        // Get handles for the views.
+        val fileNameEditText = dialog.findViewById<EditText>(R.id.file_name_edittext)
+        val mhtCheckBox = dialog.findViewById<CheckBox>(R.id.mht_checkbox)
+
+        // Get the file path string.
+        val openFilePath = fileNameEditText.text.toString()
+
+        // Apply the domain settings.  This resets the favorite icon and removes any domain settings.
+        applyDomainSettings(currentWebView!!, openFilePath, resetTab = true, reloadWebsite = false, loadUrl = false)
+
+        // Open the file according to the type.
+        if (mhtCheckBox.isChecked) {  // Force opening of an MHT file.
+            try {
+                // Get the MHT file input stream.
+                val mhtFileInputStream = contentResolver.openInputStream(Uri.parse(openFilePath))
+
+                // Create a temporary MHT file.
+                val temporaryMhtFile = File.createTempFile(TEMPORARY_MHT_FILE, ".mht", cacheDir)
+
+                // Get a file output stream for the temporary MHT file.
+                val temporaryMhtFileOutputStream = FileOutputStream(temporaryMhtFile)
+
+                // Create a transfer byte array.
+                val transferByteArray = ByteArray(1024)
+
+                // Create an integer to track the number of bytes read.
+                var bytesRead: Int
+
+                // Copy the temporary MHT file input stream to the MHT output stream.
+                while (mhtFileInputStream!!.read(transferByteArray).also { bytesRead = it } > 0)
+                    temporaryMhtFileOutputStream.write(transferByteArray, 0, bytesRead)
+
+                // Flush the temporary MHT file output stream.
+                temporaryMhtFileOutputStream.flush()
+
+                // Close the streams.
+                temporaryMhtFileOutputStream.close()
+                mhtFileInputStream.close()
+
+                // Load the temporary MHT file.
+                currentWebView!!.loadUrl(temporaryMhtFile.toString())
+            } catch (exception: Exception) {
+                // Display a snackbar.
+                Snackbar.make(currentWebView!!, getString(R.string.error, exception), Snackbar.LENGTH_INDEFINITE).show()
+            }
+        } else {  // Let the WebView handle opening of the file.
+            // Open the file.
+            currentWebView!!.loadUrl(openFilePath)
+        }
+    }
+
+    private fun openWithApp(url: String) {
+        // Create an open with app intent with `ACTION_VIEW`.
+        val openWithAppIntent = Intent(Intent.ACTION_VIEW)
+
+        // Set the URI but not the MIME type.  This should open all available apps.
+        openWithAppIntent.data = Uri.parse(url)
+
+        // Flag the intent to open in a new task.
+        openWithAppIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+        // Try the intent.
+        try {
+            // Show the chooser.
+            startActivity(openWithAppIntent)
+        } catch (exception: ActivityNotFoundException) {  // There are no apps available to open the URL.
+            // Show a snackbar with the error.
+            Snackbar.make(currentWebView!!, getString(R.string.error, exception), Snackbar.LENGTH_INDEFINITE).show()
+        }
+    }
+
+    private fun openWithBrowser(url: String) {
+
+        // Create an open with browser intent with `ACTION_VIEW`.
+        val openWithBrowserIntent = Intent(Intent.ACTION_VIEW)
+
+        // Set the URI and the MIME type.  `"text/html"` should load browser options.
+        openWithBrowserIntent.setDataAndType(Uri.parse(url), "text/html")
+
+        // Flag the intent to open in a new task.
+        openWithBrowserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+        // Try the intent.
+        try {
+            // Show the chooser.
+            startActivity(openWithBrowserIntent)
+        } catch (exception: ActivityNotFoundException) {  // There are no browsers available to open the URL.
+            // Show a snackbar with the error.
+            Snackbar.make(currentWebView!!, getString(R.string.error, exception), Snackbar.LENGTH_INDEFINITE).show()
+        }
+    }
+
+    override fun pinnedErrorGoBack() {
+        // Get the current web back forward list.
+        val webBackForwardList = currentWebView!!.copyBackForwardList()
+
+        // Get the previous entry URL.
+        val previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
+
+        // Apply the domain settings.
+        applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
+
+        // Go back.
+        currentWebView!!.goBack()
+    }
+
+    private fun sanitizeUrl(urlString: String): String {
+        // Initialize a sanitized URL string.
+        var sanitizedUrlString = urlString
+
+        // Sanitize tracking queries.
+        if (sanitizeTrackingQueries)
+            sanitizedUrlString = SanitizeUrlHelper.sanitizeTrackingQueries(sanitizedUrlString)
+
+        // Sanitize AMP redirects.
+        if (sanitizeAmpRedirects)
+            sanitizedUrlString = SanitizeUrlHelper.sanitizeAmpRedirects(sanitizedUrlString)
+
+        // Return the sanitized URL string.
+        return sanitizedUrlString
+    }
+
+    override fun saveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment) {
+        // Store the URL.  This will be used in the save URL activity result launcher.
+        saveUrlString = if (originalUrlString.startsWith("data:")) {
+            // Save the original URL.
+            originalUrlString
+        } else {
+            // Get the dialog.
+            val dialog = dialogFragment.dialog!!
+
+            // Get a handle for the dialog URL edit text.
+            val dialogUrlEditText = dialog.findViewById<EditText>(R.id.url_edittext)
+
+            // Get the URL from the edit text, which may have been modified.
+            dialogUrlEditText.text.toString()
+        }
+
+        // Open the file picker.
+        saveUrlActivityResultLauncher.launch(fileNameString)
+    }
+
+    private fun setCurrentWebView(pageNumber: Int) {
+        // Stop the swipe to refresh indicator if it is running
+        swipeRefreshLayout.isRefreshing = false
+
+        // Get the WebView tab fragment.
+        val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(pageNumber)
+
+        // Get the fragment view.
+        val webViewFragmentView = webViewTabFragment.view
+
+        // Set the current WebView if the fragment view is not null.
+        if (webViewFragmentView != null) {  // The fragment has been populated.
+            // Store the current WebView.
+            currentWebView = webViewFragmentView.findViewById(R.id.nestedscroll_webview)
+
+            // Update the status of swipe to refresh.
+            if (currentWebView!!.swipeToRefresh) {  // Swipe to refresh is enabled.
+                // Enable the swipe refresh layout if the WebView is scrolled all the way to the top.  It is updated every time the scroll changes.
+                swipeRefreshLayout.isEnabled = (currentWebView!!.scrollY == 0)
+            } else {  // Swipe to refresh is disabled.
+                // Disable the swipe refresh layout.
+                swipeRefreshLayout.isEnabled = false
+            }
+
+            // Set the cookie status.
+            cookieManager.setAcceptCookie(currentWebView!!.acceptCookies)
+
+            // Update the privacy icons.  `true` redraws the icons in the app bar.
+            updatePrivacyIcons(true)
+
+            // Get a handle for the input method manager.
+            val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+
+            // Get the current URL.
+            val urlString = currentWebView!!.url
+
+            // Update the URL edit text if not loading a new intent.  Otherwise, this will be handled by `onPageStarted()` (if called) and `onPageFinished()`.
+            if (!loadingNewIntent) {  // A new intent is not being loaded.
+                if ((urlString == null) || (urlString == "about:blank")) {  // The WebView is blank.
+                    // Display the hint in the URL edit text.
+                    urlEditText.setText("")
+
+                    // Request focus for the URL text box.
+                    urlEditText.requestFocus()
+
+                    // Display the keyboard.
+                    inputMethodManager.showSoftInput(urlEditText, 0)
+                } else {  // The WebView has a loaded URL.
+                    // Clear the focus from the URL text box.
+                    urlEditText.clearFocus()
+
+                    // Hide the soft keyboard.
+                    inputMethodManager.hideSoftInputFromWindow(currentWebView!!.windowToken, 0)
+
+                    // Display the current URL in the URL text box.
+                    urlEditText.setText(urlString)
+
+                    // Highlight the URL syntax.
+                    UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
+                }
+            } else {  // A new intent is being loaded.
+                // Reset the loading new intent flag.
+                loadingNewIntent = false
+            }
+
+            // Set the background to indicate the domain settings status.
+            if (currentWebView!!.domainSettingsApplied) {
+                // Set a background on the URL relative layout to indicate that custom domain settings are being used.
+                urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.drawable.domain_settings_url_background)
+            } else {
+                // Remove any background on the URL relative layout.
+                urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
+            }
+        } else if (pageNumber == savedTabPosition) {  // The app is being restored but the saved tab position fragment has not been populated yet.  Try again in 100 milliseconds.
+            // Create a handler to set the current WebView.
+            val setCurrentWebViewHandler = Handler(Looper.getMainLooper())
+
+            // Create a runnable to set the current WebView.
+            val setCurrentWebWebRunnable = Runnable {
+                // Set the current WebView.
+                setCurrentWebView(pageNumber)
+            }
+
+            // Try setting the current WebView again after 100 milliseconds.
+            setCurrentWebViewHandler.postDelayed(setCurrentWebWebRunnable, 100)
+        }
+    }
+
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun toggleBookmarksDrawerPinned(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Toggle the bookmarks drawer pinned tracker.
+        bookmarksDrawerPinned = !bookmarksDrawerPinned
+
+        // Update the bookmarks drawer pinned image view.
+        updateBookmarksDrawerPinnedImageView()
+    }
+
+    private fun updateBookmarksDrawerPinnedImageView() {
+        // Set the current icon.
+        if (bookmarksDrawerPinned)
+            bookmarksDrawerPinnedImageView.setImageResource(R.drawable.pin_selected)
+        else
+            bookmarksDrawerPinnedImageView.setImageResource(R.drawable.pin)
+    }
+
     private fun updateDomainsSettingsSet() {
         // Reset the domains settings set.
         domainsSettingsSet = HashSet()
@@ -5926,5 +5868,55 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Close the domains cursor.
         domainsCursor.close()
+    }
+
+    override fun updateFontSize(dialogFragment: DialogFragment) {
+        // Get the dialog.
+        val dialog = dialogFragment.dialog!!
+
+        // Get a handle for the font size edit text.
+        val fontSizeEditText = dialog.findViewById<EditText>(R.id.font_size_edittext)
+
+        // Initialize the new font size variable with the current font size.
+        var newFontSize = currentWebView!!.settings.textZoom
+
+        // Get the font size from the edit text.
+        try {
+            newFontSize = fontSizeEditText.text.toString().toInt()
+        } catch (exception: Exception) {
+            // If the edit text does not contain a valid font size do nothing.
+        }
+
+        // Apply the new font size.
+        currentWebView!!.settings.textZoom = newFontSize
+    }
+
+    private fun updatePrivacyIcons(runInvalidateOptionsMenu: Boolean) {
+        // Only update the privacy icons if the options menu and the current WebView have already been populated.
+        if ((optionsMenu != null) && (currentWebView != null)) {
+            // Update the privacy icon.
+            if (currentWebView!!.settings.javaScriptEnabled)  // JavaScript is enabled.
+                optionsPrivacyMenuItem.setIcon(R.drawable.javascript_enabled)
+            else if (currentWebView!!.acceptCookies)  // JavaScript is disabled but cookies are enabled.
+                optionsPrivacyMenuItem.setIcon(R.drawable.warning)
+            else  // All the dangerous features are disabled.
+                optionsPrivacyMenuItem.setIcon(R.drawable.privacy_mode)
+
+            // Update the cookies icon.
+            if (currentWebView!!.acceptCookies)
+                optionsCookiesMenuItem.setIcon(R.drawable.cookies_enabled)
+            else
+                optionsCookiesMenuItem.setIcon(R.drawable.cookies_disabled)
+
+            // Update the refresh icon.
+            if (optionsRefreshMenuItem.title == getString(R.string.refresh))  // The refresh icon is displayed.
+                optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled)
+            else  // The stop icon is displayed.
+                optionsRefreshMenuItem.setIcon(R.drawable.close_blue)
+
+            // `invalidateOptionsMenu()` calls `onPrepareOptionsMenu()` and redraws the icons in the app bar.
+            if (runInvalidateOptionsMenu)
+                invalidateOptionsMenu()
+        }
     }
 }
