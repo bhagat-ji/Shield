@@ -199,7 +199,7 @@ class ViewRequestDialog : DialogFragment() {
                 requestDisposition.setText(R.string.allowed)
 
                 // Set the background color to be blue.
-                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.requests_blue_background))
             }
 
             REQUEST_THIRD_PARTY -> {

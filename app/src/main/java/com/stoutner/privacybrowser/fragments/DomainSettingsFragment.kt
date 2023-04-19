@@ -45,6 +45,7 @@ import android.widget.TextView
 
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -130,6 +131,7 @@ class DomainSettingsFragment : Fragment() {
         val ultraPrivacySwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.ultraprivacy_switch)
         val blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById<ImageView>(R.id.block_all_third_party_requests_imageview)
         val blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.block_all_third_party_requests_switch)
+        val userAgentLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.user_agent_linear_layout)
         val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
         val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
         val customUserAgentEditText = domainSettingsView.findViewById<EditText>(R.id.custom_user_agent_edittext)
@@ -350,33 +352,33 @@ class DomainSettingsFragment : Fragment() {
         })
 
         // Set the switch positions.
-        javaScriptSwitch.isChecked = javaScriptInt == 1
-        cookiesSwitch.isChecked = cookiesInt == 1
-        domStorageSwitch.isChecked = domStorageInt == 1
-        formDataSwitch.isChecked = formDataInt == 1 // Form data can be removed once the minimum API >= 26.
-        easyListSwitch.isChecked = easyListInt == 1
-        easyPrivacySwitch.isChecked = easyPrivacyInt == 1
-        fanboysAnnoyanceListSwitch.isChecked = fanboysAnnoyanceListInt == 1
-        fanboysSocialBlockingListSwitch.isChecked = fanboysSocialBlockingListInt == 1
-        ultraListSwitch.isChecked = ultraListInt == 1
-        ultraPrivacySwitch.isChecked = ultraPrivacyInt == 1
-        blockAllThirdPartyRequestsSwitch.isChecked = blockAllThirdPartyRequestsInt == 1
-        pinnedSslCertificateSwitch.isChecked = pinnedSslCertificateInt == 1
-        pinnedIpAddressesSwitch.isChecked = pinnedIpAddressesInt == 1
+        javaScriptSwitch.isChecked = (javaScriptInt == 1)
+        cookiesSwitch.isChecked = (cookiesInt == 1)
+        domStorageSwitch.isChecked = (domStorageInt == 1)
+        formDataSwitch.isChecked = (formDataInt == 1)  // Form data can be removed once the minimum API >= 26.
+        easyListSwitch.isChecked = (easyListInt == 1)
+        easyPrivacySwitch.isChecked = (easyPrivacyInt == 1)
+        fanboysAnnoyanceListSwitch.isChecked = (fanboysAnnoyanceListInt == 1)
+        fanboysSocialBlockingListSwitch.isChecked = (fanboysSocialBlockingListInt == 1)
+        ultraListSwitch.isChecked = (ultraListInt == 1)
+        ultraPrivacySwitch.isChecked = (ultraPrivacyInt == 1)
+        blockAllThirdPartyRequestsSwitch.isChecked = (blockAllThirdPartyRequestsInt == 1)
+        pinnedSslCertificateSwitch.isChecked = (pinnedSslCertificateInt == 1)
+        pinnedIpAddressesSwitch.isChecked = (pinnedIpAddressesInt == 1)
 
         // Set the switch icon colors.
-        cookiesImageView.isSelected = cookiesInt == 1
-        domStorageImageView.isSelected = domStorageInt == 1
-        formDataImageView.isSelected = formDataInt == 1 // Form data can be removed once the minimum API >= 26.
-        easyListImageView.isSelected = easyListInt == 1
-        easyPrivacyImageView.isSelected = easyPrivacyInt == 1
-        fanboysAnnoyanceListImageView.isSelected = fanboysAnnoyanceListInt == 1
-        fanboysSocialBlockingListImageView.isSelected = fanboysSocialBlockingListInt == 1
-        ultraListImageView.isSelected = ultraListInt == 1
-        ultraPrivacyImageView.isSelected = ultraPrivacyInt == 1
-        blockAllThirdPartyRequestsImageView.isSelected = blockAllThirdPartyRequestsInt == 1
-        pinnedSslCertificateImageView.isSelected = pinnedSslCertificateInt == 1
-        pinnedIpAddressesImageView.isSelected = pinnedIpAddressesInt == 1
+        cookiesImageView.isSelected = (cookiesInt == 1)
+        domStorageImageView.isSelected = (domStorageInt == 1)
+        formDataImageView.isSelected = (formDataInt == 1)  // Form data can be removed once the minimum API >= 26.
+        easyListImageView.isSelected = (easyListInt == 1)
+        easyPrivacyImageView.isSelected = (easyPrivacyInt == 1)
+        fanboysAnnoyanceListImageView.isSelected = (fanboysAnnoyanceListInt == 1)
+        fanboysSocialBlockingListImageView.isSelected = (fanboysSocialBlockingListInt == 1)
+        ultraListImageView.isSelected = (ultraListInt == 1)
+        ultraPrivacyImageView.isSelected = (ultraPrivacyInt == 1)
+        blockAllThirdPartyRequestsImageView.isSelected = (blockAllThirdPartyRequestsInt == 1)
+        pinnedSslCertificateImageView.isSelected = (pinnedSslCertificateInt == 1)
+        pinnedIpAddressesImageView.isSelected = (pinnedIpAddressesInt == 1)
 
         // Set the JavaScript icon.
         if (javaScriptInt == 1)
@@ -402,6 +404,14 @@ class DomainSettingsFragment : Fragment() {
 
         // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
         fanboysSocialBlockingListImageView.isEnabled = (fanboysAnnoyanceListInt == 0)
+
+        // Open the spinners when the text view is clicked.
+        userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
+        defaultFontSizeTextView.setOnClickListener { fontSizeSpinner.performClick() }
+        swipeToRefreshTextView.setOnClickListener { swipeToRefreshSpinner.performClick() }
+        webViewThemeTextView.setOnClickListener { webViewThemeSpinner.performClick() }
+        wideViewportTextView.setOnClickListener { wideViewportSpinner.performClick() }
+        displayImagesTextView.setOnClickListener { displayWebpageImagesSpinner.performClick() }
 
         // Inflated a WebView to get the default user agent.
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the bare WebView should not be displayed on the screen.
@@ -435,6 +445,9 @@ class DomainSettingsFragment : Fragment() {
                 // Get the user agent string from the user agent data array.
                 else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
             }
+
+            // Set the background color to be transparent.
+            userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
         } else if (userAgentArrayPosition == UNRECOGNIZED_USER_AGENT || currentUserAgentName == getString(R.string.custom_user_agent)) {
             // A custom user agent is stored in the current user agent name.  The second check is necessary in case the user did not change the default custom text.
             // Set the user agent spinner to `Custom user agent`.
@@ -446,6 +459,9 @@ class DomainSettingsFragment : Fragment() {
             // Show the custom user agent edit text and set the current user agent name as the text.
             customUserAgentEditText.visibility = View.VISIBLE
             customUserAgentEditText.setText(currentUserAgentName)
+
+            // Set the background color to be blue.
+            userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
         } else {  // The user agent name contains one of the canonical user agents.
             // Set the user agent spinner selection.  The spinner has one more entry at the beginning than the user agent data array, so the position must be incremented.
             userAgentSpinner.setSelection(userAgentArrayPosition + 1)
@@ -464,10 +480,11 @@ class DomainSettingsFragment : Fragment() {
                 // Get the user agent string from the user agent data array.  The spinner has one more entry at the beginning than the user agent data array, so the position must be incremented.
                 userAgentTextView.text = userAgentDataArray[userAgentArrayPosition + 1]
             }
+
+            // Set the background color to be blue.
+            userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
         }
 
-        // Open the user agent spinner when the text view is clicked.
-        userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
 
         // Display the font size settings.
         if (fontSizeInt == 0) {  // `0` is the code for system default font size.
@@ -501,9 +518,6 @@ class DomainSettingsFragment : Fragment() {
 
         // Set the default font size text in the text view.
         defaultFontSizeTextView.text = defaultFontSizePercentageString
-
-        // Open the font size spinner when the text view is clicked.
-        defaultFontSizeTextView.setOnClickListener { fontSizeSpinner.performClick() }
 
         // Select the swipe-to-refresh selection in the spinner.
         swipeToRefreshSpinner.setSelection(swipeToRefreshInt)
@@ -540,9 +554,6 @@ class DomainSettingsFragment : Fragment() {
                 swipeToRefreshTextView.visibility = View.GONE
             }
         }
-
-        // Open the swipe-to-refresh spinner when the text view is clicked.
-        swipeToRefreshTextView.setOnClickListener { swipeToRefreshSpinner.performClick() }
 
         // Get the WebView theme string arrays.
         val webViewThemeStringArray = resources.getStringArray(R.array.webview_theme_array)
@@ -601,9 +612,6 @@ class DomainSettingsFragment : Fragment() {
             }
         }
 
-        // Open the WebView theme spinner when the text view is clicked.
-        webViewThemeTextView.setOnClickListener { webViewThemeSpinner.performClick() }
-
         // Select the wide viewport in the spinner.
         wideViewportSpinner.setSelection(wideViewportInt)
 
@@ -638,9 +646,6 @@ class DomainSettingsFragment : Fragment() {
                 wideViewportTextView.visibility = View.GONE
             }
         }
-
-        // Open the wide viewport spinner when the text view is clicked.
-        wideViewportTextView.setOnClickListener { wideViewportSpinner.performClick() }
 
         // Display the website images mode in the spinner.
         displayWebpageImagesSpinner.setSelection(displayImagesInt)
@@ -677,9 +682,6 @@ class DomainSettingsFragment : Fragment() {
                 displayImagesTextView.visibility = View.GONE
             }
         }
-
-        // Open the display images spinner when the text view is clicked.
-        displayImagesTextView.setOnClickListener { displayWebpageImagesSpinner.performClick() }
 
         // Store the current date.
         val currentDate = Calendar.getInstance().time
@@ -984,6 +986,9 @@ class DomainSettingsFragment : Fragment() {
                             // Get the user agent string from the user agent data array.
                             else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
                         }
+
+                        // Set the background color to be transparent.
+                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
                     }
 
                     DOMAINS_WEBVIEW_DEFAULT_USER_AGENT -> {
@@ -995,6 +1000,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the custom user agent EditTex.
                         customUserAgentEditText.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
 
                     DOMAINS_CUSTOM_USER_AGENT -> {
@@ -1006,6 +1014,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Set the current user agent name as the text.
                         customUserAgentEditText.setText(currentUserAgentName)
+
+                        // Set the background color to be blue.
+                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
 
                     else -> {
@@ -1017,6 +1028,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the custom user agent edit text.
                         customUserAgentEditText.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
                 }
             }

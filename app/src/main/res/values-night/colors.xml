@@ -21,7 +21,7 @@
 <resources>
     <!-- Nicknamed colors. -->
     <color name="alt_blue_text">@color/violet_700</color>
-    <color name="blue_background">@color/blue_700_50</color>
+    <color name="blue_background">@color/violet_a900</color>
     <color name="blue_button">@color/violet_700</color>
     <color name="blue_icon">@color/violet_500</color>
     <color name="blue_text">@color/violet_500</color>
@@ -34,10 +34,10 @@
     <color name="ghosted_icon">@color/gray_700</color>
     <color name="icon">@color/white</color>
     <color name="parent_folder_text">@color/gray_300</color>
-    <color name="proxy_appbar_background">@color/dark_blue_30</color>
     <color name="red_background">@color/red_700_40</color>
     <color name="red_icon">@color/red_night</color>
     <color name="red_text">@color/red_night</color>
+    <color name="requests_blue_background">@color/violet_a900</color>
     <color name="selected_icon_background">@color/gray_700</color>
     <color name="translucent_background">@color/black_translucent_33</color>
     <color name="yellow_background">@color/yellow_700_50</color>

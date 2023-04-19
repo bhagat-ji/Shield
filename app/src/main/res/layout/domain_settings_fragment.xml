@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -400,6 +400,7 @@
 
         <!-- User Agent. -->
         <LinearLayout
+            android:id="@+id/user_agent_linear_layout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"

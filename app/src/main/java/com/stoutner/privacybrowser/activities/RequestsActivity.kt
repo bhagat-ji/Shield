@@ -177,7 +177,7 @@ class RequestsActivity : AppCompatActivity(), ViewRequestListener {
 
         // Handle clicks on the spinner dropdown.
         appBarSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when (id.toInt()) {
                     0 -> {
                         // Get an adapter for all the requests.

@@ -371,8 +371,8 @@
     <string name="export">Esporta</string>
     <string name="import_button">Importa</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Decripta</string>
-    <string name="privacy_browser_settings_pbs">Privacy Browser Android %1$s Settings - Schema %2$d.pbs</string>
-    <string name="privacy_browser_settings_pbs_aes">Privacy Browser Android %1$s Settings - Schema %2$d.pbs.aes</string>
+    <string name="privacy_browser_settings_pbs">Privacy Browser Android %1$s Impostazioni - Schema %2$d.pbs</string>
+    <string name="privacy_browser_settings_pbs_aes">Privacy Browser Android %1$s Impostazioni - Schema %2$d.pbs.aes</string>
     <string name="export_successful">Esportazione riuscita</string>
     <string name="export_failed">Esportazione fallita:\u0020 %1$s</string>
     <string name="import_failed">Importazione fallita:\u0020 %1$s</string>

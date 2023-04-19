@@ -37,7 +37,7 @@
     <string name="dom_storage_enabled">Almacenamiento DOM habilitado</string>
     <string name="dom_storage_disabled">Almacenamiento DOM deshabilitado</string>
     <string name="form_data_enabled">Datos de formulario habilitados</string>
-    <string name="form_data_disabled">Datos de fromulario deshabilitados</string>
+    <string name="form_data_disabled">Datos de formulario deshabilitados</string>
     <string name="cookies_deleted">Cookies borradas</string>
     <string name="dom_storage_deleted">Almacenamiento DOM borrado</string>
     <string name="form_data_deleted">Datos de formulario borrado</string>
@@ -50,7 +50,7 @@
     <string name="new_tab">Nueva pestaña</string>
     <string name="loading">Cargando…</string>
     <string name="error">Error:\u0020 %1$s</string>
-    <string name="apply">Apply</string>
+    <string name="apply">Aplicar</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Cargando EasyList</string>
@@ -429,7 +429,7 @@
                 <string name="google_play_flavor">%1$s (variante de Google Play)</string>
             <string name="openkeychain">OpenKeychain: \u0020</string>
         <string name="memory_usage">Uso de memoria</string>
-            <string name="app_consumed_memory">Memoria conumida de la app: \u0020</string>
+            <string name="app_consumed_memory">Memoria consumida de la app: \u0020</string>
             <string name="app_available_memory">Memoria disponible de la app: \u0020</string>
             <string name="app_total_memory">Memoria total de la app: \u0020</string>
             <string name="app_maximum_memory">Memoria máxima de la app: \u0020</string>

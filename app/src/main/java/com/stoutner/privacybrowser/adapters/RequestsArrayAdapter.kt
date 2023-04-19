@@ -70,7 +70,7 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
                 dispositionTextView.text = context.resources.getString(R.string.request_allowed, id)
 
                 // Set the background color.
-                linearLayout.setBackgroundColor(context.getColor(R.color.blue_background))
+                linearLayout.setBackgroundColor(context.getColor(R.color.requests_blue_background))
             }
 
             REQUEST_THIRD_PARTY -> {
