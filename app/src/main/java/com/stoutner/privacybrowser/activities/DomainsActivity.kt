@@ -647,7 +647,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         }
     }
 
-    override fun onAddDomain(dialogFragment: DialogFragment) {
+    override fun addDomain(dialogFragment: DialogFragment) {
         // Dismiss the undo delete snackbar if it is currently displayed.
         if (undoDeleteSnackbar != null && undoDeleteSnackbar!!.isShown)
             undoDeleteSnackbar!!.dismiss()
@@ -710,7 +710,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val swipeToRefreshSpinner = view.findViewById<Spinner>(R.id.swipe_to_refresh_spinner)
         val webViewThemeSpinner = view.findViewById<Spinner>(R.id.webview_theme_spinner)
         val wideViewportSpinner = view.findViewById<Spinner>(R.id.wide_viewport_spinner)
-        val displayWebpageImagesSpinner = view.findViewById<Spinner>(R.id.display_webpage_images_spinner)
+        val displayWebpageImagesSpinner = view.findViewById<Spinner>(R.id.display_images_spinner)
         val pinnedSslCertificateSwitch = view.findViewById<SwitchCompat>(R.id.pinned_ssl_certificate_switch)
         val currentWebsiteCertificateRadioButton = view.findViewById<RadioButton>(R.id.current_website_certificate_radiobutton)
         val pinnedIpAddressesSwitch = view.findViewById<SwitchCompat>(R.id.pinned_ip_addresses_switch)

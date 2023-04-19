@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -48,7 +48,7 @@ class AddDomainDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface AddDomainListener {
-        fun onAddDomain(dialogFragment: DialogFragment)
+        fun addDomain(dialogFragment: DialogFragment)
     }
 
     override fun onAttach(context: Context) {
@@ -103,7 +103,7 @@ class AddDomainDialog : DialogFragment() {
         // Set the add button listener.
         dialogBuilder.setPositiveButton(R.string.add) { _: DialogInterface, _: Int ->
             // Return the dialog fragment to the parent activity on add.
-            addDomainListener.onAddDomain(this)
+            addDomainListener.addDomain(this)
         }
 
         // Create an alert dialog from the builder.
@@ -169,7 +169,7 @@ class AddDomainDialog : DialogFragment() {
             // Check the key code and event.
             if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {  // The event is a key-down on the enter key.
                 // Trigger the add domain listener and return the dialog fragment to the parent activity.
-                addDomainListener.onAddDomain(this)
+                addDomainListener.addDomain(this)
 
                 // Manually dismiss the alert dialog.
                 alertDialog.dismiss()

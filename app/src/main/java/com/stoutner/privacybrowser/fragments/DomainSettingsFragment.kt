@@ -131,13 +131,15 @@ class DomainSettingsFragment : Fragment() {
         val ultraPrivacySwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.ultraprivacy_switch)
         val blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById<ImageView>(R.id.block_all_third_party_requests_imageview)
         val blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.block_all_third_party_requests_switch)
-        val userAgentLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.user_agent_linear_layout)
+        val userAgentLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.user_agent_linearlayout)
         val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
         val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
         val customUserAgentEditText = domainSettingsView.findViewById<EditText>(R.id.custom_user_agent_edittext)
+        val fontSizeLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.font_size_linearlayout)
         val fontSizeSpinner = domainSettingsView.findViewById<Spinner>(R.id.font_size_spinner)
         val defaultFontSizeTextView = domainSettingsView.findViewById<TextView>(R.id.default_font_size_textview)
         val customFontSizeEditText = domainSettingsView.findViewById<EditText>(R.id.custom_font_size_edittext)
+        val swipeToRefreshLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.swipe_to_refresh_linearlayout)
         val swipeToRefreshImageView = domainSettingsView.findViewById<ImageView>(R.id.swipe_to_refresh_imageview)
         val swipeToRefreshSpinner = domainSettingsView.findViewById<Spinner>(R.id.swipe_to_refresh_spinner)
         val swipeToRefreshTextView = domainSettingsView.findViewById<TextView>(R.id.swipe_to_refresh_textview)
@@ -145,12 +147,14 @@ class DomainSettingsFragment : Fragment() {
         val webViewThemeImageView = domainSettingsView.findViewById<ImageView>(R.id.webview_theme_imageview)
         val webViewThemeSpinner = domainSettingsView.findViewById<Spinner>(R.id.webview_theme_spinner)
         val webViewThemeTextView = domainSettingsView.findViewById<TextView>(R.id.webview_theme_textview)
+        val wideViewportLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.wide_viewport_linearlayout)
         val wideViewportImageView = domainSettingsView.findViewById<ImageView>(R.id.wide_viewport_imageview)
         val wideViewportSpinner = domainSettingsView.findViewById<Spinner>(R.id.wide_viewport_spinner)
         val wideViewportTextView = domainSettingsView.findViewById<TextView>(R.id.wide_viewport_textview)
-        val displayWebpageImagesImageView = domainSettingsView.findViewById<ImageView>(R.id.display_webpage_images_imageview)
-        val displayWebpageImagesSpinner = domainSettingsView.findViewById<Spinner>(R.id.display_webpage_images_spinner)
-        val displayImagesTextView = domainSettingsView.findViewById<TextView>(R.id.display_webpage_images_textview)
+        val displayImagesLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.display_images_linearlayout)
+        val displayImagesImageView = domainSettingsView.findViewById<ImageView>(R.id.display_images_imageview)
+        val displayImagesSpinner = domainSettingsView.findViewById<Spinner>(R.id.display_images_spinner)
+        val displayImagesTextView = domainSettingsView.findViewById<TextView>(R.id.display_images_textview)
         val pinnedSslCertificateImageView = domainSettingsView.findViewById<ImageView>(R.id.pinned_ssl_certificate_imageview)
         val pinnedSslCertificateSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.pinned_ssl_certificate_switch)
         val savedSslCardView = domainSettingsView.findViewById<CardView>(R.id.saved_ssl_certificate_cardview)
@@ -272,7 +276,7 @@ class DomainSettingsFragment : Fragment() {
         swipeToRefreshSpinner.adapter = swipeToRefreshArrayAdapter
         webViewThemeSpinner.adapter = webViewThemeArrayAdapter
         wideViewportSpinner.adapter = wideViewportArrayAdapter
-        displayWebpageImagesSpinner.adapter = displayImagesArrayAdapter
+        displayImagesSpinner.adapter = displayImagesArrayAdapter
 
         // Create a spannable string builder for each TextView that needs multiple colors of text.
         val savedSslIssuedToCNameStringBuilder = SpannableStringBuilder(cNameLabel + savedSslIssuedToCNameString)
@@ -411,7 +415,7 @@ class DomainSettingsFragment : Fragment() {
         swipeToRefreshTextView.setOnClickListener { swipeToRefreshSpinner.performClick() }
         webViewThemeTextView.setOnClickListener { webViewThemeSpinner.performClick() }
         wideViewportTextView.setOnClickListener { wideViewportSpinner.performClick() }
-        displayImagesTextView.setOnClickListener { displayWebpageImagesSpinner.performClick() }
+        displayImagesTextView.setOnClickListener { displayImagesSpinner.performClick() }
 
         // Inflated a WebView to get the default user agent.
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the bare WebView should not be displayed on the screen.
@@ -499,6 +503,9 @@ class DomainSettingsFragment : Fragment() {
 
             // Set the default font size as the text of the custom font size edit text.  This way, if the user switches to custom it will already be populated.
             customFontSizeEditText.setText(defaultFontSizeString)
+
+            // Set the background color to be transparent.
+            fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
         } else {  // A custom font size is selected.
             // Set the spinner to the custom font size.
             fontSizeSpinner.setSelection(1)
@@ -511,6 +518,9 @@ class DomainSettingsFragment : Fragment() {
 
             // Set the custom font size.
             customFontSizeEditText.setText(fontSizeInt.toString())
+
+            // Set the background color to be blue.
+            fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
         }
 
         // Initialize the default font size percentage string.
@@ -536,6 +546,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Show the swipe-to-refresh text view.
                 swipeToRefreshTextView.visibility = View.VISIBLE
+
+                // Set the background color to be transparent.
+                swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
             }
 
             DomainsDatabaseHelper.ENABLED -> {
@@ -544,6 +557,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Hide the swipe-to-refresh text view.
                 swipeToRefreshTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
 
             DomainsDatabaseHelper.DISABLED -> {
@@ -552,6 +568,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Hide the swipe-to-refresh text view.
                 swipeToRefreshTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
         }
 
@@ -593,6 +612,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Show the WebView theme text view.
                 webViewThemeTextView.visibility = View.VISIBLE
+
+                // Set the background color to be transparent.
+                webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
             }
 
             DomainsDatabaseHelper.LIGHT_THEME -> {
@@ -601,6 +623,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Hide the WebView theme text view.
                 webViewThemeTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
 
             DomainsDatabaseHelper.DARK_THEME -> {
@@ -609,6 +634,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Hide the WebView theme text view.
                 webViewThemeTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
         }
 
@@ -618,7 +646,8 @@ class DomainSettingsFragment : Fragment() {
         // Set the default wide viewport text.
         if (defaultWideViewport)
             wideViewportTextView.text = wideViewportArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED)
-        else wideViewportTextView.text = wideViewportArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED)
+        else
+            wideViewportTextView.text = wideViewportArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED)
 
         // Set the wide viewport icon and text view settings.
         when (wideViewportInt) {
@@ -628,6 +657,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Show the wide viewport text view.
                 wideViewportTextView.visibility = View.VISIBLE
+
+                // Set the background color to be transparent.
+                wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
             }
 
             DomainsDatabaseHelper.ENABLED -> {
@@ -636,6 +668,9 @@ class DomainSettingsFragment : Fragment() {
 
                 // Hide the wide viewport text view.
                 wideViewportTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
 
             DomainsDatabaseHelper.DISABLED -> {
@@ -644,11 +679,14 @@ class DomainSettingsFragment : Fragment() {
 
                 // Hide the wide viewport text view.
                 wideViewportTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
         }
 
         // Display the website images mode in the spinner.
-        displayWebpageImagesSpinner.setSelection(displayImagesInt)
+        displayImagesSpinner.setSelection(displayImagesInt)
 
         // Set the default display images text.
         if (defaultDisplayWebpageImages)
@@ -660,26 +698,35 @@ class DomainSettingsFragment : Fragment() {
         when (displayImagesInt) {
             DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
                 // Set the icon color.
-                displayWebpageImagesImageView.isSelected = defaultDisplayWebpageImages
+                displayImagesImageView.isSelected = defaultDisplayWebpageImages
 
                 // Show the display images text view.
                 displayImagesTextView.visibility = View.VISIBLE
+
+                // Set the background color to be transparent.
+                displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
             }
 
             DomainsDatabaseHelper.ENABLED -> {
                 // Set the icon color.
-                displayWebpageImagesImageView.isSelected = true
+                displayImagesImageView.isSelected = true
 
                 // Hide the display images text view.
                 displayImagesTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
 
             DomainsDatabaseHelper.DISABLED -> {
                 // Set the icon color.
-                displayWebpageImagesImageView.isSelected = false
+                displayImagesImageView.isSelected = false
 
                 // Hide the display images text view.
                 displayImagesTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+               displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
             }
         }
 
@@ -1050,12 +1097,18 @@ class DomainSettingsFragment : Fragment() {
 
                     // Hide the custom font size edit text.
                     customFontSizeEditText.visibility = View.GONE
+
+                    // Set the background color to be transparent.
+                    fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
                 } else {  // A custom font size has been selected.
                     // Hide the default font size text view.
                     defaultFontSizeTextView.visibility = View.GONE
 
                     // Show the custom font size edit text.
                     customFontSizeEditText.visibility = View.VISIBLE
+
+                    // Set the background color to be blue.
+                    fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                 }
             }
 
@@ -1075,6 +1128,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Show the swipe-to-refresh text view.
                         swipeToRefreshTextView.visibility = View.VISIBLE
+
+                        // Set the background color to be transparent.
+                        swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
                     }
 
                     DomainsDatabaseHelper.ENABLED -> {
@@ -1083,6 +1139,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the swipe-to-refresh text view.
                         swipeToRefreshTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
 
                     DomainsDatabaseHelper.DISABLED -> {
@@ -1091,6 +1150,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the swipe-to-refresh text view.
                         swipeToRefreshTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
                 }
             }
@@ -1115,6 +1177,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Show the WebView theme text view.
                         webViewThemeTextView.visibility = View.VISIBLE
+
+                        // Set the background color to be transparent.
+                        webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
                     }
 
                     DomainsDatabaseHelper.LIGHT_THEME -> {
@@ -1123,6 +1188,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the WebView theme text view.
                         webViewThemeTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
 
                     DomainsDatabaseHelper.DARK_THEME -> {
@@ -1131,6 +1199,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the WebView theme text view.
                         webViewThemeTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
                 }
             }
@@ -1151,6 +1222,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Show the wide viewport text view.
                         wideViewportTextView.visibility = View.VISIBLE
+
+                        // Set the background color to be transparent.
+                        wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
                     }
 
                     DomainsDatabaseHelper.ENABLED -> {
@@ -1159,6 +1233,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hide the wide viewport text view.
                         wideViewportTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
 
                     DomainsDatabaseHelper.DISABLED -> {
@@ -1167,6 +1244,9 @@ class DomainSettingsFragment : Fragment() {
 
                         // Hid ethe wide viewport text view.
                         wideViewportTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
                 }
             }
@@ -1177,32 +1257,41 @@ class DomainSettingsFragment : Fragment() {
         }
 
         // Set the display webpage images spinner listener.
-        displayWebpageImagesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        displayImagesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Update the icon and the visibility of the display images text view.
                 when (position) {
                     DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
                         // Set the icon color.
-                        displayWebpageImagesImageView.isSelected = defaultDisplayWebpageImages
+                        displayImagesImageView.isSelected = defaultDisplayWebpageImages
 
                         // Show the display images text view.
                         displayImagesTextView.visibility = View.VISIBLE
+
+                        // Set the background color to be transparent.
+                        displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
                     }
 
                     DomainsDatabaseHelper.ENABLED -> {
                         // Set the icon color.
-                        displayWebpageImagesImageView.isSelected = true
+                        displayImagesImageView.isSelected = true
 
                         // Hide the display images text view.
                         displayImagesTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
 
                     DomainsDatabaseHelper.DISABLED -> {
                         // Set the icon color.
-                        displayWebpageImagesImageView.isSelected = false
+                        displayImagesImageView.isSelected = false
 
                         // Hide the display images text view.
                         displayImagesTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
                     }
                 }
             }

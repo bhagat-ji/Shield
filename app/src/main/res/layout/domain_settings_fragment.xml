@@ -20,18 +20,17 @@
 
 <ScrollView android:id="@+id/domain_settings_scrollview"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:descendantFocusability="beforeDescendants"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:descendantFocusability="beforeDescendants" >
 
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_margin="12dp"
         android:orientation="vertical"
         android:divider="?android:attr/dividerVertical" >
 
@@ -39,7 +38,10 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -85,7 +87,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/javascript_imageview"
@@ -112,7 +116,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/cookies_imageview"
@@ -141,7 +147,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/dom_storage_imageview"
@@ -170,7 +178,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/form_data_imageview"
@@ -199,7 +209,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/easylist_imageview"
@@ -228,7 +240,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/easyprivacy_imageview"
@@ -257,7 +271,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/fanboys_annoyance_list_imageview"
@@ -286,7 +302,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/fanboys_social_blocking_list_imageview"
@@ -315,7 +333,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/ultralist_imageview"
@@ -344,7 +364,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/ultraprivacy_imageview"
@@ -373,7 +395,9 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <ImageView
                 android:id="@+id/block_all_third_party_requests_imageview"
@@ -400,12 +424,16 @@
 
         <!-- User Agent. -->
         <LinearLayout
-            android:id="@+id/user_agent_linear_layout"
+            android:id="@+id/user_agent_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp" >
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/user_agent" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -449,11 +477,16 @@
 
         <!-- Font Size. -->
         <LinearLayout
+            android:id="@+id/font_size_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp" >
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/font_size" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -497,11 +530,16 @@
 
         <!-- Swipe to Refresh. -->
         <LinearLayout
+            android:id="@+id/swipe_to_refresh_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp" >
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/swipe_to_refresh" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -540,8 +578,12 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp" >
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/webview_theme" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -576,11 +618,16 @@
 
         <!-- Wide Viewport. -->
         <LinearLayout
+            android:id="@+id/wide_viewport_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp" >
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/wide_viewport" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -615,11 +662,16 @@
 
         <!-- Display Images. -->
         <LinearLayout
+            android:id="@+id/display_images_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp" >
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/display_images" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -627,7 +679,7 @@
                 android:orientation="horizontal" >
 
                 <ImageView
-                    android:id="@+id/display_webpage_images_imageview"
+                    android:id="@+id/display_images_imageview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="1dp"
@@ -638,13 +690,13 @@
                     android:contentDescription="@string/display_webpage_images" />
 
                 <Spinner
-                    android:id="@+id/display_webpage_images_spinner"
+                    android:id="@+id/display_images_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/display_webpage_images_textview"
+                android:id="@+id/display_images_textview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -658,7 +710,10 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_marginTop="18dp"
-            android:layout_marginBottom="18dp" >
+            android:layout_marginBottom="18dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            tools:ignore="TooManyViews" >
 
             <!-- Switch -->
             <LinearLayout
@@ -684,8 +739,7 @@
                     android:layout_marginStart="8dp"
                     android:text="@string/pinned_ssl_certificate"
                     android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp"
-                    tools:ignore="TooManyViews" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <!-- Saved Certificate -->
@@ -712,7 +766,8 @@
                         android:textSize="17sp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        android:textColor="?android:textColorPrimary" />
+                        android:textColor="?android:textColorPrimary"
+                        tools:ignore="TooManyViews" />
 
                     <LinearLayout
                         android:layout_height="wrap_content"
@@ -913,7 +968,9 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_marginTop="18dp"
-            android:layout_marginBottom="18dp" >
+            android:layout_marginBottom="18dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp" >
 
             <!-- Switch -->
             <LinearLayout

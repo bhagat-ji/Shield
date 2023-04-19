@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -345,7 +345,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ULTRALIST, ultraList)
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
-        domainContentValues.put(USER_AGENT, appContext.getString(R.string.user_agent_default_value))
+        domainContentValues.put(USER_AGENT, appContext.getString(R.string.system_default_user_agent))
         domainContentValues.put(FONT_SIZE, 0)
         domainContentValues.put(SWIPE_TO_REFRESH, 0)
         domainContentValues.put(WEBVIEW_THEME, 0)
