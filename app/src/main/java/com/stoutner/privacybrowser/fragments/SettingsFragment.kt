@@ -43,62 +43,78 @@ import com.stoutner.privacybrowser.activities.UNRECOGNIZED_USER_AGENT
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 import kotlin.system.exitProcess
 
+// Define the class constants.
+private const val SCROLL_Y = "scroll_y"
+
 class SettingsFragment : PreferenceFragmentCompat() {
+    companion object {
+        // Declare the private static class variables.  For some reason (I'm looking at you Android's Activity Lifecycle) this only works if these are static.
+        private var fragmentRestarted: Boolean = false
+        private var scrollY: Int = 0
+    }
+
     // Declare the class variables.
+    private lateinit var allowScreenshotsPreference: Preference
+    private lateinit var ampRedirectsPreference: Preference
     private lateinit var appThemeEntriesStringArray: Array<String>
     private lateinit var appThemeEntryValuesStringArray: Array<String>
-    private lateinit var defaultUserAgent: String
-    private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
-    private lateinit var translatedUserAgentNamesArray: Array<String>
-    private lateinit var userAgentDataArray: Array<String>
-    private lateinit var userAgentNamesArray: ArrayAdapter<CharSequence>
-    private lateinit var webViewThemeEntriesStringArray: Array<String>
-    private lateinit var webViewThemeEntryValuesStringArray: Array<String>
-
-    // Define the the class views.
-    private lateinit var javaScriptPreference: Preference
+    private lateinit var appThemePreference: Preference
+    private lateinit var blockAllThirdPartyRequestsPreference: Preference
+    private lateinit var bottomAppBarPreference: Preference
+    private lateinit var clearCachePreference: Preference
+    private lateinit var clearCookiesPreference: Preference
+    private lateinit var clearDomStoragePreference: Preference
+    private lateinit var clearEverythingPreference: Preference
+    private lateinit var clearFormDataPreference: Preference  // The clear form data preference can be removed once the minimum API >= 26.
+    private lateinit var clearLogcatPreference: Preference
     private lateinit var cookiesPreference: Preference
-    private lateinit var domStoragePreference: Preference
-    private lateinit var formDataPreference: Preference  // The form data preference can be removed once the minimum API >= 26.
-    private lateinit var userAgentPreference: Preference
     private lateinit var customUserAgentPreference: Preference
-    private lateinit var incognitoModePreference: Preference
-    private lateinit var allowScreenshotsPreference: Preference
+    private lateinit var defaultUserAgent: String
+    private lateinit var displayAdditionalAppBarIconsPreference: Preference
+    private lateinit var displayWebpageImagesPreference: Preference
+    private lateinit var domStoragePreference: Preference
+    private lateinit var downloadWithExternalAppPreference: Preference
     private lateinit var easyListPreference: Preference
     private lateinit var easyPrivacyPreference: Preference
     private lateinit var fanboyAnnoyanceListPreference: Preference
     private lateinit var fanboySocialBlockingListPreference: Preference
-    private lateinit var ultraListPreference: Preference
-    private lateinit var ultraPrivacyPreference: Preference
-    private lateinit var blockAllThirdPartyRequestsPreference: Preference
-    private lateinit var trackingQueriesPreference: Preference
-    private lateinit var ampRedirectsPreference: Preference
-    private lateinit var searchPreference: Preference
-    private lateinit var searchCustomURLPreference: Preference
-    private lateinit var proxyPreference: Preference
-    private lateinit var proxyCustomUrlPreference: Preference
+    private lateinit var fontSizePreference: Preference
+    private lateinit var formDataPreference: Preference  // The form data preference can be removed once the minimum API >= 26.
     private lateinit var fullScreenBrowsingModePreference: Preference
     private lateinit var hideAppBarPreference: Preference
-    private lateinit var clearEverythingPreference: Preference
-    private lateinit var clearCookiesPreference: Preference
-    private lateinit var clearDomStoragePreference: Preference
-    private lateinit var clearFormDataPreference: Preference  // The clear form data preference can be removed once the minimum API >= 26.
-    private lateinit var clearLogcatPreference: Preference
-    private lateinit var clearCachePreference: Preference
     private lateinit var homepagePreference: Preference
-    private lateinit var fontSizePreference: Preference
+    private lateinit var incognitoModePreference: Preference
+    private lateinit var javaScriptPreference: Preference
     private lateinit var openIntentsInNewTabPreference: Preference
-    private lateinit var swipeToRefreshPreference: Preference
-    private lateinit var downloadWithExternalAppPreference: Preference
+    private lateinit var proxyCustomUrlPreference: Preference
+    private lateinit var proxyPreference: Preference
     private lateinit var scrollAppBarPreference: Preference
-    private lateinit var bottomAppBarPreference: Preference
-    private lateinit var displayAdditionalAppBarIconsPreference: Preference
-    private lateinit var appThemePreference: Preference
+    private lateinit var searchCustomURLPreference: Preference
+    private lateinit var searchPreference: Preference
+    private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
+    private lateinit var swipeToRefreshPreference: Preference
+    private lateinit var trackingQueriesPreference: Preference
+    private lateinit var translatedUserAgentNamesArray: Array<String>
+    private lateinit var ultraListPreference: Preference
+    private lateinit var ultraPrivacyPreference: Preference
+    private lateinit var userAgentDataArray: Array<String>
+    private lateinit var userAgentPreference: Preference
+    private lateinit var userAgentNamesArray: ArrayAdapter<CharSequence>
+    private lateinit var webViewThemeEntriesStringArray: Array<String>
+    private lateinit var webViewThemeEntryValuesStringArray: Array<String>
     private lateinit var webViewThemePreference: Preference
     private lateinit var wideViewportPreference: Preference
-    private lateinit var displayWebpageImagesPreference: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        // Check if the fragment has been restarted.
+        if (savedInstanceState != null) {
+            // Set the fragment restored flag.
+            fragmentRestarted = true
+
+            // Save the scroll Y.
+            scrollY = savedInstanceState.getInt(SCROLL_Y)
+        }
+
         // Load the preferences from the XML file.
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
@@ -593,6 +609,23 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // Re-register the shared preference listener.
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+
+        // Restore the scroll position if the fragment has been restarted.
+        if (fragmentRestarted) {
+            // Reset the fragment restarted flag.
+            fragmentRestarted = false
+
+            // Set the scroll position.
+            listView.smoothScrollBy(0, scrollY)
+        }
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        // Run the default commands.
+        super.onSaveInstanceState(savedInstanceState)
+
+        // Save the scroll position.
+        savedInstanceState.putInt(SCROLL_Y, listView.computeVerticalScrollOffset())
     }
 
     private fun getSharedPreferenceChangeListener(): OnSharedPreferenceChangeListener {
