@@ -35,44 +35,49 @@
 
         <img class="center" src="images/request_details.png"/>
 
-        <p>隐私浏览器包括四个<a href="https://easylist.to/">常见的黑名单，</a> 基于 <a href="https://adblockplus.org/filters">屏蔽广告的语法</a>:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.这些黑名单由隐私浏览器分为22种，他们按顺序检查资源。</p>
+        <p>Privacy Browser includes four <a href="https://easylist.to/">common filter lists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
+            These filter lists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
 
         <ol>
-            <li>主要白名单</li>
-            <li>最终白名单</li>
-            <li>域白名单</li>
-            <li>域初始白名单</li>
-            <li>域最终白名单</li>
-            <li>第三方白名单</li>
-            <li>第三方域白名单</li>
-            <li>第三方域初始白名单</li>
-            <li>主黑名单</li>
-            <li>初始黑名单</li>
-            <li>最终黑名单</li>
-            <li>域黑名单</li>
-            <li>域初始黑名单</li>
-            <li>域最终黑名单</li>
-            <li>域正则表达式黑名单</li>
-            <li>第三方黑名单</li>
-            <li>第三方初始黑名单</li>
-            <li>第三方域黑名单</li>
-            <li>第三方域初始黑名单</li>
-            <li>第三方正则表达式黑名单</li>
-            <li>第三方域正则表达式黑名单</li>
-            <li>正则表达式黑名单</li>
+            <li>Main Allow List</li>
+            <li>Final Allow List</li>
+            <li>Domain Allow List</li>
+            <li>Domain Initial Allow List</li>
+            <li>Domain Final Allow List</li>
+            <li>Third-Party Allow List</li>
+            <li>Third-Party Domain Allow List</li>
+            <li>Third-Party Domain Initial Allow List</li>
+            <li>Main Block List</li>
+            <li>Initial Block List</li>
+            <li>Final Block List</li>
+            <li>Domain Block List</li>
+            <li>Domain Initial Block List</li>
+            <li>Domain Final Block List</li>
+            <li>Domain Regular Expression Block List</li>
+            <li>Third-Party Block List</li>
+            <li>Third-Party Initial Block List</li>
+            <li>Third-Party Domain Block List</li>
+            <li>Third-Party Domain Initial Block List</li>
+            <li>Third-Party Regular Expression Block List</li>
+            <li>Third-Party Domain Regular Expression Block List</li>
+            <li>Regular Expression Block List</li>
         </ol>
 
         <p>初始列表检查 URL 的开头。最终列表检查 URL 的末尾。域列表仅检查某些域。第三方列表仅在请求的根域与主 URL 的根域不同时才适用。正则表达式列表遵循<a href="https://en.wikipedia.org/wiki/Regular_expression">正则表达式语法</a>。
             每个子列表项都有一个或多个条目。在域子列表的情况下，如果第一个条目与主 URL 的域匹配，则仅根据项目检查资源请求。</p>
 
-        <p>由于Android的WebView的限制，并且为了加快请求的处理速度，Privacy Browser 实现了对Adblock语法的简化解释。这有时会导致误报，即通过原始条目不希望的方式允许或阻止资源。
-            有关如何处理黑名单条目的更详细说明，请访问<a href="https://www.stoutner.com/privacy-browser-android/blocklists/">stoutner.com</a>。</p>
+        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
+            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
+            A more detailed description of how the filter list entries are processed is available at <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/">stoutner.com</a>.</p>
 
-        <p>Privacy Browser 有三个额外的阻止列表。
-            <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultralist/">UltraList</a> and
-            <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultraprivacy/">UltraPrivacy</a>
-            阻止 EasyList 和 EasyPrivacy 不阻止的广告和跟踪器。第三个阻止所有第三方请求。如果请求的基本域与 URL 的基本域不同，则请求只被视为第三方。
-            例如，如果www.website.com从加载图片images.website.com，这不会作为第三方请求被阻止，因为它们共享相同的基本域website.com。阻止所有第三方请求会增加隐私，但此阻止列表默认情况下处于禁用状态，因为它会使大量网站打不开。</p>
+        <p>Privacy Browser has three additional filter lists.
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a> and
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacy</a>
+            filters ads and trackers that EasyList and EasyPrivacy do not. The third blocks all third-party requests.
+            A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
+            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
+            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
+            Blocking all third-party requests increases privacy, but this filter list is disabled by default because it breaks a large number of websites.</p>
     </body>
 </html>

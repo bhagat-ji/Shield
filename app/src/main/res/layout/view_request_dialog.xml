@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2018,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018,2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -64,18 +64,18 @@
             android:textColor="?android:textColorPrimary"
             android:textIsSelectable="true" />
 
-        <!-- Blocklist -->
+        <!-- Filter List -->
         <TextView
-            android:id="@+id/request_blocklist_label"
+            android:id="@+id/request_filterlist_label"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/blocklist"
+            android:text="@string/filterlist"
             android:textSize="12sp"
             android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/request_blocklist"
+            android:id="@+id/request_filterlist"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"
@@ -100,36 +100,36 @@
             android:textColor="?android:textColorPrimary"
             android:textIsSelectable="true" />
 
-        <!-- Blocklist Entries. -->
+        <!-- Filter List Entries. -->
         <TextView
-            android:id="@+id/request_blocklist_entries_label"
+            android:id="@+id/request_filterlist_entries_label"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/blocklist_entries"
+            android:text="@string/filterlist_entries"
             android:textSize="12sp"
             android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/request_blocklist_entries"
+            android:id="@+id/request_filterlist_entries"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"
             android:textColor="?android:textColorPrimary"
             android:textIsSelectable="true" />
 
-        <!-- Blocklist Entries. -->
+        <!-- Filter List Entries. -->
         <TextView
-            android:id="@+id/request_blocklist_original_entry_label"
+            android:id="@+id/request_filterlist_original_entry_label"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/blocklist_original_entry"
+            android:text="@string/filterlist_original_entry"
             android:textSize="12sp"
             android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/request_blocklist_original_entry"
+            android:id="@+id/request_filterlist_original_entry"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"

@@ -56,7 +56,7 @@
     <string name="error">Fehler:\u0020 %1$s</string>
     <string name="apply">Anwenden</string>
 
-    <!-- Loading Blocklists. -->
+    <!-- Loading Filter Lists. -->
     <string name="loading_easylist">Lade EasyList</string>
     <string name="loading_easyprivacy">Lade EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Lade Fanboy’s Annoyance Filterliste</string>
@@ -292,32 +292,7 @@
         <string name="blocked">blockiert</string>
         <string name="request_blocked">%1$d. blockiert</string>
         <string name="blocked_plural">blockiert</string>
-    <string name="blocklist">Filterliste</string>
     <string name="sublist">Unterliste</string>
-        <string name="main_whitelist">Haupt-Positivliste</string>
-        <string name="final_whitelist">finale Positivliste</string>
-        <string name="domain_whitelist">Domänen-Positivliste</string>
-        <string name="domain_initial_whitelist">Domänen-Positivliste (URL-Anfang)</string>
-        <string name="domain_final_whitelist">Domänen-Positivliste (URL-Ende)</string>
-        <string name="third_party_whitelist">Drittanbieter-Positivliste</string>
-        <string name="third_party_domain_whitelist">Drittanbieter-Domänen-Positivliste</string>
-        <string name="third_party_domain_initial_whitelist">Drittanbieter-Domänen-Positivliste (URL-Anfang)</string>
-        <string name="main_blacklist">Haupt-Negativliste</string>
-        <string name="initial_blacklist">Negativliste (URL-Anfang)</string>
-        <string name="final_blacklist">Negativliste (URL-Ende)</string>
-        <string name="domain_blacklist">Domänen-Negativliste</string>
-        <string name="domain_initial_blacklist">Domänen-Negativliste (URL-Anfang)</string>
-        <string name="domain_final_blacklist">Domänen-Negativliste (URL-Ende)</string>
-        <string name="domain_regular_expression_blacklist">Domänen-Negativliste mit regulären Ausdrücken</string>
-        <string name="third_party_blacklist">Drittanbieter-Negativliste</string>
-        <string name="third_party_initial_blacklist">Drittanbieter-Negativliste (URL-Anfang)</string>
-        <string name="third_party_domain_blacklist">Drittanbieter-Domänen-Negativliste</string>
-        <string name="third_party_domain_initial_blacklist">Drittanbieter-Domänen-Negativliste (URL-Anfang)</string>
-        <string name="third_party_regular_expression_blacklist">Drittanbieter-Negativliste  mit regulären Ausdrücken</string>
-        <string name="third_party_domain_regular_expression_blacklist">Drittanbieter-Domänen-Negativliste mit regulären Ausdrücken</string>
-        <string name="regular_expression_blacklist">Negativliste mit regulären Ausdrücken</string>
-    <string name="blocklist_entries">Negativlisten-Einträge</string>
-    <string name="blocklist_original_entry">Negativlisten-Original-Eintrag</string>
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
@@ -507,19 +482,12 @@
             Im Incognito-Modus schließt \'Zurück\'-Button den aktive Tab (oder die App, wenn nur ein Tab geöffnet wurde).</string>
         <string name="allow_screenshots">Screenshots zulassen</string>
         <string name="allow_screenshots_summary">Screenshots, Bildschirmvideos und Anzeige auf unsicheren Bildschirmen zulassen. Eine Änderung dieser Einstellung startet Privacy Browser neu.</string>
-    <string name="blocklists">Sperrlisten</string>
         <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Haupt-Sperrliste gegen Werbung.</string>
         <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Haupt-Sperrliste gegen Tracker.</string>
         <string name="fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
-        <string name="fanboys_annoyance_list_summary">Blockiert nervende PopUps und Links. Enthält Fanboy’s Social Blocking Sperrliste.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
-        <string name="fanboys_social_blocking_list_summary">Blockiert Social-Media-Inhalte von Drittanbietern.</string>
         <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">UltraList blockiert Werbung, die von EasyList nicht blockiert wird, da dies Webseiten verunstalten kann.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
-        <string name="ultraprivacy_summary">UltraPrivacy blockiert Tracker, die von EasyPrivacy nicht blockiert werden, da dies Webseiten verunstalten kann.</string>
         <string name="block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
         <string name="block_all_third_party_requests_summary">Alle Zugriffe auf Dritt-Anbieter-Inhalte zu blockieren verbessert die Privatsphäre, kann jedoch Webseiten verunstalten.</string>
     <string name="url_modification">URL-Bereinigung</string>

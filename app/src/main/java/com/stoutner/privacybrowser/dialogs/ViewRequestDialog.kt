@@ -33,14 +33,14 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.DOMAIN_BLACKLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_BLACKLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_WHITELIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_BLACKLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_WHITELIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_REGULAR_EXPRESSION_BLACKLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_WHITELIST
-import com.stoutner.privacybrowser.helpers.INITIAL_BLACKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.DOMAIN_REGULAR_EXPRESSION_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.INITIAL_BLOCKLIST
 import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
 import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
 import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST
@@ -48,23 +48,23 @@ import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST_ENTRIES
 import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST_ORIGINAL_ENTRY
 import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
 import com.stoutner.privacybrowser.helpers.REQUEST_DISPOSITION
-import com.stoutner.privacybrowser.helpers.FINAL_BLACKLIST
-import com.stoutner.privacybrowser.helpers.FINAL_WHITELIST
-import com.stoutner.privacybrowser.helpers.MAIN_BLACKLIST
-import com.stoutner.privacybrowser.helpers.MAIN_WHITELIST
-import com.stoutner.privacybrowser.helpers.REGULAR_EXPRESSION_BLACKLIST
+import com.stoutner.privacybrowser.helpers.FINAL_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.FINAL_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.MAIN_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.MAIN_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.REGULAR_EXPRESSION_BLOCKLIST
 import com.stoutner.privacybrowser.helpers.REQUEST_SUBLIST
 import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
 import com.stoutner.privacybrowser.helpers.REQUEST_URL
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_BLACKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_BLACKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_WHITELIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_INITIAL_BLACKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_WHITELIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_INITIAL_BLOCKLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_ALLOWLIST
+import com.stoutner.privacybrowser.helpers.THIRD_PARTY_REGULAR_EXPRESSION_BLOCKLIST
 
 // Define the class constants.
 private const val ID = "id"
@@ -167,14 +167,14 @@ class ViewRequestDialog : DialogFragment() {
         // Get handles for the dialog views.
         val requestDisposition = alertDialog.findViewById<TextView>(R.id.request_disposition)!!
         val requestUrl = alertDialog.findViewById<TextView>(R.id.request_url)!!
-        val requestBlockListLabel = alertDialog.findViewById<TextView>(R.id.request_blocklist_label)!!
-        val requestBlockList = alertDialog.findViewById<TextView>(R.id.request_blocklist)!!
+        val requestFilterListLabel = alertDialog.findViewById<TextView>(R.id.request_filterlist_label)!!
+        val requestFilterList = alertDialog.findViewById<TextView>(R.id.request_filterlist)!!
         val requestSubListLabel = alertDialog.findViewById<TextView>(R.id.request_sublist_label)!!
         val requestSubList = alertDialog.findViewById<TextView>(R.id.request_sublist)!!
-        val requestBlockListEntriesLabel = alertDialog.findViewById<TextView>(R.id.request_blocklist_entries_label)!!
-        val requestBlockListEntries = alertDialog.findViewById<TextView>(R.id.request_blocklist_entries)!!
-        val requestBlockListOriginalEntryLabel = alertDialog.findViewById<TextView>(R.id.request_blocklist_original_entry_label)!!
-        val requestBlockListOriginalEntry = alertDialog.findViewById<TextView>(R.id.request_blocklist_original_entry)!!
+        val requestFilterListEntriesLabel = alertDialog.findViewById<TextView>(R.id.request_filterlist_entries_label)!!
+        val requestFilterListEntries = alertDialog.findViewById<TextView>(R.id.request_filterlist_entries)!!
+        val requestFilterListOriginalEntryLabel = alertDialog.findViewById<TextView>(R.id.request_filterlist_original_entry_label)!!
+        val requestFilterListOriginalEntry = alertDialog.findViewById<TextView>(R.id.request_filterlist_original_entry)!!
         val previousButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE)
         val nextButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
 
@@ -225,42 +225,42 @@ class ViewRequestDialog : DialogFragment() {
         // Modify the dialog based on the request action.
         if (requestDetails.size == 2) {  // A default request.
             // Hide the unused views.
-            requestBlockListLabel.visibility = View.GONE
-            requestBlockList.visibility = View.GONE
+            requestFilterListLabel.visibility = View.GONE
+            requestFilterList.visibility = View.GONE
             requestSubListLabel.visibility = View.GONE
             requestSubList.visibility = View.GONE
-            requestBlockListEntriesLabel.visibility = View.GONE
-            requestBlockListEntries.visibility = View.GONE
-            requestBlockListOriginalEntryLabel.visibility = View.GONE
-            requestBlockListOriginalEntry.visibility = View.GONE
+            requestFilterListEntriesLabel.visibility = View.GONE
+            requestFilterListEntries.visibility = View.GONE
+            requestFilterListOriginalEntryLabel.visibility = View.GONE
+            requestFilterListOriginalEntry.visibility = View.GONE
         } else {  // A blocked or allowed request.
             // Set the text on the text views.
-            requestBlockList.text = requestDetails[REQUEST_BLOCKLIST]
-            requestBlockListEntries.text = requestDetails[REQUEST_BLOCKLIST_ENTRIES]
-            requestBlockListOriginalEntry.text = requestDetails[REQUEST_BLOCKLIST_ORIGINAL_ENTRY]
+            requestFilterList.text = requestDetails[REQUEST_BLOCKLIST]
+            requestFilterListEntries.text = requestDetails[REQUEST_BLOCKLIST_ENTRIES]
+            requestFilterListOriginalEntry.text = requestDetails[REQUEST_BLOCKLIST_ORIGINAL_ENTRY]
             when (requestDetails[REQUEST_SUBLIST]) {
-                MAIN_WHITELIST -> requestSubList.setText(R.string.main_whitelist)
-                FINAL_WHITELIST -> requestSubList.setText(R.string.final_whitelist)
-                DOMAIN_WHITELIST -> requestSubList.setText(R.string.domain_whitelist)
-                DOMAIN_INITIAL_WHITELIST -> requestSubList.setText(R.string.domain_initial_whitelist)
-                DOMAIN_FINAL_WHITELIST -> requestSubList.setText(R.string.domain_final_whitelist)
-                THIRD_PARTY_WHITELIST -> requestSubList.setText(R.string.third_party_whitelist)
-                THIRD_PARTY_DOMAIN_WHITELIST -> requestSubList.setText(R.string.third_party_domain_whitelist)
-                THIRD_PARTY_DOMAIN_INITIAL_WHITELIST -> requestSubList.setText(R.string.third_party_domain_initial_whitelist)
-                MAIN_BLACKLIST -> requestSubList.setText(R.string.main_blacklist)
-                INITIAL_BLACKLIST -> requestSubList.setText(R.string.initial_blacklist)
-                FINAL_BLACKLIST -> requestSubList.setText(R.string.final_blacklist)
-                DOMAIN_BLACKLIST -> requestSubList.setText(R.string.domain_blacklist)
-                DOMAIN_INITIAL_BLACKLIST -> requestSubList.setText(R.string.domain_initial_blacklist)
-                DOMAIN_FINAL_BLACKLIST -> requestSubList.setText(R.string.domain_final_blacklist)
-                DOMAIN_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.domain_regular_expression_blacklist)
-                THIRD_PARTY_BLACKLIST -> requestSubList.setText(R.string.third_party_blacklist)
-                THIRD_PARTY_INITIAL_BLACKLIST -> requestSubList.setText(R.string.third_party_initial_blacklist)
-                THIRD_PARTY_DOMAIN_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_blacklist)
-                THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_initial_blacklist)
-                THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.third_party_regular_expression_blacklist)
-                THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.third_party_domain_regular_expression_blacklist)
-                REGULAR_EXPRESSION_BLACKLIST -> requestSubList.setText(R.string.regular_expression_blacklist)
+                MAIN_ALLOWLIST -> requestSubList.setText(R.string.main_allowlist)
+                FINAL_ALLOWLIST -> requestSubList.setText(R.string.final_allowlist)
+                DOMAIN_ALLOWLIST -> requestSubList.setText(R.string.domain_allowlist)
+                DOMAIN_INITIAL_ALLOWLIST -> requestSubList.setText(R.string.domain_initial_allowlist)
+                DOMAIN_FINAL_ALLOWLIST -> requestSubList.setText(R.string.domain_final_allowlist)
+                THIRD_PARTY_ALLOWLIST -> requestSubList.setText(R.string.third_party_allowlist)
+                THIRD_PARTY_DOMAIN_ALLOWLIST -> requestSubList.setText(R.string.third_party_domain_allowlist)
+                THIRD_PARTY_DOMAIN_INITIAL_ALLOWLIST -> requestSubList.setText(R.string.third_party_domain_initial_allowlist)
+                MAIN_BLOCKLIST -> requestSubList.setText(R.string.main_blocklist)
+                INITIAL_BLOCKLIST -> requestSubList.setText(R.string.initial_blocklist)
+                FINAL_BLOCKLIST -> requestSubList.setText(R.string.final_blocklist)
+                DOMAIN_BLOCKLIST -> requestSubList.setText(R.string.domain_blocklist)
+                DOMAIN_INITIAL_BLOCKLIST -> requestSubList.setText(R.string.domain_initial_blocklist)
+                DOMAIN_FINAL_BLOCKLIST -> requestSubList.setText(R.string.domain_final_blocklist)
+                DOMAIN_REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.domain_regular_expression_blocklist)
+                THIRD_PARTY_BLOCKLIST -> requestSubList.setText(R.string.third_party_blocklist)
+                THIRD_PARTY_INITIAL_BLOCKLIST -> requestSubList.setText(R.string.third_party_initial_blocklist)
+                THIRD_PARTY_DOMAIN_BLOCKLIST -> requestSubList.setText(R.string.third_party_domain_blocklist)
+                THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST -> requestSubList.setText(R.string.third_party_domain_initial_blocklist)
+                THIRD_PARTY_REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.third_party_regular_expression_blocklist)
+                THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.third_party_domain_regular_expression_blocklist)
+                REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.regular_expression_blocklist)
             }
         }
 

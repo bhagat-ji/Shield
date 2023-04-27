@@ -117,7 +117,7 @@ class ImportExportActivity : AppCompatActivity() {
         }
     }
 
-    private val browseForExportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri: Uri? ->
+    private val browseForExportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { fileUri: Uri? ->
         // Only do something if the user didn't press back from the file picker.
         if (fileUri != null) {
             // Get the file name string from the URI.

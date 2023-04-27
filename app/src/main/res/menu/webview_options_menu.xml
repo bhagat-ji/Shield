@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -94,8 +94,8 @@
     </item>
 
     <item
-        android:id="@+id/blocklists"
-        android:title="@string/blocklists"
+        android:id="@+id/filterlists"
+        android:title="@string/filterlists"
         android:orderInCategory="900"
         app:showAsAction="never" >
 

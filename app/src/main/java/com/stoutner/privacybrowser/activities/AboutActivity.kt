@@ -32,12 +32,9 @@ import com.google.android.material.tabs.TabLayout
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.adapters.AboutPagerAdapter
 
-class AboutActivity : AppCompatActivity() {
-    companion object {
-        // Define the companion object constants.  These can be move to being public constants once MainWebViewActivity has been converted to Kotlin.
-        const val BLOCKLIST_VERSIONS = "blocklist_versions"
-    }
+const val FILTERLIST_VERSIONS = "filterlist_versions"
 
+class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -57,15 +54,14 @@ class AboutActivity : AppCompatActivity() {
         // Get the intent that launched the activity.
         val launchingIntent = intent
 
-        // Store the blocklist versions.
-        val blocklistVersions = launchingIntent.getStringArrayExtra(BLOCKLIST_VERSIONS)!!
+        // Get the filter list versions.
+        val filterListVersions = launchingIntent.getStringArrayExtra(FILTERLIST_VERSIONS)!!
 
         // Set the content view.
-        if (bottomAppBar) {
+        if (bottomAppBar)
             setContentView(R.layout.about_bottom_appbar)
-        } else {
+        else
             setContentView(R.layout.about_top_appbar)
-        }
 
         // Get handles for the views.
         val toolbar = findViewById<Toolbar>(R.id.about_toolbar)
@@ -82,7 +78,7 @@ class AboutActivity : AppCompatActivity() {
         actionBar.setDisplayHomeAsUpEnabled(true)
 
         // Initialize the about pager adapter.
-        val aboutPagerAdapter = AboutPagerAdapter(supportFragmentManager, applicationContext, blocklistVersions)
+        val aboutPagerAdapter = AboutPagerAdapter(supportFragmentManager, applicationContext, filterListVersions)
 
         // Set the view pager adapter.
         aboutViewPager.adapter = aboutPagerAdapter

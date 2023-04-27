@@ -45,7 +45,7 @@
     <string name="loading">Yükleniyor…</string>
     <string name="error">Hata:\u0020 %1$s</string>
 
-    <!-- Loading Blocklists. -->
+    <!-- Loading Filter Lists. -->
     <string name="loading_easylist">EasyList yükleniyor</string>
     <string name="loading_easyprivacy">EasyPrivacy yükleniyor</string>
     <string name="loading_fanboys_annoyance_list">Fanboy’s Annoyance List yükleniyor</string>
@@ -253,32 +253,7 @@
         <string name="blocked">Engellendi</string>
         <string name="request_blocked">%1$d. Engellendi</string>
         <string name="blocked_plural">Engellendi</string>
-    <string name="blocklist">Engel listesi</string>
     <string name="sublist">Alt liste</string>
-        <string name="main_whitelist">Ana beyaz listesi</string>
-        <string name="final_whitelist">Final beyaz listesi</string>
-        <string name="domain_whitelist">Domain beyaz listesi</string>
-        <string name="domain_initial_whitelist">Domain başlangıç beyaz listesi</string>
-        <string name="domain_final_whitelist">Domain final beyaz listesi</string>
-        <string name="third_party_whitelist">Üçüncü taraf beyaz listesi</string>
-        <string name="third_party_domain_whitelist">Üçüncü taraf domain beyaz listesi</string>
-        <string name="third_party_domain_initial_whitelist">Üçüncü taraf domain başlangıç beyaz listesi</string>
-        <string name="main_blacklist">Ana kara listesi</string>
-        <string name="initial_blacklist">Başlangıç kara listesi</string>
-        <string name="final_blacklist">Final kara listesi</string>
-        <string name="domain_blacklist">Domain kara listesi</string>
-        <string name="domain_initial_blacklist">Domain başlangıç kara listesi</string>
-        <string name="domain_final_blacklist">Domain son kara listesi</string>
-        <string name="domain_regular_expression_blacklist">Domain düzenli ifade kara listesi</string>
-        <string name="third_party_blacklist">Üçüncü taraf kara listesi</string>
-        <string name="third_party_initial_blacklist">Üçüncü taraf başlangıç kara listesi</string>
-        <string name="third_party_domain_blacklist">Üçüncü taraf domain kara listesi</string>
-        <string name="third_party_domain_initial_blacklist">Üçüncü taraf domain başlangıç kara listesi</string>
-        <string name="third_party_regular_expression_blacklist">Üçüncü taraf düzenli ifade kara listesi</string>
-        <string name="third_party_domain_regular_expression_blacklist">Üçüncü taraf domain düzenli ifade kara listesi</string>
-        <string name="regular_expression_blacklist">Düzenli ifade kara listesi</string>
-    <string name="blocklist_entries">Engel listesi girdileri</string>
-    <string name="blocklist_original_entry">Engel listesi orijinal girdisi</string>
 
     <!-- Domains. -->
     <string name="domains">Domainler</string>
@@ -433,19 +408,12 @@
         <string name="allow_screenshots">Ekran görüntülerine izin ver</string>
         <string name="allow_screenshots_summary">Ekran görüntülerine, video kaydına ve güvenli olmayan ekranlarda görüntülenmeye izin verir.
             Bu ayarı değiştirmek Privacy Browser uygulamasını yeniden başlatır.</string>
-    <string name="blocklists">Engel listesi</string>
         <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Ana reklam engelleme listesi.</string>
         <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Ana takipçi engelleme listesi.</string>
         <string name="fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-        <string name="fanboys_annoyance_list_summary">Rahatsız eden açılır pencereleri ve linkleri engeller. Fanboy’s Social Blocking listelerini de içerir.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
-        <string name="fanboys_social_blocking_list_summary">Üçüncü taraf sosyal medya içeriklerini engeller.</string>
         <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">UltraList, EasyList\'in engellemediği reklamları da engeller, bunu yapmak web sitelerinin çökmesine sebep olabilir.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
-        <string name="ultraprivacy_summary">UltraPrivacy, EasyPrivacy\'de olmayan takipçileri de engeller, fakat bu seçenek bazı web sitelerinin çökmesine sebep olabilir.</string>
         <string name="block_all_third_party_requests">Tüm üçüncü taraf istekleri engelle</string>
         <string name="block_all_third_party_requests_summary">Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çoğu web sitesinin çökmesine sebep olur.</string>
     <string name="url_modification">URL Modifikasyonu</string>

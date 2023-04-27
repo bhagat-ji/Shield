@@ -52,7 +52,7 @@
     <string name="error">Erreur : %1$s</string>
     <string name="apply">Appliquer</string>
 
-    <!-- Loading Blocklists. -->
+    <!-- Loading Filter Lists. -->
     <string name="loading_easylist">Chargement EasyList</string>
     <string name="loading_easyprivacy">Chargement EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Chargement Fanboy’s Annoyance List</string>
@@ -288,32 +288,7 @@
         <string name="blocked">Bloquée</string>
         <string name="request_blocked">%1$d. Bloquée</string>
         <string name="blocked_plural">Bloquées</string>
-    <string name="blocklist">Liste noires</string>
     <string name="sublist">Sous-listes</string>
-        <string name="main_whitelist">Main whitelist</string>
-        <string name="final_whitelist">Final whitelist</string>
-        <string name="domain_whitelist">Domain whitelist</string>
-        <string name="domain_initial_whitelist">Domain initial whitelist</string>
-        <string name="domain_final_whitelist">Domain final whitelist</string>
-        <string name="third_party_whitelist">Third-party whitelist</string>
-        <string name="third_party_domain_whitelist">Third-party domain whitelist</string>
-        <string name="third_party_domain_initial_whitelist">Third-party domain initial whitelist</string>
-        <string name="main_blacklist">Main blacklist</string>
-        <string name="initial_blacklist">Initial blacklist</string>
-        <string name="final_blacklist">Final blacklist</string>
-        <string name="domain_blacklist">Domain blacklist</string>
-        <string name="domain_initial_blacklist">Domain initial blacklist</string>
-        <string name="domain_final_blacklist">Domain final blacklist</string>
-        <string name="domain_regular_expression_blacklist">Domain regular expression blacklist</string>
-        <string name="third_party_blacklist">Third-party blacklist</string>
-        <string name="third_party_initial_blacklist">Third-party initial blacklist</string>
-        <string name="third_party_domain_blacklist">Third-party domain blacklist</string>
-        <string name="third_party_domain_initial_blacklist">Third-party domain initial blacklist</string>
-        <string name="third_party_regular_expression_blacklist">Third-party regular expression blacklist</string>
-        <string name="third_party_domain_regular_expression_blacklist">Third-party domain regular expression blacklist</string>
-        <string name="regular_expression_blacklist">Regular expression blacklist</string>
-    <string name="blocklist_entries">Blocklist entries</string>
-    <string name="blocklist_original_entry">Blocklist original entry</string>
 
     <!-- Domains. -->
     <string name="domains">Domaines</string>
@@ -501,19 +476,12 @@
             Dans le mode Incognito, le bouton Retour ferme l\'onglet (ou l\'application s\'il n\'y a qu\'un seul onglet).</string>
         <string name="allow_screenshots">Autoriser captures d\'écrans</string>
         <string name="allow_screenshots_summary">Autoriser les captures d\'écrans, enregistrements vidéo et affichage sur des écrans non-sécurisés. Changer ce paramètre redémarrera Privacy Browser.</string>
-    <string name="blocklists">Listes noires</string>
         <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Liste principale pour les publicités.</string>
         <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Liste principale pour les traceurs.</string>
         <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboys_annoyance_list_summary">Bloque pop-ups et liens gênants. Inclue Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
-        <string name="fanboys_social_blocking_list_summary">Bloque les contenus des médias sociaux tiers.</string>
         <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">Bloque les publicités qu\'EasyList ne bloque pas car cela peut casser les sites Web</string>
         <string name="ultraprivacy">UltraPrivacy</string>
-        <string name="ultraprivacy_summary">Bloque les pisteurs qu\'EasyPrivacy ne bloque pas car cela peut casser les sites Web.</string>
         <string name="block_all_third_party_requests">Bloquer toutes les requêtes tierces</string>
         <string name="block_all_third_party_requests_summary">Le blocage de toutes les requêtes tierces augmente la vie privée, mais détruit de nombreux sites Web.</string>
     <string name="url_modification">Modifications d\'URL</string>

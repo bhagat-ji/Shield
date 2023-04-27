@@ -50,7 +50,7 @@
     <string name="error">Ошибка:\u0020 %1$s</string>
     <string name="apply">Применить</string>
 
-    <!-- Loading Blocklists. -->
+    <!-- Loading Filter Lists. -->
     <string name="loading_easylist">Загрузка EasyList</string>
     <string name="loading_easyprivacy">Загрузка EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Загрузка Fanboy’s Annoyance List</string>
@@ -285,32 +285,7 @@
         <string name="blocked">Блокирован</string>
         <string name="request_blocked">%1$d. Блокирован</string>
         <string name="blocked_plural">Блокировано</string>
-    <string name="blocklist">Список блокировки</string>
     <string name="sublist">Подсписок</string>
-        <string name="main_whitelist">Основной белый список</string>
-        <string name="final_whitelist">Конец белого списка</string>
-        <string name="domain_whitelist">Белый список доменов</string>
-        <string name="domain_initial_whitelist">Начало белого списка доменов</string>
-        <string name="domain_final_whitelist">Конец белого списка доменов</string>
-        <string name="third_party_whitelist">Сторонний белый список</string>
-        <string name="third_party_domain_whitelist">Сторонний белый список доменов</string>
-        <string name="third_party_domain_initial_whitelist">Начало стороннего белого списка доменов</string>
-        <string name="main_blacklist">Основной черный список</string>
-        <string name="initial_blacklist">Начало черного списка</string>
-        <string name="final_blacklist">Конец черного списка</string>
-        <string name="domain_blacklist">Черный список доменов</string>
-        <string name="domain_initial_blacklist">Начало черного списка доменов</string>
-        <string name="domain_final_blacklist">Конец черного списка доменов</string>
-        <string name="domain_regular_expression_blacklist">Регулярные выражения черного списка доменов</string>
-        <string name="third_party_blacklist">Сторонний черный список</string>
-        <string name="third_party_initial_blacklist">Начало стороннего черного списка доменов</string>
-        <string name="third_party_domain_blacklist">Сторонний черный список доменов</string>
-        <string name="third_party_domain_initial_blacklist">Начало стороннего черного списка доменов</string>
-        <string name="third_party_regular_expression_blacklist">Регулярные выражения стороннего черного списка</string>
-        <string name="third_party_domain_regular_expression_blacklist">Регулярные выражения стороннего черного списка доменов</string>
-        <string name="regular_expression_blacklist">Регулярные выражения черного списка</string>
-    <string name="blocklist_entries">Записи списка блокировки</string>
-    <string name="blocklist_original_entry">Исходная запись списка блокировки</string>
 
     <!-- Domains. -->
     <string name="domains">Домены</string>
@@ -500,19 +475,12 @@
             В режиме инкогнито нажатие кнопки Назад приведет к закрытию вкладки (или приложения, если открыта только одна вкладка).</string>
         <string name="allow_screenshots">Разрешить скриншоты</string>
         <string name="allow_screenshots_summary">Разрешить скриншоты, запись видео и просмотр на незащищенных дисплеях. При изменении этого параметра Privacy Browser будет перезапущен.</string>
-    <string name="blocklists">Списки блокировки</string>
         <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Основной список блокировки рекламы.</string>
         <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Основной список блокировки отслеживания.</string>
         <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboys_annoyance_list_summary">Блокирует раздражающие всплывающие окна и ссылки.  Включает в себя Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
-        <string name="fanboys_social_blocking_list_summary">Блокирует содержимое социальных сетей.</string>
         <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">UltraList блокирует рекламу, которую пропускает EasyList, так как блокировка может сломать сайты.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
-        <string name="ultraprivacy_summary">UltraPrivacy блокирует трекеры, которые пропускает EasyPrivacy, чтобы не ломать веб-сайты.</string>
         <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>
         <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
     <string name="url_modification">Модификация URL</string>

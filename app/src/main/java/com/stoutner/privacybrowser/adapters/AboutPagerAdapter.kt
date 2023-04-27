@@ -31,7 +31,7 @@ import com.stoutner.privacybrowser.fragments.AboutWebViewFragment
 
 import java.util.LinkedList
 
-class AboutPagerAdapter(fragmentManager: FragmentManager, private val context: Context, private val blocklistVersions: Array<String>) :
+class AboutPagerAdapter(fragmentManager: FragmentManager, private val context: Context, private val filterListVersions: Array<String>) :
     FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     // Define the class variables.
@@ -48,7 +48,7 @@ class AboutPagerAdapter(fragmentManager: FragmentManager, private val context: C
         // Create the tab fragment and add it to the list.
         if (tabNumber == 0) {
             // Add the version tab to the list.
-            aboutFragmentList.add(AboutVersionFragment.createTab(blocklistVersions))
+            aboutFragmentList.add(AboutVersionFragment.createTab(filterListVersions))
         } else {
             // Add the WebView tab to the list.
             aboutFragmentList.add(AboutWebViewFragment.createTab(tabNumber))

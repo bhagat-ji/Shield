@@ -56,7 +56,7 @@
     <string name="error">错误:\u0020 %1$s</string>
     <string name="apply">请求</string>
 
-    <!-- Loading Blocklists. -->
+    <!-- Loading Filter Lists. -->
     <string name="loading_easylist">加载 EasyList</string>
     <string name="loading_easyprivacy">加载 EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">加载 Fanboy’s Annoyance List</string>
@@ -290,32 +290,7 @@
         <string name="blocked">不允许</string>
         <string name="request_blocked">%1$d. 不允许</string>
         <string name="blocked_plural">不允许</string>
-    <string name="blocklist">不允许名单</string>
     <string name="sublist">子表</string>
-        <string name="main_whitelist">关键词白名单</string>
-        <string name="final_whitelist">最后的白名单</string>
-        <string name="domain_whitelist">域名白名单</string>
-        <string name="domain_initial_whitelist">域名白名单的开头</string>
-        <string name="domain_final_whitelist">域名白名单的结尾</string>
-        <string name="third_party_whitelist">第三方白名单</string>
-        <string name="third_party_domain_whitelist">第三方域名白名单</string>
-        <string name="third_party_domain_initial_whitelist">第三方域名白名单的开头</string>
-        <string name="main_blacklist">屏蔽关键词</string>
-        <string name="initial_blacklist">屏蔽开头</string>
-        <string name="final_blacklist">屏蔽结尾</string>
-        <string name="domain_blacklist">屏蔽域名</string>
-        <string name="domain_initial_blacklist">屏蔽域名的开头</string>
-        <string name="domain_final_blacklist">屏蔽域名的结尾</string>
-        <string name="domain_regular_expression_blacklist">域名黑名单正则表达式</string>
-        <string name="third_party_blacklist">屏蔽第三方</string>
-        <string name="third_party_initial_blacklist">屏蔽第三方的开头</string>
-        <string name="third_party_domain_blacklist">屏蔽第三方的域名</string>
-        <string name="third_party_domain_initial_blacklist">屏蔽第三方的域名的开头</string>
-        <string name="third_party_regular_expression_blacklist">第三方黑名单正则表达式</string>
-        <string name="third_party_domain_regular_expression_blacklist">第三方域名黑名单正则表达式</string>
-        <string name="regular_expression_blacklist">黑名单的正则表达式</string>
-    <string name="blocklist_entries">黑名单列表</string>
-    <string name="blocklist_original_entry">最初的黑名单目录</string>
 
     <!-- Domains. -->
     <string name="domains">域名</string>
@@ -502,19 +477,12 @@
         <string name="incognito_mode_summary">在无痕模式中，关闭当前标签页，会清除所有的记录和网页上的痕迹.</string>
         <string name="allow_screenshots">允许截图</string>
         <string name="allow_screenshots_summary">允许截图，录视频，在不安全的显示中查看，更改这个设置会重启本浏览器.</string>
-    <string name="blocklists">黑名单</string>
         <string name="easylist">EasyList</string>
-        <string name="easylist_summary">主要的广告屏蔽列表.</string>
         <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">主跟踪阻止列表.</string>
         <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboys_annoyance_list_summary">阻止弹窗和链接，包括Fanboy’s social 的黑名单</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social 黑名单</string>
-        <string name="fanboys_social_blocking_list_summary">阻止社交媒体内容</string>
         <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">UltraList 屏蔽EasyList 不屏蔽的广告。这可能使网页崩溃</string>
         <string name="ultraprivacy">UltraPrivacy</string>
-        <string name="ultraprivacy_summary">UltraPrivacy 阻止EasyPrivacy泄露的跟踪器，这可能使网页崩溃</string>
         <string name="block_all_third_party_requests">屏蔽第三方请求</string>
         <string name="block_all_third_party_requests_summary">屏蔽所有第三方包括隐私在内的请求，这会使许多网页崩溃。</string>
     <string name="url_modification">修改网址</string>

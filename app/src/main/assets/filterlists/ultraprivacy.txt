@@ -1,9 +1,9 @@
 [Adblock Plus 2.0]
 ! Version: 3
 ! Title: UltraPrivacy
-! Last modified: 30 July 2022 02:06 UTC
+! Last modified: 27 Apr 2023 19:27 UTC
 ! Expires: 90 days (update frequency)
-! Homepage: https://www.stoutner.com/privacy-browser-android/blocklists/ultraprivacy/
+! Homepage: https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/
 ! Licence: GPLv3+ http://www.gnu.org/licenses/gpl-3.0.html
 !
 ! I can't imagine that anything that includes `analytics` is good for your privacy.  <https://redmine.stoutner.com/issues/312>

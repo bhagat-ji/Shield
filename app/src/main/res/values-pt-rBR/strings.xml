@@ -51,7 +51,7 @@
     <string name="error">Erro:\u0020 %1$s</string>
     <string name="apply">Aplicar</string>
 
-    <!-- Loading Blocklists. -->
+    <!-- Loading Filter Lists. -->
     <string name="loading_easylist">Carregando  EasyList</string>
     <string name="loading_easyprivacy">Carregando EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Carregando Fanboy’s Annoyance List</string>
@@ -286,32 +286,7 @@
         <string name="blocked">Bloqueado</string>
         <string name="request_blocked">%1$d. Bloqueado</string>
         <string name="blocked_plural">Bloqueados</string>
-    <string name="blocklist">Lista de bloqueios</string>
         <string name="sublist">Sublista</string>
-        <string name="main_whitelist">Lista de permissão principal</string>
-        <string name="final_whitelist">Lista de permissões final</string>
-        <string name="domain_whitelist">Lista de permissões de domínio</string>
-        <string name="domain_initial_whitelist">Lista de permissões inicial do domínio</string>
-        <string name="domain_final_whitelist">Lista de permissões final de domínio</string>
-        <string name="third_party_whitelist">Lista de permissões de terceiros</string>
-        <string name="third_party_domain_whitelist">Lista de permissões de domínios de terceiros</string>
-        <string name="third_party_domain_initial_whitelist">Lista de permissões iniciais de domínios de terceiros</string>
-        <string name="main_blacklist">Lista de restrições principal</string>
-        <string name="initial_blacklist">Lista de restrições inicial</string>
-        <string name="final_blacklist">Lista de restrições final</string>
-        <string name="domain_blacklist">Lista de restrições de domínios</string>
-        <string name="domain_initial_blacklist">Lista de restrições inicial do domínio</string>
-        <string name="domain_final_blacklist">Lista de restrições final do domínio</string>
-        <string name="domain_regular_expression_blacklist">Lista de restrições de expressões regulares de domínio</string>
-        <string name="third_party_blacklist">Lista de restrições de terceiros</string>
-        <string name="third_party_initial_blacklist">Lista de restrições inicial de terceiros</string>
-        <string name="third_party_domain_blacklist">Lista de restrições de domínios de terceiros</string>
-        <string name="third_party_domain_initial_blacklist">Lista de restrições inicial de domínios de terceiros</string>
-        <string name="third_party_regular_expression_blacklist">Lista de restrições de expressões regulares de terceiros</string>
-        <string name="third_party_domain_regular_expression_blacklist">Lista de restrições de expressões regulares de domínios de terceiros</string>
-        <string name="regular_expression_blacklist">Lista de restrições de expressões regulares</string>
-    <string name="blocklist_entries">Entradas da lista de bloqueio</string>
-    <string name="blocklist_original_entry">Entrada original da lista de bloqueio</string>
 
     <!-- Domains. -->
     <string name="domains">Domínios</string>
@@ -500,19 +475,12 @@
             volta para fechar a guia (ou o aplicativo, se houver apenas uma guia).</string>
         <string name="allow_screenshots">Permitir capturas de tela</string>
         <string name="allow_screenshots_summary">Permitir capturas de tela, gravação de vídeo e visualização em monitores não seguros. Alterar esta configuração irá reiniciar o Privacy Browser.</string>
-    <string name="blocklists">Blocklists</string>
         <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Lista principal de bloqueio de anúncios.</string>
         <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Lista de bloqueio do rastreador principal.</string>
         <string name="fanboys_annoyance_list"> Lista de importunação Fanboy</string>
-        <string name="fanboys_annoyance_list_summary">Bloqueie popups e links irritantes. Inclui listas de bloqueio social do Fanboy.</string>
         <string name="fanboys_social_blocking_list">Lista de bloqueio social do Fanboy</string>
-        <string name="fanboys_social_blocking_list_summary">Bloqueia conteúdo de mídia social de terceiros.</string>
         <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">O UltraList bloqueia anúncios que EasyList não bloqueia porque fazer isso pode quebrar sites.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
-        <string name="ultraprivacy_summary">O UltraPrivacy bloqueia rastreadores que o EasyPrivacy não bloqueia, pois isso pode corromper sites.</string>
         <string name="block_all_third_party_requests">Bloquear todas as solicitações de terceiros</string>
         <string name="block_all_third_party_requests_summary">Bloquear todas as solicitações de terceiros aumenta a privacidade, mas quebra muitos sites.</string>
     <string name="url_modification">Modificação de URL</string>

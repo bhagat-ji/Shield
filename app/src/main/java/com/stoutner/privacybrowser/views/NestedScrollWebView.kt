@@ -259,9 +259,9 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
 
 
     // Resource request counters.
-    fun incrementRequestsCount(blocklist: Int) {
-        // Increment the count of the indicated blocklist.
-        when (blocklist) {
+    fun incrementRequestsCount(filterList: Int) {
+        // Increment the count of the indicated filter list.
+        when (filterList) {
             BLOCKED_REQUESTS -> blockedRequests++
             EASYLIST -> easyListBlockedRequests++
             EASYPRIVACY -> easyPrivacyBlockedRequests++
@@ -273,9 +273,9 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         }
     }
 
-    fun getRequestsCount(blocklist: Int): Int {
-        // Return the count of the indicated blocklist.
-        return when (blocklist) {
+    fun getRequestsCount(filterList: Int): Int {
+        // Return the count of the indicated filter list.
+        return when (filterList) {
             BLOCKED_REQUESTS -> blockedRequests
             EASYLIST -> easyListBlockedRequests
             EASYPRIVACY -> easyPrivacyBlockedRequests

@@ -82,7 +82,7 @@ class RequestsActivity : AppCompatActivity(), ViewRequestListener {
         // Get the launching intent
         val intent = intent
 
-        // Get the status of the third-party blocklist.
+        // Get the status of the third-party filter list.
         val blockAllThirdPartyRequests = intent.getBooleanExtra(BLOCK_ALL_THIRD_PARTY_REQUESTS, false)
 
         // Set the content view.

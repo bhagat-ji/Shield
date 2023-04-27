@@ -35,33 +35,33 @@
 
         <img class="center" src="images/request_details.png"/>
 
-        <p>Privacy Browser, <a href="https://adblockplus.org/filters">Adblock sözdizimini (Adblock syntax)</a> temel alan 4 <a href="https://easylist.to/">yaygın engel listesini</a> içerir:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List ve Fanboy’s Social Blocking List.
-            Bu engel listeleri, Privacy Browser tarafından, aşağıda listelenmiş olan kaynak isteklerini kontrol eden 22 alt listeye göre işlenmiştir.</p>
+        <p>Privacy Browser includes four <a href="https://easylist.to/">common filter lists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
+            These filter lists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
 
         <ol>
-            <li>Ana Beyaz Listesi</li>
-            <li>Final Beyaz Listesi</li>
-            <li>Domain Beyaz Listesi</li>
-            <li>Domain Başlangıç Beyaz Listesi</li>
-            <li>Domain Final Beyaz Listesi</li>
-            <li>Üçüncü Taraf Beyaz Listesi</li>
-            <li>Üçüncü Taraf Domain Beyaz Listesi</li>
-            <li>Üçüncü Taraf Domain Başlangıç Beyaz Listesi</li>
-            <li>Ana Kara Listesi</li>
-            <li>Başlangıç Kara Listesi</li>
-            <li>Final Kara Listesi</li>
-            <li>Domain Kara Listesi</li>
-            <li>Domain Başlangıç Kara Listesi</li>
-            <li>Domain Final Kara Listesi</li>
-            <li>Domain Düzenli İfade (Regular Expression) Kara Listesi</li>
-            <li>Üçüncü Taraf Kara Listesi</li>
-            <li>Üçüncü Taraf Başlangıç Kara Listesi</li>
-            <li>Üçüncü Taraf Domain Kara Listesi</li>
-            <li>Üçüncü Taraf Domain Başlangıç Kara Listesi</li>
-            <li>Üçüncü Taraf Düzenli İfade (Regular Expression) Kara Listesi</li>
-            <li>Üçüncü Taraf Domain Düzenli İfade (Regular Expression) Kara Listesi</li>
-            <li>Düzenli İfade (Regular Expression) Kara Listesi</li>
+            <li>Main Allow List</li>
+            <li>Final Allow List</li>
+            <li>Domain Allow List</li>
+            <li>Domain Initial Allow List</li>
+            <li>Domain Final Allow List</li>
+            <li>Third-Party Allow List</li>
+            <li>Third-Party Domain Allow List</li>
+            <li>Third-Party Domain Initial Allow List</li>
+            <li>Main Block List</li>
+            <li>Initial Block List</li>
+            <li>Final Block List</li>
+            <li>Domain Block List</li>
+            <li>Domain Initial Block List</li>
+            <li>Domain Final Block List</li>
+            <li>Domain Regular Expression Block List</li>
+            <li>Third-Party Block List</li>
+            <li>Third-Party Initial Block List</li>
+            <li>Third-Party Domain Block List</li>
+            <li>Third-Party Domain Initial Block List</li>
+            <li>Third-Party Regular Expression Block List</li>
+            <li>Third-Party Domain Regular Expression Block List</li>
+            <li>Regular Expression Block List</li>
         </ol>
 
         <p>Başlangıç listeleri, URL'nin başlangıcına göre kontrol eder. Final listeleri, URL'nin sonuna göre kontrol eder. Domain listeleri, yalnızca belli domainlere göre kontrol eder.
@@ -70,17 +70,17 @@
             Her alt liste öğesinin bir veya daha fazla girdisi vardır.
             Domain alt listeleri işe karıştığında, ilk girdi ana URL'nin domaini ile eşleşirse, kaynak isteği yalnızca öğeye göre kontrol edilir.</p>
 
-        <p>Anroid’in WebView kısıtlamaları yüzünden ve isteklerin işlenmesini hızlandırmak için Privacy Browser, Adblock sözdiziminin basitleştirilmiş bir yorumunu uygular.
-            Bu durum, bazen, kaynakların orijinal girdi tarafından amaçlanmayan şekillerde izin verildiği veya engellendiği yanlış pozitif (false positive) durumuna yol açabilir.
-            Engel listesi girdilerinin nasıl işlendiğine dair daha ayrıntılı bir açıklama <a href="https://www.stoutner.com/privacy-browser-android/blocklists/">stoutner.com</a> adresinde bulunabilir.</p>
+        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
+            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
+            A more detailed description of how the filter list entries are processed is available at <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/">stoutner.com</a>.</p>
 
-        <p>Privacy Browser'a 3 yeni engel listesi eklendi.
-            <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultralist/">UltraList</a> ve
-            <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultraprivacy/">UltraPrivacy</a>,
-            EasyList ve EasyPrivacy'nin engellemediği reklamları ve izleyicileri de engeller. Üçüncü liste ise tüm üçüncü taraf istekleri engeller.
-            Bir istek yalnızca, isteğin temel domaini bağlantının temel domaininden farklıysa üçüncü taraf olarak kabul edilir.
-            Örneğin, <code>www.website.com</code> adresi <code>images.website.com</code> adresinden bir resim yüklüyorsa,
-            her ikisi de aynı temel domaini (<code>website.com</code>) paylaştığı için bu üçüncü taraf isteği olarak engellenmez.
-            Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çok sayıda web sitesini bozduğu için bu engel listesi varsayılan olarak devre dışıdır.</p>
+        <p>Privacy Browser has three additional filter lists.
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a> and
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacy</a>
+            filters ads and trackers that EasyList and EasyPrivacy do not. The third blocks all third-party requests.
+            A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
+            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
+            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
+            Blocking all third-party requests increases privacy, but this filter list is disabled by default because it breaks a large number of websites.</p>
     </body>
 </html>

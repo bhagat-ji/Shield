@@ -38,33 +38,33 @@
 
         <img class="center216" src="images/request_details.png"/>
 
-        <p>O Privacy Browser inclui quatro <a href="https://easylist.to/">listas de bloqueio comuns</a> com base na <a href="https://adblockplus.org/filters">sintaxe do Adblock</a>:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List e Fanboy’s Social Blocking List.
-            Essas listas de bloqueio são processadas pelo Privacy Browser nas seguintes 22 sublistas, que verificam as solicitações de recursos na ordem listada.</p>
+        <p>Privacy Browser includes four <a href="https://easylist.to/">common filter lists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
+            These filter lists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
 
         <ol>
-            <li>Lista de permissão principal</li>
-            <li>Lista de permissões final</li>
-            <li>Lista de permissões de domínio</li>
-            <li>Lista de permissões inicial do domínio</li>
-            <li>Lista de permissões final de domínio</li>
-            <li>Lista de permissões de terceiros</li>
-            <li>Lista de permissões de domínios de terceiros</li>
-            <li>Lista de permissões iniciais de domínios de terceiros</li>
-            <li>Lista de restrições principal</li>
-            <li>Lista de restrições inicial</li>
-            <li>Lista de restrições final</li>
-            <li>Lista de restrições de domínios</li>
-            <li>Lista de restrições inicial do domínio</li>
-            <li>Lista de restrições final do domínio</li>
-            <li>Lista de restrições de expressões regulares de domínio</li>
-            <li>Lista de restrições de terceiros</li>
-            <li>Lista de restrições inicial de terceiros</li>
-            <li>Lista de restrições de domínios de terceiros</li>
-            <li>Lista de restrições inicial de domínios de terceiros</li>
-            <li>Lista de restrições de expressões regulares de terceiros</li>
-            <li>Lista de restrições de expressões regulares de domínios de terceiros</li>
-            <li>Lista de restrições de expressões regulares</li>
+            <li>Main Allow List</li>
+            <li>Final Allow List</li>
+            <li>Domain Allow List</li>
+            <li>Domain Initial Allow List</li>
+            <li>Domain Final Allow List</li>
+            <li>Third-Party Allow List</li>
+            <li>Third-Party Domain Allow List</li>
+            <li>Third-Party Domain Initial Allow List</li>
+            <li>Main Block List</li>
+            <li>Initial Block List</li>
+            <li>Final Block List</li>
+            <li>Domain Block List</li>
+            <li>Domain Initial Block List</li>
+            <li>Domain Final Block List</li>
+            <li>Domain Regular Expression Block List</li>
+            <li>Third-Party Block List</li>
+            <li>Third-Party Initial Block List</li>
+            <li>Third-Party Domain Block List</li>
+            <li>Third-Party Domain Initial Block List</li>
+            <li>Third-Party Regular Expression Block List</li>
+            <li>Third-Party Domain Regular Expression Block List</li>
+            <li>Regular Expression Block List</li>
         </ol>
 
         <p>As listas iniciais são comparadas ao início do URL. As listas finais são comparadas ao final do URL. As listas de domínio verificam apenas em alguns domínios.
@@ -72,16 +72,17 @@
             Listas de expressões regulares seguem a <a href="https://en.wikipedia.org/wiki/Regular_expression">sintaxe de expressão regular</a>. Cada item da sublista possui uma ou mais entradas.
             No caso de sublistas de domínio, a solicitação de recurso só é verificada em relação ao item se a primeira entrada corresponder ao domínio do URL principal.</p>
 
-        <p>Por causa das limitações no WebView do Android e para acelerar o processamento de solicitações, o Privacy Browser implementa uma interpretação simplificada da sintaxe Adblock.
-            Isso às vezes pode levar a falsos positivos, em que os recursos são permitidos ou bloqueados de maneiras que não eram pretendidas pela entrada original.
-            Uma descrição mais detalhada de como as entradas da lista de bloqueio são processadas está disponível em <a href="https://www.stoutner.com/privacy-browser-android/blocklists/">stoutner.com</a>.</p>
+        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
+            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
+            A more detailed description of how the filter list entries are processed is available at <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/">stoutner.com</a>.</p>
 
-        <p>O Privacy Browser tem três listas de bloqueio adicionais.
-            <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultralist/">UltraList</a> e <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultraprivacy/">UltraPrivacy</a>
-            bloqueiam anúncios e rastreadores que EasyList e EasyPrivacy não bloqueiam. O terceiro bloqueia todas as solicitações de terceiros.
-            Uma solicitação só é considerada de terceiros se o domínio base da solicitação for diferente do domínio base da URL.
-            Por exemplo, se <code>www.website.com</code> carregar uma imagem de <code>images.website.com</code>,
-            isso não é bloqueado como uma solicitação de terceiros porque ambos compartilham o mesmo domínio base de <code>website.com</code>.
-            Bloquear todas as solicitações de terceiros aumenta a privacidade, mas essa lista de bloqueio é desabilitada por padrão porque quebra um grande número de sites.</p>
+        <p>Privacy Browser has three additional filter lists.
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a> and
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacy</a>
+            filters ads and trackers that EasyList and EasyPrivacy do not. The third blocks all third-party requests.
+            A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
+            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
+            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
+            Blocking all third-party requests increases privacy, but this filter list is disabled by default because it breaks a large number of websites.</p>
     </body>
 </html>

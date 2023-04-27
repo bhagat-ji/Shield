@@ -72,7 +72,7 @@ import java.text.NumberFormat
 import kotlin.text.StringBuilder
 
 // Define the class constants.
-private const val BLOCKLIST_VERSIONS = "blocklist_versions"
+private const val FILTERLISTS_VERSIONS = "filterlists_versions"
 private const val MEBIBYTE = 1048576
 
 class AboutVersionFragment : Fragment() {
@@ -80,72 +80,72 @@ class AboutVersionFragment : Fragment() {
     private var updateMemoryUsageBoolean = true
 
     // Declare the class variables.
-    private lateinit var blocklistVersions: Array<String>
     private lateinit var aboutVersionLayout: View
-    private lateinit var appConsumedMemoryLabel: String
-    private lateinit var appAvailableMemoryLabel: String
-    private lateinit var appTotalMemoryLabel: String
-    private lateinit var appMaximumMemoryLabel: String
-    private lateinit var systemConsumedMemoryLabel: String
-    private lateinit var systemAvailableMemoryLabel: String
-    private lateinit var systemTotalMemoryLabel: String
-    private lateinit var runtime: Runtime
     private lateinit var activityManager: ActivityManager
+    private lateinit var appAvailableMemoryLabel: String
+    private lateinit var appConsumedMemoryLabel: String
+    private lateinit var appMaximumMemoryLabel: String
+    private lateinit var appTotalMemoryLabel: String
+    private lateinit var blueColorSpan: ForegroundColorSpan
+    private lateinit var filterListsVersions: Array<String>
     private lateinit var memoryInfo: ActivityManager.MemoryInfo
     private lateinit var numberFormat: NumberFormat
-    private lateinit var blueColorSpan: ForegroundColorSpan
+    private lateinit var runtime: Runtime
+    private lateinit var systemAvailableMemoryLabel: String
+    private lateinit var systemConsumedMemoryLabel: String
+    private lateinit var systemTotalMemoryLabel: String
 
     // Declare the class views.
-    private lateinit var privacyBrowserTextView: TextView
-    private lateinit var versionTextView: TextView
-    private lateinit var hardwareTextView: TextView
-    private lateinit var brandTextView: TextView
-    private lateinit var manufacturerTextView: TextView
-    private lateinit var modelTextView: TextView
-    private lateinit var deviceTextView: TextView
-    private lateinit var bootloaderTextView: TextView
-    private lateinit var radioTextView: TextView
-    private lateinit var softwareTextView: TextView
     private lateinit var androidTextView: TextView
-    private lateinit var securityPatchTextView: TextView
-    private lateinit var buildTextView: TextView
-    private lateinit var kernelTextView: TextView
-    private lateinit var webViewProviderTextView: TextView
-    private lateinit var webViewVersionTextView: TextView
-    private lateinit var orbotTextView: TextView
-    private lateinit var i2pTextView: TextView
-    private lateinit var openKeychainTextView: TextView
-    private lateinit var memoryUsageTextView: TextView
-    private lateinit var appConsumedMemoryTextView: TextView
     private lateinit var appAvailableMemoryTextView: TextView
-    private lateinit var appTotalMemoryTextView: TextView
+    private lateinit var appConsumedMemoryTextView: TextView
     private lateinit var appMaximumMemoryTextView: TextView
-    private lateinit var systemConsumedMemoryTextView: TextView
-    private lateinit var systemAvailableMemoryTextView: TextView
-    private lateinit var systemTotalMemoryTextView: TextView
-    private lateinit var blocklistsTextView: TextView
+    private lateinit var appTotalMemoryTextView: TextView
+    private lateinit var brandTextView: TextView
+    private lateinit var bootloaderTextView: TextView
+    private lateinit var certificateEndDateTextView: TextView
+    private lateinit var certificateIssuerDnTextView: TextView
+    private lateinit var certificateSerialNumberTextView: TextView
+    private lateinit var certificateSignatureAlgorithmTextView: TextView
+    private lateinit var certificateStartDateTextView: TextView
+    private lateinit var certificateSubjectDnTextView: TextView
+    private lateinit var certificateVersionTextView: TextView
+    private lateinit var buildTextView: TextView
+    private lateinit var deviceTextView: TextView
     private lateinit var easyListTextView: TextView
     private lateinit var easyPrivacyTextView: TextView
     private lateinit var fanboyAnnoyanceTextView: TextView
     private lateinit var fanboySocialTextView: TextView
+    private lateinit var filterListsTextView: TextView
+    private lateinit var hardwareTextView: TextView
+    private lateinit var i2pTextView: TextView
+    private lateinit var kernelTextView: TextView
+    private lateinit var manufacturerTextView: TextView
+    private lateinit var memoryUsageTextView: TextView
+    private lateinit var modelTextView: TextView
+    private lateinit var openKeychainTextView: TextView
+    private lateinit var orbotTextView: TextView
+    private lateinit var packageSignatureTextView: TextView
+    private lateinit var privacyBrowserTextView: TextView
+    private lateinit var radioTextView: TextView
+    private lateinit var securityPatchTextView: TextView
+    private lateinit var softwareTextView: TextView
+    private lateinit var systemAvailableMemoryTextView: TextView
+    private lateinit var systemConsumedMemoryTextView: TextView
+    private lateinit var systemTotalMemoryTextView: TextView
+    private lateinit var versionTextView: TextView
     private lateinit var ultraListTextView: TextView
     private lateinit var ultraPrivacyTextView: TextView
-    private lateinit var packageSignatureTextView: TextView
-    private lateinit var certificateIssuerDnTextView: TextView
-    private lateinit var certificateSubjectDnTextView: TextView
-    private lateinit var certificateStartDateTextView: TextView
-    private lateinit var certificateEndDateTextView: TextView
-    private lateinit var certificateVersionTextView: TextView
-    private lateinit var certificateSerialNumberTextView: TextView
-    private lateinit var certificateSignatureAlgorithmTextView: TextView
+    private lateinit var webViewProviderTextView: TextView
+    private lateinit var webViewVersionTextView: TextView
 
     companion object {
-        fun createTab(blocklistVersions: Array<String>): AboutVersionFragment {
+        fun createTab(filterListsVersions: Array<String>): AboutVersionFragment {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
 
             // Store the arguments in the bundle.
-            argumentsBundle.putStringArray(BLOCKLIST_VERSIONS, blocklistVersions)
+            argumentsBundle.putStringArray(FILTERLISTS_VERSIONS, filterListsVersions)
 
             // Create a new instance of the tab fragment.
             val aboutVersionFragment = AboutVersionFragment()
@@ -219,7 +219,7 @@ class AboutVersionFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // Store the arguments in class variables.
-        blocklistVersions = requireArguments().getStringArray(BLOCKLIST_VERSIONS)!!
+        filterListsVersions = requireArguments().getStringArray(FILTERLISTS_VERSIONS)!!
 
         // Enable the options menu for this fragment.
         setHasOptionsMenu(true)
@@ -257,7 +257,7 @@ class AboutVersionFragment : Fragment() {
         systemConsumedMemoryTextView = aboutVersionLayout.findViewById(R.id.system_consumed_memory)
         systemAvailableMemoryTextView = aboutVersionLayout.findViewById(R.id.system_available_memory)
         systemTotalMemoryTextView = aboutVersionLayout.findViewById(R.id.system_total_memory)
-        blocklistsTextView = aboutVersionLayout.findViewById(R.id.blocklists)
+        filterListsTextView = aboutVersionLayout.findViewById(R.id.filterlists)
         easyListTextView = aboutVersionLayout.findViewById(R.id.easylist)
         easyPrivacyTextView = aboutVersionLayout.findViewById(R.id.easyprivacy)
         fanboyAnnoyanceTextView = aboutVersionLayout.findViewById(R.id.fanboy_annoyance)
@@ -371,12 +371,12 @@ class AboutVersionFragment : Fragment() {
         val buildStringBuilder = SpannableStringBuilder(buildLabel + build)
         val kernelStringBuilder = SpannableStringBuilder(kernelLabel + kernel)
         val webViewVersionStringBuilder = SpannableStringBuilder(webViewVersionLabel + webView)
-        val easyListStringBuilder = SpannableStringBuilder(easyListLabel + blocklistVersions[0])
-        val easyPrivacyStringBuilder = SpannableStringBuilder(easyPrivacyLabel + blocklistVersions[1])
-        val fanboyAnnoyanceStringBuilder = SpannableStringBuilder(fanboyAnnoyanceLabel + blocklistVersions[2])
-        val fanboySocialStringBuilder = SpannableStringBuilder(fanboySocialLabel + blocklistVersions[3])
-        val ultraListStringBuilder = SpannableStringBuilder(ultraListLabel + blocklistVersions[4])
-        val ultraPrivacyStringBuilder = SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[5])
+        val easyListStringBuilder = SpannableStringBuilder(easyListLabel + filterListsVersions[0])
+        val easyPrivacyStringBuilder = SpannableStringBuilder(easyPrivacyLabel + filterListsVersions[1])
+        val fanboyAnnoyanceStringBuilder = SpannableStringBuilder(fanboyAnnoyanceLabel + filterListsVersions[2])
+        val fanboySocialStringBuilder = SpannableStringBuilder(fanboySocialLabel + filterListsVersions[3])
+        val ultraListStringBuilder = SpannableStringBuilder(ultraListLabel + filterListsVersions[4])
+        val ultraPrivacyStringBuilder = SpannableStringBuilder(ultraPrivacyLabel + filterListsVersions[5])
 
         // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
         blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
@@ -869,7 +869,7 @@ class AboutVersionFragment : Fragment() {
         aboutVersionStringBuilder.append("\n")
         aboutVersionStringBuilder.append(systemTotalMemoryTextView.text)
         aboutVersionStringBuilder.append("\n\n")
-        aboutVersionStringBuilder.append(blocklistsTextView.text)
+        aboutVersionStringBuilder.append(filterListsTextView.text)
         aboutVersionStringBuilder.append("\n")
         aboutVersionStringBuilder.append(easyListTextView.text)
         aboutVersionStringBuilder.append("\n")

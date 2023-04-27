@@ -27,7 +27,7 @@ import android.widget.TextView
 import androidx.drawerlayout.widget.DrawerLayout
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.ParseBlocklistHelper
+import com.stoutner.privacybrowser.helpers.ParseFilterListHelper
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,113 +36,111 @@ import kotlinx.coroutines.withContext
 
 import java.util.ArrayList
 
-class PopulateBlocklistsCoroutine(context: Context) {
+class PopulateFilterListsCoroutine(context: Context) {
     // The public interface is used to send information back to the parent activity.
-    interface PopulateBlocklistsListener {
-        fun finishedPopulatingBlocklists(combinedBlocklists: ArrayList<ArrayList<List<Array<String>>>>)
+    interface PopulateFilterListsListener {
+        fun finishedPopulatingFilterLists(combinedFilterLists: ArrayList<ArrayList<List<Array<String>>>>)
     }
-
-    // Define a populate blocklists listener.
-    private val populateBlocklistsListener: PopulateBlocklistsListener
 
     // Define the class variables.
     private val context: Context
+    private val populateFilterListsListener: PopulateFilterListsListener
 
     // The public constructor.
     init {
-        // Get a handle for the populate blocklists listener from the launching activity.
-        populateBlocklistsListener = context as PopulateBlocklistsListener
+        // Get a handle for the populate filter lists listener from the launching activity.
+        populateFilterListsListener = context as PopulateFilterListsListener
 
         // Store the context.
         this.context = context
     }
 
-    fun populateBlocklists(activity: Activity) {
-        // Use a coroutine to populate the blocklists.
+    fun populateFilterLists(activity: Activity) {
+        // Use a coroutine to populate the filter lists.
         CoroutineScope(Dispatchers.Main).launch {
             // Get handles for the views.
             val drawerLayout = activity.findViewById<DrawerLayout>(R.id.drawerlayout)
-            val loadingBlocklistsRelativeLayout = activity.findViewById<RelativeLayout>(R.id.loading_blocklists_relativelayout)
-            val loadingBlocklistTextView = activity.findViewById<TextView>(R.id.loading_blocklist_textview)
+            val loadingFilterListsRelativeLayout = activity.findViewById<RelativeLayout>(R.id.loading_filterlists_relativelayout)
+            val loadingFilterListTextView = activity.findViewById<TextView>(R.id.loading_filterlist_textview)
 
-            // Show the loading blocklists screen.
-            loadingBlocklistsRelativeLayout.visibility = View.VISIBLE
+            // Show the loading filter lists screen.
+            loadingFilterListsRelativeLayout.visibility = View.VISIBLE
 
-            // Instantiate the blocklist helper.
-            val parseBlocklistHelper = ParseBlocklistHelper()
+            // Instantiate the filter list helper.
+            val parseFilterListHelper = ParseFilterListHelper()
 
             // Create a combined array list.
-            val combinedBlocklists = ArrayList<ArrayList<List<Array<String>>>>()
+            val combinedFilterLists = ArrayList<ArrayList<List<Array<String>>>>()
 
             // Advertise the loading of EasyList.
-            loadingBlocklistTextView.text = context.getString(R.string.loading_easylist)
+            loadingFilterListTextView.text = context.getString(R.string.loading_easylist)
 
-            // Populate the blocklists on the IO thread.
+            // Populate the filter lists on the IO thread.
             withContext(Dispatchers.IO) {
                 // Populate EasyList.
-                val easyList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/easylist.txt")
+                val easyList = parseFilterListHelper.parseFilterList(context.assets, "filterlists/easylist.txt")
 
                 // Advertise the loading of EasyPrivacy.
                 withContext(Dispatchers.Main) {
-                    loadingBlocklistTextView.text = context.getString(R.string.loading_easyprivacy)
+                    loadingFilterListTextView.text = context.getString(R.string.loading_easyprivacy)
                 }
 
                 // Populate EasyPrivacy.
-                val easyPrivacy = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/easyprivacy.txt")
+                val easyPrivacy = parseFilterListHelper.parseFilterList(context.assets, "filterlists/easyprivacy.txt")
 
                 // Advertise the loading of Fanboy's Annoyance List.
                 withContext(Dispatchers.Main) {
-                    loadingBlocklistTextView.text = context.getString(R.string.loading_fanboys_annoyance_list)
+                    loadingFilterListTextView.text = context.getString(R.string.loading_fanboys_annoyance_list)
                 }
 
                 // Populate Fanboy's Annoyance List.
-                val fanboysAnnoyanceList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/fanboy-annoyance.txt")
+                val fanboysAnnoyanceList = parseFilterListHelper.parseFilterList(context.assets, "filterlists/fanboy-annoyance.txt")
 
                 // Advertise the loading of Fanboy's social blocking list.
                 withContext(Dispatchers.Main) {
-                    loadingBlocklistTextView.text = context.getString(R.string.loading_fanboys_social_blocking_list)
+                    loadingFilterListTextView.text = context.getString(R.string.loading_fanboys_social_blocking_list)
                 }
 
                 // Populate Fanboy's Social Blocking List.
-                val fanboysSocialList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/fanboy-social.txt")
+                val fanboysSocialList = parseFilterListHelper.parseFilterList(context.assets, "filterlists/fanboy-social.txt")
 
                 // Advertise the loading of UltraList
                 withContext(Dispatchers.Main) {
-                    loadingBlocklistTextView.text = context.getString(R.string.loading_ultralist)
+                    loadingFilterListTextView.text = context.getString(R.string.loading_ultralist)
                 }
 
                 // Populate UltraList.
-                val ultraList = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/ultralist.txt")
+                val ultraList = parseFilterListHelper.parseFilterList(context.assets, "filterlists/ultralist.txt")
 
                 // Advertise the loading of UltraPrivacy.
                 withContext(Dispatchers.Main) {
-                    loadingBlocklistTextView.text = context.getString(R.string.loading_ultraprivacy)
+                    loadingFilterListTextView.text = context.getString(R.string.loading_ultraprivacy)
                 }
 
                 // Populate UltraPrivacy.
-                val ultraPrivacy = parseBlocklistHelper.parseBlocklist(context.assets, "blocklists/ultraprivacy.txt")
+                val ultraPrivacy = parseFilterListHelper.parseFilterList(context.assets, "filterlists/ultraprivacy.txt")
 
                 // Populate the combined array list.
-                combinedBlocklists.add(easyList)
-                combinedBlocklists.add(easyPrivacy)
-                combinedBlocklists.add(fanboysAnnoyanceList)
-                combinedBlocklists.add(fanboysSocialList)
-                combinedBlocklists.add(ultraList)
-                combinedBlocklists.add(ultraPrivacy)
+                combinedFilterLists.add(easyList)
+                combinedFilterLists.add(easyPrivacy)
+                combinedFilterLists.add(fanboysAnnoyanceList)
+                combinedFilterLists.add(fanboysSocialList)
+                combinedFilterLists.add(ultraList)
+                combinedFilterLists.add(ultraPrivacy)
 
                 // Update the UI.
                 withContext(Dispatchers.Main) {
                     // Show the drawer layout.
                     drawerLayout.visibility = View.VISIBLE
 
-                    // Hide the loading blocklists screen.
-                    loadingBlocklistsRelativeLayout.visibility = View.GONE
+                    // Hide the loading filter lists screen.
+                    loadingFilterListsRelativeLayout.visibility = View.GONE
 
                     // Enable the sliding drawers.
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
                     // Add the first tab.
-                    populateBlocklistsListener.finishedPopulatingBlocklists(combinedBlocklists)
+                    populateFilterListsListener.finishedPopulatingFilterLists(combinedFilterLists)
                 }
             }
         }

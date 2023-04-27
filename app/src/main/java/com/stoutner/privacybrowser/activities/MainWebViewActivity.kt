@@ -118,7 +118,7 @@ import com.google.android.material.tabs.TabLayout
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter
 import com.stoutner.privacybrowser.coroutines.GetHostIpAddressesCoroutine
-import com.stoutner.privacybrowser.coroutines.PopulateBlocklistsCoroutine
+import com.stoutner.privacybrowser.coroutines.PopulateFilterListsCoroutine
 import com.stoutner.privacybrowser.coroutines.PrepareSaveDialogCoroutine
 import com.stoutner.privacybrowser.coroutines.SaveUrlCoroutine
 import com.stoutner.privacybrowser.coroutines.SaveWebpageImageCoroutine
@@ -142,7 +142,7 @@ import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
 import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
 import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
-import com.stoutner.privacybrowser.helpers.CheckBlocklistHelper
+import com.stoutner.privacybrowser.helpers.CheckFilterListHelper
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.helpers.SanitizeUrlHelper
@@ -200,7 +200,7 @@ private const val SAVED_TAB_POSITION = "saved_tab_position"
 private const val TEMPORARY_MHT_FILE = "temporary_mht_file"
 
 class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener,
-    NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklistsCoroutine.PopulateBlocklistsListener, SaveDialog.SaveListener,
+    NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateFilterListsCoroutine.PopulateFilterListsListener, SaveDialog.SaveListener,
     UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     companion object {
@@ -219,7 +219,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     // Declare the class variables.
     private lateinit var appBar: ActionBar
-    private lateinit var checkBlocklistHelper: CheckBlocklistHelper
+    private lateinit var checkFilterListHelper: CheckFilterListHelper
     private lateinit var bookmarksCursorAdapter: CursorAdapter
     private lateinit var bookmarksListView: ListView
     private lateinit var bookmarksDrawerPinnedImageView: ImageView
@@ -245,7 +245,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var navigationRequestsMenuItem: MenuItem
     private lateinit var optionsAddOrEditDomainMenuItem: MenuItem
     private lateinit var optionsBlockAllThirdPartyRequestsMenuItem: MenuItem
-    private lateinit var optionsBlocklistsMenuItem: MenuItem
     private lateinit var optionsClearCookiesMenuItem: MenuItem
     private lateinit var optionsClearDataMenuItem: MenuItem
     private lateinit var optionsClearDomStorageMenuItem: MenuItem
@@ -258,6 +257,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var optionsEasyPrivacyMenuItem: MenuItem
     private lateinit var optionsFanboysAnnoyanceListMenuItem: MenuItem
     private lateinit var optionsFanboysSocialBlockingListMenuItem: MenuItem
+    private lateinit var optionsFilterListsMenuItem: MenuItem
     private lateinit var optionsFontSizeMenuItem: MenuItem
     private lateinit var optionsPrivacyMenuItem: MenuItem
     private lateinit var optionsProxyCustomMenuItem: MenuItem
@@ -488,7 +488,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Do not continue if the app theme is different than the OS theme.  The app always initially starts in the OS theme.
         // If the user has specified the opposite theme should be used, the app will restart in that mode after the above `setDefaultNightMode()` code processes.  However, the restart is delayed.
-        // If the blacklist coroutine starts below it will continue to run during the restart, which leads to indeterminate behavior, with the system often not knowing how many tabs exist.
+        // If the filter list coroutine starts below it will continue to run during the restart, which leads to indeterminate behavior, with the system often not knowing how many tabs exist.
         // See https://redmine.stoutner.com/issues/952.
         if ((appTheme == appThemeEntryValuesStringArray[0]) ||  // The system default theme is used.
             ((appTheme == appThemeEntryValuesStringArray[1]) && (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)) ||  // The app is running in day theme as desired.
@@ -570,10 +570,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Create the hamburger icon at the start of the AppBar.
             actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer)
 
-            // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
+            // Initially disable the sliding drawers.  They will be enabled once the filter lists are loaded.
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-            // Initially hide the user interface so that only the blocklist loading screen is shown (if reloading).
+            // Initially hide the user interface so that only the filter list loading screen is shown (if reloading).
             drawerLayout.visibility = View.GONE
 
             // Initialize the WebView pager adapter.
@@ -638,11 +638,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Register the on back pressed callback.
             onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-            // Instantiate the populate blocklists coroutine.
-            val populateBlocklistsCoroutine = PopulateBlocklistsCoroutine(this)
+            // Instantiate the populate filter lists coroutine.
+            val populateFilterListsCoroutine = PopulateFilterListsCoroutine(this)
 
-            // Populate the blocklists.
-            populateBlocklistsCoroutine.populateBlocklists(this)
+            // Populate the filter lists.
+            populateFilterListsCoroutine.populateFilterLists(this)
         }
     }
 
@@ -957,11 +957,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         optionsClearCookiesMenuItem = menu.findItem(R.id.clear_cookies)
         optionsClearDomStorageMenuItem = menu.findItem(R.id.clear_dom_storage)
         optionsClearFormDataMenuItem = menu.findItem(R.id.clear_form_data) // Form data can be removed once the minimum API >= 26.
-        optionsBlocklistsMenuItem = menu.findItem(R.id.blocklists)
         optionsEasyListMenuItem = menu.findItem(R.id.easylist)
         optionsEasyPrivacyMenuItem = menu.findItem(R.id.easyprivacy)
         optionsFanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list)
         optionsFanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list)
+        optionsFilterListsMenuItem = menu.findItem(R.id.filterlists)
         optionsUltraListMenuItem = menu.findItem(R.id.ultralist)
         optionsUltraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy)
         optionsBlockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests)
@@ -1066,8 +1066,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             optionsWideViewportMenuItem.isChecked = currentWebView!!.settings.useWideViewPort
             optionsDisplayImagesMenuItem.isChecked = currentWebView!!.settings.loadsImagesAutomatically
 
-            // Initialize the display names for the blocklists with the number of blocked requests.
-            optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + currentWebView!!.getRequestsCount(BLOCKED_REQUESTS)
+            // Initialize the display names for the filter lists with the number of blocked requests.
+            optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + currentWebView!!.getRequestsCount(BLOCKED_REQUESTS)
             optionsEasyListMenuItem.title = currentWebView!!.getRequestsCount(EASYLIST).toString() + " - " + getString(R.string.easylist)
             optionsEasyPrivacyMenuItem.title = currentWebView!!.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
             optionsFanboysAnnoyanceListMenuItem.title = currentWebView!!.getRequestsCount(FANBOYS_ANNOYANCE_LIST).toString() + " - " + getString(R.string.fanboys_annoyance_list)
@@ -2327,11 +2327,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Create an intent to launch the about activity.
                 val aboutIntent = Intent(this, AboutActivity::class.java)
 
-                // Create a string array for the blocklist versions.
-                val blocklistVersions = arrayOf(easyList[0][0][0], easyPrivacy[0][0][0], fanboysAnnoyanceList[0][0][0], fanboysSocialList[0][0][0], ultraList[0][0][0], ultraPrivacy!![0][0][0])
+                // Create a string array for the filter list versions.
+                val filterListVersions = arrayOf(easyList[0][0][0], easyPrivacy[0][0][0], fanboysAnnoyanceList[0][0][0], fanboysSocialList[0][0][0], ultraList[0][0][0], ultraPrivacy!![0][0][0])
 
-                // Add the blocklist versions to the intent.
-                aboutIntent.putExtra(AboutActivity.BLOCKLIST_VERSIONS, blocklistVersions)
+                // Add the filter list versions to the intent.
+                aboutIntent.putExtra(FILTERLIST_VERSIONS, filterListVersions)
 
                 // Make it so.
                 startActivity(aboutIntent)
@@ -3789,14 +3789,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         currentWebView!!.findNext(false)
     }
 
-    override fun finishedPopulatingBlocklists(combinedBlocklists: ArrayList<ArrayList<List<Array<String>>>>) {
-        // Store the blocklists.
-        easyList = combinedBlocklists[0]
-        easyPrivacy = combinedBlocklists[1]
-        fanboysAnnoyanceList = combinedBlocklists[2]
-        fanboysSocialList = combinedBlocklists[3]
-        ultraList = combinedBlocklists[4]
-        ultraPrivacy = combinedBlocklists[5]
+    override fun finishedPopulatingFilterLists(combinedFilterLists: ArrayList<ArrayList<List<Array<String>>>>) {
+        // Store the filter lists.
+        easyList = combinedFilterLists[0]
+        easyPrivacy = combinedFilterLists[1]
+        fanboysAnnoyanceList = combinedFilterLists[2]
+        fanboysSocialList = combinedFilterLists[3]
+        ultraList = combinedFilterLists[4]
+        ultraPrivacy = combinedFilterLists[5]
 
         // Check to see if the activity has been restarted with a saved state.
         if ((savedStateArrayList == null) || (savedStateArrayList!!.size == 0)) {  // The activity has not been restarted or it was restarted on start to change the theme.
@@ -4265,8 +4265,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Update the domains settings set.
         updateDomainsSettingsSet()
 
-        // Instantiate the check blocklist helper.
-        checkBlocklistHelper = CheckBlocklistHelper()
+        // Instantiate the check filter list helper.
+        checkFilterListHelper = CheckFilterListHelper()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -4810,10 +4810,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     return null
                 }
 
-                // Wait until the blocklists have been populated.  When Privacy Browser is being resumed after having the process killed in the background it will try to load the URLs immediately.
+                // Wait until the filter lists have been populated.  When Privacy Browser is being resumed after having the process killed in the background it will try to load the URLs immediately.
                 while (ultraPrivacy == null) {
                     try {
-                        // Check to see if the blocklists have been populated after 100 ms.
+                        // Check to see if the filter lists have been populated after 100 ms.
                         Thread.sleep(100)
                     } catch (exception: InterruptedException) {
                         // Do nothing.
@@ -4824,7 +4824,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 val emptyWebResourceResponse = WebResourceResponse("text/plain", "utf8", ByteArrayInputStream("".toByteArray()))
 
                 // Initialize the variables.
-                var whitelistResultStringArray: Array<String>? = null
+                var allowListResultStringArray: Array<String>? = null
                 var isThirdPartyRequest = false
 
                 // Get the current URL.  `.getUrl()` throws an error because operations on the WebView cannot be made from this thread.
@@ -4869,7 +4869,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
                     nestedScrollWebView.incrementRequestsCount(THIRD_PARTY_REQUESTS)
 
-                    // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                    // Update the titles of the filter lists menu items if the WebView is currently displayed.
                     if (webViewDisplayed) {
                         // Updating the UI must be run from the UI thread.
                         runOnUiThread {
@@ -4878,7 +4878,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                             // Update the options menu if it has been populated.
                             if (optionsMenu != null) {
-                                optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                                optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
                                 optionsBlockAllThirdPartyRequestsMenuItem.title =
                                     nestedScrollWebView.getRequestsCount(THIRD_PARTY_REQUESTS).toString() + " - " + getString(R.string.block_all_third_party_requests)
                             }
@@ -4892,10 +4892,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check UltraList if it is enabled.
                 if (nestedScrollWebView.ultraListEnabled) {
                     // Check the URL against UltraList.
-                    val ultraListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, ultraList)
+                    val ultraListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, ultraList)
 
                     // Process the UltraList results.
-                    if (ultraListResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraList's blacklist.
+                    if (ultraListResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraList's block list.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]))
 
@@ -4903,7 +4903,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
                         nestedScrollWebView.incrementRequestsCount(ULTRALIST)
 
-                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
                             // Updating the UI must be run from the UI thread.
                             runOnUiThread {
@@ -4912,7 +4912,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
                                     optionsUltraListMenuItem.title = nestedScrollWebView.getRequestsCount(ULTRALIST).toString() + " - " + getString(R.string.ultralist)
                                 }
                             }
@@ -4920,11 +4920,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (ultraListResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraList's whitelist.
-                        // Add a whitelist entry to the resource requests array.
+                    } else if (ultraListResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraList's allow list.
+                        // Add an allow list entry to the resource requests array.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]))
 
-                        // The resource request has been allowed by UltraPrivacy.  `return null` loads the requested resource.
+                        // The resource request has been allowed by UltraList.  `return null` loads the requested resource.
                         return null
                     }
                 }
@@ -4932,10 +4932,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check UltraPrivacy if it is enabled.
                 if (nestedScrollWebView.ultraPrivacyEnabled) {
                     // Check the URL against UltraPrivacy.
-                    val ultraPrivacyResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, ultraPrivacy!!)
+                    val ultraPrivacyResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, ultraPrivacy!!)
 
                     // Process the UltraPrivacy results.
-                    if (ultraPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraPrivacy's blacklist.
+                    if (ultraPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraPrivacy's block list.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
                             ultraPrivacyResults[5]))
@@ -4944,7 +4944,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
                         nestedScrollWebView.incrementRequestsCount(ULTRAPRIVACY)
 
-                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
                             // Updating the UI must be run from the UI thread.
                             runOnUiThread {
@@ -4953,7 +4953,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
                                     optionsUltraPrivacyMenuItem.title = nestedScrollWebView.getRequestsCount(ULTRAPRIVACY).toString() + " - " + getString(R.string.ultraprivacy)
                                 }
                             }
@@ -4961,8 +4961,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (ultraPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraPrivacy's whitelist.
-                        // Add a whitelist entry to the resource requests array.
+                    } else if (ultraPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraPrivacy's allow list.
+                        // Add an allow list entry to the resource requests array.
                         nestedScrollWebView.addResourceRequest(arrayOf(ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
                             ultraPrivacyResults[5]))
 
@@ -4974,10 +4974,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check EasyList if it is enabled.
                 if (nestedScrollWebView.easyListEnabled) {
                     // Check the URL against EasyList.
-                    val easyListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, easyList)
+                    val easyListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, easyList)
 
                     // Process the EasyList results.
-                    if (easyListResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyList's blacklist.
+                    if (easyListResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyList's block list.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5]))
 
@@ -4985,7 +4985,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
                         nestedScrollWebView.incrementRequestsCount(EASYLIST)
 
-                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
                             // Updating the UI must be run from the UI thread.
                             runOnUiThread {
@@ -4994,7 +4994,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
                                     optionsEasyListMenuItem.title = nestedScrollWebView.getRequestsCount(EASYLIST).toString() + " - " + getString(R.string.easylist)
                                 }
                             }
@@ -5002,19 +5002,19 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (easyListResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyList's whitelist.
-                        // Update the whitelist result string array tracker.
-                        whitelistResultStringArray = arrayOf(easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5])
+                    } else if (easyListResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyList's allow list.
+                        // Update the allow list result string array tracker.
+                        allowListResultStringArray = arrayOf(easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5])
                     }
                 }
 
                 // Check EasyPrivacy if it is enabled.
                 if (nestedScrollWebView.easyPrivacyEnabled) {
                     // Check the URL against EasyPrivacy.
-                    val easyPrivacyResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, easyPrivacy)
+                    val easyPrivacyResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, easyPrivacy)
 
                     // Process the EasyPrivacy results.
-                    if (easyPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyPrivacy's blacklist.
+                    if (easyPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyPrivacy's block list.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5]))
 
@@ -5022,7 +5022,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
                         nestedScrollWebView.incrementRequestsCount(EASYPRIVACY)
 
-                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
                             // Updating the UI must be run from the UI thread.
                             runOnUiThread {
@@ -5031,7 +5031,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
                                     optionsEasyPrivacyMenuItem.title = nestedScrollWebView.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
                                 }
                             }
@@ -5039,19 +5039,19 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (easyPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyPrivacy's whitelist.
-                        // Update the whitelist result string array tracker.
-                        whitelistResultStringArray = arrayOf(easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5])
+                    } else if (easyPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyPrivacy's allow list.
+                        // Update the allow list result string array tracker.
+                        allowListResultStringArray = arrayOf(easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5])
                     }
                 }
 
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (nestedScrollWebView.fanboysAnnoyanceListEnabled) {
                     // Check the URL against Fanboy's Annoyance List.
-                    val fanboysAnnoyanceListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, fanboysAnnoyanceList)
+                    val fanboysAnnoyanceListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, fanboysAnnoyanceList)
 
                     // Process the Fanboy's Annoyance List results.
-                    if (fanboysAnnoyanceListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Annoyance List's blacklist.
+                    if (fanboysAnnoyanceListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Annoyance List's block list.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                             fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]))
@@ -5060,7 +5060,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
                         nestedScrollWebView.incrementRequestsCount(FANBOYS_ANNOYANCE_LIST)
 
-                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
                             // Updating the UI must be run from the UI thread.
                             runOnUiThread {
@@ -5069,7 +5069,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
                                     optionsFanboysAnnoyanceListMenuItem.title = nestedScrollWebView.getRequestsCount(FANBOYS_ANNOYANCE_LIST).toString() + " - " + getString(R.string.fanboys_annoyance_list)
                                 }
                             }
@@ -5077,17 +5077,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (fanboysAnnoyanceListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Annoyance List's whitelist.
-                        // Update the whitelist result string array tracker.
-                        whitelistResultStringArray = arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
+                    } else if (fanboysAnnoyanceListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Annoyance List's allow list.
+                        // Update the allow list result string array tracker.
+                        allowListResultStringArray = arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                             fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5])
                     }
                 } else if (nestedScrollWebView.fanboysSocialBlockingListEnabled) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     // Check the URL against Fanboy's Annoyance List.
-                    val fanboysSocialListResults = checkBlocklistHelper.checkBlocklist(currentDomain, requestUrlString, isThirdPartyRequest, fanboysSocialList)
+                    val fanboysSocialListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, fanboysSocialList)
 
                     // Process the Fanboy's Social Blocking List results.
-                    if (fanboysSocialListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Social Blocking List's blacklist.
+                    if (fanboysSocialListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Social Blocking List's block list.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(arrayOf(fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3],
                             fanboysSocialListResults[4], fanboysSocialListResults[5]))
@@ -5096,7 +5096,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
                         nestedScrollWebView.incrementRequestsCount(FANBOYS_SOCIAL_BLOCKING_LIST)
 
-                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
                             // Updating the UI must be run from the UI thread.
                             runOnUiThread {
@@ -5105,7 +5105,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
-                                    optionsBlocklistsMenuItem.title = getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
                                     optionsFanboysSocialBlockingListMenuItem.title =
                                         nestedScrollWebView.getRequestsCount(FANBOYS_SOCIAL_BLOCKING_LIST).toString() + " - " + getString(R.string.fanboys_social_blocking_list)
                                 }
@@ -5114,17 +5114,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (fanboysSocialListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Social Blocking List's whitelist.
-                        // Update the whitelist result string array tracker.
-                        whitelistResultStringArray = arrayOf(fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3], fanboysSocialListResults[4],
+                    } else if (fanboysSocialListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Social Blocking List's allow list.
+                        // Update the allow list result string array tracker.
+                        allowListResultStringArray = arrayOf(fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3], fanboysSocialListResults[4],
                             fanboysSocialListResults[5])
                     }
                 }
 
                 // Add the request to the log because it hasn't been processed by any of the previous checks.
-                if (whitelistResultStringArray != null) {  // The request was processed by a whitelist.
-                    nestedScrollWebView.addResourceRequest(whitelistResultStringArray)
-                } else {  // The request didn't match any blocklist entry.  Log it as a default request.
+                if (allowListResultStringArray != null) {  // The request was processed by an allow list.
+                    nestedScrollWebView.addResourceRequest(allowListResultStringArray)
+                } else {  // The request didn't match any filter list entry.  Log it as a default request.
                     nestedScrollWebView.addResourceRequest(arrayOf(REQUEST_DEFAULT, requestUrlString))
                 }
 

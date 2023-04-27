@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018,2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -246,12 +246,12 @@
                 android:layout_width="wrap_content"
                 android:textIsSelectable="true" />
 
-            <!-- Blocklists. -->
+            <!-- Filter Lists. -->
             <TextView
-                android:id="@+id/blocklists"
+                android:id="@+id/filterlists"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/blocklists"
+                android:text="@string/filterlists"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:textColor="@color/blue_title_text"

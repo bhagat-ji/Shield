@@ -38,33 +38,33 @@
 
         <img class="center" src="images/request_details.png"/>
 
-        <p>Privacy Browser include quattro <a href="https://easylist.to/">liste di blocco comuni</a> basate sulla <a href="https://adblockplus.org/filters">Sintassi di Adblock</a>:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List, e Fanboy’s Social Blocking List.
-            Queste blocklist sono processate da Privacy Browser nelle seguenti 22 liste secondarie, che verificano le richieste di risorse nell'ordine elencato.</p>
+        <p>Privacy Browser includes four <a href="https://easylist.to/">common filter lists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
+            These filter lists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
 
         <ol>
-            <li>Whitelist principale</li>
-            <li>Whitelist finale</li>
-            <li>Whitelist per i domini</li>
-            <li>Whitelist iniziale</li>
-            <li>Whitelist finale</li>
-            <li>Whitelist di terze parti</li>
-            <li>Whitelist di terze parti per i domini</li>
-            <li>Whitelist di terze parti iniziale per i domini</li>
-            <li>Blacklist principale</li>
-            <li>Blacklist iniziale</li>
-            <li>Blacklist finale</li>
-            <li>Blacklist per i domini</li>
-            <li>Blacklist iniziale</li>
-            <li>Blacklist finale</li>
-            <li>Blacklist per le espressioni regolari</li>
-            <li>Blacklist di terze parti</li>
-            <li>Blacklist di terze parti iniziale</li>
-            <li>Blacklist di terze parti per i domini</li>
-            <li>Blacklist di terze parti iniziale per i domini</li>
-            <li>Blacklist di terze parti per le espressioni regolari</li>
-            <li>Blacklist di terze parti per le espressioni regolari per i domini</li>
-            <li>Blacklist per le espressioni regolari</li>
+            <li>Main Allow List</li>
+            <li>Final Allow List</li>
+            <li>Domain Allow List</li>
+            <li>Domain Initial Allow List</li>
+            <li>Domain Final Allow List</li>
+            <li>Third-Party Allow List</li>
+            <li>Third-Party Domain Allow List</li>
+            <li>Third-Party Domain Initial Allow List</li>
+            <li>Main Block List</li>
+            <li>Initial Block List</li>
+            <li>Final Block List</li>
+            <li>Domain Block List</li>
+            <li>Domain Initial Block List</li>
+            <li>Domain Final Block List</li>
+            <li>Domain Regular Expression Block List</li>
+            <li>Third-Party Block List</li>
+            <li>Third-Party Initial Block List</li>
+            <li>Third-Party Domain Block List</li>
+            <li>Third-Party Domain Initial Block List</li>
+            <li>Third-Party Regular Expression Block List</li>
+            <li>Third-Party Domain Regular Expression Block List</li>
+            <li>Regular Expression Block List</li>
         </ol>
 
         <p>Le liste iniziali servono per la verifica della parte iniziale delle URL. Le liste iniziali servono per la verifica della parte finale delle URL.
@@ -73,17 +73,17 @@
             Ogni oggetto delle liste secondarie ha uno o più elementi.
             Nel caso delle liste secondarie dei domini, la richiesta di risorse è verificata solo se il primo elemento combacia con il dominio della URL principale.</p>
 
-        <p>A causa delle limitazioni della WebView di Android, e per velocizzare il processo delle richiesta, Privacy Browser implementa una versione semplificata della sintassi di Adblock.
-            Questo approccio potrebbe a volte portare ad avere falsi positivi, nel caso in cui le risorse siano bloccate o permesse in modi che non erano previsti dall'elemento originale.
-            Una descrizione più dettagliata su come sono processati gli elementi delle liste di blocco è disponibile su
-            <a href="https://www.stoutner.com/privacy-browser-android/blocklists/">stoutner.com</a>.</p>
+        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
+            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
+            A more detailed description of how the filter list entries are processed is available at <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/">stoutner.com</a>.</p>
 
-        <p>Privacy Browser ha tre liste di blocco aggiuntive.
-            <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultralist/">UltraList</a> e <a href="https://www.stoutner.com/privacy-browser-android/blocklists/ultraprivacy/">UltraPrivacy</a>
-            bloccano gli annunci e i sistemi di tracciamento che EasyList e EasyPrivacy non bloccano. La terza blocca tutte le richieste di terze parti.
-            Una richiesta è considerata di terze parti solo se il dominio di base della richiesta è diverso dal dominio di base della URL.
-            Ad esempio se <code>www.website.com</code> carica un'immagine da <code>images.website.com</code>,
-            questa non è bloccata come richiesta di terze parti, perchè il dominio di base è lo stesso: <code>website.com</code>.
-            Il blocco di tutte le richieste di terze parti aumenta la privacy, ma questa lista di blocco è disabilitata di default perchè impedisce la corretta visualizzazione di un gran numero di siti web.</p>
+        <p>Privacy Browser has three additional filter lists.
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a> and
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacy</a>
+            filters ads and trackers that EasyList and EasyPrivacy do not. The third blocks all third-party requests.
+            A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
+            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
+            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
+            Blocking all third-party requests increases privacy, but this filter list is disabled by default because it breaks a large number of websites.</p>
     </body>
 </html>

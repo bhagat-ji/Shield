@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2017,2019-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2017,2019-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -200,9 +200,9 @@
         android:layout_width="match_parent"
         android:visibility="gone" />
 
-    <!-- The loading blocklists relative layout displays when the app first starts.  It is hidden once the blocklists are populated. -->
+    <!-- The loading filter lists relative layout displays when the app first starts.  It is hidden once the filter lists are populated. -->
     <RelativeLayout
-        android:id="@+id/loading_blocklists_relativelayout"
+        android:id="@+id/loading_filterlists_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -215,7 +215,7 @@
             tools:ignore="contentDescription" />
 
         <TextView
-            android:id="@+id/loading_blocklist_textview"
+            android:id="@+id/loading_filterlist_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/privacy_browser_logo"
