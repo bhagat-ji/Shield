@@ -1,1 +1,1 @@
-• Correction d'un problème rare qui faisait que l'onglet courant n'était pas toujours l'onglet actif.
+• Correction d'une situation de compétition qui faisait que l'onglet courant n'était pas toujours l'onglet actif.

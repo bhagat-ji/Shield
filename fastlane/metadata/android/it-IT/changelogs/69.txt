@@ -1,0 +1,8 @@
+• Colorazione dello sfondo delle impostazioni dei domini diverse dalle impostazioni di default.
+• Eliminazione dei termini whitelist e blacklist dal progetto.
+• Standardizzazione dei nomi dei file suggeriti.
+• Aggiornamento nella barra dell'app del colore di sfondo del proxy.
+• Ripristino della posizione dello scrolling al riavvio delle impostazioni dell'app.
+• Migrazione dell'ultima porzione di codice in Kotlin e rimozione delle deprecate AsyncTasks.
+• Ottimizzazione di diverse porzioni del codice per un'esecuzione più efficiente.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

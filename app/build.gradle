@@ -28,9 +28,20 @@ android {
     defaultConfig {
         minSdk 24
         targetSdk 33
-        versionCode 68
-        versionName "3.13.4"
-        resConfigs 'en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN'
+        versionCode 69
+        versionName "3.14"
+        resourceConfigurations += ['en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN']
+    }
+
+    // Specify the compile Java version.  This must match the Kotlin JVM target.  For some reason the system was not setting this correctly.  These can probably be removed in the future.
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // Specify the Kotlin JVM target.  This must match the compile Java version.  For some reason the system was not setting this correctly.  These can probably be removed in the future.
+    kotlinOptions {
+        jvmTarget = 17
     }
 
     buildTypes {
@@ -72,16 +83,16 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'androidx.webkit:webkit:1.6.0'
+    implementation 'androidx.webkit:webkit:1.6.1'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.10'
 
     // Include the Google material library.
     implementation 'com.google.android.material:material:1.8.0'

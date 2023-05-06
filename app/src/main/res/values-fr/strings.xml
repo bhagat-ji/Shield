@@ -288,7 +288,32 @@
         <string name="blocked">Bloquée</string>
         <string name="request_blocked">%1$d. Bloquée</string>
         <string name="blocked_plural">Bloquées</string>
+    <string name="filterlist">Liste de filtre</string>
     <string name="sublist">Sous-listes</string>
+        <string name="main_allowlist">Liste principale d\'autorisation</string>
+        <string name="final_allowlist">Liste finale d\'autorisation</string>
+        <string name="domain_allowlist">Liste d\'autorisation de domaine</string>
+        <string name="domain_initial_allowlist">Liste initiale d\'autorisation de domaine</string>
+        <string name="domain_final_allowlist">Liste finale d\'autorisation de domaine</string>
+        <string name="third_party_allowlist">Liste d\'autorisation de tiers</string>
+        <string name="third_party_domain_allowlist">Liste d\'autorisation de domaine tiers</string>
+        <string name="third_party_domain_initial_allowlist">Liste initiale d\'autorisation de domaine tiers</string>
+        <string name="main_blocklist">Liste principale de blocage</string>
+        <string name="initial_blocklist">Liste initiale de blocage</string>
+        <string name="final_blocklist">Liste finale de blocage</string>
+        <string name="domain_blocklist">Liste de blocage de domaine</string>
+        <string name="domain_initial_blocklist">Liste initiale de blocage de domaine</string>
+        <string name="domain_final_blocklist">Liste finale de blocage de domaine</string>
+        <string name="domain_regular_expression_blocklist">Expression régulière de blocage de domaine</string>
+        <string name="third_party_blocklist">Liste de blocage de tiers</string>
+        <string name="third_party_initial_blocklist">Liste initiale de blocage de domaine tiers</string>
+        <string name="third_party_domain_blocklist">Liste de blocage de domaine tiers</string>
+        <string name="third_party_domain_initial_blocklist">Liste initiale de blocage de domaine tiers</string>
+        <string name="third_party_regular_expression_blocklist">Expression régulière de blocage de tiers</string>
+        <string name="third_party_domain_regular_expression_blocklist">Expression régulière de blocage de domaine tiers</string>
+        <string name="regular_expression_blocklist">Expression régulière de liste de blocage</string>
+    <string name="filterlist_entries">Liste de filtrage des données</string>
+    <string name="filterlist_original_entry">Liste originale de filtrage des données</string>
 
     <!-- Domains. -->
     <string name="domains">Domaines</string>
@@ -476,12 +501,19 @@
             Dans le mode Incognito, le bouton Retour ferme l\'onglet (ou l\'application s\'il n\'y a qu\'un seul onglet).</string>
         <string name="allow_screenshots">Autoriser captures d\'écrans</string>
         <string name="allow_screenshots_summary">Autoriser les captures d\'écrans, enregistrements vidéo et affichage sur des écrans non-sécurisés. Changer ce paramètre redémarrera Privacy Browser.</string>
+    <string name="filterlists">Listes de filtrage</string>
         <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Liste de filtre publicitaire principale.</string>
         <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Liste de filtre de suivi principale.</string>
         <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboys_annoyance_list_summary">Filtre les popups et liens gênants. Inclu les listes de blocage de réseaux sociaux Fanboy.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+        <string name="fanboys_social_blocking_list_summary">Filtre les contenus tiers de réseaux sociaux.</string>
         <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList filtre les publicités qu\'EasyList ne fait pas car cela peut casser certains sites Web.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">UltraPrivacy filtre les pisteurs qu\'EasyPrivacy ne fait pas car cela peut casser certains sites Web.</string>
         <string name="block_all_third_party_requests">Bloquer toutes les requêtes tierces</string>
         <string name="block_all_third_party_requests_summary">Le blocage de toutes les requêtes tierces augmente la vie privée, mais détruit de nombreux sites Web.</string>
     <string name="url_modification">Modifications d\'URL</string>

@@ -1,0 +1,7 @@
+• Highlight the background of domain settings that are not default.
+• Remove the terms whitelist and blacklist from the project.
+• Standardize the suggested file names.
+• Update the app bar proxy background color.
+• Restore the scroll position when restarting the settings app.
+• Migrate the last of the code to Kotlin and remove the deprecated AsyncTasks.
+• Optimize several pieces of the code to run more efficiently.

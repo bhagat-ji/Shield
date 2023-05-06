@@ -285,7 +285,32 @@
         <string name="blocked">Блокирован</string>
         <string name="request_blocked">%1$d. Блокирован</string>
         <string name="blocked_plural">Блокировано</string>
+    <string name="filterlist">Список фильтров</string>
     <string name="sublist">Подсписок</string>
+        <string name="main_allowlist">Основной список разрешенных</string>
+        <string name="final_allowlist">Окончательный список разрешенных</string>
+        <string name="domain_allowlist">Список разрешенных доменов</string>
+        <string name="domain_initial_allowlist">Начальный список разрешенных доменов</string>
+        <string name="domain_final_allowlist">Окончательный список разрешенных доменов</string>
+        <string name="third_party_allowlist">Сторонний список разрешенных</string>
+        <string name="third_party_domain_allowlist">Сторонний список разрешенных доменов</string>
+        <string name="third_party_domain_initial_allowlist">Начальный список разрешенных сторонних доменов</string>
+        <string name="main_blocklist">Основной список блокировки</string>
+        <string name="initial_blocklist">Начальный список блокировки</string>
+        <string name="final_blocklist">Окончательный список блокировки</string>
+        <string name="domain_blocklist">Список блокировки доменов</string>
+        <string name="domain_initial_blocklist">Начальный список блокировки доменов</string>
+        <string name="domain_final_blocklist">Окончательный список блокировки доменов</string>
+        <string name="domain_regular_expression_blocklist">Список блокировки доменов по регулярным выражениям</string>
+        <string name="third_party_blocklist">Сторонний список блокировки</string>
+        <string name="third_party_initial_blocklist">Сторонний начальный список блокировки</string>
+        <string name="third_party_domain_blocklist">Сторонний список блокировки доменов</string>
+        <string name="third_party_domain_initial_blocklist">Сторонний начальный список блокировки доменов</string>
+        <string name="third_party_regular_expression_blocklist">Сторонний список блокировки по регулярным выражениям</string>
+        <string name="third_party_domain_regular_expression_blocklist">Сторонний список блокировки доменов по регулярным выражениям</string>
+        <string name="regular_expression_blocklist">Список блокировки регулярными выражениями</string>
+    <string name="filterlist_entries">Записи списка фильтрации</string>
+    <string name="filterlist_original_entry">Исходная запись списка фильтрации</string>
 
     <!-- Domains. -->
     <string name="domains">Домены</string>
@@ -475,12 +500,19 @@
             В режиме инкогнито нажатие кнопки Назад приведет к закрытию вкладки (или приложения, если открыта только одна вкладка).</string>
         <string name="allow_screenshots">Разрешить скриншоты</string>
         <string name="allow_screenshots_summary">Разрешить скриншоты, запись видео и просмотр на незащищенных дисплеях. При изменении этого параметра Privacy Browser будет перезапущен.</string>
+    <string name="filterlists">Списки фильтрации</string>
         <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Основной список фильтрации рекламы.</string>
         <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Основной список фильтрации трекеров.</string>
         <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboys_annoyance_list_summary">Фильтруйте назойливые всплывающие окна и ссылки. Включает списки блокировки Fanboy Social.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+        <string name="fanboys_social_blocking_list_summary">Фильтрует сторонний контент социальных сетей.</string>
         <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList фильтрует рекламу, которую не фильтрует EasyList, поскольку это может нарушить работу сайтов.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">UltraPrivacy фильтрует трекеры, которые не фильтрует EasyPrivacy, поскольку это может нарушить работу сайтов.</string>
         <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>
         <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
     <string name="url_modification">Модификация URL</string>

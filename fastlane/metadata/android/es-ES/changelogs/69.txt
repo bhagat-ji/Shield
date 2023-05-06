@@ -1,0 +1,8 @@
+• Resaltar el fondo de las configuraciones de dominio que no son por defecto.
+• Eliminar los términos lista blanca y lista negra del proyecto.
+• Normalizar los nombres de archivo sugeridos.
+• Actualizar en la barra de aplicaciones el color de fondo del proxy.
+• Restaurar la posición de desplazamiento al reiniciar la configuración de la app.
+• Migrar el último código a Kotlin y eliminar el obsoleto AsyncTasks.
+• Optimizar varios trozos del código para que funcione de forma más eficiente.
+• Actualizada la traducción al español proporcionada por Jose A. León.
