@@ -27,11 +27,12 @@ import android.provider.OpenableColumns
 import android.util.Base64
 import android.webkit.CookieManager
 
+import androidx.viewpager2.widget.ViewPager2
+
 import com.google.android.material.snackbar.Snackbar
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.ProxyHelper
-import com.stoutner.privacybrowser.views.NoSwipeViewPager
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,10 +71,10 @@ class SaveUrlCoroutine {
             }
 
             // Get a handle for the no swipe view pager.
-            val noSwipeViewPager = activity.findViewById<NoSwipeViewPager>(R.id.webviewpager)
+            val webViewViewPager2 = activity.findViewById<ViewPager2>(R.id.webview_viewpager2)
 
             // Create a saving file snackbar.
-            val savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file, 0, fileNameString), Snackbar.LENGTH_INDEFINITE)
+            val savingFileSnackbar = Snackbar.make(webViewViewPager2, activity.getString(R.string.saving_file, 0, fileNameString), Snackbar.LENGTH_INDEFINITE)
 
             // Display the saving file snackbar.
             savingFileSnackbar.show()
@@ -204,7 +205,7 @@ class SaveUrlCoroutine {
                         savingFileSnackbar.dismiss()
 
                         // Display the file saved snackbar.
-                        Snackbar.make(noSwipeViewPager, activity.getString(R.string.saved, fileNameString), Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(webViewViewPager2, activity.getString(R.string.saved, fileNameString), Snackbar.LENGTH_LONG).show()
                     }
                 } catch (exception: Exception) {
                     // Update the UI.
@@ -213,7 +214,7 @@ class SaveUrlCoroutine {
                         savingFileSnackbar.dismiss()
 
                         // Display the file saving error.
-                        Snackbar.make(noSwipeViewPager, activity.getString(R.string.error_saving_file, fileNameString, exception), Snackbar.LENGTH_INDEFINITE).show()
+                        Snackbar.make(webViewViewPager2, activity.getString(R.string.error_saving_file, fileNameString, exception), Snackbar.LENGTH_INDEFINITE).show()
                     }
                 }
             }

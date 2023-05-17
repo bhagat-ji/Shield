@@ -105,7 +105,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 
@@ -116,7 +116,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter
+import com.stoutner.privacybrowser.adapters.WebViewStateAdapter
 import com.stoutner.privacybrowser.coroutines.GetHostIpAddressesCoroutine
 import com.stoutner.privacybrowser.coroutines.PopulateFilterListsCoroutine
 import com.stoutner.privacybrowser.coroutines.PrepareSaveDialogCoroutine
@@ -211,7 +211,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val pendingDialogsArrayList = ArrayList<PendingDialogDataClass>()
         var proxyMode = ProxyHelper.NONE
         var restartFromBookmarksActivity = false
-        var webViewPagerAdapter: WebViewPagerAdapter? = null
+        var webViewStateAdapter: WebViewStateAdapter? = null
 
         // Declare the public static variables.
         lateinit var appBarLayout: AppBarLayout
@@ -296,7 +296,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var tabsLinearLayout: LinearLayout
     private lateinit var toolbar: Toolbar
     private lateinit var webViewDefaultUserAgent: String
-    private lateinit var webViewPager: ViewPager
+    private lateinit var webViewViewPager2: ViewPager2
     private lateinit var ultraList: ArrayList<List<Array<String>>>
     private lateinit var urlEditText: EditText
     private lateinit var urlRelativeLayout: RelativeLayout
@@ -532,7 +532,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             tabsLinearLayout = findViewById(R.id.tabs_linearlayout)
             tabLayout = findViewById(R.id.tablayout)
             swipeRefreshLayout = findViewById(R.id.swiperefreshlayout)
-            webViewPager = findViewById(R.id.webviewpager)
+            webViewViewPager2 = findViewById(R.id.webview_viewpager2)
             val navigationView = findViewById<NavigationView>(R.id.navigationview)
             bookmarksListView = findViewById(R.id.bookmarks_drawer_listview)
             bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview)
@@ -576,14 +576,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Initially hide the user interface so that only the filter list loading screen is shown (if reloading).
             drawerLayout.visibility = View.GONE
 
-            // Initialize the WebView pager adapter.
-            webViewPagerAdapter = WebViewPagerAdapter(supportFragmentManager)
+            // Initialize the WebView state adapter.
+            webViewStateAdapter = WebViewStateAdapter(this)
 
             // Set the pager adapter on the web view pager.
-            webViewPager.adapter = webViewPagerAdapter
+            webViewViewPager2.adapter = webViewStateAdapter
 
             // Store up to 100 tabs in memory.
-            webViewPager.offscreenPageLimit = 100
+            webViewViewPager2.offscreenPageLimit = 100
+
+            // Disable swiping between pages in the view pager.
+            webViewViewPager2.isUserInputEnabled = false
 
             // Get a handle for the cookie manager.
             cookieManager = CookieManager.getInstance()
@@ -748,9 +751,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             updateDomainsSettingsSet()
 
             // Reapply the domain settings for each tab.
-            for (i in 0 until webViewPagerAdapter!!.count) {
+            for (i in 0 until webViewStateAdapter!!.itemCount) {
                 // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                 // Get the fragment view.
                 val fragmentView = webViewTabFragment.view
@@ -791,11 +794,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Run the default commands.
         super.onStart()
 
-        // Resume any WebViews if the pager adapter exists.  If the app is restarting to change the initial app theme it won't have been populated yet.
-        if (webViewPagerAdapter != null) {
-            for (i in 0 until webViewPagerAdapter!!.count) {
+        // Resume any WebViews if the state adapter exists.  If the app is restarting to change the initial app theme it won't have been populated yet.
+        if (webViewStateAdapter != null) {
+            for (i in 0 until webViewStateAdapter!!.itemCount) {
                 // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                 // Get the fragment view.
                 val fragmentView = webViewTabFragment.view
@@ -850,16 +853,16 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState)
 
-        // Only save the instance state if the WebView pager adapter is not null, which will be the case if the app is restarting to change the initial app theme.
-        if (webViewPagerAdapter != null) {
+        // Only save the instance state if the WebView state adapter is not null, which will be the case if the app is restarting to change the initial app theme.
+        if (webViewStateAdapter != null) {
             // Initialize the saved state array lists.
             savedStateArrayList = ArrayList<Bundle>()
             savedNestedScrollWebViewStateArrayList = ArrayList<Bundle>()
 
             // Get the URLs from each tab.
-            for (i in 0 until webViewPagerAdapter!!.count) {
+            for (i in 0 until webViewStateAdapter!!.itemCount) {
                 // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                 // Get the fragment view.
                 val fragmentView = webViewTabFragment.view
@@ -899,12 +902,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Run the default commands.
         super.onStop()
 
-        // Only pause the WebViews if the pager adapter is not null, which is the case if the app is restarting to change the initial app theme.
-        if (webViewPagerAdapter != null) {
+        // Only pause the WebViews if the state adapter is not null, which is the case if the app is restarting to change the initial app theme.
+        if (webViewStateAdapter != null) {
             // Pause each web view.
-            for (i in 0 until webViewPagerAdapter!!.count) {
+            for (i in 0 until webViewStateAdapter!!.itemCount) {
                 // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                 // Get the fragment view.
                 val fragmentView = webViewTabFragment.view
@@ -1298,11 +1301,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Display a snackbar.
                 if (currentWebView!!.settings.javaScriptEnabled)  // JavaScrip is enabled.
-                    Snackbar.make(webViewPager, R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show()
                 else if (cookieManager.acceptCookie())  // JavaScript is disabled, but cookies are enabled.
-                    Snackbar.make(webViewPager, R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show()
                 else  // Privacy mode.
-                    Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show()
 
                 // Reload the current WebView.
                 currentWebView!!.reload()
@@ -1345,11 +1348,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Display a snackbar.
                 if (cookieManager.acceptCookie())  // Cookies are enabled.
-                    Snackbar.make(webViewPager, R.string.cookies_enabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.cookies_enabled, Snackbar.LENGTH_SHORT).show()
                 else if (currentWebView!!.settings.javaScriptEnabled)  // JavaScript is still enabled.
-                    Snackbar.make(webViewPager, R.string.cookies_disabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.cookies_disabled, Snackbar.LENGTH_SHORT).show()
                 else  // Privacy mode.
-                    Snackbar.make(webViewPager, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.privacy_mode, Snackbar.LENGTH_SHORT).show()
 
                 // Reload the current WebView.
                 currentWebView!!.reload()
@@ -1370,9 +1373,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Display a snackbar.
                 if (currentWebView!!.settings.domStorageEnabled)
-                    Snackbar.make(webViewPager, R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show()
                 else
-                    Snackbar.make(webViewPager, R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show()
 
                 // Reload the current WebView.
                 currentWebView!!.reload()
@@ -1393,9 +1396,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Display a snackbar.
                 @Suppress("DEPRECATION")
                 if (currentWebView!!.settings.saveFormData)
-                    Snackbar.make(webViewPager, R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show()
                 else
-                    Snackbar.make(webViewPager, R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(webViewViewPager2, R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show()
 
                 // Update the privacy icon.
                 updatePrivacyIcons(true)
@@ -1409,7 +1412,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             R.id.clear_cookies -> {  // Clear cookies.
                 // Create a snackbar.
-                Snackbar.make(webViewPager, R.string.cookies_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(webViewViewPager2, R.string.cookies_deleted, Snackbar.LENGTH_LONG)
                     .setAction(R.string.undo) {}  // Everything will be handled by `onDismissed()` below.
                     .addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(snackbar: Snackbar, event: Int) {
@@ -1427,7 +1430,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             R.id.clear_dom_storage -> {  // Clear DOM storage.
                 // Create a snackbar.
-                Snackbar.make(webViewPager, R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(webViewViewPager2, R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
                     .setAction(R.string.undo) {}  // Everything will be handled by `onDismissed()` below.
                     .addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(snackbar: Snackbar, event: Int) {
@@ -1484,7 +1487,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             R.id.clear_form_data -> {  // Clear form data.  This can be remove once the minimum API >= 26.
                 // Create a snackbar.
-                Snackbar.make(webViewPager, R.string.form_data_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(webViewViewPager2, R.string.form_data_deleted, Snackbar.LENGTH_LONG)
                     .setAction(R.string.undo) {}  // Everything will be handled by `onDismissed()` below.
                     .addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(snackbar: Snackbar, event: Int) {
@@ -2691,7 +2694,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         newTab.setCustomView(R.layout.tab_custom_view)
 
         // Add the new WebView page.
-        webViewPagerAdapter!!.addPage(newTabNumber, webViewPager, urlString, moveToTab)
+        webViewStateAdapter!!.addPage(newTabNumber, webViewViewPager2, urlString, moveToTab)
 
         // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
         if (bottomAppBar && moveToTab && appBarLayout.translationY != 0f) {
@@ -2780,9 +2783,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
 
             // Set the app bar scrolling for each WebView.
-            for (i in 0 until webViewPagerAdapter!!.count) {
+            for (i in 0 until webViewStateAdapter!!.itemCount) {
                 // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                 // Get the fragment view.
                 val fragmentView = webViewTabFragment.view
@@ -2875,7 +2878,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 nestedScrollWebView.initializeFavoriteIcon()
 
                 // Get the current page position.
-                val currentPagePosition = webViewPagerAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
+                val currentPagePosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
 
                 // Get the corresponding tab.
                 val tab = tabLayout.getTabAt(currentPagePosition)
@@ -3361,9 +3364,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Reload the WebViews if requested and not waiting for the proxy.
         if (reloadWebViews && !waitingForProxy) {
             // Reload the WebViews.
-            for (i in 0 until webViewPagerAdapter!!.count) {
+            for (i in 0 until webViewStateAdapter!!.itemCount) {
                 // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                 // Get the fragment view.
                 val fragmentView = webViewTabFragment.view
@@ -3499,9 +3502,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Clear the cache.
         if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_cache_key), true)) {
             // Clear the cache from each WebView.
-            for (i in 0 until webViewPagerAdapter!!.count) {
+            for (i in 0 until webViewStateAdapter!!.itemCount) {
                 // Get the WebView tab fragment.
-                val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                 // Get the WebView fragment view.
                 val webViewFragmentView = webViewTabFragment.view
@@ -3534,9 +3537,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         }
 
         // Wipe out each WebView.
-        for (i in 0 until webViewPagerAdapter!!.count) {
+        for (i in 0 until webViewStateAdapter!!.itemCount) {
             // Get the WebView tab fragment.
-            val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+            val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
             // Get the WebView frame layout.
             val webViewFrameLayout = webViewTabFragment.view as FrameLayout?
@@ -3614,7 +3617,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Delete the current page.  If the selected page number did not change during the delete (because the newly selected tab has has same number as the previously deleted tab), it will return true,
             // meaning that the current WebView must be reset.  Otherwise it will happen automatically as the selected tab number changes.
-            if (webViewPagerAdapter!!.deletePage(currentTabNumber, webViewPager))
+            if (webViewStateAdapter!!.deletePage(currentTabNumber, webViewViewPager2))
                 setCurrentWebView(currentTabNumber)
         } else {  // There is only one tab open.
             clearAndExit()
@@ -3801,7 +3804,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Check to see if the activity has been restarted with a saved state.
         if ((savedStateArrayList == null) || (savedStateArrayList!!.size == 0)) {  // The activity has not been restarted or it was restarted on start to change the theme.
             // Add the first tab.
-            addNewTab("", true)
+            addNewTab("", false)
         } else {  // The activity has been restarted.
             // Restore each tab.
             for (i in savedStateArrayList!!.indices) {
@@ -3815,7 +3818,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 newTab.setCustomView(R.layout.tab_custom_view)
 
                 // Add the new page.
-                webViewPagerAdapter!!.restorePage(savedStateArrayList!![i], savedNestedScrollWebViewStateArrayList!![i])
+                webViewStateAdapter!!.restorePage(savedStateArrayList!![i], savedNestedScrollWebViewStateArrayList!![i])
             }
 
             // Reset the saved state variables.
@@ -3828,7 +3831,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 setCurrentWebView(0)
             } else {  // The first tab is not selected.
                 // Move to the selected tab.
-                webViewPager.currentItem = savedTabPosition
+                webViewViewPager2.currentItem = savedTabPosition
             }
 
             // Get the intent that started the app.
@@ -3947,9 +3950,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     }
 
                     // Reload existing URLs and load any URLs that are waiting for the proxy.
-                    for (i in 0 until webViewPagerAdapter!!.count) {
+                    for (i in 0 until webViewStateAdapter!!.itemCount) {
                         // Get the WebView tab fragment.
-                        val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(i)
+                        val webViewTabFragment = webViewStateAdapter!!.getPageFragment(i)
 
                         // Get the fragment view.
                         val fragmentView = webViewTabFragment.view
@@ -3989,9 +3992,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val createBookmarkFab = findViewById<FloatingActionButton>(R.id.create_bookmark_fab)
 
         // Update the WebView pager every time a tab is modified.
-        webViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
+        webViewViewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 // Close the find on page bar if it is open.
                 closeFindOnPage(null)
@@ -4011,15 +4012,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     }
                 }
             }
-
-            override fun onPageScrollStateChanged(state: Int) {}
         })
 
         // Handle tab selections.
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 // Select the same page in the view pager.
-                webViewPager.currentItem = tab.position
+                webViewViewPager2.currentItem = tab.position
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -4593,7 +4592,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     nestedScrollWebView.setFavoriteIcon(icon)
 
                     // Get the current page position.
-                    val currentPosition = webViewPagerAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
+                    val currentPosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
 
                     // Get the current tab.
                     val tab = tabLayout.getTabAt(currentPosition)
@@ -4618,7 +4617,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Save a copy of the title when it changes.
             override fun onReceivedTitle(view: WebView, title: String) {
                 // Get the current page position.
-                val currentPosition = webViewPagerAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
+                val currentPosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
 
                 // Get the current tab.
                 val tab = tabLayout.getTabAt(currentPosition)
@@ -4855,10 +4854,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
 
                 // Get the current WebView page position.
-                val webViewPagePosition = webViewPagerAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
+                val webViewPagePosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
 
                 // Determine if the WebView is currently displayed.
-                val webViewDisplayed = webViewPagePosition == tabLayout.selectedTabPosition
+                val webViewDisplayed = (webViewPagePosition == tabLayout.selectedTabPosition)
 
                 // Block third-party requests if enabled.
                 if (isThirdPartyRequest && nestedScrollWebView.blockAllThirdPartyRequests) {
@@ -5184,7 +5183,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 nestedScrollWebView.resetRequestsCounters()
 
                 // Get the current page position.
-                val currentPagePosition = webViewPagerAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
+                val currentPagePosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
 
                 // Update the URL text bar if the page is currently selected and the URL edit text is not currently being edited.
                 if ((tabLayout.selectedTabPosition == currentPagePosition) && !urlEditText.hasFocus()) {
@@ -5208,7 +5207,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 val currentDomainName = currentUri.host
 
                 // Get the IP addresses for the current domain.
-                if ((currentDomainName != null) && currentDomainName.isNotEmpty())
+                if (!currentDomainName.isNullOrEmpty())
                     GetHostIpAddressesCoroutine.checkPinnedMismatch(currentDomainName, nestedScrollWebView, supportFragmentManager, getString(R.string.pinned_mismatch))
 
                 // Replace Refresh with Stop if the options menu has been created and the WebView is currently displayed.  (The first WebView typically begins loading before the menu items are instantiated.)
@@ -5275,7 +5274,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
 
                 // Get the current page position.
-                val currentPagePosition = webViewPagerAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
+                val currentPagePosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
 
                 // Get the current URL from the nested scroll WebView.  This is more accurate than using the URL passed into the method, which is sometimes not the final one.
                 val currentUrl = nestedScrollWebView.url
@@ -5748,7 +5747,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         swipeRefreshLayout.isRefreshing = false
 
         // Get the WebView tab fragment.
-        val webViewTabFragment = webViewPagerAdapter!!.getPageFragment(pageNumber)
+        val webViewTabFragment = webViewStateAdapter!!.getPageFragment(pageNumber)
 
         // Get the fragment view.
         val webViewFragmentView = webViewTabFragment.view
@@ -5816,7 +5815,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Remove any background on the URL relative layout.
                 urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
             }
-        } else if (pageNumber == savedTabPosition) {  // The app is being restored but the saved tab position fragment has not been populated yet.  Try again in 100 milliseconds.
+        } else if ((pageNumber == savedTabPosition) || (pageNumber == (webViewStateAdapter!!.itemCount - 1))) {  // The tab has not been populated yet.
+            //  Try again in 100 milliseconds if the app is being restored or the a new tab has been added (the last tab).
             // Create a handler to set the current WebView.
             val setCurrentWebViewHandler = Handler(Looper.getMainLooper())
 

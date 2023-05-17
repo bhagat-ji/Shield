@@ -86,10 +86,10 @@ class HttpAuthenticationDialog : DialogFragment() {
         // Try to populate the alert dialog.
         try {  // Getting the WebView tab fragment will fail if Privacy Browser has been restarted.
             // Get the current position of this WebView fragment.
-            val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(webViewFragmentId)
+            val webViewPosition = MainWebViewActivity.webViewStateAdapter!!.getPositionForId(webViewFragmentId)
 
             // Get the WebView tab fragment.
-            val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
+            val webViewTabFragment = MainWebViewActivity.webViewStateAdapter!!.getPageFragment(webViewPosition)
 
             // Get the fragment view.
             val fragmentView = webViewTabFragment.requireView()

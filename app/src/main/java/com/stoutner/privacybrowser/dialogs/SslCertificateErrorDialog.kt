@@ -112,10 +112,10 @@ class SslCertificateErrorDialog : DialogFragment() {
         val webViewFragmentId = requireArguments().getLong(WEBVIEW_FRAGMENT_ID)
 
         // Get the current position of this WebView fragment.
-        val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(webViewFragmentId)
+        val webViewPosition = MainWebViewActivity.webViewStateAdapter!!.getPositionForId(webViewFragmentId)
 
         // Get the WebView tab fragment.
-        val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
+        val webViewTabFragment = MainWebViewActivity.webViewStateAdapter!!.getPageFragment(webViewPosition)
 
         // Get the fragment view.
         val fragmentView = webViewTabFragment.requireView()

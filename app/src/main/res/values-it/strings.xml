@@ -288,7 +288,32 @@
         <string name="blocked">Bloccata</string>
         <string name="request_blocked">%1$d. Bloccata</string>
         <string name="blocked_plural">Bloccate</string>
+    <string name="filterlist">Lista dei Filtri</string>
     <string name="sublist">Sublist</string>
+        <string name="main_allowlist">Lista principale dei permessi</string>
+        <string name="final_allowlist">Lista finale dei permessi</string>
+        <string name="domain_allowlist">Lista domini permessi</string>
+        <string name="domain_initial_allowlist">Lista iniziale domini permessi</string>
+        <string name="domain_final_allowlist">Lista finale domini permessi</string>
+        <string name="third_party_allowlist">Lista di terze parti permesse</string>
+        <string name="third_party_domain_allowlist">Lista domini di terze parti permessi</string>
+        <string name="third_party_domain_initial_allowlist">Lista iniziale domini di terze parti permessi</string>
+        <string name="main_blocklist">Lista principale bloccati</string>
+        <string name="initial_blocklist">Lista iniziale bloccati</string>
+        <string name="final_blocklist">Lista finale bloccati</string>
+        <string name="domain_blocklist">Lista domini bloccati</string>
+        <string name="domain_initial_blocklist">Lista iniziale domini bloccati</string>
+        <string name="domain_final_blocklist">Lista finale domini bloccati</string>
+        <string name="domain_regular_expression_blocklist">Lista di blocco espressioni regolari nei domini</string>
+        <string name="third_party_blocklist">Lista di terze parti bloccate</string>
+        <string name="third_party_initial_blocklist">Lista iniziale di terze parti bloccate</string>
+        <string name="third_party_domain_blocklist">Lista domini di terze parti bloccati</string>
+        <string name="third_party_domain_initial_blocklist">Lista iniziale domini di terze parti bloccati</string>
+        <string name="third_party_regular_expression_blocklist">Lista di blocco espressioni regolari di terze parti</string>
+        <string name="third_party_domain_regular_expression_blocklist">Lista di blocco espressioni regolari domini di terze parti</string>
+        <string name="regular_expression_blocklist">Lista di blocco espressioni regolari</string>
+    <string name="filterlist_entries">Elementi della lista dei filtri</string>
+    <string name="filterlist_original_entry">Elemento originale della lista dei filtri</string>
 
     <!-- Domains. -->
     <string name="domains">Domini</string>
@@ -479,12 +504,19 @@
         <string name="allow_screenshots">Permetti gli screenshot</string>
         <string name="allow_screenshots_summary">Permette gli screenshot, la registrazione di video, e la possibilità di visualizzare su schermi non sicuri.
             La modifica di questa impostazione provoca il riavvio di Privacy Browser.</string>
+    <string name="filterlists">Lista dei filtri</string>
         <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Lista principale dei filtri degli annunci.</string>
         <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Lista principale dei filtri per i tracker.</string>
         <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboys_annoyance_list_summary">Filtra collegamenti e popups fastidiosi.  Include le liste Fanboy’s social blocking.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+        <string name="fanboys_social_blocking_list_summary">Filtra i contenuti dei social media di terze parti.</string>
         <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList filtra gli annunci che EasyList non è in grado di bloccare per non rendere inaccessibili i siti web.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">UltraPrivacy filtra i trackers che EasyList non è in grado di bloccare per non rendere inaccessibili i siti web.</string>
         <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
         <string name="block_all_third_party_requests_summary">Il blocco di tutte le richieste di Terze Parti aumenta privacy, ma impedisce la visualizzazione di molti siti web.</string>
     <string name="url_modification">Modifica delle URL</string>

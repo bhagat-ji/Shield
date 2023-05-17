@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -25,12 +25,13 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.PreferenceManager
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.adapters.GuidePagerAdapter
+import com.stoutner.privacybrowser.adapters.GuideStateAdapter
 
 class GuideActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +59,8 @@ class GuideActivity : AppCompatActivity() {
 
         // Get handles for the views.
         val toolbar = findViewById<Toolbar>(R.id.guide_toolbar)
-        val guideViewPager = findViewById<ViewPager>(R.id.guide_viewpager)
         val guideTabLayout = findViewById<TabLayout>(R.id.guide_tablayout)
+        val guideViewPager2 = findViewById<ViewPager2>(R.id.guide_viewpager2)
 
         // Set the support action bar.
         setSupportActionBar(toolbar)
@@ -70,16 +71,28 @@ class GuideActivity : AppCompatActivity() {
         // Display the home arrow on the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        // Initialize the guide pager adapter.
-        val guidePagerAdapter = GuidePagerAdapter(supportFragmentManager, applicationContext)
+        // Initialize the guide state adapter.
+        val guideStateAdapter = GuideStateAdapter(this)
 
         // Set the view pager adapter.
-        guideViewPager.adapter = guidePagerAdapter
+        guideViewPager2.adapter = guideStateAdapter
 
-        // Keep all the tabs in memory.  This prevents the memory usage adapter from running multiple times.
-        guideViewPager.offscreenPageLimit = 10
-
-        // Link the tab layout to the view pager.
-        guideTabLayout.setupWithViewPager(guideViewPager)
+        // Create a tab layout mediator.  Tab numbers start at 0.
+        TabLayoutMediator(guideTabLayout, guideViewPager2) { tab, position ->
+            // Set the tab text based on the position.
+            tab.text = when (position) {
+                0 -> getString(R.string.overview)
+                1 -> getString(R.string.javascript)
+                2 -> getString(R.string.local_storage)
+                3 -> getString(R.string.user_agent)
+                4 -> getString(R.string.requests)
+                5 -> getString(R.string.domain_settings)
+                6 -> getString(R.string.ssl_certificates)
+                7 -> getString(R.string.proxies)
+                8 -> getString(R.string.tracking_ids)
+                9 -> getString(R.string.gui)
+                else -> ""
+            }
+        }.attach()
     }
 }

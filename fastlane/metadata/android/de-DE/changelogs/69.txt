@@ -1,0 +1,8 @@
+• Nicht den voreingestellten Werten entsprechende Domain-Einstellungen werden nun durch einen geänderten Hintergrund hervorgehoben.
+• Die Bezeichnungen whitelist und blacklist wurden aus dem Projekt entfernt.
+• Vorgeschlagene Dateinamen wurden vereinheitlicht.
+• Hintergrundfarbe der App-Leiste bei Verwendung von Proxies wurde geändert.
+• Die Scroll-Position wird wiederhergestellt, wenn der Einstellungs-Dialog neu gestartet wird.
+• Letzte Programmteile nach Kotlin migriert und veraltete AsyncTasks entfernt.
+• Diverse kleine Code-Optimierungen für einen effizienteren Programmablauf.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

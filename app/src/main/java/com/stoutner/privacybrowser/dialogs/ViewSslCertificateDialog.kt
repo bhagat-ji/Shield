@@ -113,10 +113,10 @@ class ViewSslCertificateDialog : DialogFragment() {
         // Populate the class variables.
         if (savedInstanceState == null) {  // The dialog is starting for the first time.
             // Get the current position of this WebView fragment.
-            val webViewPosition = MainWebViewActivity.webViewPagerAdapter!!.getPositionForId(requireArguments().getLong(WEBVIEW_FRAGMENT_ID))
+            val webViewPosition = MainWebViewActivity.webViewStateAdapter!!.getPositionForId(requireArguments().getLong(WEBVIEW_FRAGMENT_ID))
 
             // Get the WebView tab fragment.
-            val webViewTabFragment = MainWebViewActivity.webViewPagerAdapter!!.getPageFragment(webViewPosition)
+            val webViewTabFragment = MainWebViewActivity.webViewStateAdapter!!.getPageFragment(webViewPosition)
 
             // Get the fragment view.
             val fragmentView = webViewTabFragment.requireView()

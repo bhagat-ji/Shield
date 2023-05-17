@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2019-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -52,8 +52,8 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <!-- `android:layout_weight="1"` makes the view pager fill the rest of the screen. -->
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/about_viewpager"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/about_viewpager2"
             android:layout_height="0dp"
             android:layout_width="match_parent"
             android:layout_weight="1" />

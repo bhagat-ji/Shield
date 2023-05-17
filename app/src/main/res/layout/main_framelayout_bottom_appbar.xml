@@ -44,8 +44,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
 
-                    <com.stoutner.privacybrowser.views.NoSwipeViewPager
-                        android:id="@+id/webviewpager"
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/webview_viewpager2"
                         android:layout_height="match_parent"
                         android:layout_width="match_parent" />
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

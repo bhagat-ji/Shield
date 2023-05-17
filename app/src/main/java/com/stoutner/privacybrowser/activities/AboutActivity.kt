@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -25,12 +25,13 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.PreferenceManager
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.adapters.AboutPagerAdapter
+import com.stoutner.privacybrowser.adapters.AboutStateAdapter
 
 const val FILTERLIST_VERSIONS = "filterlist_versions"
 
@@ -66,7 +67,7 @@ class AboutActivity : AppCompatActivity() {
         // Get handles for the views.
         val toolbar = findViewById<Toolbar>(R.id.about_toolbar)
         val aboutTabLayout = findViewById<TabLayout>(R.id.about_tablayout)
-        val aboutViewPager = findViewById<ViewPager>(R.id.about_viewpager)
+        val aboutViewPager2 = findViewById<ViewPager2>(R.id.about_viewpager2)
 
         // Set the support action bar.
         setSupportActionBar(toolbar)
@@ -77,16 +78,25 @@ class AboutActivity : AppCompatActivity() {
         // Display the home arrow on the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        // Initialize the about pager adapter.
-        val aboutPagerAdapter = AboutPagerAdapter(supportFragmentManager, applicationContext, filterListVersions)
+        // Initialize the about state adapter.
+        val aboutStateAdapter = AboutStateAdapter(this, filterListVersions)
 
         // Set the view pager adapter.
-        aboutViewPager.adapter = aboutPagerAdapter
+        aboutViewPager2.adapter = aboutStateAdapter
 
-        // Keep all the tabs in memory.  This prevents the memory usage updater from running multiple times.
-        aboutViewPager.offscreenPageLimit = 10
-
-        // Connect the tab layout to the view pager.
-        aboutTabLayout.setupWithViewPager(aboutViewPager)
+        // Create a tab layout mediator.  Tab numbers start at 0.
+        TabLayoutMediator(aboutTabLayout, aboutViewPager2) { tab, position ->
+            // Set the tab text based on the position.
+            tab.text = when (position) {
+                0 -> getString(R.string.version)
+                1 -> getString(R.string.permissions)
+                2 -> getString(R.string.privacy_policy)
+                3 -> getString(R.string.changelog)
+                4 -> getString(R.string.licenses)
+                5 -> getString(R.string.contributors)
+                6 -> getString(R.string.links)
+                else -> ""
+            }
+        }.attach()
     }
 }
