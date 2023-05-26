@@ -36,8 +36,8 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -49,6 +49,9 @@ import com.google.android.material.textfield.TextInputLayout
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.BuildConfig
+import com.stoutner.privacybrowser.helpers.EXPORT_SUCCESSFUL
+import com.stoutner.privacybrowser.helpers.IMPORT_EXPORT_SCHEMA_VERSION
+import com.stoutner.privacybrowser.helpers.IMPORT_SUCCESSFUL
 import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper
 
 import java.io.File
@@ -392,7 +395,7 @@ class ImportExportActivity : AppCompatActivity() {
         savedInstanceState.putString(IMPORT_EXPORT_BUTTON_TEXT, importExportButton.text.toString())
     }
 
-    fun onClickRadioButton(@Suppress("UNUSED_PARAMETER") view: View) {
+    fun onClickRadioButton(view: View) {
         // Check to see if import or export was selected.
         if (view.id == R.id.import_radiobutton) {  // The import radio button is selected.
             // Check to see if OpenPGP encryption is selected.
@@ -457,9 +460,9 @@ class ImportExportActivity : AppCompatActivity() {
         } else {  // Export is selected
             // Open the file picker with the export name according to the encryption type.
             if (encryptionSpinner.selectedItemPosition == NO_ENCRYPTION)  // No encryption is selected.
-                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, ImportExportDatabaseHelper.SCHEMA_VERSION))
+                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, IMPORT_EXPORT_SCHEMA_VERSION))
             else  // Password encryption is selected.
-                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs_aes, BuildConfig.VERSION_NAME, ImportExportDatabaseHelper.SCHEMA_VERSION))
+                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs_aes, BuildConfig.VERSION_NAME, IMPORT_EXPORT_SCHEMA_VERSION))
         }
     }
 
@@ -494,7 +497,7 @@ class ImportExportActivity : AppCompatActivity() {
                     }
 
                     // Restart Privacy Browser if successful.
-                    if (importStatus == ImportExportDatabaseHelper.IMPORT_SUCCESSFUL)
+                    if (importStatus == IMPORT_SUCCESSFUL)
                         restartPrivacyBrowser()
                 }
 
@@ -600,7 +603,7 @@ class ImportExportActivity : AppCompatActivity() {
                         temporaryUnencryptedImportFile.delete()
 
                         // Restart Privacy Browser if successful.
-                        if (importStatus == ImportExportDatabaseHelper.IMPORT_SUCCESSFUL)
+                        if (importStatus == IMPORT_SUCCESSFUL)
                             restartPrivacyBrowser()
                     } catch (exception: Exception) {
                         // Update the import status.
@@ -658,7 +661,7 @@ class ImportExportActivity : AppCompatActivity() {
                         openKeychainDecryptActivityResultLauncher.launch(openKeychainDecryptIntent)
 
                         // Update the import status.
-                        importStatus = ImportExportDatabaseHelper.IMPORT_SUCCESSFUL
+                        importStatus = IMPORT_SUCCESSFUL
                     } catch (exception: Exception) {
                         // Update the import status.
                         importStatus = exception.toString()
@@ -666,11 +669,9 @@ class ImportExportActivity : AppCompatActivity() {
                 }
             }
 
-            // Respond to the import status.
-            if (importStatus != ImportExportDatabaseHelper.IMPORT_SUCCESSFUL) {
-                // Display a snack bar with the import error.
+            // Display a snack bar with the import error if it was unsuccessful.
+            if (importStatus != IMPORT_SUCCESSFUL)
                 Snackbar.make(fileNameEditText, getString(R.string.import_failed, importStatus), Snackbar.LENGTH_INDEFINITE).show()
-            }
         } else {  // Export is selected.
             // Export according to the encryption type.
             when (encryptionSpinner.selectedItemPosition) {
@@ -690,11 +691,10 @@ class ImportExportActivity : AppCompatActivity() {
                         exportFileOutputStream.close()
 
                         // Display an export disposition snackbar.
-                        if (noEncryptionExportStatus == ImportExportDatabaseHelper.EXPORT_SUCCESSFUL) {
+                        if (noEncryptionExportStatus == EXPORT_SUCCESSFUL)
                             Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show()
-                        } else {
+                        else
                             Snackbar.make(fileNameEditText, getString(R.string.export_failed, noEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
-                        }
                     } catch (fileNotFoundException: FileNotFoundException) {
                         // Display a snackbar with the exception.
                         Snackbar.make(fileNameEditText, getString(R.string.export_failed, fileNotFoundException), Snackbar.LENGTH_INDEFINITE).show()
@@ -810,7 +810,7 @@ class ImportExportActivity : AppCompatActivity() {
                         temporaryUnencryptedExportFile.delete()
 
                         // Display an export disposition snackbar.
-                        if (passwordEncryptionExportStatus == ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)
+                        if (passwordEncryptionExportStatus == EXPORT_SUCCESSFUL)
                             Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show()
                         else
                             Snackbar.make(fileNameEditText, getString(R.string.export_failed, passwordEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
@@ -830,7 +830,7 @@ class ImportExportActivity : AppCompatActivity() {
 
                         // Set the temporary pre-encrypted export file.
                         temporaryPreEncryptedExportFile = File(fileProviderDirectory.toString() + "/" +
-                                getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, ImportExportDatabaseHelper.SCHEMA_VERSION))
+                                getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, IMPORT_EXPORT_SCHEMA_VERSION))
 
                         // Delete the temporary pre-encrypted export file if it already exists.
                         if (temporaryPreEncryptedExportFile.exists())
@@ -849,7 +849,7 @@ class ImportExportActivity : AppCompatActivity() {
                         temporaryPreEncryptedExportOutputStream.close()
 
                         // Display an export error snackbar if the temporary pre-encrypted export failed.
-                        if (openpgpEncryptionExportStatus != ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)
+                        if (openpgpEncryptionExportStatus != EXPORT_SUCCESSFUL)
                             Snackbar.make(fileNameEditText, getString(R.string.export_failed, openpgpEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
 
                         // Create an encryption intent for OpenKeychain.

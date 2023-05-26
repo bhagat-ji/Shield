@@ -137,10 +137,40 @@ import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog
 import com.stoutner.privacybrowser.dialogs.WaitingForProxyDialog
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment
+import com.stoutner.privacybrowser.helpers.COOKIES
+import com.stoutner.privacybrowser.helpers.DARK_THEME
+import com.stoutner.privacybrowser.helpers.DISABLED
+import com.stoutner.privacybrowser.helpers.DISPLAY_IMAGES
+import com.stoutner.privacybrowser.helpers.DOMAIN_NAME
+import com.stoutner.privacybrowser.helpers.ENABLE_DOM_STORAGE
+import com.stoutner.privacybrowser.helpers.ENABLE_EASYLIST
+import com.stoutner.privacybrowser.helpers.ENABLE_EASYPRIVACY
+import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_ANNOYANCE_LIST
+import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST
+import com.stoutner.privacybrowser.helpers.ENABLE_FORM_DATA
+import com.stoutner.privacybrowser.helpers.ENABLE_JAVASCRIPT
+import com.stoutner.privacybrowser.helpers.ENABLE_ULTRAPRIVACY
+import com.stoutner.privacybrowser.helpers.ENABLED
+import com.stoutner.privacybrowser.helpers.FONT_SIZE
+import com.stoutner.privacybrowser.helpers.ID
+import com.stoutner.privacybrowser.helpers.IP_ADDRESSES
+import com.stoutner.privacybrowser.helpers.LIGHT_THEME
+import com.stoutner.privacybrowser.helpers.PINNED_IP_ADDRESSES
+import com.stoutner.privacybrowser.helpers.PINNED_SSL_CERTIFICATE
 import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
 import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
 import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
 import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_COMMON_NAME
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_ORGANIZATION
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_COMMON_NAME
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_ORGANIZATION
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT
+import com.stoutner.privacybrowser.helpers.SWIPE_TO_REFRESH
+import com.stoutner.privacybrowser.helpers.SYSTEM_DEFAULT
+import com.stoutner.privacybrowser.helpers.WEBVIEW_THEME
+import com.stoutner.privacybrowser.helpers.WIDE_VIEWPORT
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 import com.stoutner.privacybrowser.helpers.CheckFilterListHelper
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
@@ -153,7 +183,6 @@ import com.stoutner.privacybrowser.views.EASYPRIVACY
 import com.stoutner.privacybrowser.views.FANBOYS_ANNOYANCE_LIST
 import com.stoutner.privacybrowser.views.FANBOYS_SOCIAL_BLOCKING_LIST
 import com.stoutner.privacybrowser.views.THIRD_PARTY_REQUESTS
-import com.stoutner.privacybrowser.views.ULTRALIST
 import com.stoutner.privacybrowser.views.ULTRAPRIVACY
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
@@ -226,6 +255,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var bookmarksTitleTextView: TextView
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var cookieManager: CookieManager
+    private lateinit var defaultFontSizeString: String
+    private lateinit var defaultUserAgentName: String
+    private lateinit var defaultWebViewTheme: String
     private lateinit var domainsSettingsSet: MutableSet<String>
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var easyList: ArrayList<List<Array<String>>>
@@ -296,10 +328,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var tabsLinearLayout: LinearLayout
     private lateinit var toolbar: Toolbar
     private lateinit var webViewDefaultUserAgent: String
+    private lateinit var webViewThemeEntryValuesStringArray: Array<String>
     private lateinit var webViewViewPager2: ViewPager2
     private lateinit var ultraList: ArrayList<List<Array<String>>>
     private lateinit var urlEditText: EditText
     private lateinit var urlRelativeLayout: RelativeLayout
+    private lateinit var userAgentDataArray: Array<String>
+    private lateinit var userAgentNamesArray: ArrayAdapter<CharSequence>
 
     // Define the class variables.
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
@@ -309,8 +344,22 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var bookmarksDrawerPinned = false
     private var bottomAppBar = false
     private var currentWebView: NestedScrollWebView? = null
+    private var defaultBlockAllThirdPartyRequests = false
+    private var defaultCookies = false
+    private var defaultDisplayWebpageImages = true
+    private var defaultDomStorage = false
+    private var defaultEasyList = true
+    private var defaultEasyPrivacy = true
+    private var defaultFanboysAnnoyanceList = true
+    private var defaultFanboysSocialBlockingList = true
+    private var defaultFormData = false  // Form data can be removed once the minimum API >= 26.
     private var defaultProgressViewEndOffset = 0
     private var defaultProgressViewStartOffset = 0
+    private var defaultJavaScript = false
+    private var defaultSwipeToRefresh = true
+    private var defaultUltraList = true
+    private var defaultUltraPrivacy = true
+    private var defaultWideViewport = true
     private var displayAdditionalAppBarIcons = false
     private var displayingFullScreenVideo = false
     private var domainsDatabaseHelper: DomainsDatabaseHelper? = null
@@ -1057,7 +1106,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Set the status of the menu item checkboxes.
             optionsDomStorageMenuItem.isChecked = currentWebView!!.settings.domStorageEnabled
             @Suppress("DEPRECATION")
-            optionsSaveFormDataMenuItem.isChecked = currentWebView!!.settings.saveFormData // Form data can be removed once the minimum API >= 26.
+            optionsSaveFormDataMenuItem.isChecked = currentWebView!!.settings.saveFormData  // Form data can be removed once the minimum API >= 26.
             optionsEasyListMenuItem.isChecked = currentWebView!!.easyListEnabled
             optionsEasyPrivacyMenuItem.isChecked = currentWebView!!.easyPrivacyEnabled
             optionsFanboysAnnoyanceListMenuItem.isChecked = currentWebView!!.fanboysAnnoyanceListEnabled
@@ -1075,7 +1124,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             optionsEasyPrivacyMenuItem.title = currentWebView!!.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
             optionsFanboysAnnoyanceListMenuItem.title = currentWebView!!.getRequestsCount(FANBOYS_ANNOYANCE_LIST).toString() + " - " + getString(R.string.fanboys_annoyance_list)
             optionsFanboysSocialBlockingListMenuItem.title = currentWebView!!.getRequestsCount(FANBOYS_SOCIAL_BLOCKING_LIST).toString() + " - " + getString(R.string.fanboys_social_blocking_list)
-            optionsUltraListMenuItem.title = currentWebView!!.getRequestsCount(ULTRALIST).toString() + " - " + getString(R.string.ultralist)
+            optionsUltraListMenuItem.title = currentWebView!!.getRequestsCount(com.stoutner.privacybrowser.views.ULTRALIST).toString() + " - " + getString(R.string.ultralist)
             optionsUltraPrivacyMenuItem.title = currentWebView!!.getRequestsCount(ULTRAPRIVACY).toString() + " - " + getString(R.string.ultraprivacy)
             optionsBlockAllThirdPartyRequestsMenuItem.title = currentWebView!!.getRequestsCount(THIRD_PARTY_REQUESTS).toString() + " - " + getString(R.string.block_all_third_party_requests)
 
@@ -2707,6 +2756,32 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     private fun applyAppSettings() {
+        // Store the default preferences used in `applyDomainSettings()`.  These are done here so that expensive preference requests are not done each time a domain is loaded.
+        defaultJavaScript = sharedPreferences.getBoolean(getString(R.string.javascript_key), false)
+        defaultCookies = sharedPreferences.getBoolean(getString(R.string.cookies_key), false)
+        defaultDomStorage = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
+        defaultFormData = sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false)  // Form data can be removed once the minimum API >= 26.
+        defaultEasyList = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
+        defaultEasyPrivacy = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
+        defaultFanboysAnnoyanceList = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
+        defaultFanboysSocialBlockingList = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
+        defaultUltraList = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
+        defaultUltraPrivacy = sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true)
+        defaultBlockAllThirdPartyRequests = sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false)
+        defaultFontSizeString = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))!!
+        defaultUserAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))!!
+        defaultSwipeToRefresh = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true)
+        defaultWebViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))!!
+        defaultWideViewport = sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true)
+        defaultDisplayWebpageImages = sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true)
+
+        // Get the WebView theme entry values string array.  This is done here so that expensive resource requests are not made each time a domain is loaded.
+        webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values)
+
+        // Get the user agent array adapter and string array.  These are done here so that expensive resource requests are not made each time a domain is loaded.
+        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item)
+        userAgentDataArray = resources.getStringArray(R.array.user_agent_data)
+
         // Store the values from the shared preferences in variables.
         incognitoModeEnabled = sharedPreferences.getBoolean(getString(R.string.incognito_mode_key), false)
         sanitizeTrackingQueries = sharedPreferences.getBoolean(getString(R.string.tracking_queries_key), true)
@@ -2861,7 +2936,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             newHostName = ""
 
         // Apply the domain settings if a new domain is being loaded or if the new domain is blank.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
-        if (nestedScrollWebView.currentDomainName != newHostName || newHostName == "") {
+        if ((nestedScrollWebView.currentDomainName != newHostName) || (newHostName == "")) {  // A new domain is being loaded.
             // Set the new host name as the current domain name.
             nestedScrollWebView.currentDomainName = newHostName
 
@@ -2929,22 +3004,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 newHostName = newHostName.substring(newHostName.indexOf(".") + 1)
             }
 
-            // Store the general preference information.
-            val defaultFontSizeString = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))
-            val defaultUserAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
-            val defaultSwipeToRefresh = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true)
-            val webViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))
-            val wideViewport = sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true)
-            val displayWebpageImages = sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true)
-
-            // Get the WebView theme entry values string array.
-            val webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values)
-
-            // Initialize the user agent array adapter and string array.
-            val userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item)
-            val userAgentDataArray = resources.getStringArray(R.array.user_agent_data)
-
-            // Apply either the domain settings for the default settings.
+            // Apply either the domain settings or the default settings.
             if (nestedScrollWebView.domainSettingsApplied) {  // The url has custom domain settings.
                 // Get a cursor for the current host.
                 val currentDomainSettingsCursor = domainsDatabaseHelper!!.getCursorForDomainName(domainNameInDatabase!!)
@@ -2953,69 +3013,121 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 currentDomainSettingsCursor.moveToFirst()
 
                 // Get the settings from the cursor.
-                nestedScrollWebView.domainSettingsDatabaseId = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ID))
-                nestedScrollWebView.settings.javaScriptEnabled = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1
-                nestedScrollWebView.acceptCookies = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES)) == 1
-                nestedScrollWebView.settings.domStorageEnabled = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1
-                // Form data can be removed once the minimum API >= 26.
-                val saveFormData = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1
-                nestedScrollWebView.easyListEnabled = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1
-                nestedScrollWebView.easyPrivacyEnabled = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1
-                nestedScrollWebView.fanboysAnnoyanceListEnabled = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1
-                nestedScrollWebView.fanboysSocialBlockingListEnabled =
-                    currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1
-                nestedScrollWebView.ultraListEnabled = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST)) == 1
-                nestedScrollWebView.ultraPrivacyEnabled = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1
-                nestedScrollWebView.blockAllThirdPartyRequests = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1
-                val userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT))
-                val fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE))
-                val swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH))
-                val webViewThemeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME))
-                val wideViewportInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT))
-                val displayWebpageImagesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES))
-                val pinnedSslCertificate = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1
-                val pinnedSslIssuedToCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME))
-                val pinnedSslIssuedToOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION))
-                val pinnedSslIssuedToUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT))
-                val pinnedSslIssuedByCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME))
-                val pinnedSslIssuedByOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION))
-                val pinnedSslIssuedByUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT))
-                val pinnedSslStartDate = Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)))
-                val pinnedSslEndDate = Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)))
-                val pinnedIpAddresses = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1
-                val pinnedHostIpAddresses = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES))
+                nestedScrollWebView.domainSettingsDatabaseId = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ID))
+                val javaScriptInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT))
+                val cookiesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(COOKIES))
+                val domStorageInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE))
+                val formDataInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA))  // Form data can be removed once the minimum API >= 26.
+                val easyListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
+                val easyPrivacyInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
+                val fanboysAnnoyanceListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
+                val fanboysSocialBlockingListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST))
+                val ultraListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.ULTRALIST))
+                val ultraPrivacyInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY))
+                val blockAllThirdPartyRequestsInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.BLOCK_ALL_THIRD_PARTY_REQUESTS))
+                val userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.USER_AGENT))
+                val fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(FONT_SIZE))
+                val swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH))
+                val webViewThemeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(WEBVIEW_THEME))
+                val wideViewportInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(WIDE_VIEWPORT))
+                val displayWebpageImagesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(DISPLAY_IMAGES))
+                val pinnedSslCertificate = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE)) == 1)
+                val pinnedSslIssuedToCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME))
+                val pinnedSslIssuedToOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION))
+                val pinnedSslIssuedToUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT))
+                val pinnedSslIssuedByCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME))
+                val pinnedSslIssuedByOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION))
+                val pinnedSslIssuedByUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT))
+                val pinnedSslStartDate = Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.SSL_START_DATE)))
+                val pinnedSslEndDate = Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.SSL_END_DATE)))
+                val pinnedIpAddresses = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES)) == 1)
+                val pinnedHostIpAddresses = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(IP_ADDRESSES))
 
                 // Close the current host domain settings cursor.
                 currentDomainSettingsCursor.close()
 
-                // If there is a pinned SSL certificate, store it in the WebView.
-                if (pinnedSslCertificate)
-                    nestedScrollWebView.setPinnedSslCertificate(pinnedSslIssuedToCName, pinnedSslIssuedToOName, pinnedSslIssuedToUName, pinnedSslIssuedByCName, pinnedSslIssuedByOName, pinnedSslIssuedByUName,
-                        pinnedSslStartDate, pinnedSslEndDate)
+                // Set the JavaScript status.
+                when (javaScriptInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.settings.javaScriptEnabled = defaultJavaScript
+                    ENABLED -> nestedScrollWebView.settings.javaScriptEnabled = true
+                    DISABLED -> nestedScrollWebView.settings.javaScriptEnabled = false
+                }
 
-                // If there is a pinned IP address, store it in the WebView.
-                if (pinnedIpAddresses)
-                    nestedScrollWebView.pinnedIpAddresses = pinnedHostIpAddresses
+                // Store the cookies status.
+                when (cookiesInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.acceptCookies = defaultCookies
+                    ENABLED -> nestedScrollWebView.acceptCookies = true
+                    DISABLED -> nestedScrollWebView.acceptCookies = false
+                }
 
-                // Apply the cookie domain settings.
+                // Apply the cookies status.
                 cookieManager.setAcceptCookie(nestedScrollWebView.acceptCookies)
+
+                // Set the DOM storage status.
+                when (domStorageInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.settings.domStorageEnabled = defaultDomStorage
+                    ENABLED -> nestedScrollWebView.settings.domStorageEnabled = true
+                    DISABLED -> nestedScrollWebView.settings.domStorageEnabled = false
+                }
 
                 // Apply the form data setting if the API < 26.
                 @Suppress("DEPRECATION")
-                if (Build.VERSION.SDK_INT < 26)
-                    nestedScrollWebView.settings.saveFormData = saveFormData
-
-                // Apply the font size.
-                try {  // Try the specified font size to see if it is valid.
-                    if (fontSize == 0) {  // Apply the default font size.
-                        // Set the font size from the value in the app settings.
-                        nestedScrollWebView.settings.textZoom = defaultFontSizeString!!.toInt()
-                    } else {  // Apply the font size from domain settings.
-                        nestedScrollWebView.settings.textZoom = fontSize
+                if (Build.VERSION.SDK_INT < 26) {
+                    // Set the form data status.
+                    when (formDataInt) {
+                        SYSTEM_DEFAULT -> nestedScrollWebView.settings.saveFormData = defaultFormData
+                        ENABLED -> nestedScrollWebView.settings.saveFormData = true
+                        DISABLED -> nestedScrollWebView.settings.saveFormData = false
                     }
-                } catch (exception: Exception) {  // The specified font size is invalid
-                    // Set the font size to be 100%
-                    nestedScrollWebView.settings.textZoom = 100
+                }
+
+                // Set the EasyList status.
+                when (easyListInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.easyListEnabled = defaultEasyList
+                    ENABLED -> nestedScrollWebView.easyListEnabled = true
+                    DISABLED -> nestedScrollWebView.easyListEnabled = false
+                }
+
+                // Set the EasyPrivacy status.
+                when (easyPrivacyInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.easyPrivacyEnabled = defaultEasyPrivacy
+                    ENABLED -> nestedScrollWebView.easyPrivacyEnabled = true
+                    DISABLED -> nestedScrollWebView.easyPrivacyEnabled = false
+                }
+
+                // Set the Fanboy's Annoyance List status.
+                when (fanboysAnnoyanceListInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.fanboysAnnoyanceListEnabled = defaultFanboysAnnoyanceList
+                    ENABLED -> nestedScrollWebView.fanboysAnnoyanceListEnabled = true
+                    DISABLED -> nestedScrollWebView.fanboysAnnoyanceListEnabled = false
+                }
+
+                // Set the Fanboy's Social Blocking List status.
+                when (fanboysSocialBlockingListInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.fanboysSocialBlockingListEnabled = defaultFanboysSocialBlockingList
+                    ENABLED -> nestedScrollWebView.fanboysSocialBlockingListEnabled = true
+                    DISABLED -> nestedScrollWebView.fanboysSocialBlockingListEnabled = false
+                }
+
+                // Set the UltraList status.
+                when (ultraListInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.ultraListEnabled = defaultUltraList
+                    ENABLED -> nestedScrollWebView.ultraListEnabled = true
+                    DISABLED -> nestedScrollWebView.ultraListEnabled = false
+                }
+
+                // Set the UltraPrivacy status.
+                when (ultraPrivacyInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.ultraPrivacyEnabled = defaultUltraPrivacy
+                    ENABLED -> nestedScrollWebView.ultraPrivacyEnabled = true
+                    DISABLED -> nestedScrollWebView.ultraPrivacyEnabled = false
+                }
+
+                // Set the block all third-party requests status.
+                when (blockAllThirdPartyRequestsInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.blockAllThirdPartyRequests = defaultBlockAllThirdPartyRequests
+                    ENABLED -> nestedScrollWebView.blockAllThirdPartyRequests = true
+                    DISABLED -> nestedScrollWebView.blockAllThirdPartyRequests = false
                 }
 
                 // Set the user agent.
@@ -3052,9 +3164,22 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     }
                 }
 
+                // Apply the font size.
+                try {  // Try the specified font size to see if it is valid.
+                    if (fontSize == 0) {  // Apply the default font size.
+                        // Set the font size from the value in the app settings.
+                        nestedScrollWebView.settings.textZoom = defaultFontSizeString.toInt()
+                    } else {  // Apply the font size from domain settings.
+                        nestedScrollWebView.settings.textZoom = fontSize
+                    }
+                } catch (exception: Exception) {  // The specified font size is invalid
+                    // Set the font size to be 100%
+                    nestedScrollWebView.settings.textZoom = 100
+                }
+
                 // Set swipe to refresh.
                 when (swipeToRefreshInt) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
+                    SYSTEM_DEFAULT -> {
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.swipeToRefresh = defaultSwipeToRefresh
 
@@ -3071,7 +3196,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         }
                     }
 
-                    DomainsDatabaseHelper.ENABLED -> {
+                    ENABLED -> {
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.swipeToRefresh = true
 
@@ -3082,7 +3207,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         }
                     }
 
-                    DomainsDatabaseHelper.DISABLED -> {
+                    DISABLED -> {
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.swipeToRefresh = false
 
@@ -3096,8 +3221,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Set the WebView theme.
                     when (webViewThemeInt) {
                         // Set the WebView theme.
-                        DomainsDatabaseHelper.SYSTEM_DEFAULT ->
-                            when (webViewTheme) {
+                        SYSTEM_DEFAULT ->
+                            when (defaultWebViewTheme) {
                                 // The light theme is selected.  Turn off algorithmic darkening.
                                 webViewThemeEntryValuesStringArray[1] -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
 
@@ -3115,59 +3240,67 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             }
 
                         // Turn off algorithmic darkening.
-                        DomainsDatabaseHelper.LIGHT_THEME -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
+                        LIGHT_THEME -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
 
                         // Turn on algorithmic darkening.
-                        DomainsDatabaseHelper.DARK_THEME -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
+                        DARK_THEME -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
                     }
                 }
 
                 // Set the wide viewport status.
                 when (wideViewportInt) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> nestedScrollWebView.settings.useWideViewPort = wideViewport
-                    DomainsDatabaseHelper.ENABLED -> nestedScrollWebView.settings.useWideViewPort = true
-                    DomainsDatabaseHelper.DISABLED -> nestedScrollWebView.settings.useWideViewPort = false
+                    SYSTEM_DEFAULT -> nestedScrollWebView.settings.useWideViewPort = defaultWideViewport
+                    ENABLED -> nestedScrollWebView.settings.useWideViewPort = true
+                    DISABLED -> nestedScrollWebView.settings.useWideViewPort = false
                 }
 
                 // Set the display webpage images status.
                 when (displayWebpageImagesInt) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> nestedScrollWebView.settings.loadsImagesAutomatically = displayWebpageImages
-                    DomainsDatabaseHelper.ENABLED -> nestedScrollWebView.settings.loadsImagesAutomatically = true
-                    DomainsDatabaseHelper.DISABLED -> nestedScrollWebView.settings.loadsImagesAutomatically = false
+                    SYSTEM_DEFAULT -> nestedScrollWebView.settings.loadsImagesAutomatically = defaultDisplayWebpageImages
+                    ENABLED -> nestedScrollWebView.settings.loadsImagesAutomatically = true
+                    DISABLED -> nestedScrollWebView.settings.loadsImagesAutomatically = false
                 }
+
+                // If there is a pinned SSL certificate, store it in the WebView.
+                if (pinnedSslCertificate)
+                    nestedScrollWebView.setPinnedSslCertificate(pinnedSslIssuedToCName, pinnedSslIssuedToOName, pinnedSslIssuedToUName, pinnedSslIssuedByCName, pinnedSslIssuedByOName, pinnedSslIssuedByUName,
+                        pinnedSslStartDate, pinnedSslEndDate)
+
+                // If there is a pinned IP address, store it in the WebView.
+                if (pinnedIpAddresses)
+                    nestedScrollWebView.pinnedIpAddresses = pinnedHostIpAddresses
 
                 // Set a background on the URL relative layout to indicate that custom domain settings are being used.
                 urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.drawable.domain_settings_url_background)
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from the shared preferences.
-                nestedScrollWebView.settings.javaScriptEnabled = sharedPreferences.getBoolean(getString(R.string.javascript_key), false)
-                nestedScrollWebView.acceptCookies = sharedPreferences.getBoolean(getString(R.string.cookies_key), false)
-                nestedScrollWebView.settings.domStorageEnabled = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
-                val saveFormData = sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false) // Form data can be removed once the minimum API >= 26.
-                nestedScrollWebView.easyListEnabled = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
-                nestedScrollWebView.easyPrivacyEnabled = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
-                nestedScrollWebView.fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
-                nestedScrollWebView.fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
-                nestedScrollWebView.ultraListEnabled = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
-                nestedScrollWebView.ultraPrivacyEnabled = sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true)
-                nestedScrollWebView.blockAllThirdPartyRequests = sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false)
+                nestedScrollWebView.settings.javaScriptEnabled = defaultJavaScript
+                nestedScrollWebView.acceptCookies = defaultCookies
+                nestedScrollWebView.settings.domStorageEnabled = defaultDomStorage
+                nestedScrollWebView.easyListEnabled = defaultEasyList
+                nestedScrollWebView.easyPrivacyEnabled = defaultEasyPrivacy
+                nestedScrollWebView.fanboysAnnoyanceListEnabled = defaultFanboysAnnoyanceList
+                nestedScrollWebView.fanboysSocialBlockingListEnabled = defaultFanboysSocialBlockingList
+                nestedScrollWebView.ultraListEnabled = defaultUltraList
+                nestedScrollWebView.ultraPrivacyEnabled = defaultUltraPrivacy
+                nestedScrollWebView.blockAllThirdPartyRequests = defaultBlockAllThirdPartyRequests
 
                 // Apply the default cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.acceptCookies)
 
+                // Apply the form data setting if the API < 26.
+                if (Build.VERSION.SDK_INT < 26)
+                    @Suppress("DEPRECATION")
+                    nestedScrollWebView.settings.saveFormData = defaultFormData
+
                 // Apply the default font size setting.
                 try {
                     // Try to set the font size from the value in the app settings.
-                    nestedScrollWebView.settings.textZoom = defaultFontSizeString!!.toInt()
+                    nestedScrollWebView.settings.textZoom = defaultFontSizeString.toInt()
                 } catch (exception: Exception) {
                     // If the app settings value is invalid, set the font size to 100%.
                     nestedScrollWebView.settings.textZoom = 100
                 }
-
-                // Apply the form data setting if the API < 26.
-                if (Build.VERSION.SDK_INT < 26)
-                    @Suppress("DEPRECATION")
-                    nestedScrollWebView.settings.saveFormData = saveFormData
 
                 // Store the swipe to refresh status in the nested scroll WebView.
                 nestedScrollWebView.swipeToRefresh = defaultSwipeToRefresh
@@ -3206,7 +3339,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Set the WebView theme if the device is running API >= 29 and algorithmic darkening is supported.
                 if ((Build.VERSION.SDK_INT >= 29) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
                     // Set the WebView theme.
-                    when (webViewTheme) {
+                    when (defaultWebViewTheme) {
                         // The light theme is selected.  Turn off algorithmic darkening.
                         webViewThemeEntryValuesStringArray[1] -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
 
@@ -3225,10 +3358,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
 
                 // Set the viewport.
-                nestedScrollWebView.settings.useWideViewPort = wideViewport
+                nestedScrollWebView.settings.useWideViewPort = defaultWideViewport
 
                 // Set the loading of webpage images.
-                nestedScrollWebView.settings.loadsImagesAutomatically = displayWebpageImages
+                nestedScrollWebView.settings.loadsImagesAutomatically = defaultDisplayWebpageImages
 
                 // Set a transparent background on the URL relative layout.
                 urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
@@ -4900,7 +5033,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                        nestedScrollWebView.incrementRequestsCount(ULTRALIST)
+                        nestedScrollWebView.incrementRequestsCount(com.stoutner.privacybrowser.views.ULTRALIST)
 
                         // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -4912,7 +5045,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
                                     optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                    optionsUltraListMenuItem.title = nestedScrollWebView.getRequestsCount(ULTRALIST).toString() + " - " + getString(R.string.ultralist)
+                                    optionsUltraListMenuItem.title = nestedScrollWebView.getRequestsCount(com.stoutner.privacybrowser.views.ULTRALIST).toString() + " - " + getString(R.string.ultralist)
                                 }
                             }
                         }
@@ -5815,7 +5948,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Remove any background on the URL relative layout.
                 urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
             }
-        } else if ((pageNumber == savedTabPosition) || (pageNumber == (webViewStateAdapter!!.itemCount - 1))) {  // The tab has not been populated yet.
+        } else if ((pageNumber == savedTabPosition) || (pageNumber >= (webViewStateAdapter!!.itemCount - 1))) {  // The tab has not been populated yet.
             //  Try again in 100 milliseconds if the app is being restored or the a new tab has been added (the last tab).
             // Create a handler to set the current WebView.
             val setCurrentWebViewHandler = Handler(Looper.getMainLooper())
@@ -5859,7 +5992,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val domainsCount = domainsCursor.count
 
         // Get the domain name column index.
-        val domainNameColumnIndex = domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME)
+        val domainNameColumnIndex = domainsCursor.getColumnIndexOrThrow(DOMAIN_NAME)
 
         // Populate the domain settings set.
         for (i in 0 until domainsCount) {

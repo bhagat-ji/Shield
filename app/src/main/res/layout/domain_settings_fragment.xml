@@ -85,341 +85,484 @@
 
         <!-- JavaScript. -->
         <LinearLayout
+            android:id="@+id/javascript_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/javascript_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/javascript_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/javascript"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/javascript" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/javascript" >
+
+                <ImageView
+                    android:id="@+id/javascript_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/javascript" />
+
+                <Spinner
+                    android:id="@+id/javascript_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/javascript_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Cookies. -->
         <LinearLayout
+            android:id="@+id/cookies_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/cookies_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/cookies_enabled"
-                app:tint="@color/yellow_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/cookies_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/cookies"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/cookies" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/cookies" >
+
+                <ImageView
+                    android:id="@+id/cookies_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/cookies_enabled"
+                    app:tint="@color/yellow_icon_selector"
+                    android:contentDescription="@string/cookies" />
+
+                <Spinner
+                    android:id="@+id/cookies_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/cookies_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- DOM Storage. -->
         <LinearLayout
+            android:id="@+id/dom_storage_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/dom_storage_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/dom_storage_enabled"
-                app:tint="@color/yellow_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/dom_storage_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/dom_storage_preference"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/dom_storage" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/dom_storage" >
+
+                <ImageView
+                    android:id="@+id/dom_storage_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/dom_storage_enabled"
+                    app:tint="@color/yellow_icon_selector"
+                    android:contentDescription="@string/dom_storage" />
+
+                <Spinner
+                    android:id="@+id/dom_storage_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/dom_storage_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- Form Data. -->
+        <!-- Form Data. This may be removed one the minimum API >= 26. -->
         <LinearLayout
+            android:id="@+id/form_data_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/form_data_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/form_data_enabled"
-                app:tint="@color/yellow_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/form_data_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/form_data"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/form_data" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/form_data_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/form_data_enabled"
+                    app:tint="@color/yellow_icon_selector"
+                    android:contentDescription="@string/form_data" />
+
+                <Spinner
+                    android:id="@+id/form_data_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/form_data_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- EasyList. -->
         <LinearLayout
+            android:id="@+id/easylist_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/easylist_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/block_ads_enabled"
-                app:tint="@color/blue_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/easylist_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/easylist"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/easylist" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/easylist_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/block_ads_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/easylist" />
+
+                <Spinner
+                    android:id="@+id/easylist_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/easylist_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- EasyPrivacy. -->
         <LinearLayout
+            android:id="@+id/easyprivacy_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/easyprivacy_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/block_tracking_enabled"
-                app:tint="@color/blue_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/easyprivacy_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/easyprivacy"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/easyprivacy" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/easyprivacy_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/block_tracking_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/easyprivacy" />
+
+                <Spinner
+                    android:id="@+id/easyprivacy_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/easyprivacy_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Fanboy's Annoyance List. -->
         <LinearLayout
+            android:id="@+id/fanboys_annoyance_list_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/fanboys_annoyance_list_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/social_media_enabled"
-                app:tint="@color/blue_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/fanboys_annoyance_list_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/fanboys_annoyance_list"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/fanboys_annoyance_list" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/fanboys_annoyance_list_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/social_media_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/fanboys_annoyance_list" />
+
+                <Spinner
+                    android:id="@+id/fanboys_annoyance_list_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fanboys_annoyance_list_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Fanboy's Social Blocking List. -->
         <LinearLayout
+            android:id="@+id/fanboys_social_blocking_list_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/fanboys_social_blocking_list_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/social_media_enabled"
-                app:tint="@color/blue_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/fanboys_social_blocking_list_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/fanboys_social_blocking_list"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/fanboys_social_blocking_list" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/fanboys_social_blocking_list_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/social_media_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/fanboys_social_blocking_list" />
+
+                <Spinner
+                    android:id="@+id/fanboys_social_blocking_list_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fanboys_social_blocking_list_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- UltraList. -->
         <LinearLayout
+            android:id="@+id/ultralist_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/ultralist_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/block_ads_enabled"
-                app:tint="@color/blue_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/ultralist_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/ultralist"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/ultralist" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/ultralist_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/block_ads_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/ultralist" />
+
+                <Spinner
+                    android:id="@+id/ultralist_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ultralist_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- UltraPrivacy. -->
         <LinearLayout
+            android:id="@+id/ultraprivacy_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/ultraprivacy_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/block_tracking_enabled"
-                app:tint="@color/blue_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/ultraprivacy_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/ultraprivacy"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/ultraprivacy" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/ultraprivacy_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/block_tracking_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/ultraprivacy" />
+
+                <Spinner
+                    android:id="@+id/ultraprivacy_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ultraprivacy_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Block All Third Party Requests. -->
         <LinearLayout
+            android:id="@+id/block_all_third_party_requests_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp" >
+            android:orientation="vertical"
+            android:padding="12dp" >
 
-            <ImageView
-                android:id="@+id/block_all_third_party_requests_imageview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/block_all_third_party_requests_enabled"
-                app:tint="@color/blue_icon_selector"
-                tools:ignore="contentDescription" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/block_all_third_party_requests_switch"
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/block_all_third_party_requests"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/block_all_third_party_requests" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/block_all_third_party_requests_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/block_all_third_party_requests_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/block_all_third_party_requests" />
+
+                <Spinner
+                    android:id="@+id/block_all_third_party_requests_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/block_all_third_party_requests_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- User Agent. -->
@@ -539,7 +682,8 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/swipe_to_refresh" />
+                android:text="@string/swipe_to_refresh"
+                tools:ignore="TooManyViews" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -712,8 +856,7 @@
             android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            tools:ignore="TooManyViews" >
+            android:layout_marginEnd="12dp" >
 
             <!-- Switch -->
             <LinearLayout

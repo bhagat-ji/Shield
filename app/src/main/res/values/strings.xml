@@ -332,6 +332,61 @@
     <string name="domain_name">Domain name</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
+    <string-array name="javascript_array">
+        <item>System default</item>
+        <item>JavaScript enabled</item>
+        <item>JavaScript disabled</item>
+    </string-array>
+    <string-array name="cookies_array">
+        <item>System default</item>
+        <item>Cookies enabled</item>
+        <item>Cookies disabled</item>
+    </string-array>
+    <string-array name="dom_storage_array">
+        <item>System default</item>
+        <item>DOM storage enabled</item>
+        <item>DOM storage disabled</item>
+    </string-array>
+    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
+        <item>System default</item>
+        <item>Form data enabled</item>
+        <item>Form data disabled</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>System default</item>
+        <item>EasyList enabled</item>
+        <item>EasyList disabled</item>
+    </string-array>
+    <string-array name="easyprivacy_array">
+        <item>System default</item>
+        <item>EasyPrivacy enabled</item>
+        <item>EasyPrivacy disabled</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>System default</item>
+        <item>Fanboy’s Annoyance List enabled</item>
+        <item>Fanboy’s Annoyance List disabled</item>
+    </string-array>
+    <string-array name="fanboys_social_blocking_list_array">
+        <item>System default</item>
+        <item>Fanboy’s Social Blocking List enabled</item>
+        <item>Fanboy’s Social Blocking List disabled</item>
+    </string-array>
+    <string-array name="ultralist_array">
+        <item>System default</item>
+        <item>UltraList enabled</item>
+        <item>UltraList disabled</item>
+    </string-array>
+    <string-array name="ultraprivacy_array">
+        <item>System default</item>
+        <item>UltraPrivacy enabled</item>
+        <item>UltraPrivacy disabled</item>
+    </string-array>
+    <string-array name="block_all_third_party_requests_array">
+        <item>System default</item>
+        <item>Block all third-party requests enabled</item>
+        <item>Block all third-party requests disabled</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>System default</item>
         <item>Custom font size</item>

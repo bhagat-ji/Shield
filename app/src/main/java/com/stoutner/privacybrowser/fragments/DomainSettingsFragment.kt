@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -58,6 +59,40 @@ import com.stoutner.privacybrowser.activities.SETTINGS_CUSTOM_USER_AGENT
 import com.stoutner.privacybrowser.activities.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT
 import com.stoutner.privacybrowser.activities.UNRECOGNIZED_USER_AGENT
 import com.stoutner.privacybrowser.activities.DomainsActivity
+import com.stoutner.privacybrowser.helpers.BLOCK_ALL_THIRD_PARTY_REQUESTS
+import com.stoutner.privacybrowser.helpers.COOKIES
+import com.stoutner.privacybrowser.helpers.DARK_THEME
+import com.stoutner.privacybrowser.helpers.DISABLED
+import com.stoutner.privacybrowser.helpers.DISPLAY_IMAGES
+import com.stoutner.privacybrowser.helpers.DOMAIN_NAME
+import com.stoutner.privacybrowser.helpers.ENABLED
+import com.stoutner.privacybrowser.helpers.LIGHT_THEME
+import com.stoutner.privacybrowser.helpers.SYSTEM_DEFAULT
+import com.stoutner.privacybrowser.helpers.ENABLE_DOM_STORAGE
+import com.stoutner.privacybrowser.helpers.ENABLE_EASYLIST
+import com.stoutner.privacybrowser.helpers.ENABLE_EASYPRIVACY
+import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_ANNOYANCE_LIST
+import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST
+import com.stoutner.privacybrowser.helpers.ENABLE_FORM_DATA
+import com.stoutner.privacybrowser.helpers.ENABLE_JAVASCRIPT
+import com.stoutner.privacybrowser.helpers.ENABLE_ULTRAPRIVACY
+import com.stoutner.privacybrowser.helpers.FONT_SIZE
+import com.stoutner.privacybrowser.helpers.IP_ADDRESSES
+import com.stoutner.privacybrowser.helpers.PINNED_IP_ADDRESSES
+import com.stoutner.privacybrowser.helpers.PINNED_SSL_CERTIFICATE
+import com.stoutner.privacybrowser.helpers.SSL_END_DATE
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_COMMON_NAME
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_ORGANIZATION
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_COMMON_NAME
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_ORGANIZATION
+import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT
+import com.stoutner.privacybrowser.helpers.SSL_START_DATE
+import com.stoutner.privacybrowser.helpers.SWIPE_TO_REFRESH
+import com.stoutner.privacybrowser.helpers.ULTRALIST
+import com.stoutner.privacybrowser.helpers.USER_AGENT
+import com.stoutner.privacybrowser.helpers.WEBVIEW_THEME
+import com.stoutner.privacybrowser.helpers.WIDE_VIEWPORT
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 
 import java.lang.IndexOutOfBoundsException
@@ -68,6 +103,9 @@ import java.util.Date
 class DomainSettingsFragment : Fragment() {
     // Define the class variables.
     private var scrollY = 0
+
+    // Declare the class variables.
+    private lateinit var context: Context
 
     companion object {
         // Define the public constants.
@@ -91,46 +129,82 @@ class DomainSettingsFragment : Fragment() {
         // Inflate the layout.  The fragment will take care of attaching the root automatically.
         val domainSettingsView = inflater.inflate(R.layout.domain_settings_fragment, container, false)
 
+        // Get a handle for the context.
+        context = requireContext()
+
         // Get the current theme status.
         val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         // Get a handle for the shared preference.
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
-        // Store the default settings.
-        val defaultUserAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
-        val defaultCustomUserAgentString = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
-        val defaultFontSizeString = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))
-        val defaultSwipeToRefresh = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true)
-        val defaultWebViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))
-        val defaultWideViewport = sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true)
-        val defaultDisplayWebpageImages = sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true)
+        // Get the default values.
+        val javaScriptDefault = sharedPreferences.getBoolean(getString(R.string.javascript_key), false)
+        val cookiesDefault = sharedPreferences.getBoolean(getString(R.string.cookies_key), false)
+        val domStorageDefault = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
+        val formDataDefault = sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false)  // The form data views can be remove once the minimum API >= 26.
+        val easyListDefault = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
+        val easyPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
+        val fanboysAnnoyanceListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
+        val fanboysSocialBlockingListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list), true)
+        val ultraListDefault = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
+        val ultraPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true)
+        val blockAllThirdPartyRequestsDefault = sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false)
+        val userAgentDefault = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
+        val customUserAgentStringDefault = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
+        val fontSizeStringDefault = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))
+        val swipeToRefreshDefault = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true)
+        val webViewThemeDefault = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))
+        val wideViewportDefault = sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true)
+        val displayWebpageImagesDefault = sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true)
 
         // Get handles for the views.
         val domainSettingsScrollView = domainSettingsView.findViewById<ScrollView>(R.id.domain_settings_scrollview)
         val domainNameEditText = domainSettingsView.findViewById<EditText>(R.id.domain_settings_name_edittext)
+        val javaScriptLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.javascript_linearlayout)
         val javaScriptImageView = domainSettingsView.findViewById<ImageView>(R.id.javascript_imageview)
-        val javaScriptSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.javascript_switch)
+        val javaScriptSpinner = domainSettingsView.findViewById<Spinner>(R.id.javascript_spinner)
+        val javaScriptTextView = domainSettingsView.findViewById<TextView>(R.id.javascript_textview)
+        val cookiesLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.cookies_linearlayout)
         val cookiesImageView = domainSettingsView.findViewById<ImageView>(R.id.cookies_imageview)
-        val cookiesSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.cookies_switch)
+        val cookiesSpinner = domainSettingsView.findViewById<Spinner>(R.id.cookies_spinner)
+        val cookiesTextView = domainSettingsView.findViewById<TextView>(R.id.cookies_textview)
+        val domStorageLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.dom_storage_linearlayout)
         val domStorageImageView = domainSettingsView.findViewById<ImageView>(R.id.dom_storage_imageview)
-        val domStorageSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.dom_storage_switch)
-        val formDataImageView = domainSettingsView.findViewById<ImageView>(R.id.form_data_imageview) // The form data views can be remove once the minimum API >= 26.
-        val formDataSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.form_data_switch) // The form data views can be remove once the minimum API >= 26.
+        val domStorageSpinner = domainSettingsView.findViewById<Spinner>(R.id.dom_storage_spinner)
+        val domStorageTextView = domainSettingsView.findViewById<TextView>(R.id.dom_storage_textview)
+        val formDataLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.form_data_linearlayout)  // The form data views can be remove once the minimum API >= 26.
+        val formDataImageView = domainSettingsView.findViewById<ImageView>(R.id.form_data_imageview)  // The form data views can be remove once the minimum API >= 26.
+        val formDataSpinner = domainSettingsView.findViewById<Spinner>(R.id.form_data_spinner)  // The form data views can be remove once the minimum API >= 26.
+        val formDataTextView = domainSettingsView.findViewById<TextView>(R.id.form_data_textview)  // The form data views can be remove once the minimum API >= 26.
+        val easyListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.easylist_linearlayout)
         val easyListImageView = domainSettingsView.findViewById<ImageView>(R.id.easylist_imageview)
-        val easyListSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.easylist_switch)
+        val easyListSpinner = domainSettingsView.findViewById<Spinner>(R.id.easylist_spinner)
+        val easyListTextView = domainSettingsView.findViewById<TextView>(R.id.easylist_textview)
+        val easyPrivacyLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.easyprivacy_linearlayout)
         val easyPrivacyImageView = domainSettingsView.findViewById<ImageView>(R.id.easyprivacy_imageview)
-        val easyPrivacySwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.easyprivacy_switch)
+        val easyPrivacySpinner = domainSettingsView.findViewById<Spinner>(R.id.easyprivacy_spinner)
+        val easyPrivacyTextView = domainSettingsView.findViewById<TextView>(R.id.easyprivacy_textview)
+        val fanboysAnnoyanceListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.fanboys_annoyance_list_linearlayout)
         val fanboysAnnoyanceListImageView = domainSettingsView.findViewById<ImageView>(R.id.fanboys_annoyance_list_imageview)
-        val fanboysAnnoyanceListSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.fanboys_annoyance_list_switch)
+        val fanboysAnnoyanceListSpinner = domainSettingsView.findViewById<Spinner>(R.id.fanboys_annoyance_list_spinner)
+        val fanboysAnnoyanceListTextView = domainSettingsView.findViewById<TextView>(R.id.fanboys_annoyance_list_textview)
+        val fanboysSocialBlockingListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.fanboys_social_blocking_list_linearlayout)
         val fanboysSocialBlockingListImageView = domainSettingsView.findViewById<ImageView>(R.id.fanboys_social_blocking_list_imageview)
-        val fanboysSocialBlockingListSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.fanboys_social_blocking_list_switch)
+        val fanboysSocialBlockingListSpinner = domainSettingsView.findViewById<Spinner>(R.id.fanboys_social_blocking_list_spinner)
+        val fanboysSocialBlockingListTextView = domainSettingsView.findViewById<TextView>(R.id.fanboys_social_blocking_list_textview)
+        val ultraListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.ultralist_linearlayout)
         val ultraListImageView = domainSettingsView.findViewById<ImageView>(R.id.ultralist_imageview)
-        val ultraListSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.ultralist_switch)
+        val ultraListSpinner = domainSettingsView.findViewById<Spinner>(R.id.ultralist_spinner)
+        val ultraListTextView = domainSettingsView.findViewById<TextView>(R.id.ultralist_textview)
+        val ultraPrivacyLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.ultraprivacy_linearlayout)
         val ultraPrivacyImageView = domainSettingsView.findViewById<ImageView>(R.id.ultraprivacy_imageview)
-        val ultraPrivacySwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.ultraprivacy_switch)
+        val ultraPrivacySpinner = domainSettingsView.findViewById<Spinner>(R.id.ultraprivacy_spinner)
+        val ultraPrivacyTextView = domainSettingsView.findViewById<TextView>(R.id.ultraprivacy_textview)
+        val blockAllThirdPartyRequestsLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.block_all_third_party_requests_linearlayout)
         val blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById<ImageView>(R.id.block_all_third_party_requests_imageview)
-        val blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById<SwitchCompat>(R.id.block_all_third_party_requests_switch)
+        val blockAllThirdPartyRequestsSpinner = domainSettingsView.findViewById<Spinner>(R.id.block_all_third_party_requests_spinner)
+        val blockAllThirdPartyRequestsTextView = domainSettingsView.findViewById<TextView>(R.id.block_all_third_party_requests_textview)
         val userAgentLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.user_agent_linearlayout)
         val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
         val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
@@ -191,16 +265,13 @@ class DomainSettingsFragment : Fragment() {
         val currentIpAddressesRadioButton = domainSettingsView.findViewById<RadioButton>(R.id.current_ip_addresses_radiobutton)
         val currentIpAddressesTextView = domainSettingsView.findViewById<TextView>(R.id.current_ip_addresses_textview)
 
+        // Hide the form data linear layout if the API >= 26.
+        if (Build.VERSION.SDK_INT >= 26)
+            formDataLinearLayout.visibility = View.GONE
+
         // Hide the WebView theme linear layout if the API < 29.
         if (Build.VERSION.SDK_INT < 29)
             webViewThemeLinearLayout.visibility = View.GONE
-
-        // Setup the pinned labels.
-        val cNameLabel = getString(R.string.common_name)
-        val oNameLabel = getString(R.string.organization)
-        val uNameLabel = getString(R.string.organizational_unit)
-        val startDateLabel = getString(R.string.start_date)
-        val endDateLabel = getString(R.string.end_date)
 
         // Initialize the database handler.
         val domainsDatabaseHelper = DomainsDatabaseHelper(requireContext())
@@ -212,57 +283,70 @@ class DomainSettingsFragment : Fragment() {
         domainCursor.moveToFirst()
 
         // Save the cursor entries as variables.
-        val domainNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME))
-        val javaScriptInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT))
-        val cookiesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES))
-        val domStorageInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE))
-        val formDataInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA)) // Form data can be remove once the minimum API >= 26.
-        val easyListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST))
-        val easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY))
-        val fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST))
-        val fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST))
-        val ultraListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST))
-        val ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY))
-        val blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS))
-        val currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT))
-        val fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE))
-        val swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH))
-        val webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME))
-        val wideViewportInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT))
-        val displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES))
-        val pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE))
-        val savedSslIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME))
-        val savedSslIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION))
-        val savedSslIssuedToUNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT))
-        val savedSslIssuedByCNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME))
-        val savedSslIssuedByONameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION))
-        val savedSslIssuedByUNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT))
-        val pinnedIpAddressesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES))
-        val savedIpAddresses = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES))
+        val domainNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(DOMAIN_NAME))
+        val javaScriptInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT))
+        val cookiesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(COOKIES))
+        val domStorageInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE))
+        val formDataInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA))  // Form data can be remove once the minimum API >= 26.
+        val easyListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
+        val easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
+        val fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
+        val fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST))
+        val ultraListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ULTRALIST))
+        val ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY))
+        val blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS))
+        val currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(USER_AGENT))
+        val fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(FONT_SIZE))
+        val swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH))
+        val webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(WEBVIEW_THEME))
+        val wideViewportInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(WIDE_VIEWPORT))
+        val displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(DISPLAY_IMAGES))
+        val pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE))
+        val savedSslIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME))
+        val savedSslIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION))
+        val savedSslIssuedToUNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT))
+        val savedSslIssuedByCNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME))
+        val savedSslIssuedByONameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION))
+        val savedSslIssuedByUNameString = domainCursor.getString(domainCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT))
+        val savedSslStartDateLong = domainCursor.getLong(domainCursor.getColumnIndexOrThrow(SSL_START_DATE))
+        val savedSslEndDateLong = domainCursor.getLong(domainCursor.getColumnIndexOrThrow(SSL_END_DATE))
+        val pinnedIpAddressesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES))
+        val savedIpAddresses = domainCursor.getString(domainCursor.getColumnIndexOrThrow(IP_ADDRESSES))
 
-        // Get the SSL dates from the database.
-        val savedSslStartDateLong = domainCursor.getLong(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE))
-        val savedSslEndDateLong = domainCursor.getLong(domainCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE))
+        // Close the domain cursor.
+        domainCursor.close()
 
-        // Initialize the saved SSL certificate date variables.
-        var savedSslStartDate: Date? = null
-        var savedSslEndDate: Date? = null
-
-        // Only get the saved SSL certificate dates from the cursor if they are not set to `0`.
-        if (savedSslStartDateLong != 0L)
-            savedSslStartDate = Date(savedSslStartDateLong)
-        if (savedSslEndDateLong != 0L)
-            savedSslEndDate = Date(savedSslEndDateLong)
-
-        // Create array adapters for the spinners.
-        val translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item)
-        val fontSizeArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.font_size_array, R.layout.spinner_item)
-        val swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.swipe_to_refresh_array, R.layout.spinner_item)
-        val webViewThemeArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.webview_theme_array, R.layout.spinner_item)
-        val wideViewportArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.wide_viewport_array, R.layout.spinner_item)
-        val displayImagesArrayAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.display_webpage_images_array, R.layout.spinner_item)
+        // Create spinner array adapters.
+        val javaScriptArrayAdapter = ArrayAdapter.createFromResource(context, R.array.javascript_array, R.layout.spinner_item)
+        val cookiesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.cookies_array, R.layout.spinner_item)
+        val domStorageArrayAdapter = ArrayAdapter.createFromResource(context, R.array.dom_storage_array, R.layout.spinner_item)
+        val formDataArrayAdapter = ArrayAdapter.createFromResource(context, R.array.form_data_array, R.layout.spinner_item)  // Form data can be remove once the minimum API >= 26.
+        val easyListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easylist_array, R.layout.spinner_item)
+        val easyPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easyprivacy_array, R.layout.spinner_item)
+        val fanboysAnnoyanceListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.fanboys_annoyance_list_array, R.layout.spinner_item)
+        val fanboysSocialBlockingListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.fanboys_social_blocking_list_array, R.layout.spinner_item)
+        val ultraListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.ultralist_array, R.layout.spinner_item)
+        val ultraPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.ultraprivacy_array, R.layout.spinner_item)
+        val blockAllThirdPartyRequestsArrayAdapter = ArrayAdapter.createFromResource(context, R.array.block_all_third_party_requests_array, R.layout.spinner_item)
+        val translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item)
+        val fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.font_size_array, R.layout.spinner_item)
+        val swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.spinner_item)
+        val webViewThemeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.webview_theme_array, R.layout.spinner_item)
+        val wideViewportArrayAdapter = ArrayAdapter.createFromResource(context, R.array.wide_viewport_array, R.layout.spinner_item)
+        val displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.spinner_item)
 
         // Set the drop down view resource on the spinners.
+        javaScriptArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        cookiesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        domStorageArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        formDataArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)  // Form data can be remove once the minimum API >= 26.
+        easyListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        easyPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        fanboysAnnoyanceListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        fanboysSocialBlockingListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        ultraListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        ultraPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        blockAllThirdPartyRequestsArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
@@ -271,6 +355,17 @@ class DomainSettingsFragment : Fragment() {
         displayImagesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
 
         // Set the array adapters for the spinners.
+        javaScriptSpinner.adapter = javaScriptArrayAdapter
+        cookiesSpinner.adapter = cookiesArrayAdapter
+        domStorageSpinner.adapter = domStorageArrayAdapter
+        formDataSpinner.adapter = formDataArrayAdapter  // Form data can be remove once the minimum API >= 26.
+        easyListSpinner.adapter = easyListArrayAdapter
+        easyPrivacySpinner.adapter = easyPrivacyArrayAdapter
+        fanboysAnnoyanceListSpinner.adapter = fanboysAnnoyanceListArrayAdapter
+        fanboysSocialBlockingListSpinner.adapter = fanboysSocialBlockingListArrayAdapter
+        ultraListSpinner.adapter = ultraListArrayAdapter
+        ultraPrivacySpinner.adapter = ultraPrivacyArrayAdapter
+        blockAllThirdPartyRequestsSpinner.adapter = blockAllThirdPartyRequestsArrayAdapter
         userAgentSpinner.adapter = translatedUserAgentArrayAdapter
         fontSizeSpinner.adapter = fontSizeArrayAdapter
         swipeToRefreshSpinner.adapter = swipeToRefreshArrayAdapter
@@ -278,31 +373,88 @@ class DomainSettingsFragment : Fragment() {
         wideViewportSpinner.adapter = wideViewportArrayAdapter
         displayImagesSpinner.adapter = displayImagesArrayAdapter
 
-        // Create a spannable string builder for each TextView that needs multiple colors of text.
-        val savedSslIssuedToCNameStringBuilder = SpannableStringBuilder(cNameLabel + savedSslIssuedToCNameString)
-        val savedSslIssuedToONameStringBuilder = SpannableStringBuilder(oNameLabel + savedSslIssuedToONameString)
-        val savedSslIssuedToUNameStringBuilder = SpannableStringBuilder(uNameLabel + savedSslIssuedToUNameString)
-        val savedSslIssuedByCNameStringBuilder = SpannableStringBuilder(cNameLabel + savedSslIssuedByCNameString)
-        val savedSslIssuedByONameStringBuilder = SpannableStringBuilder(oNameLabel + savedSslIssuedByONameString)
-        val savedSslIssuedByUNameStringBuilder = SpannableStringBuilder(uNameLabel + savedSslIssuedByUNameString)
+        // Open the spinners when the text view is tapped.
+        javaScriptTextView.setOnClickListener { javaScriptSpinner.performClick() }
+        cookiesTextView.setOnClickListener { cookiesSpinner.performClick() }
+        domStorageTextView.setOnClickListener { domStorageSpinner.performClick() }
+        formDataTextView.setOnClickListener { formDataSpinner.performClick() }
+        easyListTextView.setOnClickListener { easyListSpinner.performClick() }
+        easyPrivacyTextView.setOnClickListener { easyPrivacySpinner.performClick() }
+        fanboysAnnoyanceListTextView.setOnClickListener { fanboysAnnoyanceListSpinner.performClick() }
+        fanboysSocialBlockingListTextView.setOnClickListener { fanboysSocialBlockingListSpinner.performClick() }
+        ultraListTextView.setOnClickListener { ultraListSpinner.performClick() }
+        ultraPrivacyTextView.setOnClickListener { ultraPrivacySpinner.performClick() }
+        blockAllThirdPartyRequestsTextView.setOnClickListener { blockAllThirdPartyRequestsSpinner.performClick() }
+        userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
+        defaultFontSizeTextView.setOnClickListener { fontSizeSpinner.performClick() }
+        swipeToRefreshTextView.setOnClickListener { swipeToRefreshSpinner.performClick() }
+        webViewThemeTextView.setOnClickListener { webViewThemeSpinner.performClick() }
+        wideViewportTextView.setOnClickListener { wideViewportSpinner.performClick() }
+        displayImagesTextView.setOnClickListener { displayImagesSpinner.performClick() }
 
-        // Create the date spannable string builders.
-        val savedSslStartDateStringBuilder: SpannableStringBuilder = if (savedSslStartDate == null)
-            SpannableStringBuilder(startDateLabel)
-        else
-            SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslStartDate))
+        // Set the spinner selections.  Items that aren't defined by an integer are handled individually below.
+        javaScriptSpinner.setSelection(javaScriptInt)
+        cookiesSpinner.setSelection(cookiesInt)
+        domStorageSpinner.setSelection(domStorageInt)
+        formDataSpinner.setSelection(formDataInt)
+        easyListSpinner.setSelection(easyListInt)
+        easyPrivacySpinner.setSelection(easyPrivacyInt)
+        fanboysAnnoyanceListSpinner.setSelection(fanboysAnnoyanceListInt)
+        fanboysSocialBlockingListSpinner.setSelection(fanboysSocialBlockingListInt)
+        ultraListSpinner.setSelection(ultraListInt)
+        ultraPrivacySpinner.setSelection(ultraPrivacyInt)
+        blockAllThirdPartyRequestsSpinner.setSelection(blockAllThirdPartyRequestsInt)
+        swipeToRefreshSpinner.setSelection(swipeToRefreshInt)
+        webViewThemeSpinner.setSelection(webViewThemeInt)
+        wideViewportSpinner.setSelection(wideViewportInt)
+        displayImagesSpinner.setSelection(displayImagesInt)
 
-        val savedSslEndDateStringBuilder: SpannableStringBuilder = if (savedSslEndDate == null)
-            SpannableStringBuilder(endDateLabel)
-        else
-            SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslEndDate))
+        // Populate the text views.  Items that aren't defined by an integer are handled individually below.
+        populateTextView(javaScriptDefault, javaScriptArrayAdapter, javaScriptTextView)
+        populateTextView(cookiesDefault, cookiesArrayAdapter, cookiesTextView)
+        populateTextView(domStorageDefault, domStorageArrayAdapter, domStorageTextView)
+        populateTextView(formDataDefault, formDataArrayAdapter, formDataTextView)
+        populateTextView(easyListDefault, easyListArrayAdapter, easyListTextView)
+        populateTextView(easyPrivacyDefault, easyPrivacyArrayAdapter, easyPrivacyTextView)
+        populateTextView(fanboysAnnoyanceListDefault, fanboysAnnoyanceListArrayAdapter, fanboysAnnoyanceListTextView)
+        populateTextView(fanboysSocialBlockingListDefault, fanboysSocialBlockingListArrayAdapter, fanboysSocialBlockingListTextView)
+        populateTextView(ultraListDefault, ultraListArrayAdapter, ultraListTextView)
+        populateTextView(ultraPrivacyDefault, ultraPrivacyArrayAdapter, ultraPrivacyTextView)
+        populateTextView(blockAllThirdPartyRequestsDefault, blockAllThirdPartyRequestsArrayAdapter, blockAllThirdPartyRequestsTextView)
+        populateTextView(swipeToRefreshDefault, swipeToRefreshArrayAdapter, swipeToRefreshTextView)
+        populateTextView(wideViewportDefault, wideViewportArrayAdapter, wideViewportTextView)
+        populateTextView(displayWebpageImagesDefault, displayImagesArrayAdapter, displayImagesTextView)
 
-        // Create the color spans.
-        val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
-        val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
+        // Set the icon and text view settings.  Non-standard items are handled individually below.
+        setIconAndTextViewSettings(cookiesInt, cookiesDefault, cookiesLinearLayout, cookiesImageView, cookiesTextView)
+        setIconAndTextViewSettings(domStorageInt, domStorageDefault, domStorageLinearLayout, domStorageImageView, domStorageTextView)
+        setIconAndTextViewSettings(formDataInt, formDataDefault, formDataLinearLayout, formDataImageView, formDataTextView)
+        setIconAndTextViewSettings(easyListInt, easyListDefault, easyListLinearLayout, easyListImageView, easyListTextView)
+        setIconAndTextViewSettings(easyPrivacyInt, easyPrivacyDefault, easyPrivacyLinearLayout, easyPrivacyImageView, easyListTextView)
+        setIconAndTextViewSettings(fanboysAnnoyanceListInt, fanboysAnnoyanceListDefault, fanboysAnnoyanceListLinearLayout, fanboysAnnoyanceListImageView, fanboysAnnoyanceListTextView)
+        setIconAndTextViewSettings(fanboysSocialBlockingListInt, fanboysSocialBlockingListDefault, fanboysSocialBlockingListLinearLayout, fanboysSocialBlockingListImageView, fanboysSocialBlockingListTextView)
+        setIconAndTextViewSettings(ultraListInt, ultraListDefault, ultraListLinearLayout, ultraListImageView, ultraListTextView)
+        setIconAndTextViewSettings(ultraPrivacyInt, ultraPrivacyDefault, ultraPrivacyLinearLayout, ultraPrivacyImageView, ultraPrivacyTextView)
+        setIconAndTextViewSettings(blockAllThirdPartyRequestsInt, blockAllThirdPartyRequestsDefault, blockAllThirdPartyRequestsLinearLayout, blockAllThirdPartyRequestsImageView,
+            blockAllThirdPartyRequestsTextView)
+        setIconAndTextViewSettings(swipeToRefreshInt, swipeToRefreshDefault, swipeToRefreshLinearLayout, swipeToRefreshImageView, swipeToRefreshTextView)
+        setIconAndTextViewSettings(wideViewportInt, wideViewportDefault, wideViewportLinearLayout, wideViewportImageView, wideViewportTextView)
+        setIconAndTextViewSettings(displayImagesInt, displayWebpageImagesDefault, displayImagesLinearLayout, displayImagesImageView, displayImagesTextView)
+
 
         // Set the domain name from the the database cursor.
         domainNameEditText.setText(domainNameString)
+
+        // Setup the pinned labels.
+        val cNameLabel = getString(R.string.common_name)
+        val oNameLabel = getString(R.string.organization)
+        val uNameLabel = getString(R.string.organizational_unit)
+        val startDateLabel = getString(R.string.start_date)
+        val endDateLabel = getString(R.string.end_date)
+
+        // Create the color spans.
+        val blueColorSpan = ForegroundColorSpan(context.getColor(R.color.alt_blue_text))
+        val redColorSpan = ForegroundColorSpan(context.getColor(R.color.red_text))
 
         // Update the certificates' Common Name color when the domain name text changes.
         domainNameEditText.addTextChangedListener(object : TextWatcher {
@@ -355,80 +507,85 @@ class DomainSettingsFragment : Fragment() {
             }
         })
 
-        // Set the switch positions.
-        javaScriptSwitch.isChecked = (javaScriptInt == 1)
-        cookiesSwitch.isChecked = (cookiesInt == 1)
-        domStorageSwitch.isChecked = (domStorageInt == 1)
-        formDataSwitch.isChecked = (formDataInt == 1)  // Form data can be removed once the minimum API >= 26.
-        easyListSwitch.isChecked = (easyListInt == 1)
-        easyPrivacySwitch.isChecked = (easyPrivacyInt == 1)
-        fanboysAnnoyanceListSwitch.isChecked = (fanboysAnnoyanceListInt == 1)
-        fanboysSocialBlockingListSwitch.isChecked = (fanboysSocialBlockingListInt == 1)
-        ultraListSwitch.isChecked = (ultraListInt == 1)
-        ultraPrivacySwitch.isChecked = (ultraPrivacyInt == 1)
-        blockAllThirdPartyRequestsSwitch.isChecked = (blockAllThirdPartyRequestsInt == 1)
-        pinnedSslCertificateSwitch.isChecked = (pinnedSslCertificateInt == 1)
-        pinnedIpAddressesSwitch.isChecked = (pinnedIpAddressesInt == 1)
 
-        // Set the switch icon colors.
-        cookiesImageView.isSelected = (cookiesInt == 1)
-        domStorageImageView.isSelected = (domStorageInt == 1)
-        formDataImageView.isSelected = (formDataInt == 1)  // Form data can be removed once the minimum API >= 26.
-        easyListImageView.isSelected = (easyListInt == 1)
-        easyPrivacyImageView.isSelected = (easyPrivacyInt == 1)
-        fanboysAnnoyanceListImageView.isSelected = (fanboysAnnoyanceListInt == 1)
-        fanboysSocialBlockingListImageView.isSelected = (fanboysSocialBlockingListInt == 1)
-        ultraListImageView.isSelected = (ultraListInt == 1)
-        ultraPrivacyImageView.isSelected = (ultraPrivacyInt == 1)
-        blockAllThirdPartyRequestsImageView.isSelected = (blockAllThirdPartyRequestsInt == 1)
-        pinnedSslCertificateImageView.isSelected = (pinnedSslCertificateInt == 1)
-        pinnedIpAddressesImageView.isSelected = (pinnedIpAddressesInt == 1)
+        // Set the javaScript icon and text view settings.
+        when (javaScriptInt) {
+            SYSTEM_DEFAULT -> {
+                // Set the icon.
+                if (javaScriptDefault)
+                    javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null))
+                else
+                    javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null))
 
-        // Set the JavaScript icon.
-        if (javaScriptInt == 1)
-            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null))
-        else
-            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null))
+                // Show the text view.
+                javaScriptTextView.visibility = View.VISIBLE
 
-        // Set the DOM storage switch status based on the JavaScript status.
-        domStorageSwitch.isEnabled = (javaScriptInt == 1)
+                // Set the background color to be transparent.
+                javaScriptLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
+            }
 
-        // Set the DOM storage icon ghosted status based on the JavaScript status.
-        domStorageImageView.isEnabled = (javaScriptInt == 1)
+            ENABLED -> {
+                // Set the icon.
+                javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null))
 
-        // Set the form data visibility.  Form data can be removed once the minimum API >= 26.
-        if (Build.VERSION.SDK_INT >= 26) {
-            // Hide the form data image view and switch.
-            formDataImageView.visibility = View.GONE
-            formDataSwitch.visibility = View.GONE
+                // Hide the text view.
+                javaScriptTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                javaScriptLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+            }
+
+            DISABLED -> {
+                // Set the icon.
+                javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null))
+
+                // Hide the text view.
+                javaScriptTextView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                javaScriptLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+            }
         }
 
-        // Set Fanboy's Social Blocking List switch status based on the Annoyance List status.
-        fanboysSocialBlockingListSwitch.isEnabled = (fanboysAnnoyanceListInt == 0)
+
+        // Calculate if JavaScript is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
+        val javaScriptEnabled = (((javaScriptInt == 0) && javaScriptDefault) || (javaScriptInt == 1))
+
+        // Set the DOM storage spinner and text view status based on the JavaScript status.
+        domStorageSpinner.isEnabled = javaScriptEnabled
+        domStorageTextView.isEnabled = javaScriptEnabled
+
+        // Set the DOM storage icon ghosted status based on the JavaScript status.
+        domStorageImageView.isEnabled = javaScriptEnabled
+
+
+        // Calculate if Fanboy's Annoyance List is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
+        val fanboysAnnoyanceListEnabled = (((fanboysAnnoyanceListInt == 0) && fanboysAnnoyanceListDefault) || (fanboysAnnoyanceListInt == 1))
+
+        // Set Fanboy's Social Blocking List spinner and text view status based on the Annoyance List status.
+        fanboysSocialBlockingListSpinner.isEnabled = !fanboysAnnoyanceListEnabled
+        fanboysSocialBlockingListTextView.isEnabled = !fanboysAnnoyanceListEnabled
 
         // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
-        fanboysSocialBlockingListImageView.isEnabled = (fanboysAnnoyanceListInt == 0)
+        fanboysSocialBlockingListImageView.isEnabled = !fanboysAnnoyanceListEnabled
 
-        // Open the spinners when the text view is clicked.
-        userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
-        defaultFontSizeTextView.setOnClickListener { fontSizeSpinner.performClick() }
-        swipeToRefreshTextView.setOnClickListener { swipeToRefreshSpinner.performClick() }
-        webViewThemeTextView.setOnClickListener { webViewThemeSpinner.performClick() }
-        wideViewportTextView.setOnClickListener { wideViewportSpinner.performClick() }
-        displayImagesTextView.setOnClickListener { displayImagesSpinner.performClick() }
 
         // Inflated a WebView to get the default user agent.
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the bare WebView should not be displayed on the screen.
         @SuppressLint("InflateParams") val bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false)
+
+        // Get a handle for the bare WebView.
         val bareWebView = bareWebViewLayout.findViewById<WebView>(R.id.bare_webview)
+
+        // Get the default user agent.
         val webViewDefaultUserAgentString = bareWebView.settings.userAgentString
 
         // Get a handle for the user agent array adapter.  This array does not contain the `System default` entry.
-        val userAgentNamesArray = ArrayAdapter.createFromResource(requireContext(), R.array.user_agent_names, R.layout.spinner_item)
+        val userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item)
 
         // Get the positions of the user agent and the default user agent.
         val userAgentArrayPosition = userAgentNamesArray.getPosition(currentUserAgentName)
-        val defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName)
+        val defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(userAgentDefault)
 
         // Get a handle for the user agent data array.  This array does not contain the `System default` entry.
         val userAgentDataArray = resources.getStringArray(R.array.user_agent_data)
@@ -438,20 +595,20 @@ class DomainSettingsFragment : Fragment() {
             // Set the user agent according to the system default.
             when (defaultUserAgentArrayPosition) {
                 // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = defaultUserAgentName
+                UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = userAgentDefault
 
                 // Display the WebView default user agent.
                 SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
 
                 // Display the custom user agent.
-                SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = defaultCustomUserAgentString
+                SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = customUserAgentStringDefault
 
                 // Get the user agent string from the user agent data array.
                 else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
             }
 
             // Set the background color to be transparent.
-            userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
+            userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
         } else if (userAgentArrayPosition == UNRECOGNIZED_USER_AGENT || currentUserAgentName == getString(R.string.custom_user_agent)) {
             // A custom user agent is stored in the current user agent name.  The second check is necessary in case the user did not change the default custom text.
             // Set the user agent spinner to `Custom user agent`.
@@ -465,7 +622,7 @@ class DomainSettingsFragment : Fragment() {
             customUserAgentEditText.setText(currentUserAgentName)
 
             // Set the background color to be blue.
-            userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+            userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
         } else {  // The user agent name contains one of the canonical user agents.
             // Set the user agent spinner selection.  The spinner has one more entry at the beginning than the user agent data array, so the position must be incremented.
             userAgentSpinner.setSelection(userAgentArrayPosition + 1)
@@ -486,14 +643,14 @@ class DomainSettingsFragment : Fragment() {
             }
 
             // Set the background color to be blue.
-            userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+            userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
         }
 
 
         // Display the font size settings.
-        if (fontSizeInt == 0) {  // `0` is the code for system default font size.
+        if (fontSizeInt == SYSTEM_DEFAULT) {  // `0` is the code for system default font size.
             // Set the font size to the system default.
-            fontSizeSpinner.setSelection(0)
+            fontSizeSpinner.setSelection(SYSTEM_DEFAULT)
 
             // Show the default font size text view.
             defaultFontSizeTextView.visibility = View.VISIBLE
@@ -502,10 +659,10 @@ class DomainSettingsFragment : Fragment() {
             customFontSizeEditText.visibility = View.GONE
 
             // Set the default font size as the text of the custom font size edit text.  This way, if the user switches to custom it will already be populated.
-            customFontSizeEditText.setText(defaultFontSizeString)
+            customFontSizeEditText.setText(fontSizeStringDefault)
 
             // Set the background color to be transparent.
-            fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
+            fontSizeLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
         } else {  // A custom font size is selected.
             // Set the spinner to the custom font size.
             fontSizeSpinner.setSelection(1)
@@ -520,81 +677,34 @@ class DomainSettingsFragment : Fragment() {
             customFontSizeEditText.setText(fontSizeInt.toString())
 
             // Set the background color to be blue.
-            fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+            fontSizeLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
         }
 
         // Initialize the default font size percentage string.
-        val defaultFontSizePercentageString = "$defaultFontSizeString%"
+        val defaultFontSizePercentageString = "$fontSizeStringDefault%"
 
         // Set the default font size text in the text view.
         defaultFontSizeTextView.text = defaultFontSizePercentageString
 
-        // Select the swipe-to-refresh selection in the spinner.
-        swipeToRefreshSpinner.setSelection(swipeToRefreshInt)
-
-        // Set the swipe-to-refresh text.
-        if (defaultSwipeToRefresh)
-            swipeToRefreshTextView.text = swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED)
-        else
-            swipeToRefreshTextView.text = swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED)
-
-        // Set the swipe-to-refresh icon and text view settings.
-        when (swipeToRefreshInt) {
-            DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                // Set the icon color.
-                swipeToRefreshImageView.isSelected = defaultSwipeToRefresh
-
-                // Show the swipe-to-refresh text view.
-                swipeToRefreshTextView.visibility = View.VISIBLE
-
-                // Set the background color to be transparent.
-                swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
-            }
-
-            DomainsDatabaseHelper.ENABLED -> {
-                // Set the icon color.
-                swipeToRefreshImageView.isSelected = true
-
-                // Hide the swipe-to-refresh text view.
-                swipeToRefreshTextView.visibility = View.GONE
-
-                // Set the background color to be blue.
-                swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-            }
-
-            DomainsDatabaseHelper.DISABLED -> {
-                // Set the icon color.
-                swipeToRefreshImageView.isSelected = false
-
-                // Hide the swipe-to-refresh text view.
-                swipeToRefreshTextView.visibility = View.GONE
-
-                // Set the background color to be blue.
-                swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-            }
-        }
 
         // Get the WebView theme string arrays.
         val webViewThemeStringArray = resources.getStringArray(R.array.webview_theme_array)
         val webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values)
 
-        // Get the WebView theme entry number that matches the current WebView theme.
-        val appWebViewThemeEntryNumber = when (defaultWebViewTheme) {
-            webViewThemeEntryValuesStringArray[1] -> { 1 }  // The light theme is selected.
-            webViewThemeEntryValuesStringArray[2] -> { 2 }  // The dark theme is selected.
-            else -> { 0 }  // The system default theme is selected.
+        // Get the WebView theme entry number that matches the current WebView theme string.
+        val appWebViewThemeEntryNumber = when (webViewThemeDefault) {
+            webViewThemeEntryValuesStringArray[1] -> { LIGHT_THEME }  // The light theme is selected.
+            webViewThemeEntryValuesStringArray[2] -> { DARK_THEME }  // The dark theme is selected.
+            else -> { SYSTEM_DEFAULT }  // The system default theme is selected.
         }
 
-        // Select the WebView theme in the spinner.
-        webViewThemeSpinner.setSelection(webViewThemeInt)
-
-        // Set the WebView theme text.
-        if (appWebViewThemeEntryNumber == DomainsDatabaseHelper.SYSTEM_DEFAULT) {  // The app WebView theme is system default.
+        // Set the WebView theme text.  This is only displayed if system default is selection, but it should be set here in case the user changes the selection.
+        if (appWebViewThemeEntryNumber == SYSTEM_DEFAULT) {  // The app WebView theme is system default.
             // Set the text according to the current UI theme.
             if (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)
-                webViewThemeTextView.text = webViewThemeStringArray[DomainsDatabaseHelper.LIGHT_THEME]
+                webViewThemeTextView.text = webViewThemeStringArray[LIGHT_THEME]
             else
-                webViewThemeTextView.text = webViewThemeStringArray[DomainsDatabaseHelper.DARK_THEME]
+                webViewThemeTextView.text = webViewThemeStringArray[DARK_THEME]
         } else {  // The app WebView theme is not system default.
             // Set the text according to the app WebView theme.
             webViewThemeTextView.text = webViewThemeStringArray[appWebViewThemeEntryNumber]
@@ -602,22 +712,22 @@ class DomainSettingsFragment : Fragment() {
 
         // Set the WebView theme icon and text visibility.
         when (webViewThemeInt) {
-            DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
+            SYSTEM_DEFAULT -> {
                 // Set the icon color.
                 when (appWebViewThemeEntryNumber) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> webViewThemeImageView.isSelected = (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)
-                    DomainsDatabaseHelper.LIGHT_THEME -> webViewThemeImageView.isSelected = true
-                    DomainsDatabaseHelper.DARK_THEME -> webViewThemeImageView.isSelected = false
+                    SYSTEM_DEFAULT -> webViewThemeImageView.isSelected = (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)
+                    LIGHT_THEME -> webViewThemeImageView.isSelected = true
+                    DARK_THEME -> webViewThemeImageView.isSelected = false
                 }
 
                 // Show the WebView theme text view.
                 webViewThemeTextView.visibility = View.VISIBLE
 
                 // Set the background color to be transparent.
-                webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
+                webViewThemeLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
             }
 
-            DomainsDatabaseHelper.LIGHT_THEME -> {
+            LIGHT_THEME -> {
                 // Set the icon color.
                 webViewThemeImageView.isSelected = true
 
@@ -625,10 +735,10 @@ class DomainSettingsFragment : Fragment() {
                 webViewThemeTextView.visibility = View.GONE
 
                 // Set the background color to be blue.
-                webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                webViewThemeLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
             }
 
-            DomainsDatabaseHelper.DARK_THEME -> {
+            DARK_THEME -> {
                 // Set the icon color.
                 webViewThemeImageView.isSelected = false
 
@@ -636,102 +746,50 @@ class DomainSettingsFragment : Fragment() {
                 webViewThemeTextView.visibility = View.GONE
 
                 // Set the background color to be blue.
-                webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                webViewThemeLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
             }
         }
 
-        // Select the wide viewport in the spinner.
-        wideViewportSpinner.setSelection(wideViewportInt)
 
-        // Set the default wide viewport text.
-        if (defaultWideViewport)
-            wideViewportTextView.text = wideViewportArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED)
-        else
-            wideViewportTextView.text = wideViewportArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED)
+        // Set the switch positions.
+        pinnedSslCertificateSwitch.isChecked = (pinnedSslCertificateInt == 1)
+        pinnedIpAddressesSwitch.isChecked = (pinnedIpAddressesInt == 1)
 
-        // Set the wide viewport icon and text view settings.
-        when (wideViewportInt) {
-            DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                // Set the icon color.
-                wideViewportImageView.isSelected = defaultWideViewport
-
-                // Show the wide viewport text view.
-                wideViewportTextView.visibility = View.VISIBLE
-
-                // Set the background color to be transparent.
-                wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
-            }
-
-            DomainsDatabaseHelper.ENABLED -> {
-                // Set the icon color.
-                wideViewportImageView.isSelected = true
-
-                // Hide the wide viewport text view.
-                wideViewportTextView.visibility = View.GONE
-
-                // Set the background color to be blue.
-                wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-            }
-
-            DomainsDatabaseHelper.DISABLED -> {
-                // Set the icon color.
-                wideViewportImageView.isSelected = false
-
-                // Hide the wide viewport text view.
-                wideViewportTextView.visibility = View.GONE
-
-                // Set the background color to be blue.
-                wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-            }
-        }
-
-        // Display the website images mode in the spinner.
-        displayImagesSpinner.setSelection(displayImagesInt)
-
-        // Set the default display images text.
-        if (defaultDisplayWebpageImages)
-            displayImagesTextView.text = displayImagesArrayAdapter.getItem(DomainsDatabaseHelper.ENABLED)
-        else
-            displayImagesTextView.text = displayImagesArrayAdapter.getItem(DomainsDatabaseHelper.DISABLED)
-
-        // Set the display website images icon and text view settings.
-        when (displayImagesInt) {
-            DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                // Set the icon color.
-                displayImagesImageView.isSelected = defaultDisplayWebpageImages
-
-                // Show the display images text view.
-                displayImagesTextView.visibility = View.VISIBLE
-
-                // Set the background color to be transparent.
-                displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
-            }
-
-            DomainsDatabaseHelper.ENABLED -> {
-                // Set the icon color.
-                displayImagesImageView.isSelected = true
-
-                // Hide the display images text view.
-                displayImagesTextView.visibility = View.GONE
-
-                // Set the background color to be blue.
-                displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-            }
-
-            DomainsDatabaseHelper.DISABLED -> {
-                // Set the icon color.
-                displayImagesImageView.isSelected = false
-
-                // Hide the display images text view.
-                displayImagesTextView.visibility = View.GONE
-
-                // Set the background color to be blue.
-               displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-            }
-        }
+        // Set the switch icon colors.
+        pinnedSslCertificateImageView.isSelected = (pinnedSslCertificateInt == 1)
+        pinnedIpAddressesImageView.isSelected = (pinnedIpAddressesInt == 1)
 
         // Store the current date.
         val currentDate = Calendar.getInstance().time
+
+        // Create a spannable string builder for each text view that needs multiple colors of text.
+        val savedSslIssuedToCNameStringBuilder = SpannableStringBuilder(cNameLabel + savedSslIssuedToCNameString)
+        val savedSslIssuedToONameStringBuilder = SpannableStringBuilder(oNameLabel + savedSslIssuedToONameString)
+        val savedSslIssuedToUNameStringBuilder = SpannableStringBuilder(uNameLabel + savedSslIssuedToUNameString)
+        val savedSslIssuedByCNameStringBuilder = SpannableStringBuilder(cNameLabel + savedSslIssuedByCNameString)
+        val savedSslIssuedByONameStringBuilder = SpannableStringBuilder(oNameLabel + savedSslIssuedByONameString)
+        val savedSslIssuedByUNameStringBuilder = SpannableStringBuilder(uNameLabel + savedSslIssuedByUNameString)
+
+        // Initialize the saved SSL certificate date variables.
+        var savedSslStartDate: Date? = null
+        var savedSslEndDate: Date? = null
+
+        // Only get the saved SSL certificate dates from the cursor if they are not set to `0`.
+        if (savedSslStartDateLong != 0L)
+            savedSslStartDate = Date(savedSslStartDateLong)
+        if (savedSslEndDateLong != 0L)
+            savedSslEndDate = Date(savedSslEndDateLong)
+
+        // Create the date spannable string builders.
+        val savedSslStartDateStringBuilder: SpannableStringBuilder = if (savedSslStartDate == null)
+            SpannableStringBuilder(startDateLabel)
+        else
+            SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslStartDate))
+
+        val savedSslEndDateStringBuilder: SpannableStringBuilder = if (savedSslEndDate == null)
+            SpannableStringBuilder(endDateLabel)
+        else
+            SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslEndDate))
 
         // Setup the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         savedSslIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length, savedSslIssuedToONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -905,7 +963,7 @@ class DomainSettingsFragment : Fragment() {
                 currentIpAddressesRadioButton.isChecked = false
 
                 // Darken the background of the current IP addresses linear layout.
-                currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.translucent_background)
+                currentIpAddressesLinearLayout.setBackgroundResource(R.color.translucent_background)
             } else {  // The saved IP addresses are hidden.
                 // Check the current IP addresses radio button.
                 currentIpAddressesRadioButton.isChecked = true
@@ -924,87 +982,193 @@ class DomainSettingsFragment : Fragment() {
         }
 
 
-        // Set the JavaScript switch listener.
-        javaScriptSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the JavaScript icon.
-            if (isChecked)
-                javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null))
-            else
-                javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null))
+        // Set the JavaScript spinner listener.
+        javaScriptSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    SYSTEM_DEFAULT -> {
+                        // Set the icon.
+                        if (javaScriptDefault)
+                            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null))
+                        else
+                            javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null))
 
-            // Set the DOM storage switch status.
-            domStorageSwitch.isEnabled = isChecked
+                        // Show the text view.
+                        javaScriptTextView.visibility = View.VISIBLE
 
-            // Set the DOM storage ghosted icon status.
-            domStorageImageView.isEnabled = isChecked
-        }
+                        // Set the background color to be transparent.
+                        javaScriptLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
+                    }
 
-        // Set the cookies switch listener.
-        cookiesSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            cookiesImageView.isSelected = isChecked
-        }
+                    ENABLED -> {
+                        // Set the icon.
+                        javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.javascript_enabled, null))
 
-        // Set the DOM Storage switch listener.
-        domStorageSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            domStorageImageView.isSelected = isChecked
-        }
+                        // Hide the text view.
+                        javaScriptTextView.visibility = View.GONE
 
-        // Set the form data switch listener.  It can be removed once the minimum API >= 26.
-        if (Build.VERSION.SDK_INT < 26) {
-            formDataSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                // Update the icon color.
-                formDataImageView.isSelected = isChecked
+                        // Set the background color to be blue.
+                        javaScriptLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+                    }
+
+                    DISABLED -> {
+                        // Set the icon.
+                        javaScriptImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.privacy_mode, null))
+
+                        // Hide the text view.
+                        javaScriptTextView.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        javaScriptLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+                    }
+                }
+
+                // Calculate if JavaScript is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
+                val updatedJavaScriptEnabled = (((position == 0) && javaScriptDefault) || (position == 1))
+
+                // Set the DOM storage spinner and text view status based on the JavaScript status.
+                domStorageSpinner.isEnabled = updatedJavaScriptEnabled
+                domStorageTextView.isEnabled = updatedJavaScriptEnabled
+
+                // Set the DOM storage icon ghosted status based on the JavaScript status.
+                domStorageImageView.isEnabled = updatedJavaScriptEnabled
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
             }
         }
 
-        // Set the EasyList switch listener.
-        easyListSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            easyListImageView.isSelected = isChecked
+        // Set the cookies switch listener.
+        cookiesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, cookiesDefault, cookiesLinearLayout, cookiesImageView, cookiesTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
         }
 
-        // Set the EasyPrivacy switch listener.
-        easyPrivacySwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            easyPrivacyImageView.isSelected = isChecked
+        // Set the DOM Storage spinner listener.
+        domStorageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, domStorageDefault, domStorageLinearLayout, domStorageImageView, domStorageTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
         }
 
-        // Set the Fanboy's Annoyance List switch listener.
-        fanboysAnnoyanceListSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            fanboysAnnoyanceListImageView.isSelected = isChecked
+        // Set the form data spinner listener.  It can be removed once the minimum API >= 26.
+        if (Build.VERSION.SDK_INT < 26) {
+            formDataSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    // Update the icon and the text view settings.
+                    setIconAndTextViewSettings(position, formDataDefault, formDataLinearLayout, formDataImageView, formDataTextView)
+                }
 
-            // Set Fanboy's Social Blocking List switch position.
-            fanboysSocialBlockingListSwitch.isEnabled = !isChecked
-
-            // Set the Social Blocking List icon ghosted status.
-            fanboysSocialBlockingListImageView.isEnabled = !isChecked
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Do nothing.
+                }
+            }
         }
 
-        // Set the Fanboy's Social Blocking List switch listener.
-        fanboysSocialBlockingListSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            fanboysSocialBlockingListImageView.isSelected = isChecked
+        // Set the EasyList spinner listener.
+        easyListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, easyListDefault, easyListLinearLayout, easyListImageView, easyListTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
         }
 
-        // Set the UltraList switch listener.
-        ultraListSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            ultraListImageView.isSelected = isChecked
+        // Set the EasyPrivacy spinner listener.
+        easyPrivacySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, easyPrivacyDefault, easyPrivacyLinearLayout, easyPrivacyImageView, easyPrivacyTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
         }
 
-        // Set the UltraPrivacy switch listener.
-        ultraPrivacySwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            ultraPrivacyImageView.isSelected = isChecked
+        // Set the Fanboy's Annoyance List spinner listener.
+        fanboysAnnoyanceListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, fanboysAnnoyanceListDefault, fanboysAnnoyanceListLinearLayout, fanboysAnnoyanceListImageView, fanboysAnnoyanceListTextView)
+
+                // Calculate if Fanboy's Annoyance List is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
+                val updatedFanboysAnnoyanceListEnabled = (((position == 0) && fanboysAnnoyanceListDefault) || (position == 1))
+
+                // Set Fanboy's Social Blocking List spinner and test view status based on the Annoyance List status.
+                fanboysSocialBlockingListSpinner.isEnabled = !updatedFanboysAnnoyanceListEnabled
+                fanboysSocialBlockingListTextView.isEnabled = !updatedFanboysAnnoyanceListEnabled
+
+                // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
+                fanboysSocialBlockingListImageView.isEnabled = !updatedFanboysAnnoyanceListEnabled
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
         }
 
-        // Set the block all third-party requests switch listener.
-        blockAllThirdPartyRequestsSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            // Update the icon color.
-            blockAllThirdPartyRequestsImageView.isSelected = isChecked
+        // Set the Fanboy's Social Blocking List spinner listener.
+        fanboysSocialBlockingListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, fanboysSocialBlockingListDefault, fanboysSocialBlockingListLinearLayout, fanboysSocialBlockingListImageView, fanboysSocialBlockingListTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
+        }
+
+        // Set the UltraList spinner listener.
+        ultraListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, ultraListDefault, ultraListLinearLayout, ultraListImageView, ultraListTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
+        }
+
+        // Set the UltraPrivacy spinner listener.
+        ultraPrivacySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, ultraPrivacyDefault, ultraPrivacyLinearLayout, ultraPrivacyImageView, ultraPrivacyTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
+        }
+
+        // Set the block all third-party requests spinner listener.
+        blockAllThirdPartyRequestsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, blockAllThirdPartyRequestsDefault, blockAllThirdPartyRequestsLinearLayout, blockAllThirdPartyRequestsImageView, blockAllThirdPartyRequestsTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
         }
 
         // Set the user agent spinner listener.
@@ -1022,20 +1186,20 @@ class DomainSettingsFragment : Fragment() {
                         // Set the user text.
                         when (defaultUserAgentArrayPosition) {
                             // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                            UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = defaultUserAgentName
+                            UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = userAgentDefault
 
                             // Display the `WebView` default user agent.
                             SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
 
                             // Display the custom user agent.
-                            SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = defaultCustomUserAgentString
+                            SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = customUserAgentStringDefault
 
                             // Get the user agent string from the user agent data array.
                             else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
                         }
 
                         // Set the background color to be transparent.
-                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
                     }
 
                     DOMAINS_WEBVIEW_DEFAULT_USER_AGENT -> {
@@ -1045,15 +1209,15 @@ class DomainSettingsFragment : Fragment() {
                         // Set the user agent text.
                         userAgentTextView.text = webViewDefaultUserAgentString
 
-                        // Hide the custom user agent EditTex.
+                        // Hide the custom user agent edit text.
                         customUserAgentEditText.visibility = View.GONE
 
                         // Set the background color to be blue.
-                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
                     }
 
                     DOMAINS_CUSTOM_USER_AGENT -> {
-                        // Hide the user agent TextView.
+                        // Hide the user agent text view.
                         userAgentTextView.visibility = View.GONE
 
                         // Show the custom user agent edit text.
@@ -1063,7 +1227,7 @@ class DomainSettingsFragment : Fragment() {
                         customUserAgentEditText.setText(currentUserAgentName)
 
                         // Set the background color to be blue.
-                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
                     }
 
                     else -> {
@@ -1077,7 +1241,7 @@ class DomainSettingsFragment : Fragment() {
                         customUserAgentEditText.visibility = View.GONE
 
                         // Set the background color to be blue.
-                        userAgentLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
                     }
                 }
             }
@@ -1091,7 +1255,7 @@ class DomainSettingsFragment : Fragment() {
         fontSizeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Update the font size display options.
-                if (position == 0) {  // The system default font size has been selected.
+                if (position == SYSTEM_DEFAULT) {  // The system default font size has been selected.
                     // Show the default font size text view.
                     defaultFontSizeTextView.visibility = View.VISIBLE
 
@@ -1099,7 +1263,7 @@ class DomainSettingsFragment : Fragment() {
                     customFontSizeEditText.visibility = View.GONE
 
                     // Set the background color to be transparent.
-                    fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
+                    fontSizeLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
                 } else {  // A custom font size has been selected.
                     // Hide the default font size text view.
                     defaultFontSizeTextView.visibility = View.GONE
@@ -1108,7 +1272,7 @@ class DomainSettingsFragment : Fragment() {
                     customFontSizeEditText.visibility = View.VISIBLE
 
                     // Set the background color to be blue.
-                    fontSizeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                    fontSizeLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
                 }
             }
 
@@ -1120,41 +1284,8 @@ class DomainSettingsFragment : Fragment() {
         // Set the swipe-to-refresh spinner listener.
         swipeToRefreshSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the visibility of the text view.
-                when (position) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                        // Set the icon color.
-                        swipeToRefreshImageView.isSelected = defaultSwipeToRefresh
-
-                        // Show the swipe-to-refresh text view.
-                        swipeToRefreshTextView.visibility = View.VISIBLE
-
-                        // Set the background color to be transparent.
-                        swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
-                    }
-
-                    DomainsDatabaseHelper.ENABLED -> {
-                        // Set the icon color.
-                        swipeToRefreshImageView.isSelected = true
-
-                        // Hide the swipe-to-refresh text view.
-                        swipeToRefreshTextView.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-                    }
-
-                    DomainsDatabaseHelper.DISABLED -> {
-                        // Set the icon color.
-                        swipeToRefreshImageView.isSelected = false
-
-                        // Hide the swipe-to-refresh text view.
-                        swipeToRefreshTextView.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        swipeToRefreshLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-                    }
-                }
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, swipeToRefreshDefault, swipeToRefreshLinearLayout, swipeToRefreshImageView, swipeToRefreshTextView)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -1165,24 +1296,24 @@ class DomainSettingsFragment : Fragment() {
         // Set the WebView theme spinner listener.
         webViewThemeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the visibility of the WebView theme text view.
+                // Update the icon and the WebView theme text view settings.
                 when (position) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
+                    SYSTEM_DEFAULT -> {
                         // Set the icon color.
                         when (appWebViewThemeEntryNumber) {
-                            DomainsDatabaseHelper.SYSTEM_DEFAULT -> webViewThemeImageView.isSelected = (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)
-                            DomainsDatabaseHelper.LIGHT_THEME -> webViewThemeImageView.isSelected = true
-                            DomainsDatabaseHelper.DARK_THEME -> webViewThemeImageView.isSelected = false
+                            SYSTEM_DEFAULT -> webViewThemeImageView.isSelected = (currentThemeStatus == Configuration.UI_MODE_NIGHT_NO)
+                            LIGHT_THEME -> webViewThemeImageView.isSelected = true
+                            DARK_THEME -> webViewThemeImageView.isSelected = false
                         }
 
                         // Show the WebView theme text view.
                         webViewThemeTextView.visibility = View.VISIBLE
 
                         // Set the background color to be transparent.
-                        webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
+                        webViewThemeLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
                     }
 
-                    DomainsDatabaseHelper.LIGHT_THEME -> {
+                    LIGHT_THEME -> {
                         // Set the icon color.
                         webViewThemeImageView.isSelected = true
 
@@ -1190,10 +1321,10 @@ class DomainSettingsFragment : Fragment() {
                         webViewThemeTextView.visibility = View.GONE
 
                         // Set the background color to be blue.
-                        webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                        webViewThemeLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
                     }
 
-                    DomainsDatabaseHelper.DARK_THEME -> {
+                    DARK_THEME -> {
                         // Set the icon color.
                         webViewThemeImageView.isSelected = false
 
@@ -1201,7 +1332,7 @@ class DomainSettingsFragment : Fragment() {
                         webViewThemeTextView.visibility = View.GONE
 
                         // Set the background color to be blue.
-                        webViewThemeLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
+                        webViewThemeLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
                     }
                 }
             }
@@ -1214,41 +1345,8 @@ class DomainSettingsFragment : Fragment() {
         // Set the wide viewport spinner listener.
         wideViewportSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the visibility of the wide viewport text view.
-                when (position) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                        // Set the icon color.
-                        wideViewportImageView.isSelected = defaultWideViewport
-
-                        // Show the wide viewport text view.
-                        wideViewportTextView.visibility = View.VISIBLE
-
-                        // Set the background color to be transparent.
-                        wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
-                    }
-
-                    DomainsDatabaseHelper.ENABLED -> {
-                        // Set the icon color.
-                        wideViewportImageView.isSelected = true
-
-                        // Hide the wide viewport text view.
-                        wideViewportTextView.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-                    }
-
-                    DomainsDatabaseHelper.DISABLED -> {
-                        // Set the icon color.
-                        wideViewportImageView.isSelected = false
-
-                        // Hid ethe wide viewport text view.
-                        wideViewportTextView.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        wideViewportLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-                    }
-                }
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, wideViewportDefault, wideViewportLinearLayout, wideViewportImageView, wideViewportTextView)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -1259,41 +1357,8 @@ class DomainSettingsFragment : Fragment() {
         // Set the display webpage images spinner listener.
         displayImagesSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the visibility of the display images text view.
-                when (position) {
-                    DomainsDatabaseHelper.SYSTEM_DEFAULT -> {
-                        // Set the icon color.
-                        displayImagesImageView.isSelected = defaultDisplayWebpageImages
-
-                        // Show the display images text view.
-                        displayImagesTextView.visibility = View.VISIBLE
-
-                        // Set the background color to be transparent.
-                        displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.transparent))
-                    }
-
-                    DomainsDatabaseHelper.ENABLED -> {
-                        // Set the icon color.
-                        displayImagesImageView.isSelected = true
-
-                        // Hide the display images text view.
-                        displayImagesTextView.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-                    }
-
-                    DomainsDatabaseHelper.DISABLED -> {
-                        // Set the icon color.
-                        displayImagesImageView.isSelected = false
-
-                        // Hide the display images text view.
-                        displayImagesTextView.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        displayImagesLinearLayout.setBackgroundColor(getColor(requireContext(), R.color.blue_background))
-                    }
-                }
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, displayWebpageImagesDefault, displayImagesLinearLayout, displayImagesImageView, displayImagesTextView)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -1632,5 +1697,51 @@ class DomainSettingsFragment : Fragment() {
         }
 
         return domainNamesMatch
+    }
+
+    private fun populateTextView(defaultValue: Boolean, arrayAdapter: ArrayAdapter<CharSequence>, textView: TextView) {
+        // Set the text.
+        textView.text = if (defaultValue)
+            arrayAdapter.getItem(ENABLED)
+        else
+            arrayAdapter.getItem(DISABLED)
+    }
+
+    private fun setIconAndTextViewSettings(databaseInt: Int, defaultValue: Boolean, linearLayout: LinearLayout, imageView: ImageView, textView: TextView) {
+        // Set the icon and text view settings.
+        when (databaseInt) {
+            SYSTEM_DEFAULT -> {
+                // Set the icon color.
+                imageView.isSelected = defaultValue
+
+                // Show the text view.
+                textView.visibility = View.VISIBLE
+
+                // Set the background color to be transparent.
+                linearLayout.setBackgroundColor(getColor(context, R.color.transparent))
+            }
+
+            ENABLED -> {
+                // Set the icon color.
+                imageView.isSelected = true
+
+                // Hide the text view.
+                textView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                linearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+            }
+
+            DISABLED -> {
+                // Set the icon color.
+                imageView.isSelected = false
+
+                // Hide the text view.
+                textView.visibility = View.GONE
+
+                // Set the background color to be blue.
+                linearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+            }
+        }
     }
 }

@@ -34,11 +34,15 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
+// Define the public constants.
+const val EXPORT_SUCCESSFUL = "A"
+const val IMPORT_SUCCESSFUL = "B"
+const val IMPORT_EXPORT_SCHEMA_VERSION = 17
+
 // Define the private class constants.
 private const val ALLOW_SCREENSHOTS = "allow_screenshots"
 private const val AMP_REDIRECTS = "amp_redirects"
 private const val APP_THEME = "app_theme"
-private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
 private const val BOTTOM_APP_BAR = "bottom_app_bar"
 private const val CLEAR_CACHE = "clear_cache"
 private const val CLEAR_COOKIES = "clear_cookies"
@@ -46,7 +50,6 @@ private const val CLEAR_DOM_STORAGE = "clear_dom_storage"
 private const val CLEAR_EVERYTHING = "clear_everything"
 private const val CLEAR_FORM_DATA = "clear_form_data"  // Clear form data can be removed once the minimum API >= 26.
 private const val CLEAR_LOGCAT = "clear_logcat"
-private const val COOKIES = "cookies"
 private const val CUSTOM_USER_AGENT = "custom_user_agent"
 private const val DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons"
 private const val DISPLAY_WEBPAGE_IMAGES = "display_webpage_images"
@@ -56,38 +59,27 @@ private const val EASYLIST = "easylist"
 private const val EASYPRIVACY = "easyprivacy"
 private const val FANBOYS_ANNOYANCE_LIST = "fanboys_annoyance_list"
 private const val FANBOYS_SOCIAL_BLOCKING_LIST = "fanboys_social_blocking_list"
-private const val FONT_SIZE = "font_size"
 private const val FULL_SCREEN_BROWSING_MODE = "full_screen_browsing_mode"
 private const val HIDE_APP_BAR = "hide_app_bar"
 private const val HOMEPAGE = "homepage"
-private const val ID = "_id"
 private const val INCOGNITO_MODE = "incognito_mode"
 private const val JAVASCRIPT = "javascript"
 private const val OPEN_INTENTS_IN_NEW_TAB = "open_intents_in_new_tab"
+private const val PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
+private const val PREFERENCES_FONT_SIZE = "font_size"
 private const val PREFERENCES_TABLE = "preferences"
+private const val PREFERENCES_USER_AGENT = "user_agent"
 private const val PROXY = "proxy"
 private const val PROXY_CUSTOM_URL = "proxy_custom_url"
 private const val SAVE_FORM_DATA = "save_form_data"
 private const val SEARCH = "search"
 private const val SEARCH_CUSTOM_URL = "search_custom_url"
 private const val SCROLL_APP_BAR = "scroll_app_bar"
-private const val SWIPE_TO_REFRESH = "swipe_to_refresh"
+private const val PREFERENCES_SWIPE_TO_REFRESH = "swipe_to_refresh"
 private const val TRACKING_QUERIES = "tracking_queries"
-private const val ULTRALIST = "ultralist"
 private const val ULTRAPRIVACY = "ultraprivacy"
-private const val USER_AGENT = "user_agent"
-private const val WEBVIEW_THEME = "webview_theme"
-private const val WIDE_VIEWPORT = "wide_viewport"
 
 class ImportExportDatabaseHelper {
-    // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
-    companion object {
-        // Define the public class constants.
-        const val EXPORT_SUCCESSFUL = "Export Successful"
-        const val IMPORT_SUCCESSFUL = "Import Successful"
-        const val SCHEMA_VERSION = 16
-    }
-
     fun importUnencrypted(importFileInputStream: InputStream, context: Context): String {
         return try {
             // Create a temporary import file.
@@ -140,17 +132,17 @@ class ImportExportDatabaseHelper {
                 // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
 
                 // Create the new font size column.
-                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $FONT_SIZE TEXT")
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $PREFERENCES_FONT_SIZE TEXT")
 
                 // Populate the preferences table with the current font size value.
-                importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $FONT_SIZE = default_font_size")
+                importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $PREFERENCES_FONT_SIZE = default_font_size")
             }
 
             // Upgrade from schema version 3, first used in Privacy Browser 2.15, to schema version 4, first used in Privacy Browser 2.16.
             if (importDatabaseVersion < 4) {
                 // Add the Pinned IP Addresses columns to the domains table.
-                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.PINNED_IP_ADDRESSES}  BOOLEAN")
-                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.IP_ADDRESSES} TEXT")
+                importDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $PINNED_IP_ADDRESSES  BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $IP_ADDRESSES TEXT")
             }
 
             // Upgrade from schema version 4, first used in Privacy Browser 2.16, to schema version 5, first used in Privacy Browser 2.17.
@@ -199,7 +191,7 @@ class ImportExportDatabaseHelper {
                 // Previously this upgrade added `facebook_click_ids` to the Preferences table.  But that is now removed in schema version 15.
 
                 // Add the wide viewport column to the domains table.
-                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.WIDE_VIEWPORT} INTEGER")
+                importDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $WIDE_VIEWPORT INTEGER")
 
                 // Add the Google Analytics, Twitter AMP redirects, and wide viewport columns to the preferences table.
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN google_analytics BOOLEAN")
@@ -235,7 +227,7 @@ class ImportExportDatabaseHelper {
             // Upgrade from schema version 7, first used in Privacy Browser 3.1, to schema version 8, first used in Privacy Browser 3.2.
             if (importDatabaseVersion < 8) {
                 // Add the UltraList column to the tables.
-                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.ULTRALIST} BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ULTRALIST INTEGER")
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $ULTRALIST BOOLEAN")
 
                 // Get the current preference values.
@@ -245,10 +237,10 @@ class ImportExportDatabaseHelper {
                 // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 if (ultraList) {
-                    importDatabase.execSQL("UPDATE ${DomainsDatabaseHelper.DOMAINS_TABLE} SET ${DomainsDatabaseHelper.ULTRALIST}  =  1")
+                    importDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ULTRALIST = 1")
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $ULTRALIST = 1")
                 } else {
-                    importDatabase.execSQL("UPDATE ${DomainsDatabaseHelper.DOMAINS_TABLE} SET ${DomainsDatabaseHelper.ULTRALIST} = 0")
+                    importDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ULTRALIST = 0")
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $ULTRALIST = 0")
                 }
             }
@@ -310,7 +302,7 @@ class ImportExportDatabaseHelper {
                 }
 
                 // Add the WebView theme to the domains table.  This defaults to 0, which is `System default`, so a separate step isn't needed to populate the database.
-                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.WEBVIEW_THEME} INTEGER")
+                importDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $WEBVIEW_THEME INTEGER")
 
                 // Add the WebView theme to the preferences table.
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $WEBVIEW_THEME TEXT")
@@ -353,11 +345,11 @@ class ImportExportDatabaseHelper {
                 // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
 
                 // Create the new cookies columns.
-                importDatabase.execSQL("ALTER TABLE ${DomainsDatabaseHelper.DOMAINS_TABLE} ADD COLUMN ${DomainsDatabaseHelper.COOKIES} BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $COOKIES INTEGER")
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $COOKIES BOOLEAN")
 
                 // Copy the data from the old cookies columns to the new ones.
-                importDatabase.execSQL("UPDATE ${DomainsDatabaseHelper.DOMAINS_TABLE} SET ${DomainsDatabaseHelper.COOKIES} = enablefirstpartycookies")
+                importDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $COOKIES = enablefirstpartycookies")
                 importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $COOKIES = first_party_cookies")
 
                 // Create the new download with external app and bottom app bar columns.
@@ -435,16 +427,92 @@ class ImportExportDatabaseHelper {
                 importBookmarksCursor.moveToNext()
             }
 
+            // Upgrade from schema version 16, first used in Privacy Browser 3.12, to schema version 17, first used in Privacy Browser 3.15.
+            if (importDatabaseVersion < 16) {
+                // Get the current switch default values.
+                val javaScriptDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.javascript_key), false)
+                val cookiesDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.cookies_key), false)
+                val domStorageDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.dom_storage_key), false)
+                val formDataDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.save_form_data_key), false)
+                val easyListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easylist_key), true)
+                val easyPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easyprivacy_key), true)
+                val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_annoyance_list_key), true)
+                val fanboysSocialBlockingListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_social_blocking_list), true)
+                val ultraListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultralist_key), true)
+                val ultraPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultraprivacy_key), true)
+                val blockAllThirdPartyRequestsDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.block_all_third_party_requests_key), false)
+
+                // Get a domains cursor.
+                val importDomainsConversionCursor = importDatabase.rawQuery("SELECT * FROM $DOMAINS_TABLE", null)
+
+                // Get the domains column indexes.
+                val javaScriptColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
+                val cookiesColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(COOKIES)
+                val domStorageColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
+                val formDataColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)
+                val easyListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+                val easyPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+                val fanboysAnnoyanceListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
+                val fanboysSocialBlockingListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
+                val ultraListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ULTRALIST)
+                val ultraPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)
+                val blockAllThirdPartyRequestsColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
+
+                // Convert the domain from the switch booleans to the spinner integers.
+                for (i in 0 until importDomainsConversionCursor.count) {
+                    // Move to the current record.
+                    importDomainsConversionCursor.moveToPosition(i)
+
+                    // Get the domain current values.
+                    val javaScriptDomainCurrentValue = importDomainsConversionCursor.getInt(javaScriptColumnIndex)
+                    val cookiesDomainCurrentValue = importDomainsConversionCursor.getInt(cookiesColumnIndex)
+                    val domStorageDomainCurrentValue = importDomainsConversionCursor.getInt(domStorageColumnIndex)
+                    val formDataDomainCurrentValue = importDomainsConversionCursor.getInt(formDataColumnIndex)
+                    val easyListDomainCurrentValue = importDomainsConversionCursor.getInt(easyListColumnIndex)
+                    val easyPrivacyDomainCurrentValue = importDomainsConversionCursor.getInt(easyPrivacyColumnIndex)
+                    val fanboysAnnoyanceListCurrentValue = importDomainsConversionCursor.getInt(fanboysAnnoyanceListColumnIndex)
+                    val fanboysSocialBlockingListCurrentValue = importDomainsConversionCursor.getInt(fanboysSocialBlockingListColumnIndex)
+                    val ultraListCurrentValue = importDomainsConversionCursor.getInt(ultraListColumnIndex)
+                    val ultraPrivacyCurrentValue = importDomainsConversionCursor.getInt(ultraPrivacyColumnIndex)
+                    val blockAllThirdPartyRequestsCurrentValue = importDomainsConversionCursor.getInt(blockAllThirdPartyRequestsColumnIndex)
+
+                    // Instantiate a domain content values.
+                    val domainContentValues = ContentValues()
+
+                    // Populate the domain content values.
+                    domainContentValues.put(ENABLE_JAVASCRIPT, convertFromSwitchToSpinner(javaScriptDefaultValue, javaScriptDomainCurrentValue))
+                    domainContentValues.put(COOKIES, convertFromSwitchToSpinner(cookiesDefaultValue, cookiesDomainCurrentValue))
+                    domainContentValues.put(ENABLE_DOM_STORAGE, convertFromSwitchToSpinner(domStorageDefaultValue, domStorageDomainCurrentValue))
+                    domainContentValues.put(ENABLE_FORM_DATA, convertFromSwitchToSpinner(formDataDefaultValue, formDataDomainCurrentValue))
+                    domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
+                    domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
+                    domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
+                    domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, convertFromSwitchToSpinner(fanboysSocialBlockingListDefaultValue, fanboysSocialBlockingListCurrentValue))
+                    domainContentValues.put(ULTRALIST, convertFromSwitchToSpinner(ultraListDefaultValue, ultraListCurrentValue))
+                    domainContentValues.put(ENABLE_ULTRAPRIVACY, convertFromSwitchToSpinner(ultraPrivacyDefaultValue, ultraPrivacyCurrentValue))
+                    domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, convertFromSwitchToSpinner(blockAllThirdPartyRequestsDefaultValue, blockAllThirdPartyRequestsCurrentValue))
+
+                    // Get the current database ID.
+                    val currentDatabaseId = importDomainsConversionCursor.getInt(importDomainsConversionCursor.getColumnIndexOrThrow(ID))
+
+                    // Update the row for the specified database ID.
+                    importDatabase.update(DOMAINS_TABLE, domainContentValues, "$ID = $currentDatabaseId", null)
+                }
+
+                // Close the cursor.
+                importDomainsConversionCursor.close()
+            }
+
             // Close the bookmarks cursor and database.
             importBookmarksCursor.close()
             bookmarksDatabaseHelper.close()
 
 
             // Get a cursor for the domains table.
-            val importDomainsCursor = importDatabase.rawQuery("SELECT * FROM ${DomainsDatabaseHelper.DOMAINS_TABLE} ORDER BY ${DomainsDatabaseHelper.DOMAIN_NAME} ASC", null)
+            val importDomainsCursor = importDatabase.rawQuery("SELECT * FROM $DOMAINS_TABLE ORDER BY $DOMAIN_NAME ASC", null)
 
             // Delete the current domains database.
-            context.deleteDatabase(DomainsDatabaseHelper.DOMAINS_DATABASE)
+            context.deleteDatabase(DOMAINS_DATABASE)
 
             // Create a new domains database.
             val domainsDatabaseHelper = DomainsDatabaseHelper(context)
@@ -458,44 +526,35 @@ class ImportExportDatabaseHelper {
                 val domainContentValues = ContentValues()
 
                 // Populate the domain content values.
-                domainContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)))
-                domainContentValues.put(DomainsDatabaseHelper.COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST,
-                    importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST,
-                    importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ULTRALIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)))
-                domainContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS,
-                    importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)))
-                domainContentValues.put(DomainsDatabaseHelper.USER_AGENT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT)))
-                domainContentValues.put(DomainsDatabaseHelper.FONT_SIZE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE)))
-                domainContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH)))
-                domainContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME)))
-                domainContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT)))
-                domainContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES)))
-                domainContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME,
-                    importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION,
-                    importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT,
-                    importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME,
-                    importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION,
-                    importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT,
-                    importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)))
-                domainContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)))
-                domainContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES)))
+                domainContentValues.put(DOMAIN_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DOMAIN_NAME)))
+                domainContentValues.put(ENABLE_JAVASCRIPT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)))
+                domainContentValues.put(COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(COOKIES)))
+                domainContentValues.put(ENABLE_DOM_STORAGE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)))
+                domainContentValues.put(ENABLE_FORM_DATA, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)))
+                domainContentValues.put(ENABLE_EASYLIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)))
+                domainContentValues.put(ENABLE_EASYPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)))
+                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)))
+                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)))
+                domainContentValues.put(ULTRALIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ULTRALIST)))
+                domainContentValues.put(ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)))
+                domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)))
+                domainContentValues.put(USER_AGENT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(USER_AGENT)))
+                domainContentValues.put(FONT_SIZE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(FONT_SIZE)))
+                domainContentValues.put(SWIPE_TO_REFRESH, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)))
+                domainContentValues.put(WEBVIEW_THEME, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
+                domainContentValues.put(WIDE_VIEWPORT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)))
+                domainContentValues.put(DISPLAY_IMAGES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DISPLAY_IMAGES)))
+                domainContentValues.put(PINNED_SSL_CERTIFICATE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE)))
+                domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME)))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION)))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)))
+                domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME)))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION)))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)))
+                domainContentValues.put(SSL_START_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(SSL_START_DATE)))
+                domainContentValues.put(SSL_END_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(SSL_END_DATE)))
+                domainContentValues.put(PINNED_IP_ADDRESSES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES)))
+                domainContentValues.put(IP_ADDRESSES, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)))
 
                 // Insert the content values into the domains database.
                 domainsDatabaseHelper.addDomain(domainContentValues)
@@ -521,7 +580,7 @@ class ImportExportDatabaseHelper {
                 .putBoolean(COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(COOKIES)) == 1)
                 .putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOM_STORAGE)) == 1)
                 .putBoolean(SAVE_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SAVE_FORM_DATA)) == 1)  // Save form data can be removed once the minimum API >= 26.
-                .putString(USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(USER_AGENT)))
+                .putString(PREFERENCES_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_USER_AGENT)))
                 .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(CUSTOM_USER_AGENT)))
                 .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(INCOGNITO_MODE)) == 1)
                 .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ALLOW_SCREENSHOTS)) == 1)
@@ -531,7 +590,7 @@ class ImportExportDatabaseHelper {
                 .putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
                 .putBoolean(ULTRALIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRALIST)) == 1)
                 .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRAPRIVACY)) == 1)
-                .putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
+                .putBoolean(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
                 .putBoolean(TRACKING_QUERIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(TRACKING_QUERIES)) == 1)
                 .putBoolean(AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(AMP_REDIRECTS)) == 1)
                 .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH)))
@@ -547,9 +606,9 @@ class ImportExportDatabaseHelper {
                 .putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_LOGCAT)) == 1)
                 .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_CACHE)) == 1)
                 .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(HOMEPAGE)))
-                .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(FONT_SIZE)))
+                .putString(PREFERENCES_FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_FONT_SIZE)))
                 .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(OPEN_INTENTS_IN_NEW_TAB)) == 1)
-                .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)) == 1)
+                .putBoolean(PREFERENCES_SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_SWIPE_TO_REFRESH)) == 1)
                 .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
                 .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SCROLL_APP_BAR)) == 1)
                 .putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BOTTOM_APP_BAR)) == 1)
@@ -584,7 +643,7 @@ class ImportExportDatabaseHelper {
             val temporaryExportDatabase = SQLiteDatabase.openOrCreateDatabase(temporaryExportFile, null)
 
             // Set the temporary export database version number.
-            temporaryExportDatabase.version = SCHEMA_VERSION
+            temporaryExportDatabase.version = IMPORT_EXPORT_SCHEMA_VERSION
 
 
             // Create the temporary export database bookmarks table.
@@ -625,7 +684,7 @@ class ImportExportDatabaseHelper {
 
 
             // Create the temporary export database domains table.
-            temporaryExportDatabase.execSQL(DomainsDatabaseHelper.CREATE_DOMAINS_TABLE)
+            temporaryExportDatabase.execSQL(CREATE_DOMAINS_TABLE)
 
             // Open the domains database.
             val domainsDatabaseHelper = DomainsDatabaseHelper(context)
@@ -642,41 +701,38 @@ class ImportExportDatabaseHelper {
                 val domainContentValues = ContentValues()
 
                 // Populate the domain content values.
-                domainContentValues.put(DomainsDatabaseHelper.DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)))
-                domainContentValues.put(DomainsDatabaseHelper.COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.COOKIES)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FORM_DATA)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYLIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST,
-                    domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ULTRALIST)))
-                domainContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)))
-                domainContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)))
-                domainContentValues.put(DomainsDatabaseHelper.USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.USER_AGENT)))
-                domainContentValues.put(DomainsDatabaseHelper.FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.FONT_SIZE)))
-                domainContentValues.put(DomainsDatabaseHelper.SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SWIPE_TO_REFRESH)))
-                domainContentValues.put(DomainsDatabaseHelper.WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WEBVIEW_THEME)))
-                domainContentValues.put(DomainsDatabaseHelper.WIDE_VIEWPORT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.WIDE_VIEWPORT)))
-                domainContentValues.put(DomainsDatabaseHelper.DISPLAY_IMAGES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DISPLAY_IMAGES)))
-                domainContentValues.put(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT,
-                    domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT,
-                    domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_START_DATE)))
-                domainContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.SSL_END_DATE)))
-                domainContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)))
-                domainContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.IP_ADDRESSES)))
+                domainContentValues.put(DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DOMAIN_NAME)))
+                domainContentValues.put(ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)))
+                domainContentValues.put(COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(COOKIES)))
+                domainContentValues.put(ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)))
+                domainContentValues.put(ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)))
+                domainContentValues.put(ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)))
+                domainContentValues.put(ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)))
+                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)))
+                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)))
+                domainContentValues.put(ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ULTRALIST)))
+                domainContentValues.put(ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)))
+                domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)))
+                domainContentValues.put(USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(USER_AGENT)))
+                domainContentValues.put(FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(FONT_SIZE)))
+                domainContentValues.put(SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)))
+                domainContentValues.put(WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
+                domainContentValues.put(WIDE_VIEWPORT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)))
+                domainContentValues.put(DISPLAY_IMAGES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DISPLAY_IMAGES)))
+                domainContentValues.put(PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE)))
+                domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME)))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION)))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)))
+                domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME)))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION)))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)))
+                domainContentValues.put(SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(SSL_START_DATE)))
+                domainContentValues.put(SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(SSL_END_DATE)))
+                domainContentValues.put(PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES)))
+                domainContentValues.put(IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)))
 
                 // Insert the content values into the temporary export database.
-                temporaryExportDatabase.insert(DomainsDatabaseHelper.DOMAINS_TABLE, null, domainContentValues)
+                temporaryExportDatabase.insert(DOMAINS_TABLE, null, domainContentValues)
 
                 // Advance to the next record.
                 domainsCursor.moveToNext()
@@ -694,7 +750,7 @@ class ImportExportDatabaseHelper {
                     "$COOKIES BOOLEAN, " +
                     "$DOM_STORAGE BOOLEAN, " +
                     "$SAVE_FORM_DATA BOOLEAN, " +
-                    "$USER_AGENT TEXT, " +
+                    "$PREFERENCES_USER_AGENT TEXT, " +
                     "$CUSTOM_USER_AGENT TEXT, " +
                     "$INCOGNITO_MODE BOOLEAN, " +
                     "$ALLOW_SCREENSHOTS BOOLEAN, " +
@@ -704,7 +760,7 @@ class ImportExportDatabaseHelper {
                     "$FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN, " +
                     "$ULTRALIST BOOLEAN, " +
                     "$ULTRAPRIVACY BOOLEAN, " +
-                    "$BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN, " +
+                    "$PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN, " +
                     "$TRACKING_QUERIES BOOLEAN, " +
                     "$AMP_REDIRECTS BOOLEAN, " +
                     "$SEARCH TEXT, " +
@@ -720,9 +776,9 @@ class ImportExportDatabaseHelper {
                     "$CLEAR_LOGCAT BOOLEAN, " +
                     "$CLEAR_CACHE BOOLEAN, " +
                     "$HOMEPAGE TEXT, " +
-                    "$FONT_SIZE TEXT, " +
+                    "$PREFERENCES_FONT_SIZE TEXT, " +
                     "$OPEN_INTENTS_IN_NEW_TAB BOOLEAN, " +
-                    "$SWIPE_TO_REFRESH BOOLEAN, " +
+                    "$PREFERENCES_SWIPE_TO_REFRESH BOOLEAN, " +
                     "$DOWNLOAD_WITH_EXTERNAL_APP BOOLEAN, " +
                     "$SCROLL_APP_BAR BOOLEAN, " +
                     "$BOTTOM_APP_BAR BOOLEAN, " +
@@ -746,7 +802,7 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(COOKIES, sharedPreferences.getBoolean(COOKIES, false))
             preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean(DOM_STORAGE, false))
             preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean(SAVE_FORM_DATA, false))  // Save form data can be removed once the minimum API >= 26.
-            preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)))
+            preferencesContentValues.put(PREFERENCES_USER_AGENT, sharedPreferences.getString(PREFERENCES_USER_AGENT, context.getString(R.string.user_agent_default_value)))
             preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)))
             preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false))
             preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false))
@@ -756,7 +812,7 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, true))
             preferencesContentValues.put(ULTRALIST, sharedPreferences.getBoolean(ULTRALIST, true))
             preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true))
-            preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, false))
+            preferencesContentValues.put(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS, false))
             preferencesContentValues.put(TRACKING_QUERIES, sharedPreferences.getBoolean(TRACKING_QUERIES, true))
             preferencesContentValues.put(AMP_REDIRECTS, sharedPreferences.getBoolean(AMP_REDIRECTS, true))
             preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)))
@@ -772,9 +828,9 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(CLEAR_LOGCAT, sharedPreferences.getBoolean(CLEAR_LOGCAT, true))
             preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true))
             preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)))
-            preferencesContentValues.put(FONT_SIZE, sharedPreferences.getString(FONT_SIZE, context.getString(R.string.font_size_default_value)))
+            preferencesContentValues.put(PREFERENCES_FONT_SIZE, sharedPreferences.getString(PREFERENCES_FONT_SIZE, context.getString(R.string.font_size_default_value)))
             preferencesContentValues.put(OPEN_INTENTS_IN_NEW_TAB, sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true))
-            preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true))
+            preferencesContentValues.put(PREFERENCES_SWIPE_TO_REFRESH, sharedPreferences.getBoolean(PREFERENCES_SWIPE_TO_REFRESH, true))
             preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false))
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true))
             preferencesContentValues.put(BOTTOM_APP_BAR, sharedPreferences.getBoolean(BOTTOM_APP_BAR, false))
@@ -826,5 +882,17 @@ class ImportExportDatabaseHelper {
             // Return the export error.
             exception.toString()
         }
+    }
+
+    // This method is used to convert the old domain settings switches to spinners.
+    private fun convertFromSwitchToSpinner(systemDefault: Boolean, currentDatabaseInteger: Int): Int {
+        // Return the new spinner integer.
+        return if ((!systemDefault && (currentDatabaseInteger == 0)) ||
+            (systemDefault && (currentDatabaseInteger == 1)))  // The system default is currently selected.
+            SYSTEM_DEFAULT
+        else if (currentDatabaseInteger == 0)  // The switch is currently disabled and that is not the system default.
+            DISABLED
+        else  // The switch is currently enabled and that is not the system default.
+            ENABLED
     }
 }

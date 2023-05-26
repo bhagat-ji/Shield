@@ -31,94 +31,94 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 
 // Define the class constants.
-private const val SCHEMA_VERSION = 15
+private const val SCHEMA_VERSION = 16
+
+// Define the public database constants.
+const val DOMAINS_DATABASE = "domains.db"
+const val DOMAINS_TABLE = "domains"
+
+// Define the public spinner constants.
+const val SYSTEM_DEFAULT = 0
+const val ENABLED = 1
+const val DISABLED = 2
+const val LIGHT_THEME = 1
+const val DARK_THEME = 2
+
+// Define the public schema constants.
+const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "blockallthirdpartyrequests"
+const val COOKIES = "cookies"
+const val DISPLAY_IMAGES = "displayimages"
+const val DOMAIN_NAME = "domainname"
+const val ENABLE_DOM_STORAGE = "enabledomstorage"
+const val ENABLE_EASYLIST = "enableeasylist"
+const val ENABLE_EASYPRIVACY = "enableeasyprivacy"
+const val ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist"
+const val ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist"
+const val ENABLE_FORM_DATA = "enableformdata" // Form data can be removed once the minimum API >= 26.
+const val ENABLE_JAVASCRIPT = "enablejavascript"
+const val ENABLE_ULTRAPRIVACY = "enableultraprivacy"
+const val FONT_SIZE = "fontsize"
+const val ID = "_id"
+const val IP_ADDRESSES = "ip_addresses"
+const val PINNED_IP_ADDRESSES = "pinned_ip_addresses"
+const val PINNED_SSL_CERTIFICATE = "pinnedsslcertificate"
+const val SSL_END_DATE = "sslenddate"
+const val SSL_START_DATE = "sslstartdate"
+const val SSL_ISSUED_BY_COMMON_NAME = "sslissuedbycommonname"
+const val SSL_ISSUED_BY_ORGANIZATION = "sslissuedbyorganization"
+const val SSL_ISSUED_BY_ORGANIZATIONAL_UNIT = "sslissuedbyorganizationalunit"
+const val SSL_ISSUED_TO_COMMON_NAME = "sslissuedtocommonname"
+const val SSL_ISSUED_TO_ORGANIZATION = "sslissuedtoorganization"
+const val SSL_ISSUED_TO_ORGANIZATIONAL_UNIT = "sslissuedtoorganizationalunit"
+const val SWIPE_TO_REFRESH = "swipetorefresh"
+const val ULTRALIST = "ultralist"
+const val USER_AGENT = "useragent"
+const val WEBVIEW_THEME = "webview_theme"
+const val WIDE_VIEWPORT = "wide_viewport"
+
+// Define the public table creation constant.
+const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
+        "$ID INTEGER PRIMARY KEY, " +
+        "$DOMAIN_NAME TEXT, " +
+        "$ENABLE_JAVASCRIPT INTEGER, " +
+        "$COOKIES INTEGER, " +
+        "$ENABLE_DOM_STORAGE INTEGER, " +
+        "$ENABLE_FORM_DATA INTEGER, " +
+        "$ENABLE_EASYLIST INTEGER, " +
+        "$ENABLE_EASYPRIVACY INTEGER, " +
+        "$ENABLE_FANBOYS_ANNOYANCE_LIST INTEGER, " +
+        "$ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST INTEGER, " +
+        "$ULTRALIST INTEGER, " +
+        "$ENABLE_ULTRAPRIVACY INTEGER, " +
+        "$BLOCK_ALL_THIRD_PARTY_REQUESTS INTEGER, " +
+        "$USER_AGENT TEXT, " +
+        "$FONT_SIZE INTEGER, " +
+        "$SWIPE_TO_REFRESH INTEGER, " +
+        "$WEBVIEW_THEME INTEGER, " +
+        "$WIDE_VIEWPORT INTEGER, " +
+        "$DISPLAY_IMAGES INTEGER, " +
+        "$PINNED_SSL_CERTIFICATE BOOLEAN, " +
+        "$SSL_ISSUED_TO_COMMON_NAME TEXT, " +
+        "$SSL_ISSUED_TO_ORGANIZATION TEXT, " +
+        "$SSL_ISSUED_TO_ORGANIZATIONAL_UNIT TEXT, " +
+        "$SSL_ISSUED_BY_COMMON_NAME TEXT, " +
+        "$SSL_ISSUED_BY_ORGANIZATION TEXT, " +
+        "$SSL_ISSUED_BY_ORGANIZATIONAL_UNIT TEXT, " +
+        "$SSL_START_DATE INTEGER, " +
+        "$SSL_END_DATE INTEGER, " +
+        "$PINNED_IP_ADDRESSES BOOLEAN, " +
+        "$IP_ADDRESSES TEXT)"
 
 class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(appContext, DOMAINS_DATABASE, null, SCHEMA_VERSION) {
-    // Define the public companion object constants.  These can be moved to public class constants once the entire project has migrated to Kotlin.
-    companion object {
-        // Define the public database constants.
-        const val DOMAINS_DATABASE = "domains.db"
-        const val DOMAINS_TABLE = "domains"
-
-        // Define the public spinner constants.
-        const val SYSTEM_DEFAULT = 0
-        const val ENABLED = 1
-        const val DISABLED = 2
-        const val LIGHT_THEME = 1
-        const val DARK_THEME = 2
-
-        // Define the public schema constants.
-        const val ID = "_id"
-        const val DOMAIN_NAME = "domainname"
-        const val ENABLE_JAVASCRIPT = "enablejavascript"
-        const val COOKIES = "cookies"
-        const val ENABLE_DOM_STORAGE = "enabledomstorage"
-        const val ENABLE_FORM_DATA = "enableformdata" // Form data can be removed once the minimum API >= 26.
-        const val ENABLE_EASYLIST = "enableeasylist"
-        const val ENABLE_EASYPRIVACY = "enableeasyprivacy"
-        const val ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist"
-        const val ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist"
-        const val ULTRALIST = "ultralist"
-        const val ENABLE_ULTRAPRIVACY = "enableultraprivacy"
-        const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "blockallthirdpartyrequests"
-        const val USER_AGENT = "useragent"
-        const val FONT_SIZE = "fontsize"
-        const val SWIPE_TO_REFRESH = "swipetorefresh"
-        const val WEBVIEW_THEME = "webview_theme"
-        const val WIDE_VIEWPORT = "wide_viewport"
-        const val DISPLAY_IMAGES = "displayimages"
-        const val PINNED_SSL_CERTIFICATE = "pinnedsslcertificate"
-        const val SSL_ISSUED_TO_COMMON_NAME = "sslissuedtocommonname"
-        const val SSL_ISSUED_TO_ORGANIZATION = "sslissuedtoorganization"
-        const val SSL_ISSUED_TO_ORGANIZATIONAL_UNIT = "sslissuedtoorganizationalunit"
-        const val SSL_ISSUED_BY_COMMON_NAME = "sslissuedbycommonname"
-        const val SSL_ISSUED_BY_ORGANIZATION = "sslissuedbyorganization"
-        const val SSL_ISSUED_BY_ORGANIZATIONAL_UNIT = "sslissuedbyorganizationalunit"
-        const val SSL_START_DATE = "sslstartdate"
-        const val SSL_END_DATE = "sslenddate"
-        const val PINNED_IP_ADDRESSES = "pinned_ip_addresses"
-        const val IP_ADDRESSES = "ip_addresses"
-
-        // Define the public table creation constant.
-        const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
-                "$ID INTEGER PRIMARY KEY, " +
-                "$DOMAIN_NAME TEXT, " +
-                "$ENABLE_JAVASCRIPT BOOLEAN, " +
-                "$COOKIES BOOLEAN, " +
-                "$ENABLE_DOM_STORAGE BOOLEAN, " +
-                "$ENABLE_FORM_DATA BOOLEAN, " +
-                "$ENABLE_EASYLIST BOOLEAN, " +
-                "$ENABLE_EASYPRIVACY BOOLEAN, " +
-                "$ENABLE_FANBOYS_ANNOYANCE_LIST BOOLEAN, " +
-                "$ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN, " +
-                "$ULTRALIST BOOLEAN, " +
-                "$ENABLE_ULTRAPRIVACY BOOLEAN, " +
-                "$BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN, " +
-                "$USER_AGENT TEXT, " +
-                "$FONT_SIZE INTEGER, " +
-                "$SWIPE_TO_REFRESH INTEGER, " +
-                "$WEBVIEW_THEME INTEGER, " +
-                "$WIDE_VIEWPORT INTEGER, " +
-                "$DISPLAY_IMAGES INTEGER, " +
-                "$PINNED_SSL_CERTIFICATE BOOLEAN, " +
-                "$SSL_ISSUED_TO_COMMON_NAME TEXT, " +
-                "$SSL_ISSUED_TO_ORGANIZATION TEXT, " +
-                "$SSL_ISSUED_TO_ORGANIZATIONAL_UNIT TEXT, " +
-                "$SSL_ISSUED_BY_COMMON_NAME TEXT, " +
-                "$SSL_ISSUED_BY_ORGANIZATION TEXT, " +
-                "$SSL_ISSUED_BY_ORGANIZATIONAL_UNIT TEXT, " +
-                "$SSL_START_DATE INTEGER, " +
-                "$SSL_END_DATE INTEGER, " +
-                "$PINNED_IP_ADDRESSES BOOLEAN, " +
-                "$IP_ADDRESSES TEXT)"
-    }
-
     override fun onCreate(domainsDatabase: SQLiteDatabase) {
         // Create the domains table.
         domainsDatabase.execSQL(CREATE_DOMAINS_TABLE)
     }
 
     override fun onUpgrade(domainsDatabase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // Get a handle for the shared preference.
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
+
         // Upgrade from schema version 1, first used in Privacy Browser 2.0, to schema version 2, first used in Privacy Browser 2.3.
         if (oldVersion < 2) {
             // Add the display images column.
@@ -153,14 +153,11 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_ANNOYANCE_LIST BOOLEAN")
             domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN")
 
-            // Get a handle for the shared preference.
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
-
-            // Get the default block list settings.
-            val easyListEnabled = sharedPreferences.getBoolean("easylist", true)
-            val easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true)
-            val fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true)
-            val fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true)
+            // Get the default filter list settings.
+            val easyListEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.easylist_key), true)
+            val easyPrivacyEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.easyprivacy_key), true)
+            val fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_annoyance_list_key), true)
+            val fanboySocialBlockingListEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_social_blocking_list_key), true)
 
             // Set EasyList for existing rows according to the current system-wide default.
             // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
@@ -265,6 +262,82 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
         // It will be a while before that is supported in Android.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
         // Although a new table could be created and all the data copied to it, I think I will just leave the X-Requested-With column.  It will be wiped out the next time an import is run.
+
+        // Upgrade from schema version 15, first used in Privacy Browser 3.12, to schema version 16, first used in Privacy Browser 3.15.
+        if (oldVersion < 16) {
+            // Get the current switch default values.
+            val javaScriptDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.javascript_key), false)
+            val cookiesDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.cookies_key), false)
+            val domStorageDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.dom_storage_key), false)
+            val formDataDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.save_form_data_key), false)
+            val easyListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.easylist_key), true)
+            val easyPrivacyDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.easyprivacy_key), true)
+            val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_annoyance_list_key), true)
+            val fanboysSocialBlockingListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_social_blocking_list), true)
+            val ultraListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.ultralist_key), true)
+            val ultraPrivacyDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.ultraprivacy_key), true)
+            val blockAllThirdPartyRequestsDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.block_all_third_party_requests_key), false)
+
+            // Get a domains cursor.
+            val domainsCursor = domainsDatabase.rawQuery("SELECT * FROM $DOMAINS_TABLE", null)
+
+            // Get the domains column indexes.
+            val javaScriptColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
+            val cookiesColumnIndex = domainsCursor.getColumnIndexOrThrow(COOKIES)
+            val domStorageColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
+            val formDataColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)
+            val easyListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+            val easyPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val fanboysAnnoyanceListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
+            val fanboysSocialBlockingListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
+            val ultraListColumnIndex = domainsCursor.getColumnIndexOrThrow(ULTRALIST)
+            val ultraPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)
+            val blockAllThirdPartyRequestsColumnIndex = domainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
+
+            // Convert the domain from the switch booleans to the spinner integers.
+            for (i in 0 until domainsCursor.count) {
+                // Move to the current record.
+                domainsCursor.moveToPosition(i)
+
+                // Get the domain current values.
+                val javaScriptDomainCurrentValue = domainsCursor.getInt(javaScriptColumnIndex)
+                val cookiesDomainCurrentValue = domainsCursor.getInt(cookiesColumnIndex)
+                val domStorageDomainCurrentValue = domainsCursor.getInt(domStorageColumnIndex)
+                val formDataDomainCurrentValue = domainsCursor.getInt(formDataColumnIndex)
+                val easyListDomainCurrentValue = domainsCursor.getInt(easyListColumnIndex)
+                val easyPrivacyDomainCurrentValue = domainsCursor.getInt(easyPrivacyColumnIndex)
+                val fanboysAnnoyanceListCurrentValue = domainsCursor.getInt(fanboysAnnoyanceListColumnIndex)
+                val fanboysSocialBlockingListCurrentValue = domainsCursor.getInt(fanboysSocialBlockingListColumnIndex)
+                val ultraListCurrentValue = domainsCursor.getInt(ultraListColumnIndex)
+                val ultraPrivacyCurrentValue = domainsCursor.getInt(ultraPrivacyColumnIndex)
+                val blockAllThirdPartyRequestsCurrentValue = domainsCursor.getInt(blockAllThirdPartyRequestsColumnIndex)
+
+                // Instantiate a domain content values.
+                val domainContentValues = ContentValues()
+
+                // Populate the domain content values.
+                domainContentValues.put(ENABLE_JAVASCRIPT, convertFromSwitchToSpinner(javaScriptDefaultValue, javaScriptDomainCurrentValue))
+                domainContentValues.put(COOKIES, convertFromSwitchToSpinner(cookiesDefaultValue, cookiesDomainCurrentValue))
+                domainContentValues.put(ENABLE_DOM_STORAGE, convertFromSwitchToSpinner(domStorageDefaultValue, domStorageDomainCurrentValue))
+                domainContentValues.put(ENABLE_FORM_DATA, convertFromSwitchToSpinner(formDataDefaultValue, formDataDomainCurrentValue))
+                domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
+                domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
+                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
+                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, convertFromSwitchToSpinner(fanboysSocialBlockingListDefaultValue, fanboysSocialBlockingListCurrentValue))
+                domainContentValues.put(ULTRALIST, convertFromSwitchToSpinner(ultraListDefaultValue, ultraListCurrentValue))
+                domainContentValues.put(ENABLE_ULTRAPRIVACY, convertFromSwitchToSpinner(ultraPrivacyDefaultValue, ultraPrivacyCurrentValue))
+                domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, convertFromSwitchToSpinner(blockAllThirdPartyRequestsDefaultValue, blockAllThirdPartyRequestsCurrentValue))
+
+                // Get the current database ID.
+                val currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ID))
+
+                // Update the row for the specified database ID.
+                domainsDatabase.update(DOMAINS_TABLE, domainContentValues, "$ID = $currentDatabaseId", null)
+            }
+
+            // Close the cursor.
+            domainsCursor.close()
+        }
     }
 
     val completeCursorOrderedByDomain: Cursor
@@ -284,6 +357,18 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             // Return the database id and the domain name in the domains table ordered by the domain name.  The cursor can't be closed because it is needed in the calling activity.
             return domainsDatabase.rawQuery("SELECT $ID, $DOMAIN_NAME FROM $DOMAINS_TABLE ORDER BY $DOMAIN_NAME ASC", null)
         }
+    
+    // This method is used to convert the old domain settings switches to spinners.
+    private fun convertFromSwitchToSpinner(systemDefault: Boolean, currentDatabaseInteger: Int): Int {
+        // Return the new spinner integer.
+        return if ((!systemDefault && (currentDatabaseInteger == 0)) ||
+                    (systemDefault && (currentDatabaseInteger == 1)))  // The system default is currently selected.
+            SYSTEM_DEFAULT
+        else if (currentDatabaseInteger == 0)  // The switch is currently disabled and that is not the system default.
+            DISABLED
+        else  // The switch is currently enabled and that is not the system default.
+            ENABLED
+    }
 
     fun getDomainNameCursorOrderedByDomainExcept(databaseId: Int): Cursor {
         // Get a readable database handle.
@@ -376,9 +461,9 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainsDatabase.close()
     }
 
-    fun updateDomain(databaseId: Int, domainName: String, javaScript: Boolean, cookies: Boolean, domStorage: Boolean, formData: Boolean, easyList: Boolean, easyPrivacy: Boolean, fanboysAnnoyance: Boolean,
-                     fanboysSocialBlocking: Boolean, ultraList: Boolean, ultraPrivacy: Boolean, blockAllThirdPartyRequests: Boolean, userAgent: String, fontSize: Int,
-                     swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int, pinnedSslCertificate: Boolean, pinnedIpAddresses: Boolean) {
+    fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, formData: Int, easyList: Int, easyPrivacy: Int, fanboysAnnoyance: Int, fanboysSocialBlocking: Int,
+                     ultraList: Int, ultraPrivacy: Int, blockAllThirdPartyRequests: Int, userAgent: String, fontSize: Int, swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int,
+                     pinnedSslCertificate: Boolean, pinnedIpAddresses: Boolean) {
 
         // Instantiate a content values.
         val domainContentValues = ContentValues()

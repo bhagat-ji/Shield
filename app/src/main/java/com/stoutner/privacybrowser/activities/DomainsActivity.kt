@@ -35,8 +35,8 @@ import android.widget.RadioButton
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
@@ -55,6 +55,8 @@ import com.stoutner.privacybrowser.fragments.DomainSettingsFragment
 import com.stoutner.privacybrowser.fragments.DomainsListFragment
 import com.stoutner.privacybrowser.fragments.DomainsListFragment.DismissSnackbarInterface
 import com.stoutner.privacybrowser.fragments.DomainsListFragment.SaveDomainSettingsInterface
+import com.stoutner.privacybrowser.helpers.DOMAIN_NAME
+import com.stoutner.privacybrowser.helpers.ID
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
 
 // Define the public constants.
@@ -485,7 +487,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
 
                         override fun bindView(view: View, context: Context, cursor: Cursor) {
                             // Get the domain name string.
-                            val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME))
+                            val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DOMAIN_NAME))
 
                             // Get a handle for the domain name text view.
                             val domainNameTextView = view.findViewById<TextView>(R.id.domain_name_textview)
@@ -535,7 +537,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
 
                                             override fun bindView(view: View, context: Context, cursor: Cursor) {
                                                 /// Get the domain name string.
-                                                val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME))
+                                                val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DOMAIN_NAME))
 
                                                 // Get a handle for the domain name text view.
                                                 val domainNameTextView = view.findViewById<TextView>(R.id.domain_name_textview)
@@ -692,17 +694,17 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
     override fun saveDomainSettings(view: View) {
         // Get handles for the domain settings.
         val domainNameEditText = view.findViewById<EditText>(R.id.domain_settings_name_edittext)
-        val javaScriptSwitch = view.findViewById<SwitchCompat>(R.id.javascript_switch)
-        val cookiesSwitch = view.findViewById<SwitchCompat>(R.id.cookies_switch)
-        val domStorageSwitch = view.findViewById<SwitchCompat>(R.id.dom_storage_switch)
-        val formDataSwitch = view.findViewById<SwitchCompat>(R.id.form_data_switch) // Form data can be removed once the minimum API >= 26.
-        val easyListSwitch = view.findViewById<SwitchCompat>(R.id.easylist_switch)
-        val easyPrivacySwitch = view.findViewById<SwitchCompat>(R.id.easyprivacy_switch)
-        val fanboysAnnoyanceSwitch = view.findViewById<SwitchCompat>(R.id.fanboys_annoyance_list_switch)
-        val fanboysSocialBlockingSwitch = view.findViewById<SwitchCompat>(R.id.fanboys_social_blocking_list_switch)
-        val ultraListSwitch = view.findViewById<SwitchCompat>(R.id.ultralist_switch)
-        val ultraPrivacySwitch = view.findViewById<SwitchCompat>(R.id.ultraprivacy_switch)
-        val blockAllThirdPartyRequestsSwitch = view.findViewById<SwitchCompat>(R.id.block_all_third_party_requests_switch)
+        val javaScriptSpinner = view.findViewById<Spinner>(R.id.javascript_spinner)
+        val cookiesSpinner = view.findViewById<Spinner>(R.id.cookies_spinner)
+        val domStorageSpinner = view.findViewById<Spinner>(R.id.dom_storage_spinner)
+        val formDataSpinner = view.findViewById<Spinner>(R.id.form_data_spinner) // Form data can be removed once the minimum API >= 26.
+        val easyListSpinner = view.findViewById<Spinner>(R.id.easylist_spinner)
+        val easyPrivacySpinner = view.findViewById<Spinner>(R.id.easyprivacy_spinner)
+        val fanboysAnnoyanceSpinner = view.findViewById<Spinner>(R.id.fanboys_annoyance_list_spinner)
+        val fanboysSocialBlockingSpinner = view.findViewById<Spinner>(R.id.fanboys_social_blocking_list_spinner)
+        val ultraListSpinner = view.findViewById<Spinner>(R.id.ultralist_spinner)
+        val ultraPrivacySpinner = view.findViewById<Spinner>(R.id.ultraprivacy_spinner)
+        val blockAllThirdPartyRequestsSpinner = view.findViewById<Spinner>(R.id.block_all_third_party_requests_spinner)
         val userAgentSpinner = view.findViewById<Spinner>(R.id.user_agent_spinner)
         val customUserAgentEditText = view.findViewById<EditText>(R.id.custom_user_agent_edittext)
         val fontSizeSpinner = view.findViewById<Spinner>(R.id.font_size_spinner)
@@ -718,17 +720,17 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
 
         // Extract the data for the domain settings.
         val domainNameString = domainNameEditText.text.toString()
-        val javaScript = javaScriptSwitch.isChecked
-        val cookies = cookiesSwitch.isChecked
-        val domStorage = domStorageSwitch.isChecked
-        val formData = formDataSwitch.isChecked // Form data can be removed once the minimum API >= 26.
-        val easyList = easyListSwitch.isChecked
-        val easyPrivacy = easyPrivacySwitch.isChecked
-        val fanboysAnnoyance = fanboysAnnoyanceSwitch.isChecked
-        val fanboysSocialBlocking = fanboysSocialBlockingSwitch.isChecked
-        val ultraList = ultraListSwitch.isChecked
-        val ultraPrivacy = ultraPrivacySwitch.isChecked
-        val blockAllThirdPartyRequests = blockAllThirdPartyRequestsSwitch.isChecked
+        val javaScriptInt = javaScriptSpinner.selectedItemPosition
+        val cookiesInt = cookiesSpinner.selectedItemPosition
+        val domStorageInt = domStorageSpinner.selectedItemPosition
+        val formDataInt = formDataSpinner.selectedItemPosition // Form data can be removed once the minimum API >= 26.
+        val easyListInt = easyListSpinner.selectedItemPosition
+        val easyPrivacyInt = easyPrivacySpinner.selectedItemPosition
+        val fanboysAnnoyanceInt = fanboysAnnoyanceSpinner.selectedItemPosition
+        val fanboysSocialBlockingInt = fanboysSocialBlockingSpinner.selectedItemPosition
+        val ultraListInt = ultraListSpinner.selectedItemPosition
+        val ultraPrivacyInt = ultraPrivacySpinner.selectedItemPosition
+        val blockAllThirdPartyRequestsInt = blockAllThirdPartyRequestsSpinner.selectedItemPosition
         val userAgentSwitchPosition = userAgentSpinner.selectedItemPosition
         val fontSizeSwitchPosition = fontSizeSpinner.selectedItemPosition
         val swipeToRefreshInt = swipeToRefreshSpinner.selectedItemPosition
@@ -763,8 +765,8 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             fontSizeInt = customFontSizeEditText.text.toString().toInt()
 
         // Save the domain settings.
-        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScript, cookies, domStorage, formData, easyList, easyPrivacy, fanboysAnnoyance, fanboysSocialBlocking, ultraList,
-            ultraPrivacy, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
+        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScriptInt, cookiesInt, domStorageInt, formDataInt, easyListInt, easyPrivacyInt, fanboysAnnoyanceInt,
+            fanboysSocialBlockingInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, userAgentName, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
             pinnedSslCertificate, pinnedIpAddress)
 
         // Update the pinned SSL certificate if a new one is checked.
@@ -793,7 +795,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
                 val domainNameTextView = view.findViewById<TextView>(R.id.domain_name_textview)
 
                 // Get the domain name string.
-                val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DomainsDatabaseHelper.DOMAIN_NAME))
+                val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DOMAIN_NAME))
 
                 // Set the domain name.
                 domainNameTextView.text = domainNameString
@@ -820,7 +822,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
                 domainsCursor.moveToPosition(i)
 
                 // Get the database ID for this position.
-                val currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ID))
+                val currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ID))
 
                 // Set the highlighted domain position if the database ID for this matches the highlighted domain database ID.
                 if (highlightedDomainDatabaseId == currentDatabaseId)
@@ -834,7 +836,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             domainsCursor.moveToPosition(highlightedDomainPosition)
 
             // Get the database ID for the highlighted domain.
-            currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DomainsDatabaseHelper.ID))
+            currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ID))
 
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
