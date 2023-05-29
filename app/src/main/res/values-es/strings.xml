@@ -3,7 +3,7 @@
 <!--
   Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2022 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2023 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -325,6 +325,61 @@
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_deleted">Dominio borrado</string>
     <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
+    <string-array name="javascript_array">
+        <item>Por defecto del sistema</item>
+        <item>JavaScript habilitado</item>
+        <item>JavaScript deshabilitado</item>
+    </string-array>
+    <string-array name="cookies_array">
+        <item>Por defecto del sistema</item>
+        <item>Cookies habilitadas</item>
+        <item>Cookies deshabilitadas</item>
+    </string-array>
+    <string-array name="dom_storage_array">
+        <item>Por defecto del sistema</item>
+        <item>Almacenamiento DOM habilitado</item>
+        <item>Almacenamiento DOM deshabilitado</item>
+    </string-array>
+    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
+        <item>Por defecto del sistema</item>
+        <item>Datos de formulario habilitados</item>
+        <item>Datos de formulario deshabilitados</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>Por defecto del sistema</item>
+        <item>EasyList habilitada</item>
+        <item>EasyList deshabilitada</item>
+    </string-array>
+    <string-array name="easyprivacy_array">
+        <item>Por defecto del sistema</item>
+        <item>EasyPrivacy habilitada</item>
+        <item>EasyPrivacy deshabilitada</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>Por defecto del sistema</item>
+        <item>Lista molesta de Fanboy habilitada</item>
+        <item>Lista molesta de Fanboy deshabilitada</item>
+    </string-array>
+    <string-array name="fanboys_social_blocking_list_array">
+        <item>Por defecto del sistema</item>
+        <item>Lista de bloqueo social de Fanboy habilitada</item>
+        <item>Lista de bloqueo social de Fanboy deshabilitada</item>
+    </string-array>
+    <string-array name="ultralist_array">
+        <item>Por defecto del sistema</item>
+        <item>UltraList habilitada</item>
+        <item>UltraList deshabilitada</item>
+    </string-array>
+    <string-array name="ultraprivacy_array">
+        <item>Por defecto del sistema</item>
+        <item>Ultra Privacidad habilitada</item>
+        <item>Ultra Privacidad deshabilitada</item>
+    </string-array>
+    <string-array name="block_all_third_party_requests_array">
+        <item>Por defecto del sistema</item>
+        <item>Bloquear todas las solicitudes de terceras partes habilitada</item>
+        <item>Bloquear todas las solicitudes de terceras partes deshabilitada</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>Por defecto del sistema</item>
         <item>Tamaño de letra personalizado</item>

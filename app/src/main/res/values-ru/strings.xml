@@ -321,6 +321,61 @@
     <string name="domain_name">Имя домена</string>
     <string name="domain_deleted">Домен удален</string>
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. *.stoutner.com)</string>
+    <string-array name="javascript_array">
+        <item>По умолчанию</item>
+        <item>JavaScript включен</item>
+        <item>JavaScript отключен</item>
+    </string-array>
+    <string-array name="cookies_array">
+        <item>По умолчанию</item>
+        <item>Cookie включены</item>
+        <item>Cookie отключены</item>
+    </string-array>
+    <string-array name="dom_storage_array">
+        <item>По умолчанию</item>
+        <item>DOM-хранилище включено</item>
+        <item>DOM-хранилище отключено</item>
+    </string-array>
+    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
+        <item>По умолчанию</item>
+        <item>Данные форм включены</item>
+        <item>Данные форм отключены</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>По умолчанию</item>
+        <item>EasyList включен</item>
+        <item>EasyList отключен</item>
+    </string-array>
+    <string-array name="easyprivacy_array">
+        <item>По умолчанию</item>
+        <item>EasyPrivacy включен</item>
+        <item>EasyPrivacy отключен</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>По умолчанию</item>
+        <item>Fanboy’s Annoyance List включен</item>
+        <item>Fanboy’s Annoyance List отключен</item>
+    </string-array>
+    <string-array name="fanboys_social_blocking_list_array">
+        <item>По умолчанию</item>
+        <item>Fanboy’s Social Blocking List включен</item>
+        <item>Fanboy’s Social Blocking List отключен</item>
+    </string-array>
+    <string-array name="ultralist_array">
+        <item>По умолчанию</item>
+        <item>UltraList включен</item>
+        <item>UltraList отключен</item>
+    </string-array>
+    <string-array name="ultraprivacy_array">
+        <item>По умолчанию</item>
+        <item>UltraPrivacy включен</item>
+        <item>UltraPrivacy отключен</item>
+    </string-array>
+    <string-array name="block_all_third_party_requests_array">
+        <item>По умолчанию</item>
+        <item>Блокировка всех сторонних запросов включена</item>
+        <item>Блокировка всех сторонних запросов отключена</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>Настройки по умолчанию</item>
         <item>Пользовательский размер шрифта</item>

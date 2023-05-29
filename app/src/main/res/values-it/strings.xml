@@ -324,6 +324,61 @@
     <string name="domain_name">Nome del Dominio</string>
     <string name="domain_deleted">Dominio Eliminato</string>
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
+    <string-array name="javascript_array">
+        <item>Default di Sistema</item>
+        <item>JavaScript abilitato</item>
+        <item>JavaScript disabilitato</item>
+    </string-array>
+    <string-array name="cookies_array">
+        <item>Default di Sistema</item>
+        <item>Cookies abilitati</item>
+        <item>Cookies disabilitati</item>
+    </string-array>
+    <string-array name="dom_storage_array">
+        <item>Default di Sistema</item>
+        <item>DOM storage abilitato</item>
+        <item>DOM storage disabilitato</item>
+    </string-array>
+    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
+        <item>Default di Sistema</item>
+        <item>Dati dei Form abilitati</item>
+        <item>Dati dei Form disabilitati</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>Default di Sistema</item>
+        <item>EasyList abilitata</item>
+        <item>EasyList disabilitata</item>
+    </string-array>
+    <string-array name="easyprivacy_array">
+        <item>Default di Sistema</item>
+        <item>EasyPrivacy abilitata</item>
+        <item>EasyPrivacy disabilitata</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>Default di Sistema</item>
+        <item>Fanboy’s Annoyance List abilitata</item>
+        <item>Fanboy’s Annoyance List disabilitata</item>
+    </string-array>
+    <string-array name="fanboys_social_blocking_list_array">
+        <item>Default di Sistema</item>
+        <item>Fanboy’s Social Blocking List abilitata</item>
+        <item>Fanboy’s Social Blocking List disabilitata</item>
+    </string-array>
+    <string-array name="ultralist_array">
+        <item>Default di Sistema</item>
+        <item>UltraList abilitata</item>
+        <item>UltraList disabilitata</item>
+    </string-array>
+    <string-array name="ultraprivacy_array">
+        <item>Default di Sistema</item>
+        <item>UltraPrivacy abilitata</item>
+        <item>UltraPrivacy disabilitata</item>
+    </string-array>
+    <string-array name="block_all_third_party_requests_array">
+        <item>Default di Sistema</item>
+        <item>Bloccco di tutte le richieste di terze parti abilitato</item>
+        <item>Bloccco di tutte le richieste di terze parti disabilitato</item>
+    </string-array>
     <string-array name="font_size_array">
         <item>Impostazioni di default</item>
         <item>Dimensione carattere personalizzata</item>

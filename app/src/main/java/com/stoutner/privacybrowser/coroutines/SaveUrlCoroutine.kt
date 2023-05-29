@@ -47,6 +47,9 @@ import java.text.NumberFormat
 
 class SaveUrlCoroutine {
     fun save(context: Context, activity: Activity, urlString: String, fileUri: Uri, userAgent: String, cookiesEnabled: Boolean) {
+        // Create a canceled boolean.
+        var canceled = false
+
         // Use a coroutine to save the URL.
         CoroutineScope(Dispatchers.Main).launch {
             // Create a file name string.
@@ -75,6 +78,7 @@ class SaveUrlCoroutine {
 
             // Create a saving file snackbar.
             val savingFileSnackbar = Snackbar.make(webViewViewPager2, activity.getString(R.string.saving_file, 0, fileNameString), Snackbar.LENGTH_INDEFINITE)
+                                             .setAction(R.string.cancel) { canceled = true }
 
             // Display the saving file snackbar.
             savingFileSnackbar.show()
@@ -160,7 +164,7 @@ class SaveUrlCoroutine {
                             var bufferLength: Int
 
                             // Attempt to read data from the input stream and store it in the output stream.  Also store the amount of data read in the buffer length variable.
-                            while (inputStream.read(conversionBufferByteArray).also { bufferLength = it } > 0) {  // Proceed while the amount of data stored in the buffer in > 0.
+                            while ((inputStream.read(conversionBufferByteArray).also { bufferLength = it } > 0) && !canceled) {  // Proceed while the amount of data stored in the buffer in > 0.
                                 // Write the contents of the conversion buffer to the file output stream.
                                 outputStream.write(conversionBufferByteArray, 0, bufferLength)
 
@@ -204,8 +208,13 @@ class SaveUrlCoroutine {
                         // Dismiss the saving file snackbar.
                         savingFileSnackbar.dismiss()
 
-                        // Display the file saved snackbar.
-                        Snackbar.make(webViewViewPager2, activity.getString(R.string.saved, fileNameString), Snackbar.LENGTH_LONG).show()
+                        // Display a final disposition snackbar.
+                        if (canceled)
+                            // Display the download cancelled snackbar.
+                            Snackbar.make(webViewViewPager2, activity.getString(R.string.download_cancelled), Snackbar.LENGTH_SHORT).show()
+                        else
+                            // Display the file saved snackbar.
+                            Snackbar.make(webViewViewPager2, activity.getString(R.string.saved, fileNameString), Snackbar.LENGTH_LONG).show()
                     }
                 } catch (exception: Exception) {
                     // Update the UI.

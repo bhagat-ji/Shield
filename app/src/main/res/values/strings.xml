@@ -213,6 +213,7 @@
     <string name="saving_file_progress">Saving file:\u0020 %1$s bytes - %2$s</string>
     <string name="saving_file_percentage_progress">Saving file:\u0020 %1$d%% - %2$s bytes / %3$s bytes - %4$s</string>
     <string name="saved">%1$s saved.</string>
+    <string name="download_cancelled">Download cancelled.</string>
     <string name="processing_image">Processing image:\u0020 %1$s</string>
     <string name="error_saving_file">Error saving %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unknown error</string>
