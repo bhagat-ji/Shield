@@ -270,6 +270,8 @@
         <string name="sorted_by_database_id">Ordenados por ID de base de datos.</string>
         <string name="sorted_by_display_order">Ordenados por orden de visualización.</string>
     <string name="database_id">ID de base de datos:</string>
+    <string name="folder_id">ID de carpeta:</string>
+    <string name="folder_id_separator">\u0020 – %1$d</string>
     <string name="folder">Carpeta:</string>
     <string name="parent_folder">Carpeta superior:</string>
     <string name="display_order">Mostrar orden:</string>

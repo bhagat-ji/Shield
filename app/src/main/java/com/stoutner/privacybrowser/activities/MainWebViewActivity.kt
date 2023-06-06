@@ -3968,8 +3968,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Set the first page as the current WebView.
                 setCurrentWebView(0)
             } else {  // The first tab is not selected.
-                // Move to the selected tab.
-                webViewViewPager2.currentItem = savedTabPosition
+                // Create a handler move to the page.
+                val setCurrentPageHandler = Handler(Looper.getMainLooper())
+
+                // Create a runnable to move to the page.
+                val setCurrentPageRunnable = Runnable {
+                    // Move to the page.
+                    webViewViewPager2.currentItem = savedTabPosition
+                }
+
+                // Move to the page after 50 milliseconds, which should be enough time to for the WebView state adapter to populate the restored pages.
+                setCurrentPageHandler.postDelayed(setCurrentPageRunnable, 50)
             }
 
             // Get the intent that started the app.
