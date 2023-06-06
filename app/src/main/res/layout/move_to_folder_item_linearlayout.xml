@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -19,7 +19,6 @@
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <LinearLayout
-    android:id="@+id/move_to_folder_item_linearlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
@@ -28,16 +27,24 @@
     android:background="?attr/listSelectorDrawable"
     tools:ignore="UseCompoundDrawables">
 
+    <!-- Subfolder spacer. -->
+    <TextView
+        android:id="@+id/subfolder_spacer_textview"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="10dp" />
+
+    <!-- Folder icon. -->
     <ImageView
-        android:id="@+id/move_to_folder_icon"
+        android:id="@+id/folder_icon_imageview"
         android:layout_height="30dp"
         android:layout_width="30dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="10dp"
         tools:ignore="ContentDescription" />
 
+    <!-- Folder name. -->
     <TextView
-        android:id="@+id/move_to_folder_name_textview"
+        android:id="@+id/folder_name_textview"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_margin="10dp"

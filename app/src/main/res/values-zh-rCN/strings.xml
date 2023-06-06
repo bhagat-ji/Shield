@@ -245,7 +245,6 @@
     <string name="bookmark_name">书签名</string>
     <string name="folder_name">文件夹名</string>
     <string name="bookmark_url">书签链接</string>
-    <string name="folder_names_must_be_unique">文件夹明不能重复</string>
     <string name="edit_bookmark">编辑书签</string>
     <string name="edit_folder">编辑文件夹</string>
     <string name="move_to_folder">移动到文件夹</string>

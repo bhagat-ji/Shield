@@ -208,7 +208,6 @@
     <string name="bookmark_name">Yer imi adı</string>
     <string name="folder_name">Klasör adı</string>
     <string name="bookmark_url">Yer imi URL\'si</string>
-    <string name="folder_names_must_be_unique">Klasör adları özgün olmalı</string>
     <string name="edit_bookmark">Yer imi düzenle</string>
     <string name="edit_folder">Klasörü düzenle</string>
     <string name="move_to_folder">Klasöre taşı</string>

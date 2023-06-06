@@ -137,6 +137,8 @@ import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog
 import com.stoutner.privacybrowser.dialogs.WaitingForProxyDialog
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment
+import com.stoutner.privacybrowser.helpers.BOOKMARK_NAME
+import com.stoutner.privacybrowser.helpers.BOOKMARK_URL
 import com.stoutner.privacybrowser.helpers.COOKIES
 import com.stoutner.privacybrowser.helpers.DARK_THEME
 import com.stoutner.privacybrowser.helpers.DISABLED
@@ -151,9 +153,12 @@ import com.stoutner.privacybrowser.helpers.ENABLE_FORM_DATA
 import com.stoutner.privacybrowser.helpers.ENABLE_JAVASCRIPT
 import com.stoutner.privacybrowser.helpers.ENABLE_ULTRAPRIVACY
 import com.stoutner.privacybrowser.helpers.ENABLED
+import com.stoutner.privacybrowser.helpers.FAVORITE_ICON
+import com.stoutner.privacybrowser.helpers.FOLDER_ID
 import com.stoutner.privacybrowser.helpers.FONT_SIZE
 import com.stoutner.privacybrowser.helpers.ID
 import com.stoutner.privacybrowser.helpers.IP_ADDRESSES
+import com.stoutner.privacybrowser.helpers.IS_FOLDER
 import com.stoutner.privacybrowser.helpers.LIGHT_THEME
 import com.stoutner.privacybrowser.helpers.PINNED_IP_ADDRESSES
 import com.stoutner.privacybrowser.helpers.PINNED_SSL_CERTIFICATE
@@ -234,7 +239,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     companion object {
         // Define the public static variables.
-        var currentBookmarksFolder = ""
+        var currentBookmarksFolderId = 0L
         val executorService = Executors.newFixedThreadPool(4)!!
         var orbotStatus = "unknown"
         val pendingDialogsArrayList = ArrayList<PendingDialogDataClass>()
@@ -3518,12 +3523,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     // The view parameter cannot be removed because it is called from the layout onClick.
     fun bookmarksBack(@Suppress("UNUSED_PARAMETER")view: View?) {
-        if (currentBookmarksFolder.isEmpty()) {  // The home folder is displayed.
+        if (currentBookmarksFolderId == HOME_FOLDER_ID) {  // The home folder is displayed.
             // close the bookmarks drawer.
             drawerLayout.closeDrawer(GravityCompat.END)
         } else {  // A subfolder is displayed.
             // Set the former parent folder as the current folder.
-            currentBookmarksFolder = bookmarksDatabaseHelper!!.getParentFolderName(currentBookmarksFolder)
+            currentBookmarksFolderId = bookmarksDatabaseHelper!!.getParentFolderId(currentBookmarksFolderId)
 
             // Load the new folder.
             loadBookmarksFolder()
@@ -3782,10 +3787,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val newBookmarkDisplayOrder = bookmarksListView.count
 
         // Create the bookmark.
-        bookmarksDatabaseHelper!!.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolder, newBookmarkDisplayOrder, favoriteIconByteArray)
+        bookmarksDatabaseHelper!!.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolderId, newBookmarkDisplayOrder, favoriteIconByteArray)
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
+        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -3840,10 +3845,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         }
 
         // Create the folder, which will be placed at the top of the list view.
-        bookmarksDatabaseHelper!!.createFolder(folderNameString, currentBookmarksFolder, folderIconByteArray)
+        bookmarksDatabaseHelper!!.createFolder(folderNameString, currentBookmarksFolderId, folderIconByteArray)
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
+        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -4186,7 +4191,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             val bookmarksIntent = Intent(applicationContext, BookmarksActivity::class.java)
 
             // Add the extra information to the intent.
-            bookmarksIntent.putExtra(CURRENT_FOLDER, currentBookmarksFolder)
+            bookmarksIntent.putExtra(CURRENT_FOLDER_ID, currentBookmarksFolderId)
             bookmarksIntent.putExtra(CURRENT_TITLE, currentWebView!!.title)
             bookmarksIntent.putExtra(CURRENT_URL, currentWebView!!.url)
             bookmarksIntent.putExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY, currentFavoriteIconByteArray)
@@ -4283,15 +4288,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             bookmarkCursor.moveToFirst()
 
             // Act upon the bookmark according to the type.
-            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
-                // Store the folder name.
-                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndexOrThrow(IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+                // Store the folder ID.
+                currentBookmarksFolderId = bookmarkCursor.getLong(bookmarkCursor.getColumnIndexOrThrow(FOLDER_ID))
 
                 // Load the new folder.
                 loadBookmarksFolder()
             } else {  // The selected bookmark is not a folder.
                 // Load the bookmark URL.
-                loadUrl(currentWebView!!, bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)))
+                loadUrl(currentWebView!!, bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BOOKMARK_URL)))
 
                 // Close the bookmarks drawer if it is not pinned.
                 if (!bookmarksDrawerPinned)
@@ -4309,8 +4314,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Run the commands associated with the type.
             if (bookmarksDatabaseHelper!!.isFolder(databaseId)) {  // The bookmark is a folder.
+                // Get the folder ID.
+                val folderId = bookmarksDatabaseHelper!!.getFolderId(databaseId)
+
                 // Get a cursor of all the bookmarks in the folder.
-                val bookmarksCursor = bookmarksDatabaseHelper!!.getFolderBookmarks(databaseId)
+                val bookmarksCursor = bookmarksDatabaseHelper!!.getFolderBookmarks(folderId)
 
                 // Move to the first entry in the cursor.
                 bookmarksCursor.moveToFirst()
@@ -4318,7 +4326,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Open each bookmark
                 for (i in 0 until bookmarksCursor.count) {
                     // Load the bookmark in a new tab, moving to the tab for the first bookmark if the drawer is not pinned.
-                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), !bookmarksDrawerPinned && (i == 0))
+                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BOOKMARK_URL)), !bookmarksDrawerPinned && (i == 0))
 
                     // Move to the next bookmark.
                     bookmarksCursor.moveToNext()
@@ -4334,7 +4342,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 bookmarkCursor.moveToFirst()
 
                 // Load the bookmark in a new tab and move to the tab if the drawer is not pinned.
-                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)), !bookmarksDrawerPinned)
+                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BOOKMARK_URL)), !bookmarksDrawerPinned)
 
                 // Close the cursor.
                 bookmarkCursor.close()
@@ -5603,7 +5611,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     private fun loadBookmarksFolder() {
         // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolder)
+        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
 
         // Populate the bookmarks cursor adapter.
         bookmarksCursorAdapter = object : CursorAdapter(this, bookmarksCursor, false) {
@@ -5618,7 +5626,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 val bookmarkNameTextView = view.findViewById<TextView>(R.id.bookmark_name)
 
                 // Get the favorite icon byte array from the cursor.
-                val favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
+                val favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(FAVORITE_ICON))
 
                 // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
                 val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
@@ -5627,10 +5635,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap)
 
                 // Display the bookmark name from the cursor in the bookmark name text view.
-                bookmarkNameTextView.text = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+                bookmarkNameTextView.text = cursor.getString(cursor.getColumnIndexOrThrow(BOOKMARK_NAME))
 
                 // Make the font bold for folders.
-                if (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1)
+                if (cursor.getInt(cursor.getColumnIndexOrThrow(IS_FOLDER)) == 1)
                     bookmarkNameTextView.typeface = Typeface.DEFAULT_BOLD
                 else  // Reset the font to default for normal bookmarks.
                     bookmarkNameTextView.typeface = Typeface.DEFAULT
@@ -5641,10 +5649,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         bookmarksListView.adapter = bookmarksCursorAdapter
 
         // Set the bookmarks drawer title.
-        if (currentBookmarksFolder.isEmpty())
+        if (currentBookmarksFolderId == HOME_FOLDER_ID)  // The current bookmarks folder is the home folder.
             bookmarksTitleTextView.setText(R.string.bookmarks)
         else
-            bookmarksTitleTextView.text = currentBookmarksFolder
+            bookmarksTitleTextView.text = bookmarksDatabaseHelper!!.getFolderName(currentBookmarksFolderId)
     }
 
     private fun loadUrl(nestedScrollWebView: NestedScrollWebView, url: String) {

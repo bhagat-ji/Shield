@@ -205,6 +205,8 @@
     <string name="saving_file">Guardando archivo:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Guardando archivo:\u0020 %1$s bytes - %2$s</string>
     <string name="saving_file_percentage_progress">Guardando archivo:\u0020 %1$d%% - %2$s bytes / %3$s bytes - %4$s</string>
+    <string name="saved">%1$s guardado.</string>
+    <string name="download_cancelled">Descarga cancelada.</string>
     <string name="processing_image">Procesando imagen:\u0020 %1$s</string>
     <string name="error_saving_file">Error al guardar %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Error desconocido</string>
@@ -244,7 +246,6 @@
     <string name="bookmark_name">Nombre de favorito</string>
     <string name="folder_name">Nombre de carpeta</string>
     <string name="bookmark_url">Favorito URL</string>
-    <string name="folder_names_must_be_unique">Los nombres de carpetas deben ser únicos</string>
     <string name="edit_bookmark">Editar favorito</string>
     <string name="edit_folder">Editar carpeta</string>
     <string name="move_to_folder">Mover a carpeta</string>
@@ -439,7 +440,6 @@
     <string name="clear">Borrar</string>
     <string name="logcat_copied">Logcat copiado.</string>
     <string name="privacy_browser_logcat_txt">Navegador Privado Android %1$s Logcat.txt</string>
-    <string name="saved">%1$s guardado.</string>
     <string name="error_saving_logcat">Error guardando logcat:\u0020 %1$s</string>
 
     <!-- Guide. -->

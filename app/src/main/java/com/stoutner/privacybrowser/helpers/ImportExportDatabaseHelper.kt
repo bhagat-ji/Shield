@@ -27,6 +27,7 @@ import android.database.sqlite.SQLiteDatabase
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.activities.HOME_FOLDER_ID
 
 import java.io.File
 import java.io.FileInputStream
@@ -34,10 +35,12 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
+import java.util.Date
+
 // Define the public constants.
+const val IMPORT_EXPORT_SCHEMA_VERSION = 17
 const val EXPORT_SUCCESSFUL = "A"
 const val IMPORT_SUCCESSFUL = "B"
-const val IMPORT_EXPORT_SCHEMA_VERSION = 17
 
 // Define the private class constants.
 private const val ALLOW_SCREENSHOTS = "allow_screenshots"
@@ -395,11 +398,104 @@ class ImportExportDatabaseHelper {
             // This upgrade removed the `x_requested_with_header` from the domains and preferences tables.
             // There is no need to delete the columns as they will simply be ignored by the import.
 
+            // Upgrade from schema version 16, first used in Privacy Browser 3.12, to schema version 17, first used in Privacy Browser 3.15.
+            if (importDatabaseVersion < 17) {
+                // Add the folder ID column.
+                importDatabase.execSQL("ALTER TABLE $BOOKMARKS_TABLE ADD COLUMN $FOLDER_ID INTEGER")
+
+                // Get a cursor with all the folders.
+                val foldersCursor = importDatabase.rawQuery("SELECT $ID FROM $BOOKMARKS_TABLE WHERE $IS_FOLDER = 1", null)
+
+                // Get the folders cursor ID column index.
+                val foldersCursorIdColumnIndex = foldersCursor.getColumnIndexOrThrow(ID)
+
+                // Add a folder ID to each folder.
+                while(foldersCursor.moveToNext()) {
+                    // Get the current folder database ID.
+                    val databaseId = foldersCursor.getInt(foldersCursorIdColumnIndex)
+
+                    // Generate a folder ID.
+                    val folderId = generateFolderId(importDatabase)
+
+                    // Create a folder content values.
+                    val folderContentValues = ContentValues()
+
+                    // Store the new folder ID in the content values.
+                    folderContentValues.put(FOLDER_ID, folderId)
+
+                    // Update the folder with the new folder ID.
+                    importDatabase.update(BOOKMARKS_TABLE, folderContentValues, "$ID = $databaseId", null)
+                }
+
+                // Close the folders cursor.
+                foldersCursor.close()
+
+
+                // Add the parent folder ID column.
+                importDatabase.execSQL("ALTER TABLE $BOOKMARKS_TABLE ADD COLUMN $PARENT_FOLDER_ID INTEGER")
+
+                // Get a cursor with all the bookmarks.
+                val bookmarksCursor = importDatabase.rawQuery("SELECT $ID, parentfolder FROM $BOOKMARKS_TABLE", null)
+
+                // Get the bookmarks cursor ID column index.
+                val bookmarksCursorIdColumnIndex = bookmarksCursor.getColumnIndexOrThrow(ID)
+                val bookmarksCursorParentFolderColumnIndex = bookmarksCursor.getColumnIndexOrThrow("parentfolder")
+
+                // Populate the parent folder ID for each bookmark.
+                while(bookmarksCursor.moveToNext()) {
+                    // Get the information from the cursor.
+                    val databaseId = bookmarksCursor.getInt(bookmarksCursorIdColumnIndex)
+                    val oldParentFolderString = bookmarksCursor.getString(bookmarksCursorParentFolderColumnIndex)
+
+                    // Initialize the new parent folder ID.
+                    var newParentFolderId = HOME_FOLDER_ID
+
+                    // Get the parent folder ID if the bookmark is not in the home folder.
+                    if (oldParentFolderString.isNotEmpty()) {
+                        // SQL escape the old parent folder string.
+                        val sqlEscapedFolderName = DatabaseUtils.sqlEscapeString(oldParentFolderString)
+
+                        // Get the parent folder cursor.
+                        val parentFolderCursor = importDatabase.rawQuery("SELECT $FOLDER_ID FROM $BOOKMARKS_TABLE WHERE $BOOKMARK_NAME = $sqlEscapedFolderName AND $IS_FOLDER = 1", null)
+
+                        // Get the new parent folder ID if it exists.
+                        if (parentFolderCursor.count > 0) {
+                            // Move to the first entry.
+                            parentFolderCursor.moveToFirst()
+
+                            // Get the new parent folder ID.
+                            newParentFolderId = parentFolderCursor.getLong(parentFolderCursor.getColumnIndexOrThrow(FOLDER_ID))
+                        }
+
+                        // Close the parent folder cursor.
+                        parentFolderCursor.close()
+                    }
+
+                    // Create a bookmark content values.
+                    val bookmarkContentValues = ContentValues()
+
+                    // Store the new parent folder ID in the content values.
+                    bookmarkContentValues.put(PARENT_FOLDER_ID, newParentFolderId)
+
+                    // Update the folder with the new folder ID.
+                    importDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, "$ID = $databaseId", null)
+                }
+
+                // Close the bookmarks cursor.
+                bookmarksCursor.close()
+
+                // This upgrade removed the old `parentfolder` string column.
+                // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
+                // It will be a while before that is supported in Android.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
+                // Although a new table could be created and all the data copied to it, I think I will just leave the old parent folder column.  It will be wiped out the next time an import is run.
+            }
+
+
             // Get a cursor for the bookmarks table.
-            val importBookmarksCursor = importDatabase.rawQuery("SELECT * FROM ${BookmarksDatabaseHelper.BOOKMARKS_TABLE}", null)
+            val importBookmarksCursor = importDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE", null)
 
             // Delete the current bookmarks database.
-            context.deleteDatabase(BookmarksDatabaseHelper.BOOKMARKS_DATABASE)
+            context.deleteDatabase(BOOKMARKS_DATABASE)
 
             // Create a new bookmarks database.
             val bookmarksDatabaseHelper = BookmarksDatabaseHelper(context)
@@ -407,18 +503,28 @@ class ImportExportDatabaseHelper {
             // Move to the first record.
             importBookmarksCursor.moveToFirst()
 
+            // Get the bookmarks colum indexes.
+            val bookmarkNameColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(BOOKMARK_NAME)
+            val bookmarkUrlColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(BOOKMARK_URL)
+            val bookmarkParentFolderIdColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(PARENT_FOLDER_ID)
+            val bookmarkDisplayOrderColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(DISPLAY_ORDER)
+            val bookmarkIsFolderColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(IS_FOLDER)
+            val bookmarkFolderIdColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(FOLDER_ID)
+            val bookmarkFavoriteIconColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(FAVORITE_ICON)
+
             // Copy the data from the import bookmarks cursor into the bookmarks database.
             for (i in 0 until importBookmarksCursor.count) {
                 // Create a bookmark content values.
                 val bookmarkContentValues = ContentValues()
 
                 // Add the information for this bookmark to the content values.
-                bookmarkContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, importBookmarksCursor.getString(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, importBookmarksCursor.getInt(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, importBookmarksCursor.getInt(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, importBookmarksCursor.getBlob(importBookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON)))
+                bookmarkContentValues.put(BOOKMARK_NAME, importBookmarksCursor.getString(bookmarkNameColumnIndex))
+                bookmarkContentValues.put(BOOKMARK_URL, importBookmarksCursor.getString(bookmarkUrlColumnIndex))
+                bookmarkContentValues.put(PARENT_FOLDER_ID, importBookmarksCursor.getLong(bookmarkParentFolderIdColumnIndex))
+                bookmarkContentValues.put(DISPLAY_ORDER, importBookmarksCursor.getInt(bookmarkDisplayOrderColumnIndex))
+                bookmarkContentValues.put(IS_FOLDER, importBookmarksCursor.getInt(bookmarkIsFolderColumnIndex))
+                bookmarkContentValues.put(FOLDER_ID, importBookmarksCursor.getLong(bookmarkFolderIdColumnIndex))
+                bookmarkContentValues.put(FAVORITE_ICON, importBookmarksCursor.getBlob(bookmarkFavoriteIconColumnIndex))
 
                 // Insert the content values into the bookmarks database.
                 bookmarksDatabaseHelper.createBookmark(bookmarkContentValues)
@@ -520,41 +626,72 @@ class ImportExportDatabaseHelper {
             // Move to the first record.
             importDomainsCursor.moveToFirst()
 
+            // Get the domain column indexes.
+            val domainNameColumnIndex = importDomainsCursor.getColumnIndexOrThrow(DOMAIN_NAME)
+            val domainJavaScriptColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
+            val domainCookiesColumnIndex = importDomainsCursor.getColumnIndexOrThrow(COOKIES)
+            val domainDomStorageColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
+            val domainFormDataColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)  // Form data can be removed once the minimum API >= 26.
+            val domainEasyListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+            val domainEasyPrivacyColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainFanboysAnnoyanceListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
+            val domainFanboysSocialBlockingListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
+            val domainUltraListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ULTRALIST)
+            val domainUltraPrivacyColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainBlockAllThirdPartyRequestsColumnIndex = importDomainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
+            val domainUserAgentColumnIndex = importDomainsCursor.getColumnIndexOrThrow(USER_AGENT)
+            val domainFontSizeColumnIndex = importDomainsCursor.getColumnIndexOrThrow(FONT_SIZE)
+            val domainSwipeToRefreshColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)
+            val domainWebViewThemeColumnIndex = importDomainsCursor.getColumnIndexOrThrow(WEBVIEW_THEME)
+            val domainWideViewportColumnIndex = importDomainsCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)
+            val domainDisplayImagesColumnIndex = importDomainsCursor.getColumnIndexOrThrow(DISPLAY_IMAGES)
+            val domainPinnedSslCertificateColumnIndex = importDomainsCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE)
+            val domainSslIssuedToCommonNameColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME)
+            val domainSslIssuedToOrganizationColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION)
+            val domainSslIssuedToOrganizationalUnitColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)
+            val domainSslIssuedByCommonNameColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME)
+            val domainSslIssuedByOrganizationColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION)
+            val domainSslIssuedByOrganizationalUnitColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)
+            val domainSslStartDateColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_START_DATE)
+            val domainSslEndDateColumnIndex = importDomainsCursor.getColumnIndexOrThrow(SSL_END_DATE)
+            val domainPinnedIpAddressesColumnIndex = importDomainsCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES)
+            val domainIpAddressesColumnIndex = importDomainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)
+
             // Copy the data from the import domains cursor into the domains database.
             for (i in 0 until importDomainsCursor.count) {
                 // Create a domain content values.
                 val domainContentValues = ContentValues()
 
                 // Populate the domain content values.
-                domainContentValues.put(DOMAIN_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(DOMAIN_NAME)))
-                domainContentValues.put(ENABLE_JAVASCRIPT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)))
-                domainContentValues.put(COOKIES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(COOKIES)))
-                domainContentValues.put(ENABLE_DOM_STORAGE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)))
-                domainContentValues.put(ENABLE_FORM_DATA, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)))
-                domainContentValues.put(ENABLE_EASYLIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)))
-                domainContentValues.put(ENABLE_EASYPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)))
-                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)))
-                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)))
-                domainContentValues.put(ULTRALIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ULTRALIST)))
-                domainContentValues.put(ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)))
-                domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)))
-                domainContentValues.put(USER_AGENT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(USER_AGENT)))
-                domainContentValues.put(FONT_SIZE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(FONT_SIZE)))
-                domainContentValues.put(SWIPE_TO_REFRESH, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)))
-                domainContentValues.put(WEBVIEW_THEME, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
-                domainContentValues.put(WIDE_VIEWPORT, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)))
-                domainContentValues.put(DISPLAY_IMAGES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(DISPLAY_IMAGES)))
-                domainContentValues.put(PINNED_SSL_CERTIFICATE, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE)))
-                domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME)))
-                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION)))
-                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME)))
-                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION)))
-                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(SSL_START_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(SSL_START_DATE)))
-                domainContentValues.put(SSL_END_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndexOrThrow(SSL_END_DATE)))
-                domainContentValues.put(PINNED_IP_ADDRESSES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES)))
-                domainContentValues.put(IP_ADDRESSES, importDomainsCursor.getString(importDomainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)))
+                domainContentValues.put(DOMAIN_NAME, importDomainsCursor.getString(domainNameColumnIndex))
+                domainContentValues.put(ENABLE_JAVASCRIPT, importDomainsCursor.getInt(domainJavaScriptColumnIndex))
+                domainContentValues.put(COOKIES, importDomainsCursor.getInt(domainCookiesColumnIndex))
+                domainContentValues.put(ENABLE_DOM_STORAGE, importDomainsCursor.getInt(domainDomStorageColumnIndex))
+                domainContentValues.put(ENABLE_FORM_DATA, importDomainsCursor.getInt(domainFormDataColumnIndex))  // Form data can be removed once the minimum API >= 26.
+                domainContentValues.put(ENABLE_EASYLIST, importDomainsCursor.getInt(domainEasyListColumnIndex))
+                domainContentValues.put(ENABLE_EASYPRIVACY, importDomainsCursor.getInt(domainEasyPrivacyColumnIndex))
+                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, importDomainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
+                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, importDomainsCursor.getInt(domainFanboysSocialBlockingListColumnIndex))
+                domainContentValues.put(ULTRALIST, importDomainsCursor.getInt(domainUltraListColumnIndex))
+                domainContentValues.put(ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(domainUltraPrivacyColumnIndex))
+                domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, importDomainsCursor.getInt(domainBlockAllThirdPartyRequestsColumnIndex))
+                domainContentValues.put(USER_AGENT, importDomainsCursor.getString(domainUserAgentColumnIndex))
+                domainContentValues.put(FONT_SIZE, importDomainsCursor.getInt(domainFontSizeColumnIndex))
+                domainContentValues.put(SWIPE_TO_REFRESH, importDomainsCursor.getInt(domainSwipeToRefreshColumnIndex))
+                domainContentValues.put(WEBVIEW_THEME, importDomainsCursor.getInt(domainWebViewThemeColumnIndex))
+                domainContentValues.put(WIDE_VIEWPORT, importDomainsCursor.getInt(domainWideViewportColumnIndex))
+                domainContentValues.put(DISPLAY_IMAGES, importDomainsCursor.getInt(domainDisplayImagesColumnIndex))
+                domainContentValues.put(PINNED_SSL_CERTIFICATE, importDomainsCursor.getInt(domainPinnedSslCertificateColumnIndex))
+                domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, importDomainsCursor.getString(domainSslIssuedToCommonNameColumnIndex))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, importDomainsCursor.getString(domainSslIssuedToOrganizationColumnIndex))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, importDomainsCursor.getString(domainSslIssuedToOrganizationalUnitColumnIndex))
+                domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, importDomainsCursor.getString(domainSslIssuedByCommonNameColumnIndex))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, importDomainsCursor.getString(domainSslIssuedByOrganizationColumnIndex))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, importDomainsCursor.getString(domainSslIssuedByOrganizationalUnitColumnIndex))
+                domainContentValues.put(SSL_START_DATE, importDomainsCursor.getLong(domainSslStartDateColumnIndex))
+                domainContentValues.put(SSL_END_DATE, importDomainsCursor.getLong(domainSslEndDateColumnIndex))
+                domainContentValues.put(PINNED_IP_ADDRESSES, importDomainsCursor.getInt(domainPinnedIpAddressesColumnIndex))
+                domainContentValues.put(IP_ADDRESSES, importDomainsCursor.getString(domainIpAddressesColumnIndex))
 
                 // Insert the content values into the domains database.
                 domainsDatabaseHelper.addDomain(domainContentValues)
@@ -647,7 +784,7 @@ class ImportExportDatabaseHelper {
 
 
             // Create the temporary export database bookmarks table.
-            temporaryExportDatabase.execSQL(BookmarksDatabaseHelper.CREATE_BOOKMARKS_TABLE)
+            temporaryExportDatabase.execSQL(CREATE_BOOKMARKS_TABLE)
 
             // Open the bookmarks database.
             val bookmarksDatabaseHelper = BookmarksDatabaseHelper(context)
@@ -658,21 +795,31 @@ class ImportExportDatabaseHelper {
             // Move to the first record.
             bookmarksCursor.moveToFirst()
 
+            // Get the bookmarks colum indexes.
+            val bookmarkNameColumnIndex = bookmarksCursor.getColumnIndexOrThrow(BOOKMARK_NAME)
+            val bookmarkUrlColumnIndex = bookmarksCursor.getColumnIndexOrThrow(BOOKMARK_URL)
+            val bookmarkParentFolderIdColumnIndex = bookmarksCursor.getColumnIndexOrThrow(PARENT_FOLDER_ID)
+            val bookmarkDisplayOrderColumnIndex = bookmarksCursor.getColumnIndexOrThrow(DISPLAY_ORDER)
+            val bookmarkIsFolderColumnIndex = bookmarksCursor.getColumnIndexOrThrow(IS_FOLDER)
+            val bookmarkFolderIdColumnIndex = bookmarksCursor.getColumnIndexOrThrow(FOLDER_ID)
+            val bookmarkFavoriteIconColumnIndex = bookmarksCursor.getColumnIndexOrThrow(FAVORITE_ICON)
+
             // Copy the data from the bookmarks cursor into the export database.
             for (i in 0 until bookmarksCursor.count) {
                 // Create a bookmark content values.
                 val bookmarkContentValues = ContentValues()
 
                 // Populate the bookmark content values.
-                bookmarkContentValues.put(BookmarksDatabaseHelper.BOOKMARK_NAME, bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.BOOKMARK_URL, bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.PARENT_FOLDER, bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.DISPLAY_ORDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.IS_FOLDER, bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)))
-                bookmarkContentValues.put(BookmarksDatabaseHelper.FAVORITE_ICON, bookmarksCursor.getBlob(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON)))
+                bookmarkContentValues.put(BOOKMARK_NAME, bookmarksCursor.getString(bookmarkNameColumnIndex))
+                bookmarkContentValues.put(BOOKMARK_URL, bookmarksCursor.getString(bookmarkUrlColumnIndex))
+                bookmarkContentValues.put(PARENT_FOLDER_ID, bookmarksCursor.getLong(bookmarkParentFolderIdColumnIndex))
+                bookmarkContentValues.put(DISPLAY_ORDER, bookmarksCursor.getInt(bookmarkDisplayOrderColumnIndex))
+                bookmarkContentValues.put(IS_FOLDER, bookmarksCursor.getInt(bookmarkIsFolderColumnIndex))
+                bookmarkContentValues.put(FOLDER_ID, bookmarksCursor.getLong(bookmarkFolderIdColumnIndex))
+                bookmarkContentValues.put(FAVORITE_ICON, bookmarksCursor.getBlob(bookmarkFavoriteIconColumnIndex))
 
                 // Insert the content values into the temporary export database.
-                temporaryExportDatabase.insert(BookmarksDatabaseHelper.BOOKMARKS_TABLE, null, bookmarkContentValues)
+                temporaryExportDatabase.insert(BOOKMARKS_TABLE, null, bookmarkContentValues)
 
                 // Advance to the next record.
                 bookmarksCursor.moveToNext()
@@ -695,41 +842,72 @@ class ImportExportDatabaseHelper {
             // Move to the first record.
             domainsCursor.moveToFirst()
 
+            // Get the domain column indexes.
+            val domainNameColumnIndex = domainsCursor.getColumnIndexOrThrow(DOMAIN_NAME)
+            val domainJavaScriptColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
+            val domainCookiesColumnIndex = domainsCursor.getColumnIndexOrThrow(COOKIES)
+            val domainDomStorageColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
+            val domainFormDataColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)  // Form data can be removed once the minimum API >= 26.
+            val domainEasyListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+            val domainEasyPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainFanboysAnnoyanceListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
+            val domainFanboysSocialBlockingListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
+            val domainUltraListColumnIndex = domainsCursor.getColumnIndexOrThrow(ULTRALIST)
+            val domainUltraPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainBlockAllThirdPartyRequestsColumnIndex = domainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
+            val domainUserAgentColumnIndex = domainsCursor.getColumnIndexOrThrow(USER_AGENT)
+            val domainFontSizeColumnIndex = domainsCursor.getColumnIndexOrThrow(FONT_SIZE)
+            val domainSwipeToRefreshColumnIndex = domainsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)
+            val domainWebViewThemeColumnIndex = domainsCursor.getColumnIndexOrThrow(WEBVIEW_THEME)
+            val domainWideViewportColumnIndex = domainsCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)
+            val domainDisplayImagesColumnIndex = domainsCursor.getColumnIndexOrThrow(DISPLAY_IMAGES)
+            val domainPinnedSslCertificateColumnIndex = domainsCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE)
+            val domainSslIssuedToCommonNameColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME)
+            val domainSslIssuedToOrganizationColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION)
+            val domainSslIssuedToOrganizationalUnitColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)
+            val domainSslIssuedByCommonNameColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME)
+            val domainSslIssuedByOrganizationColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION)
+            val domainSslIssuedByOrganizationalUnitColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)
+            val domainSslStartDateColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_START_DATE)
+            val domainSslEndDateColumnIndex = domainsCursor.getColumnIndexOrThrow(SSL_END_DATE)
+            val domainPinnedIpAddressesColumnIndex = domainsCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES)
+            val domainIpAddressesColumnIndex = domainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)
+
             // Copy the data from the domains cursor into the export database.
             for (i in 0 until domainsCursor.count) {
                 // Create a domain content values.
                 val domainContentValues = ContentValues()
 
                 // Populate the domain content values.
-                domainContentValues.put(DOMAIN_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(DOMAIN_NAME)))
-                domainContentValues.put(ENABLE_JAVASCRIPT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)))
-                domainContentValues.put(COOKIES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(COOKIES)))
-                domainContentValues.put(ENABLE_DOM_STORAGE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)))
-                domainContentValues.put(ENABLE_FORM_DATA, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)))
-                domainContentValues.put(ENABLE_EASYLIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)))
-                domainContentValues.put(ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)))
-                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)))
-                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)))
-                domainContentValues.put(ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ULTRALIST)))
-                domainContentValues.put(ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)))
-                domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)))
-                domainContentValues.put(USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(USER_AGENT)))
-                domainContentValues.put(FONT_SIZE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(FONT_SIZE)))
-                domainContentValues.put(SWIPE_TO_REFRESH, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH)))
-                domainContentValues.put(WEBVIEW_THEME, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
-                domainContentValues.put(WIDE_VIEWPORT, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)))
-                domainContentValues.put(DISPLAY_IMAGES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(DISPLAY_IMAGES)))
-                domainContentValues.put(PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(PINNED_SSL_CERTIFICATE)))
-                domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_COMMON_NAME)))
-                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATION)))
-                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_COMMON_NAME)))
-                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATION)))
-                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)))
-                domainContentValues.put(SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(SSL_START_DATE)))
-                domainContentValues.put(SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndexOrThrow(SSL_END_DATE)))
-                domainContentValues.put(PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndexOrThrow(PINNED_IP_ADDRESSES)))
-                domainContentValues.put(IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)))
+                domainContentValues.put(DOMAIN_NAME, domainsCursor.getString(domainNameColumnIndex))
+                domainContentValues.put(ENABLE_JAVASCRIPT, domainsCursor.getInt(domainJavaScriptColumnIndex))
+                domainContentValues.put(COOKIES, domainsCursor.getInt(domainCookiesColumnIndex))
+                domainContentValues.put(ENABLE_DOM_STORAGE, domainsCursor.getInt(domainDomStorageColumnIndex))
+                domainContentValues.put(ENABLE_FORM_DATA, domainsCursor.getInt(domainFormDataColumnIndex))  // Form data can be removed once the minimum API >= 26.
+                domainContentValues.put(ENABLE_EASYLIST, domainsCursor.getInt(domainEasyListColumnIndex))
+                domainContentValues.put(ENABLE_EASYPRIVACY, domainsCursor.getInt(domainEasyPrivacyColumnIndex))
+                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
+                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainFanboysSocialBlockingListColumnIndex))
+                domainContentValues.put(ULTRALIST, domainsCursor.getInt(domainUltraListColumnIndex))
+                domainContentValues.put(ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainUltraPrivacyColumnIndex))
+                domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainBlockAllThirdPartyRequestsColumnIndex))
+                domainContentValues.put(USER_AGENT, domainsCursor.getString(domainUserAgentColumnIndex))
+                domainContentValues.put(FONT_SIZE, domainsCursor.getInt(domainFontSizeColumnIndex))
+                domainContentValues.put(SWIPE_TO_REFRESH, domainsCursor.getInt(domainSwipeToRefreshColumnIndex))
+                domainContentValues.put(WEBVIEW_THEME, domainsCursor.getInt(domainWebViewThemeColumnIndex))
+                domainContentValues.put(WIDE_VIEWPORT, domainsCursor.getInt(domainWideViewportColumnIndex))
+                domainContentValues.put(DISPLAY_IMAGES, domainsCursor.getInt(domainDisplayImagesColumnIndex))
+                domainContentValues.put(PINNED_SSL_CERTIFICATE, domainsCursor.getInt(domainPinnedSslCertificateColumnIndex))
+                domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, domainsCursor.getString(domainSslIssuedToCommonNameColumnIndex))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, domainsCursor.getString(domainSslIssuedToOrganizationColumnIndex))
+                domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainSslIssuedToOrganizationalUnitColumnIndex))
+                domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, domainsCursor.getString(domainSslIssuedByCommonNameColumnIndex))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, domainsCursor.getString(domainSslIssuedByOrganizationColumnIndex))
+                domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainSslIssuedByOrganizationalUnitColumnIndex))
+                domainContentValues.put(SSL_START_DATE, domainsCursor.getLong(domainSslStartDateColumnIndex))
+                domainContentValues.put(SSL_END_DATE, domainsCursor.getLong(domainSslEndDateColumnIndex))
+                domainContentValues.put(PINNED_IP_ADDRESSES, domainsCursor.getInt(domainPinnedIpAddressesColumnIndex))
+                domainContentValues.put(IP_ADDRESSES, domainsCursor.getString(domainIpAddressesColumnIndex))
 
                 // Insert the content values into the temporary export database.
                 temporaryExportDatabase.insert(DOMAINS_TABLE, null, domainContentValues)
@@ -894,5 +1072,25 @@ class ImportExportDatabaseHelper {
             DISABLED
         else  // The switch is currently enabled and that is not the system default.
             ENABLED
+    }
+
+    private fun generateFolderId(database: SQLiteDatabase): Long {
+        // Get the current time in epoch format.
+        val possibleFolderId = Date().time
+
+        // Get a cursor with any folders that already have this folder ID.
+        val existingFolderCursor = database.rawQuery("SELECT $ID FROM $BOOKMARKS_TABLE WHERE $FOLDER_ID = $possibleFolderId", null)
+
+        // Check if the folder ID is unique.
+        val folderIdIsUnique = (existingFolderCursor.count == 0)
+
+        // Close the cursor.
+        existingFolderCursor.close()
+
+        // Either return the folder ID or test a new one.
+        return if (folderIdIsUnique)
+            possibleFolderId
+        else
+            generateFolderId(database)
     }
 }

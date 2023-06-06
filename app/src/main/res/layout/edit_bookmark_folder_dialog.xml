@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2019-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017,2019-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -145,13 +145,5 @@
                 android:inputType="textUri"
                 android:selectAllOnFocus="true" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:gravity="center_horizontal"
-            android:text="@string/folder_names_must_be_unique"
-            android:layout_marginStart="7dp"
-            android:layout_marginEnd="7dp" />
     </LinearLayout>
 </ScrollView>

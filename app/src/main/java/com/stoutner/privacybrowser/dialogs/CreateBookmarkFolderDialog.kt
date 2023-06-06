@@ -40,7 +40,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import java.io.ByteArrayOutputStream
 
@@ -177,10 +176,7 @@ class CreateBookmarkFolderDialog : DialogFragment() {
             defaultIconRadioButton.isChecked = false
         }
 
-        // Initialize the database helper.
-        val bookmarksDatabaseHelper = BookmarksDatabaseHelper(requireContext())
-
-        // Enable the create button if the new folder name is unique.
+        // Enable the create button if the folder name is populated.
         folderNameEditText.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // Do nothing.
@@ -194,11 +190,8 @@ class CreateBookmarkFolderDialog : DialogFragment() {
                 // Convert the current text to a string.
                 val folderName = editable.toString()
 
-                // Check if a folder with the name already exists.
-                val folderExistsCursor = bookmarksDatabaseHelper.getFolder(folderName)
-
-                // Enable the create button if the new folder name is not empty and doesn't already exist.
-                createButton.isEnabled = folderName.isNotEmpty() && (folderExistsCursor.count == 0)
+                // Enable the create button if the new folder name is not empty.
+                createButton.isEnabled = folderName.isNotEmpty()
             }
         })
 

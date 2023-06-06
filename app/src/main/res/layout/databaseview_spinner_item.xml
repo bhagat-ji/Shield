@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2019,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2019,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -26,16 +26,18 @@
     android:orientation="horizontal"
     tools:ignore="UseCompoundDrawables" >
 
+    <!-- Folder icon. -->
     <ImageView
-        android:id="@+id/spinner_item_imageview"
+        android:id="@+id/folder_icon_imageview"
         android:layout_height="30dp"
         android:layout_width="30dp"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="10dp"
         tools:ignore="contentDescription" />
 
+    <!-- Folder name. -->
     <TextView
-        android:id="@+id/spinner_item_textview"
+        android:id="@+id/folder_name_textview"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:lines="1"

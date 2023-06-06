@@ -205,6 +205,7 @@
     <string name="saving_file">Enregistrement du fichier : %1$d%% - %2$s</string>
     <string name="saving_file_progress">Enregistrement du fichier : %1$s octets - %2$s</string>
     <string name="saving_file_percentage_progress">Enregistrement du fichier : %1$d%% - %2$s octets / %3$s octets - %4$s</string>
+    <string name="saved">%1$s sauvegardé.</string>
     <string name="processing_image">Traitement de l\'image : %1$s</string>
     <string name="error_saving_file">Erreur lors de l\'enregistrement de %1$s : %2$s</string>
     <string name="unknown_error">Erreur inconnue</string>
@@ -243,7 +244,6 @@
     <string name="bookmark_name">Nom du favori</string>
     <string name="folder_name">Nom du dossier</string>
     <string name="bookmark_url">Ajouter aux favoris</string>
-    <string name="folder_names_must_be_unique">Les noms de dossiers doivent être uniques</string>
     <string name="edit_bookmark">Editer favori</string>
     <string name="edit_folder">Editer dossier</string>
     <string name="move_to_folder">Déplacer vers dossier</string>
@@ -381,7 +381,6 @@
     <string name="clear">Vider</string>
     <string name="logcat_copied">Journal système copié.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
-    <string name="saved">%1$s sauvegardé.</string>
     <string name="error_saving_logcat">Erreur de sauvegarde du logcat : %1$s</string>
 
     <!-- Guide. -->

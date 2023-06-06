@@ -41,6 +41,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.helpers.BOOKMARK_NAME
+import com.stoutner.privacybrowser.helpers.BOOKMARK_URL
+import com.stoutner.privacybrowser.helpers.FAVORITE_ICON
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import java.io.ByteArrayOutputStream
@@ -51,7 +54,7 @@ private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class EditBookmarkDialog : DialogFragment() {
     companion object {
-        fun bookmarkDatabaseId(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkDialog {
+        fun editBookmark(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
 
@@ -168,7 +171,7 @@ class EditBookmarkDialog : DialogFragment() {
         saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Get the current favorite icon byte array from the cursor.
-        val currentIconByteArray = bookmarkCursor.getBlob(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
+        val currentIconByteArray = bookmarkCursor.getBlob(bookmarkCursor.getColumnIndexOrThrow(FAVORITE_ICON))
 
         // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
         val currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.size)
@@ -180,8 +183,8 @@ class EditBookmarkDialog : DialogFragment() {
         webpageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
 
         // Store the current bookmark name and URL.
-        val currentName = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
-        val currentUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL))
+        val currentName = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BOOKMARK_NAME))
+        val currentUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BOOKMARK_URL))
 
         // Populate the edit texts.
         nameEditText.setText(currentName)

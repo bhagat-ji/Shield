@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -51,6 +51,31 @@
 
             <TextView
                 android:id="@+id/folder_database_id_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/gray_500" />
+        </LinearLayout>
+
+        <!-- Folder ID. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/folder_id"
+                android:textSize="18sp"
+                android:textColor="?android:textColorPrimary"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/folder_id_textview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textSize="18sp"
@@ -225,13 +250,5 @@
                 android:importantForAutofill="no"
                 tools:targetApi="26" />
         </LinearLayout>
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:gravity="center_horizontal"
-            android:text="@string/folder_names_must_be_unique"
-            android:layout_marginStart="7dp"
-            android:layout_marginEnd="7dp" />
     </LinearLayout>
 </ScrollView>

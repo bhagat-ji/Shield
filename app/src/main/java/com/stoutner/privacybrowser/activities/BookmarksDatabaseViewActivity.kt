@@ -61,24 +61,30 @@ import com.stoutner.privacybrowser.dialogs.EditBookmarkDatabaseViewDialog.Compan
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDatabaseViewDialog.EditBookmarkDatabaseViewListener
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDatabaseViewDialog.Companion.folderDatabaseId
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDatabaseViewDialog.EditBookmarkFolderDatabaseViewListener
+import com.stoutner.privacybrowser.helpers.BOOKMARK_NAME
+import com.stoutner.privacybrowser.helpers.BOOKMARK_URL
+import com.stoutner.privacybrowser.helpers.DISPLAY_ORDER
+import com.stoutner.privacybrowser.helpers.FAVORITE_ICON
+import com.stoutner.privacybrowser.helpers.FOLDER_ID
+import com.stoutner.privacybrowser.helpers.ID
+import com.stoutner.privacybrowser.helpers.IS_FOLDER
+import com.stoutner.privacybrowser.helpers.PARENT_FOLDER_ID
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import java.io.ByteArrayOutputStream
 
 import java.util.Arrays
 
+// Define the public class constants.
+const val HOME_FOLDER_DATABASE_ID = -1
+const val HOME_FOLDER_ID = 0L
+
 // Define the private class constants.
 private const val ALL_FOLDERS_DATABASE_ID = -2
-private const val CURRENT_FOLDER_DATABASE_ID = "current_folder_database_id"
-private const val CURRENT_FOLDER_NAME = "current_folder_name"
-private const val SORT_BY_DISPLAY_ORDER = "sort_by_display_order"
+private const val CURRENT_FOLDER_DATABASE_ID = "A"
+private const val SORT_BY_DISPLAY_ORDER = "B"
 
 class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseViewListener, EditBookmarkFolderDatabaseViewListener {
-    companion object {
-        // Define the public class constants.
-        const val HOME_FOLDER_DATABASE_ID = -1
-    }
-
     // Define the class variables.
     private var closeActivityAfterDismissingSnackbar = false
     private var currentFolderDatabaseId = 0
@@ -90,8 +96,6 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
     private lateinit var bookmarksCursor: Cursor
     private lateinit var bookmarksDatabaseHelper: BookmarksDatabaseHelper
     private lateinit var bookmarksListView: ListView
-    private lateinit var currentFolderName: String
-    private lateinit var oldFolderNameString: String
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
@@ -110,10 +114,10 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         super.onCreate(savedInstanceState)
 
         // Get the favorite icon byte array.
-        val favoriteIconByteArray = intent.getByteArrayExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY)!!
+        val currentFavoriteIconByteArray = intent.getByteArrayExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY)!!
 
         // Convert the favorite icon byte array to a bitmap and store it in a class variable.
-        val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
+        val currentFavoriteIconBitmap = BitmapFactory.decodeByteArray(currentFavoriteIconByteArray, 0, currentFavoriteIconByteArray.size)
 
         // Set the view according to the theme.
         if (bottomAppBar) {
@@ -129,7 +133,7 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
 
         // Get a handle for the toolbar.
         val toolbar = findViewById<Toolbar>(R.id.bookmarks_databaseview_toolbar)
-        val bookmarksListView = findViewById<ListView>(R.id.bookmarks_databaseview_listview)
+        bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview)
 
         // Set the support action bar.
         setSupportActionBar(toolbar)
@@ -158,16 +162,16 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         bookmarksDatabaseHelper = BookmarksDatabaseHelper(this)
 
         // Create a matrix cursor column name string array.
-        val matrixCursorColumnNames = arrayOf(BookmarksDatabaseHelper.ID, BookmarksDatabaseHelper.BOOKMARK_NAME)
+        val matrixCursorColumnNames = arrayOf(ID, BOOKMARK_NAME, PARENT_FOLDER_ID)
 
         // Setup the matrix cursor.
         MatrixCursor(matrixCursorColumnNames).use { matrixCursor ->
             // Add "All Folders" and "Home Folder" to the matrix cursor.
-            matrixCursor.addRow(arrayOf<Any>(ALL_FOLDERS_DATABASE_ID, getString(R.string.all_folders)))
-            matrixCursor.addRow(arrayOf<Any>(HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)))
+            matrixCursor.addRow(arrayOf<Any>(ALL_FOLDERS_DATABASE_ID, getString(R.string.all_folders), HOME_FOLDER_ID))
+            matrixCursor.addRow(arrayOf<Any>(HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder), HOME_FOLDER_ID))
 
             // Get a cursor with the list of all the folders.
-            val foldersCursor = bookmarksDatabaseHelper.allFolders
+            val foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(listOf())
 
             // Combine the matrix cursor and the folders cursor.
             val foldersMergeCursor = MergeCursor(arrayOf(matrixCursor, foldersCursor))
@@ -182,11 +186,24 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
             val defaultFolderBitmap = defaultFolderBitmapDrawable.bitmap
 
             // Create a resource cursor adapter for the spinner.
-            val foldersCursorAdapter: ResourceCursorAdapter = object : ResourceCursorAdapter(this, R.layout.appbar_spinner_item, foldersMergeCursor, 0) {
+            val foldersCursorAdapter: ResourceCursorAdapter = object : ResourceCursorAdapter(this, R.layout.bookmarks_databaseview_appbar_spinner_item, foldersMergeCursor, 0) {
                 override fun bindView(view: View, context: Context, cursor: Cursor) {
                     // Get handles for the spinner views.
-                    val spinnerItemImageView = view.findViewById<ImageView>(R.id.spinner_item_imageview)
-                    val spinnerItemTextView = view.findViewById<TextView>(R.id.spinner_item_textview)
+                    val subfolderSpacerTextView = view.findViewById<TextView>(R.id.subfolder_spacer_textview)
+                    val folderIconImageView = view.findViewById<ImageView>(R.id.folder_icon_imageview)
+                    val folderNameTextView = view.findViewById<TextView>(R.id.folder_name_textview)
+
+                    // Populate the subfolder spacer if it is not null (the spinner is open).
+                    if (subfolderSpacerTextView != null) {
+                        // Indent subfolders.
+                        if (cursor.getLong(cursor.getColumnIndexOrThrow(PARENT_FOLDER_ID)) != HOME_FOLDER_ID) {  // The folder is not in the home folder.
+                            // Get the subfolder spacer.
+                            subfolderSpacerTextView.text = bookmarksDatabaseHelper.getSubfolderSpacer(cursor.getLong(cursor.getColumnIndexOrThrow(FOLDER_ID)))
+                        } else {  // The folder is in the home folder.
+                            // Reset the subfolder spacer.
+                            subfolderSpacerTextView.text = ""
+                        }
+                    }
 
                     // Set the folder icon according to the type.
                     if (foldersMergeCursor.position > 1) {  // Set a user folder icon.
@@ -200,7 +217,7 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
                         val defaultFolderIconByteArray = defaultFolderIconByteArrayOutputStream.toByteArray()
 
                         // Get the folder icon byte array from the cursor.
-                        val folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
+                        val folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(FAVORITE_ICON))
 
                         // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
                         val folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.size)
@@ -208,23 +225,23 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
                         // Set the icon according to the type.
                         if (Arrays.equals(folderIconByteArray, defaultFolderIconByteArray)) {  // The default folder icon is used.
                             // Set a smaller and darker folder icon, which works well with the spinner.
-                            spinnerItemImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.folder_dark_blue))
+                            folderIconImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.folder_dark_blue))
                         } else {  // A custom folder icon is uses.
                             // Set the folder image stored in the cursor.
-                            spinnerItemImageView.setImageBitmap(folderIconBitmap)
+                            folderIconImageView.setImageBitmap(folderIconBitmap)
                         }
                     } else {  // Set the `All Folders` or `Home Folder` icon.
                         // Set the gray folder image.
-                        spinnerItemImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.folder_gray))
+                        folderIconImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.folder_gray))
                     }
 
-                    // Set the text view to display the folder name.
-                    spinnerItemTextView.text = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+                    // Set the folder name.
+                    folderNameTextView.text = cursor.getString(cursor.getColumnIndexOrThrow(BOOKMARK_NAME))
                 }
             }
 
             // Set the resource cursor adapter drop drown view resource.
-            foldersCursorAdapter.setDropDownViewResource(R.layout.appbar_spinner_dropdown_item)
+            foldersCursorAdapter.setDropDownViewResource(R.layout.bookmarks_databaseview_appbar_spinner_dropdown_item)
 
             // Get a handle for the folder spinner.
             val folderSpinner = findViewById<Spinner>(R.id.spinner)
@@ -239,12 +256,6 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
                     override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                         // Store the current folder database ID.
                         currentFolderDatabaseId = id.toInt()
-
-                        // Get a handle for the selected view.
-                        val selectedFolderTextView = findViewById<TextView>(R.id.spinner_item_textview)
-
-                        // Store the current folder name.
-                        currentFolderName = selectedFolderTextView.text.toString()
 
                         // Update the list view.
                         updateBookmarksListView()
@@ -263,7 +274,6 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
             } else {  // The activity was restarted.
                 // Restore the class variables from the saved instance state.
                 currentFolderDatabaseId = savedInstanceState.getInt(CURRENT_FOLDER_DATABASE_ID)
-                currentFolderName = savedInstanceState.getString(CURRENT_FOLDER_NAME)!!
                 sortByDisplayOrder = savedInstanceState.getBoolean(SORT_BY_DISPLAY_ORDER)
 
                 // Update the spinner if the home folder is selected.  Android handles this by default for the main cursor but not the matrix cursor.
@@ -284,66 +294,71 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
 
                 override fun bindView(view: View, context: Context, cursor: Cursor) {
                     // Get handles for the views.
-                    val bookmarkDatabaseIdTextView = view.findViewById<TextView>(R.id.bookmarks_databaseview_database_id)
-                    val bookmarkFavoriteIcon = view.findViewById<ImageView>(R.id.bookmarks_databaseview_favorite_icon)
-                    val bookmarkNameTextView = view.findViewById<TextView>(R.id.bookmarks_databaseview_bookmark_name)
-                    val bookmarkUrlTextView = view.findViewById<TextView>(R.id.bookmarks_databaseview_bookmark_url)
-                    val bookmarkDisplayOrderTextView = view.findViewById<TextView>(R.id.bookmarks_databaseview_display_order)
-                    val parentFolderImageView = view.findViewById<ImageView>(R.id.bookmarks_databaseview_parent_folder_icon)
-                    val bookmarkParentFolderTextView = view.findViewById<TextView>(R.id.bookmarks_databaseview_parent_folder)
+                    val databaseIdTextView = view.findViewById<TextView>(R.id.database_id_textview)
+                    val bookmarkFavoriteIconImageView = view.findViewById<ImageView>(R.id.favorite_icon_imageview)
+                    val nameTextView = view.findViewById<TextView>(R.id.name_textview)
+                    val folderIdTextView = view.findViewById<TextView>(R.id.folder_id_textview)
+                    val urlTextView = view.findViewById<TextView>(R.id.url_textview)
+                    val displayOrderTextView = view.findViewById<TextView>(R.id.display_order_textview)
+                    val parentFolderIconImageView = view.findViewById<ImageView>(R.id.parent_folder_icon_imageview)
+                    val parentFolderTextView = view.findViewById<TextView>(R.id.parent_folder_textview)
 
                     // Get the information from the cursor.
-                    val bookmarkDatabaseId = cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID))
-                    val bookmarkFavoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
-                    val bookmarkNameString = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
-                    val bookmarkUrlString = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_URL))
-                    val bookmarkDisplayOrder = cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.DISPLAY_ORDER))
-                    val bookmarkParentFolder = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.PARENT_FOLDER))
+                    val databaseId = cursor.getInt(cursor.getColumnIndexOrThrow(ID))
+                    val bookmarkFavoriteIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(FAVORITE_ICON))
+                    val nameString = cursor.getString(cursor.getColumnIndexOrThrow(BOOKMARK_NAME))
+                    val folderId = cursor.getLong(cursor.getColumnIndexOrThrow(FOLDER_ID))
+                    val urlString = cursor.getString(cursor.getColumnIndexOrThrow(BOOKMARK_URL))
+                    val displayOrder = cursor.getInt(cursor.getColumnIndexOrThrow(DISPLAY_ORDER))
+                    val parentFolderId = cursor.getLong(cursor.getColumnIndexOrThrow(PARENT_FOLDER_ID))
 
                     // Convert the byte array to a `Bitmap` beginning at the beginning at the first byte and ending at the last.
                     val bookmarkFavoriteIconBitmap = BitmapFactory.decodeByteArray(bookmarkFavoriteIconByteArray, 0, bookmarkFavoriteIconByteArray.size)
 
                     // Populate the views.
-                    bookmarkDatabaseIdTextView.text = bookmarkDatabaseId.toString()
-                    bookmarkFavoriteIcon.setImageBitmap(bookmarkFavoriteIconBitmap)
-                    bookmarkNameTextView.text = bookmarkNameString
-                    bookmarkUrlTextView.text = bookmarkUrlString
-                    bookmarkDisplayOrderTextView.text = bookmarkDisplayOrder.toString()
+                    databaseIdTextView.text = databaseId.toString()
+                    bookmarkFavoriteIconImageView.setImageBitmap(bookmarkFavoriteIconBitmap)
+                    nameTextView.text = nameString
+                    urlTextView.text = urlString
+                    displayOrderTextView.text = displayOrder.toString()
 
                     // Check to see if the bookmark is a folder.
-                    if (cursor.getInt(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The bookmark is a folder.
+                    if (cursor.getInt(cursor.getColumnIndexOrThrow(IS_FOLDER)) == 1) {  // The bookmark is a folder.
                         // Make the font bold.  When the first argument is null the font is not changed.
-                        bookmarkNameTextView.setTypeface(null, Typeface.BOLD)
+                        nameTextView.setTypeface(null, Typeface.BOLD)
+
+                        // Display the folder ID.
+                        folderIdTextView.text = getString(R.string.folder_id_separator, folderId)
 
                         // Hide the URL.
-                        bookmarkUrlTextView.visibility = View.GONE
+                        urlTextView.visibility = View.GONE
                     } else {  // The bookmark is not a folder.
                         // Reset the font to default.
-                        bookmarkNameTextView.typeface = Typeface.DEFAULT
+                        nameTextView.typeface = Typeface.DEFAULT
 
                         // Show the URL.
-                        bookmarkUrlTextView.visibility = View.VISIBLE
+                        urlTextView.visibility = View.VISIBLE
                     }
 
                     // Make the folder name gray if it is the home folder.
-                    if (bookmarkParentFolder.isEmpty()) {  // The bookmark is in the home folder.
+                    if (parentFolderId == HOME_FOLDER_ID) {  // The bookmark is in the home folder.
                         // Get the home folder icon.
-                        parentFolderImageView.setImageDrawable(AppCompatResources.getDrawable(applicationContext, R.drawable.folder_gray))
+                        parentFolderIconImageView.setImageDrawable(AppCompatResources.getDrawable(applicationContext, R.drawable.folder_gray))
 
                         // Set the parent folder text to be `Home Folder`.
-                        bookmarkParentFolderTextView.setText(R.string.home_folder)
+                        parentFolderTextView.setText(R.string.home_folder)
 
                         // Set the home folder text to be gray.
-                        bookmarkParentFolderTextView.setTextColor(getColor(R.color.gray_500))
+                        parentFolderTextView.setTextColor(getColor(R.color.gray_500))
                     } else {  // The bookmark is in a subfolder.
-                        // Get the parent folder icon.
-                        parentFolderImageView.setImageDrawable(AppCompatResources.getDrawable(applicationContext, R.drawable.folder_dark_blue))
+                        // Set the parent folder icon.
+                        parentFolderIconImageView.setImageDrawable(AppCompatResources.getDrawable(applicationContext, R.drawable.folder_dark_blue))
 
                         // Set the parent folder name.
-                        bookmarkParentFolderTextView.text = bookmarkParentFolder
+                        parentFolderTextView.text = bookmarksDatabaseHelper.getFolderName(parentFolderId)
 
                         // Set the parent folder text color.
-                        bookmarkParentFolderTextView.setTextColor(getColor(R.color.parent_folder_text))
+                        parentFolderTextView.setTextColor(getColor(R.color.parent_folder_text))
                     }
                 }
             }
@@ -358,17 +373,14 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
 
                 // Show the edit bookmark or edit bookmark folder dialog.
                 if (bookmarksDatabaseHelper.isFolder(databaseId)) {
-                    // Save the current folder name, which is used in `onSaveBookmarkFolder()`.
-                    oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
-
                     // Instantiate the edit bookmark folder dialog.
-                    val editBookmarkFolderDatabaseViewDialog: DialogFragment = folderDatabaseId(databaseId, favoriteIconBitmap)
+                    val editBookmarkFolderDatabaseViewDialog = folderDatabaseId(databaseId, currentFavoriteIconBitmap)
 
                     // Make it so.
                     editBookmarkFolderDatabaseViewDialog.show(supportFragmentManager, resources.getString(R.string.edit_folder))
                 } else {
                     // Instantiate the edit bookmark dialog.
-                    val editBookmarkDatabaseViewDialog: DialogFragment = bookmarkDatabaseId(databaseId, favoriteIconBitmap)
+                    val editBookmarkDatabaseViewDialog = bookmarkDatabaseId(databaseId, currentFavoriteIconBitmap)
 
                     // Make it so.
                     editBookmarkDatabaseViewDialog.show(supportFragmentManager, resources.getString(R.string.edit_bookmark))
@@ -436,13 +448,13 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
 
                         // Do not allow a bookmark to be deselected if the folder is selected.
                         if (!checked) {
-                            // Get the folder name.
-                            val folderName = bookmarksDatabaseHelper.getParentFolderName(id.toInt())
+                            // Get the parent folder ID.
+                            val parentFolderId = bookmarksDatabaseHelper.getParentFolderId(databaseId)
 
                             // If the bookmark is not in the root folder, check to see if the folder is selected.
-                            if (folderName.isNotEmpty()) {
-                                // Get the database ID of the folder.
-                                val folderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderName)
+                            if (parentFolderId != HOME_FOLDER_ID) {
+                                // Get the folder database ID.
+                                val folderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(parentFolderId)
 
                                 // Move the bookmarks cursor to the first position.
                                 bookmarksCursor.moveToFirst()
@@ -453,7 +465,7 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
                                 // Get the position of the folder in the bookmarks cursor.
                                 while ((folderPosition < 0) && (bookmarksCursor.position < bookmarksCursor.count)) {
                                     // Check if the folder database ID matches the bookmark database ID.
-                                    if (folderDatabaseId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID))) {
+                                    if (folderDatabaseId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(ID))) {
                                         // Get the folder position.
                                         folderPosition = bookmarksCursor.position
 
@@ -501,26 +513,32 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
                         // Populate the bookmarks cursor.
                         bookmarksCursor = when (currentFolderDatabaseId) {
                             // Get all the bookmarks except the ones being deleted.
-                            ALL_FOLDERS_DATABASE_ID ->
+                            ALL_FOLDERS_DATABASE_ID -> {
                                 if (sortByDisplayOrder)
                                     bookmarksDatabaseHelper.getAllBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray)
                                 else
                                     bookmarksDatabaseHelper.getAllBookmarksExcept(selectedBookmarksIdsLongArray)
+                            }
 
                             // Get the home folder bookmarks except the ones being deleted.
-                            HOME_FOLDER_DATABASE_ID ->
+                            HOME_FOLDER_DATABASE_ID -> {
                                 if (sortByDisplayOrder)
-                                    bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, "")
+                                    bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, HOME_FOLDER_ID)
                                 else
-                                    bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, "")
-
+                                    bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, HOME_FOLDER_ID)
+                            }
 
                             // Get the current folder bookmarks except the ones being deleted.
-                            else ->
+                            else -> {
+                                // Get the current folder ID.
+                                val currentFolderId = bookmarksDatabaseHelper.getFolderId(currentFolderDatabaseId)
+
+                                // Get the cursor.
                                 if (sortByDisplayOrder)
-                                    bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolderName)
+                                    bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolderId)
                                 else
-                                    bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, currentFolderName)
+                                    bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, currentFolderId)
+                            }
                         }
 
                         // Update the list view.
@@ -557,8 +575,13 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
                                     deleteMenuItem.isEnabled = true
 
                                     // Close the activity if back has been pressed.
-                                    if (closeActivityAfterDismissingSnackbar)
+                                    if (closeActivityAfterDismissingSnackbar) {
+                                        // Reload the bookmarks list view when returning to the bookmarks activity.
+                                        BookmarksActivity.restartFromBookmarksDatabaseViewActivity = true
+
+                                        // Finish the activity.
                                         finish()
+                                    }
                                 }
                             })
 
@@ -590,6 +613,15 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
 
         // Success.
         return true
+    }
+
+    public override fun onDestroy() {
+        // Close the bookmarks cursor and database.
+        bookmarksCursor.close()
+        bookmarksDatabaseHelper.close()
+
+        // Run the default commands.
+        super.onDestroy()
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
@@ -633,112 +665,10 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
 
         // Store the class variables in the bundle.
         savedInstanceState.putInt(CURRENT_FOLDER_DATABASE_ID, currentFolderDatabaseId)
-        savedInstanceState.putString(CURRENT_FOLDER_NAME, currentFolderName)
         savedInstanceState.putBoolean(SORT_BY_DISPLAY_ORDER, sortByDisplayOrder)
     }
 
-    private fun prepareFinish() {
-        // Check to see if a snackbar is currently displayed.  If so, it must be closed before existing so that a pending delete is completed before reloading the list view in the bookmarks activity.
-        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar!!.isShown) { // Close the bookmarks deleted snackbar before going home.
-            // Set the close flag.
-            closeActivityAfterDismissingSnackbar = true
-
-            // Dismiss the snackbar.
-            bookmarksDeletedSnackbar!!.dismiss()
-        } else {  // Go home immediately.
-            // Update the current folder in the bookmarks activity.
-            if (currentFolderDatabaseId == ALL_FOLDERS_DATABASE_ID || currentFolderDatabaseId == HOME_FOLDER_DATABASE_ID) {  // All folders or the the home folder are currently displayed.
-                // Load the home folder.
-                BookmarksActivity.currentFolder = ""
-            } else {  // A subfolder is currently displayed.
-                // Load the current folder.
-                BookmarksActivity.currentFolder = currentFolderName
-            }
-
-            // Reload the bookmarks list view when returning to the bookmarks activity.
-            BookmarksActivity.restartFromBookmarksDatabaseViewActivity = true
-
-            // Exit the bookmarks database view activity.
-            finish()
-        }
-    }
-
-    private fun updateBookmarksListView() {
-        // Populate the bookmarks list view based on the spinner selection.
-        bookmarksCursor = when (currentFolderDatabaseId) {
-            // Get all the bookmarks.
-            ALL_FOLDERS_DATABASE_ID ->
-                if (sortByDisplayOrder)
-                    bookmarksDatabaseHelper.allBookmarksByDisplayOrder
-                else
-                    bookmarksDatabaseHelper.allBookmarks
-
-            // Get the bookmarks in the current folder.
-            HOME_FOLDER_DATABASE_ID ->
-                if (sortByDisplayOrder)
-                    bookmarksDatabaseHelper.getBookmarksByDisplayOrder("")
-                else
-                    bookmarksDatabaseHelper.getBookmarks("")
-
-            // Get the bookmarks in the specified folder.
-            else ->
-                if (sortByDisplayOrder)
-                    bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderName)
-                else
-                    bookmarksDatabaseHelper.getBookmarks(currentFolderName)
-        }
-
-        // Update the cursor adapter if it isn't null, which happens when the activity is restarted.
-        if (bookmarksCursorAdapter != null) {
-            bookmarksCursorAdapter!!.changeCursor(bookmarksCursor)
-        }
-    }
-
-    private fun selectAllBookmarksInFolder(folderId: Int) {
-        // Get the folder name.
-        val folderName = bookmarksDatabaseHelper.getFolderName(folderId)
-
-        // Get a cursor with the contents of the folder.
-        val folderCursor = bookmarksDatabaseHelper.getBookmarks(folderName)
-
-        // Move to the beginning of the cursor.
-        folderCursor.moveToFirst()
-
-        while (folderCursor.position < folderCursor.count) {
-            // Get the bookmark database ID.
-            val bookmarkId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID))
-
-            // Move the bookmarks cursor to the first position.
-            bookmarksCursor.moveToFirst()
-
-            // Initialize the bookmark position variable.
-            var bookmarkPosition = -1
-
-            // Get the position of this bookmark in the bookmarks cursor.
-            while ((bookmarkPosition < 0) && (bookmarksCursor.position < bookmarksCursor.count)) {
-                // Check if the bookmark IDs match.
-                if (bookmarkId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.ID))) {
-                    // Get the bookmark position.
-                    bookmarkPosition = bookmarksCursor.position
-
-                    // If this bookmark is a folder, select all the bookmarks inside it.
-                    if (bookmarksDatabaseHelper.isFolder(bookmarkId))
-                        selectAllBookmarksInFolder(bookmarkId)
-
-                    // Select the bookmark.
-                    bookmarksListView.setItemChecked(bookmarkPosition, true)
-                }
-
-                // Increment the bookmarks cursor position.
-                bookmarksCursor.moveToNext()
-            }
-
-            // Move to the next position.
-            folderCursor.moveToNext()
-        }
-    }
-
-    override fun onSaveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap) {
+    override fun saveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 
@@ -755,15 +685,15 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         val folderDatabaseId = folderSpinner.selectedItemId.toInt()
         val displayOrderInt = displayOrderEditText.text.toString().toInt()
 
-        // Get the parent folder name.
-        val parentFolderNameString: String = if (folderDatabaseId == HOME_FOLDER_DATABASE_ID)  // The home folder is selected.  Use `""`.
-            ""
+        // Get the parent folder ID.
+        val parentFolderId: Long = if (folderDatabaseId == HOME_FOLDER_DATABASE_ID)  // The home folder is selected.
+            HOME_FOLDER_ID
         else  // Get the parent folder name from the database.
-            bookmarksDatabaseHelper.getFolderName(folderDatabaseId)
+            bookmarksDatabaseHelper.getFolderId(folderDatabaseId)
 
         // Update the bookmark.
         if (currentIconRadioButton.isChecked) {  // Update the bookmark without changing the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderNameString, displayOrderInt)
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderId, displayOrderInt)
         } else {  // Update the bookmark using the `WebView` favorite icon.
             // Create a favorite icon byte array output stream.
             val newFavoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -775,14 +705,14 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
             val newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray()
 
             //  Update the bookmark and the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderNameString, displayOrderInt, newFavoriteIconByteArray)
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderId, displayOrderInt, newFavoriteIconByteArray)
         }
 
         // Update the list view.
         updateBookmarksListView()
     }
 
-    override fun onSaveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap) {
+    override fun saveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 
@@ -799,15 +729,15 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         val parentFolderDatabaseId = parentFolderSpinner.selectedItemId.toInt()
         val displayOrderInt = displayOrderEditText.text.toString().toInt()
 
-        // Set the parent folder name.
-        val parentFolderNameString: String = if (parentFolderDatabaseId == HOME_FOLDER_DATABASE_ID)  // The home folder is selected.  Use `""`.
-            ""
+        // Set the parent folder ID.
+        val parentFolderId: Long = if (parentFolderDatabaseId == HOME_FOLDER_DATABASE_ID)  // The home folder is selected.
+            HOME_FOLDER_ID
         else  // Get the parent folder name from the database.
-            bookmarksDatabaseHelper.getFolderName(parentFolderDatabaseId)
+            bookmarksDatabaseHelper.getFolderId(parentFolderDatabaseId)
 
         // Update the folder.
         if (currentIconRadioButton.isChecked) {  // Update the folder without changing the favorite icon.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, parentFolderNameString, displayOrderInt)
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderNameString, parentFolderId, displayOrderInt)
         } else {  // Update the folder and the icon.
             // Get the new folder icon bitmap.
             val folderIconBitmap = if (defaultIconRadioButton.isChecked) {
@@ -834,19 +764,120 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
             val newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray()
 
             //  Update the folder and the icon.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, parentFolderNameString, displayOrderInt, newFolderIconByteArray)
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderNameString, parentFolderId, displayOrderInt, newFolderIconByteArray)
         }
 
         // Update the list view.
         updateBookmarksListView()
     }
 
-    public override fun onDestroy() {
-        // Close the bookmarks cursor and database.
-        bookmarksCursor.close()
-        bookmarksDatabaseHelper.close()
+    private fun updateBookmarksListView() {
+        // Populate the bookmarks list view based on the spinner selection.
+        bookmarksCursor = when (currentFolderDatabaseId) {
+            // Get all the bookmarks.
+            ALL_FOLDERS_DATABASE_ID -> {
+                if (sortByDisplayOrder)
+                    bookmarksDatabaseHelper.allBookmarksByDisplayOrder
+                else
+                    bookmarksDatabaseHelper.allBookmarks
+            }
 
-        // Run the default commands.
-        super.onDestroy()
+            // Get the bookmarks in the home folder.
+            HOME_FOLDER_DATABASE_ID -> {
+                if (sortByDisplayOrder)
+                    bookmarksDatabaseHelper.getBookmarksByDisplayOrder(HOME_FOLDER_ID)
+                else
+                    bookmarksDatabaseHelper.getBookmarks(HOME_FOLDER_ID)
+            }
+
+            // Get the bookmarks in the specified folder.
+            else -> {
+                // Get the current folder ID.
+                val currentFolderId = bookmarksDatabaseHelper.getFolderId(currentFolderDatabaseId)
+
+                if (sortByDisplayOrder)
+                    bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+                else
+                    bookmarksDatabaseHelper.getBookmarks(currentFolderId)
+            }
+        }
+
+        // Update the cursor adapter if it isn't null, which happens when the activity is restarted.
+        if (bookmarksCursorAdapter != null) {
+            bookmarksCursorAdapter!!.changeCursor(bookmarksCursor)
+        }
+    }
+
+    private fun prepareFinish() {
+        // Check to see if a snackbar is currently displayed.  If so, it must be closed before existing so that a pending delete is completed before reloading the list view in the bookmarks activity.
+        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar!!.isShown) { // Close the bookmarks deleted snackbar before going home.
+            // Set the close flag.
+            closeActivityAfterDismissingSnackbar = true
+
+            // Dismiss the snackbar.
+            bookmarksDeletedSnackbar!!.dismiss()
+        } else {  // Go home immediately.
+            // Update the current folder in the bookmarks activity.
+            if ((currentFolderDatabaseId == ALL_FOLDERS_DATABASE_ID) || (currentFolderDatabaseId == HOME_FOLDER_DATABASE_ID)) {  // All folders or the the home folder are currently displayed.
+                // Load the home folder.
+                BookmarksActivity.currentFolderId = HOME_FOLDER_ID
+            } else {  // A subfolder is currently displayed.
+                // Load the current folder.
+                BookmarksActivity.currentFolderId = bookmarksDatabaseHelper.getFolderId(currentFolderDatabaseId)
+            }
+
+            // Reload the bookmarks list view when returning to the bookmarks activity.
+            BookmarksActivity.restartFromBookmarksDatabaseViewActivity = true
+
+            // Exit the bookmarks database view activity.
+            finish()
+        }
+    }
+
+    private fun selectAllBookmarksInFolder(folderDatabaseId: Int) {
+        // Get the folder ID.
+        val folderId = bookmarksDatabaseHelper.getFolderId(folderDatabaseId)
+
+        // Get a cursor with the contents of the folder.
+        val folderCursor = bookmarksDatabaseHelper.getBookmarks(folderId)
+
+        // Get the column indexes.
+        val idColumnIndex = bookmarksCursor.getColumnIndexOrThrow(ID)
+
+        // Move to the beginning of the cursor.
+        folderCursor.moveToFirst()
+
+        while (folderCursor.position < folderCursor.count) {
+            // Get the bookmark database ID.
+            val bookmarkId = folderCursor.getInt(folderCursor.getColumnIndexOrThrow(ID))
+
+            // Move the bookmarks cursor to the first position.
+            bookmarksCursor.moveToFirst()
+
+            // Initialize the bookmark position variable.
+            var bookmarkPosition = -1
+
+            // Get the position of this bookmark in the bookmarks cursor.
+            while ((bookmarkPosition < 0) && (bookmarksCursor.position < bookmarksCursor.count)) {
+                // Check if the bookmark IDs match.
+                if (bookmarkId == bookmarksCursor.getInt(idColumnIndex)) {
+                    // Get the bookmark position.
+                    bookmarkPosition = bookmarksCursor.position
+
+                    // If this bookmark is a folder, select all the bookmarks inside it.
+                    if (bookmarksDatabaseHelper.isFolder(bookmarkId))
+                        selectAllBookmarksInFolder(bookmarkId)
+
+                    // Select the bookmark.
+                    bookmarksListView.setItemChecked(bookmarkPosition, true)
+                }
+
+                // Increment the bookmarks cursor position.
+                bookmarksCursor.moveToNext()
+            }
+
+            // Move to the next position.
+            folderCursor.moveToNext()
+        }
     }
 }

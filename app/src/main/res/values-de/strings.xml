@@ -209,6 +209,8 @@
     <string name="saving_file">Speichere Datei:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Speichere Datei:\u0020 %1$s Bytes - %2$s</string>
     <string name="saving_file_percentage_progress">Speichere Datei:\u0020 %1$d%% - %2$s Bytes / %3$s Bytes - %4$s</string>
+    <string name="saved">%1$s gespeichert.</string>
+    <string name="download_cancelled">Download abgebrochen.</string>
     <string name="processing_image">Bild wird bearbeitet:\u0020 %1$s</string>
     <string name="error_saving_file">Fehler beim Speichern der Datei %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unbekannter Fehler</string>
@@ -247,7 +249,6 @@
     <string name="bookmark_name">Name des Lesezeichens</string>
     <string name="folder_name">Name des Ordners</string>
     <string name="bookmark_url">URL für das Lesezeichen</string>
-    <string name="folder_names_must_be_unique">Ordnernamen müssen einmalig sein</string>
     <string name="edit_bookmark">Lesezeichen bearbeiten</string>
     <string name="edit_folder">Ordner bearbeiten</string>
     <string name="move_to_folder">In Ordner verschieben</string>
@@ -303,27 +304,82 @@
     <string name="domain_name">Domainname</string>
     <string name="domain_deleted">Domain gelöscht</string>
     <string name="domain_name_instructions">*. kann als Wildcard-Subdomain verwendet werden (z.B. *.stoutner.com)</string>
+    <string-array name="javascript_array">
+        <item>Systemeinstellung</item>
+        <item>JavaScript aktiviert</item>
+        <item>JavaScript deaktiviert</item>
+    </string-array>
+    <string-array name="cookies_array">
+        <item>Systemeinstellung</item>
+        <item>Cookies aktiviert</item>
+        <item>Cookies deaktiviert</item>
+    </string-array>
+    <string-array name="dom_storage_array">
+        <item>Systemeinstellung</item>
+        <item>DOM-Speicher aktiviert</item>
+        <item>DOM-Speicher deaktiviert</item>
+    </string-array>
+    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
+        <item>Systemeinstellung</item>
+        <item>Formulardaten aktiviert</item>
+        <item>Formulardaten deaktiviert</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>Systemeinstellung</item>
+        <item>EasyList aktiviert</item>
+        <item>EasyList deaktiviert</item>
+    </string-array>
+    <string-array name="easyprivacy_array">
+        <item>Systemeinstellung</item>
+        <item>EasyPrivacy aktiviert</item>
+        <item>EasyPrivacy deaktiviert</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>Systemeinstellung</item>
+        <item>Fanboy’s Annoyance Sperrliste aktiviert</item>
+        <item>Fanboy’s Annoyance Sperrliste deaktiviert</item>
+    </string-array>
+    <string-array name="fanboys_social_blocking_list_array">
+        <item>Systemeinstellung</item>
+        <item>Fanboy’s Social Blocking Sperrliste aktiviert</item>
+        <item>Fanboy’s Social Blocking Sperrliste deaktiviert</item>
+    </string-array>
+    <string-array name="ultralist_array">
+        <item>Systemeinstellung</item>
+        <item>UltraList aktiviert</item>
+        <item>UltraList deaktiviert</item>
+    </string-array>
+    <string-array name="ultraprivacy_array">
+        <item>Systemeinstellung</item>
+        <item>UltraPrivacy aktiviert</item>
+        <item>UltraPrivacy deaktiviert</item>
+    </string-array>
+    <string-array name="block_all_third_party_requests_array">
+        <item>Systemeinstellung</item>
+        <item>Alle Drittanbieter-Anfragen blockieren</item>
+        <item>Alle Drittanbieter-Anfragen zulassen</item>
+    </string-array>
     <string-array name="font_size_array">
-        <item>System-Einstellung</item>
+        <item>Systemeinstellung</item>
         <item>Benutzerdefinierte Schriftgröße</item>
     </string-array>
     <string-array name="swipe_to_refresh_array">
-        <item>System-Einstellung</item>
+        <item>Systemeinstellung</item>
         <item>Herunterziehen zum aktualisieren aktiviert</item>
         <item>Herunterziehen zum aktualisieren deaktiviert</item>
     </string-array>
     <string-array name="webview_theme_array">
-        <item>System-Einstellung</item>
+        <item>Systemeinstellung</item>
         <item>Helles WebView-Erscheinungsbild</item>
         <item>Dunkles WebView-Erscheinungsbild</item>
     </string-array>
     <string-array name="wide_viewport_array">
-        <item>System-Einstellung</item>
+        <item>Systemeinstellung</item>
         <item>Breiter Anzeigebereich aktiviert</item>
         <item>Breiter Anzeigebereich deaktiviert</item>
     </string-array>
     <string-array name="display_webpage_images_array">
-        <item>System-Einstellung</item>
+        <item>Systemeinstellung</item>
         <item>Grafiken aktiviert</item>
         <item>Grafiken deaktiviert</item>
     </string-array>
@@ -362,7 +418,6 @@
     <string name="clear">leeren</string>
     <string name="logcat_copied">Logcat kopiert.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
-    <string name="saved">%1$s gespeichert.</string>
     <string name="error_saving_logcat">Fehler beim Speichern von Logcat:\u0020 %1$s</string>
 
     <!-- Guide. -->

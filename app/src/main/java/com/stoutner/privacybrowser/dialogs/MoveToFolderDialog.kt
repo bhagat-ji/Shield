@@ -23,7 +23,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.database.Cursor
-import android.database.DatabaseUtils
 import android.database.MatrixCursor
 import android.database.MergeCursor
 import android.graphics.Bitmap
@@ -46,6 +45,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.activities.HOME_FOLDER_ID
+import com.stoutner.privacybrowser.helpers.BOOKMARK_NAME
+import com.stoutner.privacybrowser.helpers.FAVORITE_ICON
+import com.stoutner.privacybrowser.helpers.FOLDER_ID
+import com.stoutner.privacybrowser.helpers.ID
+import com.stoutner.privacybrowser.helpers.PARENT_FOLDER_ID
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import kotlinx.coroutines.CoroutineScope
@@ -54,20 +59,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 import java.io.ByteArrayOutputStream
-import java.lang.StringBuilder
 
 // Define the class constants.
-private const val CURRENT_FOLDER = "current_folder"
-private const val SELECTED_BOOKMARKS_LONG_ARRAY = "selected_bookmarks_long_array"
+private const val CURRENT_FOLDER_ID = "A"
+private const val SELECTED_BOOKMARKS_LONG_ARRAY = "B"
 
 class MoveToFolderDialog : DialogFragment() {
     companion object {
-        fun moveBookmarks(currentFolder: String, selectedBookmarksLongArray: LongArray): MoveToFolderDialog {
+        fun moveBookmarks(currentFolderId: Long, selectedBookmarksLongArray: LongArray): MoveToFolderDialog {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
 
             // Store the arguments in the bundle.
-            argumentsBundle.putString(CURRENT_FOLDER, currentFolder)
+            argumentsBundle.putLong(CURRENT_FOLDER_ID, currentFolderId)
             argumentsBundle.putLongArray(SELECTED_BOOKMARKS_LONG_ARRAY, selectedBookmarksLongArray)
 
             // Create a new instance of the dialog.
@@ -84,7 +88,6 @@ class MoveToFolderDialog : DialogFragment() {
     // Declare the class variables.
     private lateinit var moveToFolderListener: MoveToFolderListener
     private lateinit var bookmarksDatabaseHelper: BookmarksDatabaseHelper
-    private lateinit var exceptFolders: StringBuilder
 
     // The public interface is used to send information back to the parent activity.
     interface MoveToFolderListener {
@@ -101,7 +104,7 @@ class MoveToFolderDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the data from the arguments.
-        val currentFolder = requireArguments().getString(CURRENT_FOLDER)!!
+        val currentFolderId = requireArguments().getLong(CURRENT_FOLDER_ID, HOME_FOLDER_ID)
         val selectedBookmarksLongArray = requireArguments().getLongArray(SELECTED_BOOKMARKS_LONG_ARRAY)!!
 
         // Initialize the database helper.
@@ -152,32 +155,40 @@ class MoveToFolderDialog : DialogFragment() {
         // Initially disable the positive button.
         moveButton.isEnabled = false
 
-        // Initialize the except folders string builder.
-        exceptFolders = StringBuilder()
+        // Create a list of folders not to display.
+        val folderIdsNotToDisplay = mutableListOf<Long>()
 
-        // Declare the cursor variables.
-        val foldersCursor: Cursor
-        val foldersCursorAdapter: CursorAdapter
+        // Add any selected folders and their subfolders to the list of folders not to display.
+        for (databaseIdLong in selectedBookmarksLongArray) {
+            // Get the database ID int for each selected bookmark.
+            val databaseIdInt = databaseIdLong.toInt()
+
+            // Check to see if the bookmark is a folder.
+            if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
+                // Add the folder to the list of folders not to display.
+                folderIdsNotToDisplay.add(bookmarksDatabaseHelper.getFolderId(databaseIdInt))
+            }
+        }
 
         // Check to see if the bookmark is currently in the home folder.
-        if (currentFolder.isEmpty()) {  // The bookmark is currently in the home folder.  Don't display `Home Folder` at the top of the list view.
-            // If a folder is selected, add it and all children to the list of folders not to display.
-            for (databaseIdLong in selectedBookmarksLongArray) {
-                // Get the database ID int for each selected bookmark.
-                val databaseIdInt = databaseIdLong.toInt()
-
-                // Check to see if the bookmark is a folder.
-                if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
-                    // Add the folder to the list of folders not to display.
-                    addFolderToExceptFolders(databaseIdInt)
-                }
-            }
-
+        if (currentFolderId == HOME_FOLDER_ID) {  // The bookmark is currently in the home folder.  Don't display `Home Folder` at the top of the list view.
             // Get a cursor containing the folders to display.
-            foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString())
+            val foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(folderIdsNotToDisplay)
 
             // Populate the folders cursor adapter.
-            foldersCursorAdapter = populateFoldersCursorAdapter(requireContext(), foldersCursor)
+            val foldersCursorAdapter = populateFoldersCursorAdapter(requireContext(), foldersCursor)
+
+            // Get a handle for the folders list view.
+            val foldersListView = alertDialog.findViewById<ListView>(R.id.move_to_folder_listview)!!
+
+            // Set the folder list view adapter.
+            foldersListView.adapter = foldersCursorAdapter
+
+            // Enable the move button when a folder is selected.
+            foldersListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
+                // Enable the move button.
+                moveButton.isEnabled = true
+            }
         } else {  // The current folder is not directly in the home folder.  Display `Home Folder` at the top of the list view.
             // Get the home folder icon drawable.
             val homeFolderIconDrawable = ContextCompat.getDrawable(requireActivity().applicationContext, R.drawable.folder_gray_bitmap)
@@ -196,99 +207,51 @@ class MoveToFolderDialog : DialogFragment() {
                 withContext(Dispatchers.Default) {
                     // Convert the home folder bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
                     homeFolderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, homeFolderIconByteArrayOutputStream)
+
+                    // Convert the home folder icon byte array output stream to a byte array.
+                    val homeFolderIconByteArray = homeFolderIconByteArrayOutputStream.toByteArray()
+
+                    // Setup the home folder matrix cursor column names.
+                    val homeFolderMatrixCursorColumnNames = arrayOf(ID, BOOKMARK_NAME, FAVORITE_ICON, PARENT_FOLDER_ID)
+
+                    // Setup a matrix cursor for the `Home Folder`.
+                    val homeFolderMatrixCursor = MatrixCursor(homeFolderMatrixCursorColumnNames)
+
+                    // Add the home folder to the home folder matrix cursor.
+                    homeFolderMatrixCursor.addRow(arrayOf<Any>(0, getString(R.string.home_folder), homeFolderIconByteArray, HOME_FOLDER_ID))
+
+                    // Add the current folder to the list of folders not to display.
+                    folderIdsNotToDisplay.add(currentFolderId)
+
+                    // Get a cursor containing the folders to display.
+                    val foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(folderIdsNotToDisplay)
+
+                    // Combine the home folder matrix cursor and the folders cursor.
+                    val foldersMergeCursor = MergeCursor(arrayOf(homeFolderMatrixCursor, foldersCursor))
+
+                    // Populate the folders cursor on the main thread.
+                    withContext(Dispatchers.Main) {
+                        // Populate the folders cursor adapter.
+                        val foldersCursorAdapter = populateFoldersCursorAdapter(requireContext(), foldersMergeCursor)
+
+                        // Get a handle for the folders list view.
+                        val foldersListView = alertDialog.findViewById<ListView>(R.id.move_to_folder_listview)!!
+
+                        // Set the folder list view adapter.
+                        foldersListView.adapter = foldersCursorAdapter
+
+                        // Enable the move button when a folder is selected.
+                        foldersListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
+                            // Enable the move button.
+                            moveButton.isEnabled = true
+                        }
+                    }
                 }
             }
-
-            // Convert the home folder icon byte array output stream to a byte array.
-            val homeFolderIconByteArray = homeFolderIconByteArrayOutputStream.toByteArray()
-
-            // Setup the home folder matrix cursor column names.
-            val homeFolderMatrixCursorColumnNames = arrayOf(BookmarksDatabaseHelper.ID, BookmarksDatabaseHelper.BOOKMARK_NAME, BookmarksDatabaseHelper.FAVORITE_ICON)
-
-            // Setup a matrix cursor for the `Home Folder`.
-            val homeFolderMatrixCursor = MatrixCursor(homeFolderMatrixCursorColumnNames)
-
-            // Add the home folder to the home folder matrix cursor.
-            homeFolderMatrixCursor.addRow(arrayOf<Any>(0, getString(R.string.home_folder), homeFolderIconByteArray))
-
-            // Add the parent folder to the list of folders not to display.
-            exceptFolders.append(DatabaseUtils.sqlEscapeString(currentFolder))
-
-            // If a folder is selected, add it and all children to the list of folders not to display.
-            for (databaseIdLong in selectedBookmarksLongArray) {
-                // Get the database ID int for each selected bookmark.
-                val databaseIdInt = databaseIdLong.toInt()
-
-                // Check to see if the bookmark is a folder.
-                if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
-                    // Add the folder to the list of folders not to display.
-                    addFolderToExceptFolders(databaseIdInt)
-                }
-            }
-
-            // Get a cursor containing the folders to display.
-            foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString())
-
-            // Combine the home folder matrix cursor and the folders cursor.
-            val foldersMergeCursor = MergeCursor(arrayOf(homeFolderMatrixCursor, foldersCursor))
-
-            // Populate the folders cursor adapter.
-            foldersCursorAdapter = populateFoldersCursorAdapter(requireContext(), foldersMergeCursor)
-        }
-
-        // Get a handle for the folders list view.
-        val foldersListView = alertDialog.findViewById<ListView>(R.id.move_to_folder_listview)!!
-
-        // Set the folder list view adapter.
-        foldersListView.adapter = foldersCursorAdapter
-
-        // Enable the move button when a folder is selected.
-        foldersListView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
-            // Enable the move button.
-            moveButton.isEnabled = true
         }
 
         // Return the alert dialog.
         return alertDialog
-    }
-
-    private fun addFolderToExceptFolders(databaseIdInt: Int) {
-        // Get the name of the selected folder.
-        val folderName = bookmarksDatabaseHelper.getFolderName(databaseIdInt)
-
-        // Populate the list of folders not to get.
-        if (exceptFolders.isEmpty()) {
-            // Add the selected folder to the list of folders not to display.
-            exceptFolders.append(DatabaseUtils.sqlEscapeString(folderName))
-        } else {
-            // Add the selected folder to the end of the list of folders not to display.
-            exceptFolders.append(",")
-            exceptFolders.append(DatabaseUtils.sqlEscapeString(folderName))
-        }
-
-        // Add the selected folder's subfolders to the list of folders not to display.
-        addSubfoldersToExceptFolders(folderName)
-    }
-
-    private fun addSubfoldersToExceptFolders(folderName: String) {
-        // Get a cursor with all the immediate subfolders.
-        val subfoldersCursor = bookmarksDatabaseHelper.getSubfolders(folderName)
-
-        // Add each subfolder to the list of folders not to display.
-        for (i in 0 until subfoldersCursor.count) {
-            // Move the subfolder cursor to the current item.
-            subfoldersCursor.moveToPosition(i)
-
-            // Get the name of the subfolder.
-            val subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
-
-            // Add the subfolder to except folders.
-            exceptFolders.append(",")
-            exceptFolders.append(DatabaseUtils.sqlEscapeString(subfolderName))
-
-            // Run the same tasks for any subfolders of the subfolder.
-            addSubfoldersToExceptFolders(subfolderName)
-        }
     }
 
     private fun populateFoldersCursorAdapter(context: Context, cursor: Cursor): CursorAdapter {
@@ -301,12 +264,22 @@ class MoveToFolderDialog : DialogFragment() {
 
             override fun bindView(view: View, context: Context, cursor: Cursor) {
                 // Get the data from the cursor.
-                val folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
-                val folderName = cursor.getString(cursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+                val folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(FAVORITE_ICON))
+                val folderName = cursor.getString(cursor.getColumnIndexOrThrow(BOOKMARK_NAME))
 
                 // Get handles for the views.
-                val folderIconImageView = view.findViewById<ImageView>(R.id.move_to_folder_icon)
-                val folderNameTextView = view.findViewById<TextView>(R.id.move_to_folder_name_textview)
+                val subfolderSpacerTextView = view.findViewById<TextView>(R.id.subfolder_spacer_textview)
+                val folderIconImageView = view.findViewById<ImageView>(R.id.folder_icon_imageview)
+                val folderNameTextView = view.findViewById<TextView>(R.id.folder_name_textview)
+
+                // Populate the subfolder spacer.
+                if (cursor.getLong(cursor.getColumnIndexOrThrow(PARENT_FOLDER_ID)) != HOME_FOLDER_ID) {  // The folder is not in the home folder.
+                    // Get the subfolder spacer.
+                    subfolderSpacerTextView.text = bookmarksDatabaseHelper.getSubfolderSpacer(cursor.getLong(cursor.getColumnIndexOrThrow(FOLDER_ID)))
+                } else {  // The folder is in the home folder.
+                    // Reset the subfolder spacer.
+                    subfolderSpacerTextView.text = ""
+                }
 
                 // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
                 val folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.size)

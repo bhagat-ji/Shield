@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -41,6 +41,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.helpers.BOOKMARK_NAME
+import com.stoutner.privacybrowser.helpers.FAVORITE_ICON
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import java.io.ByteArrayOutputStream
@@ -51,7 +53,7 @@ private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
 
 class EditBookmarkFolderDialog : DialogFragment() {
     companion object {
-        fun folderDatabaseId(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkFolderDialog {
+        fun editFolder(databaseId: Int, favoriteIconBitmap: Bitmap): EditBookmarkFolderDialog {
             // Create a favorite icon byte array output stream.
             val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
 
@@ -170,7 +172,7 @@ class EditBookmarkFolderDialog : DialogFragment() {
         saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Get the current favorite icon byte array from the cursor.
-        val currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.FAVORITE_ICON))
+        val currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndexOrThrow(FAVORITE_ICON))
 
         // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
         val currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.size)
@@ -182,7 +184,7 @@ class EditBookmarkFolderDialog : DialogFragment() {
         webpageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap)
 
         // Get the current folder name.
-        currentFolderName = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BookmarksDatabaseHelper.BOOKMARK_NAME))
+        currentFolderName = folderCursor.getString(folderCursor.getColumnIndexOrThrow(BOOKMARK_NAME))
 
         // Display the current folder name.
         folderNameEditText.setText(currentFolderName)
@@ -275,22 +277,13 @@ class EditBookmarkFolderDialog : DialogFragment() {
         // Get the new folder name.
         val newFolderName = folderNameEditText.text.toString()
 
-        // Get a cursor for the new folder name if it exists.
-        val folderExistsCursor = bookmarksDatabaseHelper.getFolder(newFolderName)
-
-        // Is the new folder name empty?
-        val folderNameEmpty = newFolderName.isEmpty()
-
-        // Does the folder name already exist?
-        val folderNameAlreadyExists = (newFolderName != currentFolderName) && folderExistsCursor.count > 0
-
         // Has the folder been renamed?
-        val folderRenamed = (newFolderName != currentFolderName) && !folderNameAlreadyExists
+        val folderRenamed = (newFolderName != currentFolderName)
 
         // Has the favorite icon changed?
-        val iconChanged = !currentIconRadioButton.isChecked && !folderNameAlreadyExists
+        val iconChanged = !currentIconRadioButton.isChecked
 
-        // Enable the save button if something has been edited and the new folder name is valid.
-        saveButton.isEnabled = !folderNameEmpty && (folderRenamed || iconChanged)
+        // Enable the save button if something has been edited and the new folder name is not valid.
+        saveButton.isEnabled = newFolderName.isNotBlank() && (folderRenamed || iconChanged)
     }
 }

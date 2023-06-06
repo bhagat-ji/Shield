@@ -252,7 +252,6 @@
     <string name="bookmark_name">Bookmark name</string>
     <string name="folder_name">Folder name</string>
     <string name="bookmark_url">Bookmark URL</string>
-    <string name="folder_names_must_be_unique">Folder names must be unique</string>
     <string name="edit_bookmark">Edit Bookmark</string>
     <string name="edit_folder">Edit Folder</string>
     <string name="move_to_folder">Move to Folder</string>
@@ -269,7 +268,8 @@
     <string name="bookmarks_deleted">Bookmarks Deleted:\u0020 %1$d</string>
     <string name="undo">Undo</string>
 
-    <!-- Bookmarks Database View. -->
+    <!-- Bookmarks Database View.  Android removes initial spaces, but they can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter>-->
     <string name="bookmarks_database_view">Bookmarks Database View</string>
     <string name="all_folders">All Folders</string>
     <string name="home_folder">Home Folder</string>
@@ -277,6 +277,8 @@
         <string name="sorted_by_database_id">Sorted by database ID.</string>
         <string name="sorted_by_display_order">Sorted by display order.</string>
     <string name="database_id">Database ID:</string>
+    <string name="folder_id">Folder ID:</string>
+    <string name="folder_id_separator">\u0020 – %1$d</string>
     <string name="folder">Folder:</string>
     <string name="parent_folder">Parent folder:</string>
     <string name="display_order">Display order:</string>

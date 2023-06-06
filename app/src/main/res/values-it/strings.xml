@@ -205,6 +205,8 @@
     <string name="saving_file">Salvataggio file:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Salvataggio file:\u0020 %1$s byte - %2$s</string>
     <string name="saving_file_percentage_progress">Salvataggio file:\u0020 %1$d%% - %2$s byte / %3$s byte - %4$s</string>
+    <string name="saved">%1$s salvato.</string>
+    <string name="download_cancelled">Download cancellato.</string>
     <string name="processing_image">Creazione immagine:\u0020 %1$s</string>
     <string name="error_saving_file">Error di salvataggio di %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Errore sconosciuto</string>
@@ -243,7 +245,6 @@
     <string name="bookmark_name">Nome Segnalibro</string>
     <string name="folder_name">Nome Cartella</string>
     <string name="bookmark_url">URL Segnalibro</string>
-    <string name="folder_names_must_be_unique">I nomi delle cartelle devono essere unici</string>
     <string name="edit_bookmark">Modifica Segnalibro</string>
     <string name="edit_folder">Modifica Cartella</string>
     <string name="move_to_folder">Sposta nella Cartella</string>
@@ -438,7 +439,6 @@
     <string name="clear">Cancella</string>
     <string name="logcat_copied">Logcat copiato.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
-    <string name="saved">%1$s salvato.</string>
     <string name="error_saving_logcat">Errore salvataggio logcat:\u0020 %1$s</string>
 
     <!-- Guide. -->

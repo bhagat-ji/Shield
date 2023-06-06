@@ -202,6 +202,8 @@
     <string name="saving_file">Сохранение файла:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Сохранение файла:\u0020 %1$s байтов - %2$s</string>
     <string name="saving_file_percentage_progress">Сохранение файла:\u0020 %1$d%% - %2$s байтов / %3$s байтов - %4$s</string>
+    <string name="saved">%1$s сохранен.</string>
+    <string name="download_cancelled">Загрузка отменена.</string>
     <string name="processing_image">Обработка изображения:\u0020 %1$s</string>
     <string name="error_saving_file">Ошибка сохранения %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Неизвестная ошибка</string>
@@ -240,7 +242,6 @@
     <string name="bookmark_name">Имя закладки</string>
     <string name="folder_name">Имя папки</string>
     <string name="bookmark_url">URL-адрес закладки</string>
-    <string name="folder_names_must_be_unique">Имена папок должны быть уникальными</string>
     <string name="edit_bookmark">Изменить закладку</string>
     <string name="edit_folder">Изменить папку</string>
     <string name="move_to_folder">Переместить в папку</string>
@@ -435,7 +436,6 @@
     <string name="clear">Очистить</string>
     <string name="logcat_copied">Logcat скопирован.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
-    <string name="saved">%1$s сохранен.</string>
     <string name="error_saving_logcat">Ошибка сохранения logcat:\u0020 %1$s</string>
 
     <!-- Guide. -->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2019,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -19,7 +19,6 @@
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <LinearLayout
-    android:id="@+id/bookmarks_databaseview_item_linearlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
@@ -36,8 +35,9 @@
         android:layout_marginEnd="10dp"
         android:orientation="horizontal" >
 
+        <!-- Database ID. -->
         <TextView
-            android:id="@+id/bookmarks_databaseview_database_id"
+            android:id="@+id/database_id_textview"
             android:layout_height="wrap_content"
             android:layout_width="50dp"
             android:layout_marginEnd="10dp"
@@ -45,27 +45,39 @@
             android:textColor="@color/gray_500"
             android:textSize="22sp" />
 
+        <!-- Favorite icon. -->
         <ImageView
-            android:id="@+id/bookmarks_databaseview_favorite_icon"
+            android:id="@+id/favorite_icon_imageview"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="10dp"
             tools:ignore="ContentDescription" />
 
+        <!-- Name. -->
         <TextView
-            android:id='@+id/bookmarks_databaseview_bookmark_name'
+            android:id="@+id/name_textview"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="22sp"
             android:ellipsize="end"
             android:lines="1" />
+
+        <!-- Folder ID. -->
+        <TextView
+            android:id="@+id/folder_id_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/gray_500"
+            android:textSize="22sp"
+            android:ellipsize="end"
+            android:lines="1" />
     </LinearLayout>
 
-    <!-- Second row. -->
+    <!-- Second row - URL. -->
     <TextView
-        android:id="@+id/bookmarks_databaseview_bookmark_url"
+        android:id="@+id/url_textview"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginStart="13dp"
@@ -84,8 +96,9 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal" >
 
+        <!-- Display order. -->
         <TextView
-            android:id="@+id/bookmarks_databaseview_display_order"
+            android:id="@+id/display_order_textview"
             android:layout_height="wrap_content"
             android:layout_width="50dp"
             android:layout_marginEnd="10dp"
@@ -93,8 +106,9 @@
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="22sp" />
 
+        <!-- Parent folder icon. -->
         <ImageView
-            android:id="@+id/bookmarks_databaseview_parent_folder_icon"
+            android:id="@+id/parent_folder_icon_imageview"
             android:layout_height="30dp"
             android:layout_width="30dp"
             android:layout_gravity="center_vertical"
@@ -102,8 +116,9 @@
             android:src="@drawable/folder_gray"
             tools:ignore="ContentDescription" />
 
+        <!-- Parent folder name. -->
         <TextView
-            android:id="@+id/bookmarks_databaseview_parent_folder"
+            android:id="@+id/parent_folder_textview"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textSize="22sp"
