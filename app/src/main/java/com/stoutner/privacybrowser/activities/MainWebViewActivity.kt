@@ -999,6 +999,23 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         super.onDestroy()
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        // Run the default commands.
+        super.onConfigurationChanged(newConfig)
+
+        // Get the current page.
+        val currentPage = webViewViewPager2.currentItem
+
+        // Toggle the pages if there is more than one so that the view pager will recalculate their size.
+        if (currentPage > 0) {
+            // Switch to the previous page.
+            webViewViewPager2.currentItem = (currentPage - 1)
+
+            // Switch back to the current page after the view pager has quiesced.
+            webViewViewPager2.post { webViewViewPager2.currentItem = currentPage }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu.  This adds items to the app bar if it is present.
         menuInflater.inflate(R.menu.webview_options_menu, menu)
