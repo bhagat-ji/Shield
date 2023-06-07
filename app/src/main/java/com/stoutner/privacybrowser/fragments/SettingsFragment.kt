@@ -191,15 +191,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             clearAndExitCategory.removePreference(clearFormDataPreference)
         }
 
-        // Remove the WebView theme preference if the API < 29.
-        if (Build.VERSION.SDK_INT < 29) {
-            // Get a handle for the general category.
-            val generalCategory = findPreference<PreferenceCategory>(getString(R.string.general_category_key))!!
-
-            // Remove the WebView theme preference.
-            generalCategory.removePreference(webViewThemePreference)
-        }
-
         // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
         fanboySocialBlockingListPreference.isEnabled = !fanboyAnnoyanceListEnabled
 

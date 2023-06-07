@@ -1075,9 +1075,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Disable the clear form data menu item if the API >= 26 so that the status of the main Clear Data is calculated correctly.
         optionsClearFormDataMenuItem.isEnabled = Build.VERSION.SDK_INT < 26
 
-        // Only display the dark WebView menu item if the API >= 29.
-        optionsDarkWebViewMenuItem.isVisible = Build.VERSION.SDK_INT >= 29
-
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {  // Display the additional icons.
             optionsRefreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
@@ -1159,8 +1156,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Enable dark WebView if night mode is enabled.
             optionsDarkWebViewMenuItem.isEnabled = (currentThemeStatus == Configuration.UI_MODE_NIGHT_YES)
 
-            // Set the checkbox status for dark WebView if the device is running API >= 29 and algorithmic darkening is supported.
-            if ((Build.VERSION.SDK_INT >= 29) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
+            // Set the checkbox status for dark WebView if algorithmic darkening is supported.
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
                 optionsDarkWebViewMenuItem.isChecked = WebSettingsCompat.isAlgorithmicDarkeningAllowed(currentWebView!!.settings)
         }
 
@@ -1918,7 +1915,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             R.id.dark_webview -> {  // Dark WebView.
                 // Toggle dark WebView if supported.
-                if ((Build.VERSION.SDK_INT >= 29) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
                     WebSettingsCompat.setAlgorithmicDarkeningAllowed(currentWebView!!.settings, !WebSettingsCompat.isAlgorithmicDarkeningAllowed(currentWebView!!.settings)
                 )
 
@@ -3238,8 +3235,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     }
                 }
 
-                // Set the WebView theme if device is running API >= 29 and algorithmic darkening is supported.
-                if ((Build.VERSION.SDK_INT >= 29) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+                // Set the WebView theme if algorithmic darkening is supported.
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
                     // Set the WebView theme.
                     when (webViewThemeInt) {
                         // Set the WebView theme.
@@ -3358,8 +3355,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     else -> nestedScrollWebView.settings.userAgentString = userAgentDataArray[userAgentArrayPosition]
                 }
 
-                // Set the WebView theme if the device is running API >= 29 and algorithmic darkening is supported.
-                if ((Build.VERSION.SDK_INT >= 29) && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+                // Set the WebView theme if algorithmic darkening is supported.
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
                     // Set the WebView theme.
                     when (defaultWebViewTheme) {
                         // The light theme is selected.  Turn off algorithmic darkening.
@@ -4443,8 +4440,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Get the WebView theme entry values string array.
         val webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values)
 
-        // Set the WebView theme if device is running API >= 29 and algorithmic darkening is supported.
-        if (Build.VERSION.SDK_INT >= 29 && WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+        // Set the WebView theme if algorithmic darkening is supported.
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
             // Set the WebView them.  A switch statement cannot be used because the WebView theme entry values string array is not a compile time constant.
             if (webViewTheme == webViewThemeEntryValuesStringArray[1]) {  // The light theme is selected.
                 // Turn off algorithmic darkening.

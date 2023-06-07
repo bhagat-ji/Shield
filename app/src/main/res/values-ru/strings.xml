@@ -266,6 +266,8 @@
         <string name="sorted_by_database_id">Сортировать по ID базы данных.</string>
         <string name="sorted_by_display_order">Сортировать по порядку отображения.</string>
     <string name="database_id">ID базы данных:</string>
+    <string name="folder_id">ID папки:</string>
+    <string name="folder_id_separator">\u0020 – %1$d</string>
     <string name="folder">Папка:</string>
     <string name="parent_folder">Родительская папка:</string>
     <string name="display_order">Порядок отображения:</string>

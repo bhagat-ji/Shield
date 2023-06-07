@@ -269,10 +269,6 @@ class DomainSettingsFragment : Fragment() {
         if (Build.VERSION.SDK_INT >= 26)
             formDataLinearLayout.visibility = View.GONE
 
-        // Hide the WebView theme linear layout if the API < 29.
-        if (Build.VERSION.SDK_INT < 29)
-            webViewThemeLinearLayout.visibility = View.GONE
-
         // Initialize the database handler.
         val domainsDatabaseHelper = DomainsDatabaseHelper(requireContext())
 
