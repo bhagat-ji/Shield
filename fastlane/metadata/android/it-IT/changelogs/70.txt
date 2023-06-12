@@ -1,0 +1,7 @@
+• Abilitato nuovamente il tema scuro di WebView su Android 7-9 (API 24-28).
+• Aggiunta l'azione di annullamento nella snackbar per il salvataggio delle URL.
+• Modifica degli interruttori delle impostazioni dei domini in menù a tendina che includono anche il "default di sistema".
+• Aggiunta la possibilità di duplicare i nomi delle cartelle dei segnalibri.
+• Correzione di un crash che avveniva quando Privacy Browser veniva riavviato mentre era visualizzata la finestra di dialogo di disallineamento dei certificati appuntati.
+• Modernizzazione del codice dell'adattatore delle pagine di WebView.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

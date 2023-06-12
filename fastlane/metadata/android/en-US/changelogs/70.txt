@@ -1,0 +1,6 @@
+• Reenable the dark WebView theme on Android 7-9 (API 24-28).
+• Add a cancel action to the Save URL snackbar.
+• Change the domain settings switches to drop down lists that include “system default”.
+• Allow duplicate bookmark folder names.
+• Fix a crash if Privacy Browser is restarted while the pinned mismatch dialog is displayed.
+• Modernize the WebView pager adapter code.

@@ -1,0 +1,7 @@
+• Reactivar el tema oscuro de WebView en Android 7-9 (API 24-28).
+• Añadir una acción de cancelación a la snackbar Guardar URL.
+• Cambiar los interruptores de configuración de dominio a listas desplegables que incluyan “predeterminado del sistema”.
+• Permitir duplicar los nombres de carpeta de marcadores.
+• Corregir un fallo si se reinicia Navegador Privado mientras el cuadro de diálogo de desajuste de anclajes es mostrado.
+• Modernizar el código del adaptador del paginador de WebView.
+• Actualizada la traducción al español proporcionada por Jose A. León.

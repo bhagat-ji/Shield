@@ -53,6 +53,7 @@ import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.Patterns
 import android.util.TypedValue
 import android.view.ContextMenu
@@ -774,7 +775,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
         } else {  // The app has been restarted.
             // If the new intent will open a new tab, set the saved tab position to be the size of the saved state array list.
-            // The tab position is 0 based, meaning the at the new tab will be the tab position that is restored.
+            // The tab position is 0 based, meaning the new tab will be the tab position that is restored.
             if ((intentUriData != null) || (intentStringExtra != null) || isWebSearch)
                 savedTabPosition = savedStateArrayList!!.size
 
@@ -3977,22 +3978,19 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             savedStateArrayList = null
             savedNestedScrollWebViewStateArrayList = null
 
+            Log.i("Tab", "Saved tab position:  $savedTabPosition")
+
             // Restore the selected tab position.
             if (savedTabPosition == 0) {  // The first tab is selected.
                 // Set the first page as the current WebView.
                 setCurrentWebView(0)
             } else {  // The first tab is not selected.
-                // Create a handler move to the page.
-                val setCurrentPageHandler = Handler(Looper.getMainLooper())
+                // Switch to the page before the saved tab position.
+                webViewViewPager2.post { webViewViewPager2.currentItem = (savedTabPosition - 1) }
 
-                // Create a runnable to move to the page.
-                val setCurrentPageRunnable = Runnable {
-                    // Move to the page.
-                    webViewViewPager2.currentItem = savedTabPosition
-                }
-
-                // Move to the page after 50 milliseconds, which should be enough time to for the WebView state adapter to populate the restored pages.
-                setCurrentPageHandler.postDelayed(setCurrentPageRunnable, 50)
+                // Switch to the saved tab position.
+                // This has to be done twice because, for some reason, if the above step is skipped there is some race condition where nothing happens and the first page is displayed.
+                webViewViewPager2.post { webViewViewPager2.currentItem = savedTabPosition }
             }
 
             // Get the intent that started the app.

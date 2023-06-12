@@ -269,6 +269,7 @@
         <string name="sorted_by_database_id">Ordina per database ID.</string>
         <string name="sorted_by_display_order">Ordina come visualizzato.</string>
     <string name="database_id">ID Database:</string>
+    <string name="folder_id">ID Folder:</string>
     <string name="folder_id_separator">\u0020 – %1$d</string>
     <string name="folder">Cartella:</string>
     <string name="parent_folder">Cartella superiore:</string>
