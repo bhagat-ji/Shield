@@ -698,6 +698,8 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val cookiesSpinner = view.findViewById<Spinner>(R.id.cookies_spinner)
         val domStorageSpinner = view.findViewById<Spinner>(R.id.dom_storage_spinner)
         val formDataSpinner = view.findViewById<Spinner>(R.id.form_data_spinner) // Form data can be removed once the minimum API >= 26.
+        val userAgentSpinner = view.findViewById<Spinner>(R.id.user_agent_spinner)
+        val customUserAgentEditText = view.findViewById<EditText>(R.id.custom_user_agent_edittext)
         val easyListSpinner = view.findViewById<Spinner>(R.id.easylist_spinner)
         val easyPrivacySpinner = view.findViewById<Spinner>(R.id.easyprivacy_spinner)
         val fanboysAnnoyanceSpinner = view.findViewById<Spinner>(R.id.fanboys_annoyance_list_spinner)
@@ -705,8 +707,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val ultraListSpinner = view.findViewById<Spinner>(R.id.ultralist_spinner)
         val ultraPrivacySpinner = view.findViewById<Spinner>(R.id.ultraprivacy_spinner)
         val blockAllThirdPartyRequestsSpinner = view.findViewById<Spinner>(R.id.block_all_third_party_requests_spinner)
-        val userAgentSpinner = view.findViewById<Spinner>(R.id.user_agent_spinner)
-        val customUserAgentEditText = view.findViewById<EditText>(R.id.custom_user_agent_edittext)
         val fontSizeSpinner = view.findViewById<Spinner>(R.id.font_size_spinner)
         val customFontSizeEditText = view.findViewById<EditText>(R.id.custom_font_size_edittext)
         val swipeToRefreshSpinner = view.findViewById<Spinner>(R.id.swipe_to_refresh_spinner)
@@ -724,6 +724,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val cookiesInt = cookiesSpinner.selectedItemPosition
         val domStorageInt = domStorageSpinner.selectedItemPosition
         val formDataInt = formDataSpinner.selectedItemPosition // Form data can be removed once the minimum API >= 26.
+        val userAgentSwitchPosition = userAgentSpinner.selectedItemPosition
         val easyListInt = easyListSpinner.selectedItemPosition
         val easyPrivacyInt = easyPrivacySpinner.selectedItemPosition
         val fanboysAnnoyanceInt = fanboysAnnoyanceSpinner.selectedItemPosition
@@ -731,7 +732,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val ultraListInt = ultraListSpinner.selectedItemPosition
         val ultraPrivacyInt = ultraPrivacySpinner.selectedItemPosition
         val blockAllThirdPartyRequestsInt = blockAllThirdPartyRequestsSpinner.selectedItemPosition
-        val userAgentSwitchPosition = userAgentSpinner.selectedItemPosition
         val fontSizeSwitchPosition = fontSizeSpinner.selectedItemPosition
         val swipeToRefreshInt = swipeToRefreshSpinner.selectedItemPosition
         val webViewThemeInt = webViewThemeSpinner.selectedItemPosition
@@ -765,8 +765,8 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             fontSizeInt = customFontSizeEditText.text.toString().toInt()
 
         // Save the domain settings.
-        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScriptInt, cookiesInt, domStorageInt, formDataInt, easyListInt, easyPrivacyInt, fanboysAnnoyanceInt,
-            fanboysSocialBlockingInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, userAgentName, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
+        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScriptInt, cookiesInt, domStorageInt, formDataInt, userAgentName, easyListInt, easyPrivacyInt, fanboysAnnoyanceInt,
+            fanboysSocialBlockingInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
             pinnedSslCertificate, pinnedIpAddress)
 
         // Update the pinned SSL certificate if a new one is checked.

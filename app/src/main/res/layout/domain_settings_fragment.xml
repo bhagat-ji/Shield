@@ -257,6 +257,59 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
+        <!-- User Agent. -->
+        <LinearLayout
+            android:id="@+id/user_agent_linearlayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/user_agent" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/user_agent"
+                    app:tint="@color/blue_icon"
+                    android:contentDescription="@string/user_agent" />
+
+                <Spinner
+                    android:id="@+id/user_agent_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/user_agent_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/custom_user_agent_edittext"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="60dp"
+                android:inputType="textUri"
+                android:hint="@string/custom_user_agent"
+                android:importantForAutofill="no" />
+        </LinearLayout>
+
         <!-- EasyList. -->
         <LinearLayout
             android:id="@+id/easylist_linearlayout"
@@ -553,7 +606,8 @@
                 <Spinner
                     android:id="@+id/block_all_third_party_requests_spinner"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
+                    android:layout_width="match_parent"
+                    tools:ignore="TooManyViews" />
             </LinearLayout>
 
             <TextView
@@ -563,59 +617,6 @@
                 android:layout_marginStart="45dp"
                 android:layout_marginEnd="36dp"
                 android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- User Agent. -->
-        <LinearLayout
-            android:id="@+id/user_agent_linearlayout"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:padding="12dp" >
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:text="@string/user_agent" />
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/user_agent"
-                    app:tint="@color/blue_icon"
-                    android:contentDescription="@string/user_agent" />
-
-                <Spinner
-                    android:id="@+id/user_agent_spinner"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/user_agent_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="36dp"
-                android:textSize="13sp" />
-
-            <EditText
-                android:id="@+id/custom_user_agent_edittext"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="60dp"
-                android:inputType="textUri"
-                android:hint="@string/custom_user_agent"
-                android:importantForAutofill="no" />
         </LinearLayout>
 
         <!-- Font Size. -->
@@ -682,8 +683,7 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/swipe_to_refresh"
-                tools:ignore="TooManyViews" />
+                android:text="@string/swipe_to_refresh" />
 
             <LinearLayout
                 android:layout_height="wrap_content"

@@ -143,6 +143,8 @@ class DomainSettingsFragment : Fragment() {
         val cookiesDefault = sharedPreferences.getBoolean(getString(R.string.cookies_key), false)
         val domStorageDefault = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
         val formDataDefault = sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false)  // The form data views can be remove once the minimum API >= 26.
+        val userAgentDefault = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
+        val customUserAgentStringDefault = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
         val easyListDefault = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
         val easyPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
         val fanboysAnnoyanceListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
@@ -150,8 +152,6 @@ class DomainSettingsFragment : Fragment() {
         val ultraListDefault = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
         val ultraPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true)
         val blockAllThirdPartyRequestsDefault = sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false)
-        val userAgentDefault = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
-        val customUserAgentStringDefault = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
         val fontSizeStringDefault = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))
         val swipeToRefreshDefault = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true)
         val webViewThemeDefault = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))
@@ -177,6 +177,10 @@ class DomainSettingsFragment : Fragment() {
         val formDataImageView = domainSettingsView.findViewById<ImageView>(R.id.form_data_imageview)  // The form data views can be remove once the minimum API >= 26.
         val formDataSpinner = domainSettingsView.findViewById<Spinner>(R.id.form_data_spinner)  // The form data views can be remove once the minimum API >= 26.
         val formDataTextView = domainSettingsView.findViewById<TextView>(R.id.form_data_textview)  // The form data views can be remove once the minimum API >= 26.
+        val userAgentLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.user_agent_linearlayout)
+        val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
+        val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
+        val customUserAgentEditText = domainSettingsView.findViewById<EditText>(R.id.custom_user_agent_edittext)
         val easyListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.easylist_linearlayout)
         val easyListImageView = domainSettingsView.findViewById<ImageView>(R.id.easylist_imageview)
         val easyListSpinner = domainSettingsView.findViewById<Spinner>(R.id.easylist_spinner)
@@ -205,10 +209,6 @@ class DomainSettingsFragment : Fragment() {
         val blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById<ImageView>(R.id.block_all_third_party_requests_imageview)
         val blockAllThirdPartyRequestsSpinner = domainSettingsView.findViewById<Spinner>(R.id.block_all_third_party_requests_spinner)
         val blockAllThirdPartyRequestsTextView = domainSettingsView.findViewById<TextView>(R.id.block_all_third_party_requests_textview)
-        val userAgentLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.user_agent_linearlayout)
-        val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
-        val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
-        val customUserAgentEditText = domainSettingsView.findViewById<EditText>(R.id.custom_user_agent_edittext)
         val fontSizeLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.font_size_linearlayout)
         val fontSizeSpinner = domainSettingsView.findViewById<Spinner>(R.id.font_size_spinner)
         val defaultFontSizeTextView = domainSettingsView.findViewById<TextView>(R.id.default_font_size_textview)
@@ -284,6 +284,7 @@ class DomainSettingsFragment : Fragment() {
         val cookiesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(COOKIES))
         val domStorageInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE))
         val formDataInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA))  // Form data can be remove once the minimum API >= 26.
+        val currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(USER_AGENT))
         val easyListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
         val easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
         val fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
@@ -291,7 +292,6 @@ class DomainSettingsFragment : Fragment() {
         val ultraListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ULTRALIST))
         val ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY))
         val blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS))
-        val currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(USER_AGENT))
         val fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(FONT_SIZE))
         val swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH))
         val webViewThemeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(WEBVIEW_THEME))
@@ -317,6 +317,7 @@ class DomainSettingsFragment : Fragment() {
         val cookiesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.cookies_array, R.layout.spinner_item)
         val domStorageArrayAdapter = ArrayAdapter.createFromResource(context, R.array.dom_storage_array, R.layout.spinner_item)
         val formDataArrayAdapter = ArrayAdapter.createFromResource(context, R.array.form_data_array, R.layout.spinner_item)  // Form data can be remove once the minimum API >= 26.
+        val translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item)
         val easyListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easylist_array, R.layout.spinner_item)
         val easyPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easyprivacy_array, R.layout.spinner_item)
         val fanboysAnnoyanceListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.fanboys_annoyance_list_array, R.layout.spinner_item)
@@ -324,7 +325,6 @@ class DomainSettingsFragment : Fragment() {
         val ultraListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.ultralist_array, R.layout.spinner_item)
         val ultraPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.ultraprivacy_array, R.layout.spinner_item)
         val blockAllThirdPartyRequestsArrayAdapter = ArrayAdapter.createFromResource(context, R.array.block_all_third_party_requests_array, R.layout.spinner_item)
-        val translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item)
         val fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.font_size_array, R.layout.spinner_item)
         val swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.spinner_item)
         val webViewThemeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.webview_theme_array, R.layout.spinner_item)
@@ -336,6 +336,7 @@ class DomainSettingsFragment : Fragment() {
         cookiesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         domStorageArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         formDataArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)  // Form data can be remove once the minimum API >= 26.
+        translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         easyListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         easyPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         fanboysAnnoyanceListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
@@ -343,7 +344,6 @@ class DomainSettingsFragment : Fragment() {
         ultraListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         ultraPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         blockAllThirdPartyRequestsArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         webViewThemeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
@@ -355,6 +355,7 @@ class DomainSettingsFragment : Fragment() {
         cookiesSpinner.adapter = cookiesArrayAdapter
         domStorageSpinner.adapter = domStorageArrayAdapter
         formDataSpinner.adapter = formDataArrayAdapter  // Form data can be remove once the minimum API >= 26.
+        userAgentSpinner.adapter = translatedUserAgentArrayAdapter
         easyListSpinner.adapter = easyListArrayAdapter
         easyPrivacySpinner.adapter = easyPrivacyArrayAdapter
         fanboysAnnoyanceListSpinner.adapter = fanboysAnnoyanceListArrayAdapter
@@ -362,7 +363,6 @@ class DomainSettingsFragment : Fragment() {
         ultraListSpinner.adapter = ultraListArrayAdapter
         ultraPrivacySpinner.adapter = ultraPrivacyArrayAdapter
         blockAllThirdPartyRequestsSpinner.adapter = blockAllThirdPartyRequestsArrayAdapter
-        userAgentSpinner.adapter = translatedUserAgentArrayAdapter
         fontSizeSpinner.adapter = fontSizeArrayAdapter
         swipeToRefreshSpinner.adapter = swipeToRefreshArrayAdapter
         webViewThemeSpinner.adapter = webViewThemeArrayAdapter
@@ -373,7 +373,8 @@ class DomainSettingsFragment : Fragment() {
         javaScriptTextView.setOnClickListener { javaScriptSpinner.performClick() }
         cookiesTextView.setOnClickListener { cookiesSpinner.performClick() }
         domStorageTextView.setOnClickListener { domStorageSpinner.performClick() }
-        formDataTextView.setOnClickListener { formDataSpinner.performClick() }
+        formDataTextView.setOnClickListener { formDataSpinner.performClick() }  // Form data can be remove once the minimum API >= 26.
+        userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
         easyListTextView.setOnClickListener { easyListSpinner.performClick() }
         easyPrivacyTextView.setOnClickListener { easyPrivacySpinner.performClick() }
         fanboysAnnoyanceListTextView.setOnClickListener { fanboysAnnoyanceListSpinner.performClick() }
@@ -381,7 +382,6 @@ class DomainSettingsFragment : Fragment() {
         ultraListTextView.setOnClickListener { ultraListSpinner.performClick() }
         ultraPrivacyTextView.setOnClickListener { ultraPrivacySpinner.performClick() }
         blockAllThirdPartyRequestsTextView.setOnClickListener { blockAllThirdPartyRequestsSpinner.performClick() }
-        userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
         defaultFontSizeTextView.setOnClickListener { fontSizeSpinner.performClick() }
         swipeToRefreshTextView.setOnClickListener { swipeToRefreshSpinner.performClick() }
         webViewThemeTextView.setOnClickListener { webViewThemeSpinner.performClick() }
@@ -555,17 +555,6 @@ class DomainSettingsFragment : Fragment() {
         domStorageImageView.isEnabled = javaScriptEnabled
 
 
-        // Calculate if Fanboy's Annoyance List is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
-        val fanboysAnnoyanceListEnabled = (((fanboysAnnoyanceListInt == 0) && fanboysAnnoyanceListDefault) || (fanboysAnnoyanceListInt == 1))
-
-        // Set Fanboy's Social Blocking List spinner and text view status based on the Annoyance List status.
-        fanboysSocialBlockingListSpinner.isEnabled = !fanboysAnnoyanceListEnabled
-        fanboysSocialBlockingListTextView.isEnabled = !fanboysAnnoyanceListEnabled
-
-        // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
-        fanboysSocialBlockingListImageView.isEnabled = !fanboysAnnoyanceListEnabled
-
-
         // Inflated a WebView to get the default user agent.
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the bare WebView should not be displayed on the screen.
         @SuppressLint("InflateParams") val bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false)
@@ -641,6 +630,17 @@ class DomainSettingsFragment : Fragment() {
             // Set the background color to be blue.
             userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
         }
+
+
+        // Calculate if Fanboy's Annoyance List is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
+        val fanboysAnnoyanceListEnabled = (((fanboysAnnoyanceListInt == 0) && fanboysAnnoyanceListDefault) || (fanboysAnnoyanceListInt == 1))
+
+        // Set Fanboy's Social Blocking List spinner and text view status based on the Annoyance List status.
+        fanboysSocialBlockingListSpinner.isEnabled = !fanboysAnnoyanceListEnabled
+        fanboysSocialBlockingListTextView.isEnabled = !fanboysAnnoyanceListEnabled
+
+        // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
+        fanboysSocialBlockingListImageView.isEnabled = !fanboysAnnoyanceListEnabled
 
 
         // Display the font size settings.
@@ -1073,6 +1073,86 @@ class DomainSettingsFragment : Fragment() {
             }
         }
 
+        // Set the user agent spinner listener.
+        userAgentSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Set the new user agent.
+                when (position) {
+                    DOMAINS_SYSTEM_DEFAULT_USER_AGENT -> {
+                        // Show the user agent text view.
+                        userAgentTextView.visibility = View.VISIBLE
+
+                        // Hide the custom user agent edit text.
+                        customUserAgentEditText.visibility = View.GONE
+
+                        // Set the user text.
+                        when (defaultUserAgentArrayPosition) {
+                            // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
+                            UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = userAgentDefault
+
+                            // Display the `WebView` default user agent.
+                            SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
+
+                            // Display the custom user agent.
+                            SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = customUserAgentStringDefault
+
+                            // Get the user agent string from the user agent data array.
+                            else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
+                        }
+
+                        // Set the background color to be transparent.
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
+                    }
+
+                    DOMAINS_WEBVIEW_DEFAULT_USER_AGENT -> {
+                        // Show the user agent text view.
+                        userAgentTextView.visibility = View.VISIBLE
+
+                        // Set the user agent text.
+                        userAgentTextView.text = webViewDefaultUserAgentString
+
+                        // Hide the custom user agent edit text.
+                        customUserAgentEditText.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+                    }
+
+                    DOMAINS_CUSTOM_USER_AGENT -> {
+                        // Hide the user agent text view.
+                        userAgentTextView.visibility = View.GONE
+
+                        // Show the custom user agent edit text.
+                        customUserAgentEditText.visibility = View.VISIBLE
+
+                        // Set the current user agent name as the text.
+                        customUserAgentEditText.setText(currentUserAgentName)
+
+                        // Set the background color to be blue.
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+                    }
+
+                    else -> {
+                        // Show the user agent text view.
+                        userAgentTextView.visibility = View.VISIBLE
+
+                        // Set the text from the user agent data array, which has one less entry than the spinner, so the position must be decremented.
+                        userAgentTextView.text = userAgentDataArray[position - 1]
+
+                        // Hide the custom user agent edit text.
+                        customUserAgentEditText.visibility = View.GONE
+
+                        // Set the background color to be blue.
+                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
+        }
+
         // Set the EasyList spinner listener.
         easyListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -1160,86 +1240,6 @@ class DomainSettingsFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Update the icon and the text view settings.
                 setIconAndTextViewSettings(position, blockAllThirdPartyRequestsDefault, blockAllThirdPartyRequestsLinearLayout, blockAllThirdPartyRequestsImageView, blockAllThirdPartyRequestsTextView)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing.
-            }
-        }
-
-        // Set the user agent spinner listener.
-        userAgentSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Set the new user agent.
-                when (position) {
-                    DOMAINS_SYSTEM_DEFAULT_USER_AGENT -> {
-                        // Show the user agent text view.
-                        userAgentTextView.visibility = View.VISIBLE
-
-                        // Hide the custom user agent edit text.
-                        customUserAgentEditText.visibility = View.GONE
-
-                        // Set the user text.
-                        when (defaultUserAgentArrayPosition) {
-                            // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                            UNRECOGNIZED_USER_AGENT -> userAgentTextView.text = userAgentDefault
-
-                            // Display the `WebView` default user agent.
-                            SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> userAgentTextView.text = webViewDefaultUserAgentString
-
-                            // Display the custom user agent.
-                            SETTINGS_CUSTOM_USER_AGENT -> userAgentTextView.text = customUserAgentStringDefault
-
-                            // Get the user agent string from the user agent data array.
-                            else -> userAgentTextView.text = userAgentDataArray[defaultUserAgentArrayPosition]
-                        }
-
-                        // Set the background color to be transparent.
-                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.transparent))
-                    }
-
-                    DOMAINS_WEBVIEW_DEFAULT_USER_AGENT -> {
-                        // Show the user agent text view.
-                        userAgentTextView.visibility = View.VISIBLE
-
-                        // Set the user agent text.
-                        userAgentTextView.text = webViewDefaultUserAgentString
-
-                        // Hide the custom user agent edit text.
-                        customUserAgentEditText.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
-                    }
-
-                    DOMAINS_CUSTOM_USER_AGENT -> {
-                        // Hide the user agent text view.
-                        userAgentTextView.visibility = View.GONE
-
-                        // Show the custom user agent edit text.
-                        customUserAgentEditText.visibility = View.VISIBLE
-
-                        // Set the current user agent name as the text.
-                        customUserAgentEditText.setText(currentUserAgentName)
-
-                        // Set the background color to be blue.
-                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
-                    }
-
-                    else -> {
-                        // Show the user agent text view.
-                        userAgentTextView.visibility = View.VISIBLE
-
-                        // Set the text from the user agent data array, which has one less entry than the spinner, so the position must be decremented.
-                        userAgentTextView.text = userAgentDataArray[position - 1]
-
-                        // Hide the custom user agent edit text.
-                        customUserAgentEditText.visibility = View.GONE
-
-                        // Set the background color to be blue.
-                        userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
-                    }
-                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

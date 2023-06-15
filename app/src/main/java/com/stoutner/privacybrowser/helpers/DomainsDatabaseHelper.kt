@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -84,6 +84,7 @@ const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
         "$COOKIES INTEGER, " +
         "$ENABLE_DOM_STORAGE INTEGER, " +
         "$ENABLE_FORM_DATA INTEGER, " +
+        "$USER_AGENT TEXT, " +
         "$ENABLE_EASYLIST INTEGER, " +
         "$ENABLE_EASYPRIVACY INTEGER, " +
         "$ENABLE_FANBOYS_ANNOYANCE_LIST INTEGER, " +
@@ -91,7 +92,6 @@ const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
         "$ULTRALIST INTEGER, " +
         "$ENABLE_ULTRAPRIVACY INTEGER, " +
         "$BLOCK_ALL_THIRD_PARTY_REQUESTS INTEGER, " +
-        "$USER_AGENT TEXT, " +
         "$FONT_SIZE INTEGER, " +
         "$SWIPE_TO_REFRESH INTEGER, " +
         "$WEBVIEW_THEME INTEGER, " +
@@ -423,6 +423,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(COOKIES, cookies)
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorage)
         domainContentValues.put(ENABLE_FORM_DATA, saveFormData) // Form data can be removed once the minimum API >= 26.
+        domainContentValues.put(USER_AGENT, appContext.getString(R.string.system_default_user_agent))
         domainContentValues.put(ENABLE_EASYLIST, easyList)
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy)
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboyAnnoyanceList)
@@ -430,7 +431,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ULTRALIST, ultraList)
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
-        domainContentValues.put(USER_AGENT, appContext.getString(R.string.system_default_user_agent))
         domainContentValues.put(FONT_SIZE, 0)
         domainContentValues.put(SWIPE_TO_REFRESH, 0)
         domainContentValues.put(WEBVIEW_THEME, 0)
@@ -461,8 +461,8 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainsDatabase.close()
     }
 
-    fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, formData: Int, easyList: Int, easyPrivacy: Int, fanboysAnnoyance: Int, fanboysSocialBlocking: Int,
-                     ultraList: Int, ultraPrivacy: Int, blockAllThirdPartyRequests: Int, userAgent: String, fontSize: Int, swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int,
+    fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, formData: Int, userAgent: String, easyList: Int, easyPrivacy: Int, fanboysAnnoyance: Int,
+                     fanboysSocialBlocking: Int, ultraList: Int, ultraPrivacy: Int, blockAllThirdPartyRequests: Int, fontSize: Int, swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int,
                      pinnedSslCertificate: Boolean, pinnedIpAddresses: Boolean) {
 
         // Instantiate a content values.
@@ -474,6 +474,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(COOKIES, cookies)
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorage)
         domainContentValues.put(ENABLE_FORM_DATA, formData) // Form data can be removed once the minimum API >= 26.
+        domainContentValues.put(USER_AGENT, userAgent)
         domainContentValues.put(ENABLE_EASYLIST, easyList)
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy)
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyance)
@@ -481,7 +482,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ULTRALIST, ultraList)
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
-        domainContentValues.put(USER_AGENT, userAgent)
         domainContentValues.put(FONT_SIZE, fontSize)
         domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefresh)
         domainContentValues.put(WEBVIEW_THEME, webViewTheme)

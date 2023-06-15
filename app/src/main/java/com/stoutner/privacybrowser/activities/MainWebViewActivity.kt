@@ -53,7 +53,6 @@ import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.util.Patterns
 import android.util.TypedValue
 import android.view.ContextMenu
@@ -3977,8 +3976,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Reset the saved state variables.
             savedStateArrayList = null
             savedNestedScrollWebViewStateArrayList = null
-
-            Log.i("Tab", "Saved tab position:  $savedTabPosition")
 
             // Restore the selected tab position.
             if (savedTabPosition == 0) {  // The first tab is selected.
