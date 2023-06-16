@@ -607,7 +607,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             fragmentRestarted = false
 
             // Set the scroll position.
-            listView.smoothScrollBy(0, scrollY)
+            listView.post { listView.smoothScrollBy(0, scrollY) }
         }
     }
 

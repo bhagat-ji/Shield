@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -46,19 +46,20 @@ import java.util.Calendar
 import java.util.Date
 
 // Define the private class constants.
-private const val DOMAIN = "domain"
-private const val END_DATE = "end_date"
-private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
-private const val HAS_SSL_CERTIFICATE = "has_ssl_certificate"
-private const val IP_ADDRESSES = "ip_addresses"
-private const val ISSUED_BY_CNAME = "issued_by_cname"
-private const val ISSUED_BY_ONAME = "issued_by_oname"
-private const val ISSUED_BY_UNAME = "issued_by_uname"
-private const val ISSUED_TO_CNAME = "issued_to_cname"
-private const val ISSUED_TO_ONAME = "issued_to_oname"
-private const val ISSUED_TO_UNAME = "issued_to_uname"
-private const val START_DATE = "start_date"
-private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
+private const val DOMAIN = "A"
+private const val END_DATE = "B"
+private const val FAVORITE_ICON_BYTE_ARRAY = "C"
+private const val HAS_SSL_CERTIFICATE = "D"
+private const val IP_ADDRESSES = "E"
+private const val ISSUED_BY_CNAME = "F"
+private const val ISSUED_BY_ONAME = "G"
+private const val ISSUED_BY_UNAME = "H"
+private const val ISSUED_TO_CNAME = "I"
+private const val ISSUED_TO_ONAME = "J"
+private const val ISSUED_TO_UNAME = "K"
+private const val START_DATE = "L"
+private const val WEBVIEW_FRAGMENT_ID = "M"
+private const val URL = "N"
 
 class ViewSslCertificateDialog : DialogFragment() {
     companion object {
@@ -105,6 +106,7 @@ class ViewSslCertificateDialog : DialogFragment() {
     private lateinit var issuedToUName: String
     private lateinit var nestedScrollWebView: NestedScrollWebView
     private lateinit var startDate: Date
+    private lateinit var urlString: String
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
@@ -130,10 +132,13 @@ class ViewSslCertificateDialog : DialogFragment() {
             // Store the status of the SSL certificate.
             hasSslCertificate = sslCertificate != null
 
+            // Store the URL string.
+            urlString = nestedScrollWebView.currentUrl
+
             // Populate the certificate class variables if the webpage has an SSL certificate.
             if (hasSslCertificate) {
                 // Convert the URL to a URI.
-                val uri = Uri.parse(nestedScrollWebView.url)
+                val uri = Uri.parse(nestedScrollWebView.currentUrl)
 
                 // Extract the domain name from the URI.
                 domainString = uri.host!!
@@ -154,6 +159,7 @@ class ViewSslCertificateDialog : DialogFragment() {
         } else {  // The dialog has been restarted.
             // Get the data from the saved instance state.
             hasSslCertificate = savedInstanceState.getBoolean(HAS_SSL_CERTIFICATE)
+            urlString = savedInstanceState.getString(URL)!!
 
             // Populate the certificate class variables if the webpage has an SSL certificate.
             if (hasSslCertificate) {
@@ -331,11 +337,20 @@ class ViewSslCertificateDialog : DialogFragment() {
             // Return the alert dialog.
             return alertDialog
         } else {  // The website is not encrypted.
-            // Set the title.
-            dialogBuilder.setTitle(R.string.unencrypted_website)
+            // Populate the dialog according to the URL type.
+            if (urlString.startsWith("content://")) {  // A content URL is loaded.
+                // Set the title.
+                dialogBuilder.setTitle(R.string.content_url)
 
-            // Set the Layout.
-            dialogBuilder.setView(R.layout.unencrypted_website_dialog)
+                // Set the message.
+                dialogBuilder.setMessage(R.string.content_url_message)
+            } else {  // The website is unencrypted.
+                // Set the title.
+                dialogBuilder.setTitle(R.string.unencrypted_website)
+
+                // Set the layout.
+                dialogBuilder.setView(R.layout.unencrypted_website_dialog)
+            }
 
             // Create an alert dialog from the builder.
             val alertDialog = dialogBuilder.create()
@@ -357,6 +372,7 @@ class ViewSslCertificateDialog : DialogFragment() {
 
         // Save the common class variables.
         savedInstanceState.putBoolean(HAS_SSL_CERTIFICATE, hasSslCertificate)
+        savedInstanceState.putString(URL, urlString)
 
         // Save the SSL certificate strings if they exist.
         if (hasSslCertificate) {
