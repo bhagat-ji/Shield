@@ -98,7 +98,7 @@ class SslCertificateErrorDialog : DialogFragment() {
         }
     }
 
-    // Declare the class variables.
+    // Define the class variables.
     private var sslErrorHandler: SslErrorHandler? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

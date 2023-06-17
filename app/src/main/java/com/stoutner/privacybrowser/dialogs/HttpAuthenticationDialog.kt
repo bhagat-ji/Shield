@@ -68,7 +68,7 @@ class HttpAuthenticationDialog : DialogFragment() {
     }
 
     // Define the class variables.
-    private var dismissDialog: Boolean = false
+    private var httpAuthHandler: HttpAuthHandler? = null
 
     // Declare the class views.
     private lateinit var usernameEditText: EditText
@@ -98,7 +98,7 @@ class HttpAuthenticationDialog : DialogFragment() {
             val nestedScrollWebView = fragmentView.findViewById<NestedScrollWebView>(R.id.nestedscroll_webview)
 
             // Get a handle for the HTTP authentication handler.
-            val httpAuthHandler = nestedScrollWebView.httpAuthHandler
+            httpAuthHandler = nestedScrollWebView.httpAuthHandler
 
             // Use an alert dialog builder to create the alert dialog.
             val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -116,7 +116,7 @@ class HttpAuthenticationDialog : DialogFragment() {
             dialogBuilder.setNegativeButton(R.string.close) { _: DialogInterface?, _: Int ->
                 if (httpAuthHandler != null) {
                     // Cancel the HTTP authentication request.
-                    httpAuthHandler.cancel()
+                    httpAuthHandler!!.cancel()
 
                     // Reset the HTTP authentication handler.
                     nestedScrollWebView.resetHttpAuthHandler()
@@ -211,28 +211,25 @@ class HttpAuthenticationDialog : DialogFragment() {
             // Return the alert dialog.
             return alertDialog
         } catch (exception: Exception) {  // Privacy Browser was restarted and the HTTP auth handler no longer exists.
+            // Dismiss this new instance of the dialog as soon as it is displayed.
+            dismiss()
+
             // Use an alert dialog builder to create an empty alert dialog.
             val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-            // Create an empty alert dialog from the alert dialog builder.
-            val alertDialog = dialogBuilder.create()
-
-            // Set the flag to dismiss the dialog as soon as it is resumed.
-            dismissDialog = true
-
             // Return the alert dialog.
-            return alertDialog
+            return dialogBuilder.create()
         }
     }
 
-    override fun onResume() {
+    override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onResume()
+        super.onSaveInstanceState(outState)
 
-        // Dismiss the alert dialog if the activity was restarted and the HTTP auth handler no longer exists.
-        if (dismissDialog) {
-            dialog!!.dismiss()
-        }
+        // Cancel the request if the SSL error handler is not null.  This resets the WebView so it is not waiting on a response to the error handler if it is restarted in the background.
+        // Otherwise, after restart, the dialog is no longer displayed, but the error handler is still pending and there is no way to cause the dialog to redisplay for that URL in that tab.
+        if (httpAuthHandler != null)
+            httpAuthHandler!!.cancel()
     }
 
     private fun login(httpAuthHandler: HttpAuthHandler?, nestedScrollWebView: NestedScrollWebView) {
