@@ -55,35 +55,35 @@ const val ULTRAPRIVACY = 6
 const val THIRD_PARTY_REQUESTS = 7
 
 // Define the private class constants.
-private const val DOMAIN_SETTINGS_APPLIED = "domain_settings_applied"
-private const val DOMAIN_SETTINGS_DATABASE_ID = "domain_settings_database_id"
-private const val CURRENT_DOMAIN_NAME = "current_domain_name"
-private const val CURRENT_URl = "current_url"
-private const val ACCEPT_COOKIES = "accept_cookies"
-private const val EASYLIST_ENABLED = "easylist_enabled"
-private const val EASYPRIVACY_ENABLED = "easyprivacy_enabled"
-private const val FANBOYS_ANNOYANCE_LIST_ENABLED = "fanboys_annoyance_list_enabled"
-private const val FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED = "fanboys_social_blocking_list_enabled"
-private const val ULTRALIST_ENABLED = "ultralist_enabled"
-private const val ULTRAPRIVACY_ENABLED = "ultraprivacy_enabled"
-private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
-private const val HAS_PINNED_SSL_CERTIFICATE = "has_pinned_ssl_certificate"
-private const val PINNED_SSL_ISSUED_TO_CNAME = "pinned_ssl_issued_to_cname"
-private const val PINNED_SSL_ISSUED_TO_ONAME = "pinned_ssl_issued_to_oname"
-private const val PINNED_SSL_ISSUED_TO_UNAME = "pinned_ssl_issued_to_uname"
-private const val PINNED_SSL_ISSUED_BY_CNAME = "pinned_ssl_issued_by_cname"
-private const val PINNED_SSL_ISSUED_BY_ONAME = "pinned_ssl_issued_by_oname"
-private const val PINNED_SSL_ISSUED_BY_UNAME = "pinned_ssl_issued_by_uname"
-private const val PINNED_SSL_START_DATE = "pinned_ssl_start_date"
-private const val PINNED_SSL_END_DATE = "pinned_ssl_end_date"
-private const val PINNED_IP_ADDRESSES = "pinned_ip_addresses"
-private const val IGNORE_PINNED_DOMAIN_INFORMATION = "ignore_pinned_domain_information"
-private const val SWIPE_TO_REFRESH = "swipe_to_refresh"
-private const val JAVASCRIPT_ENABLED = "javascript_enabled"
-private const val DOM_STORAGE_ENABLED = "dom_storage_enabled"
-private const val USER_AGENT = "user_agent"
-private const val WIDE_VIEWPORT = "wide_viewport"
-private const val FONT_SIZE = "font_size"
+private const val ACCEPT_COOKIES = "A"
+private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "B"
+private const val CURRENT_DOMAIN_NAME = "C"
+private const val CURRENT_URl = "D"
+private const val DOM_STORAGE_ENABLED = "E"
+private const val DOMAIN_SETTINGS_APPLIED = "F"
+private const val DOMAIN_SETTINGS_DATABASE_ID = "G"
+private const val EASYLIST_ENABLED = "H"
+private const val EASYPRIVACY_ENABLED = "I"
+private const val FANBOYS_ANNOYANCE_LIST_ENABLED = "J"
+private const val FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED = "K"
+private const val FONT_SIZE = "L"
+private const val HAS_PINNED_SSL_CERTIFICATE = "M"
+private const val IGNORE_PINNED_DOMAIN_INFORMATION = "N"
+private const val JAVASCRIPT_ENABLED = "O"
+private const val PINNED_IP_ADDRESSES = "P"
+private const val PINNED_SSL_END_DATE = "Q"
+private const val PINNED_SSL_ISSUED_BY_CNAME = "R"
+private const val PINNED_SSL_ISSUED_BY_ONAME = "S"
+private const val PINNED_SSL_ISSUED_BY_UNAME = "T"
+private const val PINNED_SSL_ISSUED_TO_CNAME = "U"
+private const val PINNED_SSL_ISSUED_TO_ONAME = "V"
+private const val PINNED_SSL_ISSUED_TO_UNAME = "W"
+private const val PINNED_SSL_START_DATE = "X"
+private const val SWIPE_TO_REFRESH = "Y"
+private const val ULTRALIST_ENABLED = "Z"
+private const val ULTRAPRIVACY_ENABLED = "AA"
+private const val USER_AGENT = "AB"
+private const val WIDE_VIEWPORT = "AC"
 
 // NestedScrollWebView extends WebView to handle nested scrolls (scrolling the app bar off the screen).  It also stores extra information about the state of the WebView used by Privacy Browser.
 class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defaultStyle: Int = android.R.attr.webViewStyle) : WebView(context, attributeSet, defaultStyle),
@@ -395,35 +395,35 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         val savedState = Bundle()
 
         // Populate the saved state bundle.
-        savedState.putBoolean(DOMAIN_SETTINGS_APPLIED, domainSettingsApplied)
-        savedState.putInt(DOMAIN_SETTINGS_DATABASE_ID, domainSettingsDatabaseId)
+        savedState.putBoolean(ACCEPT_COOKIES, acceptCookies)
+        savedState.putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
         savedState.putString(CURRENT_DOMAIN_NAME, currentDomainName)
         savedState.putString(CURRENT_URl, currentUrl)
-        savedState.putBoolean(ACCEPT_COOKIES, acceptCookies)
+        savedState.putBoolean(DOM_STORAGE_ENABLED, this.settings.domStorageEnabled)
+        savedState.putBoolean(DOMAIN_SETTINGS_APPLIED, domainSettingsApplied)
+        savedState.putInt(DOMAIN_SETTINGS_DATABASE_ID, domainSettingsDatabaseId)
         savedState.putBoolean(EASYLIST_ENABLED, easyListEnabled)
         savedState.putBoolean(EASYPRIVACY_ENABLED, easyPrivacyEnabled)
         savedState.putBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED, fanboysAnnoyanceListEnabled)
         savedState.putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED, fanboysSocialBlockingListEnabled)
-        savedState.putBoolean(ULTRALIST_ENABLED, ultraListEnabled)
-        savedState.putBoolean(ULTRAPRIVACY_ENABLED, ultraPrivacyEnabled)
-        savedState.putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
+        savedState.putInt(FONT_SIZE, this.settings.textZoom)
         savedState.putBoolean(HAS_PINNED_SSL_CERTIFICATE, hasPinnedSslCertificate)
-        savedState.putString(PINNED_SSL_ISSUED_TO_CNAME, pinnedSslIssuedToCName)
-        savedState.putString(PINNED_SSL_ISSUED_TO_ONAME, pinnedSslIssuedToOName)
-        savedState.putString(PINNED_SSL_ISSUED_TO_UNAME, pinnedSslIssuedToUName)
+        savedState.putBoolean(IGNORE_PINNED_DOMAIN_INFORMATION, ignorePinnedDomainInformation)
+        savedState.putBoolean(JAVASCRIPT_ENABLED, this.settings.javaScriptEnabled)
+        savedState.putString(PINNED_IP_ADDRESSES, pinnedIpAddresses)
+        savedState.putLong(PINNED_SSL_END_DATE, pinnedSslEndDate.time)
         savedState.putString(PINNED_SSL_ISSUED_BY_CNAME, pinnedSslIssuedByCName)
         savedState.putString(PINNED_SSL_ISSUED_BY_ONAME, pinnedSslIssuedByOName)
         savedState.putString(PINNED_SSL_ISSUED_BY_UNAME, pinnedSslIssuedByUName)
+        savedState.putString(PINNED_SSL_ISSUED_TO_CNAME, pinnedSslIssuedToCName)
+        savedState.putString(PINNED_SSL_ISSUED_TO_ONAME, pinnedSslIssuedToOName)
+        savedState.putString(PINNED_SSL_ISSUED_TO_UNAME, pinnedSslIssuedToUName)
         savedState.putLong(PINNED_SSL_START_DATE, pinnedSslStartDate.time)
-        savedState.putLong(PINNED_SSL_END_DATE, pinnedSslEndDate.time)
-        savedState.putString(PINNED_IP_ADDRESSES, pinnedIpAddresses)
-        savedState.putBoolean(IGNORE_PINNED_DOMAIN_INFORMATION, ignorePinnedDomainInformation)
         savedState.putBoolean(SWIPE_TO_REFRESH, swipeToRefresh)
-        savedState.putBoolean(JAVASCRIPT_ENABLED, this.settings.javaScriptEnabled)
-        savedState.putBoolean(DOM_STORAGE_ENABLED, this.settings.domStorageEnabled)
+        savedState.putBoolean(ULTRALIST_ENABLED, ultraListEnabled)
+        savedState.putBoolean(ULTRAPRIVACY_ENABLED, ultraPrivacyEnabled)
         savedState.putString(USER_AGENT, this.settings.userAgentString)
         savedState.putBoolean(WIDE_VIEWPORT, this.settings.useWideViewPort)
-        savedState.putInt(FONT_SIZE, this.settings.textZoom)
 
         // Return the saved state bundle.
         return savedState
@@ -432,35 +432,35 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     // Restore the state.
     fun restoreNestedScrollWebViewState(savedState: Bundle) {
         // Restore the class variables.
-        domainSettingsApplied = savedState.getBoolean(DOMAIN_SETTINGS_APPLIED)
-        domainSettingsDatabaseId = savedState.getInt(DOMAIN_SETTINGS_DATABASE_ID)
+        acceptCookies = savedState.getBoolean(ACCEPT_COOKIES)
+        blockAllThirdPartyRequests = savedState.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS)
         currentDomainName = savedState.getString(CURRENT_DOMAIN_NAME)!!
         currentUrl = savedState.getString(CURRENT_URl)!!
-        acceptCookies = savedState.getBoolean(ACCEPT_COOKIES)
+        this.settings.domStorageEnabled = savedState.getBoolean(DOM_STORAGE_ENABLED)
+        domainSettingsApplied = savedState.getBoolean(DOMAIN_SETTINGS_APPLIED)
+        domainSettingsDatabaseId = savedState.getInt(DOMAIN_SETTINGS_DATABASE_ID)
         easyListEnabled = savedState.getBoolean(EASYLIST_ENABLED)
         easyPrivacyEnabled = savedState.getBoolean(EASYPRIVACY_ENABLED)
         fanboysAnnoyanceListEnabled = savedState.getBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED)
         fanboysSocialBlockingListEnabled = savedState.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED)
-        ultraListEnabled = savedState.getBoolean(ULTRALIST_ENABLED)
-        ultraPrivacyEnabled = savedState.getBoolean(ULTRAPRIVACY_ENABLED)
-        blockAllThirdPartyRequests = savedState.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS)
+        this.settings.textZoom = savedState.getInt(FONT_SIZE)
         hasPinnedSslCertificate = savedState.getBoolean(HAS_PINNED_SSL_CERTIFICATE)
-        pinnedSslIssuedToCName = savedState.getString(PINNED_SSL_ISSUED_TO_CNAME)!!
-        pinnedSslIssuedToOName = savedState.getString(PINNED_SSL_ISSUED_TO_ONAME)!!
-        pinnedSslIssuedToUName = savedState.getString(PINNED_SSL_ISSUED_TO_UNAME)!!
+        ignorePinnedDomainInformation = savedState.getBoolean(IGNORE_PINNED_DOMAIN_INFORMATION)
+        this.settings.javaScriptEnabled = savedState.getBoolean(JAVASCRIPT_ENABLED)
+        pinnedIpAddresses = savedState.getString(PINNED_IP_ADDRESSES)!!
+        pinnedSslEndDate = Date(savedState.getLong(PINNED_SSL_END_DATE))
         pinnedSslIssuedByCName = savedState.getString(PINNED_SSL_ISSUED_BY_CNAME)!!
         pinnedSslIssuedByOName = savedState.getString(PINNED_SSL_ISSUED_BY_ONAME)!!
         pinnedSslIssuedByUName = savedState.getString(PINNED_SSL_ISSUED_BY_UNAME)!!
+        pinnedSslIssuedToCName = savedState.getString(PINNED_SSL_ISSUED_TO_CNAME)!!
+        pinnedSslIssuedToOName = savedState.getString(PINNED_SSL_ISSUED_TO_ONAME)!!
+        pinnedSslIssuedToUName = savedState.getString(PINNED_SSL_ISSUED_TO_UNAME)!!
         pinnedSslStartDate = Date(savedState.getLong(PINNED_SSL_START_DATE))
-        pinnedSslEndDate = Date(savedState.getLong(PINNED_SSL_END_DATE))
-        pinnedIpAddresses = savedState.getString(PINNED_IP_ADDRESSES)!!
-        ignorePinnedDomainInformation = savedState.getBoolean(IGNORE_PINNED_DOMAIN_INFORMATION)
         swipeToRefresh = savedState.getBoolean(SWIPE_TO_REFRESH)
-        this.settings.javaScriptEnabled = savedState.getBoolean(JAVASCRIPT_ENABLED)
-        this.settings.domStorageEnabled = savedState.getBoolean(DOM_STORAGE_ENABLED)
+        ultraListEnabled = savedState.getBoolean(ULTRALIST_ENABLED)
+        ultraPrivacyEnabled = savedState.getBoolean(ULTRAPRIVACY_ENABLED)
         this.settings.userAgentString = savedState.getString(USER_AGENT)
         this.settings.useWideViewPort = savedState.getBoolean(WIDE_VIEWPORT)
-        this.settings.textZoom = savedState.getInt(FONT_SIZE)
     }
 
 

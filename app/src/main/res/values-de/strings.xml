@@ -73,6 +73,8 @@
     <string name="unencrypted_website">Unverschlüsselte Website</string>
     <string name="no_ssl_certificate">Die Kommunikation mit dieser Website erfolgt nicht verschlüsselt.
         Dies ermöglicht Dritten, Informationen abzuhören, Ihre Bewegungen im Internet zu beobachten und böswillige Inhalte einzuschleusen.</string>
+    <string name="content_url">Content-URL</string>
+    <string name="content_url_message">Content-URLs liefern Daten aus anderen auf Ihrem Gerät installierten Apps.</string>
     <string name="ssl_certificate">SSL-Zertifikat</string>
     <string name="close">Schließen</string>
     <string name="domain">Domain</string>

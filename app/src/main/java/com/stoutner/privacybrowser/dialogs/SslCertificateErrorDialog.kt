@@ -28,6 +28,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.WindowManager
+import android.webkit.SslErrorHandler
 import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
@@ -97,217 +98,241 @@ class SslCertificateErrorDialog : DialogFragment() {
         }
     }
 
+    // Declare the class variables.
+    private var sslErrorHandler: SslErrorHandler? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Get the variables from the bundle.
-        val primaryErrorInt = requireArguments().getInt(PRIMARY_ERROR_INT)
-        val urlWithErrors = requireArguments().getString(URL_WITH_ERRORS)
-        val issuedToCName = requireArguments().getString(ISSUED_TO_CNAME)
-        val issuedToOName = requireArguments().getString(ISSUED_TO_ONAME)
-        val issuedToUName = requireArguments().getString(ISSUED_TO_UNAME)
-        val issuedByCName = requireArguments().getString(ISSUED_BY_CNAME)
-        val issuedByOName = requireArguments().getString(ISSUED_BY_ONAME)
-        val issuedByUName = requireArguments().getString(ISSUED_BY_UNAME)
-        val startDate = requireArguments().getString(START_DATE)
-        val endDate = requireArguments().getString(END_DATE)
-        val webViewFragmentId = requireArguments().getLong(WEBVIEW_FRAGMENT_ID)
+        try {
+            // Get the variables from the bundle.
+            val primaryErrorInt = requireArguments().getInt(PRIMARY_ERROR_INT)
+            val urlWithErrors = requireArguments().getString(URL_WITH_ERRORS)
+            val issuedToCName = requireArguments().getString(ISSUED_TO_CNAME)
+            val issuedToOName = requireArguments().getString(ISSUED_TO_ONAME)
+            val issuedToUName = requireArguments().getString(ISSUED_TO_UNAME)
+            val issuedByCName = requireArguments().getString(ISSUED_BY_CNAME)
+            val issuedByOName = requireArguments().getString(ISSUED_BY_ONAME)
+            val issuedByUName = requireArguments().getString(ISSUED_BY_UNAME)
+            val startDate = requireArguments().getString(START_DATE)
+            val endDate = requireArguments().getString(END_DATE)
+            val webViewFragmentId = requireArguments().getLong(WEBVIEW_FRAGMENT_ID)
 
-        // Get the current position of this WebView fragment.
-        val webViewPosition = MainWebViewActivity.webViewStateAdapter!!.getPositionForId(webViewFragmentId)
+            // Get the current position of this WebView fragment.
+            val webViewPosition = MainWebViewActivity.webViewStateAdapter!!.getPositionForId(webViewFragmentId)
 
-        // Get the WebView tab fragment.
-        val webViewTabFragment = MainWebViewActivity.webViewStateAdapter!!.getPageFragment(webViewPosition)
+            // Get the WebView tab fragment.
+            val webViewTabFragment = MainWebViewActivity.webViewStateAdapter!!.getPageFragment(webViewPosition)
 
-        // Get the fragment view.
-        val fragmentView = webViewTabFragment.requireView()
+            // Get the fragment view.
+            val fragmentView = webViewTabFragment.requireView()
 
-        // Get a handle for the current WebView.
-        val nestedScrollWebView: NestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview)
+            // Get a handle for the current WebView.
+            val nestedScrollWebView: NestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview)
 
-        // Get a handle for the SSL error handler.
-        val sslErrorHandler = nestedScrollWebView.sslErrorHandler
+            // Get a handle for the SSL error handler.
+            sslErrorHandler = nestedScrollWebView.sslErrorHandler
 
-        // Use an alert dialog builder to create the alert dialog.
-        val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
+            // Use an alert dialog builder to create the alert dialog.
+            val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-        // Set the icon.
-        dialogBuilder.setIcon(R.drawable.ssl_certificate)
+            // Set the icon.
+            dialogBuilder.setIcon(R.drawable.ssl_certificate)
 
-        // Set the title.
-        dialogBuilder.setTitle(R.string.ssl_certificate_error)
+            // Set the title.
+            dialogBuilder.setTitle(R.string.ssl_certificate_error)
 
-        // Set the view.
-        dialogBuilder.setView(R.layout.ssl_certificate_error)
+            // Set the view.
+            dialogBuilder.setView(R.layout.ssl_certificate_error)
 
-        // Set the cancel button listener.
-        dialogBuilder.setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int ->
-            // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
-            if (sslErrorHandler != null) {
-                // Cancel the request.
-                sslErrorHandler.cancel()
+            // Set the cancel button listener.
+            dialogBuilder.setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int ->
+                // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
+                if (sslErrorHandler != null) {
+                    // Cancel the request.
+                    sslErrorHandler!!.cancel()
 
-                // Reset the SSL error handler.
-                nestedScrollWebView.resetSslErrorHandler()
-            }
-        }
-
-        // Set the proceed button listener.
-        dialogBuilder.setPositiveButton(R.string.proceed) { _: DialogInterface?, _: Int ->
-            // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
-            if (sslErrorHandler != null) {
-                // Proceed to the website.
-                sslErrorHandler.proceed()
-
-                // Reset the SSL error handler.
-                nestedScrollWebView.resetSslErrorHandler()
-            }
-        }
-
-        // Create an alert dialog from the builder.
-        val alertDialog = dialogBuilder.create()
-
-        // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-
-        // Get the screenshot preference.
-        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
-
-        // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
-            // Disable screenshots.
-            alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
-
-        // Get a URI for the URL with errors.
-        val uriWithErrors = Uri.parse(urlWithErrors)
-
-        // The alert dialog must be shown before the contents can be modified.
-        alertDialog.show()
-
-        // Get handles for the views.
-        val primaryErrorTextView = alertDialog.findViewById<TextView>(R.id.primary_error)!!
-        val urlTextView = alertDialog.findViewById<TextView>(R.id.url)!!
-        val ipAddressesTextView = alertDialog.findViewById<TextView>(R.id.ip_addresses)!!
-        val issuedToCNameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_cname)!!
-        val issuedToONameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_oname)!!
-        val issuedToUNameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_uname)!!
-        val issuedByTextView = alertDialog.findViewById<TextView>(R.id.issued_by_textview)!!
-        val issuedByCNameTextView = alertDialog.findViewById<TextView>(R.id.issued_by_cname)!!
-        val issuedByONameTextView = alertDialog.findViewById<TextView>(R.id.issued_by_oname)!!
-        val issuedByUNameTextView = alertDialog.findViewById<TextView>(R.id.issued_by_uname)!!
-        val validDatesTextView = alertDialog.findViewById<TextView>(R.id.valid_dates_textview)!!
-        val startDateTextView = alertDialog.findViewById<TextView>(R.id.start_date)!!
-        val endDateTextView = alertDialog.findViewById<TextView>(R.id.end_date)!!
-
-        // Define the color spans.
-        val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
-        val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
-
-        // Get the IP Addresses for the URI.
-        GetHostIpAddressesCoroutine.getAddresses(uriWithErrors.host!!, getString(R.string.ip_addresses), blueColorSpan, ipAddressesTextView)
-
-        // Setup the common strings.
-        val urlLabel = getString(R.string.url_label)
-        val cNameLabel = getString(R.string.common_name)
-        val oNameLabel = getString(R.string.organization)
-        val uNameLabel = getString(R.string.organizational_unit)
-        val startDateLabel = getString(R.string.start_date)
-        val endDateLabel = getString(R.string.end_date)
-
-        // Create a spannable string builder for each text view that needs multiple colors of text.
-        val urlStringBuilder = SpannableStringBuilder(urlLabel + urlWithErrors)
-        val issuedToCNameStringBuilder = SpannableStringBuilder(cNameLabel + issuedToCName)
-        val issuedToONameStringBuilder = SpannableStringBuilder(oNameLabel + issuedToOName)
-        val issuedToUNameStringBuilder = SpannableStringBuilder(uNameLabel + issuedToUName)
-        val issuedByCNameStringBuilder = SpannableStringBuilder(cNameLabel + issuedByCName)
-        val issuedByONameStringBuilder = SpannableStringBuilder(oNameLabel + issuedByOName)
-        val issuedByUNameStringBuilder = SpannableStringBuilder(uNameLabel + issuedByUName)
-        val startDateStringBuilder = SpannableStringBuilder(startDateLabel + startDate)
-        val endDateStringBuilder = SpannableStringBuilder(endDateLabel + endDate)
-
-        // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-        urlStringBuilder.setSpan(blueColorSpan, urlLabel.length, urlStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length, issuedToCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        issuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length, issuedToONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        issuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length, issuedToUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        issuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length, issuedByCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        issuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length, issuedByONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        issuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length, issuedByUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        startDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        endDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length, endDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-        // Define the primary error string.
-        var primaryErrorString = ""
-
-        // Highlight the primary error in red and store it in the primary error string.
-        when (primaryErrorInt) {
-            SslError.SSL_IDMISMATCH -> {
-                // Change the URL span colors to red.
-                urlStringBuilder.setSpan(redColorSpan, urlLabel.length, urlStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                issuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length, issuedToCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-                // Store the primary error string.
-                primaryErrorString = getString(R.string.cn_mismatch)
+                    // Reset the SSL error handler.
+                    nestedScrollWebView.resetSslErrorHandler()
+                }
             }
 
-            SslError.SSL_UNTRUSTED -> {
-                // Change the issued by text view text to red.
-                issuedByTextView.setTextColor(requireContext().getColor(R.color.red_text))
+            // Set the proceed button listener.
+            dialogBuilder.setPositiveButton(R.string.proceed) { _: DialogInterface?, _: Int ->
+                // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
+                if (sslErrorHandler != null) {
+                    // Proceed to the website.
+                    sslErrorHandler!!.proceed()
 
-                // Change the issued by span color to red.
-                issuedByCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length, issuedByCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                issuedByONameStringBuilder.setSpan(redColorSpan, oNameLabel.length, issuedByONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                issuedByUNameStringBuilder.setSpan(redColorSpan, uNameLabel.length, issuedByUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-                // Store the primary error string.
-                primaryErrorString = getString(R.string.untrusted)
+                    // Reset the SSL error handler.
+                    nestedScrollWebView.resetSslErrorHandler()
+                }
             }
 
-            SslError.SSL_DATE_INVALID -> {
-                // Change the valid dates text view text to red.
-                validDatesTextView.setTextColor(requireContext().getColor(R.color.red_text))
+            // Create an alert dialog from the builder.
+            val alertDialog = dialogBuilder.create()
 
-                // Change the date span colors to red.
-                startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-                endDateStringBuilder.setSpan(redColorSpan, endDateLabel.length, endDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            // Get a handle for the shared preferences.
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
-                // Store the primary error string.
-                primaryErrorString = getString(R.string.invalid_date)
+            // Get the screenshot preference.
+            val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
+
+            // Disable screenshots if not allowed.
+            if (!allowScreenshots) {
+                // Disable screenshots.
+                alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
             }
 
-            SslError.SSL_NOTYETVALID -> {
-                // Change the start date span color to red.
-                startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            // Get a URI for the URL with errors.
+            val uriWithErrors = Uri.parse(urlWithErrors)
 
-                // Store the primary error string.
-                primaryErrorString = getString(R.string.future_certificate)
+            // The alert dialog must be shown before the contents can be modified.
+            alertDialog.show()
+
+            // Get handles for the views.
+            val primaryErrorTextView = alertDialog.findViewById<TextView>(R.id.primary_error)!!
+            val urlTextView = alertDialog.findViewById<TextView>(R.id.url)!!
+            val ipAddressesTextView = alertDialog.findViewById<TextView>(R.id.ip_addresses)!!
+            val issuedToCNameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_cname)!!
+            val issuedToONameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_oname)!!
+            val issuedToUNameTextView = alertDialog.findViewById<TextView>(R.id.issued_to_uname)!!
+            val issuedByTextView = alertDialog.findViewById<TextView>(R.id.issued_by_textview)!!
+            val issuedByCNameTextView = alertDialog.findViewById<TextView>(R.id.issued_by_cname)!!
+            val issuedByONameTextView = alertDialog.findViewById<TextView>(R.id.issued_by_oname)!!
+            val issuedByUNameTextView = alertDialog.findViewById<TextView>(R.id.issued_by_uname)!!
+            val validDatesTextView = alertDialog.findViewById<TextView>(R.id.valid_dates_textview)!!
+            val startDateTextView = alertDialog.findViewById<TextView>(R.id.start_date)!!
+            val endDateTextView = alertDialog.findViewById<TextView>(R.id.end_date)!!
+
+            // Define the color spans.
+            val blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
+            val redColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.red_text))
+
+            // Get the IP Addresses for the URI.
+            GetHostIpAddressesCoroutine.getAddresses(uriWithErrors.host!!, getString(R.string.ip_addresses), blueColorSpan, ipAddressesTextView)
+
+            // Setup the common strings.
+            val urlLabel = getString(R.string.url_label)
+            val cNameLabel = getString(R.string.common_name)
+            val oNameLabel = getString(R.string.organization)
+            val uNameLabel = getString(R.string.organizational_unit)
+            val startDateLabel = getString(R.string.start_date)
+            val endDateLabel = getString(R.string.end_date)
+
+            // Create a spannable string builder for each text view that needs multiple colors of text.
+            val urlStringBuilder = SpannableStringBuilder(urlLabel + urlWithErrors)
+            val issuedToCNameStringBuilder = SpannableStringBuilder(cNameLabel + issuedToCName)
+            val issuedToONameStringBuilder = SpannableStringBuilder(oNameLabel + issuedToOName)
+            val issuedToUNameStringBuilder = SpannableStringBuilder(uNameLabel + issuedToUName)
+            val issuedByCNameStringBuilder = SpannableStringBuilder(cNameLabel + issuedByCName)
+            val issuedByONameStringBuilder = SpannableStringBuilder(oNameLabel + issuedByOName)
+            val issuedByUNameStringBuilder = SpannableStringBuilder(uNameLabel + issuedByUName)
+            val startDateStringBuilder = SpannableStringBuilder(startDateLabel + startDate)
+            val endDateStringBuilder = SpannableStringBuilder(endDateLabel + endDate)
+
+            // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            urlStringBuilder.setSpan(blueColorSpan, urlLabel.length, urlStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length, issuedToCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            issuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length, issuedToONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            issuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length, issuedToUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            issuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length, issuedByCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            issuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length, issuedByONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            issuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length, issuedByUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            startDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            endDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length, endDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+            // Define the primary error string.
+            var primaryErrorString = ""
+
+            // Highlight the primary error in red and store it in the primary error string.
+            when (primaryErrorInt) {
+                SslError.SSL_IDMISMATCH -> {
+                    // Change the URL span colors to red.
+                    urlStringBuilder.setSpan(redColorSpan, urlLabel.length, urlStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    issuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length, issuedToCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    // Store the primary error string.
+                    primaryErrorString = getString(R.string.cn_mismatch)
+                }
+
+                SslError.SSL_UNTRUSTED -> {
+                    // Change the issued by text view text to red.
+                    issuedByTextView.setTextColor(requireContext().getColor(R.color.red_text))
+
+                    // Change the issued by span color to red.
+                    issuedByCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length, issuedByCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    issuedByONameStringBuilder.setSpan(redColorSpan, oNameLabel.length, issuedByONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    issuedByUNameStringBuilder.setSpan(redColorSpan, uNameLabel.length, issuedByUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    // Store the primary error string.
+                    primaryErrorString = getString(R.string.untrusted)
+                }
+
+                SslError.SSL_DATE_INVALID -> {
+                    // Change the valid dates text view text to red.
+                    validDatesTextView.setTextColor(requireContext().getColor(R.color.red_text))
+
+                    // Change the date span colors to red.
+                    startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    endDateStringBuilder.setSpan(redColorSpan, endDateLabel.length, endDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    // Store the primary error string.
+                    primaryErrorString = getString(R.string.invalid_date)
+                }
+
+                SslError.SSL_NOTYETVALID -> {
+                    // Change the start date span color to red.
+                    startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    // Store the primary error string.
+                    primaryErrorString = getString(R.string.future_certificate)
+                }
+
+                SslError.SSL_EXPIRED -> {
+                    // Change the end date span color to red.
+                    endDateStringBuilder.setSpan(redColorSpan, endDateLabel.length, endDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+                    // Store the primary error string.
+                    primaryErrorString = getString(R.string.expired_certificate)
+                }
+
+                SslError.SSL_INVALID ->
+                    // Store the primary error string.
+                    primaryErrorString = getString(R.string.invalid_certificate)
             }
 
-            SslError.SSL_EXPIRED -> {
-                // Change the end date span color to red.
-                endDateStringBuilder.setSpan(redColorSpan, endDateLabel.length, endDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            // Display the strings.
+            primaryErrorTextView.text = primaryErrorString
+            urlTextView.text = urlStringBuilder
+            issuedToCNameTextView.text = issuedToCNameStringBuilder
+            issuedToONameTextView.text = issuedToONameStringBuilder
+            issuedToUNameTextView.text = issuedToUNameStringBuilder
+            issuedByCNameTextView.text = issuedByCNameStringBuilder
+            issuedByONameTextView.text = issuedByONameStringBuilder
+            issuedByUNameTextView.text = issuedByUNameStringBuilder
+            startDateTextView.text = startDateStringBuilder
+            endDateTextView.text = endDateStringBuilder
 
-                // Store the primary error string.
-                primaryErrorString = getString(R.string.expired_certificate)
+            // Return the alert dialog.
+            return alertDialog
+        } catch (exception: Exception) {  // The app was restarted while the dialog was displayed.
+            // Dismiss this new instance of the dialog as soon as it is displayed.
+            dismiss()
+
+            // Use an alert dialog builder to create an empty alert dialog.
+            val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
+
+            // Return the empty alert dialog.
+            return dialogBuilder.create()
             }
+    }
 
-            SslError.SSL_INVALID ->
-                // Store the primary error string.
-                primaryErrorString = getString(R.string.invalid_certificate)
-        }
+    override fun onSaveInstanceState(outState: Bundle) {
+        // Run the default commands.
+        super.onSaveInstanceState(outState)
 
-        // Display the strings.
-        primaryErrorTextView.text = primaryErrorString
-        urlTextView.text = urlStringBuilder
-        issuedToCNameTextView.text = issuedToCNameStringBuilder
-        issuedToONameTextView.text = issuedToONameStringBuilder
-        issuedToUNameTextView.text = issuedToUNameStringBuilder
-        issuedByCNameTextView.text = issuedByCNameStringBuilder
-        issuedByONameTextView.text = issuedByONameStringBuilder
-        issuedByUNameTextView.text = issuedByUNameStringBuilder
-        startDateTextView.text = startDateStringBuilder
-        endDateTextView.text = endDateStringBuilder
-
-        // Return the alert dialog.
-        return alertDialog
+        // Cancel the request if the SSL error handler is not null.  This resets the WebView so it is not waiting on a response to the error handler if it is restarted in the background.
+        // Otherwise, after restart, the dialog is no longer displayed, but the error handler is still pending and there is no way to cause the dialog to redisplay for that URL in that tab.
+        if (sslErrorHandler != null)
+            sslErrorHandler!!.cancel()
     }
 }

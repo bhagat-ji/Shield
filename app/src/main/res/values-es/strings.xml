@@ -69,6 +69,8 @@
     <string name="unencrypted_website">Web sin cifrar</string>
     <string name="no_ssl_certificate">La comunicación con esta página web no está cifrada.
         Esto permite a terceras partes interceptar información, rastrear su navegación e inyectar contenido malicioso.</string>
+    <string name="content_url">URL de contenido</string>
+    <string name="content_url_message">Las URL de contenido son datos cargados desde otras aplicaciones de tu dispositivo.</string>
     <string name="ssl_certificate">Certificado SSL</string>
     <string name="close">Cerrar</string>
     <string name="domain">Dominio</string>

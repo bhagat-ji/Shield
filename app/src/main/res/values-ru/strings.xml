@@ -66,6 +66,8 @@
     <string name="view_ssl_certificate">Просмотр сертификата SSL</string>
     <string name="unencrypted_website">Незашифрованный веб-сайт</string>
     <string name="no_ssl_certificate">Соединение с этим сайтом не зашифровано. Это позволяет третьим сторонам перехватывать информацию, отслеживать просмотр и внедрять вредоносный контент.</string>
+    <string name="content_url">URL контента</string>
+    <string name="content_url_message">URL контента - это данные, загруженные из других приложений на вашем устройстве.</string>
     <string name="ssl_certificate">Сертификат SSL</string>
     <string name="close">Закрыть</string>
     <string name="domain">Домен</string>
