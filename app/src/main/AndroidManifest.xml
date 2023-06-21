@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -268,8 +268,8 @@
             `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot. -->
         <activity
-            android:name=".activities.ViewSourceActivity"
-            android:label="@string/view_source"
+            android:name=".activities.ViewHeadersActivity"
+            android:label="@string/view_headers"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"

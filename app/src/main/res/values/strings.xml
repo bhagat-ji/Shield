@@ -172,6 +172,8 @@
         <string name="save">Save</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
+        <string name="view_rendered_website">View Rendered Website</string>
+        <string name="view_headers">View Headers</string>
     <string name="share">Share</string>
         <string name="share_message">Share Message</string>
         <string name="share_url">Share URL</string>
@@ -229,8 +231,8 @@
     <string name="content_data">Content Data</string>
     <string name="untrusted_ssl_certificate">The SSL certificate is untrusted.</string>
     <string name="load_anyway">Load anyway</string>
-    <string name="about_view_source">About View Source</string>
-    <string name="about_view_source_message">Because Android’s WebView does not expose the source information,
+    <string name="about_view_headers">About View Headers</string>
+    <string name="about_view_headers_message">Because Android’s WebView does not expose the source information,
         a separate request was made using system tools to gather the information displayed in this activity.
         There may be some differences between this data and that used by the WebView in the main activity. This limitation will be removed in the 4.x series with the release of Privacy WebView.</string>
 

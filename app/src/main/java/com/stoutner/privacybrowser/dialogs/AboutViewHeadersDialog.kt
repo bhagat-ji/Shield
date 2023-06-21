@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -29,7 +29,7 @@ import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 
-class AboutViewSourceDialog : DialogFragment() {
+class AboutViewHeadersDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -38,10 +38,10 @@ class AboutViewSourceDialog : DialogFragment() {
         dialogBuilder.setIcon(R.drawable.about_blue)
 
         // Set the title.
-        dialogBuilder.setTitle(R.string.about_view_source)
+        dialogBuilder.setTitle(R.string.about_view_headers)
 
         // Set the text.
-        dialogBuilder.setMessage(R.string.about_view_source_message)
+        dialogBuilder.setMessage(R.string.about_view_headers_message)
 
         // Set the close button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.close, null)

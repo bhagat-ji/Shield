@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -20,7 +20,7 @@
 
 <!-- Setting the layout root to be `focusableInTouchMode` prevents the URL toolbar from stealing focus on launch and opening the keyboard. -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/view_source_coordinatorlayout"
+    android:id="@+id/coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
@@ -38,13 +38,13 @@
 
         <!-- `android:layout_weight="1"` causes the swipe refresh layout to fill all the remaining space. -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/view_source_swiperefreshlayout"
+            android:id="@+id/swiperefreshlayout"
             android:layout_height="0dp"
             android:layout_width="match_parent"
             android:layout_weight="1">
 
             <ScrollView
-                android:id="@+id/view_source_scrollview"
+                android:id="@+id/scrollview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent" >
 
@@ -141,7 +141,7 @@
                 android:layout_width="match_parent" >
 
                 <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/view_source_toolbar"
+                    android:id="@+id/toolbar"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2020-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -26,29 +26,29 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-import com.stoutner.privacybrowser.backgroundtasks.GetSourceBackgroundTask
+import com.stoutner.privacybrowser.backgroundtasks.GetHeadersBackgroundTask
 
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 
-class WebViewSource(private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy, private val contentResolver: ContentResolver,
-                    private val executorService: ExecutorService): ViewModel() {
+class HeadersViewModel(private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy, private val contentResolver: ContentResolver,
+                       private val executorService: ExecutorService): ViewModel() {
     // Initialize the mutable live data variables.
     private val mutableLiveDataSourceStringArray = MutableLiveData<Array<SpannableStringBuilder>>()
     private val mutableLiveDataErrorString = MutableLiveData<String>()
 
     // Initialize the view model.
     init {
-        // Instantiate the get source background task class.
-        val getSourceBackgroundTask = GetSourceBackgroundTask()
+        // Instantiate the get headers background task class.
+        val getSourceBackgroundTask = GetHeadersBackgroundTask()
 
-        // Get the source.
+        // Get the headers.
         executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this,
             false)) }
     }
 
-    // The source observer.
-    fun observeSource(): LiveData<Array<SpannableStringBuilder>> {
+    // The headers observer.
+    fun observeHeaders(): LiveData<Array<SpannableStringBuilder>> {
         // Return the source to the activity.
         return mutableLiveDataSourceStringArray
     }
@@ -65,15 +65,15 @@ class WebViewSource(private val urlString: String, private val userAgent: String
         mutableLiveDataErrorString.postValue(errorString)
     }
 
-    // The workhorse that gets the source.
-    fun updateSource(urlString: String, ignoreSslErrors: Boolean) {
+    // The workhorse that gets the headers.
+    fun updateHeaders(urlString: String, ignoreSslErrors: Boolean) {
         // Reset the mutable live data error string.  This prevents the snackbar from displaying later if the activity restarts.
         mutableLiveDataErrorString.postValue("")
 
-        // Instantiate the get source background task class.
-        val getSourceBackgroundTask = GetSourceBackgroundTask()
+        // Instantiate the get headers background task class.
+        val getSourceBackgroundTask = GetHeadersBackgroundTask()
 
-        // Get the source.
+        // Get the headers.
         executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this,
             ignoreSslErrors)) }
     }

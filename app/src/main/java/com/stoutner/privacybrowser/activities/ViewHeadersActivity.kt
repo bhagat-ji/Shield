@@ -46,23 +46,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.dialogs.AboutViewSourceDialog
+import com.stoutner.privacybrowser.dialogs.AboutViewHeadersDialog
 import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog
 import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog.UntrustedSslCertificateListener
 import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.helpers.UrlHelper
-import com.stoutner.privacybrowser.viewmodelfactories.WebViewSourceFactory
-import com.stoutner.privacybrowser.viewmodels.WebViewSource
+import com.stoutner.privacybrowser.viewmodelfactories.ViewHeadersFactory
+import com.stoutner.privacybrowser.viewmodels.HeadersViewModel
 
 // Define the public constants.
 const val USER_AGENT = "user_agent"
 
-class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
+class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener {
     // Declare the class variables.
+    private lateinit var headersViewModel: HeadersViewModel
     private lateinit var initialGrayColorSpan: ForegroundColorSpan
     private lateinit var finalGrayColorSpan: ForegroundColorSpan
     private lateinit var redColorSpan: ForegroundColorSpan
-    private lateinit var webViewSource: WebViewSource
 
     // Declare the class views.
     private lateinit var urlEditText: EditText
@@ -98,13 +98,13 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
 
         // Set the content view.
         if (bottomAppBar) {
-            setContentView(R.layout.view_source_bottom_appbar)
+            setContentView(R.layout.view_headers_bottom_appbar)
         } else {
-            setContentView(R.layout.view_source_top_appbar)
+            setContentView(R.layout.view_headers_top_appbar)
         }
 
         // Get a handle for the toolbar.
-        val toolbar = findViewById<Toolbar>(R.id.view_source_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
         // Set the support action bar.
         setSupportActionBar(toolbar)
@@ -113,7 +113,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         val actionBar = supportActionBar!!
 
         // Add the custom layout to the action bar.
-        actionBar.setCustomView(R.layout.view_source_appbar_custom_view)
+        actionBar.setCustomView(R.layout.view_headers_appbar_custom_view)
 
         // Instruct the action bar to display a custom layout.
         actionBar.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
@@ -121,7 +121,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         // Get handles for the views.
         urlEditText = findViewById(R.id.url_edittext)
         val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
-        val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.view_source_swiperefreshlayout)
+        val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefreshlayout)
         requestHeadersTitleTextView = findViewById(R.id.request_headers_title_textview)
         requestHeadersTextView = findViewById(R.id.request_headers_textview)
         responseMessageTitleTextView = findViewById(R.id.response_message_title_textview)
@@ -243,19 +243,19 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         // Update the layout.
         updateLayout(currentUrl)
 
-        // Instantiate the WebView source factory.
-        val webViewSourceFactory: ViewModelProvider.Factory = WebViewSourceFactory(currentUrl, userAgent, localesStringBuilder.toString(), proxy, contentResolver, MainWebViewActivity.executorService)
+        // Instantiate the view headers factory.
+        val viewHeadersFactory: ViewModelProvider.Factory = ViewHeadersFactory(currentUrl, userAgent, localesStringBuilder.toString(), proxy, contentResolver, MainWebViewActivity.executorService)
 
-        // Instantiate the WebView source view model class.
-        webViewSource = ViewModelProvider(this, webViewSourceFactory)[WebViewSource::class.java]
+        // Instantiate the headers view model.
+        headersViewModel = ViewModelProvider(this, viewHeadersFactory)[HeadersViewModel::class.java]
 
-        // Create a source observer.
-        webViewSource.observeSource().observe(this) { sourceStringArray: Array<SpannableStringBuilder> ->
+        // Create a headers observer.
+        headersViewModel.observeHeaders().observe(this) { headersStringArray: Array<SpannableStringBuilder> ->
             // Populate the text views.  This can take a long time, and freezes the user interface, if the response body is particularly large.
-            requestHeadersTextView.text = sourceStringArray[0]
-            responseMessageTextView.text = sourceStringArray[1]
-            responseHeadersTextView.text = sourceStringArray[2]
-            responseBodyTextView.text = sourceStringArray[3]
+            requestHeadersTextView.text = headersStringArray[0]
+            responseMessageTextView.text = headersStringArray[1]
+            responseHeadersTextView.text = headersStringArray[2]
+            responseBodyTextView.text = headersStringArray[3]
 
             // Hide the progress bar.
             progressBar.isIndeterminate = false
@@ -266,7 +266,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
         }
 
         // Create an error observer.
-        webViewSource.observeErrors().observe(this) { errorString: String ->
+        headersViewModel.observeErrors().observe(this) { errorString: String ->
             // Display an error snackbar if the string is not `""`.
             if (errorString != "") {
                 if (errorString.startsWith("javax.net.ssl.SSLHandshakeException")) {
@@ -296,13 +296,13 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
             // Update the layout.
             updateLayout(urlString)
 
-            // Get the updated source.
-            webViewSource.updateSource(urlString, false)
+            // Get the updated headers.
+            headersViewModel.updateHeaders(urlString, false)
         }
 
-        // Set the go button on the keyboard to request new source data.
+        // Set the go button on the keyboard to request new headers data.
         urlEditText.setOnKeyListener { _: View?, keyCode: Int, event: KeyEvent ->
-            // Request new source data if the enter key was pressed.
+            // Request new headers data if the enter key was pressed.
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 // Hide the soft keyboard.
                 inputMethodManager.hideSoftInputFromWindow(urlEditText.windowToken, 0)
@@ -322,8 +322,8 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
                 // Update the layout.
                 updateLayout(urlString)
 
-                // Get the updated source.
-                webViewSource.updateSource(urlString, false)
+                // Get the updated headers.
+                headersViewModel.updateHeaders(urlString, false)
 
                 // Consume the key press.
                 return@setOnKeyListener true
@@ -336,7 +336,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu.
-        menuInflater.inflate(R.menu.view_source_options_menu, menu)
+        menuInflater.inflate(R.menu.view_headers_options_menu, menu)
 
         // Display the menu.
         return true
@@ -344,7 +344,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         // Instantiate the about dialog fragment.
-        val aboutDialogFragment: DialogFragment = AboutViewSourceDialog()
+        val aboutDialogFragment: DialogFragment = AboutViewHeadersDialog()
 
         // Show the about alert dialog.
         aboutDialogFragment.show(supportFragmentManager, getString(R.string.about))
@@ -361,7 +361,7 @@ class ViewSourceActivity: AppCompatActivity(), UntrustedSslCertificateListener {
 
     override fun loadAnyway() {
         // Load the URL anyway.
-        webViewSource.updateSource(urlEditText.text.toString(), true)
+        headersViewModel.updateHeaders(urlEditText.text.toString(), true)
     }
 
     private fun updateLayout(urlString: String) {

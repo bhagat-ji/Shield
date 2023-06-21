@@ -219,8 +219,7 @@
     <string name="content_data">Данные содержимого</string>
     <string name="untrusted_ssl_certificate">SSL-сертификат не является доверенным.</string>
     <string name="load_anyway">Все равно загрузить</string>
-    <string name="about_view_source">О просмотре исходного кода</string>
-    <string name="about_view_source_message">Поскольку Android WebView не предоставляет исходные данные, для сбора информации, отображаемой в этом действии,
+    <string name="about_view_headers_message">Поскольку Android WebView не предоставляет исходные данные, для сбора информации, отображаемой в этом действии,
         был сделан отдельный запрос с помощью системных средств. Между этими данными и теми, которые используются в WebView, могут быть некоторые отличия.
         Это ограничение будет удалено в серии 4.x с выпуском Privacy WebView.</string>
 

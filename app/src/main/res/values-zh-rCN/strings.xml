@@ -222,8 +222,7 @@
     <string name="content_data">内容数据</string>
     <string name="untrusted_ssl_certificate">SSL证书不受信任.</string>
     <string name="load_anyway">仍然加载</string>
-    <string name="about_view_source">查看源代码</string>
-    <string name="about_view_source_message">因为安卓的网页不支持显示资源内容，一个另外的请求被系统调用来显示这个活动的信息,数据和网页主要活动可能存在差异，这个限制将会在隐私浏览器4.x系列解决。</string>
+    <string name="about_view_headers_message">因为安卓的网页不支持显示资源内容，一个另外的请求被系统调用来显示这个活动的信息,数据和网页主要活动可能存在差异，这个限制将会在隐私浏览器4.x系列解决。</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">创建标签</string>

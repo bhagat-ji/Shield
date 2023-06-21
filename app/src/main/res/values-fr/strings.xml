@@ -219,8 +219,7 @@
     <string name="content_data">Données du contenu</string>
     <string name="untrusted_ssl_certificate">Le certificat SSL n\'est pas fiable.</string>
     <string name="load_anyway">Charger quand même</string>
-    <string name="about_view_source">A propos de Voir Source</string>
-    <string name="about_view_source_message">Puisqu\'Android Webview ne permet pas de révêler l\'information source,
+    <string name="about_view_headers_message">Puisqu\'Android Webview ne permet pas de révêler l\'information source,
         une requête séparée a été effectuée en utilisant les outils sytèmes afin d\'afficher ce qui est présenté à l\'écran
         Il peut donc y avoir des différences entre ces connées et celle utilisée par Webview. Cette limitation sera supprimée lors de la sortie de Privacy Webview 4.x</string>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -28,7 +28,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import android.webkit.CookieManager
 
-import com.stoutner.privacybrowser.viewmodels.WebViewSource
+import com.stoutner.privacybrowser.viewmodels.HeadersViewModel
 
 import java.io.BufferedInputStream
 import java.io.BufferedReader
@@ -52,8 +52,8 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 
-class GetSourceBackgroundTask {
-    fun acquire(urlString: String, userAgent: String, localeString: String, proxy: Proxy, contentResolver: ContentResolver, webViewSource: WebViewSource, ignoreSslErrors: Boolean):
+class GetHeadersBackgroundTask {
+    fun acquire(urlString: String, userAgent: String, localeString: String, proxy: Proxy, contentResolver: ContentResolver, headersViewModel: HeadersViewModel, ignoreSslErrors: Boolean):
             Array<SpannableStringBuilder> {
 
         // Initialize the spannable string builders.
@@ -105,7 +105,7 @@ class GetSourceBackgroundTask {
                 }
             } catch (exception: Exception) {
                 // Return the error message.
-                webViewSource.returnError(exception.toString())
+                headersViewModel.returnError(exception.toString())
             }
         } else {  // This is not a content URL.
             // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch `IOExceptions`.
@@ -312,7 +312,7 @@ class GetSourceBackgroundTask {
                         }
                     } catch (exception: IOException) {
                         // Return the error message.
-                        webViewSource.returnError(exception.toString())
+                        headersViewModel.returnError(exception.toString())
                     }
 
                     // Close the input stream.
@@ -326,7 +326,7 @@ class GetSourceBackgroundTask {
                 }
             } catch (exception: Exception) {
                 // Return the error message.
-                webViewSource.returnError(exception.toString())
+                headersViewModel.returnError(exception.toString())
             }
         }
 

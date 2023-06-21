@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2018,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2018,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -24,7 +24,7 @@
 
     <!-- `android:iconTint` can be used once API >= 26 instead of including separate drawable files. -->
     <item
-        android:id="@+id/about_view_source"
+        android:id="@+id/about_view_headers"
         android:title="@string/about"
         android:orderInCategory="10"
         android:icon="@drawable/about"

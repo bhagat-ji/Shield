@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -365,6 +365,12 @@
                 android:id="@+id/view_source"
                 android:title="@string/view_source"
                 android:orderInCategory="1220"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/view_headers"
+                android:title="@string/view_headers"
+                android:orderInCategory="1230"
                 app:showAsAction="never" />
         </menu>
     </item>

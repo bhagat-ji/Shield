@@ -321,6 +321,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var optionsUserAgentSafariOnIosMenuItem: MenuItem
     private lateinit var optionsUserAgentSafariOnMacosMenuItem: MenuItem
     private lateinit var optionsUserAgentWebViewDefaultMenuItem: MenuItem
+    private lateinit var optionsViewSourceMenuItem: MenuItem
     private lateinit var optionsWideViewportMenuItem: MenuItem
     private lateinit var proxyHelper: ProxyHelper
     private lateinit var redColorSpan: ForegroundColorSpan
@@ -685,6 +686,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // Go back.
                         currentWebView!!.goBack()
+
+                        // Update the URL edit text after a delay.
+                        updateUrlEditTextAfterDelay()
                     } else {  // Close the current tab.
                         // A view is required because the method is also called by an XML `onClick`.
                         closeTab(null)
@@ -1063,6 +1067,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         optionsDisplayImagesMenuItem = menu.findItem(R.id.display_images)
         optionsDarkWebViewMenuItem = menu.findItem(R.id.dark_webview)
         optionsFontSizeMenuItem = menu.findItem(R.id.font_size)
+        optionsViewSourceMenuItem = menu.findItem(R.id.view_source)
         optionsAddOrEditDomainMenuItem = menu.findItem(R.id.add_or_edit_domain)
 
         // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
@@ -1137,7 +1142,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             optionsWideViewportMenuItem.isChecked = currentWebView!!.settings.useWideViewPort
             optionsDisplayImagesMenuItem.isChecked = currentWebView!!.settings.loadsImagesAutomatically
 
-            // Initialize the display names for the filter lists with the number of blocked requests.
+            // Set the display names for the filter lists with the number of blocked requests.
             optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + currentWebView!!.getRequestsCount(BLOCKED_REQUESTS)
             optionsEasyListMenuItem.title = currentWebView!!.getRequestsCount(EASYLIST).toString() + " - " + getString(R.string.easylist)
             optionsEasyPrivacyMenuItem.title = currentWebView!!.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
@@ -1159,6 +1164,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Set the checkbox status for dark WebView if algorithmic darkening is supported.
             if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))
                 optionsDarkWebViewMenuItem.isChecked = WebSettingsCompat.isAlgorithmicDarkeningAllowed(currentWebView!!.settings)
+
+            // Set the view source title according to the current URL.
+            if (currentWebView!!.currentUrl.startsWith("view-source:"))
+                optionsViewSourceMenuItem.title = getString(R.string.view_rendered_website)
+            else
+                optionsViewSourceMenuItem.title = getString(R.string.view_source)
         }
 
         // Set the cookies menu item checked status.
@@ -2003,15 +2014,29 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
 
             R.id.view_source -> {  // View source.
-                // Create an intent to launch the view source activity.
-                val viewSourceIntent = Intent(this, ViewSourceActivity::class.java)
+                // Open a new tab according to the current URL.
+                if (currentWebView!!.currentUrl.startsWith("view-source:")) {  // The source is currently viewed.
+                    // Open the rendered website in a new tab.
+                    addNewTab(currentWebView!!.currentUrl.substring(12, currentWebView!!.currentUrl.length), true)
+                } else {  // The rendered website is currently viewed.
+                    // Open the source in a new tab.
+                    addNewTab("view-source:${currentWebView!!.currentUrl}", true)
+                }
+
+                // Consume the event.
+                true
+            }
+
+            R.id.view_headers -> {  // View headers.
+                // Create an intent to launch the view headers activity.
+                val viewHeadersIntent = Intent(this, ViewHeadersActivity::class.java)
 
                 // Add the variables to the intent.
-                viewSourceIntent.putExtra(CURRENT_URL, currentWebView!!.url)
-                viewSourceIntent.putExtra(USER_AGENT, currentWebView!!.settings.userAgentString)
+                viewHeadersIntent.putExtra(CURRENT_URL, currentWebView!!.url)
+                viewHeadersIntent.putExtra(USER_AGENT, currentWebView!!.settings.userAgentString)
 
                 // Make it so.
-                startActivity(viewSourceIntent)
+                startActivity(viewHeadersIntent)
 
                 // Consume the event.
                 true
@@ -2209,6 +2234,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Load the previous website in the history.
                     currentWebView!!.goBack()
+
+                    // Update the URL edit text after a delay.
+                    updateUrlEditTextAfterDelay()
                 }
             }
 
@@ -2226,6 +2254,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Load the next website in the history.
                     currentWebView!!.goForward()
+
+                    // Update the URL edit text after a delay.
+                    updateUrlEditTextAfterDelay()
                 }
             }
 
@@ -3393,6 +3424,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Reload the website if returning from the Domains activity.
         if (reloadWebsite)
             nestedScrollWebView.reload()
+
+        // Disable the wide viewport if the source is being viewed.
+        if (url.startsWith("view-source:"))
+            nestedScrollWebView.settings.useWideViewPort = false
 
         // Load the URL if directed.  This makes sure that the domain settings are properly loaded before the URL.  By using `loadUrl()`, instead of `loadUrlFromBase()`, the Referer header will never be sent.
         if (loadUrl)
@@ -5346,8 +5381,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Update the URL text bar if the page is currently selected and the URL edit text is not currently being edited.
                 if ((tabLayout.selectedTabPosition == currentPagePosition) && !urlEditText.hasFocus()) {
-                    // Display the formatted URL text.
-                    urlEditText.setText(url)
+                    // Display the formatted URL text.  The nested scroll WebView current URL preserves any initial `view-source:`, and opposed to the method URL variable.
+                    urlEditText.setText(nestedScrollWebView.currentUrl)
 
                     // Highlight the URL syntax.
                     UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
@@ -5689,7 +5724,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         var urlString = ""
 
         // Check to see if the unformatted URL string is a valid URL.  Otherwise, convert it into a search.
-        if (unformattedUrlString.startsWith("content://")) {  // This is a content URL.
+        if (unformattedUrlString.startsWith("content://") || unformattedUrlString.startsWith("view-source:")) {  // This is a content or source URL.
             // Load the entire content URL.
             urlString = unformattedUrlString
         } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://") ||
@@ -5753,6 +5788,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Load the history entry.
         currentWebView!!.goBackOrForward(steps)
+
+        // Update the URL edit text after a delay.
+        updateUrlEditTextAfterDelay()
     }
 
     override fun openFile(dialogFragment: DialogFragment) {
@@ -5863,6 +5901,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Go back.
         currentWebView!!.goBack()
+
+        // Update the URL edit text after a delay.
+        updateUrlEditTextAfterDelay()
     }
 
     private fun sanitizeUrl(urlString: String): String {
@@ -6081,5 +6122,23 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             if (runInvalidateOptionsMenu)
                 invalidateOptionsMenu()
         }
+    }
+
+    fun updateUrlEditTextAfterDelay() {
+        // Create a handler to update the URL edit box.
+        val urlEditTextUpdateHandler = Handler(Looper.getMainLooper())
+
+        // Create a runnable to update the URL edit box.
+        val urlEditTextUpdateRunnable = Runnable {
+            // Update the URL edit text.
+            urlEditText.setText(currentWebView!!.url)
+
+            // Disable the wide viewport if the source is being viewed.
+            if (currentWebView!!.url!!.startsWith("view-source:"))
+                currentWebView!!.settings.useWideViewPort = false
+        }
+
+        // Update the URL edit text after 50 milliseconds, so that the WebView has enough time to navigate to the new URL.
+        urlEditTextUpdateHandler.postDelayed(urlEditTextUpdateRunnable, 50)
     }
 }

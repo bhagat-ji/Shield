@@ -226,8 +226,7 @@
     <string name="content_data">Content-Daten</string>
     <string name="untrusted_ssl_certificate">Das SSL-Zertifikat ist nicht vertrauenswürdig.</string>
     <string name="load_anyway">Trotzdem laden</string>
-    <string name="about_view_source">Über Quelltext</string>
-    <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
+    <string name="about_view_headers_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
         die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit WebView dargestellten Webseite auftreten.
         Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>
 

@@ -220,8 +220,7 @@
     <string name="content_data">Content - Dati</string>
     <string name="untrusted_ssl_certificate">Il certificato SSL non è attendibile.</string>
     <string name="load_anyway">Carica comunque</string>
-    <string name="about_view_source">Informazioni sulla visualizzazione della sorgente</string>
-    <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
+    <string name="about_view_headers_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
         ottenere le informazioni mostrate. Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView.
         Questa limitazione sarà eliminata nella serie 4.x quando verrà rilasciata Privacy WebView.</string>
 

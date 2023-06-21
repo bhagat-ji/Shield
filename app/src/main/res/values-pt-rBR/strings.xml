@@ -217,8 +217,7 @@
     <string name="content_data">Dados de conteúdo</string>
     <string name="untrusted_ssl_certificate">O certificado SSL é suspeito.</string>
     <string name="load_anyway">Carregar mesmo assim</string>
-    <string name="about_view_source">Sobre Ver Fonte</string>
-    <string name="about_view_source_message">Como o WebView do Android não expõe as informações de origem,
+    <string name="about_view_headers_message">Como o WebView do Android não expõe as informações de origem,
         uma solicitação separada foi feita usando ferramentas do sistema para reunir as informações exibidas nesta atividade.
         Pode haver algumas diferenças entre esses dados e aqueles usados pelo WebView na atividade principal. Essa limitação será removida na série 4.x com o lançamento do Privacy WebView.</string>
 
