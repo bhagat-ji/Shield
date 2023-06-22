@@ -45,6 +45,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.activities.HOME_FOLDER_DATABASE_ID
 import com.stoutner.privacybrowser.activities.HOME_FOLDER_ID
 import com.stoutner.privacybrowser.helpers.BOOKMARK_NAME
 import com.stoutner.privacybrowser.helpers.FAVORITE_ICON
@@ -218,7 +219,7 @@ class MoveToFolderDialog : DialogFragment() {
                     val homeFolderMatrixCursor = MatrixCursor(homeFolderMatrixCursorColumnNames)
 
                     // Add the home folder to the home folder matrix cursor.
-                    homeFolderMatrixCursor.addRow(arrayOf<Any>(0, getString(R.string.home_folder), homeFolderIconByteArray, HOME_FOLDER_ID))
+                    homeFolderMatrixCursor.addRow(arrayOf<Any>(HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder), homeFolderIconByteArray, HOME_FOLDER_ID))
 
                     // Add the current folder to the list of folders not to display.
                     folderIdsNotToDisplay.add(currentFolderId)
