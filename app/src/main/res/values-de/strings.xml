@@ -169,8 +169,10 @@
         <string name="print">Drucken</string>
             <string name="privacy_browser_webpage">Privacy Browser-Website</string>
         <string name="save">Speichern</string>
-        <string name="view_source">Quelltext anzeigen</string>
         <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
+        <string name="view_source">Quelltext anzeigen</string>
+        <string name="view_rendered_website">Gerenderte Internet-Seite anzeigen</string>
+        <string name="view_headers">Header anzeigen</string>
     <string name="share">Teilen</string>
     <string name="share_message">URL als Nachricht teilen</string>
         <string name="share_url">URL teilen</string>
@@ -217,7 +219,7 @@
     <string name="error_saving_file">Fehler beim Speichern der Datei %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unbekannter Fehler</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">Anfragekopfzeilen</string>
     <string name="response_message">Status-Code</string>
     <string name="response_headers">Antwortkopfzeilen</string>
@@ -226,6 +228,7 @@
     <string name="content_data">Content-Daten</string>
     <string name="untrusted_ssl_certificate">Das SSL-Zertifikat ist nicht vertrauenswürdig.</string>
     <string name="load_anyway">Trotzdem laden</string>
+    <string name="about_view_headers">Information zu "Header anzeigen"</string>
     <string name="about_view_headers_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
         die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit WebView dargestellten Webseite auftreten.
         Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>

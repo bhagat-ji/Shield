@@ -1,0 +1,7 @@
+• Sistemazione di un crash che avveniva muovendo un segnalibro nella cartella principale.
+• Utilizzo della segreta e non documentata funzionalità di visione della sorgente di WebView.
+• Spostamento dello User Agent al di sotto del DOM Storage nell'elenco delle impostazioni dei domini.
+• Creazione di una speciale finestra di dialogo di cifratura per gli URL di contenuto.
+• Sistemazione di un crash che avveniva quando Privacy Browser era riavviato mentre era visualizzata la finestra di dialogo di errore del certificato SSL.
+• Sistemazione di un rallentamento che avveniva quando Privacy Browser era riavviato mentre era visualizzata la finestra di dialogo di autenticazione HTTP.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

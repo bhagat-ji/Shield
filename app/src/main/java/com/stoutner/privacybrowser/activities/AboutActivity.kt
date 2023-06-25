@@ -84,6 +84,9 @@ class AboutActivity : AppCompatActivity() {
         // Set the view pager adapter.
         aboutViewPager2.adapter = aboutStateAdapter
 
+        // Disable swiping between pages in the view pager.
+        aboutViewPager2.isUserInputEnabled = false
+
         // Create a tab layout mediator.  Tab numbers start at 0.
         TabLayoutMediator(aboutTabLayout, aboutViewPager2) { tab, position ->
             // Set the tab text based on the position.

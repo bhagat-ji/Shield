@@ -222,7 +222,7 @@
     <string name="error_saving_file">Error saving %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unknown error</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">Request Headers</string>
     <string name="response_message">Response Message</string>
     <string name="response_headers">Response Headers</string>

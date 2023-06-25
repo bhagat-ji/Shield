@@ -165,6 +165,8 @@
         <string name="save">Salva</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
+        <string name="view_rendered_website">Visualizza il sito renderizzato</string>
+        <string name="view_headers">Visualizza Intestazioni</string>
     <string name="share">Condividi</string>
         <string name="share_message">Condividi messaggio</string>
         <string name="share_url">Condividi URL</string>
@@ -211,7 +213,7 @@
     <string name="error_saving_file">Error di salvataggio di %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Errore sconosciuto</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">Richiesta Intestazioni</string>
     <string name="response_message">Messaggio di Risposta</string>
     <string name="response_headers">Risposta Intestazioni</string>
@@ -220,6 +222,7 @@
     <string name="content_data">Content - Dati</string>
     <string name="untrusted_ssl_certificate">Il certificato SSL non è attendibile.</string>
     <string name="load_anyway">Carica comunque</string>
+    <string name="about_view_headers">Info sulla visualizzazione delle Intestazioni</string>
     <string name="about_view_headers_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
         ottenere le informazioni mostrate. Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView.
         Questa limitazione sarà eliminata nella serie 4.x quando verrà rilasciata Privacy WebView.</string>

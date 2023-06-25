@@ -164,6 +164,8 @@
         <string name="save">Сохранить</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
+        <string name="view_rendered_website">Просмотр рендеринга сайта</string>
+        <string name="view_headers">Просмотр заголовков</string>
     <string name="share">Поделиться</string>
         <string name="share_message">Поделиться в сообщении</string>
         <string name="share_url">Поделиться URL</string>
@@ -210,7 +212,7 @@
     <string name="error_saving_file">Ошибка сохранения %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Неизвестная ошибка</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">Заголовки запроса</string>
     <string name="response_message">Ответное сообщение</string>
     <string name="response_headers">Заголовки ответа</string>
@@ -219,6 +221,7 @@
     <string name="content_data">Данные содержимого</string>
     <string name="untrusted_ssl_certificate">SSL-сертификат не является доверенным.</string>
     <string name="load_anyway">Все равно загрузить</string>
+    <string name="about_view_headers">О просмотре заголовков</string>
     <string name="about_view_headers_message">Поскольку Android WebView не предоставляет исходные данные, для сбора информации, отображаемой в этом действии,
         был сделан отдельный запрос с помощью системных средств. Между этими данными и теми, которые используются в WebView, могут быть некоторые отличия.
         Это ограничение будет удалено в серии 4.x с выпуском Privacy WebView.</string>

@@ -210,7 +210,7 @@
     <string name="error_saving_file">Erreur lors de l\'enregistrement de %1$s : %2$s</string>
     <string name="unknown_error">Erreur inconnue</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">En-tête de la requête</string>
     <string name="response_message">Message de la réponse</string>
     <string name="response_headers">En-tête de la réponse</string>

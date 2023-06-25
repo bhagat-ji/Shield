@@ -401,41 +401,25 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         // Instantiate a content values.
         val domainContentValues = ContentValues()
 
-        // Get a handle for the shared preference.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
-
-        // Get the default settings.
-        val javaScript = sharedPreferences.getBoolean(appContext.getString(R.string.javascript_key), false)
-        val cookies = sharedPreferences.getBoolean(appContext.getString(R.string.cookies_key), false)
-        val domStorage = sharedPreferences.getBoolean(appContext.getString(R.string.dom_storage_key), false)
-        val saveFormData = sharedPreferences.getBoolean(appContext.getString(R.string.save_form_data_key), false)  // Form data can be removed once the minimum API >= 26.
-        val easyList = sharedPreferences.getBoolean(appContext.getString(R.string.easylist_key), true)
-        val easyPrivacy = sharedPreferences.getBoolean(appContext.getString(R.string.easyprivacy_key), true)
-        val fanboyAnnoyanceList = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_annoyance_list_key), true)
-        val fanboySocialBlockingList = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_social_blocking_list_key), true)
-        val ultraList = sharedPreferences.getBoolean(appContext.getString(R.string.ultralist_key), true)
-        val ultraPrivacy = sharedPreferences.getBoolean(appContext.getString(R.string.ultraprivacy_key), true)
-        val blockAllThirdPartyRequests = sharedPreferences.getBoolean(appContext.getString(R.string.block_all_third_party_requests_key), false)
-
         // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
         domainContentValues.put(DOMAIN_NAME, domainName)
-        domainContentValues.put(ENABLE_JAVASCRIPT, javaScript)
-        domainContentValues.put(COOKIES, cookies)
-        domainContentValues.put(ENABLE_DOM_STORAGE, domStorage)
-        domainContentValues.put(ENABLE_FORM_DATA, saveFormData) // Form data can be removed once the minimum API >= 26.
+        domainContentValues.put(ENABLE_JAVASCRIPT, SYSTEM_DEFAULT)
+        domainContentValues.put(COOKIES, SYSTEM_DEFAULT)
+        domainContentValues.put(ENABLE_DOM_STORAGE, SYSTEM_DEFAULT)
+        domainContentValues.put(ENABLE_FORM_DATA, SYSTEM_DEFAULT) // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(USER_AGENT, appContext.getString(R.string.system_default_user_agent))
-        domainContentValues.put(ENABLE_EASYLIST, easyList)
-        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy)
-        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboyAnnoyanceList)
-        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboySocialBlockingList)
-        domainContentValues.put(ULTRALIST, ultraList)
-        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
-        domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
-        domainContentValues.put(FONT_SIZE, 0)
-        domainContentValues.put(SWIPE_TO_REFRESH, 0)
-        domainContentValues.put(WEBVIEW_THEME, 0)
-        domainContentValues.put(WIDE_VIEWPORT, 0)
-        domainContentValues.put(DISPLAY_IMAGES, 0)
+        domainContentValues.put(ENABLE_EASYLIST, SYSTEM_DEFAULT)
+        domainContentValues.put(ENABLE_EASYPRIVACY, SYSTEM_DEFAULT)
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, SYSTEM_DEFAULT)
+        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, SYSTEM_DEFAULT)
+        domainContentValues.put(ULTRALIST, SYSTEM_DEFAULT)
+        domainContentValues.put(ENABLE_ULTRAPRIVACY, SYSTEM_DEFAULT)
+        domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, SYSTEM_DEFAULT)
+        domainContentValues.put(FONT_SIZE, SYSTEM_DEFAULT)
+        domainContentValues.put(SWIPE_TO_REFRESH, SYSTEM_DEFAULT)
+        domainContentValues.put(WEBVIEW_THEME, SYSTEM_DEFAULT)
+        domainContentValues.put(WIDE_VIEWPORT, SYSTEM_DEFAULT)
+        domainContentValues.put(DISPLAY_IMAGES, SYSTEM_DEFAULT)
 
         // Get a writable database handle.
         val domainsDatabase = this.writableDatabase

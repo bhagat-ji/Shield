@@ -213,7 +213,7 @@
     <string name="error_saving_file">保存失败 %1$s:\u0020 %2$s</string>
     <string name="unknown_error">未知错误</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">请求头</string>
     <string name="response_message">响应</string>
     <string name="response_headers">响应头</string>

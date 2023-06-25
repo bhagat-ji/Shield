@@ -179,7 +179,7 @@
     <string name="file_name">Dosya adı</string>
     <string name="unknown_size">Bilinmeyen boyut</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">İstek Başlıkları</string>
     <string name="response_message">Yanıt Mesajı</string>
     <string name="response_headers">Yanıt Başlıkları</string>

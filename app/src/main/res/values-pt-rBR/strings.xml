@@ -208,7 +208,7 @@
     <string name="error_saving_file">Erro ao salvar %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Erro desconhecido</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">Solicitar cabeçalhos</string>
     <string name="response_message">Mensagem de Resposta</string>
     <string name="response_headers">Cabeçalhos de resposta</string>

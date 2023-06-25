@@ -167,6 +167,8 @@
         <string name="save">Guardar</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="view_source">Ver la fuente</string>
+        <string name="view_rendered_website">Ver sitio web renderizado</string>
+        <string name="view_headers">Ver cabeceras</string>
     <string name="share">Compartir</string>
         <string name="share_message">Compartir mensaje</string>
         <string name="share_url">Compartir URL</string>
@@ -213,7 +215,7 @@
     <string name="error_saving_file">Error al guardar %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Error desconocido</string>
 
-    <!-- View Source. -->
+    <!-- View Headers. -->
     <string name="request_headers">Cabeceras de solicitud</string>
     <string name="response_message">Mensaje de respuesta</string>
     <string name="response_headers">Cabeceras de respuesta</string>
@@ -222,6 +224,7 @@
     <string name="content_data">Datos del contenido</string>
     <string name="untrusted_ssl_certificate">El certificado SSL no es de confianza.</string>
     <string name="load_anyway">Cargar de todos modos</string>
+    <string name="about_view_headers">Acerca de ver cabeceras</string>
     <string name="about_view_headers_message">Debido a que WebView de Android no expone la información fuente,
         se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.
         Puede haber algunas diferencias entre estos datos y los utilizados por WebView en la actividad principal.

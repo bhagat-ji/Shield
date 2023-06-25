@@ -77,6 +77,9 @@ class GuideActivity : AppCompatActivity() {
         // Set the view pager adapter.
         guideViewPager2.adapter = guideStateAdapter
 
+        // Disable swiping between pages in the view pager.
+        guideViewPager2.isUserInputEnabled = false
+
         // Create a tab layout mediator.  Tab numbers start at 0.
         TabLayoutMediator(guideTabLayout, guideViewPager2) { tab, position ->
             // Set the tab text based on the position.
