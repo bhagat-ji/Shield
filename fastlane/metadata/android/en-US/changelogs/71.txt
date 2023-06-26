@@ -1,0 +1,7 @@
+• Fix a crash when moving a bookmark to the home folder.
+• Take advantage of WebView’s secret, undocumented View Source functionality.
+• Fix Domain Settings sometimes being created as Enabled instead of System Default.
+• Move User Agent below DOM Storage in the domain settings list.
+• Create a special encryption dialog for Content URLs.
+• Fix a crash if Privacy Browser is restarted while the SSL certificate error dialog is displayed.
+• Fix a delay if Privacy Browser is restarted while the HTTP authentication dialog is displayed.

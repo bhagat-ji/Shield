@@ -1,0 +1,8 @@
+• Correction d'un crash lors du déplacement de favoris vers le dossier personnel.
+• Les fonctionnalités secrètes et non documentées de WebView, telles que View Source, sont mises à profit.
+• Correction des paramètres de domaine qui sont parfois créés en tant que "Activés" au lieu de la "Valeur par défaut du système".
+• Déplacement du User Agent en dessous du Stockage du DOM dans la liste des paramètres de domaine.
+• Création d'un message spécial de chiffrement pour les URLs de contenu.
+• Correction d'un crash si Privacy Browser est redémarré alors que la boîte de dialogue d'erreur de certificat SSL est affichée.
+• Correction d'un délai si Privacy Browser est redémarré alors que la boîte de dialogue d'authentification HTTP est affichée.
+• Traduction française mise à jour fournie par Kévin L.

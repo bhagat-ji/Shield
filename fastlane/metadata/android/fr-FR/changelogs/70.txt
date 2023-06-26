@@ -1,0 +1,7 @@
+• Réactivation du thème sombre WebView sur Android 7-9 (API 24-28).
+• Ajout d'une action d'annulation dans la vue de sauvegarde d'URL.
+• Modification des paramètres du domaine en listes déroulantes comprenant "Valeur Système".
+• Permission de dupliquer les noms de répertoires de favoris.
+• Correction d'un crash si Privacy Browser est redémarré alors que la boîte de dialogue d'épingler un domaine est affichée.
+• Modernisation du code d'adaptation de pagination de WebView.
+• Traduction française mise à jour fournie par Kévin L.

@@ -1,0 +1,8 @@
+• Mise en évidence de l'arrière-plan des réglages du domaine qui sont non par défaut.
+• Suppression des termes liste blanche et liste noire du projet.
+• Standardisation du nom suggéré des fichiers.
+• Mise à jour de la couleur d'arrière plan de la barre de l'app avec proxy.
+• Restauration de la position de défilement lors du redémarrage de l'application Paramètres.
+• Migration du restant du code vers Kotlin et suppression de AsyncTasks.
+• Optimisation de plusieurs parties du code pour plus d'efficacité.
+• Traduction française mise à jour fournie par Kévin L.

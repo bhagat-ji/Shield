@@ -1,5 +1,6 @@
 • Corregir un fallo al mover un marcador a la carpeta de inicio.
 • Aprovechar la funcionalidad secreta e indocumentada de Webview: Ver Fuente.
+• Arreglar la Configuración de Dominio que a veces se crea como Habilitada en vez de Predeterminada del sistema.
 • Mover el Agente de Usuario debajo de Almacenamiento DOM en la lista de configuración de dominio.
 • Crear un diálogo especial de cifrado para las URLs de contenido.
 • Corregir un fallo si Navegador Privado se reinicia mientras el diálogo de error de certificado SSL es mostrado.

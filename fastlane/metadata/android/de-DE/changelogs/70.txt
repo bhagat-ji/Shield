@@ -1,0 +1,7 @@
+• Dunkles WebView-Theme unter Android 7-9 (API 24-28) wieder reaktiviert.
+• "Abbrechen"-Aktion zur URL-Speichern-Informationsleiste hinzugefügt.
+• Domain-Einstellungs-Schalter zu Drop-Down-Listen geändert, welche die Option "System-Standard" beinhalten.
+• Dubletten bei Lesezeichen-Ordner-Namen erlaubt.
+• Problem mit Abstürzen behoben, wenn Privacy Browser neu gestartet wurde, während ein Verankerungs-Fehler angezeigt wurde.
+• WebView-Pager-Adapter-Code modernisiert.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

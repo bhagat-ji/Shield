@@ -69,6 +69,8 @@
     <string name="unencrypted_website">Site Web non-chiffré</string>
     <string name="no_ssl_certificate">La communication avec ce site n\'est pas chiffrée. Cela permet à des tiers d\'intercepter des informations, traquer votre activité,
         et injecter des contenus malicieux.</string>
+    <string name="content_url">URL de contenu</string>
+    <string name="content_url_message">Les URL de contenu sont des données chargées à partir d\'autres applications sur votre appareil.</string>
     <string name="ssl_certificate">Certificat SSL</string>
     <string name="close">Fermer</string>
     <string name="domain">Domaine</string>
@@ -165,6 +167,8 @@
         <string name="save">Sauvegarder</string>
         <string name="add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
         <string name="view_source">Voir Source</string>
+        <string name="view_rendered_website">Voir le site web reconstitué</string>
+        <string name="view_headers">Voir les en-têtes</string>
     <string name="share">Partager</string>
         <string name="share_message">Partager le message</string>
         <string name="share_url">Partager URL</string>
@@ -206,6 +210,7 @@
     <string name="saving_file_progress">Enregistrement du fichier : %1$s octets - %2$s</string>
     <string name="saving_file_percentage_progress">Enregistrement du fichier : %1$d%% - %2$s octets / %3$s octets - %4$s</string>
     <string name="saved">%1$s sauvegardé.</string>
+    <string name="download_cancelled">Téléchargement annulé.</string>
     <string name="processing_image">Traitement de l\'image : %1$s</string>
     <string name="error_saving_file">Erreur lors de l\'enregistrement de %1$s : %2$s</string>
     <string name="unknown_error">Erreur inconnue</string>
@@ -219,6 +224,7 @@
     <string name="content_data">Données du contenu</string>
     <string name="untrusted_ssl_certificate">Le certificat SSL n\'est pas fiable.</string>
     <string name="load_anyway">Charger quand même</string>
+    <string name="about_view_headers">A propos de View Headers</string>
     <string name="about_view_headers_message">Puisqu\'Android Webview ne permet pas de révêler l\'information source,
         une requête séparée a été effectuée en utilisant les outils sytèmes afin d\'afficher ce qui est présenté à l\'écran
         Il peut donc y avoir des différences entre ces connées et celle utilisée par Webview. Cette limitation sera supprimée lors de la sortie de Privacy Webview 4.x</string>
@@ -267,6 +273,8 @@
         <string name="sorted_by_database_id">Trié par ID dans la base</string>
         <string name="sorted_by_display_order">Trié par ordre d\'affichage</string>
     <string name="database_id">ID dans la base de données :</string>
+    <string name="folder_id">Identifiant du répertoire :</string>
+    <string name="folder_id_separator">\u0020 – %1$d</string>
     <string name="folder">Dossier :</string>
     <string name="parent_folder">Dossier parent :</string>
     <string name="display_order">Mode d\'affichage :</string>
@@ -323,27 +331,82 @@
     <string name="domain_name">Nom de demaine</string>
     <string name="domain_deleted">Domaine supprimé</string>
     <string name="domain_name_instructions">Faire précéder par *. pour inclure l\'ensemble des sous-domaines (ex. *.stoutner.com)</string>
+    <string-array name="javascript_array">
+        <item>Valeur système</item>
+        <item>JavaScript activé</item>
+        <item>JavaScript désactivé</item>
+    </string-array>
+    <string-array name="cookies_array">
+        <item>Valeur système</item>
+        <item>Cookies activés</item>
+        <item>Cookies désactivés</item>
+    </string-array>
+    <string-array name="dom_storage_array">
+        <item>Valeur système</item>
+        <item>Stockage du DOM activé</item>
+        <item>Stockage du DOM désactivé</item>
+    </string-array>
+    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
+        <item>Valeur système</item>
+        <item>Données de formulaire activées</item>
+        <item>Données de formulaire désactivées</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>Valeur système</item>
+        <item>EasyList activé</item>
+        <item>EasyList désactivé</item>
+    </string-array>
+    <string-array name="easyprivacy_array">
+        <item>Valeur système</item>
+        <item>EasyPrivacy activé</item>
+        <item>EasyPrivacy désactivé</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>Valeur système</item>
+        <item>Fanboy’s Annoyance List activé</item>
+        <item>Fanboy’s Annoyance List désactivé</item>
+    </string-array>
+    <string-array name="fanboys_social_blocking_list_array">
+        <item>Valeur système</item>
+        <item>Fanboy’s Social Blocking List activé</item>
+        <item>Fanboy’s Social Blocking List désactivé</item>
+    </string-array>
+    <string-array name="ultralist_array">
+        <item>Valeur système</item>
+        <item>UltraList activé</item>
+        <item>UltraList désactivé</item>
+    </string-array>
+    <string-array name="ultraprivacy_array">
+        <item>Valeur système</item>
+        <item>UltraPrivacy activé</item>
+        <item>UltraPrivacy désactivé</item>
+    </string-array>
+    <string-array name="block_all_third_party_requests_array">
+        <item>Valeur système</item>
+        <item>Blocage toutes les requêtes de tiers activé</item>
+        <item>Blocage toutes les requêtes de tiers désactivé</item>
+    </string-array>
     <string-array name="font_size_array">
-        <item>Réglages système</item>
+        <item>Valeur système</item>
         <item>Taille de police personnalisée</item>
     </string-array>
     <string-array name="swipe_to_refresh_array">
-        <item>Réglages système</item>
+        <item>Valeur système</item>
         <item>Glisser pour actualiser activé</item>
         <item>Glisser pour actualiser déactivé</item>
     </string-array>
     <string-array name="webview_theme_array">
-        <item>Réglages système</item>
+        <item>Valeur système</item>
         <item>Thème WebView clair</item>
         <item>Thème WebView sombre</item>
     </string-array>
     <string-array name="wide_viewport_array">
-        <item>Réglages système</item>
+        <item>Valeur système</item>
         <item>Mode fenêtre large activé</item>
         <item>Mode fenêtre largé désactivé</item>
     </string-array>
     <string-array name="display_webpage_images_array">
-        <item>Réglages système</item>
+        <item>Valeur système</item>
         <item>Images affichées</item>
         <item>Images masquées</item>
     </string-array>

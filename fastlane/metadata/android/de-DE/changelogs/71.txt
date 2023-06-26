@@ -1,0 +1,8 @@
+• Problem mit Abstürzen korrigiert, wenn Lesezeichen in den Hauptordner verschoben wurden.
+• Geheime, undokumentierte WebView-Funktion zum Anzeigen des Quellcodes wird nun genutzt.
+• Fehler behoben, durch den Domain-Einstellungen manchmal als Aktiviert statt System-Voreinstellung angelegt wurden.
+• User-Agent unter DOM-Speicher in der Liste der Domain-Einstellungen verschoben.
+• Speziellen Verschlüsselungs-Dialog für Content-URLs erstellt.
+• Problem mit Abstürzen behoben, wenn Privacy Browser neu gestartet wurde, während ein SSL-Zertifikats-Fehler-Dialog angezeigt wurde.
+• Problem mit Wartezeiten behoben, wenn Privacy Browser neu gestartet wurde, während ein HTTP-Authentifizierungs-Dialog angezeigt wurde.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

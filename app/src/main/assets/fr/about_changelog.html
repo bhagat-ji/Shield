@@ -32,38 +32,39 @@
         <h3>3.15.1 (version du code 71)</h3>
         <p>26 Juin 2023 - API minimale : 24, API optimale : 33</p>
         <ul>
-            <li>Fix a crash when moving a bookmark <a href="https://redmine.stoutner.com/issues/1028">to the home folder</a>.</li>
-            <li>Take advantage of WebView’s secret, undocumented <a href="https://redmine.stoutner.com/issues/1023">View Source functionality</a>.</li>
-            <li>Move <a href="https://redmine.stoutner.com/issues/1011">User Agent below DOM Storage</a> in the domain settings list.</li>
-            <li>Create a <a href="https://redmine.stoutner.com/issues/672">special encryption dialog</a> for Content URLs.</li>
-            <li>Fix a crash if Privacy Browser is restarted while the <a href="https://redmine.stoutner.com/issues/693">SSL certificate error dialog</a> is displayed.</li>
-            <li>Fix a delay if Privacy Browser is restarted while the <a href="https://redmine.stoutner.com/issues/692">HTTP authentication dialog</a> is displayed.</li>
+            <li>Correction d'un crash lors du déplacement de favoris <a href="https://redmine.stoutner.com/issues/1028">vers le dossier personnel</a>.</li>
+            <li>Les fonctionnalités secrètes et non documentées de WebView, telles que <a href="https://redmine.stoutner.com/issues/1023">View Source</a>, sont mises à profit.</li>
+            <li>Correction des paramètres de domaine qui sont parfois créés en tant que <a href="https://redmine.stoutner.com/issues/1032">"Activés" au lieu de la "Valeur par défaut du système"</a>.</li>
+            <li>Déplacement <a href="https://redmine.stoutner.com/issues/1011">du User Agent en dessous du Stockage du DOM </a> dans la liste des paramètres de domaine.</li>
+            <li>Création d'un <a href="https://redmine.stoutner.com/issues/672">message spécial de chiffrement </a> pour les URLs de contenu.</li>
+            <li>Correction d'un crash si Privacy Browser est redémarré alors que la <a href="https://redmine.stoutner.com/issues/693">boîte de dialogue d'erreur de certificat SSL</a> est affichée.</li>
+            <li>Correction d'un délai si Privacy Browser est redémarré alors que la <a href="https://redmine.stoutner.com/issues/692">boîte de dialogue d'authentification HTTP</a> est affichée.</li>
             <li>Traduction française mise à jour fournie par <a href="mailto:kevinliste@framalistes.org">Kévin L</a>.</li>
         </ul>
 
         <h3><a href="https://www.stoutner.com/privacy-browser-android-3-15/">3.15</a> (version du code 70)</h3>
         <p><a href="https://gitweb.stoutner.com/?p=PrivacyBrowserAndroid.git;a=commitdiff;h=a424c7a4dd110995277c9f4753fecb21a4a4991a">12 Juin 2023</a> - API minimale : 24, API optimale : 33</p>
         <ul>
-            <li>Reenable the <a href="https://redmine.stoutner.com/issues/1012">dark WebView theme</a> on Android 7-9 (API 24-28).</li>
-            <li>Add a <a href="https://redmine.stoutner.com/issues/782">cancel action</a> to the Save URL snackbar.</li>
-            <li>Change the domain settings switches to <a href="https://redmine.stoutner.com/issues/407">drop down lists</a> that include "system default".</li>
-            <li>Allow <a href="https://redmine.stoutner.com/issues/199">duplicate bookmark folder names</a>.</li>
-            <li>Fix a crash if Privacy Browser is restarted while the <a href="https://redmine.stoutner.com/issues/655">pinned mismatch dialog</a> is displayed.</li>
-            <li>Modernize the <a href="https://redmine.stoutner.com/issues/587">WebView pager adapter</a> code.</li>
+            <li>Réactivation du <a href="https://redmine.stoutner.com/issues/1012">thème sombre WebView</a> sur Android 7-9 (API 24-28).</li>
+            <li>Ajout d'une <a href="https://redmine.stoutner.com/issues/782">action d'annulation</a> dans la vue de sauvegarde d'URL.</li>
+            <li>Modification des paramètres du domaine en <a href="https://redmine.stoutner.com/issues/407">listes déroulantes</a> comprenant "Valeur Système".</li>
+            <li>Permission de <a href="https://redmine.stoutner.com/issues/199">dupliquer les noms de répertoires de favoris</a>.</li>
+            <li>Correction d'un crash si Privacy Browser est redémarré alors que la boîte de dialogue <a href="https://redmine.stoutner.com/issues/655">d'épingler un domaine</a> est affichée.</li>
+            <li>Modernisation du code <a href="https://redmine.stoutner.com/issues/587">d'adaptation de pagination de WebView</a>.</li>
             <li>Traduction française mise à jour fournie par <a href="mailto:kevinliste@framalistes.org">Kévin L</a>.</li>
         </ul>
 
         <h3><a href="https://www.stoutner.com/privacy-browser-android-3-14/">3.14</a> (version du code 69)</h3>
         <p><a href="https://gitweb.stoutner.com/?p=PrivacyBrowserAndroid.git;a=commitdiff;h=6d4644db8bed024d0f4d4cfb7cc8d1dcef3789fe">6 Mai 2023</a> - API minimale : 24, API optimale : 33</p>
         <ul>
-            <li>Highlight the background of domain settings that are <a href="https://redmine.stoutner.com/issues/886">not default</a>.</li>
-            <li>Remove the terms <a href="https://redmine.stoutner.com/issues/705"><code>whitelist</code> and <code>blacklist</code></a> from the project.</li>
-            <li>Standardize the <a href="https://redmine.stoutner.com/issues/951">suggested file names</a>.</li>
-            <li>Update the app bar <a href="https://redmine.stoutner.com/issues/998">proxy background color</a>.</li>
-            <li><a href="https://redmine.stoutner.com/issues/700">Restore the scroll position</a> when restarting the settings app.</li>
-            <li>Migrate the last of the code to <a href="https://redmine.stoutner.com/issues/989">Kotlin</a> and remove the deprecated <a href="https://redmine.stoutner.com/issues/987">AsyncTasks</a>.</li>
-            <li>Optimize <a href="https://redmine.stoutner.com/issues/990">several</a> <a href="https://redmine.stoutner.com/issues/991">pieces</a> of the
-                <a href="https://redmine.stoutner.com/issues/953">code</a> to run more efficiently.</li>
+            <li>Mise en évidence de l'arrière-plan des réglages du domaine qui sont <a href="https://redmine.stoutner.com/issues/886">non par défaut</a>.</li>
+            <li>Suppression des termes <a href="https://redmine.stoutner.com/issues/705"><code>liste blanche</code> et <code>liste noire</code></a> du projet.</li>
+            <li>Standardisation du <a href="https://redmine.stoutner.com/issues/951">nom suggéré des fichiers</a>.</li>
+            <li>Mise à jour de la couleur d'arrière plan <a href="https://redmine.stoutner.com/issues/998">de la barre de l'app avec proxy</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/700">Restauration de la position de défilement</a> lors du redémarrage de l'application Paramètres.</li>
+            <li>Migration du restant du code vers <a href="https://redmine.stoutner.com/issues/989">Kotlin</a> et suppression de <a href="https://redmine.stoutner.com/issues/987">AsyncTasks</a>.</li>
+            <li>Optimisation de <a href="https://redmine.stoutner.com/issues/990">plusieurs</a> <a href="https://redmine.stoutner.com/issues/991">parties</a> du
+                <a href="https://redmine.stoutner.com/issues/953">code</a> pour plus d'efficacité.</li>
             <li>Traduction française mise à jour fournie par <a href="mailto:kevinliste@framalistes.org">Kévin L</a>.</li>
         </ul>
 
