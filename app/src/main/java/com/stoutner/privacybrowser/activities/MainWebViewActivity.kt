@@ -4191,10 +4191,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Set the current WebView.
                 setCurrentWebView(position)
 
-                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled by creating a new tab.
-                if (tabLayout.selectedTabPosition != position) {
-                    // Wait until the new tab has been created.
-                    tabLayout.post {
+                // Wait until the new tab has been created.
+                tabLayout.post {
+                    // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled by creating a new tab.
+                    // The checking of the position was moved inside the post block to prevent a race condition that caused the tab to be selected twice and the encryption dialog to be displayed.
+                    // <https://redmine.stoutner.com/issues/1020>
+                    if (tabLayout.selectedTabPosition != position) {
                         // Get a handle for the tab.
                         val tab = tabLayout.getTabAt(position)!!
 
