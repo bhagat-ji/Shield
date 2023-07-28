@@ -380,6 +380,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var orbotStatusBroadcastReceiver: BroadcastReceiver? = null
     private var reapplyAppSettingsOnRestart = false
     private var reapplyDomainSettingsOnRestart = false
+    private var restartTime = Date(0)
     private var sanitizeAmpRedirects = false
     private var sanitizeTrackingQueries = false
     private var savedProxyMode: String? = null
@@ -1012,12 +1013,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Toggle the pages if there is more than one so that the view pager will recalculate their size.
         if (currentPage > 0) {
-            // Switch to the previous page.
-            webViewViewPager2.currentItem = (currentPage - 1)
+            // Switch to the previous page after 25 milliseconds.
+            webViewViewPager2.postDelayed ({ webViewViewPager2.currentItem = (currentPage - 1) }, 25)
 
-            // Switch back to the current page after the view pager has quiesced.
-            webViewViewPager2.post { webViewViewPager2.currentItem = currentPage }
+            // Switch back to the current page after the view pager has quiesced (which we are deciding should be 25 milliseconds).
+            webViewViewPager2.postDelayed ({ webViewViewPager2.currentItem = currentPage }, 25)
         }
+
+        // Scroll to the current tab position after 25 milliseconds.
+        tabLayout.postDelayed ({ tabLayout.setScrollPosition(currentPage, 0F, false, false) }, 25)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -2792,8 +2796,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Set a custom view on the new tab.
         newTab.setCustomView(R.layout.tab_custom_view)
 
+        // Scroll to the new tab position.
+        tabLayout.post { tabLayout.setScrollPosition(newTabNumber, 0F, false, false) }
+
         // Add the new WebView page.
-        webViewStateAdapter!!.addPage(newTabNumber, webViewViewPager2, urlString, moveToTab)
+        webViewStateAdapter!!.addPage(newTabNumber, newTab, urlString, moveToTab)
 
         // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
         if (bottomAppBar && moveToTab && appBarLayout.translationY != 0f) {
@@ -3992,7 +3999,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         if ((savedStateArrayList == null) || (savedStateArrayList!!.size == 0)) {  // The activity has not been restarted or it was restarted on start to change the theme.
             // Add the first tab.
             addNewTab("", false)
-        } else {  // The activity has been restarted.
+        } else {  // The activity has been restarted with a saved state.
+            // Set the current restart time.
+            restartTime = Date()
+
             // Restore each tab.
             for (i in savedStateArrayList!!.indices) {
                 // Add a new tab.
@@ -4017,12 +4027,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Set the first page as the current WebView.
                 setCurrentWebView(0)
             } else {  // The first tab is not selected.
-                // Switch to the page before the saved tab position.
-                webViewViewPager2.post { webViewViewPager2.currentItem = (savedTabPosition - 1) }
+                // Select the tab when the layout has finished populating.
+                tabLayout.post {
+                    // Get a handle for the tab.
+                    val tab = tabLayout.getTabAt(savedTabPosition)!!
 
-                // Switch to the saved tab position.
-                // This has to be done twice because, for some reason, if the above step is skipped there is some race condition where nothing happens and the first page is displayed.
-                webViewViewPager2.post { webViewViewPager2.currentItem = savedTabPosition }
+                    // Select the tab.
+                    tab.select()
+                }
             }
 
             // Get the intent that started the app.
@@ -4182,46 +4194,37 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val createBookmarkFolderFab = findViewById<FloatingActionButton>(R.id.create_bookmark_folder_fab)
         val createBookmarkFab = findViewById<FloatingActionButton>(R.id.create_bookmark_fab)
 
-        // Update the WebView pager every time a tab is modified.
-        webViewViewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                // Close the find on page bar if it is open.
-                closeFindOnPage(null)
-
-                // Set the current WebView.
-                setCurrentWebView(position)
-
-                // Wait until the new tab has been created.
-                tabLayout.post {
-                    // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled by creating a new tab.
-                    // The checking of the position was moved inside the post block to prevent a race condition that caused the tab to be selected twice and the encryption dialog to be displayed.
-                    // <https://redmine.stoutner.com/issues/1020>
-                    if (tabLayout.selectedTabPosition != position) {
-                        // Get a handle for the tab.
-                        val tab = tabLayout.getTabAt(position)!!
-
-                        // Select the tab.
-                        tab.select()
-                    }
-                }
-            }
-        })
-
         // Handle tab selections.
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
+                // Close the find on page bar if it is open.
+                closeFindOnPage(null)
+
                 // Select the same page in the view pager.
                 webViewViewPager2.currentItem = tab.position
+
+                // Set the current WebView.
+                setCurrentWebView(tab.position)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
 
             override fun onTabReselected(tab: TabLayout.Tab) {
-                // Instantiate the View SSL Certificate dialog.
-                val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
+                // Only display the view SSL certificate dialog if the current WebView is not null.
+                // This can happen if the tab is programmatically reselected while the app is being restarted and is not yet populated.
+                if (currentWebView != null) {
+                    // Calculate the milliseconds since the last restart.  This can be replaced by the simpler LocalDateTime once the minimum API >= 26.
+                    val millisecondsSinceLastRestart = Date().time - restartTime.time
 
-                // Display the View SSL Certificate dialog.
-                viewSslCertificateDialogFragment.show(supportFragmentManager, getString(R.string.view_ssl_certificate))
+                    // Only display the SSL certificate dialog if it has been at least 1 second since the last restart as deep restarts sometimes end up selecting a tab twice.
+                    if (millisecondsSinceLastRestart > 1000) {
+                        // Instantiate the View SSL Certificate dialog.
+                        val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
+
+                        // Display the View SSL Certificate dialog.
+                        viewSslCertificateDialogFragment.show(supportFragmentManager, getString(R.string.view_ssl_certificate))
+                    }
+                }
             }
         })
 
@@ -5948,16 +5951,16 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Stop the swipe to refresh indicator if it is running
         swipeRefreshLayout.isRefreshing = false
 
-        // Get the WebView tab fragment.
-        val webViewTabFragment = webViewStateAdapter!!.getPageFragment(pageNumber)
+        // Try to set the current WebView.  This will fail if the WebView has not yet been populated.
+        try {
+            // Get the WebView tab fragment.
+            val webViewTabFragment = webViewStateAdapter!!.getPageFragment(pageNumber)
 
-        // Get the fragment view.
-        val webViewFragmentView = webViewTabFragment.view
+            // Get the fragment view.
+            val webViewFragmentView = webViewTabFragment.view
 
-        // Set the current WebView if the fragment view is not null.
-        if (webViewFragmentView != null) {  // The fragment has been populated.
             // Store the current WebView.
-            currentWebView = webViewFragmentView.findViewById(R.id.nestedscroll_webview)
+            currentWebView = webViewFragmentView!!.findViewById(R.id.nestedscroll_webview)
 
             // Update the status of swipe to refresh.
             if (currentWebView!!.swipeToRefresh) {  // Swipe to refresh is enabled.
@@ -6017,8 +6020,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Remove any background on the URL relative layout.
                 urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
             }
-        } else if ((pageNumber == savedTabPosition) || (pageNumber >= (webViewStateAdapter!!.itemCount - 1))) {  // The tab has not been populated yet.
-            //  Try again in 100 milliseconds if the app is being restored or the a new tab has been added (the last tab).
+        }  catch (exception: Exception) {
+            //  Try again in 100 milliseconds if the WebView has not yet been populated.
             // Create a handler to set the current WebView.
             val setCurrentWebViewHandler = Handler(Looper.getMainLooper())
 
@@ -6028,8 +6031,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 setCurrentWebView(pageNumber)
             }
 
-            // Try setting the current WebView again after 100 milliseconds.
-            setCurrentWebViewHandler.postDelayed(setCurrentWebWebRunnable, 100)
+            // Try setting the current WebView again after 50 milliseconds.
+            setCurrentWebViewHandler.postDelayed(setCurrentWebWebRunnable, 50)
         }
     }
 

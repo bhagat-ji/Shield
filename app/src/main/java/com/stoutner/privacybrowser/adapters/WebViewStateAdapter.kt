@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -27,6 +27,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView.NO_ID
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+
+import com.google.android.material.tabs.TabLayout
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment
@@ -82,7 +84,7 @@ class WebViewStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAda
             NO_ID
     }
 
-    fun addPage(pageNumber: Int, webViewViewPager2: ViewPager2, url: String, moveToNewPage: Boolean) {
+    fun addPage(pageNumber: Int, newTab: TabLayout.Tab, url: String, moveToNewPage: Boolean) {
         // Add a new page.
         webViewFragmentsList.add(WebViewTabFragment.createPage(pageNumber, url))
 
@@ -90,8 +92,10 @@ class WebViewStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAda
         notifyItemInserted(pageNumber)
 
         // Move to the new page if indicated.
-        if (moveToNewPage)
-            webViewViewPager2.currentItem = pageNumber
+        if (moveToNewPage) {
+            // Select the newTab.
+            newTab.select()
+        }
     }
 
     fun deletePage(pageNumber: Int, webViewPager2: ViewPager2): Boolean {
