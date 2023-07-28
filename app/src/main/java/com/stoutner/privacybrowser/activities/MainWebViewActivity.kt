@@ -104,6 +104,8 @@ import androidx.cursoradapter.widget.CursorAdapter
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import androidx.webkit.WebSettingsCompat
@@ -280,6 +282,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var navigationForwardMenuItem: MenuItem
     private lateinit var navigationHistoryMenuItem: MenuItem
     private lateinit var navigationRequestsMenuItem: MenuItem
+    private lateinit var navigationView: NavigationView
     private lateinit var optionsAddOrEditDomainMenuItem: MenuItem
     private lateinit var optionsBlockAllThirdPartyRequestsMenuItem: MenuItem
     private lateinit var optionsClearCookiesMenuItem: MenuItem
@@ -375,6 +378,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var inFullScreenBrowsingMode = false
     private var incognitoModeEnabled = false
     private var loadingNewIntent = false
+    private var navigationDrawerFirstView = true
     private var objectAnimator = ObjectAnimator()
     private var optionsMenu: Menu? = null
     private var orbotStatusBroadcastReceiver: BroadcastReceiver? = null
@@ -589,7 +593,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             tabLayout = findViewById(R.id.tablayout)
             swipeRefreshLayout = findViewById(R.id.swiperefreshlayout)
             webViewViewPager2 = findViewById(R.id.webview_viewpager2)
-            val navigationView = findViewById<NavigationView>(R.id.navigationview)
+            navigationView = findViewById(R.id.navigationview)
             bookmarksListView = findViewById(R.id.bookmarks_drawer_listview)
             bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview)
             bookmarksDrawerPinnedImageView = findViewById(R.id.bookmarks_drawer_pinned_imageview)
@@ -1007,6 +1011,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     override fun onConfigurationChanged(newConfig: Configuration) {
         // Run the default commands.
         super.onConfigurationChanged(newConfig)
+
+        // Reset the navigation drawer first view flag.
+        navigationDrawerFirstView = true
 
         // Get the current page.
         val currentPage = webViewViewPager2.currentItem
@@ -4444,6 +4451,20 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Clear the focus from from the WebView if it is not null, which can happen if a user opens a drawer while the browser is being resumed.
                     // Clearing the focus from the WebView removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     currentWebView?.clearFocus()
+
+                    if (bottomAppBar && navigationDrawerFirstView) {
+                        // Reset the navigation drawer first view flag.
+                        navigationDrawerFirstView = false
+
+                        // Get a handle for the navigation recycler view.
+                        val navigationRecyclerView = navigationView.getChildAt(0) as RecyclerView
+
+                        // Get the navigation linear layout manager.
+                        val navigationLinearLayoutManager = navigationRecyclerView.layoutManager as LinearLayoutManager
+
+                        // Scroll the navigation drawer to the bottom.
+                        navigationLinearLayoutManager.scrollToPositionWithOffset(13, 0)
+                    }
                 }
             }
         })
