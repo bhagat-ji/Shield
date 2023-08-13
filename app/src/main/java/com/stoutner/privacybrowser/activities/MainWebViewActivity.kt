@@ -4223,8 +4223,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Calculate the milliseconds since the last restart.  This can be replaced by the simpler LocalDateTime once the minimum API >= 26.
                     val millisecondsSinceLastRestart = Date().time - restartTime.time
 
-                    // Only display the SSL certificate dialog if it has been at least 1 second since the last restart as deep restarts sometimes end up selecting a tab twice.
-                    if (millisecondsSinceLastRestart > 1000) {
+                    // Only display the SSL certificate dialog if it has been at least 2 seconds since the last restart as deep restarts sometimes end up selecting a tab twice.
+                    if (millisecondsSinceLastRestart > 2000) {
                         // Instantiate the View SSL Certificate dialog.
                         val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
 
