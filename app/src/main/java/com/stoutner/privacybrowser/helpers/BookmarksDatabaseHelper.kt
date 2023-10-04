@@ -885,7 +885,7 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
     }
 
     private fun generateFolderId(): Long {
-        // Get the current time in epoch format.
+        // Get the current time in epoch format (in milliseconds).
         val possibleFolderId = Date().time
 
         // Get a readable database.

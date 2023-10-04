@@ -4207,11 +4207,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Close the find on page bar if it is open.
                 closeFindOnPage(null)
 
-                // Select the same page in the view pager.
-                webViewViewPager2.currentItem = tab.position
+                // Update the view pager when it has quiesced.  Otherwise, if a page launched by a new intent on restart has not yet been created, the view pager will not be updated to match the tab layout.
+                webViewViewPager2.post {
+                    // Select the same page in the view pager.
+                    webViewViewPager2.currentItem = tab.position
 
-                // Set the current WebView.
-                setCurrentWebView(tab.position)
+                    // Set the current WebView.
+                    setCurrentWebView(tab.position)
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -4223,8 +4226,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Calculate the milliseconds since the last restart.  This can be replaced by the simpler LocalDateTime once the minimum API >= 26.
                     val millisecondsSinceLastRestart = Date().time - restartTime.time
 
-                    // Only display the SSL certificate dialog if it has been at least 2 seconds since the last restart as deep restarts sometimes end up selecting a tab twice.
-                    if (millisecondsSinceLastRestart > 2000) {
+                    // Only display the SSL certificate dialog if it has been at least 3 seconds since the last restart as deep restarts sometimes end up selecting a tab twice.
+                    if (millisecondsSinceLastRestart > 3000) {
                         // Instantiate the View SSL Certificate dialog.
                         val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
 
