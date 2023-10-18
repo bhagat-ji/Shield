@@ -227,12 +227,24 @@ object UrlHelper {
                 // De-emphasize subdomains.
                 if (penultimateDotIndex > 0) // There is more than one subdomain in the domain name.
                     urlEditText.text.setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-            } else if (urlString.startsWith("https://")) {  // The protocol is encrypted.
+            } else if (urlString.startsWith("https://") || urlString.startsWith("view-source:https://")) {  // The protocol is encrypted.
                 // De-emphasize the protocol of connections that are encrypted.
                 if (penultimateDotIndex > 0)  // There is more than one subdomain in the domain name.  De-emphasize the protocol and the additional subdomains.
                     urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                 else  // There is only one subdomain in the domain name.  De-emphasize only the protocol.
                     urlEditText.text.setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            } else if (urlString.startsWith("view-source:http://")) {  // An insecure source is being viewed.
+                // Check to see if subdomains should be de-emphasized.
+                if (penultimateDotIndex > 0) {  // There are subdomains that should be de-emphasized.
+                    // De-emphasize the `view-source:` text.
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                } else {  // There are no subdomains that need to be de-emphasized.
+                    // De-emphasize the `view-source:` text.
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 11, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+
+                // Highlight the protocol in red.
+                urlEditText.text.setSpan(redColorSpan, 12, 19, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             }
 
             // De-emphasize the text after the domain name.
