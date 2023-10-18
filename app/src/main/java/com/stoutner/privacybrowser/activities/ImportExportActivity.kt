@@ -189,8 +189,6 @@ class ImportExportActivity : AppCompatActivity() {
 
         // Find out if OpenKeychain is installed.
         openKeychainInstalled = try {
-            // The newer method can be used once the minimum API >= 33.
-            @Suppress("DEPRECATION")
             packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName.isNotEmpty()
         } catch (exception: PackageManager.NameNotFoundException) {
             false

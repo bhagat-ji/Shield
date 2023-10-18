@@ -58,7 +58,7 @@ const val THIRD_PARTY_REQUESTS = 7
 private const val ACCEPT_COOKIES = "A"
 private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "B"
 private const val CURRENT_DOMAIN_NAME = "C"
-private const val CURRENT_URl = "D"
+private const val CURRENT_URL = "D"
 private const val DOM_STORAGE_ENABLED = "E"
 private const val DOMAIN_SETTINGS_APPLIED = "F"
 private const val DOMAIN_SETTINGS_DATABASE_ID = "G"
@@ -398,7 +398,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         savedState.putBoolean(ACCEPT_COOKIES, acceptCookies)
         savedState.putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
         savedState.putString(CURRENT_DOMAIN_NAME, currentDomainName)
-        savedState.putString(CURRENT_URl, currentUrl)
+        savedState.putString(CURRENT_URL, currentUrl)
         savedState.putBoolean(DOM_STORAGE_ENABLED, this.settings.domStorageEnabled)
         savedState.putBoolean(DOMAIN_SETTINGS_APPLIED, domainSettingsApplied)
         savedState.putInt(DOMAIN_SETTINGS_DATABASE_ID, domainSettingsDatabaseId)
@@ -435,7 +435,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         acceptCookies = savedState.getBoolean(ACCEPT_COOKIES)
         blockAllThirdPartyRequests = savedState.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS)
         currentDomainName = savedState.getString(CURRENT_DOMAIN_NAME)!!
-        currentUrl = savedState.getString(CURRENT_URl)!!
+        currentUrl = savedState.getString(CURRENT_URL)!!
         this.settings.domStorageEnabled = savedState.getBoolean(DOM_STORAGE_ENABLED)
         domainSettingsApplied = savedState.getBoolean(DOMAIN_SETTINGS_APPLIED)
         domainSettingsDatabaseId = savedState.getInt(DOMAIN_SETTINGS_DATABASE_ID)

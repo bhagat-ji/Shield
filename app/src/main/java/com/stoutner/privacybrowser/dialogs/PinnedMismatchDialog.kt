@@ -22,13 +22,10 @@ package com.stoutner.privacybrowser.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.WindowManager
 
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
@@ -101,29 +98,8 @@ class PinnedMismatchDialog : DialogFragment() {
             // Use an alert dialog builder to create the alert dialog.
             val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
-            // Get the favorite icon.
-            val favoriteIconBitmap = nestedScrollWebView.getFavoriteIcon()
-
-            // Get the default favorite icon drawable.  `ContextCompat` must be used until API >= 21.
-            val defaultFavoriteIconDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.world)
-
-            // Cast the favorite icon drawable to a bitmap drawable.
-            val defaultFavoriteIconBitmapDrawable = (defaultFavoriteIconDrawable as BitmapDrawable)
-
-            // Store the default icon bitmap.
-            val defaultFavoriteIconBitmap = defaultFavoriteIconBitmapDrawable.bitmap
-
-            // Set the favorite icon as the dialog icon if it exists.
-            if (favoriteIconBitmap.sameAs(defaultFavoriteIconBitmap)) {  // There is no website favorite icon.
-                // Set the icon.
-                dialogBuilder.setIcon(R.drawable.ssl_certificate)
-            } else {  // There is a favorite icon.
-                // Create a drawable version of the favorite icon.
-                val favoriteIconDrawable: Drawable = BitmapDrawable(resources, favoriteIconBitmap)
-
-                // Set the icon.
-                dialogBuilder.setIcon(favoriteIconDrawable)
-            }
+            // Set the icon.
+            dialogBuilder.setIcon(R.drawable.ssl_certificate)
 
             // Set the title.
             dialogBuilder.setTitle(R.string.pinned_mismatch)

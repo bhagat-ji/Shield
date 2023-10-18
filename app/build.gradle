@@ -23,11 +23,12 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
-        targetSdk 33
+        //noinspection EditedTargetSdkVersion
+        targetSdk 34
         versionCode 71
         versionName "3.15.1"
         resourceConfigurations += ['en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN']
@@ -58,7 +59,7 @@ android {
     }
 
     // Gradle requires a `flavorDimension`, but it isn't used for anything in Privacy Browser.
-    flavorDimensions "basic"
+    flavorDimensions = ['basic']
 
     productFlavors {
         standard {
@@ -77,23 +78,23 @@ android {
 
 dependencies {
     // Include the following AndroidX libraries.
-    implementation "androidx.activity:activity-ktx:1.7.0-alpha04"
+    implementation "androidx.activity:activity-ktx:1.8.0"
     implementation 'androidx.arch.core:core-common:2.2.0'
     implementation 'androidx.arch.core:core-runtime:2.2.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'androidx.webkit:webkit:1.7.0'
+    implementation 'androidx.webkit:webkit:1.8.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
 }

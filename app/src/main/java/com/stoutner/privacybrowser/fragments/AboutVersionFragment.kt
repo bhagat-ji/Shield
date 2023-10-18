@@ -327,8 +327,7 @@ class AboutVersionFragment : Fragment() {
 
         // Get the Orbot version name if Orbot is installed.
         val orbot: String = try {
-            // Store the version name.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
-            @Suppress("DEPRECATION")
+            // Store the version name.
             requireContext().packageManager.getPackageInfo("org.torproject.android", 0).versionName
         } catch (exception: PackageManager.NameNotFoundException) {  // Orbot is not installed.
             // Store an empty string.
@@ -337,13 +336,11 @@ class AboutVersionFragment : Fragment() {
 
         // Get the I2P version name if I2P is installed.
         val i2p: String = try {
-            // Check to see if the F-Droid flavor is installed.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
-            @Suppress("DEPRECATION")
+            // Check to see if the F-Droid flavor is installed.
             requireContext().getString(R.string.fdroid_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName)
         } catch (exception: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
             try {
-                // Check to see if the F-Droid flavor is installed.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
-                @Suppress("DEPRECATION")
+                // Check to see if the F-Droid flavor is installed.
                 requireContext().getString(R.string.google_play_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android", 0).versionName)
             } catch (exception: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed either.
                 // Store an empty string.
@@ -353,8 +350,7 @@ class AboutVersionFragment : Fragment() {
 
         // Get the OpenKeychain version name if it is installed.
         val openKeychain: String = try {
-            // Store the version name.  The newer `getPackageInfo()` may be used once the minimum API >= 33.
-            @Suppress("DEPRECATION")
+            // Store the version name.
             requireContext().packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName
         } catch (exception: PackageManager.NameNotFoundException) {  // OpenKeychain is not installed.
             // Store an empty string.

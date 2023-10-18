@@ -99,6 +99,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.drawerlayout.widget.DrawerLayout
@@ -3480,8 +3481,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Get the package manager.
                     val packageManager = packageManager
 
-                    // Check to see if Orbot is in the list.  This will throw an error and drop to the catch section if it isn't installed.  The deprecated method must be used until the minimum API >= 33.
-                    @Suppress("DEPRECATION")
+                    // Check to see if Orbot is in the list.  This will throw an error and drop to the catch section if it isn't installed.
                     packageManager.getPackageInfo("org.torproject.android", 0)
 
                     // Check to see if the proxy is ready.
@@ -3529,14 +3529,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Check to see if I2P is installed.
                 try {
                     // Check to see if the F-Droid flavor is installed.  This will throw an error and drop to the catch section if it isn't installed.
-                    // The deprecated method must be used until the minimum API >= 33.
-                    @Suppress("DEPRECATION")
                     packageManager.getPackageInfo("net.i2p.android.router", 0)
                 } catch (fdroidException: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
                     try {
                         // Check to see if the Google Play flavor is installed.  This will throw an error and drop to the catch section if it isn't installed.
-                        // The deprecated method must be used until the minimum API >= 33.
-                        @Suppress("DEPRECATION")
                         packageManager.getPackageInfo("net.i2p.android", 0)
                     } catch (googlePlayException: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed.
                         // Sow the I2P not installed dialog if it is not already displayed.
@@ -4192,8 +4188,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
         }
 
-        // Register the Orbot status broadcast receiver.
-        registerReceiver(orbotStatusBroadcastReceiver, IntentFilter("org.torproject.android.intent.action.STATUS"))
+        // Register the Orbot status broadcast receiver.  `ContextCompat` must be used until the minimum API >= 34.
+        ContextCompat.registerReceiver(this, orbotStatusBroadcastReceiver, IntentFilter("org.torproject.android.intent.action.STATUS"), ContextCompat.RECEIVER_EXPORTED)
 
         // Get handles for views that need to be modified.
         val bookmarksHeaderLinearLayout = findViewById<LinearLayout>(R.id.bookmarks_header_linearlayout)
@@ -4671,9 +4667,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
             }
 
-            override fun onFling(motionEvent1: MotionEvent, motionEvent2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            override fun onFling(motionEvent1: MotionEvent?, motionEvent2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
                 // Scroll the bottom app bar if enabled.
-                if (bottomAppBar && scrollAppBar && !objectAnimator.isRunning) {
+                if (bottomAppBar && scrollAppBar && !objectAnimator.isRunning && (motionEvent1 != null)) {
                     // Calculate the Y change.
                     val motionY = motionEvent2.y - motionEvent1.y
 
