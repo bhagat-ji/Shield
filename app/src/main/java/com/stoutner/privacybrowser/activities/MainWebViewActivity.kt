@@ -726,6 +726,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Run the default commands.
         super.onNewIntent(intent)
 
+        // Close the navigation drawer if it is open.
+        if (drawerLayout.isDrawerVisible(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START)
+
+        // Close the bookmarks drawer if it is open.
+        if (drawerLayout.isDrawerVisible(GravityCompat.END))
+            drawerLayout.closeDrawer(GravityCompat.END)
+
         // Get the information from the intent.
         val intentAction = intent.action
         val intentUriData = intent.data
@@ -773,14 +781,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Make it so.
                     loadUrl(currentWebView!!, url!!)
                 }
-
-                // Close the navigation drawer if it is open.
-                if (drawerLayout.isDrawerVisible(GravityCompat.START))
-                    drawerLayout.closeDrawer(GravityCompat.START)
-
-                // Close the bookmarks drawer if it is open.
-                if (drawerLayout.isDrawerVisible(GravityCompat.END))
-                    drawerLayout.closeDrawer(GravityCompat.END)
             }
         } else {  // The app has been restarted.
             // If the new intent will open a new tab, set the saved tab position to be the size of the saved state array list.
