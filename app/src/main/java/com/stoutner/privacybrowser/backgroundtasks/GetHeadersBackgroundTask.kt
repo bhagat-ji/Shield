@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.backgroundtasks
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.ContentResolver
 import android.graphics.Typeface
 import android.net.Uri
@@ -28,6 +29,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import android.webkit.CookieManager
 
+import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.viewmodels.HeadersViewModel
 
 import java.io.BufferedInputStream
@@ -53,14 +55,22 @@ import javax.net.ssl.X509TrustManager
 
 
 class GetHeadersBackgroundTask {
-    fun acquire(urlString: String, userAgent: String, localeString: String, proxy: Proxy, contentResolver: ContentResolver, headersViewModel: HeadersViewModel, ignoreSslErrors: Boolean):
+    fun acquire(application: Application, urlString: String, userAgent: String, localeString: String, proxy: Proxy, contentResolver: ContentResolver, headersViewModel: HeadersViewModel, ignoreSslErrors: Boolean):
             Array<SpannableStringBuilder> {
 
         // Initialize the spannable string builders.
+        val sslInformationBuilder = SpannableStringBuilder()
+        val appliedCipherBuilder = SpannableStringBuilder()
+        val availableCiphersBuilder = SpannableStringBuilder()
+        val sslCertificateBuilder = SpannableStringBuilder()
         val requestHeadersBuilder = SpannableStringBuilder()
         val responseMessageBuilder = SpannableStringBuilder()
         val responseHeadersBuilder = SpannableStringBuilder()
         val responseBodyBuilder = SpannableStringBuilder()
+
+        // Get the colon string.
+        val colonString = application.getString(R.string.colon)
+        val newLineString = System.getProperty("line.separator")
 
         if (urlString.startsWith("content://")) {  // This is a content URL.
             // Attempt to read the content data.  Return an error if this fails.
@@ -78,11 +88,11 @@ class GetHeadersBackgroundTask {
                 for (i in 0 until contentCursor.columnCount) {
                     // Add a new line if this is not the first entry.
                     if (i > 0)
-                        responseHeadersBuilder.append(System.getProperty("line.separator"))
+                        responseHeadersBuilder.append(newLineString)
 
                     // Add each header to the string builder.
                     responseHeadersBuilder.append(contentCursor.getColumnName(i), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    responseHeadersBuilder.append(":  ")
+                    responseHeadersBuilder.append(colonString)
                     responseHeadersBuilder.append(contentCursor.getString(i))
                 }
 
@@ -121,7 +131,7 @@ class GetHeadersBackgroundTask {
 
                 // Add the `Host` header to the string builder and format the text.
                 requestHeadersBuilder.append("Host", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  ")
+                requestHeadersBuilder.append(colonString)
                 requestHeadersBuilder.append(url.host)
 
 
@@ -129,27 +139,29 @@ class GetHeadersBackgroundTask {
                 httpUrlConnection.setRequestProperty("Connection", "keep-alive")
 
                 // Add the `Connection` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Connection", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  keep-alive")
+                requestHeadersBuilder.append(colonString)
+                requestHeadersBuilder.append("keep-alive")
 
 
                 // Set the `Upgrade-Insecure-Requests` header property.
                 httpUrlConnection.setRequestProperty("Upgrade-Insecure-Requests", "1")
 
                 // Add the `Upgrade-Insecure-Requests` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Upgrade-Insecure-Requests", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  1")
+                requestHeadersBuilder.append(colonString)
+                requestHeadersBuilder.append("1")
 
 
                 // Set the `User-Agent` header property.
                 httpUrlConnection.setRequestProperty("User-Agent", userAgent)
 
                 // Add the `User-Agent` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("User-Agent", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  ")
+                requestHeadersBuilder.append(colonString)
                 requestHeadersBuilder.append(userAgent)
 
 
@@ -157,36 +169,39 @@ class GetHeadersBackgroundTask {
                 httpUrlConnection.setRequestProperty("Sec-Fetch-Site", "none")
 
                 // Add the `Sec-Fetch-Site` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Sec-Fetch-Site", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  none")
+                requestHeadersBuilder.append(colonString)
+                requestHeadersBuilder.append("none")
 
 
                 // Set the `Sec-Fetch-Mode` header property.
                 httpUrlConnection.setRequestProperty("Sec-Fetch-Mode", "navigate")
 
                 // Add the `Sec-Fetch-Mode` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Sec-Fetch-Mode", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  navigate")
+                requestHeadersBuilder.append(colonString)
+                requestHeadersBuilder.append("navigate")
 
 
                 // Set the `Sec-Fetch-User` header property.
                 httpUrlConnection.setRequestProperty("Sec-Fetch-User", "?1")
 
                 // Add the `Sec-Fetch-User` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Sec-Fetch-User", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  ?1")
+                requestHeadersBuilder.append(colonString)
+                requestHeadersBuilder.append("?1")
 
 
                 // Set the `Accept` header property.
                 httpUrlConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 
                 // Add the `Accept` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Accept", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  ")
+                requestHeadersBuilder.append(colonString)
                 requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
 
 
@@ -194,9 +209,9 @@ class GetHeadersBackgroundTask {
                 httpUrlConnection.setRequestProperty("Accept-Language", localeString)
 
                 // Add the `Accept-Language` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Accept-Language", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  ")
+                requestHeadersBuilder.append(colonString)
                 requestHeadersBuilder.append(localeString)
 
 
@@ -209,18 +224,19 @@ class GetHeadersBackgroundTask {
                     httpUrlConnection.setRequestProperty("Cookie", cookiesString)
 
                     // Add the cookie header to the string builder and format the text.
-                    requestHeadersBuilder.append(System.getProperty("line.separator"))
+                    requestHeadersBuilder.append(newLineString)
                     requestHeadersBuilder.append("Cookie", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    requestHeadersBuilder.append(":  ")
+                    requestHeadersBuilder.append(colonString)
                     requestHeadersBuilder.append(cookiesString)
                 }
 
 
                 // `HttpUrlConnection` sets `Accept-Encoding` to be `gzip` by default.  If the property is manually set, than `HttpUrlConnection` does not process the decoding.
                 // Add the `Accept-Encoding` header to the string builder and format the text.
-                requestHeadersBuilder.append(System.getProperty("line.separator"))
+                requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Accept-Encoding", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                requestHeadersBuilder.append(":  gzip")
+                requestHeadersBuilder.append(colonString)
+                requestHeadersBuilder.append("gzip")
 
                 // Ignore SSL errors if requested.
                 if (ignoreSslErrors) {
@@ -268,9 +284,68 @@ class GetHeadersBackgroundTask {
                     // Get the response code, which causes the connection to the server to be made.
                     val responseCode = httpUrlConnection.responseCode
 
+                    // Try to populate the SSL certificate information.
+                    try {
+                        // Get the applied cipher suite string.
+                        val appliedCipherString = (httpUrlConnection as HttpsURLConnection).cipherSuite
+
+                        // Populate the applied cipher builder, returned separately.
+                        appliedCipherBuilder.append(appliedCipherString)
+
+                        // Append the applied cipher suite to the SSL information builder.
+                        sslInformationBuilder.append(application.getString(R.string.applied_cipher), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        sslInformationBuilder.append(colonString)
+                        sslInformationBuilder.append(appliedCipherString)
+                        sslInformationBuilder.append(newLineString)
+
+                        // Append the peer principal to the SSL information builder.
+                        sslInformationBuilder.append(application.getString(R.string.peer_principal), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        sslInformationBuilder.append(colonString)
+                        sslInformationBuilder.append(httpUrlConnection.peerPrincipal.toString())
+                        sslInformationBuilder.append(newLineString)
+
+                        // Get the server certificate.
+                        val serverCertificate = httpUrlConnection.serverCertificates[0]
+
+                        // Append the certificate type to the SSL information builder.
+                        sslInformationBuilder.append(application.getString(R.string.certificate_type), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        sslInformationBuilder.append(colonString)
+                        sslInformationBuilder.append(serverCertificate.type)
+                        sslInformationBuilder.append(newLineString)
+
+                        // Append the certificate hash code to the SSL information builder.
+                        sslInformationBuilder.append(application.getString(R.string.certificate_hash_code), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        sslInformationBuilder.append(colonString)
+                        sslInformationBuilder.append(serverCertificate.hashCode().toString())
+
+                        // Get the available cipher suites string array.
+                        val availableCipherSuitesStringArray = httpUrlConnection.sslSocketFactory.defaultCipherSuites
+
+                        // Get the available cipher suites string array size.
+                        val availableCipherSuitesStringArraySize = availableCipherSuitesStringArray.size
+
+                        // Populate the available cipher suites, returned separately.
+                        for (i in 0 until availableCipherSuitesStringArraySize) {
+                            // Append a new line if a cipher is already populated.
+                            if (i > 0)
+                                availableCiphersBuilder.append(newLineString)
+
+                            // Get the current cipher suite.
+                            val currentCipherSuite = availableCipherSuitesStringArray[i]
+
+                            // Append the current cipher to the list.
+                            availableCiphersBuilder.append(currentCipherSuite)
+                        }
+
+                        // Populate the SSL certificate, returned separately.
+                        sslCertificateBuilder.append(serverCertificate.toString())
+                    } catch (exception: Exception) {
+                        // Do nothing.
+                    }
+
                     // Populate the response message string builder.
                     responseMessageBuilder.append(responseCode.toString(), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    responseMessageBuilder.append(":  ")
+                    responseMessageBuilder.append(colonString)
                     responseMessageBuilder.append(httpUrlConnection.responseMessage)
 
                     // Initialize the iteration variable.
@@ -280,11 +355,11 @@ class GetHeadersBackgroundTask {
                     while (httpUrlConnection.getHeaderField(i) != null) {
                         // Add a new line if there is already information in the string builder.
                         if (i > 0)
-                            responseHeadersBuilder.append(System.getProperty("line.separator"))
+                            responseHeadersBuilder.append(newLineString)
 
                         // Add the header to the string builder and format the text.
                         responseHeadersBuilder.append(httpUrlConnection.getHeaderFieldKey(i), StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        responseHeadersBuilder.append(":  ")
+                        responseHeadersBuilder.append(colonString)
                         responseHeadersBuilder.append(httpUrlConnection.getHeaderField(i))
 
                         // Increment the iteration variable.
@@ -331,6 +406,6 @@ class GetHeadersBackgroundTask {
         }
 
         // Return the spannable string builders.
-        return arrayOf(requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder)
+        return arrayOf(sslInformationBuilder, appliedCipherBuilder, availableCiphersBuilder, sslCertificateBuilder, requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder)
     }
 }

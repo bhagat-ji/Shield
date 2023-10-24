@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.viewmodelfactories
 
+import android.app.Application
 import android.content.ContentResolver
 
 import androidx.lifecycle.ViewModel
@@ -27,12 +28,12 @@ import androidx.lifecycle.ViewModelProvider
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 
-class ViewHeadersFactory (private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy, private val contentResolver: ContentResolver,
-                          private val executorService: ExecutorService): ViewModelProvider.Factory {
+class ViewHeadersFactory (private val application: Application, private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy,
+                          private val contentResolver: ContentResolver, private val executorService: ExecutorService): ViewModelProvider.Factory {
     // Override the create function in order to add the provided arguments.
     override fun <T: ViewModel> create(modelClass: Class<T>): T {
         // Return a new instance of the model class with the provided arguments.
-        return modelClass.getConstructor(String::class.java, String::class.java, String::class.java, Proxy::class.java, ContentResolver::class.java, ExecutorService::class.java)
-                .newInstance(urlString, userAgent, localeString, proxy, contentResolver, executorService)
+        return modelClass.getConstructor(Application::class.java, String::class.java, String::class.java, String::class.java, Proxy::class.java, ContentResolver::class.java, ExecutorService::class.java)
+                .newInstance(application, urlString, userAgent, localeString, proxy, contentResolver, executorService)
     }
 }

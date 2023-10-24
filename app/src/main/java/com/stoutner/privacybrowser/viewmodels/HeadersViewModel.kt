@@ -19,20 +19,22 @@
 
 package com.stoutner.privacybrowser.viewmodels
 
+import android.app.Application
 import android.content.ContentResolver
 import android.text.SpannableStringBuilder
 
+import androidx.lifecycle.AndroidViewModel
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 
 import com.stoutner.privacybrowser.backgroundtasks.GetHeadersBackgroundTask
 
 import java.net.Proxy
 import java.util.concurrent.ExecutorService
 
-class HeadersViewModel(private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy, private val contentResolver: ContentResolver,
-                       private val executorService: ExecutorService): ViewModel() {
+class HeadersViewModel(application: Application, private val urlString: String, private val userAgent: String, private val localeString: String, private val proxy: Proxy, private val contentResolver: ContentResolver,
+                       private val executorService: ExecutorService): AndroidViewModel(application) {
     // Initialize the mutable live data variables.
     private val mutableLiveDataSourceStringArray = MutableLiveData<Array<SpannableStringBuilder>>()
     private val mutableLiveDataErrorString = MutableLiveData<String>()
@@ -43,7 +45,7 @@ class HeadersViewModel(private val urlString: String, private val userAgent: Str
         val getSourceBackgroundTask = GetHeadersBackgroundTask()
 
         // Get the headers.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this,
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(application, urlString, userAgent, localeString, proxy, contentResolver, this,
             false)) }
     }
 
@@ -74,7 +76,7 @@ class HeadersViewModel(private val urlString: String, private val userAgent: Str
         val getSourceBackgroundTask = GetHeadersBackgroundTask()
 
         // Get the headers.
-        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(urlString, userAgent, localeString, proxy, contentResolver, this,
+        executorService.execute { mutableLiveDataSourceStringArray.postValue(getSourceBackgroundTask.acquire(getApplication(), urlString, userAgent, localeString, proxy, contentResolver, this,
             ignoreSslErrors)) }
     }
 }

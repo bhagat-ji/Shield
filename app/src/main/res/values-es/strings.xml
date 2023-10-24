@@ -215,7 +215,8 @@
     <string name="error_saving_file">Error al guardar %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Error desconocido</string>
 
-    <!-- View Headers. -->
+    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.-->
+    <string name="colon">: \u0020</string>
     <string name="request_headers">Cabeceras de solicitud</string>
     <string name="response_message">Mensaje de respuesta</string>
     <string name="response_headers">Cabeceras de respuesta</string>

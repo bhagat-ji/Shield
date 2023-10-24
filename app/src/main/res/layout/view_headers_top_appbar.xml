@@ -22,6 +22,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -81,6 +82,55 @@
                     android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:layout_margin="10dp" >
+
+                    <!-- SSL information. -->
+                    <TextView
+                        android:id="@+id/ssl_information_title_textview"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:text="@string/ssl_information"
+                        android:textAlignment="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/blue_text"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/ssl_information_textview"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:textIsSelectable="true"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Button row. -->
+                    <LinearLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp"
+                        android:layout_gravity="center_horizontal" >
+
+                        <Button
+                            android:id="@+id/ciphers_button"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="@string/ciphers"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginEnd="10dp"
+                            android:onClick="showCiphers"
+                            app:backgroundTint="@color/button_background_selector"
+                            android:textColor="@color/button_text_selector"
+                            tools:ignore="ButtonStyle" />
+
+                        <Button
+                            android:id="@+id/certificate_button"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="@string/certificate"
+                            android:onClick="showCertificate"
+                            app:backgroundTint="@color/button_background_selector"
+                            android:textColor="@color/button_text_selector"
+                            tools:ignore="ButtonStyle" />
+                    </LinearLayout>
 
                     <!-- Request headers. -->
                     <TextView

@@ -222,7 +222,16 @@
     <string name="error_saving_file">Error saving %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unknown error</string>
 
-    <!-- View Headers. -->
+    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.-->
+    <string name="colon">: \u0020</string>
+    <string name="ssl_information">SSL Information</string>
+    <string name="applied_cipher">Applied Cipher</string>
+    <string name="peer_principal">Peer Principal</string>
+    <string name="certificate_type">Certificate Type</string>
+    <string name="certificate_hash_code">Certificate Hash Code</string>
+    <string name="ciphers">Ciphers</string>
+    <string name="available_ciphers">Available Ciphers</string>
+    <string name="certificate">Certificate</string>
     <string name="request_headers">Request Headers</string>
     <string name="response_message">Response Message</string>
     <string name="response_headers">Response Headers</string>

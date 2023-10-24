@@ -179,7 +179,8 @@
     <string name="file_name">Dosya adı</string>
     <string name="unknown_size">Bilinmeyen boyut</string>
 
-    <!-- View Headers. -->
+    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.-->
+    <string name="colon">: \u0020</string>
     <string name="request_headers">İstek Başlıkları</string>
     <string name="response_message">Yanıt Mesajı</string>
     <string name="response_headers">Yanıt Başlıkları</string>

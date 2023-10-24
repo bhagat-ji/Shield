@@ -30,6 +30,7 @@ import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -46,7 +47,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.dialogs.AVAILABLE_CIPHERS
+import com.stoutner.privacybrowser.dialogs.SSL_CERTIFICATE
 import com.stoutner.privacybrowser.dialogs.AboutViewHeadersDialog
+import com.stoutner.privacybrowser.dialogs.ViewHeadersDetailDialog
 import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog
 import com.stoutner.privacybrowser.dialogs.UntrustedSslCertificateDialog.UntrustedSslCertificateListener
 import com.stoutner.privacybrowser.helpers.ProxyHelper
@@ -59,13 +63,20 @@ const val USER_AGENT = "user_agent"
 
 class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener {
     // Declare the class variables.
+    private lateinit var appliedCipherString: String
+    private lateinit var availableCiphersString: String
     private lateinit var headersViewModel: HeadersViewModel
     private lateinit var initialGrayColorSpan: ForegroundColorSpan
     private lateinit var finalGrayColorSpan: ForegroundColorSpan
     private lateinit var redColorSpan: ForegroundColorSpan
+    private lateinit var sslCertificateString: String
 
     // Declare the class views.
     private lateinit var urlEditText: EditText
+    private lateinit var sslInformationTitleTextView: TextView
+    private lateinit var sslInformationTextView: TextView
+    private lateinit var ciphersButton: Button
+    private lateinit var certificateButton: Button
     private lateinit var requestHeadersTitleTextView: TextView
     private lateinit var requestHeadersTextView: TextView
     private lateinit var responseMessageTitleTextView: TextView
@@ -122,6 +133,10 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         urlEditText = findViewById(R.id.url_edittext)
         val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
         val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefreshlayout)
+        sslInformationTitleTextView = findViewById(R.id.ssl_information_title_textview)
+        sslInformationTextView = findViewById(R.id.ssl_information_textview)
+        ciphersButton = findViewById(R.id.ciphers_button)
+        certificateButton = findViewById(R.id.certificate_button)
         requestHeadersTitleTextView = findViewById(R.id.request_headers_title_textview)
         requestHeadersTextView = findViewById(R.id.request_headers_textview)
         responseMessageTitleTextView = findViewById(R.id.response_message_title_textview)
@@ -244,7 +259,7 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         updateLayout(currentUrl)
 
         // Instantiate the view headers factory.
-        val viewHeadersFactory: ViewModelProvider.Factory = ViewHeadersFactory(currentUrl, userAgent, localesStringBuilder.toString(), proxy, contentResolver, MainWebViewActivity.executorService)
+        val viewHeadersFactory: ViewModelProvider.Factory = ViewHeadersFactory(application, currentUrl, userAgent, localesStringBuilder.toString(), proxy, contentResolver, MainWebViewActivity.executorService)
 
         // Instantiate the headers view model.
         headersViewModel = ViewModelProvider(this, viewHeadersFactory)[HeadersViewModel::class.java]
@@ -252,16 +267,22 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         // Create a headers observer.
         headersViewModel.observeHeaders().observe(this) { headersStringArray: Array<SpannableStringBuilder> ->
             // Populate the text views.  This can take a long time, and freezes the user interface, if the response body is particularly large.
-            requestHeadersTextView.text = headersStringArray[0]
-            responseMessageTextView.text = headersStringArray[1]
-            responseHeadersTextView.text = headersStringArray[2]
-            responseBodyTextView.text = headersStringArray[3]
+            sslInformationTextView.text = headersStringArray[0]
+            requestHeadersTextView.text = headersStringArray[4]
+            responseMessageTextView.text = headersStringArray[5]
+            responseHeadersTextView.text = headersStringArray[6]
+            responseBodyTextView.text = headersStringArray[7]
+
+            // Populate the dialog strings.
+            appliedCipherString = headersStringArray[1].toString()
+            availableCiphersString = headersStringArray[2].toString()
+            sslCertificateString = headersStringArray[3].toString()
 
             // Hide the progress bar.
             progressBar.isIndeterminate = false
             progressBar.visibility = View.GONE
 
-            //Stop the swipe to refresh indicator if it is running
+            // Stop the swipe to refresh indicator if it is running
             swipeRefreshLayout.isRefreshing = false
         }
 
@@ -364,9 +385,31 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         headersViewModel.updateHeaders(urlEditText.text.toString(), true)
     }
 
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun showCertificate(@Suppress("UNUSED_PARAMETER")view: View) {
+        // Instantiate an SSL certificate dialog.
+        val sslCertificateDialogFragment= ViewHeadersDetailDialog.displayDialog(SSL_CERTIFICATE, sslCertificateString)
+
+        // Show the dialog.
+        sslCertificateDialogFragment.show(supportFragmentManager, getString(R.string.ssl_certificate))
+    }
+
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun showCiphers(@Suppress("UNUSED_PARAMETER")view: View) {
+        // Instantiate an SSL certificate dialog.
+        val ciphersDialogFragment= ViewHeadersDetailDialog.displayDialog(AVAILABLE_CIPHERS, availableCiphersString, appliedCipherString)
+
+        // Show the dialog.
+        ciphersDialogFragment.show(supportFragmentManager, getString(R.string.ssl_certificate))
+    }
+
     private fun updateLayout(urlString: String) {
         if (urlString.startsWith("content://")) {  // This is a content URL.
-            // Hide the unused text views.
+            // Hide the unused views.
+            sslInformationTitleTextView.visibility = View.GONE
+            sslInformationTextView.visibility = View.GONE
+            ciphersButton.visibility = View.GONE
+            certificateButton.visibility = View.GONE
             requestHeadersTitleTextView.visibility = View.GONE
             requestHeadersTextView.visibility = View.GONE
             responseMessageTitleTextView.visibility = View.GONE
@@ -376,7 +419,22 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
             responseHeadersTitleTextView.setText(R.string.content_metadata)
             responseBodyTitleTextView.setText(R.string.content_data)
         } else {  // This is not a content URL.
-            // Show the views.
+            // Set the status if the the SSL information views.
+            if (urlString.startsWith("http://")) {  // This is an HTTP URL.
+                // Hide the SSL information views.
+                sslInformationTitleTextView.visibility = View.GONE
+                sslInformationTextView.visibility = View.GONE
+                ciphersButton.visibility = View.GONE
+                certificateButton.visibility = View.GONE
+            } else {  // This is not an HTTP URL.
+                // Show the SSL information views.
+                sslInformationTitleTextView.visibility = View.VISIBLE
+                sslInformationTextView.visibility = View.VISIBLE
+                ciphersButton.visibility = View.VISIBLE
+                certificateButton.visibility = View.VISIBLE
+            }
+
+            // Show the other views.
             requestHeadersTitleTextView.visibility = View.VISIBLE
             requestHeadersTextView.visibility = View.VISIBLE
             responseMessageTitleTextView.visibility = View.VISIBLE

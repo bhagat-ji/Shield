@@ -213,7 +213,8 @@
     <string name="error_saving_file">保存失败 %1$s:\u0020 %2$s</string>
     <string name="unknown_error">未知错误</string>
 
-    <!-- View Headers. -->
+    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.-->
+    <string name="colon">: \u0020</string>
     <string name="request_headers">请求头</string>
     <string name="response_message">响应</string>
     <string name="response_headers">响应头</string>
