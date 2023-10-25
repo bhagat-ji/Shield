@@ -202,7 +202,7 @@ object UrlHelper {
         // Highlight the URL according to the protocol.
         if (urlString.startsWith("file://") || urlString.startsWith("content://")) {  // This is a file or content URL.
             // De-emphasize everything before the file name.
-            urlEditText.text.setSpan(initialGrayColorSpan, 0, urlString.lastIndexOf("/") + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+            urlEditText.text.setSpan(initialGrayColorSpan, 0, urlString.lastIndexOf("/") + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else {  // This is a web URL.
             // Get the index of the `/` immediately after the domain name.
             val endOfDomainName = urlString.indexOf("/", urlString.indexOf("//") + 2)
@@ -222,29 +222,29 @@ object UrlHelper {
             // Markup the beginning of the URL.
             if (urlString.startsWith("http://")) {  // The protocol is not encrypted.
                 // Highlight the protocol in red.
-                urlEditText.text.setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                urlEditText.text.setSpan(redColorSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 // De-emphasize subdomains.
                 if (penultimateDotIndex > 0) // There is more than one subdomain in the domain name.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    urlEditText.text.setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else if (urlString.startsWith("https://") || urlString.startsWith("view-source:https://")) {  // The protocol is encrypted.
                 // De-emphasize the protocol of connections that are encrypted.
                 if (penultimateDotIndex > 0)  // There is more than one subdomain in the domain name.  De-emphasize the protocol and the additional subdomains.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 else  // There is only one subdomain in the domain name.  De-emphasize only the protocol.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else if (urlString.startsWith("view-source:http://")) {  // An insecure source is being viewed.
                 // Check to see if subdomains should be de-emphasized.
                 if (penultimateDotIndex > 0) {  // There are subdomains that should be de-emphasized.
                     // De-emphasize the `view-source:` text.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 } else {  // There are no subdomains that need to be de-emphasized.
                     // De-emphasize the `view-source:` text.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 11, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
                 // Highlight the protocol in red.
-                urlEditText.text.setSpan(redColorSpan, 12, 19, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                urlEditText.text.setSpan(redColorSpan, 12, 19, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 
             // De-emphasize the text after the domain name.

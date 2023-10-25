@@ -77,7 +77,6 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="16dp"
                         android:layout_gravity="center_horizontal" >
 
                             <Button
@@ -87,6 +86,7 @@
                                 android:text="@string/ciphers"
                                 android:layout_gravity="center_horizontal"
                                 android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="16dp"
                                 android:onClick="showCiphers"
                                 app:backgroundTint="@color/button_background_selector"
                                 android:textColor="@color/button_text_selector"

@@ -120,6 +120,8 @@
     <string name="home">Home</string>
     <string name="back">Back</string>
     <string name="forward">Forward</string>
+    <string name="scroll_to_bottom">Scroll to Bottom</string>
+        <string name="scroll_to_top">Scroll to Top</string>
     <string name="history">History</string>
         <string name="clear_history">Clear History</string>
     <string name="open">Open</string>

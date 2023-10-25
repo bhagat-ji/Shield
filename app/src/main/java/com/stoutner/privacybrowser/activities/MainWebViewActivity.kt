@@ -283,6 +283,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var navigationForwardMenuItem: MenuItem
     private lateinit var navigationHistoryMenuItem: MenuItem
     private lateinit var navigationRequestsMenuItem: MenuItem
+    private lateinit var navigationScrollToBottomMenuItem: MenuItem
     private lateinit var navigationView: NavigationView
     private lateinit var optionsAddOrEditDomainMenuItem: MenuItem
     private lateinit var optionsBlockAllThirdPartyRequestsMenuItem: MenuItem
@@ -606,6 +607,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Get handles for the navigation menu items.
             navigationBackMenuItem = navigationMenu.findItem(R.id.back)
             navigationForwardMenuItem = navigationMenu.findItem(R.id.forward)
+            navigationScrollToBottomMenuItem = navigationMenu.findItem(R.id.scroll_to_bottom)
             navigationHistoryMenuItem = navigationMenu.findItem(R.id.history)
             navigationRequestsMenuItem = navigationMenu.findItem(R.id.requests)
 
@@ -2269,6 +2271,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Update the URL edit text after a delay.
                     updateUrlEditTextAfterDelay()
+                }
+            }
+
+            R.id.scroll_to_bottom -> {  // Scroll to Bottom.
+                // Check if the WebView is scrolled to the top.
+                if (currentWebView!!.scrollY == 0) {  // The WebView is at the top; scroll to the bottom.  Using a large Y number is more efficient than trying to calculate the exact WebView length.
+                    currentWebView!!.scrollTo(0, 1_000_000_000)
+                } else {  // The WebView is not at the top; scroll to the top.
+                    currentWebView!!.scrollTo(0, 0)
                 }
             }
 
@@ -4435,9 +4446,28 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 if (newState == DrawerLayout.STATE_SETTLING || newState == DrawerLayout.STATE_DRAGGING) {  // A drawer is opening or closing.
                     // Update the navigation menu items if the WebView is not null.
                     if (currentWebView != null) {
+                        // Set the enabled status of the menu items.
                         navigationBackMenuItem.isEnabled = currentWebView!!.canGoBack()
                         navigationForwardMenuItem.isEnabled = currentWebView!!.canGoForward()
+                        navigationScrollToBottomMenuItem.isEnabled = (currentWebView!!.canScrollVertically(-1) || currentWebView!!.canScrollVertically(1))
                         navigationHistoryMenuItem.isEnabled = currentWebView!!.canGoBack() || currentWebView!!.canGoForward()
+
+                        // Update the scroll menu item.
+                        if (currentWebView!!.scrollY == 0) {  // The WebView is scrolled to the top.
+                            // Set the title.
+                            navigationScrollToBottomMenuItem.title = getString(R.string.scroll_to_bottom)
+
+                            // Set the icon.
+                            navigationScrollToBottomMenuItem.icon = AppCompatResources.getDrawable(applicationContext, R.drawable.move_down_enabled)
+                        } else {  // The WebView is not scrolled to the top.
+                            // Set the title.
+                            navigationScrollToBottomMenuItem.title = getString(R.string.scroll_to_top)
+
+                            // Set the icon.
+                            navigationScrollToBottomMenuItem.icon = AppCompatResources.getDrawable(applicationContext, R.drawable.move_up_enabled)
+                        }
+
+                        // Display the number of blocked requests.
                         navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + currentWebView!!.getRequestsCount(BLOCKED_REQUESTS)
 
                         // Hide the keyboard (if displayed).

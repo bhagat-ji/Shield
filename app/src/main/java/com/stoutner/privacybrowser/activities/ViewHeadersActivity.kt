@@ -146,16 +146,10 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         responseBodyTitleTextView = findViewById(R.id.response_body_title_textview)
         val responseBodyTextView = findViewById<TextView>(R.id.response_body_textview)
 
-        // Populate the URL text box.
-        urlEditText.setText(currentUrl)
-
         // Initialize the gray foreground color spans for highlighting the URLs.
         initialGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
         finalGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
         redColorSpan = ForegroundColorSpan(getColor(R.color.red_text))
-
-        // Apply text highlighting to the URL.
-        UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
 
         // Get a handle for the input method manager, which is used to hide the keyboard.
         val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -163,10 +157,12 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         // Remove the formatting from the URL when the user is editing the text.
         urlEditText.onFocusChangeListener = OnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (hasFocus) {  // The user is editing the URL text box.
-                // Remove the highlighting.
-                urlEditText.text.removeSpan(redColorSpan)
-                urlEditText.text.removeSpan(initialGrayColorSpan)
-                urlEditText.text.removeSpan(finalGrayColorSpan)
+                // Get the foreground color spans.
+                val foregroundColorSpans: Array<ForegroundColorSpan> = urlEditText.text.getSpans(0, urlEditText.text.length, ForegroundColorSpan::class.java)
+
+                // Remove each foreground color span that highlights the text.
+                for (foregroundColorSpan in foregroundColorSpans)
+                    urlEditText.text.removeSpan(foregroundColorSpan)
             } else {  // The user has stopped editing the URL text box.
                 // Hide the soft keyboard.
                 inputMethodManager.hideSoftInputFromWindow(urlEditText.windowToken, 0)
@@ -174,10 +170,19 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
                 // Move to the beginning of the string.
                 urlEditText.setSelection(0)
 
+                // Store the URL text in the intent, so update layout uses the new text if the app is restarted.
+                intent.putExtra(CURRENT_URL, urlEditText.text.toString())
+
                 // Reapply the highlighting.
                 UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
             }
         }
+
+        // Populate the URL text box.
+        urlEditText.setText(currentUrl)
+
+        // Apply the initial text highlighting to the URL.
+        UrlHelper.highlightSyntax(urlEditText, initialGrayColorSpan, finalGrayColorSpan, redColorSpan)
 
         // Set the refresh color scheme according to the theme.
         swipeRefreshLayout.setColorSchemeResources(R.color.blue_text)

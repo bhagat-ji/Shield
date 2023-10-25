@@ -217,6 +217,14 @@
 
     <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.-->
     <string name="colon">: \u0020</string>
+    <string name="ssl_information">Información sobre SSL</string>
+    <string name="applied_cipher">Cifrado aplicado</string>
+    <string name="peer_principal">Pares principales</string>
+    <string name="certificate_type">Tipo de certificado</string>
+    <string name="certificate_hash_code">Código hash del certificado</string>
+    <string name="ciphers">Cifrados</string>
+    <string name="available_ciphers">Cifrados disponibles</string>
+    <string name="certificate">Certificado</string>
     <string name="request_headers">Cabeceras de solicitud</string>
     <string name="response_message">Mensaje de respuesta</string>
     <string name="response_headers">Cabeceras de respuesta</string>
