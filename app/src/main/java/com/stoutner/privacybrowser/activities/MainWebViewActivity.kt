@@ -386,7 +386,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var orbotStatusBroadcastReceiver: BroadcastReceiver? = null
     private var reapplyAppSettingsOnRestart = false
     private var reapplyDomainSettingsOnRestart = false
-    private var restartTime = Date(0)
     private var sanitizeAmpRedirects = false
     private var sanitizeTrackingQueries = false
     private var savedProxyMode: String? = null
@@ -785,11 +784,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
             }
         } else {  // The app has been restarted.
-            // If the new intent will open a new tab, set the saved tab position to be the size of the saved state array list.
-            // The tab position is 0 based, meaning the new tab will be the tab position that is restored.
-            if ((intentUriData != null) || (intentStringExtra != null) || isWebSearch)
-                savedTabPosition = savedStateArrayList!!.size
-
             // Replace the intent that started the app with this one.  This will load the tab after the others have been restored.
             setIntent(intent)
         }
@@ -4014,9 +4008,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Add the first tab.
             addNewTab("", false)
         } else {  // The activity has been restarted with a saved state.
-            // Set the current restart time.
-            restartTime = Date()
-
             // Restore each tab.
             for (i in savedStateArrayList!!.indices) {
                 // Add a new tab.
@@ -4036,21 +4027,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             savedStateArrayList = null
             savedNestedScrollWebViewStateArrayList = null
 
-            // Restore the selected tab position.
-            if (savedTabPosition == 0) {  // The first tab is selected.
-                // Set the first page as the current WebView.
-                setCurrentWebView(0)
-            } else {  // The first tab is not selected.
-                // Select the tab when the layout has finished populating.
-                tabLayout.post {
-                    // Get a handle for the tab.
-                    val tab = tabLayout.getTabAt(savedTabPosition)!!
-
-                    // Select the tab.
-                    tab.select()
-                }
-            }
-
             // Get the intent that started the app.
             val intent = intent
 
@@ -4066,7 +4042,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             val isWebSearch = (intentAction != null) && (intentAction == Intent.ACTION_WEB_SEARCH)
 
             // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
-            if ((intentUriData != null) || (intentStringExtra != null) || isWebSearch) {
+            if ((intentUriData != null) || (intentStringExtra != null) || isWebSearch) {  // A new tab is being loaded.
                 // Get the URL string.
                 val urlString = if (isWebSearch) {  // The intent is a web search.
                     // Sanitize the search input.
@@ -4093,6 +4069,21 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 } else {  // Load the URL in the current tab.
                     // Make it so.
                     loadUrl(currentWebView!!, urlString)
+                }
+            } else {  // A new tab is not being loaded.
+                // Restore the selected tab position.
+                if (savedTabPosition == 0) {  // The first tab is selected.
+                    // Set the first page as the current WebView.
+                    setCurrentWebView(0)
+                } else {  // The first tab is not selected.
+                    // Select the tab when the layout has finished populating.
+                    tabLayout.post {
+                        // Get a handle for the tab.
+                        val tab = tabLayout.getTabAt(savedTabPosition)!!
+
+                        // Select the tab.
+                        tab.select()
+                    }
                 }
             }
         }
@@ -4230,17 +4221,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Only display the view SSL certificate dialog if the current WebView is not null.
                 // This can happen if the tab is programmatically reselected while the app is being restarted and is not yet populated.
                 if (currentWebView != null) {
-                    // Calculate the milliseconds since the last restart.  This can be replaced by the simpler LocalDateTime once the minimum API >= 26.
-                    val millisecondsSinceLastRestart = Date().time - restartTime.time
+                    // Instantiate the View SSL Certificate dialog.
+                    val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
 
-                    // Only display the SSL certificate dialog if it has been at least 3 seconds since the last restart as deep restarts sometimes end up selecting a tab twice.
-                    if (millisecondsSinceLastRestart > 3000) {
-                        // Instantiate the View SSL Certificate dialog.
-                        val viewSslCertificateDialogFragment: DialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView!!.webViewFragmentId, currentWebView!!.getFavoriteIcon())
-
-                        // Display the View SSL Certificate dialog.
-                        viewSslCertificateDialogFragment.show(supportFragmentManager, getString(R.string.view_ssl_certificate))
-                    }
+                    // Display the View SSL Certificate dialog.
+                    viewSslCertificateDialogFragment.show(supportFragmentManager, getString(R.string.view_ssl_certificate))
                 }
             }
         })
@@ -5689,10 +5674,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             } else {  // Load the URL.
                 loadUrl(nestedScrollWebView, urlToLoadString!!)
             }
-
-            // Reset the intent.  This prevents a duplicate tab from being created on a subsequent restart if loading an link from a new intent on restart.
-            // For example, this prevents a duplicate tab if a link is loaded from the Guide after changing the theme in the guide and then changing the theme again in the main activity.
-            intent = Intent()
         } else {  // This is not the first tab.
             // Load the URL.
             loadUrl(nestedScrollWebView, urlString)
