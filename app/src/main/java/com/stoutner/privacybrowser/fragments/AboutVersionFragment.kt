@@ -628,14 +628,15 @@ class AboutVersionFragment : Fragment() {
                 // Get a handle for the clipboard manager.
                 val clipboardManager = (requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
 
-                // Save the about version string in a clip data.
+                // Place the about version string in a clip data.
                 val aboutVersionClipData = ClipData.newPlainText(getString(R.string.about), aboutVersionString)
 
                 // Place the clip data on the clipboard.
                 clipboardManager.setPrimaryClip(aboutVersionClipData)
 
-                // Display a snackbar.
-                Snackbar.make(aboutVersionLayout, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show()
+                // Display a snackbar if the API <= 32 (Android 12L).  Beginning in Android 13 the OS displays a notification that covers up the snackbar.
+                if (Build.VERSION.SDK_INT <= 32)
+                    Snackbar.make(aboutVersionLayout, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show()
 
                 // Consume the event.
                 return true
@@ -645,20 +646,20 @@ class AboutVersionFragment : Fragment() {
                 // Get the about version string.
                 val aboutString = getAboutVersionString()
 
-                // Create an email intent.
-                val emailIntent = Intent(Intent.ACTION_SEND)
+                // Create a share intent.
+                val shareIntent = Intent(Intent.ACTION_SEND)
 
                 // Add the about version string to the intent.
-                emailIntent.putExtra(Intent.EXTRA_TEXT, aboutString)
+                shareIntent.putExtra(Intent.EXTRA_TEXT, aboutString)
 
                 // Set the MIME type.
-                emailIntent.type = "text/plain"
+                shareIntent.type = "text/plain"
 
                 // Set the intent to open in a new task.
-                emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
                 // Make it so.
-                startActivity(Intent.createChooser(emailIntent, getString(R.string.share)))
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
 
                 // Consume the event.
                 return true
@@ -679,6 +680,7 @@ class AboutVersionFragment : Fragment() {
                 // Consume the event.
                 return true
             }
+
             else -> {  // The home button was selected.
                 // Run the parents class on return.
                 return super.onOptionsItemSelected(menuItem)

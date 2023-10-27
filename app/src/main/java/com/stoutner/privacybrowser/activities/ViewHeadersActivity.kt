@@ -19,7 +19,14 @@
 
 package com.stoutner.privacybrowser.activities
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
@@ -35,11 +42,11 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -57,6 +64,14 @@ import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.helpers.UrlHelper
 import com.stoutner.privacybrowser.viewmodelfactories.ViewHeadersFactory
 import com.stoutner.privacybrowser.viewmodels.HeadersViewModel
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+import java.lang.Exception
+import java.nio.charset.StandardCharsets
 
 // Define the public constants.
 const val USER_AGENT = "user_agent"
@@ -82,7 +97,58 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
     private lateinit var responseMessageTitleTextView: TextView
     private lateinit var responseMessageTextView: TextView
     private lateinit var responseHeadersTitleTextView: TextView
+    private lateinit var responseHeadersTextView: TextView
     private lateinit var responseBodyTitleTextView: TextView
+    private lateinit var responseBodyTextView: TextView
+
+    // Define the save text activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    private val saveTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri ->
+        // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
+        if (fileUri != null) {
+            // Initialize the file name string from the file URI last path segment.
+            var fileNameString = fileUri.lastPathSegment
+
+            // Query the exact file name if the API >= 26.
+            if (Build.VERSION.SDK_INT >= 26) {
+                // Get a cursor from the content resolver.
+                val contentResolverCursor = contentResolver.query(fileUri, null, null, null)!!
+
+                // Move to the first row.
+                contentResolverCursor.moveToFirst()
+
+                // Get the file name from the cursor.
+                fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+
+                // Close the cursor.
+                contentResolverCursor.close()
+            }
+
+            try {
+                // Get the about version string.
+                val headersString = getHeadersString()
+
+                // Open an output stream.
+                val outputStream = contentResolver.openOutputStream(fileUri)!!
+
+                // Save the headers using a coroutine with Dispatchers.IO.
+                CoroutineScope(Dispatchers.Main).launch {
+                    withContext(Dispatchers.IO) {
+                        // Write the headers string to the output stream.
+                        outputStream.write(headersString.toByteArray(StandardCharsets.UTF_8))
+
+                        // Close the output stream.
+                        outputStream.close()
+                    }
+                }
+
+                // Display a snackbar with the saved logcat information.
+                Snackbar.make(urlEditText, getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show()
+            } catch (exception: Exception) {
+                // Display a snackbar with the error message.
+                Snackbar.make(urlEditText, getString(R.string.error_saving_file, fileNameString, exception.toString()), Snackbar.LENGTH_INDEFINITE).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
@@ -142,9 +208,9 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         responseMessageTitleTextView = findViewById(R.id.response_message_title_textview)
         responseMessageTextView = findViewById(R.id.response_message_textview)
         responseHeadersTitleTextView = findViewById(R.id.response_headers_title_textview)
-        val responseHeadersTextView = findViewById<TextView>(R.id.response_headers_textview)
+        responseHeadersTextView = findViewById(R.id.response_headers_textview)
         responseBodyTitleTextView = findViewById(R.id.response_body_title_textview)
-        val responseBodyTextView = findViewById<TextView>(R.id.response_body_textview)
+        responseBodyTextView = findViewById(R.id.response_body_textview)
 
         // Initialize the gray foreground color spans for highlighting the URLs.
         initialGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
@@ -369,20 +435,136 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
-        // Instantiate the about dialog fragment.
-        val aboutDialogFragment: DialogFragment = AboutViewHeadersDialog()
+        // Run the appropriate commands.
+        when (menuItem.itemId) {
+            R.id.copy_headers -> {  // Copy the headers.
+                // Get the headers string.
+                val headersString = getHeadersString()
 
-        // Show the about alert dialog.
-        aboutDialogFragment.show(supportFragmentManager, getString(R.string.about))
+                // Get a handle for the clipboard manager.
+                val clipboardManager = (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
 
-        // Consume the event.
-        return true
+                // Place the headers string in a clip data.
+                val headersClipData = ClipData.newPlainText(getString(R.string.view_headers), headersString)
+
+                // Place the clip data on the clipboard.
+                clipboardManager.setPrimaryClip(headersClipData)
+
+                // Display a snackbar if the API <= 32 (Android 12L).  Beginning in Android 13 the OS displays a notification that covers up the snackbar.
+                if (Build.VERSION.SDK_INT <= 32)
+                    Snackbar.make(urlEditText, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show()
+
+                // Consume the event.
+                return true
+            }
+
+            R.id.share_headers -> {  // Share the headers.
+                // Get the headers string.
+                val headersString = getHeadersString()
+
+                // Create a share intent.
+                val shareIntent = Intent(Intent.ACTION_SEND)
+
+                // Add the headers string to the intent.
+                shareIntent.putExtra(Intent.EXTRA_TEXT, headersString)
+
+                // Set the MIME type.
+                shareIntent.type = "text/plain"
+
+                // Set the intent to open in a new task.
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                // Make it so.
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
+
+                // Consume the event.
+                return true
+            }
+
+            R.id.save_headers -> {  // Save the headers as a text file.
+                // Get the current URL.
+                val currentUrlString = urlEditText.text.toString()
+
+                // Get a URI for the current URL.
+                val currentUri = Uri.parse(currentUrlString)
+
+                // Get the current domain name.
+                val currentDomainName = currentUri.host
+
+                // Open the file picker.
+                saveTextActivityResultLauncher.launch(getString(R.string.headers_txt, currentDomainName))
+
+                // Consume the event.
+                return true
+            }
+
+            R.id.about_view_headers -> {  // Display the about dialog.
+                // Instantiate the about dialog fragment.
+                val aboutDialogFragment = AboutViewHeadersDialog()
+
+                // Show the about alert dialog.
+                aboutDialogFragment.show(supportFragmentManager, getString(R.string.about))
+
+                // Consume the event.
+                return true
+            }
+
+            else -> {  // The home button was selected.
+                // Run the parents class on return.
+                return super.onOptionsItemSelected(menuItem)
+            }
+        }
     }
 
-    // This method must be named `goBack()` and must have a View argument to match the default back arrow in the app bar.
+    // This method must be named `goBack()` and must have a View argument to match the default back arrow in the app bar or a crash occurs.
     fun goBack(@Suppress("UNUSED_PARAMETER") view: View) {
         // Go home.
         NavUtils.navigateUpFromSameTask(this)
+    }
+
+    private fun getHeadersString(): String {
+        // Initialize a headers string builder.
+        val headersStringBuilder = StringBuilder()
+
+        // Populate the SSL information if it is visible (an HTTPS URL is loaded).
+        if (sslInformationTitleTextView.visibility == View.VISIBLE) {
+            headersStringBuilder.append(sslInformationTitleTextView.text)
+            headersStringBuilder.append("\n")
+            headersStringBuilder.append(sslInformationTextView.text)
+            headersStringBuilder.append("\n\n")
+            headersStringBuilder.append(getString(R.string.available_ciphers))
+            headersStringBuilder.append("\n")
+            headersStringBuilder.append(availableCiphersString)
+            headersStringBuilder.append("\n\n")
+            headersStringBuilder.append(getString(R.string.ssl_certificate))
+            headersStringBuilder.append("\n")
+            headersStringBuilder.append(sslCertificateString)
+            headersStringBuilder.append("\n")  // Only a single new line is needed after the certificate as it already ends in one.
+        }
+
+        // Populate the request information if it is visible (an HTTP URL is loaded).
+        if (requestHeadersTitleTextView.visibility == View.VISIBLE) {
+            headersStringBuilder.append(requestHeadersTitleTextView.text)
+            headersStringBuilder.append("\n")
+            headersStringBuilder.append(requestHeadersTextView.text)
+            headersStringBuilder.append("\n\n")
+            headersStringBuilder.append(responseMessageTitleTextView.text)
+            headersStringBuilder.append("\n")
+            headersStringBuilder.append(responseMessageTextView.text)
+            headersStringBuilder.append("\n\n")
+        }
+
+        // Populate the response information, which is visible for both HTTP and content URLs.
+        headersStringBuilder.append(responseHeadersTitleTextView.text)
+        headersStringBuilder.append("\n")
+        headersStringBuilder.append(responseHeadersTextView.text)
+        headersStringBuilder.append("\n\n")
+        headersStringBuilder.append(responseBodyTitleTextView.text)
+        headersStringBuilder.append("\n")
+        headersStringBuilder.append(responseBodyTextView.text)
+
+        // Return the string.
+        return headersStringBuilder.toString()
     }
 
     override fun loadAnyway() {

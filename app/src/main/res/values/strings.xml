@@ -224,7 +224,8 @@
     <string name="error_saving_file">Error saving %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unknown error</string>
 
-    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.-->
+    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="colon">: \u0020</string>
     <string name="ssl_information">SSL Information</string>
     <string name="applied_cipher">Applied Cipher</string>
@@ -246,6 +247,8 @@
     <string name="about_view_headers_message">Because Android’s WebView does not expose the source information,
         a separate request was made using system tools to gather the information displayed in this activity.
         There may be some differences between this data and that used by the WebView in the main activity. This limitation will be removed in the 4.x series with the release of Privacy WebView.</string>
+    <string name="headers_copied">Headers copied.</string>
+    <string name="headers_txt">%1$s headers.txt</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Create Shortcut</string>

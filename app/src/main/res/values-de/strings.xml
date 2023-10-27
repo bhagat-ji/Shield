@@ -219,7 +219,8 @@
     <string name="error_saving_file">Fehler beim Speichern der Datei %1$s:\u0020 %2$s</string>
     <string name="unknown_error">Unbekannter Fehler</string>
 
-    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.-->
+    <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
+        The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="colon">: \u0020</string>
     <string name="request_headers">Anfragekopfzeilen</string>
     <string name="response_message">Status-Code</string>

@@ -204,8 +204,9 @@ class LogcatActivity : AppCompatActivity() {
                 // Place the clip data on the clipboard.
                 clipboardManager.setPrimaryClip(logcatClipData)
 
-                // Display a snackbar.
-                Snackbar.make(logcatTextView, R.string.logcat_copied, Snackbar.LENGTH_SHORT).show()
+                // Display a snackbar if the API <= 32 (Android 12L).  Beginning in Android 13 the OS displays a notification that covers up the snackbar.
+                if (Build.VERSION.SDK_INT <= 32)
+                    Snackbar.make(logcatTextView, R.string.logcat_copied, Snackbar.LENGTH_SHORT).show()
 
                 // Consume the event.
                 true
