@@ -239,6 +239,8 @@
         se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.
         Puede haber algunas diferencias entre estos datos y los utilizados por WebView en la actividad principal.
         Esta limitación se eliminará en la serie 4.x con el lanzamiento de Privacy WebView.</string>
+    <string name="headers_copied">Cabeceras copiadas.</string>
+    <string name="headers_txt">%1$s cabeceras.txt</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crear acceso directo</string>

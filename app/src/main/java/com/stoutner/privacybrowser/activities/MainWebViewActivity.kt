@@ -2545,6 +2545,27 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     true
                 }
 
+                // Add a Share URL entry.
+                contextMenu.add(R.string.share_url).setOnMenuItemClickListener {
+                    // Create the share intent.
+                    val shareUrlIntent = Intent(Intent.ACTION_SEND)
+
+                    // Add the URL to the intent.
+                    shareUrlIntent.putExtra(Intent.EXTRA_TEXT, linkUrl)
+
+                    // Set the MIME type.
+                    shareUrlIntent.type = "text/plain"
+
+                    // Set the intent to open in a new task.
+                    shareUrlIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                    //Make it so.
+                    startActivity(Intent.createChooser(shareUrlIntent, getString(R.string.share_url)))
+
+                    // Consume the event.
+                    true
+                }
+
                 // Add an empty cancel entry, which by default closes the context menu.
                 contextMenu.add(R.string.cancel)
             }
@@ -2616,6 +2637,27 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Set the clip data as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(imageTypeClipData)
+
+                    // Consume the event.
+                    true
+                }
+
+                // Add a Share URL entry.
+                contextMenu.add(R.string.share_url).setOnMenuItemClickListener {
+                    // Create the share intent.
+                    val shareUrlIntent = Intent(Intent.ACTION_SEND)
+
+                    // Add the URL to the intent.
+                    shareUrlIntent.putExtra(Intent.EXTRA_TEXT, imageUrl)
+
+                    // Set the MIME type.
+                    shareUrlIntent.type = "text/plain"
+
+                    // Set the intent to open in a new task.
+                    shareUrlIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                    //Make it so.
+                    startActivity(Intent.createChooser(shareUrlIntent, getString(R.string.share_url)))
 
                     // Consume the event.
                     true
@@ -2711,6 +2753,27 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     true
                 }
 
+                // Add a Share Image entry.
+                contextMenu.add(R.string.share_image).setOnMenuItemClickListener {
+                    // Create the share intent.
+                    val shareUrlIntent = Intent(Intent.ACTION_SEND)
+
+                    // Add the URL to the intent.
+                    shareUrlIntent.putExtra(Intent.EXTRA_TEXT, imageUrl)
+
+                    // Set the MIME type.
+                    shareUrlIntent.type = "text/plain"
+
+                    // Set the intent to open in a new task.
+                    shareUrlIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                    //Make it so.
+                    startActivity(Intent.createChooser(shareUrlIntent, getString(R.string.share_url)))
+
+                    // Consume the event.
+                    true
+                }
+
                 // Add a copy URL entry.
                 contextMenu.add(R.string.copy_url).setOnMenuItemClickListener {
                     // Save the link URL in a clip data.
@@ -2730,6 +2793,27 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         downloadUrlWithExternalApp(linkUrl)
                     else  // Handle the download inside of Privacy Browser.  The dialog will be displayed once the file size and the content disposition have been acquired.
                         PrepareSaveDialogCoroutine.prepareSaveDialog(this, supportFragmentManager, linkUrl, currentWebView!!.settings.userAgentString, currentWebView!!.acceptCookies)
+
+                    // Consume the event.
+                    true
+                }
+
+                // Add a Share URL entry.
+                contextMenu.add(R.string.share_url).setOnMenuItemClickListener {
+                    // Create the share intent.
+                    val shareUrlIntent = Intent(Intent.ACTION_SEND)
+
+                    // Add the URL to the intent.
+                    shareUrlIntent.putExtra(Intent.EXTRA_TEXT, linkUrl)
+
+                    // Set the MIME type.
+                    shareUrlIntent.type = "text/plain"
+
+                    // Set the intent to open in a new task.
+                    shareUrlIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                    //Make it so.
+                    startActivity(Intent.createChooser(shareUrlIntent, getString(R.string.share_url)))
 
                     // Consume the event.
                     true

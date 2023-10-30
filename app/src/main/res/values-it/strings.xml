@@ -236,6 +236,8 @@
     <string name="about_view_headers_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
         ottenere le informazioni mostrate. Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView.
         Questa limitazione sarà eliminata nella serie 4.x quando verrà rilasciata Privacy WebView.</string>
+    <string name="headers_copied">Intestazioni copiate.</string>
+    <string name="headers_txt">%1$s intestazioni.txt</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crea Collegamento</string>

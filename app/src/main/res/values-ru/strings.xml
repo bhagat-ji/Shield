@@ -215,6 +215,14 @@
     <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="colon">: \u0020</string>
+    <string name="ssl_information">Информация SSL</string>
+    <string name="applied_cipher">Применяемое шифрование</string>
+    <string name="peer_principal">Принципал узла</string>
+    <string name="certificate_type">Тип сертификата</string>
+    <string name="certificate_hash_code">Хэш-код сертификата</string>
+    <string name="ciphers">Шифры</string>
+    <string name="available_ciphers">Доступные шифры</string>
+    <string name="certificate">Сертификат</string>
     <string name="request_headers">Заголовки запроса</string>
     <string name="response_message">Ответное сообщение</string>
     <string name="response_headers">Заголовки ответа</string>
@@ -227,6 +235,8 @@
     <string name="about_view_headers_message">Поскольку Android WebView не предоставляет исходные данные, для сбора информации, отображаемой в этом действии,
         был сделан отдельный запрос с помощью системных средств. Между этими данными и теми, которые используются в WebView, могут быть некоторые отличия.
         Это ограничение будет удалено в серии 4.x с выпуском Privacy WebView.</string>
+    <string name="headers_copied">Заголовки скопированы.</string>
+    <string name="headers_txt">%1$s headers.txt</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Создание ярлыка</string>
