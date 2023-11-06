@@ -37,7 +37,6 @@ import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -46,6 +45,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.NavUtils
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
@@ -90,8 +90,7 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
     private lateinit var urlEditText: EditText
     private lateinit var sslInformationTitleTextView: TextView
     private lateinit var sslInformationTextView: TextView
-    private lateinit var ciphersButton: Button
-    private lateinit var certificateButton: Button
+    private lateinit var sslButtonsConstraintLayout: ConstraintLayout
     private lateinit var requestHeadersTitleTextView: TextView
     private lateinit var requestHeadersTextView: TextView
     private lateinit var responseMessageTitleTextView: TextView
@@ -201,8 +200,7 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefreshlayout)
         sslInformationTitleTextView = findViewById(R.id.ssl_information_title_textview)
         sslInformationTextView = findViewById(R.id.ssl_information_textview)
-        ciphersButton = findViewById(R.id.ciphers_button)
-        certificateButton = findViewById(R.id.certificate_button)
+        sslButtonsConstraintLayout = findViewById(R.id.ssl_buttons_constraintlayout)
         requestHeadersTitleTextView = findViewById(R.id.request_headers_title_textview)
         requestHeadersTextView = findViewById(R.id.request_headers_textview)
         responseMessageTitleTextView = findViewById(R.id.response_message_title_textview)
@@ -452,7 +450,7 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
 
                 // Display a snackbar if the API <= 32 (Android 12L).  Beginning in Android 13 the OS displays a notification that covers up the snackbar.
                 if (Build.VERSION.SDK_INT <= 32)
-                    Snackbar.make(urlEditText, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(urlEditText, R.string.headers_copied, Snackbar.LENGTH_SHORT).show()
 
                 // Consume the event.
                 return true
@@ -595,8 +593,7 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
             // Hide the unused views.
             sslInformationTitleTextView.visibility = View.GONE
             sslInformationTextView.visibility = View.GONE
-            ciphersButton.visibility = View.GONE
-            certificateButton.visibility = View.GONE
+            sslButtonsConstraintLayout.visibility = View.GONE
             requestHeadersTitleTextView.visibility = View.GONE
             requestHeadersTextView.visibility = View.GONE
             responseMessageTitleTextView.visibility = View.GONE
@@ -611,14 +608,12 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
                 // Hide the SSL information views.
                 sslInformationTitleTextView.visibility = View.GONE
                 sslInformationTextView.visibility = View.GONE
-                ciphersButton.visibility = View.GONE
-                certificateButton.visibility = View.GONE
+                sslButtonsConstraintLayout.visibility = View.GONE
             } else {  // This is not an HTTP URL.
                 // Show the SSL information views.
                 sslInformationTitleTextView.visibility = View.VISIBLE
                 sslInformationTextView.visibility = View.VISIBLE
-                ciphersButton.visibility = View.VISIBLE
-                certificateButton.visibility = View.VISIBLE
+                sslButtonsConstraintLayout.visibility = View.VISIBLE
             }
 
             // Show the other views.

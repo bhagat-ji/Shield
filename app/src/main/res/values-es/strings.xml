@@ -181,6 +181,7 @@
     <string name="open_in_new_tab">Abrir en nueva pestaña</string>
     <string name="open_in_background">Abrir en segundo plano</string>
     <string name="open_image_in_new_tab">Abrir imagen en nueva pestaña</string>
+    <string name="share_image">Compartir imagen</string>
     <string name="copy_url">Copiar URL</string>
     <string name="email_address">Correo electrónico</string>
     <string name="copy_email_address">Copiar correo electrónico</string>

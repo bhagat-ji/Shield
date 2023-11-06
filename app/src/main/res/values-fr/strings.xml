@@ -181,6 +181,7 @@
     <string name="open_in_new_tab">Ouvrir dans un nouvel onglet</string>
     <string name="open_in_background">Ouvrir en arrière-plan</string>
     <string name="open_image_in_new_tab">Ouvrir l\'image dans un nouvel onglet</string>
+    <string name="share_image">Partager l\'image</string>
     <string name="copy_url">Copier l\'URL</string>
     <string name="email_address">Addresse e-mail</string>
     <string name="copy_email_address">Copier l\'adresse e-mail</string>
@@ -218,6 +219,14 @@
     <!-- View Headers. Android removes initial and trailing spaces, but they can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="colon">\u0020:\u0020</string>
+    <string name="ssl_information">Information SSL</string>
+    <string name="applied_cipher">Chiffrement en vigueur</string>
+    <string name="peer_principal">Pair Principal</string>
+    <string name="certificate_type">Type de Certificat</string>
+    <string name="certificate_hash_code">Code de hachage du certificat</string>
+    <string name="ciphers">Chiffrements</string>
+    <string name="available_ciphers">Chiffrements disponibles</string>
+    <string name="certificate">Certificat</string>
     <string name="request_headers">En-tête de la requête</string>
     <string name="response_message">Message de la réponse</string>
     <string name="response_headers">En-tête de la réponse</string>
@@ -230,6 +239,8 @@
     <string name="about_view_headers_message">Puisqu\'Android Webview ne permet pas de révêler l\'information source,
         une requête séparée a été effectuée en utilisant les outils sytèmes afin d\'afficher ce qui est présenté à l\'écran
         Il peut donc y avoir des différences entre ces connées et celle utilisée par Webview. Cette limitation sera supprimée lors de la sortie de Privacy Webview 4.x</string>
+    <string name="headers_copied">En-têtes copiés.</string>
+    <string name="headers_txt">%1$s headers.txt</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Créer un raccourci</string>

@@ -185,6 +185,7 @@
     <string name="open_in_new_tab">In neuem Tab öffnen</string>
     <string name="open_in_background">Im Hintergrund öffnen</string>
     <string name="open_image_in_new_tab">Grafik in neuem Tab öffnen</string>
+    <string name="share_image">Bild teilen</string>
     <string name="copy_url">URL kopieren</string>
     <string name="email_address">E-Mail-Adresse</string>
     <string name="copy_email_address">E-Mail-Adresse kopieren</string>
@@ -222,6 +223,14 @@
     <!-- View Headers. Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="colon">: \u0020</string>
+    <string name="ssl_information">SSL-Information</string>
+    <string name="applied_cipher">Verwendetes Verschlüsselungsverfahren</string>
+    <string name="peer_principal">Zielprinzipalname</string>
+    <string name="certificate_type">Zertifikats-Typ</string>
+    <string name="certificate_hash_code">Zertifikats-Hash</string>
+    <string name="ciphers">Verschlüsselungsverfahren</string>
+    <string name="available_ciphers">Verfügbare Verschlüsselungsverfahren</string>
+    <string name="certificate">Zertifikat</string>
     <string name="request_headers">Anfragekopfzeilen</string>
     <string name="response_message">Status-Code</string>
     <string name="response_headers">Antwortkopfzeilen</string>
@@ -234,6 +243,8 @@
     <string name="about_view_headers_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
         die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit WebView dargestellten Webseite auftreten.
         Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>
+    <string name="headers_copied">Header kopiert.</string>
+    <string name="headers_txt">%1$s headers.txt</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Verknüpfung erstellen</string>
@@ -422,8 +433,8 @@
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
-    <string name="copy_string">kopieren</string>
-    <string name="clear">leeren</string>
+    <string name="copy_string">Kopieren</string>
+    <string name="clear">Leeren</string>
     <string name="logcat_copied">Logcat kopiert.</string>
     <string name="privacy_browser_logcat_txt">Privacy Browser Android %1$s Logcat.txt</string>
     <string name="error_saving_logcat">Fehler beim Speichern von Logcat:\u0020 %1$s</string>
