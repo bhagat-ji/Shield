@@ -320,7 +320,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var optionsUserAgentFirefoxOnAndroidMenuItem: MenuItem
     private lateinit var optionsUserAgentFirefoxOnLinuxMenuItem: MenuItem
     private lateinit var optionsUserAgentFirefoxOnWindowsMenuItem: MenuItem
-    private lateinit var optionsUserAgentInternetExplorerOnWindowsMenuItem: MenuItem
     private lateinit var optionsUserAgentMenuItem: MenuItem
     private lateinit var optionsUserAgentPrivacyBrowserMenuItem: MenuItem
     private lateinit var optionsUserAgentSafariOnIosMenuItem: MenuItem
@@ -345,7 +344,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var urlEditText: EditText
     private lateinit var urlRelativeLayout: RelativeLayout
     private lateinit var userAgentDataArray: Array<String>
-    private lateinit var userAgentNamesArray: ArrayAdapter<CharSequence>
+    private lateinit var userAgentNamesArray: Array<String>
+    private lateinit var userAgentDataArrayAdapter: ArrayAdapter<CharSequence>
+    private lateinit var userAgentNamesArrayAdapter: ArrayAdapter<CharSequence>
 
     // Define the class variables.
     private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
@@ -1067,7 +1068,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         optionsUserAgentFirefoxOnWindowsMenuItem = menu.findItem(R.id.user_agent_firefox_on_windows)
         optionsUserAgentChromeOnWindowsMenuItem = menu.findItem(R.id.user_agent_chrome_on_windows)
         optionsUserAgentEdgeOnWindowsMenuItem = menu.findItem(R.id.user_agent_edge_on_windows)
-        optionsUserAgentInternetExplorerOnWindowsMenuItem = menu.findItem(R.id.user_agent_internet_explorer_on_windows)
         optionsUserAgentSafariOnMacosMenuItem = menu.findItem(R.id.user_agent_safari_on_macos)
         optionsUserAgentCustomMenuItem = menu.findItem(R.id.user_agent_custom)
         optionsSwipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh)
@@ -1341,15 +1341,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 optionsUserAgentEdgeOnWindowsMenuItem.isChecked = true
             }
 
-            resources.getStringArray(R.array.user_agent_data)[10] -> {  // Internet Explorer on Windows.
-                // Update the user agent menu item title.
-                optionsUserAgentMenuItem.title = getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_internet_explorer_on_windows)
-
-                // Select the Internet on Windows radio box.
-                optionsUserAgentInternetExplorerOnWindowsMenuItem.isChecked = true
-            }
-
-            resources.getStringArray(R.array.user_agent_data)[11] -> {  // Safari on macOS.
+            resources.getStringArray(R.array.user_agent_data)[10] -> {  // Safari on macOS.
                 // Update the user agent menu item title.
                 optionsUserAgentMenuItem.title = getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_safari_on_macos)
 
@@ -1849,20 +1841,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 true
             }
 
-            R.id.user_agent_internet_explorer_on_windows -> {  // User Agent - Internet Explorer on Windows.
-                // Update the user agent.
-                currentWebView!!.settings.userAgentString = resources.getStringArray(R.array.user_agent_data)[10]
-
-                // Reload the current WebView.
-                currentWebView!!.reload()
-
-                // Consume the event.
-                true
-            }
-
             R.id.user_agent_safari_on_macos -> {  // User Agent - Safari on macOS.
                 // Update the user agent.
-                currentWebView!!.settings.userAgentString = resources.getStringArray(R.array.user_agent_data)[11]
+                currentWebView!!.settings.userAgentString = resources.getStringArray(R.array.user_agent_data)[10]
 
                 // Reload the current WebView.
                 currentWebView!!.reload()
@@ -2113,7 +2094,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
 
             R.id.add_or_edit_domain -> {  // Add or edit domain.
-                // Reapply the domain settings on returning to `MainWebViewActivity`.
+                // Reapply the domain settings on returning to the main WebView activity.
                 reapplyDomainSettingsOnRestart = true
 
                 // Check if domain settings are currently applied.
@@ -2162,8 +2143,118 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Get the current domain from the URI.  Use an empty string if it is null.
                     val currentDomain = currentUri.host?: ""
 
+                    // Get the current settings status.
+                    val javaScriptInt = calculateSettingsInt(currentWebView!!.settings.javaScriptEnabled, sharedPreferences.getBoolean(getString(R.string.javascript_key), false))
+                    val cookiesInt = calculateSettingsInt(currentWebView!!.acceptCookies, sharedPreferences.getBoolean(getString(R.string.cookies_key), false))
+                    val domStorageInt = calculateSettingsInt(currentWebView!!.settings.domStorageEnabled, sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false))
+                    val easyListInt = calculateSettingsInt(currentWebView!!.easyListEnabled, sharedPreferences.getBoolean(getString(R.string.easylist_key), true))
+                    val easyPrivacyInt = calculateSettingsInt(currentWebView!!.easyPrivacyEnabled, sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true))
+                    val fanboysAnnoyanceListInt = calculateSettingsInt(currentWebView!!.fanboysAnnoyanceListEnabled, sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true))
+                    val fanboysSocialBlockingListInt = calculateSettingsInt(currentWebView!!.fanboysSocialBlockingListEnabled, sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true))
+                    val ultraListInt = calculateSettingsInt(currentWebView!!.ultraListEnabled, sharedPreferences.getBoolean(getString(R.string.ultralist_key), true))
+                    val ultraPrivacyInt = calculateSettingsInt(currentWebView!!.ultraPrivacyEnabled, sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true))
+                    val blockAllThirdPartyRequestsInt = calculateSettingsInt(currentWebView!!.blockAllThirdPartyRequests, sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), true))
+                    val swipeToRefreshInt = calculateSettingsInt(currentWebView!!.swipeToRefresh, sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true))
+                    val wideViewportInt = calculateSettingsInt(currentWebView!!.settings.useWideViewPort, sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true))
+                    val displayImagesInt = calculateSettingsInt(currentWebView!!.settings.loadsImagesAutomatically, sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true))
+
+                    // Initialize the form data int.
+                    var formDataInt = SYSTEM_DEFAULT
+
+                    // Set the form data int, which can be removed once the minimum API >= 26.
+                    @Suppress("DEPRECATION")
+                    if (Build.VERSION.SDK_INT < 26) {
+                        // Get the form data status.
+                        val formDataEnabled = currentWebView!!.settings.saveFormData
+
+                        // Calculate the form data Int.
+                        formDataInt = calculateSettingsInt(formDataEnabled, sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false))
+                    }
+
+                    // Get the current user agent string.
+                    val currentUserAgentString = currentWebView!!.settings.userAgentString
+
+                    // Get the user agent string array position.
+                    val userAgentStringArrayPosition = userAgentDataArrayAdapter.getPosition(currentUserAgentString)
+
+                    // Set the user agent name.
+                    val userAgentName = if ((userAgentStringArrayPosition >= 0) && (defaultUserAgentName == userAgentNamesArray[userAgentStringArrayPosition])) {  // The system default user agent is in use.
+                        getString(R.string.system_default_user_agent)
+                    } else {  // An on-the-fly user agent is being used (or the WebView default user agent is applied).
+                        when (userAgentStringArrayPosition) {
+                            UNRECOGNIZED_USER_AGENT -> { // The user agent is unrecognized.
+                                if (currentUserAgentString == webViewDefaultUserAgent) {  // The WebView default user agent is being used.
+                                    if (defaultUserAgentName == getString(R.string.webview_default)) {  // The WebView default user agent is the system default.
+                                        // Set the user agent name to be the system default.
+                                        getString(R.string.system_default_user_agent)
+                                    } else {  // The WebView default user agent is set as an on-the-fly setting.
+                                        // Set the default user agent name.
+                                        getString(R.string.webview_default)
+                                    }
+                                } else {  // A custom user agent is being used.
+                                    if (defaultUserAgentName == getString(R.string.custom_user_agent_non_translatable)) {  // The system custom user agent is in use.
+                                        // Set the user agent name to be the system default.
+                                        getString(R.string.system_default_user_agent)
+                                    } else {  // An on-the-fly custom user agent is in use.
+                                        // Store the user agent as currently applied.
+                                        currentUserAgentString
+                                    }
+                                }
+                            }
+
+                            else ->  // Store the standard user agent name.
+                                userAgentNamesArray[userAgentStringArrayPosition]
+                        }
+                    }
+
+                    // Get the current text zoom integer.
+                    val textZoomInt = currentWebView!!.settings.textZoom
+
+                    // Set the font size integer.
+                    val fontSizeInt = if (textZoomInt == defaultFontSizeString.toInt())  // The current system default is used, which is encoded as a zoom of `0`.
+                        0
+                    else  // A custom font size is used.
+                        textZoomInt
+
+                    // Get the current WebView dark theme status.
+                    val webViewDarkThemeCurrentlyEnabled = if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING))  // Algorithmic darkening is supported.
+                        WebSettingsCompat.isAlgorithmicDarkeningAllowed(currentWebView!!.settings)
+                    else  // Algorithmic darkening is not supported.
+                        false
+
+                    // Get the default WebView dark theme setting.
+                    val defaultWebViewDarkThemeEnabled = if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {  // Algorithmic darkening is supported.
+                        when (defaultWebViewTheme) {
+                            webViewThemeEntryValuesStringArray[1] ->  // The dark theme is disabled by default.
+                                false
+
+                            webViewThemeEntryValuesStringArray[2] ->  // The dark theme is enabled by default.
+                                true
+
+                            else -> {  // The system default theme is selected.
+                                // Get the current app theme status.
+                                val currentAppThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+
+                                // Check if the current app theme is dark.
+                                currentAppThemeStatus == Configuration.UI_MODE_NIGHT_YES
+                            }
+                        }
+                    } else {  // Algorithmic darkening is not supported.
+                        false
+                    }
+
+                    // Set the WebView theme int.
+                    val webViewThemeInt = if (webViewDarkThemeCurrentlyEnabled == defaultWebViewDarkThemeEnabled)  // The current WebView theme matches the default.
+                        SYSTEM_DEFAULT
+                    else if (webViewDarkThemeCurrentlyEnabled)  // The current WebView theme is dark and that is not the default.
+                        DARK_THEME
+                    else  // The current WebView theme is light and that is not the default.
+                        LIGHT_THEME
+
                     // Create the domain and store the database ID.
-                    val newDomainDatabaseId = domainsDatabaseHelper!!.addDomain(currentDomain)
+                    val newDomainDatabaseId = domainsDatabaseHelper!!.addDomain(currentDomain, javaScriptInt, cookiesInt, domStorageInt, formDataInt, userAgentName, easyListInt, easyPrivacyInt,
+                                                                                fanboysAnnoyanceListInt, fanboysSocialBlockingListInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, fontSizeInt,
+                                                                                swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayImagesInt)
 
                     // Create an intent to launch the domains activity.
                     val domainsIntent = Intent(this, DomainsActivity::class.java)
@@ -2932,9 +3023,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Get the WebView theme entry values string array.  This is done here so that expensive resource requests are not made each time a domain is loaded.
         webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values)
 
-        // Get the user agent array adapter and string array.  These are done here so that expensive resource requests are not made each time a domain is loaded.
-        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item)
+        // Get the user agent string arrays.  These are done here so that expensive resource requests are not made each time a domain is loaded.
         userAgentDataArray = resources.getStringArray(R.array.user_agent_data)
+        userAgentNamesArray = resources.getStringArray(R.array.user_agent_names)
+
+        // Get the user agent array adapters.  These are done here so that expensive resource requests are not made each time a domain is loaded.
+        userAgentDataArrayAdapter = ArrayAdapter.createFromResource(this, R.array.user_agent_data, R.layout.spinner_item)
+        userAgentNamesArrayAdapter = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item)
 
         // Store the values from the shared preferences in variables.
         incognitoModeEnabled = sharedPreferences.getBoolean(getString(R.string.incognito_mode_key), false)
@@ -3287,23 +3382,22 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Set the user agent.
                 if (userAgentName == getString(R.string.system_default_user_agent)) {  // Use the system default user agent.
                     // Set the user agent according to the system default.
-                    when (val defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName)) {
-                        // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                        UNRECOGNIZED_USER_AGENT -> nestedScrollWebView.settings.userAgentString = defaultUserAgentName
+                    when (val defaultUserAgentArrayPosition = userAgentNamesArrayAdapter.getPosition(defaultUserAgentName)) {
+                        UNRECOGNIZED_USER_AGENT ->  // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
+                            nestedScrollWebView.settings.userAgentString = defaultUserAgentName
 
-                        // Set the user agent to `""`, which uses the default value.
-                        SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> nestedScrollWebView.settings.userAgentString = ""
+                        SETTINGS_WEBVIEW_DEFAULT_USER_AGENT ->  // Set the user agent to `""`, which uses the default value.
+                            nestedScrollWebView.settings.userAgentString = ""
 
-                        // Set the default custom user agent.
-                        SETTINGS_CUSTOM_USER_AGENT -> nestedScrollWebView.settings.userAgentString =
-                            sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
+                        SETTINGS_CUSTOM_USER_AGENT ->  // Set the default custom user agent.
+                            nestedScrollWebView.settings.userAgentString = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
 
-                        // Get the user agent string from the user agent data array
-                        else -> nestedScrollWebView.settings.userAgentString = userAgentDataArray[defaultUserAgentArrayPosition]
+                        else ->  // Get the user agent string from the user agent data array
+                            nestedScrollWebView.settings.userAgentString = userAgentDataArray[defaultUserAgentArrayPosition]
                     }
                 } else {  // Set the user agent according to the stored name.
                     // Set the user agent.
-                    when (val userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName)) {
+                    when (val userAgentArrayPosition = userAgentNamesArrayAdapter.getPosition(userAgentName)) {
                         // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
                         UNRECOGNIZED_USER_AGENT ->
                             nestedScrollWebView.settings.userAgentString = userAgentName
@@ -3374,17 +3468,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
                     // Set the WebView theme.
                     when (webViewThemeInt) {
-                        // Set the WebView theme.
-                        SYSTEM_DEFAULT ->
+                        SYSTEM_DEFAULT ->  // Set the WebView theme.
                             when (defaultWebViewTheme) {
-                                // The light theme is selected.  Turn off algorithmic darkening.
-                                webViewThemeEntryValuesStringArray[1] -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
+                                webViewThemeEntryValuesStringArray[1] ->  // The light theme is selected.  Turn off algorithmic darkening.
+                                    WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
 
-                                // The dark theme is selected.  Turn on algorithmic darkening.
-                                webViewThemeEntryValuesStringArray[2] -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
+                                webViewThemeEntryValuesStringArray[2] ->  // The dark theme is selected.  Turn on algorithmic darkening.
+                                    WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
 
-                                // The system default theme is selected.
-                                else -> {
+                                else -> {  // The system default theme is selected.
                                     // Get the current system theme status.
                                     val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
@@ -3393,11 +3485,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                                 }
                             }
 
-                        // Turn off algorithmic darkening.
-                        LIGHT_THEME -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
+                        LIGHT_THEME ->  // Turn off algorithmic darkening.
+                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
 
-                        // Turn on algorithmic darkening.
-                        DARK_THEME -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
+                        DARK_THEME ->  // Turn on algorithmic darkening.
+                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
                     }
                 }
 
@@ -3475,33 +3567,31 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 nestedScrollWebView.domainSettingsDatabaseId = -1
 
                 // Set the user agent.
-                when (val userAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName)) {
-                    // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                    UNRECOGNIZED_USER_AGENT -> nestedScrollWebView.settings.userAgentString = defaultUserAgentName
+                when (val userAgentArrayPosition = userAgentNamesArrayAdapter.getPosition(defaultUserAgentName)) {
+                    UNRECOGNIZED_USER_AGENT ->  // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
+                        nestedScrollWebView.settings.userAgentString = defaultUserAgentName
 
-                    // Set the user agent to `""`, which uses the default value.
-                    SETTINGS_WEBVIEW_DEFAULT_USER_AGENT -> nestedScrollWebView.settings.userAgentString = ""
+                    SETTINGS_WEBVIEW_DEFAULT_USER_AGENT ->  // Set the user agent to `""`, which uses the default value.
+                        nestedScrollWebView.settings.userAgentString = ""
 
-                    // Set the default custom user agent.
-                    SETTINGS_CUSTOM_USER_AGENT -> nestedScrollWebView.settings.userAgentString =
-                        sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
+                    SETTINGS_CUSTOM_USER_AGENT ->  // Set the default custom user agent.
+                        nestedScrollWebView.settings.userAgentString = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
 
-                    // Get the user agent string from the user agent data array
-                    else -> nestedScrollWebView.settings.userAgentString = userAgentDataArray[userAgentArrayPosition]
+                    else ->  // Get the user agent string from the user agent data array
+                        nestedScrollWebView.settings.userAgentString = userAgentDataArray[userAgentArrayPosition]
                 }
 
                 // Set the WebView theme if algorithmic darkening is supported.
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
                     // Set the WebView theme.
                     when (defaultWebViewTheme) {
-                        // The light theme is selected.  Turn off algorithmic darkening.
-                        webViewThemeEntryValuesStringArray[1] -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
+                        webViewThemeEntryValuesStringArray[1] ->  // The light theme is selected.  Turn off algorithmic darkening.
+                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, false)
 
-                        // The dark theme is selected.  Turn on algorithmic darkening.
-                        webViewThemeEntryValuesStringArray[2] -> WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
+                        webViewThemeEntryValuesStringArray[2] ->  // The dark theme is selected.  Turn on algorithmic darkening.
+                            WebSettingsCompat.setAlgorithmicDarkeningAllowed(nestedScrollWebView.settings, true)
 
-                        // The system default theme is selected.  Get the current system theme status.
-                        else -> {
+                        else -> {  // The system default theme is selected.  Get the current system theme status.
                             // Get the current theme status.
                             val currentThemeStatus = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
@@ -3681,6 +3771,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Load the new folder.
             loadBookmarksFolder()
         }
+    }
+
+    private fun calculateSettingsInt(settingCurrentlyEnabled: Boolean, settingEnabledByDefault: Boolean): Int {
+        return if (settingCurrentlyEnabled == settingEnabledByDefault)  // The current system default is used.
+            SYSTEM_DEFAULT
+        else if (settingCurrentlyEnabled)  // The setting is enabled, which is different from the system default.
+            ENABLED
+        else  // The setting is disabled, which is different from the system default.
+            DISABLED
     }
 
     private fun clearAndExit() {

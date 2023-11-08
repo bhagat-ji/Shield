@@ -262,21 +262,15 @@
                             app:showAsAction="never" />
 
                         <item
-                            android:id="@+id/user_agent_internet_explorer_on_windows"
-                            android:title="@string/user_agent_internet_explorer_on_windows"
-                            android:orderInCategory="1121"
-                            app:showAsAction="never" />
-
-                        <item
                             android:id="@+id/user_agent_safari_on_macos"
                             android:title="@string/user_agent_safari_on_macos"
-                            android:orderInCategory="1122"
+                            android:orderInCategory="1121"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/user_agent_custom"
                             android:title="@string/user_agent_custom"
-                            android:orderInCategory="1123"
+                            android:orderInCategory="1122"
                             app:showAsAction="never" />
                     </group>
                 </menu>

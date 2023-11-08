@@ -148,7 +148,7 @@ class DomainSettingsFragment : Fragment() {
         val easyListDefault = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
         val easyPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
         val fanboysAnnoyanceListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
-        val fanboysSocialBlockingListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list), true)
+        val fanboysSocialBlockingListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
         val ultraListDefault = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
         val ultraPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true)
         val blockAllThirdPartyRequestsDefault = sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false)

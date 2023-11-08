@@ -397,6 +397,17 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         return domainsDatabase.rawQuery("SELECT * FROM $DOMAINS_TABLE WHERE $DOMAIN_NAME = $sqlEscapedDomainName", null)
     }
 
+    fun addDomain(contentValues: ContentValues) {
+        // Get a writable database handle.
+        val domainsDatabase = this.writableDatabase
+
+        // Add the new domain.
+        domainsDatabase.insert(DOMAINS_TABLE, null, contentValues)
+
+        // Close the database handle.
+        domainsDatabase.close()
+    }
+
     fun addDomain(domainName: String): Int {
         // Instantiate a content values.
         val domainContentValues = ContentValues()
@@ -434,15 +445,43 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         return newDomainDatabaseId
     }
 
-    fun addDomain(contentValues: ContentValues) {
+    fun addDomain(domainName: String, javaScriptInt: Int, cookiesInt: Int, domStorageInt: Int, formDataInt: Int, userAgentName: String, easyListInt: Int, easyPrivacyInt: Int, fanboysAnnoyanceListInt: Int,
+                  fanboysSocialBlockingListInt: Int, ultraListInt: Int, ultraPrivacyInt: Int, blockAllThirdPartyRequestsInt: Int, fontSizeInt: Int, swipeToRefreshInt: Int, webViewThemeInt: Int,
+                  wideViewportInt: Int, displayImagesInt: Int): Int {
+        // Instantiate a content values.
+        val domainContentValues = ContentValues()
+
+        // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
+        domainContentValues.put(DOMAIN_NAME, domainName)
+        domainContentValues.put(ENABLE_JAVASCRIPT, javaScriptInt)
+        domainContentValues.put(COOKIES, cookiesInt)
+        domainContentValues.put(ENABLE_DOM_STORAGE, domStorageInt)
+        domainContentValues.put(ENABLE_FORM_DATA, formDataInt) // Form data can be removed once the minimum API >= 26.
+        domainContentValues.put(USER_AGENT, userAgentName)
+        domainContentValues.put(ENABLE_EASYLIST, easyListInt)
+        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyInt)
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceListInt)
+        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingListInt)
+        domainContentValues.put(ULTRALIST, ultraListInt)
+        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyInt)
+        domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequestsInt)
+        domainContentValues.put(FONT_SIZE, fontSizeInt)
+        domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefreshInt)
+        domainContentValues.put(WEBVIEW_THEME, webViewThemeInt)
+        domainContentValues.put(WIDE_VIEWPORT, wideViewportInt)
+        domainContentValues.put(DISPLAY_IMAGES, displayImagesInt)
+
         // Get a writable database handle.
         val domainsDatabase = this.writableDatabase
 
-        // Add the new domain.
-        domainsDatabase.insert(DOMAINS_TABLE, null, contentValues)
+        // Insert a new row and store the resulting database ID.
+        val newDomainDatabaseId = domainsDatabase.insert(DOMAINS_TABLE, null, domainContentValues).toInt()
 
         // Close the database handle.
         domainsDatabase.close()
+
+        // Return the new domain database ID.
+        return newDomainDatabaseId
     }
 
     fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, formData: Int, userAgent: String, easyList: Int, easyPrivacy: Int, fanboysAnnoyance: Int,

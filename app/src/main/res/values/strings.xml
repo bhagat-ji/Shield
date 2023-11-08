@@ -160,7 +160,6 @@
             <string name="user_agent_firefox_on_windows">Firefox on Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome on Windows</string>
             <string name="user_agent_edge_on_windows">Edge on Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">Internet Explorer on Windows</string>
             <string name="user_agent_safari_on_macos">Safari on macOS</string>
             <string name="user_agent_custom">Custom</string>
         <string name="swipe_to_refresh_options_menu">Swipe to Refresh</string>
@@ -613,6 +612,8 @@
         </string-array>
         <string name="custom_user_agent">Custom user agent</string>
         <string name="system_default_user_agent" translatable="false">System default user agent</string>  <!-- This item is referenced in code.  It is never displayed on the screen. -->
+        <string name="webview_default" translatable="false">WebView Default</string>  <!-- This item is referenced in code.  It is never displayed on the screen. -->
+        <string name="custom_user_agent_non_translatable" translatable="false">Custom user agent</string>  <!-- This item is referenced in code.  It is never displayed on the screen. -->
         <string name="incognito_mode">Incognito Mode</string>
         <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading. In Incognito Mode, back closes the tab (or the app if there is only one tab).</string>
         <string name="allow_screenshots">Allow screenshots</string>
