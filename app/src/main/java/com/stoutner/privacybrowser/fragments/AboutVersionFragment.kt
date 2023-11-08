@@ -41,7 +41,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
@@ -281,8 +280,10 @@ class AboutVersionFragment : Fragment() {
         val deviceLabel = getString(R.string.device)
         val bootloaderLabel = getString(R.string.bootloader)
         val androidLabel = getString(R.string.android)
+        val securityPatchLabel = getString(R.string.security_patch)
         val buildLabel = getString(R.string.build)
         val kernelLabel = getString(R.string.kernel)
+        val webViewProviderLabel = getString(R.string.webview_provider)
         val webViewVersionLabel = getString(R.string.webview_version)
         appConsumedMemoryLabel = getString(R.string.app_consumed_memory)
         appAvailableMemoryLabel = getString(R.string.app_available_memory)
@@ -305,11 +306,8 @@ class AboutVersionFragment : Fragment() {
         val serialNumberLabel = getString(R.string.serial_number)
         val signatureAlgorithmLabel = getString(R.string.signature_algorithm)
 
-        // The WebView layout is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
-        // Once the minimum API >= 26 this can be accomplished with the WebView package info.
-        val webViewLayout = layoutInflater.inflate(R.layout.bare_webview, container, false)
-        val tabLayoutWebView = webViewLayout.findViewById<WebView>(R.id.bare_webview)
-        val userAgentString = tabLayoutWebView.settings.userAgentString
+        // Get the current WebView package info.  This can be replaced by the direct call once the minimum API >= 26.  <https://developer.android.com/reference/android/webkit/WebView#getCurrentWebViewPackage()>
+        val webViewPackageInfo = WebViewCompat.getCurrentWebViewPackage(requireContext())!!
 
         // Get the device's information and store it in strings.
         val brand = Build.BRAND
@@ -319,11 +317,11 @@ class AboutVersionFragment : Fragment() {
         val bootloader = Build.BOOTLOADER
         val radio = Build.getRadioVersion()
         val android = getString(R.string.api, Build.VERSION.RELEASE, Build.VERSION.SDK_INT)
+        val securityPatch = Build.VERSION.SECURITY_PATCH
         val build = Build.DISPLAY
         val kernel = System.getProperty("os.version")
-
-        // Get the WebView version, selecting the substring that begins after `Chrome/` and goes until the next ` `.
-        val webView = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")))
+        val webViewPackageName = webViewPackageInfo.packageName
+        val webViewVersion = webViewPackageInfo.versionName
 
         // Get the Orbot version name if Orbot is installed.
         val orbot: String = try {
@@ -337,11 +335,11 @@ class AboutVersionFragment : Fragment() {
         // Get the I2P version name if I2P is installed.
         val i2p: String = try {
             // Check to see if the F-Droid flavor is installed.
-            requireContext().getString(R.string.fdroid_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName)
+            getString(R.string.fdroid_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName)
         } catch (exception: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
             try {
                 // Check to see if the F-Droid flavor is installed.
-                requireContext().getString(R.string.google_play_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android", 0).versionName)
+                getString(R.string.google_play_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android", 0).versionName)
             } catch (exception: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed either.
                 // Store an empty string.
                 ""
@@ -364,9 +362,11 @@ class AboutVersionFragment : Fragment() {
         val deviceStringBuilder = SpannableStringBuilder(deviceLabel + device)
         val bootloaderStringBuilder = SpannableStringBuilder(bootloaderLabel + bootloader)
         val androidStringBuilder = SpannableStringBuilder(androidLabel + android)
+        val securityPatchStringBuilder = SpannableStringBuilder(securityPatchLabel + securityPatch)
         val buildStringBuilder = SpannableStringBuilder(buildLabel + build)
         val kernelStringBuilder = SpannableStringBuilder(kernelLabel + kernel)
-        val webViewVersionStringBuilder = SpannableStringBuilder(webViewVersionLabel + webView)
+        val webViewProviderStringBuilder = SpannableStringBuilder(webViewProviderLabel + webViewPackageName)
+        val webViewVersionStringBuilder = SpannableStringBuilder(webViewVersionLabel + webViewVersion)
         val easyListStringBuilder = SpannableStringBuilder(easyListLabel + filterListsVersions[0])
         val easyPrivacyStringBuilder = SpannableStringBuilder(easyPrivacyLabel + filterListsVersions[1])
         val fanboyAnnoyanceStringBuilder = SpannableStringBuilder(fanboyAnnoyanceLabel + filterListsVersions[2])
@@ -384,8 +384,10 @@ class AboutVersionFragment : Fragment() {
         deviceStringBuilder.setSpan(blueColorSpan, deviceLabel.length, deviceStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         bootloaderStringBuilder.setSpan(blueColorSpan, bootloaderLabel.length, bootloaderStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         androidStringBuilder.setSpan(blueColorSpan, androidLabel.length, androidStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length, securityPatchStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         buildStringBuilder.setSpan(blueColorSpan, buildLabel.length, buildStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         kernelStringBuilder.setSpan(blueColorSpan, kernelLabel.length, kernelStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        webViewProviderStringBuilder.setSpan(blueColorSpan, webViewProviderLabel.length, webViewProviderStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         webViewVersionStringBuilder.setSpan(blueColorSpan, webViewVersionLabel.length, webViewVersionStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length, easyListStringBuilder.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length, easyPrivacyStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -402,8 +404,10 @@ class AboutVersionFragment : Fragment() {
         deviceTextView.text = deviceStringBuilder
         bootloaderTextView.text = bootloaderStringBuilder
         androidTextView.text = androidStringBuilder
+        securityPatchTextView.text = securityPatchStringBuilder
         buildTextView.text = buildStringBuilder
         kernelTextView.text = kernelStringBuilder
+        webViewProviderTextView.text = webViewProviderStringBuilder
         webViewVersionTextView.text = webViewVersionStringBuilder
         easyListTextView.text = easyListStringBuilder
         easyPrivacyTextView.text = easyPrivacyStringBuilder
@@ -430,39 +434,6 @@ class AboutVersionFragment : Fragment() {
             // Hide the radio text view.
             radioTextView.visibility = View.GONE
         }
-
-        // Setup the label.
-        val securityPatchLabel = getString(R.string.security_patch)
-
-        // Get the security patch version.
-        val securityPatch = Build.VERSION.SECURITY_PATCH
-
-        // Create a spannable string builder.
-        val securityPatchStringBuilder = SpannableStringBuilder(securityPatchLabel + securityPatch)
-
-        // Set the span to display the security patch version in blue.
-        securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length, securityPatchStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-        // Display the string in the text view.
-        securityPatchTextView.text = securityPatchStringBuilder
-
-        // Create the WebView provider label.
-        val webViewProviderLabel = getString(R.string.webview_provider)
-
-        // Get the current WebView package info.
-        val webViewPackageInfo = WebViewCompat.getCurrentWebViewPackage(requireContext())!!
-
-        // Get the WebView provider name.
-        val webViewPackageName = webViewPackageInfo.packageName
-
-        // Create the spannable string builder.
-        val webViewProviderStringBuilder = SpannableStringBuilder(webViewProviderLabel + webViewPackageName)
-
-        // Apply the coloration.
-        webViewProviderStringBuilder.setSpan(blueColorSpan, webViewProviderLabel.length, webViewProviderStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-
-        // Display the WebView provider.
-        webViewProviderTextView.text = webViewProviderStringBuilder
 
         // Only populate the Orbot text view if it is installed.
         if (orbot.isNotEmpty()) {
