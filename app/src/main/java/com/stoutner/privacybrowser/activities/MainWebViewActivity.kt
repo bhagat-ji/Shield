@@ -3216,6 +3216,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     val tabFavoriteIconImageView = tabCustomView.findViewById<ImageView>(R.id.favorite_icon_imageview)
                     val tabTitleTextView = tabCustomView.findViewById<TextView>(R.id.title_textview)
 
+                    // Store the current values in case they need to be restored.
+                    nestedScrollWebView.previousFavoriteIconDrawable = tabFavoriteIconImageView.drawable
+                    nestedScrollWebView.previousWebpageTitle = tabTitleTextView.text.toString()
+
                     // Set the default favorite icon as the favorite icon for this tab.
                     tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteIcon(), 64, 64, true))
 
@@ -4932,6 +4936,29 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
                     pendingDialogsArrayList.add(PendingDialogDataClass(saveDialogFragment, getString(R.string.save_dialog)))
                 }
+            }
+
+            // Get the current page position.
+            val currentPagePosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
+
+            // Get the corresponding tab.
+            val tab = tabLayout.getTabAt(currentPagePosition)!!
+
+            // Get the tab custom view.
+            val tabCustomView = tab.customView!!
+
+            // Get the tab views.
+            val tabFavoriteIconImageView = tabCustomView.findViewById<ImageView>(R.id.favorite_icon_imageview)
+            val tabTitleTextView = tabCustomView.findViewById<TextView>(R.id.title_textview)
+
+            // Restore the previous webpage favorite icon and title if the title is currently set to `Loading...`.
+            if (tabTitleTextView.text.toString() == getString(R.string.loading)) {
+                // Restore the previous webpage title text.
+                tabTitleTextView.text = nestedScrollWebView.previousWebpageTitle
+
+                // Restore the previous webpage favorite icon if it is not null.
+                if (nestedScrollWebView.previousFavoriteIconDrawable != null)
+                    tabFavoriteIconImageView.setImageDrawable(nestedScrollWebView.previousFavoriteIconDrawable)
             }
         }
 

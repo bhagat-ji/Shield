@@ -24,6 +24,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -104,6 +105,8 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     var httpAuthHandler: HttpAuthHandler? = null
     var ignorePinnedDomainInformation = false
     var pinnedIpAddresses = ""
+    var previousFavoriteIconDrawable: Drawable? = null
+    var previousWebpageTitle = ""
     var sslErrorHandler: SslErrorHandler? = null
     var swipeToRefresh = false
     var ultraListEnabled = true

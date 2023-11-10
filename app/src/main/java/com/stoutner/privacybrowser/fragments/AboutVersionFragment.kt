@@ -71,7 +71,8 @@ import java.text.NumberFormat
 import kotlin.text.StringBuilder
 
 // Define the class constants.
-private const val FILTERLISTS_VERSIONS = "filterlists_versions"
+private const val FILTERLISTS_VERSIONS = "A"
+private const val SCROLL_Y = "B"
 private const val MEBIBYTE = 1048576
 
 class AboutVersionFragment : Fragment() {
@@ -572,8 +573,7 @@ class AboutVersionFragment : Fragment() {
         // Scroll the tab if the saved instance state is not null.
         if (savedInstanceState != null) {
             aboutVersionLayout.post {
-                aboutVersionLayout.scrollX = savedInstanceState.getInt("scroll_x")
-                aboutVersionLayout.scrollY = savedInstanceState.getInt("scroll_y")
+                aboutVersionLayout.scrollY = savedInstanceState.getInt(SCROLL_Y)
             }
         }
 
@@ -663,9 +663,8 @@ class AboutVersionFragment : Fragment() {
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState)
 
-        // Save the scroll positions.
-        savedInstanceState.putInt("scroll_x", aboutVersionLayout.scrollX)
-        savedInstanceState.putInt("scroll_y", aboutVersionLayout.scrollY)
+        // Save the scroll position.
+        savedInstanceState.putInt(SCROLL_Y, aboutVersionLayout.scrollY)
     }
 
     override fun onPause() {
