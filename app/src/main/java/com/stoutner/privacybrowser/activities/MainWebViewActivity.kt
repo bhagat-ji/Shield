@@ -778,7 +778,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     loadingNewIntent = true
 
                     // Add a new tab.
-                    addNewTab(url!!, true)
+                    addNewTab(url!!, adjacent = false, moveToTab = true)
                 } else {  // Load the URL in the current tab.
                     // Make it so.
                     loadUrl(currentWebView!!, url!!)
@@ -2006,10 +2006,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Open a new tab according to the current URL.
                 if (currentWebView!!.currentUrl.startsWith("view-source:")) {  // The source is currently viewed.
                     // Open the rendered website in a new tab.
-                    addNewTab(currentWebView!!.currentUrl.substring(12, currentWebView!!.currentUrl.length), true)
+                    addNewTab(currentWebView!!.currentUrl.substring(12, currentWebView!!.currentUrl.length), true, moveToTab = true)
                 } else {  // The rendered website is currently viewed.
                     // Open the source in a new tab.
-                    addNewTab("view-source:${currentWebView!!.currentUrl}", true)
+                    addNewTab("view-source:${currentWebView!!.currentUrl}", adjacent = true, moveToTab = true)
                 }
 
                 // Consume the event.
@@ -2579,7 +2579,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Add an open in new tab entry.
                 contextMenu.add(R.string.open_in_new_tab).setOnMenuItemClickListener {
                     // Load the link URL in a new tab and move to it.
-                    addNewTab(linkUrl, true)
+                    addNewTab(linkUrl, adjacent = true, moveToTab = true)
 
                     // Consume the event.
                     true
@@ -2588,7 +2588,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Add an open in background entry.
                 contextMenu.add(R.string.open_in_background).setOnMenuItemClickListener {
                     // Load the link URL in a new tab but do not move to it.
-                    addNewTab(linkUrl, false)
+                    addNewTab(linkUrl, adjacent = true, moveToTab = false)
 
                     // Consume the event.
                     true
@@ -2675,7 +2675,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Add an open in new tab entry.
                 contextMenu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener {
                     // Load the image in a new tab.
-                    addNewTab(imageUrl, true)
+                    addNewTab(imageUrl, adjacent = true, moveToTab = true)
 
                     // Consume the event.
                     true
@@ -2781,7 +2781,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Add an open in new tab entry.
                 contextMenu.add(R.string.open_in_new_tab).setOnMenuItemClickListener {
                     // Load the link URL in a new tab and move to it.
-                    addNewTab(linkUrl, true)
+                    addNewTab(linkUrl, adjacent = true, moveToTab = true)
 
                     // Consume the event.
                     true
@@ -2790,7 +2790,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Add an open in background entry.
                 contextMenu.add(R.string.open_in_background).setOnMenuItemClickListener {
                     // Lod the link URL in a new tab but do not move to it.
-                    addNewTab(linkUrl, false)
+                    addNewTab(linkUrl, adjacent = true, moveToTab = false)
 
                     // Consume the event.
                     true
@@ -2799,7 +2799,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Add an open image in new tab entry.
                 contextMenu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener {
                     // Load the image in a new tab and move to it.
-                    addNewTab(imageUrl, true)
+                    addNewTab(imageUrl, adjacent = true, moveToTab = true)
 
                     // Consume the event.
                     true
@@ -2965,30 +2965,38 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     // The view parameter cannot be removed because it is called from the layout onClick.
     fun addTab(@Suppress("UNUSED_PARAMETER")view: View?) {
         // Add a new tab with a blank URL.
-        addNewTab("", true)
+        addNewTab(urlString = "", adjacent = true, moveToTab = true)
     }
 
-    private fun addNewTab(urlString: String, moveToTab: Boolean) {
+    private fun addNewTab(urlString: String, adjacent: Boolean, moveToTab: Boolean) {
         // Clear the focus from the URL edit text, so that it will be populated with the information from the new tab.
         urlEditText.clearFocus()
 
-        // Get the new page number.  The page numbers are 0 indexed, so the new page number will match the current count.
-        val newTabNumber = tabLayout.tabCount
+        // Get the new tab position.
+        val newTabPosition = if (adjacent)  // The new tab position is immediately to the right of the current tab position.
+            tabLayout.selectedTabPosition + 1
+        else  // The new tab position is at the end.  The tab positions are 0 indexed, so the new page number will match the current count.
+            tabLayout.tabCount
 
-        // Add a new tab.
-        tabLayout.addTab(tabLayout.newTab())
+        // Add the new WebView page.
+        webViewStateAdapter!!.addPage(newTabPosition, urlString)
 
-        // Get the new tab.
-        val newTab = tabLayout.getTabAt(newTabNumber)!!
+        // Create a new tab.
+        val newTab = tabLayout.newTab()
 
         // Set a custom view on the new tab.
         newTab.setCustomView(R.layout.tab_custom_view)
 
-        // Scroll to the new tab position.
-        tabLayout.post { tabLayout.setScrollPosition(newTabNumber, 0F, false, false) }
+        // Add the new tab.
+        tabLayout.addTab(newTab, newTabPosition, moveToTab)
 
-        // Add the new WebView page.
-        webViewStateAdapter!!.addPage(newTabNumber, newTab, urlString, moveToTab)
+        // Select the new tab if it is the first one.  For some odd reason, Android doesn't select the first tab if it is the only one, which causes problems with the new tab position logic above.
+        if (newTabPosition == 0)
+            tabLayout.selectTab(newTab)
+
+        // Scroll to the new tab position if moving to the new tab.
+        if (moveToTab)
+            tabLayout.post { tabLayout.setScrollPosition(newTabPosition, 0F, false, false) }
 
         // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
         if (bottomAppBar && moveToTab && appBarLayout.translationY != 0f) {
@@ -4193,7 +4201,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Check to see if the activity has been restarted with a saved state.
         if ((savedStateArrayList == null) || (savedStateArrayList!!.size == 0)) {  // The activity has not been restarted or it was restarted on start to change the theme.
             // Add the first tab.
-            addNewTab("", false)
+            addNewTab(urlString = "", adjacent = false, moveToTab = false)
         } else {  // The activity has been restarted with a saved state.
             // Restore each tab.
             for (i in savedStateArrayList!!.indices) {
@@ -4252,7 +4260,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     loadingNewIntent = true
 
                     // Add a new tab.
-                    addNewTab(urlString, true)
+                    addNewTab(urlString, adjacent = false, moveToTab = true)
                 } else {  // Load the URL in the current tab.
                     // Make it so.
                     loadUrl(currentWebView!!, urlString)
@@ -4573,7 +4581,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Open each bookmark
                 for (i in 0 until bookmarksCursor.count) {
                     // Load the bookmark in a new tab, moving to the tab for the first bookmark if the drawer is not pinned.
-                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BOOKMARK_URL)), !bookmarksDrawerPinned && (i == 0))
+                    addNewTab(bookmarksCursor.getString(bookmarksCursor.getColumnIndexOrThrow(BOOKMARK_URL)), adjacent = false, moveToTab = !bookmarksDrawerPinned && (i == 0))
 
                     // Move to the next bookmark.
                     bookmarksCursor.moveToNext()
@@ -4589,7 +4597,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 bookmarkCursor.moveToFirst()
 
                 // Load the bookmark in a new tab and move to the tab if the drawer is not pinned.
-                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BOOKMARK_URL)), !bookmarksDrawerPinned)
+                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndexOrThrow(BOOKMARK_URL)), adjacent = true, moveToTab = !bookmarksDrawerPinned)
 
                 // Close the cursor.
                 bookmarkCursor.close()
@@ -4690,7 +4698,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun initializeWebView(nestedScrollWebView: NestedScrollWebView, pageNumber: Int, progressBar: ProgressBar, urlString: String, restoringState: Boolean) {
+    override fun initializeWebView(nestedScrollWebView: NestedScrollWebView, pagePosition: Int, progressBar: ProgressBar, urlString: String, restoringState: Boolean) {
         // Get the WebView theme.
         val webViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))
 
@@ -5838,7 +5846,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         if (restoringState) {  // The state is being restored.
             // Resume the nested scroll WebView JavaScript timers.
             nestedScrollWebView.resumeTimers()
-        } else if (pageNumber == 0) {  // The first page is being loaded.
+        } else if (pagePosition == 0) {  // The first page is being loaded.
             // Set this nested scroll WebView as the current WebView.
             currentWebView = nestedScrollWebView
 

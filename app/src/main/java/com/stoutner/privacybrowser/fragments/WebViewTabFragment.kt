@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -35,11 +35,11 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView
 import java.util.Calendar
 
 // Define the class constants.
-private const val CREATE_NEW_PAGE = "create_new_page"
-private const val PAGE_NUMBER = "page_number"
-private const val URL = "url"
-private const val SAVED_STATE = "saved_state"
-private const val SAVED_NESTED_SCROLL_WEBVIEW_STATE = "saved_nested_scroll_webview_state"
+private const val CREATE_NEW_PAGE = "A"
+private const val PAGE_POSITION = "B"
+private const val URL = "C"
+private const val SAVED_STATE = "D"
+private const val SAVED_NESTED_SCROLL_WEBVIEW_STATE = "E"
 
 class WebViewTabFragment : Fragment() {
     // Define the public variables.
@@ -48,7 +48,7 @@ class WebViewTabFragment : Fragment() {
     // The public interface is used to send information back to the parent activity.
     interface NewTabListener {
         @SuppressLint("ClickableViewAccessibility")
-        fun initializeWebView(nestedScrollWebView: NestedScrollWebView, pageNumber: Int, progressBar: ProgressBar, urlString: String, restoringState: Boolean)
+        fun initializeWebView(nestedScrollWebView: NestedScrollWebView, pagePosition: Int, progressBar: ProgressBar, urlString: String, restoringState: Boolean)
     }
 
     // Declare the class variables.
@@ -64,7 +64,7 @@ class WebViewTabFragment : Fragment() {
 
             // Store the argument in the bundle.
             argumentsBundle.putBoolean(CREATE_NEW_PAGE, true)
-            argumentsBundle.putInt(PAGE_NUMBER, pageNumber)
+            argumentsBundle.putInt(PAGE_POSITION, pageNumber)
             argumentsBundle.putString(URL, url)
 
             // Create a new instance of the WebView tab fragment.
@@ -110,7 +110,7 @@ class WebViewTabFragment : Fragment() {
             // Check to see if a new page is being created.
             if (requireArguments().getBoolean(CREATE_NEW_PAGE)) {  // A new page is being created.
                 // Get the variables from the arguments
-                val pageNumber = requireArguments().getInt(PAGE_NUMBER)
+                val pagePosition = requireArguments().getInt(PAGE_POSITION)
                 val url = requireArguments().getString(URL)!!
 
                 // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
@@ -125,7 +125,7 @@ class WebViewTabFragment : Fragment() {
                 nestedScrollWebView.webViewFragmentId = fragmentId
 
                 // Request the main activity initialize the WebView.
-                newTabListener.initializeWebView(nestedScrollWebView, pageNumber, progressBar, url, false)
+                newTabListener.initializeWebView(nestedScrollWebView, pagePosition, progressBar, url, false)
 
                 // Return the new page view.
                 newPageView

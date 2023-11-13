@@ -28,8 +28,6 @@ import androidx.recyclerview.widget.RecyclerView.NO_ID
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 
-import com.google.android.material.tabs.TabLayout
-
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment
 import com.stoutner.privacybrowser.views.NestedScrollWebView
@@ -84,18 +82,12 @@ class WebViewStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAda
             NO_ID
     }
 
-    fun addPage(pageNumber: Int, newTab: TabLayout.Tab, url: String, moveToNewPage: Boolean) {
+    fun addPage(pagePosition: Int, url: String) {
         // Add a new page.
-        webViewFragmentsList.add(WebViewTabFragment.createPage(pageNumber, url))
+        webViewFragmentsList.add(pagePosition, WebViewTabFragment.createPage(pagePosition, url))
 
         // Update the view pager.
-        notifyItemInserted(pageNumber)
-
-        // Move to the new page if indicated.
-        if (moveToNewPage) {
-            // Select the newTab.
-            newTab.select()
-        }
+        notifyItemInserted(pagePosition)
     }
 
     fun deletePage(pageNumber: Int, webViewPager2: ViewPager2): Boolean {
