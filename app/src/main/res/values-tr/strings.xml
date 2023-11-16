@@ -100,7 +100,7 @@
     <string name="username">Kullanıcı Adı</string>
     <string name="password">Şifre</string>
 
-    <!-- MainWebViewActivity Navigation Menu. -->
+    <!-- Main Navigation Menu. -->
     <string name="navigation_drawer">Gezinti Menüsü</string>
     <string name="clear_and_exit">Temizle ve Çık</string>
     <string name="home">Anasayfa</string>
@@ -140,7 +140,6 @@
             <string name="user_agent_firefox_on_windows">Firefox - Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome - Windows</string>
             <string name="user_agent_edge_on_windows">Microsoft Edge - Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">İnternet Explorer - Windows</string>
             <string name="user_agent_safari_on_macos">Safari - macOS</string>
             <string name="user_agent_custom">Özel</string>
         <string name="swipe_to_refresh_options_menu">Yenilemek için kaydır</string>

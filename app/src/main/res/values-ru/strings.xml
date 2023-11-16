@@ -106,12 +106,14 @@
     <string name="username">Имя пользователя</string>
     <string name="password">Пароль</string>
 
-    <!-- MainWebViewActivity Navigation Menu. -->
+    <!-- Main Navigation Menu. -->
     <string name="navigation_drawer">Навигационная панель</string>
     <string name="clear_and_exit">Очистить и выйти</string>
     <string name="home">Домой</string>
     <string name="back">Назад</string>
     <string name="forward">Вперед</string>
+    <string name="scroll_to_bottom">Прокрутить вниз</string>
+        <string name="scroll_to_top">Прокрутить вверх</string>
     <string name="history">История</string>
         <string name="clear_history">Очистить историю</string>
     <string name="open">Открыть</string>
@@ -150,7 +152,6 @@
             <string name="user_agent_firefox_on_windows">Firefox на Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome на Windows</string>
             <string name="user_agent_edge_on_windows">Edge на Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">Internet Explorer на Windows</string>
             <string name="user_agent_safari_on_macos">Safari на macOS</string>
             <string name="user_agent_custom">Настраиваемый</string>
         <string name="swipe_to_refresh_options_menu">Потянуть для обновления</string>

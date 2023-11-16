@@ -113,12 +113,14 @@
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
 
-    <!-- MainWebViewActivity Navigation Menu. -->
+    <!-- Main Navigation Menu. -->
     <string name="navigation_drawer">Navigationspanel</string>
     <string name="clear_and_exit">Leeren und verlassen</string>
     <string name="home">Startseite</string>
     <string name="back">Zurück</string>
     <string name="forward">Vorwärts</string>
+    <string name="scroll_to_bottom">Nach unten scrollen</string>
+        <string name="scroll_to_top">Nach oben scrollen</string>
     <string name="history">Verlauf</string>
         <string name="clear_history">Verlauf löschen</string>
     <string name="open">Öffnen</string>
@@ -157,7 +159,6 @@
             <string name="user_agent_firefox_on_windows">Firefox auf Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome auf Windows</string>
             <string name="user_agent_edge_on_windows">Edge auf Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">Internet Explorer auf Windows</string>
             <string name="user_agent_safari_on_macos">Safari auf macOS</string>
             <string name="user_agent_custom">Eigener</string>
         <string name="swipe_to_refresh_options_menu">Herunterziehen zum aktualisieren</string>
@@ -312,7 +313,32 @@
         <string name="blocked">blockiert</string>
         <string name="request_blocked">%1$d. blockiert</string>
         <string name="blocked_plural">blockiert</string>
+    <string name="filterlist">Filter-Liste</string>
     <string name="sublist">Unterliste</string>
+        <string name="main_allowlist">Haupt-Positiv-Liste</string>
+        <string name="final_allowlist">Finale Positiv-Liste</string>
+        <string name="domain_allowlist">Domain-Positiv-Liste</string>
+        <string name="domain_initial_allowlist">Domain-Beginn-Positiv-Liste</string>
+        <string name="domain_final_allowlist">Domain-Ende-Positiv-Liste</string>
+        <string name="third_party_allowlist">Drittanbieter-Positiv-Liste</string>
+        <string name="third_party_domain_allowlist">Drittanbieter-Domain-Positiv-Liste</string>
+        <string name="third_party_domain_initial_allowlist">Drittanbieter-Domain-Beginn-Positiv-Liste</string>
+        <string name="main_blocklist">Haupt-Negativ-Liste</string>
+        <string name="initial_blocklist">Beginn-Negativ-Liste</string>
+        <string name="final_blocklist">Finale Negativ-Liste</string>
+        <string name="domain_blocklist">Domain-Negativ-Liste</string>
+        <string name="domain_initial_blocklist">Domain-Beginn-Negativ-Liste</string>
+        <string name="domain_final_blocklist">Domain-Ende-Negativ-Liste</string>
+        <string name="domain_regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke in Domains</string>
+        <string name="third_party_blocklist">Drittanbieter-Negativ-Liste</string>
+        <string name="third_party_initial_blocklist">Drittanbieter-Beginn-Negativ-Liste</string>
+        <string name="third_party_domain_blocklist">Drittanbieter-Domain-Negativ-Liste</string>
+        <string name="third_party_domain_initial_blocklist">Drittanbieter-Domain-Beginn-Negativ-Liste</string>
+        <string name="third_party_regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke in Drittanbietern</string>
+        <string name="third_party_domain_regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke in Drittanbieter-Domains</string>
+        <string name="regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke</string>
+    <string name="filterlist_entries">Filter-Listen-Einträge</string>
+    <string name="filterlist_original_entry">Filter-Listen-Original-Eintrag</string>
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
@@ -556,12 +582,19 @@
             Im Incognito-Modus schließt \'Zurück\'-Button den aktive Tab (oder die App, wenn nur ein Tab geöffnet wurde).</string>
         <string name="allow_screenshots">Screenshots zulassen</string>
         <string name="allow_screenshots_summary">Screenshots, Bildschirmvideos und Anzeige auf unsicheren Bildschirmen zulassen. Eine Änderung dieser Einstellung startet Privacy Browser neu.</string>
+    <string name="filterlists">Filter-Listen</string>
         <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Haupt-Filter-Liste für Werbung.</string>
         <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Haupt-Filter-Liste für Tracker.</string>
         <string name="fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
+        <string name="fanboys_annoyance_list_summary">Filtert störende Popups und Links. Beinhaltet Fanboy’s Social Blocking Lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
+        <string name="fanboys_social_blocking_list_summary">Filtert Social-Media-Inhalte von Drittanbietern.</string>
         <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList filtert Werbung, die von EasyList nicht gefiltert wird, da dies Internet-Seiten beeinträchtigen könnte.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">UltraPrivacy filtert Tracker, die von EasyPrivacy nicht gefiltert werden, da dies Internet-Seiten beeinträchtigen könnte.</string>
         <string name="block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
         <string name="block_all_third_party_requests_summary">Alle Zugriffe auf Dritt-Anbieter-Inhalte zu blockieren verbessert die Privatsphäre, kann jedoch Webseiten verunstalten.</string>
     <string name="url_modification">URL-Bereinigung</string>

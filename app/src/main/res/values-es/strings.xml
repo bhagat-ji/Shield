@@ -109,12 +109,14 @@
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
 
-    <!-- MainWebViewActivity Navigation Menu. -->
+    <!-- Main Navigation Menu. -->
     <string name="navigation_drawer">Caja de navegación</string>
     <string name="clear_and_exit">Borrar y salir</string>
     <string name="home">Inicio</string>
     <string name="back">Atrás</string>
     <string name="forward">Adelante</string>
+    <string name="scroll_to_bottom">Desplazar hacia abajo</string>
+        <string name="scroll_to_top">Desplazar hacia arriba</string>
     <string name="history">Historial</string>
         <string name="clear_history">Borrar historial</string>
     <string name="open">Abrir</string>
@@ -153,7 +155,6 @@
             <string name="user_agent_firefox_on_windows">Firefox en Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome en Windows</string>
             <string name="user_agent_edge_on_windows">Edge en Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">Internet Explorer en Windows</string>
             <string name="user_agent_safari_on_macos">Safari en macOS</string>
             <string name="user_agent_custom">Personalizado</string>
         <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>

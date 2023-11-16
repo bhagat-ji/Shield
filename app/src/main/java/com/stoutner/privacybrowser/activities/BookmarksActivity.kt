@@ -90,6 +90,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
 
     // Define the class variables.
     private var bookmarksDeletedSnackbar: Snackbar? = null
+    private var checkingManyBookmarks = false
     private var closeActivityAfterDismissingSnackbar = false
     private var contextualActionMode: ActionMode? = null
 
@@ -250,46 +251,49 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                 return true
             }
 
-            override fun onItemCheckedStateChanged(mode: ActionMode, position: Int, id: Long, checked: Boolean) {
-                // Get the number of selected bookmarks.
-                val numberOfSelectedBookmarks = bookmarksListView.checkedItemCount
+            override fun onItemCheckedStateChanged(actionMode: ActionMode, position: Int, id: Long, checked: Boolean) {
+                // Only update the UI if not checking many bookmarks.  In that case, the flag will be reset on the last bookmark so the UI is only updated once.
+                if (!checkingManyBookmarks) {
+                    // Get the number of selected bookmarks.
+                    val numberOfSelectedBookmarks = bookmarksListView.checkedItemCount
 
-                // Only process commands if at least one bookmark is selected.  Otherwise, a context menu with 0 selected bookmarks is briefly displayed.
-                if (numberOfSelectedBookmarks > 0) {
-                    // Adjust the action mode and the menu according to the number of selected bookmarks.
-                    if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
-                        // Show the applicable menu items.
-                        moveBookmarkUpMenuItem.isVisible = true
-                        moveBookmarkDownMenuItem.isVisible = true
-                        editBookmarkMenuItem.isVisible = true
+                    // Only process commands if at least one bookmark is selected.  Otherwise, a context menu with 0 selected bookmarks is briefly displayed.
+                    if (numberOfSelectedBookmarks > 0) {
+                        // Adjust the action mode and the menu according to the number of selected bookmarks.
+                        if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
+                            // Show the applicable menu items.
+                            moveBookmarkUpMenuItem.isVisible = true
+                            moveBookmarkDownMenuItem.isVisible = true
+                            editBookmarkMenuItem.isVisible = true
 
-                        // Update the enabled status of the move icons.
-                        updateMoveIcons()
-                    } else {  // More than one bookmark is selected.
-                        // Hide non-applicable `MenuItems`.
-                        moveBookmarkUpMenuItem.isVisible = false
-                        moveBookmarkDownMenuItem.isVisible = false
-                        editBookmarkMenuItem.isVisible = false
+                            // Update the enabled status of the move icons.
+                            updateMoveIcons()
+                        } else {  // More than one bookmark is selected.
+                            // Hide non-applicable `MenuItems`.
+                            moveBookmarkUpMenuItem.isVisible = false
+                            moveBookmarkDownMenuItem.isVisible = false
+                            editBookmarkMenuItem.isVisible = false
+                        }
+
+                        // Display the move to folder menu item if at least one other folder exists.
+                        moveToFolderMenuItem.isVisible = bookmarksDatabaseHelper.hasFoldersExceptDatabaseId(bookmarksListView.checkedItemIds)
+
+                        // List the number of selected bookmarks in the subtitle.
+                        actionMode.subtitle = getString(R.string.selected, numberOfSelectedBookmarks)
+
+                        // Show the select all menu item if all the bookmarks are not selected.
+                        selectAllBookmarksMenuItem.isVisible = (numberOfSelectedBookmarks != bookmarksListView.count)
                     }
-
-                    // Display the move to folder menu item if at least one other folder exists.
-                    moveToFolderMenuItem.isVisible = bookmarksDatabaseHelper.hasFoldersExceptDatabaseId(bookmarksListView.checkedItemIds)
-
-                    // List the number of selected bookmarks in the subtitle.
-                    mode.subtitle = getString(R.string.selected, numberOfSelectedBookmarks)
-
-                    // Show the select all menu item if all the bookmarks are not selected.
-                    selectAllBookmarksMenuItem.isVisible = (numberOfSelectedBookmarks != bookmarksListView.count)
                 }
             }
 
             override fun onActionItemClicked(actionMode: ActionMode, menuItem: MenuItem): Boolean {
                 // Declare the variables.
-                val selectedBookmarkNewPosition: Int
-                val selectedBookmarksPositionsSparseBooleanArray: SparseBooleanArray
+                val checkedBookmarkNewPosition: Int
+                val checkedBookmarksPositionsSparseBooleanArray: SparseBooleanArray
 
-                // Initialize the selected bookmark position.
-                var selectedBookmarkPosition = 0
+                // Initialize the checked bookmark position.
+                var checkedBookmarkPosition = 0
 
                 // Get the menu item ID.
                 val menuItemId = menuItem.itemId
@@ -297,30 +301,33 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                 // Run the commands according to the selected action item.
                 if (menuItemId == R.id.move_bookmark_up) {  // Move the bookmark up.
                     // Get the array of checked bookmark positions.
-                    selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
+                    checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
                     // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
-                    for (i in 0 until selectedBookmarksPositionsSparseBooleanArray.size()) {
+                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size()) {
                         // Check to see if the value for the bookmark is true, meaning it is currently selected.
-                        if (selectedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
+                        if (checkedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
                             // Only one bookmark should have a value of `true` when move bookmark up is enabled.
-                            selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(i)
+                            checkedBookmarkPosition = checkedBookmarksPositionsSparseBooleanArray.keyAt(i)
                         }
                     }
 
-                    // Calculate the new position of the selected bookmark.
-                    selectedBookmarkNewPosition = selectedBookmarkPosition - 1
+                    // Calculate the new position of the checked bookmark.
+                    checkedBookmarkNewPosition = checkedBookmarkPosition - 1
+
+                    // Get the bookmarks count.
+                    val bookmarksCount = bookmarksListView.count
 
                     // Iterate through the bookmarks.
-                    for (i in 0 until bookmarksListView.count) {
+                    for (i in 0 until bookmarksCount) {
                         // Get the database ID for the current bookmark.
                         val currentBookmarkDatabaseId = bookmarksListView.getItemIdAtPosition(i).toInt()
 
                         // Update the display order for the current bookmark.
-                        if (i == selectedBookmarkPosition) {  // The current bookmark is the selected bookmark.
+                        if (i == checkedBookmarkPosition) {  // The current bookmark is the selected bookmark.
                             // Move the current bookmark up one.
                             bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i - 1)
-                        } else if ((i + 1) == selectedBookmarkPosition) {  // The current bookmark is immediately above the selected bookmark.
+                        } else if ((i + 1) == checkedBookmarkPosition) {  // The current bookmark is immediately above the selected bookmark.
                             // Move the current bookmark down one.
                             bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i + 1)
                         } else {  // The current bookmark is not changing positions.
@@ -340,25 +347,25 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
 
                     // Scroll to the new bookmark position.
-                    scrollBookmarks(selectedBookmarkNewPosition)
+                    scrollBookmarks(checkedBookmarkNewPosition)
 
                     // Update the enabled status of the move icons.
                     updateMoveIcons()
                 } else if (menuItemId == R.id.move_bookmark_down) {  // Move the bookmark down.
                     // Get the array of checked bookmark positions.
-                    selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
+                    checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
-                    // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
-                    for (i in 0 until selectedBookmarksPositionsSparseBooleanArray.size()) {
+                    // Get the position of the bookmark that is selected.  If other bookmarks have previously been checked they will be included in the sparse boolean array with a value of `false`.
+                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size()) {
                         // Check to see if the value for the bookmark is true, meaning it is currently selected.
-                        if (selectedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
+                        if (checkedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
                             // Only one bookmark should have a value of `true` when move bookmark down is enabled.
-                            selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(i)
+                            checkedBookmarkPosition = checkedBookmarksPositionsSparseBooleanArray.keyAt(i)
                         }
                     }
 
-                    // Calculate the new position of the selected bookmark.
-                    selectedBookmarkNewPosition = selectedBookmarkPosition + 1
+                    // Calculate the new position of the checked bookmark.
+                    checkedBookmarkNewPosition = checkedBookmarkPosition + 1
 
                     // Iterate through the bookmarks.
                     for (i in 0 until bookmarksListView.count) {
@@ -366,10 +373,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                         val currentBookmarkDatabaseId = bookmarksListView.getItemIdAtPosition(i).toInt()
 
                         // Update the display order for the current bookmark.
-                        if (i == selectedBookmarkPosition) {  // The current bookmark is the selected bookmark.
+                        if (i == checkedBookmarkPosition) {  // The current bookmark is the checked bookmark.
                             // Move the current bookmark down one.
                             bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i + 1)
-                        } else if (i - 1 == selectedBookmarkPosition) {  // The current bookmark is immediately below the selected bookmark.
+                        } else if ((i - 1) == checkedBookmarkPosition) {  // The current bookmark is immediately below the checked bookmark.
                             // Move the bookmark below the selected bookmark up one.
                             bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i - 1)
                         } else {  // The current bookmark is not changing positions.
@@ -390,7 +397,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
 
                     // Scroll to the new bookmark position.
-                    scrollBookmarks(selectedBookmarkNewPosition)
+                    scrollBookmarks(checkedBookmarkNewPosition)
 
                     // Update the enabled status of the move icons.
                     updateMoveIcons()
@@ -402,19 +409,19 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     moveToFolderDialog.show(supportFragmentManager, resources.getString(R.string.move_to_folder))
                 } else if (menuItemId == R.id.edit_bookmark) {
                     // Get the array of checked bookmark positions.
-                    selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
+                    checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
                     // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
-                    for (i in 0 until selectedBookmarksPositionsSparseBooleanArray.size()) {
+                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size()) {
                         // Check to see if the value for the bookmark is true, meaning it is currently selected.
-                        if (selectedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
+                        if (checkedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
                             // Only one bookmark should have a value of `true` when move edit bookmark is enabled.
-                            selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(i)
+                            checkedBookmarkPosition = checkedBookmarksPositionsSparseBooleanArray.keyAt(i)
                         }
                     }
 
                     // Move the cursor to the selected position.
-                    bookmarksCursor.moveToPosition(selectedBookmarkPosition)
+                    bookmarksCursor.moveToPosition(checkedBookmarkPosition)
 
                     // Get the selected bookmark database ID.
                     val databaseId = bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(ID))
@@ -437,14 +444,14 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     // Set the deleting bookmarks flag, which prevents the delete menu item from being enabled until the current process finishes.
                     deletingBookmarks = true
 
-                    // Get an array of the selected row IDs.
-                    val selectedBookmarksIdsLongArray = bookmarksListView.checkedItemIds
+                    // Get an array of the checked row IDs.
+                    val checkedBookmarksIdsLongArray = bookmarksListView.checkedItemIds
 
                     // Initialize a variable to count the number of bookmarks to delete.
                     var numberOfBookmarksToDelete = 0
 
                     // Count the number of bookmarks to delete.
-                    for (databaseIdLong in selectedBookmarksIdsLongArray) {
+                    for (databaseIdLong in checkedBookmarksIdsLongArray) {
                         // Convert the database ID long to an int.
                         val databaseIdInt = databaseIdLong.toInt()
 
@@ -459,10 +466,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     }
 
                     // Get an array of checked bookmarks.  `.clone()` makes a copy that won't change if the list view is reloaded, which is needed for re-selecting the bookmarks on undelete.
-                    selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions.clone()
+                    checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions.clone()
 
                     // Update the bookmarks cursor with the current contents of the bookmarks database except for the specified database IDs.
-                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolderId)
+                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(checkedBookmarksIdsLongArray, currentFolderId)
 
                     // Update the list view.
                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -479,12 +486,24 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                                     // Update the list view.
                                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
 
-                                    // Re-select the previously selected bookmarks.
-                                    for (i in 0 until selectedBookmarksPositionsSparseBooleanArray.size())
-                                        bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true)
+                                    // Get the number of checked bookmarks.
+                                    val numberOfCheckedBookmarks = checkedBookmarksPositionsSparseBooleanArray.size()
+
+                                    // Set the checking many bookmarks flag.
+                                    checkingManyBookmarks = true
+
+                                    // Re-check the previously checked bookmarks.
+                                    for (i in 0 until numberOfCheckedBookmarks) {
+                                        // Reset the checking many bookmarks flag on the last bookmark so the UI is updated.
+                                        if (i == (numberOfCheckedBookmarks - 1))
+                                            checkingManyBookmarks = false
+
+                                        // Check the bookmark.
+                                        bookmarksListView.setItemChecked(checkedBookmarksPositionsSparseBooleanArray.keyAt(i), true)
+                                    }
                                 } else {  // The snackbar was dismissed without the undo button being pushed.
                                     // Delete each selected bookmark.
-                                    for (databaseIdLong in selectedBookmarksIdsLongArray) {
+                                    for (databaseIdLong in checkedBookmarksIdsLongArray) {
                                         // Convert the database long ID to an int.
                                         val databaseIdInt = databaseIdLong.toInt()
 
@@ -533,8 +552,16 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     // Get the total number of bookmarks.
                     val numberOfBookmarks = bookmarksListView.count
 
+                    // Set the checking many bookmarks flag.
+                    checkingManyBookmarks = true
+
                     // Select them all.
                     for (i in 0 until numberOfBookmarks) {
+                        // Reset the checking many bookmarks flag on the last bookmark so the UI is updated.
+                        if (i == (numberOfBookmarks - 1))
+                            checkingManyBookmarks = false
+
+                        // Check the bookmark.
                         bookmarksListView.setItemChecked(i, true)
                     }
                 }
@@ -651,8 +678,16 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
             // Get the total number of bookmarks.
             val numberOfBookmarks = bookmarksListView.count
 
+            // Set the checking many bookmarks flag.
+            checkingManyBookmarks = true
+
             // Select them all.
             for (i in 0 until numberOfBookmarks) {
+                // Reset the checking many bookmarks flag on the last bookmark so the UI is updated.
+                if (i == (numberOfBookmarks - 1))
+                    checkingManyBookmarks = false
+
+                // Check the bookmark.
                 bookmarksListView.setItemChecked(i, true)
             }
         } else if (menuItemId == R.id.bookmarks_database_view) {
@@ -747,11 +782,11 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         // Move all the bookmarks down one in the display order.
         for (i in 0 until bookmarksListView.count) {
             val databaseId = bookmarksListView.getItemIdAtPosition(i).toInt()
-            bookmarksDatabaseHelper.updateDisplayOrder(databaseId, i + 1)
+            bookmarksDatabaseHelper.updateDisplayOrder(databaseId, displayOrder = i + 1)
         }
 
         // Create the folder, which will be placed at the top of the list view.
-        bookmarksDatabaseHelper.createFolder(folderNameString, currentFolderId, folderIconByteArray)
+        bookmarksDatabaseHelper.createFolder(folderNameString, currentFolderId, displayOrder = 0, folderIconByteArray)
 
         // Update the bookmarks cursor with the contents of the current folder.
         bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
@@ -907,7 +942,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         val folderId = bookmarksDatabaseHelper.getFolderId(folderDatabaseId)
 
         // Get the contents of the folder.
-        val folderCursor = bookmarksDatabaseHelper.getBookmarkIds(folderId)
+        val folderCursor = bookmarksDatabaseHelper.getBookmarkAndFolderIds(folderId)
 
         // Initialize the bookmark counter.
         var bookmarkCounter = 0
@@ -937,7 +972,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         val folderId = bookmarksDatabaseHelper.getFolderId(folderDatabaseId)
 
         // Get the contents of the folder.
-        val folderCursor = bookmarksDatabaseHelper.getBookmarkIds(folderId)
+        val folderCursor = bookmarksDatabaseHelper.getBookmarkAndFolderIds(folderId)
 
         // Delete each of the bookmarks in the folder.
         for (i in 0 until folderCursor.count) {

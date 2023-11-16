@@ -110,7 +110,7 @@
     <string name="username">用户名</string>
     <string name="password">密码</string>
 
-    <!-- MainWebViewActivity Navigation Menu. -->
+    <!-- Main Navigation Menu. -->
     <string name="navigation_drawer">导航栏</string>
     <string name="clear_and_exit">清除并退出</string>
     <string name="home">主页</string>
@@ -154,7 +154,6 @@
             <string name="user_agent_firefox_on_windows">Firefox on Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome on Windows</string>
             <string name="user_agent_edge_on_windows">Edge on Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">Internet Explorer on Windows</string>
             <string name="user_agent_safari_on_macos">Safari on macOS</string>
             <string name="user_agent_custom">自定义</string>
         <string name="swipe_to_refresh_options_menu">下拉刷新</string>

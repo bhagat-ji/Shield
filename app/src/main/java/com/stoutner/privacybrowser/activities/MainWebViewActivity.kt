@@ -2996,7 +2996,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Scroll to the new tab position if moving to the new tab.
         if (moveToTab)
-            tabLayout.post { tabLayout.setScrollPosition(newTabPosition, 0F, false, false) }
+            tabLayout.post {
+                tabLayout.setScrollPosition(newTabPosition, 0F, false, false)
+            }
 
         // Show the app bar if it is at the bottom of the screen and the new tab is taking focus.
         if (bottomAppBar && moveToTab && appBarLayout.translationY != 0f) {
@@ -4100,11 +4102,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             val databaseId = bookmarksListView.getItemIdAtPosition(i).toInt()
 
             // Move the bookmark down one slot.
-            bookmarksDatabaseHelper!!.updateDisplayOrder(databaseId, i + 1)
+            bookmarksDatabaseHelper!!.updateDisplayOrder(databaseId, displayOrder = i + 1)
         }
 
         // Create the folder, which will be placed at the top of the list view.
-        bookmarksDatabaseHelper!!.createFolder(folderNameString, currentBookmarksFolderId, folderIconByteArray)
+        bookmarksDatabaseHelper!!.createFolder(folderNameString, currentBookmarksFolderId, displayOrder = 0, folderIconByteArray)
 
         // Update the bookmarks cursor with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
@@ -5901,17 +5903,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Request focus for the URL text box.
                 urlEditText.requestFocus()
 
-                // Create a display keyboard handler.
-                val displayKeyboardHandler = Handler(Looper.getMainLooper())
-
-                // Create a display keyboard runnable.
-                val displayKeyboardRunnable = Runnable {
-                    // Display the keyboard.
+                // Display the keyboard once the tab layout has settled.
+                tabLayout.post {
                     inputMethodManager.showSoftInput(urlEditText, 0)
                 }
-
-                // Display the keyboard after 100 milliseconds, which leaves enough time for the tab to transition.
-                displayKeyboardHandler.postDelayed(displayKeyboardRunnable, 100)
             }
         }
     }
@@ -6270,7 +6265,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
             }
         }  catch (exception: Exception) {
-            //  Try again in 100 milliseconds if the WebView has not yet been populated.
+            //  Try again in 50 milliseconds if the WebView has not yet been populated.
             // Create a handler to set the current WebView.
             val setCurrentWebViewHandler = Handler(Looper.getMainLooper())
 

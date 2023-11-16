@@ -172,6 +172,16 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
             return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE", null)
         }
 
+    // Get a cursor with just the database IDs of all the bookmarks and folders.  This is useful for counting the number of bookmarks imported.
+    val allBookmarkAndFolderIds: Cursor
+        get() {
+            // Get a readable database handle.
+            val bookmarksDatabase = this.readableDatabase
+
+            // Return a cursor with all the database IDs.  The cursor cannot be closed because it is used in the parent activity.
+            return bookmarksDatabase.rawQuery("SELECT $ID FROM $BOOKMARKS_TABLE", null)
+        }
+
     // Get a cursor for all bookmarks and folders ordered by display order.
     val allBookmarksByDisplayOrder: Cursor
         get() {
@@ -218,16 +228,19 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
     }
 
     // Create a folder.
-    fun createFolder(folderName: String, parentFolderId: Long, favoriteIcon: ByteArray) {
+    fun createFolder(folderName: String, parentFolderId: Long, displayOrder: Int, favoriteIcon: ByteArray): Long {
         // Create a bookmark folder content values.
         val bookmarkFolderContentValues = ContentValues()
+
+        // Generate the folder ID.
+        val folderId = generateFolderId()
 
         // The ID is created automatically.  Folders are always created at the top of the list.
         bookmarkFolderContentValues.put(BOOKMARK_NAME, folderName)
         bookmarkFolderContentValues.put(PARENT_FOLDER_ID, parentFolderId)
-        bookmarkFolderContentValues.put(DISPLAY_ORDER, 0)
+        bookmarkFolderContentValues.put(DISPLAY_ORDER, displayOrder)
         bookmarkFolderContentValues.put(IS_FOLDER, true)
-        bookmarkFolderContentValues.put(FOLDER_ID, generateFolderId())
+        bookmarkFolderContentValues.put(FOLDER_ID, folderId)
         bookmarkFolderContentValues.put(FAVORITE_ICON, favoriteIcon)
 
         // Get a writable database handle.
@@ -238,6 +251,9 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
 
         // Close the database handle.
         bookmarksDatabase.close()
+
+        // Return the new folder ID.
+        return folderId
     }
 
     // Delete one bookmark.
@@ -309,8 +325,8 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
         return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $ID NOT IN ($idsNotToGetStringBuilder)", null)
     }
 
-    // Get a cursor with just database ID of bookmarks and folders in the specified folder.  This is useful for deleting folders with bookmarks that have favorite icons too large to fit in a cursor.
-    fun getBookmarkIds(parentFolderId: Long): Cursor {
+    // Get a cursor with just the database IDs of bookmarks and folders in the specified folder.  This is useful for deleting folders with bookmarks that have favorite icons too large to fit in a cursor.
+    fun getBookmarkAndFolderIds(parentFolderId: Long): Cursor {
         // Get a readable database handle.
         val bookmarksDatabase = this.readableDatabase
 

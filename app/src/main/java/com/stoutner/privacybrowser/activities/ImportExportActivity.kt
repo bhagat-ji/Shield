@@ -34,6 +34,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
+import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
 
@@ -52,6 +53,7 @@ import com.stoutner.privacybrowser.BuildConfig
 import com.stoutner.privacybrowser.helpers.EXPORT_SUCCESSFUL
 import com.stoutner.privacybrowser.helpers.IMPORT_EXPORT_SCHEMA_VERSION
 import com.stoutner.privacybrowser.helpers.IMPORT_SUCCESSFUL
+import com.stoutner.privacybrowser.helpers.ImportExportBookmarksHelper
 import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper
 
 import java.io.File
@@ -79,25 +81,34 @@ private const val OPENPGP_ENCRYPTION = 2
 // Define the saved instance state constants.
 private const val ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY = "A"
 private const val OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY = "B"
-private const val FILE_LOCATION_CARD_VIEW = "C"
-private const val FILE_NAME_LINEARLAYOUT_VISIBILITY = "D"
+private const val SETTINGS_FILE_LOCATION_CARDVIEW_VISIBILITY = "C"
+private const val SETTINGS_FILE_NAME_LINEARLAYOUT_VISIBILITY = "D"
 private const val OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY = "E"
-private const val IMPORT_EXPORT_BUTTON_VISIBILITY = "F"
-private const val FILE_NAME_TEXT = "G"
-private const val IMPORT_EXPORT_BUTTON_TEXT = "H"
+private const val SETTINGS_IMPORT_EXPORT_BUTTON_VISIBILITY = "F"
+private const val SETTINGS_FILE_NAME_TEXT = "G"
+private const val SETTINGS_IMPORT_EXPORT_BUTTON_TEXT = "H"
+private const val BOOKMARKS_FILE_NAME_LINEARLAYOUT_VISIBILITY = "I"
+private const val BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY = "J"
+private const val BOOKMARKS_FILE_NAME_TEXT = "K"
+private const val BOOKMARKS_IMPORT_EXPORT_BUTTON_TEXT = "L"
 
 class ImportExportActivity : AppCompatActivity() {
     // Define the class views.
+    private lateinit var scrollView: ScrollView
     private lateinit var encryptionSpinner: Spinner
     private lateinit var encryptionPasswordTextInputLayout: TextInputLayout
     private lateinit var encryptionPasswordEditText: EditText
     private lateinit var openKeychainRequiredTextView: TextView
-    private lateinit var fileLocationCardView: CardView
-    private lateinit var importRadioButton: RadioButton
-    private lateinit var fileNameLinearLayout: LinearLayout
-    private lateinit var fileNameEditText: EditText
+    private lateinit var settingsFileLocationCardView: CardView
+    private lateinit var settingsImportRadioButton: RadioButton
+    private lateinit var settingsFileNameLinearLayout: LinearLayout
+    private lateinit var settingsFileNameEditText: EditText
     private lateinit var openKeychainImportInstructionsTextView: TextView
-    private lateinit var importExportButton: Button
+    private lateinit var settingsImportExportButton: Button
+    private lateinit var bookmarksImportRadioButton: RadioButton
+    private lateinit var bookmarksFileNameLinearLayout: LinearLayout
+    private lateinit var bookmarksFileNameEditText: EditText
+    private lateinit var bookmarksImportExportButton: Button
 
     // Define the class variables.
     private lateinit var fileProviderDirectory: File
@@ -105,32 +116,70 @@ class ImportExportActivity : AppCompatActivity() {
     private lateinit var temporaryPgpEncryptedImportFile: File
     private lateinit var temporaryPreEncryptedExportFile: File
 
-    // Define the browse for import activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val browseForImportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { fileUri: Uri? ->
+    // Define the result launchers.  They must be defined before `onCreate()` is run or the app will crash.
+    private val settingsBrowseForImportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { fileUri: Uri? ->
         // Only do something if the user didn't press back from the file picker.
         if (fileUri != null) {
             // Get the file name string from the URI.
             val fileNameString = fileUri.toString()
 
-            // Set the file name name text.
-            fileNameEditText.setText(fileNameString)
+            // Set the settings file name text.
+            settingsFileNameEditText.setText(fileNameString)
 
             // Move the cursor to the end of the file name edit text.
-            fileNameEditText.setSelection(fileNameString.length)
+            settingsFileNameEditText.setSelection(fileNameString.length)
         }
     }
 
-    private val browseForExportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { fileUri: Uri? ->
+    private val settingsBrowseForExportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { fileUri: Uri? ->
         // Only do something if the user didn't press back from the file picker.
         if (fileUri != null) {
             // Get the file name string from the URI.
             val fileNameString = fileUri.toString()
 
-            // Set the file name name text.
-            fileNameEditText.setText(fileNameString)
+            // Set the settings file name text.
+            settingsFileNameEditText.setText(fileNameString)
 
             // Move the cursor to the end of the file name edit text.
-            fileNameEditText.setSelection(fileNameString.length)
+            settingsFileNameEditText.setSelection(fileNameString.length)
+        }
+    }
+
+    private val bookmarksBrowseForImportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { fileUri: Uri? ->
+        // Only do something if the user didn't press back from the file picker.
+        if (fileUri != null) {
+            // Get the file name string from the URI.
+            val fileNameString = fileUri.toString()
+
+            // Set the bookmarks file name text.
+            bookmarksFileNameEditText.setText(fileNameString)
+
+            // Move the cursor to the end of the file name edit text.
+            bookmarksFileNameEditText.setSelection(fileNameString.length)
+
+            // Scroll to the bottom.
+            scrollView.post {
+                scrollView.scrollY = scrollView.height
+            }
+        }
+    }
+
+    private val bookmarksBrowseForExportActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { fileUri: Uri? ->
+        // Only do something if the user didn't press back from the file picker.
+        if (fileUri != null) {
+            // Get the file name string from the URI.
+            val fileNameString = fileUri.toString()
+
+            // Set the bookmarks file name text.
+            bookmarksFileNameEditText.setText(fileNameString)
+
+            // Move the cursor to the end of the file name edit text.
+            bookmarksFileNameEditText.setSelection(fileNameString.length)
+
+            // Scroll to the bottom.
+            scrollView.post {
+                scrollView.scrollY = scrollView.height
+            }
         }
     }
 
@@ -195,17 +244,22 @@ class ImportExportActivity : AppCompatActivity() {
         }
 
         // Get handles for the views.
+        scrollView = findViewById(R.id.scrollview)
         encryptionSpinner = findViewById(R.id.encryption_spinner)
         encryptionPasswordTextInputLayout = findViewById(R.id.encryption_password_textinputlayout)
         encryptionPasswordEditText = findViewById(R.id.encryption_password_edittext)
         openKeychainRequiredTextView = findViewById(R.id.openkeychain_required_textview)
-        fileLocationCardView = findViewById(R.id.file_location_cardview)
-        importRadioButton = findViewById(R.id.import_radiobutton)
-        val exportRadioButton = findViewById<RadioButton>(R.id.export_radiobutton)
-        fileNameLinearLayout = findViewById(R.id.file_name_linearlayout)
-        fileNameEditText = findViewById(R.id.file_name_edittext)
+        settingsFileLocationCardView = findViewById(R.id.settings_file_location_cardview)
+        settingsImportRadioButton = findViewById(R.id.settings_import_radiobutton)
+        val settingsExportRadioButton = findViewById<RadioButton>(R.id.settings_export_radiobutton)
+        settingsFileNameLinearLayout = findViewById(R.id.settings_file_name_linearlayout)
+        settingsFileNameEditText = findViewById(R.id.settings_file_name_edittext)
         openKeychainImportInstructionsTextView = findViewById(R.id.openkeychain_import_instructions_textview)
-        importExportButton = findViewById(R.id.import_export_button)
+        settingsImportExportButton = findViewById(R.id.settings_import_export_button)
+        bookmarksImportRadioButton = findViewById(R.id.bookmarks_import_radiobutton)
+        bookmarksFileNameLinearLayout = findViewById(R.id.bookmarks_file_name_linearlayout)
+        bookmarksFileNameEditText = findViewById(R.id.bookmarks_file_name_edittext)
+        bookmarksImportExportButton = findViewById(R.id.bookmarks_import_export_button)
 
         // Create an array adapter for the spinner.
         val encryptionArrayAdapter = ArrayAdapter.createFromResource(this, R.array.encryption_type, R.layout.spinner_item)
@@ -218,7 +272,7 @@ class ImportExportActivity : AppCompatActivity() {
 
         // Update the UI when the spinner changes.
         encryptionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when (position) {
                     NO_ENCRYPTION -> {
                         // Hide the unneeded layout items.
@@ -227,21 +281,21 @@ class ImportExportActivity : AppCompatActivity() {
                         openKeychainImportInstructionsTextView.visibility = View.GONE
 
                         // Show the file location card.
-                        fileLocationCardView.visibility = View.VISIBLE
+                        settingsFileLocationCardView.visibility = View.VISIBLE
 
                         // Show the file name linear layout if either import or export is checked.
-                        if (importRadioButton.isChecked || exportRadioButton.isChecked)
-                            fileNameLinearLayout.visibility = View.VISIBLE
+                        if (settingsImportRadioButton.isChecked || settingsExportRadioButton.isChecked)
+                            settingsFileNameLinearLayout.visibility = View.VISIBLE
 
                         // Reset the text of the import button, which may have been changed to `Decrypt`.
-                        if (importRadioButton.isChecked)
-                            importExportButton.setText(R.string.import_button)
+                        if (settingsImportRadioButton.isChecked)
+                            settingsImportExportButton.setText(R.string.import_button)
 
                         // Clear the file name edit text.
-                        fileNameEditText.text.clear()
+                        settingsFileNameEditText.text.clear()
 
                         // Disable the import/export button.
-                        importExportButton.isEnabled = false
+                        settingsImportExportButton.isEnabled = false
                     }
 
                     PASSWORD_ENCRYPTION -> {
@@ -253,21 +307,21 @@ class ImportExportActivity : AppCompatActivity() {
                         encryptionPasswordTextInputLayout.visibility = View.VISIBLE
 
                         // Show the file location card.
-                        fileLocationCardView.visibility = View.VISIBLE
+                        settingsFileLocationCardView.visibility = View.VISIBLE
 
                         // Show the file name linear layout if either import or export is checked.
-                        if (importRadioButton.isChecked || exportRadioButton.isChecked)
-                            fileNameLinearLayout.visibility = View.VISIBLE
+                        if (settingsImportRadioButton.isChecked || settingsExportRadioButton.isChecked)
+                            settingsFileNameLinearLayout.visibility = View.VISIBLE
 
                         // Reset the text of the import button, which may have been changed to `Decrypt`.
-                        if (importRadioButton.isChecked)
-                            importExportButton.setText(R.string.import_button)
+                        if (settingsImportRadioButton.isChecked)
+                            settingsImportExportButton.setText(R.string.import_button)
 
                         // Clear the file name edit text.
-                        fileNameEditText.text.clear()
+                        settingsFileNameEditText.text.clear()
 
                         // Disable the import/export button.
-                        importExportButton.isEnabled = false
+                        settingsImportExportButton.isEnabled = false
                     }
 
                     OPENPGP_ENCRYPTION -> {
@@ -277,36 +331,36 @@ class ImportExportActivity : AppCompatActivity() {
                         // Updated items based on the installation status of OpenKeychain.
                         if (openKeychainInstalled) {  // OpenKeychain is installed.
                             // Show the file location card.
-                            fileLocationCardView.visibility = View.VISIBLE
+                            settingsFileLocationCardView.visibility = View.VISIBLE
 
                             // Update the layout based on the checked radio button.
-                            if (importRadioButton.isChecked) {
+                            if (settingsImportRadioButton.isChecked) {
                                 // Show the file name linear layout and the OpenKeychain import instructions.
-                                fileNameLinearLayout.visibility = View.VISIBLE
+                                settingsFileNameLinearLayout.visibility = View.VISIBLE
                                 openKeychainImportInstructionsTextView.visibility = View.VISIBLE
 
                                 // Set the text of the import button to be `Decrypt`.
-                                importExportButton.setText(R.string.decrypt)
+                                settingsImportExportButton.setText(R.string.decrypt)
 
                                 // Clear the file name edit text.
-                                fileNameEditText.text.clear()
+                                settingsFileNameEditText.text.clear()
 
                                 // Disable the import/export button.
-                                importExportButton.isEnabled = false
-                            } else if (exportRadioButton.isChecked) {
+                                settingsImportExportButton.isEnabled = false
+                            } else if (settingsExportRadioButton.isChecked) {
                                 // Hide the file name linear layout and the OpenKeychain import instructions.
-                                fileNameLinearLayout.visibility = View.GONE
+                                settingsFileNameLinearLayout.visibility = View.GONE
                                 openKeychainImportInstructionsTextView.visibility = View.GONE
 
                                 // Enable the export button.
-                                importExportButton.isEnabled = true
+                                settingsImportExportButton.isEnabled = true
                             }
                         } else {  // OpenKeychain is not installed.
                             // Show the OpenPGP required layout item.
                             openKeychainRequiredTextView.visibility = View.VISIBLE
 
                             // Hide the file location card.
-                            fileLocationCardView.visibility = View.GONE
+                            settingsFileLocationCardView.visibility = View.GONE
                         }
                     }
                 }
@@ -327,12 +381,12 @@ class ImportExportActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable) {
                 // Enable the import/export button if both the file string and the password are populated.
-                importExportButton.isEnabled = fileNameEditText.text.toString().isNotEmpty() && encryptionPasswordEditText.text.toString().isNotEmpty()
+                settingsImportExportButton.isEnabled = settingsFileNameEditText.text.toString().isNotEmpty() && encryptionPasswordEditText.text.toString().isNotEmpty()
             }
         })
 
-        // Update the UI when the file name edit text changes.
-        fileNameEditText.addTextChangedListener(object : TextWatcher {
+        // Update the UI when the settings file name edit text changes.
+        settingsFileNameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // Do nothing.
             }
@@ -344,12 +398,28 @@ class ImportExportActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable) {
                 // Adjust the UI according to the encryption spinner position.
                 if (encryptionSpinner.selectedItemPosition == PASSWORD_ENCRYPTION) {
-                    // Enable the import/export button if both the file name and the password are populated.
-                    importExportButton.isEnabled = fileNameEditText.text.toString().isNotEmpty() && encryptionPasswordEditText.text.toString().isNotEmpty()
+                    // Enable the settings import/export button if both the file name and the password are populated.
+                    settingsImportExportButton.isEnabled = settingsFileNameEditText.text.toString().isNotEmpty() && encryptionPasswordEditText.text.toString().isNotEmpty()
                 } else {
-                    // Enable the export button if the file name is populated.
-                    importExportButton.isEnabled = fileNameEditText.text.toString().isNotEmpty()
+                    // Enable the settings import/export button if the file name is populated.
+                    settingsImportExportButton.isEnabled = settingsFileNameEditText.text.toString().isNotEmpty()
                 }
+            }
+        })
+
+        // Update the UI when the bookmarks file name edit text changes.
+        bookmarksFileNameEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // Do nothing.
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                // Do nothing.
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                // Enable the bookmarks import/export button if the file name is populated.
+                bookmarksImportExportButton.isEnabled = bookmarksFileNameEditText.text.toString().isNotEmpty()
             }
         })
 
@@ -358,21 +428,27 @@ class ImportExportActivity : AppCompatActivity() {
             // Initially hide the unneeded views.
             encryptionPasswordTextInputLayout.visibility = View.GONE
             openKeychainRequiredTextView.visibility = View.GONE
-            fileNameLinearLayout.visibility = View.GONE
+            settingsFileNameLinearLayout.visibility = View.GONE
             openKeychainImportInstructionsTextView.visibility = View.GONE
-            importExportButton.visibility = View.GONE
+            settingsImportExportButton.visibility = View.GONE
+            bookmarksFileNameLinearLayout.visibility = View.GONE
+            bookmarksImportExportButton.visibility = View.GONE
         } else {  // The app has been restarted.
             // Restore the visibility of the views.
             encryptionPasswordTextInputLayout.visibility = savedInstanceState.getInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY)
             openKeychainRequiredTextView.visibility = savedInstanceState.getInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY)
-            fileLocationCardView.visibility = savedInstanceState.getInt(FILE_LOCATION_CARD_VIEW)
-            fileNameLinearLayout.visibility = savedInstanceState.getInt(FILE_NAME_LINEARLAYOUT_VISIBILITY)
+            settingsFileLocationCardView.visibility = savedInstanceState.getInt(SETTINGS_FILE_LOCATION_CARDVIEW_VISIBILITY)
+            settingsFileNameLinearLayout.visibility = savedInstanceState.getInt(SETTINGS_FILE_NAME_LINEARLAYOUT_VISIBILITY)
             openKeychainImportInstructionsTextView.visibility = savedInstanceState.getInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY)
-            importExportButton.visibility = savedInstanceState.getInt(IMPORT_EXPORT_BUTTON_VISIBILITY)
+            settingsImportExportButton.visibility = savedInstanceState.getInt(SETTINGS_IMPORT_EXPORT_BUTTON_VISIBILITY)
+            bookmarksFileNameLinearLayout.visibility = savedInstanceState.getInt(BOOKMARKS_FILE_NAME_LINEARLAYOUT_VISIBILITY)
+            bookmarksImportExportButton.visibility = savedInstanceState.getInt(BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY)
 
             // Restore the text.
-            fileNameEditText.post { fileNameEditText.setText(savedInstanceState.getString(FILE_NAME_TEXT)) }
-            importExportButton.text = savedInstanceState.getString(IMPORT_EXPORT_BUTTON_TEXT)
+            settingsFileNameEditText.post { settingsFileNameEditText.setText(savedInstanceState.getString(SETTINGS_FILE_NAME_TEXT)) }
+            settingsImportExportButton.text = savedInstanceState.getString(SETTINGS_IMPORT_EXPORT_BUTTON_TEXT)
+            bookmarksFileNameEditText.post { bookmarksFileNameEditText.setText(savedInstanceState.getString(BOOKMARKS_FILE_NAME_TEXT)) }
+            bookmarksImportExportButton.text = savedInstanceState.getString(BOOKMARKS_IMPORT_EXPORT_BUTTON_TEXT)
         }
     }
 
@@ -383,98 +459,159 @@ class ImportExportActivity : AppCompatActivity() {
         // Save the visibility of the views.
         savedInstanceState.putInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY, encryptionPasswordTextInputLayout.visibility)
         savedInstanceState.putInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY, openKeychainRequiredTextView.visibility)
-        savedInstanceState.putInt(FILE_LOCATION_CARD_VIEW, fileLocationCardView.visibility)
-        savedInstanceState.putInt(FILE_NAME_LINEARLAYOUT_VISIBILITY, fileNameLinearLayout.visibility)
+        savedInstanceState.putInt(SETTINGS_FILE_LOCATION_CARDVIEW_VISIBILITY, settingsFileLocationCardView.visibility)
+        savedInstanceState.putInt(SETTINGS_FILE_NAME_LINEARLAYOUT_VISIBILITY, settingsFileNameLinearLayout.visibility)
         savedInstanceState.putInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY, openKeychainImportInstructionsTextView.visibility)
-        savedInstanceState.putInt(IMPORT_EXPORT_BUTTON_VISIBILITY, importExportButton.visibility)
+        savedInstanceState.putInt(SETTINGS_IMPORT_EXPORT_BUTTON_VISIBILITY, settingsImportExportButton.visibility)
+        savedInstanceState.putInt(BOOKMARKS_FILE_NAME_LINEARLAYOUT_VISIBILITY, bookmarksFileNameLinearLayout.visibility)
+        savedInstanceState.putInt(BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY, bookmarksImportExportButton.visibility)
 
         // Save the text.
-        savedInstanceState.putString(FILE_NAME_TEXT, fileNameEditText.text.toString())
-        savedInstanceState.putString(IMPORT_EXPORT_BUTTON_TEXT, importExportButton.text.toString())
+        savedInstanceState.putString(SETTINGS_FILE_NAME_TEXT, settingsFileNameEditText.text.toString())
+        savedInstanceState.putString(SETTINGS_IMPORT_EXPORT_BUTTON_TEXT, settingsImportExportButton.text.toString())
+        savedInstanceState.putString(BOOKMARKS_FILE_NAME_TEXT, bookmarksFileNameEditText.text.toString())
+        savedInstanceState.putString(BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY, bookmarksImportExportButton.text.toString())
     }
 
-    fun onClickRadioButton(view: View) {
+    fun onClickBookmarksRadioButton(view: View) {
         // Check to see if import or export was selected.
-        if (view.id == R.id.import_radiobutton) {  // The import radio button is selected.
+        if (view.id == R.id.bookmarks_import_radiobutton) {  // The bookmarks import radio button was selected.
+            // Set the text on the bookmarks import/export button to be `Import`.
+            bookmarksImportExportButton.setText(R.string.import_button)
+        } else {  // The bookmarks export radio button was selected.
+            // Set the text on the bookmarks import/export button to be `Export`.
+            bookmarksImportExportButton.setText(R.string.export)
+        }
+
+        // Display the bookmarks views.
+        bookmarksFileNameLinearLayout.visibility = View.VISIBLE
+        bookmarksImportExportButton.visibility = View.VISIBLE
+
+        // Clear the bookmarks file name edit text.
+        bookmarksFileNameEditText.text.clear()
+
+        // Disable the bookmarks import/export button.
+        bookmarksImportExportButton.isEnabled = false
+
+        // Scroll to the bottom of the screen.
+        scrollView.post {
+            scrollView.scrollY = scrollView.height
+        }
+    }
+
+    fun onClickSettingsRadioButton(view: View) {
+        // Check to see if import or export was selected.
+        if (view.id == R.id.settings_import_radiobutton) {  // The settings import radio button was selected.
             // Check to see if OpenPGP encryption is selected.
             if (encryptionSpinner.selectedItemPosition == OPENPGP_ENCRYPTION) {  // OpenPGP encryption selected.
                 // Show the OpenKeychain import instructions.
                 openKeychainImportInstructionsTextView.visibility = View.VISIBLE
 
-                // Set the text on the import/export button to be `Decrypt`.
-                importExportButton.setText(R.string.decrypt)
+                // Set the text on the settings import/export button to be `Decrypt`.
+                settingsImportExportButton.setText(R.string.decrypt)
             } else {  // OpenPGP encryption not selected.
                 // Hide the OpenKeychain import instructions.
                 openKeychainImportInstructionsTextView.visibility = View.GONE
 
-                // Set the text on the import/export button to be `Import`.
-                importExportButton.setText(R.string.import_button)
+                // Set the text on the settings import/export button to be `Import`.
+                settingsImportExportButton.setText(R.string.import_button)
             }
 
-            // Display the file name views.
-            fileNameLinearLayout.visibility = View.VISIBLE
-            importExportButton.visibility = View.VISIBLE
+            // Display the views.
+            settingsFileNameLinearLayout.visibility = View.VISIBLE
+            settingsImportExportButton.visibility = View.VISIBLE
 
-            // Clear the file name edit text.
-            fileNameEditText.text.clear()
+            // Clear the settings file name edit text.
+            settingsFileNameEditText.text.clear()
 
-            // Disable the import/export button.
-            importExportButton.isEnabled = false
-        } else {  // The export radio button is selected.
+            // Disable the settings import/export button.
+            settingsImportExportButton.isEnabled = false
+        } else {  // The settings export radio button was selected.
             // Hide the OpenKeychain import instructions.
             openKeychainImportInstructionsTextView.visibility = View.GONE
 
-            // Set the text on the import/export button to be `Export`.
-            importExportButton.setText(R.string.export)
+            // Set the text on the settings import/export button to be `Export`.
+            settingsImportExportButton.setText(R.string.export)
 
-            // Show the import/export button.
-            importExportButton.visibility = View.VISIBLE
+            // Show the settings import/export button.
+            settingsImportExportButton.visibility = View.VISIBLE
 
             // Check to see if OpenPGP encryption is selected.
             if (encryptionSpinner.selectedItemPosition == OPENPGP_ENCRYPTION) {  // OpenPGP encryption is selected.
-                // Hide the file name views.
-                fileNameLinearLayout.visibility = View.GONE
+                // Hide the settings file name views.
+                settingsFileNameLinearLayout.visibility = View.GONE
 
-                // Enable the export button.
-                importExportButton.isEnabled = true
+                // Enable the settings export button.
+                settingsImportExportButton.isEnabled = true
             } else {  // OpenPGP encryption is not selected.
-                // Show the file name view.
-                fileNameLinearLayout.visibility = View.VISIBLE
+                // Show the settings file name view.
+                settingsFileNameLinearLayout.visibility = View.VISIBLE
 
-                // Clear the file name edit text.
-                fileNameEditText.text.clear()
+                // Clear the settings file name edit text.
+                settingsFileNameEditText.text.clear()
 
-                // Disable the import/export button.
-                importExportButton.isEnabled = false
+                // Disable the settings import/export button.
+                settingsImportExportButton.isEnabled = false
             }
         }
     }
 
-    fun browse(@Suppress("UNUSED_PARAMETER") view: View) {
+    fun settingsBrowse(@Suppress("UNUSED_PARAMETER") view: View) {
         // Check to see if import or export is selected.
-        if (importRadioButton.isChecked) {  // Import is selected.
+        if (settingsImportRadioButton.isChecked) {  // Import is selected.
             // Open the file picker.
-            browseForImportActivityResultLauncher.launch("*/*")
+            settingsBrowseForImportActivityResultLauncher.launch("*/*")
         } else {  // Export is selected
             // Open the file picker with the export name according to the encryption type.
             if (encryptionSpinner.selectedItemPosition == NO_ENCRYPTION)  // No encryption is selected.
-                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, IMPORT_EXPORT_SCHEMA_VERSION))
+                settingsBrowseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs, BuildConfig.VERSION_NAME, IMPORT_EXPORT_SCHEMA_VERSION))
             else  // Password encryption is selected.
-                browseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs_aes, BuildConfig.VERSION_NAME, IMPORT_EXPORT_SCHEMA_VERSION))
+                settingsBrowseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_settings_pbs_aes, BuildConfig.VERSION_NAME, IMPORT_EXPORT_SCHEMA_VERSION))
         }
     }
 
-    fun importExport(@Suppress("UNUSED_PARAMETER") view: View) {
-        // Instantiate the import export database helper.
+    fun bookmarksBrowse(@Suppress("UNUSED_PARAMETER") view: View) {
+        // Check to see if import or export is selected.
+        if (bookmarksImportRadioButton.isChecked) {  // Import is selected.
+            // Open the file picker.
+            bookmarksBrowseForImportActivityResultLauncher.launch("*/*")
+        } else {  // Export is selected.
+            // Open the file picker.
+            bookmarksBrowseForExportActivityResultLauncher.launch(getString(R.string.privacy_browser_bookmarks_html))
+        }
+    }
+
+    fun importExportBookmarks(@Suppress("UNUSED_PARAMETER") view: View) {
+        // Instantiate the import/export bookmarks helper.
+        val importExportBookmarksHelper = ImportExportBookmarksHelper()
+
+        // Get the file name string.
+        val fileNameString = bookmarksFileNameEditText.text.toString()
+
+        // Check to see if import or export is selected.
+        if (bookmarksImportRadioButton.isChecked) {  // Import is selected.
+            // Import the bookmarks.
+            importExportBookmarksHelper.importBookmarks(fileNameString, context = this, scrollView)
+
+            // Repopulate the bookmarks in the main WebView activity.
+            MainWebViewActivity.restartFromBookmarksActivity = true
+        } else {  // Export is selected.
+            // Export the bookmarks.
+            importExportBookmarksHelper.exportBookmarks(fileNameString, context = this, scrollView)
+        }
+    }
+
+    fun importExportSettings(@Suppress("UNUSED_PARAMETER") view: View) {
+        // Instantiate the import/export database helper.
         val importExportDatabaseHelper = ImportExportDatabaseHelper()
 
         // Check to see if import or export is selected.
-        if (importRadioButton.isChecked) {  // Import is selected.
+        if (settingsImportRadioButton.isChecked) {  // Import is selected.
             // Initialize the import status string
             var importStatus = ""
 
             // Get the file name string.
-            val fileNameString = fileNameEditText.text.toString()
+            val fileNameString = settingsFileNameEditText.text.toString()
 
             // Import according to the encryption type.
             when (encryptionSpinner.selectedItemPosition) {
@@ -669,18 +806,18 @@ class ImportExportActivity : AppCompatActivity() {
 
             // Display a snack bar with the import error if it was unsuccessful.
             if (importStatus != IMPORT_SUCCESSFUL)
-                Snackbar.make(fileNameEditText, getString(R.string.import_failed, importStatus), Snackbar.LENGTH_INDEFINITE).show()
+                Snackbar.make(settingsFileNameEditText, getString(R.string.import_failed, importStatus), Snackbar.LENGTH_INDEFINITE).show()
         } else {  // Export is selected.
             // Export according to the encryption type.
             when (encryptionSpinner.selectedItemPosition) {
                 NO_ENCRYPTION -> {
                     // Get the file name string.
-                    val noEncryptionFileNameString = fileNameEditText.text.toString()
+                    val noEncryptionFileNameString = settingsFileNameEditText.text.toString()
 
                     try {
-                        // Get the export file output stream.
+                        // Get the export file output stream, truncating any existing content.
                         // A file may be opened directly once the minimum API >= 29.  <https://developer.android.com/reference/kotlin/android/content/ContentResolver#openfile>
-                        val exportFileOutputStream = contentResolver.openOutputStream(Uri.parse(noEncryptionFileNameString))!!
+                        val exportFileOutputStream = contentResolver.openOutputStream(Uri.parse(noEncryptionFileNameString), "wt")!!
 
                         // Export the unencrypted file.
                         val noEncryptionExportStatus = importExportDatabaseHelper.exportUnencrypted(exportFileOutputStream, this)
@@ -690,12 +827,12 @@ class ImportExportActivity : AppCompatActivity() {
 
                         // Display an export disposition snackbar.
                         if (noEncryptionExportStatus == EXPORT_SUCCESSFUL)
-                            Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(settingsFileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show()
                         else
-                            Snackbar.make(fileNameEditText, getString(R.string.export_failed, noEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
+                            Snackbar.make(settingsFileNameEditText, getString(R.string.export_failed, noEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
                     } catch (fileNotFoundException: FileNotFoundException) {
                         // Display a snackbar with the exception.
-                        Snackbar.make(fileNameEditText, getString(R.string.export_failed, fileNotFoundException), Snackbar.LENGTH_INDEFINITE).show()
+                        Snackbar.make(settingsFileNameEditText, getString(R.string.export_failed, fileNotFoundException), Snackbar.LENGTH_INDEFINITE).show()
                     }
                 }
 
@@ -768,10 +905,10 @@ class ImportExportActivity : AppCompatActivity() {
                         cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec)
 
                         // Get the file name string.
-                        val passwordEncryptionFileNameString = fileNameEditText.text.toString()
+                        val passwordEncryptionFileNameString = settingsFileNameEditText.text.toString()
 
-                        // Get the export file output stream.
-                        val exportFileOutputStream = contentResolver.openOutputStream(Uri.parse(passwordEncryptionFileNameString))!!
+                        // Get the export file output stream, truncating any existing content.
+                        val exportFileOutputStream = contentResolver.openOutputStream(Uri.parse(passwordEncryptionFileNameString), "wt")!!
 
                         // Add the salt and the initialization vector to the export file output stream.
                         exportFileOutputStream.write(saltByteArray)
@@ -809,12 +946,12 @@ class ImportExportActivity : AppCompatActivity() {
 
                         // Display an export disposition snackbar.
                         if (passwordEncryptionExportStatus == EXPORT_SUCCESSFUL)
-                            Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(settingsFileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show()
                         else
-                            Snackbar.make(fileNameEditText, getString(R.string.export_failed, passwordEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
+                            Snackbar.make(settingsFileNameEditText, getString(R.string.export_failed, passwordEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
                     } catch (exception: Exception) {
                         // Display a snackbar with the exception.
-                        Snackbar.make(fileNameEditText, getString(R.string.export_failed, exception), Snackbar.LENGTH_INDEFINITE).show()
+                        Snackbar.make(settingsFileNameEditText, getString(R.string.export_failed, exception), Snackbar.LENGTH_INDEFINITE).show()
                     }
                 }
 
@@ -848,7 +985,7 @@ class ImportExportActivity : AppCompatActivity() {
 
                         // Display an export error snackbar if the temporary pre-encrypted export failed.
                         if (openpgpEncryptionExportStatus != EXPORT_SUCCESSFUL)
-                            Snackbar.make(fileNameEditText, getString(R.string.export_failed, openpgpEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
+                            Snackbar.make(settingsFileNameEditText, getString(R.string.export_failed, openpgpEncryptionExportStatus), Snackbar.LENGTH_INDEFINITE).show()
 
                         // Create an encryption intent for OpenKeychain.
                         val openKeychainEncryptIntent = Intent("org.sufficientlysecure.keychain.action.ENCRYPT_DATA")
@@ -866,7 +1003,7 @@ class ImportExportActivity : AppCompatActivity() {
                         openKeychainEncryptActivityResultLauncher.launch(openKeychainEncryptIntent)
                     } catch (exception: Exception) {
                         // Display a snackbar with the exception.
-                        Snackbar.make(fileNameEditText, getString(R.string.export_failed, exception), Snackbar.LENGTH_INDEFINITE).show()
+                        Snackbar.make(settingsFileNameEditText, getString(R.string.export_failed, exception), Snackbar.LENGTH_INDEFINITE).show()
                     }
                 }
             }

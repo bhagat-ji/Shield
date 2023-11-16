@@ -69,6 +69,8 @@
     <string name="unencrypted_website">Sito non criptato</string>
     <string name="no_ssl_certificate">La comunicazione con questo sito web non è criptata. Questo consente a terze parti la possibilità di intercettare le informazioni scambiate,
         di tracciare la navigazione e di inviare contenuto maligno.</string>
+    <string name="content_url">Content URL</string>
+    <string name="content_url_message">Le Content URL sono dati caricati sul proprio dispositivo da altre app.</string>
     <string name="ssl_certificate">Certificato SSL</string>
     <string name="close">Chiudi</string>
     <string name="domain">Dominio</string>
@@ -107,12 +109,14 @@
     <string name="username">Nome utente</string>
     <string name="password">Password</string>
 
-    <!-- MainWebViewActivity Navigation Menu. -->
+    <!-- Main Navigation Menu. -->
     <string name="navigation_drawer">Menù di navigazione</string>
     <string name="clear_and_exit">Elimina dati ed esci</string>
     <string name="home">Home</string>
     <string name="back">Indietro</string>
     <string name="forward">Avanti</string>
+    <string name="scroll_to_bottom">Vai alla fine</string>
+        <string name="scroll_to_top">Vai all\'inizio</string>
     <string name="history">Cronologia</string>
         <string name="clear_history">Elimina cronologia</string>
     <string name="open">Apri</string>
@@ -151,7 +155,6 @@
             <string name="user_agent_firefox_on_windows">Firefox su Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome su Windows</string>
             <string name="user_agent_edge_on_windows">Edge su Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">Internet Explorer su Windows</string>
             <string name="user_agent_safari_on_macos">Safari su macOS</string>
             <string name="user_agent_custom">Personalizzato</string>
         <string name="swipe_to_refresh_options_menu">Swipe per aggiornare</string>

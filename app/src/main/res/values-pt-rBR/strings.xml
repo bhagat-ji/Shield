@@ -105,7 +105,7 @@
     <string name="username">Nome do usuário</string>
     <string name="password">Senha</string>
 
-    <!-- MainWebViewActivity Navigation Menu. -->
+    <!-- Main Navigation Menu. -->
     <string name="navigation_drawer">Caixa de Navegação</string>
     <string name="clear_and_exit">Limpar e fechar</string>
     <string name="home">Início</string>
@@ -149,7 +149,6 @@
             <string name="user_agent_firefox_on_windows">Firefox para Windows</string>
             <string name="user_agent_chrome_on_windows">Chrome para Windows</string>
             <string name="user_agent_edge_on_windows">Edge para Windows</string>
-            <string name="user_agent_internet_explorer_on_windows">Internet Explorer para Windows</string>
             <string name="user_agent_safari_on_macos">Safari para macOS</string>
             <string name="user_agent_custom">Personalizado</string>
         <string name="swipe_to_refresh_options_menu">Deslize para atualizar</string>
