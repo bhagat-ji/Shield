@@ -435,6 +435,9 @@
 
     <!-- Import/Export.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
       The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <string name="bookmarks_and_settings">Favoritos y Configuración</string>
+    <string name="sqlite_database_format">Formato de base de datos SQLite</string>
+    <string name="html_format">Formato HTML</string>
     <string name="encryption">Cifrado</string>
     <string-array name="encryption_type">
         <item>Ninguno</item>
@@ -450,9 +453,12 @@
     <string name="decrypt">Descifrar</string>
     <string name="privacy_browser_settings_pbs">Navegador Privado Android %1$s Configuración - Schema %2$d.pbs</string>
     <string name="privacy_browser_settings_pbs_aes">Navegador Privado Android %1$s Configuración - Schema %2$d.pbs.aes</string>
+    <string name="privacy_browser_bookmarks_html">Navegador Privacy Favoritos.html</string>
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:\u0020 %1$s</string>
     <string name="import_failed">Importación fallida:\u0020 %1$s</string>
+    <string name="bookmarks_imported">%1$d carpetas y favoritos importados.</string>
+    <string name="bookmarks_exported">%1$d carpetas y favoritos exportados.</string>
 
     <!-- Logcat.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->

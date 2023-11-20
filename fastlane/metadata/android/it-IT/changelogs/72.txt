@@ -1,0 +1,12 @@
+• Aggiunta la possibilità di importare e esportare i segnalibri in un file HTML.
+• Apertura delle nuove schede di fianco alla scheda in uso.
+• Resa come impostazione istantanea predefinita l'aggiunta di una nuova impostazione dei domini.
+• Aggiunta una nuova voce nel menù di navigazione per spostarsi alla fine/inizio della pagina.
+• Spostamento immediato del cassetto di navigazione in basso quando si imposta la barra dell'app in basso.
+• Aggiunta delle informazioni SSL quando si visualizzano le intestazioni.
+• Aggiunta l'opzione per copiare, condividere, e salvare le intestazioni quando visualizzate.
+• Aggiunta la possibilità di condividere le selezioni al menù contestuale di WebView.
+• Correzione di diversi bachi relativi alle schede dopo il ripristino delle pagine al riavvio.
+• Correzione di diversi piccoli bachi dell'interfaccia.
+• Spostamento della target API a 34 (Android 14).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

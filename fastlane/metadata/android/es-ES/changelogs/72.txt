@@ -1,0 +1,12 @@
+• Añadir la importación y exportación de favoritos a un archivo HTML.
+• Abrir nuevas pestañas adyacentes a la pestaña actual.
+• Por defecto se usará la actual configuración establecida al añadir nuevas configuraciones de dominio.
+• Añadir una entrada de menú de navegación para desplazarse a la parte inferior/superior de la página.
+• Desplazar inicialmente el cajón de navegación hasta el fondo cuando se use la barra inferior de aplicaciones.
+• Mostrar información SSL en Ver Cabeceras.
+• Añadir opciones para copiar, compartir, y guardar Ver Cabeceras.
+• Añadir entradas de compartir a los menús contextuales de WebView.
+• Corregir varios errores con las pestañas después de restaurar las páginas al reiniciar.
+• Corregir varios pequeños errores de interfaz.
+• Subir la API objetivo a 34 (Android 14).
+• Actualizada la traducción al español proporcionada por Jose A. León.

@@ -29,8 +29,8 @@ android {
         minSdk 24
         //noinspection EditedTargetSdkVersion
         targetSdk 34
-        versionCode 71
-        versionName "3.15.1"
+        versionCode 72
+        versionName "3.16"
         resourceConfigurations += ['en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN']
     }
 
@@ -78,7 +78,7 @@ android {
 
 dependencies {
     // Include the following AndroidX libraries.
-    implementation "androidx.activity:activity-ktx:1.8.0"
+    implementation "androidx.activity:activity-ktx:1.8.1"
     implementation 'androidx.arch.core:core-common:2.2.0'
     implementation 'androidx.arch.core:core-runtime:2.2.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

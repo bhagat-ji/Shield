@@ -1,0 +1,11 @@
+• Add importing and exporting of bookmarks to an HTML file.
+• Open new tabs adjacent to the current tab.
+• Default to current on-the-fly settings when adding new Domain Settings.
+• Add a navigation menu entry to scroll to the bottom/top of the page.
+• Initially scroll the navigation drawer to the bottom when using the bottom app bar.
+• Display SSL information in View Headers.
+• Add options to copy, share, and save View Headers.
+• Add share entries to the WebView context menus.
+• Fix several bugs with tabs after restoring pages on restart.
+• Fix several small interface bugs.
+• Bump the target API to 34 (Android 14).
