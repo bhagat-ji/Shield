@@ -195,6 +195,12 @@
             app:title="@string/hide_app_bar"
             app:summary="@string/hide_app_bar_summary"
             app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/display_under_cutouts_key"
+            app:title="@string/display_under_cutouts"
+            app:summary="@string/display_under_cutouts_summary"
+            app:defaultValue="false" />
     </PreferenceCategory>
 
     <PreferenceCategory

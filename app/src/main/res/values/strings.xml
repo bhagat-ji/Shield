@@ -693,6 +693,8 @@
         <string name="full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
         <string name="hide_app_bar">Hide the app bar</string>
         <string name="hide_app_bar_summary">Hide the app bar that contains the URL.</string>
+        <string name="display_under_cutouts">Display under cutouts</string>
+        <string name="display_under_cutouts_summary">Draw the website under cutouts, like camera notches. Changing this setting will restart Privacy Browser.</string>
     <string name="clear_everything">Clear everything</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Clears cookies, DOM storage, form data, the logcat, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
@@ -777,6 +779,7 @@
     <string name="full_screen_browsing_mode_key" translatable="false">full_screen_browsing_mode</string>
     <string name="general_category_key" translatable="false">general</string>
     <string name="hide_app_bar_key" translatable="false">hide_app_bar</string>
+    <string name="display_under_cutouts_key" translatable="false">display_under_cutouts</string>
     <string name="homepage_key" translatable="false">homepage</string>
     <string name="incognito_mode_key" translatable="false">incognito_mode</string>
     <string name="javascript_key" translatable="false">javascript</string>

@@ -377,7 +377,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var domainsDatabaseHelper: DomainsDatabaseHelper? = null
     private var downloadWithExternalApp = false
     private var fullScreenBrowsingModeEnabled = false
-    private var hideAppBar = false
+    private var hideAppBar = true
     private var inFullScreenBrowsingMode = false
     private var incognitoModeEnabled = false
     private var loadingNewIntent = false
@@ -524,6 +524,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
         bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
         displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false)
+        val displayUnderCutouts = sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false)
+
+        // Display under cutouts if specified.  This must be done here as it doesn't appear to work correctly if handled after the app is fully initialized.
+        if (displayUnderCutouts) {
+            if (Build.VERSION.SDK_INT >= 30)
+                window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+            else if (Build.VERSION.SDK_INT >= 28)
+                window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
 
         // Get the theme entry values string array.
         val appThemeEntryValuesStringArray = resources.getStringArray(R.array.app_theme_entry_values)
@@ -4827,8 +4836,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
                         @Suppress("DEPRECATION")
-                        rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     } else {  // Switch to normal viewing mode.
                         // Show the app bar if it was hidden.
                         if (hideAppBar) {

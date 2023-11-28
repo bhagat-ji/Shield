@@ -38,7 +38,7 @@ import java.io.OutputStream
 import java.util.Date
 
 // Define the public constants.
-const val IMPORT_EXPORT_SCHEMA_VERSION = 17
+const val IMPORT_EXPORT_SCHEMA_VERSION = 18
 const val EXPORT_SUCCESSFUL = "A"
 const val IMPORT_SUCCESSFUL = "B"
 
@@ -55,6 +55,7 @@ private const val CLEAR_FORM_DATA = "clear_form_data"  // Clear form data can be
 private const val CLEAR_LOGCAT = "clear_logcat"
 private const val CUSTOM_USER_AGENT = "custom_user_agent"
 private const val DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons"
+private const val DISPLAY_UNDER_CUTOUTS = "display_under_cutouts"
 private const val DISPLAY_WEBPAGE_IMAGES = "display_webpage_images"
 private const val DOM_STORAGE = "dom_storage"
 private const val DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app"
@@ -490,6 +491,25 @@ class ImportExportDatabaseHelper {
                 // Although a new table could be created and all the data copied to it, I think I will just leave the old parent folder column.  It will be wiped out the next time an import is run.
             }
 
+            // Upgrade from schema version 17, first used in Privacy Browser 3.15, to schema version 18, first used in Privacy Browser 3.17.
+            if (importDatabaseVersion < 18) {
+                // Create the new display under cutout column.
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $DISPLAY_UNDER_CUTOUTS BOOLEAN")
+
+                // Get the current display under cutout value.
+                val displayUnderCutouts = sharedPreferences.getBoolean(DISPLAY_UNDER_CUTOUTS, false)
+
+                // Populate the preferences table with the current display under cutouts value.
+                // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
+                // <https://developer.android.com/reference/android/database/sqlite/package-summary>
+                if (displayUnderCutouts)
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DISPLAY_UNDER_CUTOUTS = 1")
+                else
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DISPLAY_UNDER_CUTOUTS = 0")
+            }
+
+            /* End of database upgrade logic. */
+
 
             // Get a cursor for the bookmarks table.
             val importBookmarksCursor = importDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE", null)
@@ -736,6 +756,7 @@ class ImportExportDatabaseHelper {
                 .putString(PROXY_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY_CUSTOM_URL)))
                 .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FULL_SCREEN_BROWSING_MODE)) == 1)
                 .putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(HIDE_APP_BAR)) == 1)
+                .putBoolean(DISPLAY_UNDER_CUTOUTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_UNDER_CUTOUTS)) == 1)
                 .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_EVERYTHING)) == 1)
                 .putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_COOKIES)) == 1)
                 .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_DOM_STORAGE)) == 1)
@@ -947,6 +968,7 @@ class ImportExportDatabaseHelper {
                     "$PROXY_CUSTOM_URL TEXT, " +
                     "$FULL_SCREEN_BROWSING_MODE BOOLEAN, " +
                     "$HIDE_APP_BAR BOOLEAN, " +
+                    "$DISPLAY_UNDER_CUTOUTS BOOLEAN, " +
                     "$CLEAR_EVERYTHING BOOLEAN, " +
                     "$CLEAR_COOKIES BOOLEAN, " +
                     "$CLEAR_DOM_STORAGE BOOLEAN, " +
@@ -999,6 +1021,7 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(PROXY_CUSTOM_URL, sharedPreferences.getString(PROXY_CUSTOM_URL, context.getString(R.string.proxy_custom_url_default_value)))
             preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean(FULL_SCREEN_BROWSING_MODE, false))
             preferencesContentValues.put(HIDE_APP_BAR, sharedPreferences.getBoolean(HIDE_APP_BAR, true))
+            preferencesContentValues.put(DISPLAY_UNDER_CUTOUTS, sharedPreferences.getBoolean(DISPLAY_UNDER_CUTOUTS, false))
             preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true))
             preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean(CLEAR_COOKIES, true))
             preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean(CLEAR_DOM_STORAGE, true))

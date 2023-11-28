@@ -82,6 +82,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var formDataPreference: Preference  // The form data preference can be removed once the minimum API >= 26.
     private lateinit var fullScreenBrowsingModePreference: Preference
     private lateinit var hideAppBarPreference: Preference
+    private lateinit var displayUnderCutoutsPreference: Preference
     private lateinit var homepagePreference: Preference
     private lateinit var incognitoModePreference: Preference
     private lateinit var javaScriptPreference: Preference
@@ -145,6 +146,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         proxyCustomUrlPreference = findPreference(getString(R.string.proxy_custom_url_key))!!
         fullScreenBrowsingModePreference = findPreference(getString(R.string.full_screen_browsing_mode_key))!!
         hideAppBarPreference = findPreference(getString(R.string.hide_app_bar_key))!!
+        displayUnderCutoutsPreference = findPreference(getString(R.string.display_under_cutouts_key))!!
         clearEverythingPreference = findPreference(getString(R.string.clear_everything_key))!!
         clearCookiesPreference = findPreference(getString(R.string.clear_cookies_key))!!
         clearDomStoragePreference = findPreference(getString(R.string.clear_dom_storage_key))!!
@@ -455,6 +457,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled)
             hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted)
         }
+
+        // Set the display under cutouts icon.
+        if (sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false))
+            displayUnderCutoutsPreference.setIcon(R.drawable.display_under_cutouts_enabled)
+        else
+            displayUnderCutoutsPreference.setIcon(R.drawable.display_under_cutouts_disabled)
 
         // Set the clear everything icon.
         if (clearEverything) {
@@ -931,6 +939,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         hideAppBarPreference.setIcon(R.drawable.app_bar_enabled)
                     else
                         hideAppBarPreference.setIcon(R.drawable.app_bar_disabled)
+                }
+
+                getString(R.string.display_under_cutouts_key) -> {
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), true))
+                        displayUnderCutoutsPreference.setIcon(R.drawable.display_under_cutouts_enabled)
+                    else
+                        displayUnderCutoutsPreference.setIcon(R.drawable.display_under_cutouts_disabled)
+
+                    // Restart Privacy Browser.
+                    restartPrivacyBrowser()
                 }
 
                 getString(R.string.clear_everything_key) -> {
