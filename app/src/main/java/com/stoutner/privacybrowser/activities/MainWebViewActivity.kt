@@ -695,11 +695,24 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         // Get the current web back forward list.
                         val webBackForwardList = currentWebView!!.copyBackForwardList()
 
-                        // Get the previous entry URL.
+                        // Get the previous entry data.
                         val previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
+                        val previousFavoriteIcon = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).favicon!!
 
                         // Apply the domain settings.
                         applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
+
+                        // Get the current tab.
+                        val tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)!!
+
+                        // Get the custom view from the tab.
+                        val tabView = tab.customView!!
+
+                        // Get the favorite icon image view from the tab.
+                        val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
+
+                        // Set the previous favorite icon.
+                        tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(previousFavoriteIcon, 64, 64, true))
 
                         // Go back.
                         currentWebView!!.goBack()
@@ -2334,11 +2347,24 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Get the current web back forward list.
                     val webBackForwardList = currentWebView!!.copyBackForwardList()
 
-                    // Get the previous entry URL.
+                    // Get the previous entry data.
                     val previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
+                    val previousFavoriteIcon = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).favicon!!
 
                     // Apply the domain settings.
                     applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
+
+                    // Get the current tab.
+                    val tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)!!
+
+                    // Get the custom view from the tab.
+                    val tabView = tab.customView!!
+
+                    // Get the favorite icon image view from the tab.
+                    val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
+
+                    // Set the previous favorite icon.
+                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(previousFavoriteIcon, 64, 64, true))
 
                     // Load the previous website in the history.
                     currentWebView!!.goBack()
@@ -2354,11 +2380,24 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Get the current web back forward list.
                     val webBackForwardList = currentWebView!!.copyBackForwardList()
 
-                    // Get the next entry URL.
+                    // Get the next entry data.
                     val nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex + 1).url
+                    val nextFavoriteIcon = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex + 1).favicon!!
 
                     // Apply the domain settings.
                     applyDomainSettings(currentWebView!!, nextUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
+
+                    // Get the current tab.
+                    val tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)!!
+
+                    // Get the custom view from the tab.
+                    val tabView = tab.customView!!
+
+                    // Get the favorite icon image view from the tab.
+                    val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
+
+                    // Set the next favorite icon.
+                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nextFavoriteIcon, 64, 64, true))
 
                     // Load the next website in the history.
                     currentWebView!!.goForward()

@@ -638,6 +638,8 @@
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>
         <string name="hide_app_bar">Ocultar la barra de aplicaciones</string>
         <string name="hide_app_bar_summary">Ocultar la barra de aplicaciones que contiene la URL.</string>
+        <string name="display_under_cutouts">Mostrar bajo los recortes</string>
+        <string name="display_under_cutouts_summary">Mostrar el sitio web bajo los recortes, como las muescas de la cámara. Al cambiar esta configuración se reiniciará Navegador Privado.</string>
     <string name="clear_everything">Borrar todo</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, datos de formulario, el logcat y la caché de  WebView.

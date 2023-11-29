@@ -635,6 +635,8 @@
         <string name="full_screen_browsing_mode_summary">Doppel-Tippen, um zwischen normalem und Vollbild-Modus umzuschalten.</string>
         <string name="hide_app_bar">App-Leiste verstecken</string>
         <string name="hide_app_bar_summary" tools:ignore="Typos">Versteckt die App-Leiste, die die URL enthält.</string>
+        <string name="display_under_cutouts">Unter Aussparungen anzeigen</string>
+        <string name="display_under_cutouts_summary">Zeigt die Internetseite unterhalb von Ausschnitten wie etwa Kamera-Einbuchtungen. Das Ändern dieser Einstellung startet Privacy Browser neu.</string>
     <string name="clear_everything">Alles löschen</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, Formular-Daten, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
