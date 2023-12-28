@@ -1999,8 +1999,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
 
             R.id.save_archive -> {
-                // Open the file picker with a default file name built from the current domain name.
-                saveWebpageArchiveActivityResultLauncher.launch(currentWebView!!.currentDomainName + ".mht")
+                // Open the file picker with a default file name built from the website title.
+                saveWebpageArchiveActivityResultLauncher.launch(currentWebView!!.title + ".mht")
 
                 // Consume the event.
                 true
