@@ -38,8 +38,8 @@ import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.google.android.material.snackbar.Snackbar
-import com.stoutner.privacybrowser.BuildConfig
 
+import com.stoutner.privacybrowser.BuildConfig
 import com.stoutner.privacybrowser.R
 
 import kotlinx.coroutines.CoroutineScope

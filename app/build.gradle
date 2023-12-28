@@ -58,6 +58,11 @@ android {
         }
     }
 
+    buildFeatures {
+        // Generate BuildConfig so it can be accessed from withing the app.
+        buildConfig = true
+    }
+
     // Gradle requires a `flavorDimension`, but it isn't used for anything in Privacy Browser.
     flavorDimensions = ['basic']
 
@@ -78,7 +83,7 @@ android {
 
 dependencies {
     // Include the following AndroidX libraries.
-    implementation "androidx.activity:activity-ktx:1.8.1"
+    implementation "androidx.activity:activity-ktx:1.8.2"
     implementation 'androidx.arch.core:core-common:2.2.0'
     implementation 'androidx.arch.core:core-runtime:2.2.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -90,11 +95,11 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'androidx.webkit:webkit:1.8.0'
+    implementation 'androidx.webkit:webkit:1.9.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.11.0'
 }

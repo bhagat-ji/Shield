@@ -48,8 +48,8 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 
-import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.BuildConfig
+import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.EXPORT_SUCCESSFUL
 import com.stoutner.privacybrowser.helpers.IMPORT_EXPORT_SCHEMA_VERSION
 import com.stoutner.privacybrowser.helpers.IMPORT_SUCCESSFUL
