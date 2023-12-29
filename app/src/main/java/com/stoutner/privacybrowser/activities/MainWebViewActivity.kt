@@ -93,7 +93,6 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
@@ -349,7 +348,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var userAgentNamesArrayAdapter: ArrayAdapter<CharSequence>
 
     // Define the class variables.
-    private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
     private var appBarHeight = 0
     private var bookmarksCursor: Cursor? = null
     private var bookmarksDatabaseHelper: BookmarksDatabaseHelper? = null
@@ -639,9 +637,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             urlRelativeLayout = findViewById(R.id.url_relativelayout)
             urlEditText = findViewById(R.id.url_edittext)
 
-            // Create the hamburger icon at the start of the AppBar.
-            actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer)
-
             // Initially disable the sliding drawers.  They will be enabled once the filter lists are loaded.
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
@@ -736,15 +731,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Populate the filter lists.
             populateFilterListsCoroutine.populateFilterLists(this)
         }
-    }
-
-    public override fun onPostCreate(savedInstanceState: Bundle?) {
-        // Run the default commands.
-        super.onPostCreate(savedInstanceState)
-
-        // Sync the state of the DrawerToggle after the default `onRestoreInstanceState()` has finished.  This creates the navigation drawer icon.
-        // If the app is restarting to change the app theme the action bar drawer toggle will not yet be populated.
-        actionBarDrawerToggle?.syncState()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -4690,10 +4676,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             override fun onDrawerOpened(drawerView: View) {}
 
-            override fun onDrawerClosed(drawerView: View) {
-                // Reset the drawer icon when the drawer is closed.  Otherwise, it remains an arrow if the drawer is open when the app is restarted.
-                actionBarDrawerToggle!!.syncState()
-            }
+            override fun onDrawerClosed(drawerView: View) {}
 
             override fun onDrawerStateChanged(newState: Int) {
                 if (newState == DrawerLayout.STATE_SETTLING || newState == DrawerLayout.STATE_DRAGGING) {  // A drawer is opening or closing.
@@ -6165,6 +6148,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Open the file.
             currentWebView!!.loadUrl(openFilePath)
         }
+    }
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun openNavigationDrawer(@Suppress("UNUSED_PARAMETER")view: View) {
+        // Open the navigation drawer.
+        drawerLayout.openDrawer(GravityCompat.START)
     }
 
     private fun openWithApp(url: String) {
