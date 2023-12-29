@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2019-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2019-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -21,7 +21,6 @@
 <!-- The frame layout allows the progress bar to float above the WebView. -->
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -37,16 +36,15 @@
         android:visibility="invisible" />
 
     <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
-        `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
-        `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
+        `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.-->
     <ProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_height="3dp"
         android:layout_width="match_parent"
+        android:layout_gravity="bottom"
         android:max="100"
         android:progressTint="?attr/progressTintColor"
         android:progressBackgroundTint="@color/transparent"
-        android:visibility="gone"
-        tools:ignore="UnusedAttribute" />
+        android:visibility="gone" />
 </FrameLayout>

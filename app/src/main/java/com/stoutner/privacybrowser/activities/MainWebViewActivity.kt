@@ -644,7 +644,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             drawerLayout.visibility = View.GONE
 
             // Initialize the WebView state adapter.
-            webViewStateAdapter = WebViewStateAdapter(this)
+            webViewStateAdapter = WebViewStateAdapter(this, bottomAppBar)
 
             // Set the pager adapter on the web view pager.
             webViewViewPager2.adapter = webViewStateAdapter

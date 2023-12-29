@@ -36,10 +36,11 @@ import java.util.Calendar
 
 // Define the class constants.
 private const val CREATE_NEW_PAGE = "A"
-private const val PAGE_POSITION = "B"
-private const val URL = "C"
-private const val SAVED_STATE = "D"
-private const val SAVED_NESTED_SCROLL_WEBVIEW_STATE = "E"
+private const val BOTTOM_APP_BAR = "B"
+private const val PAGE_POSITION = "C"
+private const val SAVED_NESTED_SCROLL_WEBVIEW_STATE = "D"
+private const val SAVED_STATE = "E"
+private const val URL = "F"
 
 class WebViewTabFragment : Fragment() {
     // Define the public variables.
@@ -58,7 +59,7 @@ class WebViewTabFragment : Fragment() {
     private lateinit var nestedScrollWebView: NestedScrollWebView
 
     companion object {
-        fun createPage(pageNumber: Int, url: String?): WebViewTabFragment {
+        fun createPage(pageNumber: Int, url: String?, bottomAppBar: Boolean): WebViewTabFragment {
             // Create an arguments bundle.
             val argumentsBundle = Bundle()
 
@@ -66,6 +67,7 @@ class WebViewTabFragment : Fragment() {
             argumentsBundle.putBoolean(CREATE_NEW_PAGE, true)
             argumentsBundle.putInt(PAGE_POSITION, pageNumber)
             argumentsBundle.putString(URL, url)
+            argumentsBundle.putBoolean(BOTTOM_APP_BAR, bottomAppBar)
 
             // Create a new instance of the WebView tab fragment.
             val webViewTabFragment = WebViewTabFragment()
@@ -77,13 +79,14 @@ class WebViewTabFragment : Fragment() {
             return webViewTabFragment
         }
 
-        fun restorePage(savedState: Bundle, savedNestedScrollWebViewState: Bundle): WebViewTabFragment {
+        fun restorePage(savedState: Bundle, savedNestedScrollWebViewState: Bundle, bottomAppBar: Boolean): WebViewTabFragment {
             // Create an arguments bundle
             val argumentsBundle = Bundle()
 
             // Store the saved states in the arguments bundle.
             argumentsBundle.putBundle(SAVED_STATE, savedState)
             argumentsBundle.putBundle(SAVED_NESTED_SCROLL_WEBVIEW_STATE, savedNestedScrollWebViewState)
+            argumentsBundle.putBoolean(BOTTOM_APP_BAR, bottomAppBar)
 
             // Create a new instance of the WebView tab fragment.
             val webViewTabFragment = WebViewTabFragment()
@@ -105,6 +108,23 @@ class WebViewTabFragment : Fragment() {
     }
 
     override fun onCreateView(layoutInflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Get the bottom app bar status from the arguments.
+        val bottomAppBar = requireArguments().getBoolean(BOTTOM_APP_BAR)
+
+        // Inflate the tab's WebView according to the app bar position.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
+        // The fragment will take care of attaching the root automatically.
+        val newPageView = if (bottomAppBar)
+            layoutInflater.inflate(R.layout.webview_framelayout_bottom_appbar, container, false)
+        else
+            layoutInflater.inflate(R.layout.webview_framelayout_top_appbar, container, false)
+
+        // Get handles for the views.
+        nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview)
+        val progressBar = newPageView.findViewById<ProgressBar>(R.id.progress_bar)
+
+        // Store the WebView fragment ID in the nested scroll WebView.
+        nestedScrollWebView.webViewFragmentId = fragmentId
+
         // Check to see if the fragment is being restarted without the app being killed.
         return if (savedInstanceState == null) {  // The fragment is not being restarted.  It is either new or is being restored after the app was killed.
             // Check to see if a new page is being created.
@@ -112,17 +132,6 @@ class WebViewTabFragment : Fragment() {
                 // Get the variables from the arguments
                 val pagePosition = requireArguments().getInt(PAGE_POSITION)
                 val url = requireArguments().getString(URL)!!
-
-                // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
-                // The fragment will take care of attaching the root automatically.
-                val newPageView = layoutInflater.inflate(R.layout.webview_framelayout, container, false)
-
-                // Get handles for the views.
-                nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview)
-                val progressBar = newPageView.findViewById<ProgressBar>(R.id.progress_bar)
-
-                // Store the WebView fragment ID in the nested scroll WebView.
-                nestedScrollWebView.webViewFragmentId = fragmentId
 
                 // Request the main activity initialize the WebView.
                 newTabListener.initializeWebView(nestedScrollWebView, pagePosition, progressBar, url, false)
@@ -133,17 +142,6 @@ class WebViewTabFragment : Fragment() {
                 // Get the saved states from the arguments.
                 val savedState = requireArguments().getBundle(SAVED_STATE)!!
                 val savedNestedScrollWebViewState = requireArguments().getBundle(SAVED_NESTED_SCROLL_WEBVIEW_STATE)!!
-
-                // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
-                // The fragment will take care of attaching the root automatically.
-                val newPageView = layoutInflater.inflate(R.layout.webview_framelayout, container, false)
-
-                // Get handles for the views.
-                nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview)
-                val progressBar = newPageView.findViewById<ProgressBar>(R.id.progress_bar)
-
-                // Store the WebView fragment ID in the nested scroll WebView.
-                nestedScrollWebView.webViewFragmentId = fragmentId
 
                 // Restore the nested scroll WebView state.
                 nestedScrollWebView.restoreNestedScrollWebViewState(savedNestedScrollWebViewState)

@@ -34,7 +34,7 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView
 
 import java.util.LinkedList
 
-class WebViewStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+class WebViewStateAdapter(fragmentActivity: FragmentActivity, private val bottomAppBar: Boolean) : FragmentStateAdapter(fragmentActivity) {
     // Define the class variables.
     private val webViewFragmentsList = LinkedList<WebViewTabFragment>()
 
@@ -84,7 +84,7 @@ class WebViewStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAda
 
     fun addPage(pagePosition: Int, url: String) {
         // Add a new page.
-        webViewFragmentsList.add(pagePosition, WebViewTabFragment.createPage(pagePosition, url))
+        webViewFragmentsList.add(pagePosition, WebViewTabFragment.createPage(pagePosition, url, bottomAppBar))
 
         // Update the view pager.
         notifyItemInserted(pagePosition)
@@ -156,7 +156,7 @@ class WebViewStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAda
 
     fun restorePage(savedState: Bundle, savedNestedScrollWebViewState: Bundle) {
         // Restore the page.
-        webViewFragmentsList.add(WebViewTabFragment.restorePage(savedState, savedNestedScrollWebViewState))
+        webViewFragmentsList.add(WebViewTabFragment.restorePage(savedState, savedNestedScrollWebViewState, bottomAppBar))
 
         // Update the view pager.  The position is zero indexed.
         notifyItemInserted(webViewFragmentsList.size - 1)
