@@ -35,12 +35,11 @@
         android:background="?android:attr/colorBackground"
         android:visibility="invisible" />
 
-    <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
-        `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.-->
+    <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage. -->
     <ProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_height="3dp"
+        android:layout_height="2dp"
         android:layout_width="match_parent"
         android:max="100"
         android:progressTint="?attr/progressTintColor"
