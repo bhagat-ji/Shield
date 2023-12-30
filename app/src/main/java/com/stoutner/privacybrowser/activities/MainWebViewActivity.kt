@@ -3104,7 +3104,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false)
         hideAppBar = sharedPreferences.getBoolean(getString(R.string.hide_app_bar_key), true)
         downloadWithExternalApp = sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false)
-        scrollAppBar = sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true)
+        scrollAppBar = sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), false)
 
         // Apply the saved proxy mode if the app has been restarted.
         if (savedProxyMode != null) {

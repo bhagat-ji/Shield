@@ -522,7 +522,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled)
 
         // Set the scroll app bar icon.
-        if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true))
+        if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), false))
             scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled)
         else
             scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled)
@@ -1078,7 +1078,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
                 getString(R.string.scroll_app_bar_key) -> {
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), true))
+                    if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), false))
                         scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled)
                     else
                         scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled)

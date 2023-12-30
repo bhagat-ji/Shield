@@ -286,7 +286,7 @@
             app:key="@string/scroll_app_bar_key"
             app:title="@string/scroll_app_bar"
             app:summary="@string/scroll_app_bar_summary"
-            app:defaultValue="true" />
+            app:defaultValue="false" />
 
         <SwitchPreferenceCompat
             app:key="@string/bottom_app_bar_key"
