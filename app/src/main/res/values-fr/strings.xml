@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019-2023 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2024 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -115,6 +115,8 @@
     <string name="home">Accueil</string>
     <string name="back">Précédent</string>
     <string name="forward">Suivant</string>
+    <string name="scroll_to_bottom">Faire défiler vers le bas</string>
+        <string name="scroll_to_top">Faire défiler vers le haut</string>
     <string name="history">Historique</string>
         <string name="clear_history">Vider l\'historique</string>
     <string name="open">Ouvrir</string>
@@ -430,7 +432,10 @@
         <string name="saved_ip_addresses">Adresse(s) IP sauvegardée(s)</string>
         <string name="current_ip_addresses">Adresse(s) IP courante(s)</string>
 
-    <!-- Import/Export.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <!-- Import/Export.  The `%1$*` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
+    <string name="bookmarks_and_settings">Favoris et paramètres</string>
+    <string name="sqlite_database_format">Format de base de données SQLite</string>
+    <string name="html_format">format HTML</string>
     <string name="encryption">Chiffrement</string>
     <string-array name="encryption_type">
         <item>Aucun</item>
@@ -446,9 +451,12 @@
     <string name="decrypt">Déchiffrer</string>
     <string name="privacy_browser_settings_pbs">Privacy Browser Android %1$s Paramètres - Schema %2$d.pbs</string>
     <string name="privacy_browser_settings_pbs_aes">Privacy Browser Android %1$s Paramètres - Schema %2$d.pbs.aes</string>
+    <string name="privacy_browser_bookmarks_html">Privacy Browser Favoris.html</string>
     <string name="export_successful">Export effectué.</string>
     <string name="export_failed">L\'export a échoué : %1$s</string>
     <string name="import_failed">L\'import a échoué : %1$s</string>
+    <string name="bookmarks_imported">%1$d dossiers et favoris importés.</string>
+    <string name="bookmarks_exported">%1$d dossiers et favoris exportés.</string>
 
     <!-- Logcat.  The `%1$s` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="copy_string">Copie</string>
@@ -627,6 +635,9 @@
         <string name="full_screen_browsing_mode_summary">Appuyez deux fois pour basculer en mode plein écran.</string>
         <string name="hide_app_bar">Masquer la barre d\'application</string>
         <string name="hide_app_bar_summary">Masquer la barre d\'applications contenant l\'URL.</string>
+        <string name="display_under_cutouts">Afficher sous les éléments découpés</string>
+        <string name="display_under_cutouts_summary">Affiche le site web sous les éléments découpés, tels que les encoches d\'appareil photo.
+            La modification de ce paramètre entraînera le redémarrage de Privacy Browser.</string>
     <string name="clear_everything">Tout effacer</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache de WebView.

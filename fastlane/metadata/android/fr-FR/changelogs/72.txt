@@ -1,0 +1,12 @@
+• Ajout de l'importation et de l'exportation des signets vers un fichier HTML.
+• Ouverture de nouveaux onglets adjacents à l'onglet actuel.
+• Choix par défaut des paramètres actuels à la volée lors de l'ajout de nouveaux paramètres de domaine.
+• Ajout d'une entrée dans le menu de navigation pour faire défiler vers le bas/haut de la page.
+• Défilement initial du panneau de navigation vers le bas lors de l'utilisation de la barre d'application inférieure.
+• Affichage des informations SSL dans les en-têtes de vue.
+• Ajout d'options pour copier, partager et enregistrer les en-têtes de vue.
+• Ajout d'entrées de partage aux menus contextuels de la WebView.
+• Correction de plusieurs bugs avec les onglets après la restauration des pages au redémarrage.
+• Correction de plusieurs petits problèmes d'interface graphiques.
+• Élévation de l'API cible vers 34 (Android 14).
+• Traduction française mise à jour fournie par Kévin L.

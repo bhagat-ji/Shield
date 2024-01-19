@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -59,7 +59,7 @@ android {
     }
 
     buildFeatures {
-        // Generate BuildConfig so it can be accessed from withing the app.
+        // Generate BuildConfig so it can be accessed from within the app.
         buildConfig = true
     }
 
@@ -91,7 +91,7 @@ dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'

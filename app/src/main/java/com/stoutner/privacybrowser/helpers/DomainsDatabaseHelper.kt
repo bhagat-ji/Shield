@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -409,40 +409,9 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
     }
 
     fun addDomain(domainName: String): Int {
-        // Instantiate a content values.
-        val domainContentValues = ContentValues()
-
-        // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
-        domainContentValues.put(DOMAIN_NAME, domainName)
-        domainContentValues.put(ENABLE_JAVASCRIPT, SYSTEM_DEFAULT)
-        domainContentValues.put(COOKIES, SYSTEM_DEFAULT)
-        domainContentValues.put(ENABLE_DOM_STORAGE, SYSTEM_DEFAULT)
-        domainContentValues.put(ENABLE_FORM_DATA, SYSTEM_DEFAULT) // Form data can be removed once the minimum API >= 26.
-        domainContentValues.put(USER_AGENT, appContext.getString(R.string.system_default_user_agent))
-        domainContentValues.put(ENABLE_EASYLIST, SYSTEM_DEFAULT)
-        domainContentValues.put(ENABLE_EASYPRIVACY, SYSTEM_DEFAULT)
-        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, SYSTEM_DEFAULT)
-        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, SYSTEM_DEFAULT)
-        domainContentValues.put(ULTRALIST, SYSTEM_DEFAULT)
-        domainContentValues.put(ENABLE_ULTRAPRIVACY, SYSTEM_DEFAULT)
-        domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, SYSTEM_DEFAULT)
-        domainContentValues.put(FONT_SIZE, SYSTEM_DEFAULT)
-        domainContentValues.put(SWIPE_TO_REFRESH, SYSTEM_DEFAULT)
-        domainContentValues.put(WEBVIEW_THEME, SYSTEM_DEFAULT)
-        domainContentValues.put(WIDE_VIEWPORT, SYSTEM_DEFAULT)
-        domainContentValues.put(DISPLAY_IMAGES, SYSTEM_DEFAULT)
-
-        // Get a writable database handle.
-        val domainsDatabase = this.writableDatabase
-
-        // Insert a new row and store the resulting database ID.
-        val newDomainDatabaseId = domainsDatabase.insert(DOMAINS_TABLE, null, domainContentValues).toInt()
-
-        // Close the database handle.
-        domainsDatabase.close()
-
-        // Return the new domain database ID.
-        return newDomainDatabaseId
+        // Add the domain with default settings.
+        return addDomain(domainName, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, appContext.getString(R.string.system_default_user_agent), SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT,
+                         SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT)
     }
 
     fun addDomain(domainName: String, javaScriptInt: Int, cookiesInt: Int, domStorageInt: Int, formDataInt: Int, userAgentName: String, easyListInt: Int, easyPrivacyInt: Int, fanboysAnnoyanceListInt: Int,

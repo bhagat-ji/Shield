@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2019,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2019,2022-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -30,7 +30,7 @@
         android:layout_height="24dp"
         android:layout_width="24dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/menu"
         android:contentDescription="@string/navigation_drawer"
         android:onClick="openNavigationDrawer" />

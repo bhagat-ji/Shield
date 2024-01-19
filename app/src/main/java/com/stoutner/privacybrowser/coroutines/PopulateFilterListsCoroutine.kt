@@ -1,5 +1,5 @@
 /*
- * Copyright 2019,2021-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019,2021-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -139,7 +139,7 @@ class PopulateFilterListsCoroutine(context: Context) {
                     // Enable the sliding drawers.
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
-                    // Add the first tab.
+                    // Continue loading the app.
                     populateFilterListsListener.finishedPopulatingFilterLists(combinedFilterLists)
                 }
             }

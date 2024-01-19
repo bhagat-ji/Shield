@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -646,7 +646,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Initialize the WebView state adapter.
             webViewStateAdapter = WebViewStateAdapter(this, bottomAppBar)
 
-            // Set the pager adapter on the web view pager.
+            // Set the WebView pager adapter.
             webViewViewPager2.adapter = webViewStateAdapter
 
             // Store up to 100 tabs in memory.
@@ -2221,7 +2221,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Set the font size integer.
                     val fontSizeInt = if (textZoomInt == defaultFontSizeString.toInt())  // The current system default is used, which is encoded as a zoom of `0`.
-                        0
+                        SYSTEM_DEFAULT
                     else  // A custom font size is used.
                         textZoomInt
 
@@ -3007,17 +3007,21 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Clear the focus from the URL edit text, so that it will be populated with the information from the new tab.
         urlEditText.clearFocus()
 
-        // Get the new tab position.
-        val newTabPosition = if (adjacent)  // The new tab position is immediately to the right of the current tab position.
-            tabLayout.selectedTabPosition + 1
-        else  // The new tab position is at the end.  The tab positions are 0 indexed, so the new page number will match the current count.
-            tabLayout.tabCount
+        // Add the new tab after the tab layout has quiesced.
+        // Otherwise, there can be problems when restoring a large number of tabs and processing a new intent at the same time.  <https://redmine.stoutner.com/issues/1136>
+        tabLayout.post {
+            // Get the new tab position.
+            val newTabPosition = if (adjacent)  // The new tab position is immediately to the right of the current tab position.
+                tabLayout.selectedTabPosition + 1
+            else  // The new tab position is at the end.  The tab positions are 0 indexed, so the new page number will match the current count.
+                tabLayout.tabCount
 
-        // Add the new WebView page.
-        webViewStateAdapter!!.addPage(newTabPosition, urlString)
+            // Add the new WebView page.
+            webViewStateAdapter!!.addPage(newTabPosition, urlString)
 
-        // Add the new tab.
-        addNewTab(newTabPosition, moveToTab)
+            // Add the new tab.
+            addNewTab(newTabPosition, moveToTab)
+        }
     }
 
     private fun addNewTab(newTabPosition: Int, moveToTab: Boolean) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -26,7 +26,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.0'
+        classpath 'com.android.tools.build:gradle:8.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
 
         // NOTE: Do not place your application dependencies here; they belong
