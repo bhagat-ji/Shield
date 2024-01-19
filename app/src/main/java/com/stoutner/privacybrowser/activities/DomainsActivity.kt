@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -49,8 +49,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.dialogs.AddDomainDialog
 import com.stoutner.privacybrowser.dialogs.AddDomainDialog.AddDomainListener
-import com.stoutner.privacybrowser.dialogs.AddDomainDialog.Companion.addDomain
 import com.stoutner.privacybrowser.fragments.DomainSettingsFragment
 import com.stoutner.privacybrowser.fragments.DomainsListFragment
 import com.stoutner.privacybrowser.fragments.DomainsListFragment.DismissSnackbarInterface
@@ -157,9 +157,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         // Get the status of close-on-back, which is true when the domains activity is called from the options menu.
         closeOnBack = intent.getBooleanExtra(CLOSE_ON_BACK, false)
 
-        // Get the current URL.
-        val currentUrl = intent.getStringExtra(CURRENT_URL)
-
         // Store the current SSL certificate information in class variables.
         sslIssuedToCName = intent.getStringExtra(SSL_ISSUED_TO_CNAME)
         sslIssuedToOName = intent.getStringExtra(SSL_ISSUED_TO_ONAME)
@@ -200,7 +197,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         // Configure the add domain floating action button.
         addDomainFAB.setOnClickListener {
             // Create an add domain dialog.
-            val addDomainDialog: DialogFragment = addDomain(currentUrl)
+            val addDomainDialog: DialogFragment = AddDomainDialog()
 
             // Show the add domain dialog.
             addDomainDialog.show(supportFragmentManager, resources.getString(R.string.add_domain))

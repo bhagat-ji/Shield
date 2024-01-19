@@ -2114,7 +2114,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Add the extra information to the intent.
                     domainsIntent.putExtra(LOAD_DOMAIN, currentWebView!!.domainSettingsDatabaseId)
                     domainsIntent.putExtra(CLOSE_ON_BACK, true)
-                    domainsIntent.putExtra(CURRENT_URL, currentWebView!!.url)
                     domainsIntent.putExtra(CURRENT_IP_ADDRESSES, currentWebView!!.currentIpAddresses)
 
                     // Get the current certificate.
@@ -2271,7 +2270,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Add the extra information to the intent.
                     domainsIntent.putExtra(LOAD_DOMAIN, newDomainDatabaseId)
                     domainsIntent.putExtra(CLOSE_ON_BACK, true)
-                    domainsIntent.putExtra(CURRENT_URL, currentWebView!!.url)
                     domainsIntent.putExtra(CURRENT_IP_ADDRESSES, currentWebView!!.currentIpAddresses)
 
                     // Get the current certificate.
@@ -2488,7 +2486,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 val domainsIntent = Intent(this, DomainsActivity::class.java)
 
                 // Add the extra information to the intent.
-                domainsIntent.putExtra(CURRENT_URL, currentWebView!!.url)
                 domainsIntent.putExtra(CURRENT_IP_ADDRESSES, currentWebView!!.currentIpAddresses)
 
                 // Get the current certificate.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017,2019-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017, 2019-2020, 2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -43,6 +43,7 @@
             android:selectAllOnFocus="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- The domain name already exists textview is initially not visible. -->
     <TextView
         android:id="@+id/domain_name_already_exists_textview"
         android:layout_height="wrap_content"
@@ -50,5 +51,6 @@
         android:text="@string/domain_name_already_exists"
         android:textColor="@color/red_text"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:visibility="gone" />
 </LinearLayout>

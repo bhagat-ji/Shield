@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -22,7 +22,6 @@ package com.stoutner.privacybrowser.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -38,9 +37,6 @@ import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
-
-// Define the class constants.
-private const val URL_STRING = "url_string"
 
 class AddDomainDialog : DialogFragment() {
     // Declare the class variables
@@ -59,32 +55,7 @@ class AddDomainDialog : DialogFragment() {
         addDomainListener = context as AddDomainListener
     }
 
-    companion object {
-        fun addDomain(urlString: String?): AddDomainDialog {
-            // Create an arguments bundle.
-            val argumentsBundle = Bundle()
-
-            // Store the URL in the bundle.
-            argumentsBundle.putString(URL_STRING, urlString)
-
-            // Create a new instance of the dialog.
-            val addDomainDialog = AddDomainDialog()
-
-            // Add the arguments bundle to the dialog.
-            addDomainDialog.arguments = argumentsBundle
-
-            // Return the new dialog.
-            return addDomainDialog
-        }
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Get the arguments.
-        val arguments = requireArguments()
-
-        // Get the URL from the bundle.
-        val urlString = arguments.getString(URL_STRING)
-
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
@@ -131,6 +102,9 @@ class AddDomainDialog : DialogFragment() {
         val domainNameAlreadyExistsTextView = alertDialog.findViewById<TextView>(R.id.domain_name_already_exists_textview)!!
         val addButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
+        // Initially disable the add button.
+        addButton.isEnabled = false
+
         //  Update the status of the warning text and the add button when the domain name changes.
         addDomainEditText.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -141,7 +115,7 @@ class AddDomainDialog : DialogFragment() {
                 // Do nothing.
             }
 
-            override fun afterTextChanged(s: Editable) {
+            override fun afterTextChanged(editable: Editable) {
                 if (domainsDatabaseHelper.getCursorForDomainName(addDomainEditText.text.toString()).count > 0) {  // The domain already exists.
                     // Show the warning text.
                     domainNameAlreadyExistsTextView.visibility = View.VISIBLE
@@ -152,17 +126,11 @@ class AddDomainDialog : DialogFragment() {
                     // Hide the warning text.
                     domainNameAlreadyExistsTextView.visibility = View.GONE
 
-                    // Enable the add button.
-                    addButton.isEnabled = true
+                    // Enable the add button if the domain name is not empty.
+                    addButton.isEnabled = editable.isNotEmpty()
                 }
             }
         })
-
-        // Convert the URL string to a URI.
-        val currentUri = Uri.parse(urlString)
-
-        // Display the host in the add domain edit text.
-        addDomainEditText.setText(currentUri.host)
 
         // Allow the enter key on the keyboard to create the domain from the add domain edit text.
         addDomainEditText.setOnKeyListener { _: View, keyCode: Int, keyEvent: KeyEvent ->
