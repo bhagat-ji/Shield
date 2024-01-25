@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -630,7 +630,7 @@
         <string name="easyprivacy">EasyPrivacy</string>
         <string name="easyprivacy_summary">Main tracker filter list.</string>
         <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboys_annoyance_list_summary">Filter annoying popups and links.  Includes Fanboy’s social blocking lists.</string>
+        <string name="fanboys_annoyance_list_summary">Filter annoying popups and links. Includes Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Filters third-party social media content.</string>
         <string name="ultralist">UltraList</string>
@@ -694,7 +694,8 @@
         <string name="hide_app_bar">Hide the app bar</string>
         <string name="hide_app_bar_summary">Hide the app bar that contains the URL.</string>
         <string name="display_under_cutouts">Display under cutouts</string>
-        <string name="display_under_cutouts_summary">Draw the website under cutouts, like camera notches. Changing this setting will restart Privacy Browser.</string>
+        <string name="display_under_cutouts_summary">Draw the website under cutouts, like camera notches. When this is enabled, Privacy Browser will also be drawn under the keyboard.
+            Changing this setting will restart Privacy Browser.</string>
     <string name="clear_everything">Clear everything</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Clears cookies, DOM storage, form data, the logcat, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>

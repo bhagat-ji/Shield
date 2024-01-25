@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -635,7 +635,8 @@
         <string name="hide_app_bar">Скрыть панель приложения</string>
         <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
         <string name="display_under_cutouts">Отображение под вырезом</string>
-        <string name="display_under_cutouts_summary">Отрисовывать сайт под вырезами, например, под камерой. Изменение этой настройки приведет к перезапуску Privacy Browser.</string>
+        <string name="display_under_cutouts_summary">Отрисовывать сайт под вырезами, например, под камерой. When this is enabled, Privacy Browser will also be drawn under the keyboard.
+            Изменение этой настройки приведет к перезапуску Privacy Browser.</string>
     <string name="clear_everything">Очистить все</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Очищает cookie, DOM-хранилище, данные форм, logcat и кэш WebView. После этого вручную удаляет каталоги "app_webview" и "cache".</string>

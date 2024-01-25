@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2023 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2024 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -639,7 +639,8 @@
         <string name="hide_app_bar">Ocultar la barra de aplicaciones</string>
         <string name="hide_app_bar_summary">Ocultar la barra de aplicaciones que contiene la URL.</string>
         <string name="display_under_cutouts">Mostrar bajo los recortes</string>
-        <string name="display_under_cutouts_summary">Mostrar el sitio web bajo los recortes, como las muescas de la cámara. Al cambiar esta configuración se reiniciará Navegador Privado.</string>
+        <string name="display_under_cutouts_summary">Mostrar el sitio web bajo los recortes, como las muescas de la cámara. Cuando está opción está activada, Navegador Privado también se dibujará bajo el teclado.
+            Al cambiar esta configuración se reiniciará Navegador Privado.</string>
     <string name="clear_everything">Borrar todo</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, datos de formulario, el logcat y la caché de  WebView.

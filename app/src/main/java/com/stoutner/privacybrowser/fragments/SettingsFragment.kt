@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -169,6 +169,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Set the preference dependencies.
         domStoragePreference.dependency = getString(R.string.javascript_key)
         hideAppBarPreference.dependency = getString(R.string.full_screen_browsing_mode_key)
+        displayUnderCutoutsPreference.dependency = getString(R.string.full_screen_browsing_mode_key)
 
         // Get strings from the preferences.
         val userAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
