@@ -73,7 +73,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var displayAdditionalAppBarIconsPreference: Preference
     private lateinit var displayWebpageImagesPreference: Preference
     private lateinit var domStoragePreference: Preference
-    private lateinit var downloadWithExternalAppPreference: Preference
+    private lateinit var downloadProviderEntryValuesStringArray: Array<String>
+    private lateinit var downloadProviderPreference: Preference
     private lateinit var easyListPreference: Preference
     private lateinit var easyPrivacyPreference: Preference
     private lateinit var fanboyAnnoyanceListPreference: Preference
@@ -157,7 +158,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         fontSizePreference = findPreference(getString(R.string.font_size_key))!!
         openIntentsInNewTabPreference = findPreference(getString(R.string.open_intents_in_new_tab_key))!!
         swipeToRefreshPreference = findPreference(getString(R.string.swipe_to_refresh_key))!!
-        downloadWithExternalAppPreference = findPreference(getString(R.string.download_with_external_app_key))!!
+        downloadProviderPreference = findPreference(getString(R.string.download_provider_key))!!
         scrollAppBarPreference = findPreference(getString(R.string.scroll_app_bar_key))!!
         bottomAppBarPreference = findPreference(getString(R.string.bottom_app_bar_key))!!
         displayAdditionalAppBarIconsPreference = findPreference(getString(R.string.display_additional_app_bar_icons_key))!!
@@ -279,6 +280,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // Set the font size as the summary text for the preference.
         fontSizePreference.summary = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value)) + "%"
+
+        // Get the download provider entry values string array
+        downloadProviderEntryValuesStringArray = resources.getStringArray(R.array.download_provider_entry_values)
+
+        // Set the summary text for the download provider preference.
+        downloadProviderPreference.summary = when (sharedPreferences.getString(getString(R.string.download_provider_key), getString(R.string.download_provider_default_value))) {
+            downloadProviderEntryValuesStringArray[0] -> getString(R.string.download_with_privacy_browser)  // Privacy Browser is selected.
+            downloadProviderEntryValuesStringArray[1] -> getString(R.string.download_with_android_download_manager)  // Android download manager is selected.
+            else -> getString(R.string.download_with_external_app)  // External app is selected.
+        }
 
         // Get the app theme string arrays.
         appThemeEntriesStringArray = resources.getStringArray(R.array.app_theme_entries)
@@ -515,12 +526,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled)
         else
             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled)
-
-        // Set the download with external app icon.
-        if (sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false))
-            downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled)
-        else
-            downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled)
 
         // Set the scroll app bar icon.
         if (sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), false))
@@ -1069,12 +1074,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled)
                 }
 
-                getString(R.string.download_with_external_app_key) -> {
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false))
-                        downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_enabled)
-                    else
-                        downloadWithExternalAppPreference.setIcon(R.drawable.download_with_external_app_disabled)
+                getString(R.string.download_provider_key) -> {
+                    // Set the summary text for the download provider preference.
+                    downloadProviderPreference.summary = when (sharedPreferences.getString(getString(R.string.download_provider_key), getString(R.string.download_provider_default_value))) {
+                        downloadProviderEntryValuesStringArray[0] -> getString(R.string.download_with_privacy_browser)  // Privacy Browser is selected.
+                        downloadProviderEntryValuesStringArray[1] -> getString(R.string.download_with_android_download_manager)  // Android download manager is selected.
+                        else -> getString(R.string.download_with_external_app)  // External app is selected.
+                    }
                 }
 
                 getString(R.string.scroll_app_bar_key) -> {

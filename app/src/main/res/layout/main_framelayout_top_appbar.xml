@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2017,2019-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2017, 2019-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -87,12 +87,12 @@
                     <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                     <ImageView
                         android:id="@+id/find_previous"
-                        android:src="@drawable/previous"
-                        android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_width="35dp"
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="4dp"
                         android:layout_gravity="center_vertical"
+                        android:src="@drawable/previous"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/previous"
                         android:onClick="findPreviousOnPage"
@@ -101,12 +101,12 @@
                     <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                     <ImageView
                         android:id="@+id/find_next"
-                        android:src="@drawable/next"
-                        android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_width="35dp"
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="4dp"
                         android:layout_gravity="center_vertical"
+                        android:src="@drawable/next"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/next"
                         android:onClick="findNextOnPage"
@@ -115,12 +115,12 @@
                     <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                     <ImageView
                         android:id="@+id/close_find"
-                        android:src="@drawable/close"
-                        android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_width="35dp"
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="8dp"
                         android:layout_gravity="center_vertical"
+                        android:src="@drawable/close"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/close"
                         android:onClick="closeFindOnPage"
@@ -172,8 +172,8 @@
             <!-- `app:layout_behavior="@string/appbar_scrolling_view_behavior"` must be set on the sibling of AppBarLayout. -->
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swiperefreshlayout"
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
                     <androidx.viewpager2.widget.ViewPager2
@@ -206,8 +206,8 @@
     <!-- The loading filter lists relative layout displays when the app first starts.  It is hidden once the filter lists are populated. -->
     <RelativeLayout
         android:id="@+id/loading_filterlists_relativelayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" >
 
         <ImageView
             android:id="@+id/privacy_browser_logo"
@@ -219,8 +219,8 @@
 
         <TextView
             android:id="@+id/loading_filterlist_textview"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_below="@id/privacy_browser_logo"
             android:layout_centerHorizontal="true"
             android:layout_margin="10dp"

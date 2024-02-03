@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -276,11 +276,13 @@
             app:summary="@string/swipe_to_refresh_summary"
             app:defaultValue="true" />
 
-        <SwitchPreferenceCompat
-            app:key="@string/download_with_external_app_key"
-            app:title="@string/download_with_external_app"
-            app:summary="@string/download_with_external_app_summary"
-            app:defaultValue="false" />
+        <ListPreference
+            app:key="@string/download_provider_key"
+            app:title="@string/download_provider"
+            app:entries="@array/download_provider_entries"
+            app:entryValues="@array/download_provider_entry_values"
+            app:defaultValue="@string/download_provider_default_value"
+            app:icon="@drawable/download" />
 
         <SwitchPreferenceCompat
             app:key="@string/scroll_app_bar_key"

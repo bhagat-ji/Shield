@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2023 Xin.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -543,7 +543,6 @@
         <string name="swipe_to_refresh">下拉刷新</string>
         <string name="swipe_to_refresh_summary">下拉刷新开启时部分网页不会工作</string>
         <string name="download_with_external_app">由外部应用下载</string>
-        <string name="download_with_external_app_summary">外部应用不遵守本浏览器的代理设置，意味着从需要登录的站点下载的文件可能不会正常工作</string>
         <string name="scroll_app_bar">滚动应用栏</string>
         <string name="scroll_app_bar_summary">向下滚动网页时，隐藏顶部状态栏</string>
         <string name="bottom_app_bar">底部状态栏</string>

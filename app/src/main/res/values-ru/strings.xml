@@ -635,7 +635,7 @@
         <string name="hide_app_bar">Скрыть панель приложения</string>
         <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
         <string name="display_under_cutouts">Отображение под вырезом</string>
-        <string name="display_under_cutouts_summary">Отрисовывать сайт под вырезами, например, под камерой. When this is enabled, Privacy Browser will also be drawn under the keyboard.
+        <string name="display_under_cutouts_summary">Отрисовывать сайт под вырезами, например, под камерой. Если эта опция включена, Privacy Browser также будет отображаться под клавиатурой.
             Изменение этой настройки приведет к перезапуску Privacy Browser.</string>
     <string name="clear_everything">Очистить все</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
@@ -658,8 +658,6 @@
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
         <string name="download_with_external_app">Загрузка во внешнем приложении</string>
-        <string name="download_with_external_app_summary">Внешние приложения не будут учитывать настройки прокси Privacy Browser и не будут иметь доступа к cookie
-            (это означает, что файлы, загруженные с сайтов, для которых требуется авторизация, вряд ли будут работать).</string>
         <string name="scroll_app_bar">Прокручивать панель приложения</string>
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="bottom_app_bar">Нижняя панель приложения</string>

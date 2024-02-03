@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2020-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -44,6 +44,7 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.text.NumberFormat
+import java.util.Date
 
 class SaveUrlCoroutine {
     fun save(context: Context, activity: Activity, urlString: String, fileUri: Uri, userAgent: String, cookiesEnabled: Boolean) {
@@ -154,11 +155,13 @@ class SaveUrlCoroutine {
                             val inputStream: InputStream = BufferedInputStream(httpUrlConnection.inputStream)
 
                             // Initialize the conversion buffer byte array.
-                            // This is set to a megabyte so that frequent updating of the snackbar doesn't freeze the interface on download.  <https://redmine.stoutner.com/issues/709>
-                            val conversionBufferByteArray = ByteArray(1048576)
+                            // This is set to a 100,000 bytes so that frequent updating of the snackbar doesn't freeze the interface on download, although `inputStream.read` currently used 8,000 as an upper limit.
+                            // <https://redmine.stoutner.com/issues/709>
+                            val conversionBufferByteArray = ByteArray(100_000)
 
-                            // Initialize the downloaded kilobytes counter.
-                            var downloadedKilobytesCounter: Long = 0
+                            // Initialize the longs.
+                            var downloadedBytesCounterLong: Long = 0
+                            var lastSnackbarUpdateLong: Long = 0
 
                             // Define the buffer length variable.
                             var bufferLength: Int
@@ -168,26 +171,36 @@ class SaveUrlCoroutine {
                                 // Write the contents of the conversion buffer to the file output stream.
                                 outputStream.write(conversionBufferByteArray, 0, bufferLength)
 
-                                // Update the downloaded kilobytes counter.
-                                downloadedKilobytesCounter += bufferLength
+                                // Update the downloaded bytes counter.
+                                downloadedBytesCounterLong += bufferLength
 
                                 // Format the number of bytes downloaded.
-                                val formattedNumberOfBytesDownloadedString = NumberFormat.getInstance().format(downloadedKilobytesCounter)
+                                val formattedNumberOfBytesDownloadedString = NumberFormat.getInstance().format(downloadedBytesCounterLong)
 
-                                // Update the UI.
-                                withContext(Dispatchers.Main) {
-                                    // Check to see if the file size is known.
-                                    if (fileSize == -1L) {  // The size of the download file is not known.
-                                        // Update the snackbar.
-                                        savingFileSnackbar.setText(activity.getString(R.string.saving_file_progress, formattedNumberOfBytesDownloadedString, fileNameString))
-                                    } else {  // The size of the download file is known.
-                                        // Calculate the download percentage.
-                                        val downloadPercentage = downloadedKilobytesCounter * 100 / fileSize
+                                // Get the current time.
+                                val currentTimeLong = Date().time
 
-                                        // Update the snackbar.
-                                        savingFileSnackbar.setText(activity.getString(R.string.saving_file_percentage_progress, downloadPercentage, formattedNumberOfBytesDownloadedString, formattedFileSize,
-                                            fileNameString)
-                                        )
+                                // Update the snackbar if more than 100 milliseconds have passed since the last update.
+                                // Updating the snackbar is so resource intensive that it will throttle the download if it is done too frequently.
+                                if (currentTimeLong - lastSnackbarUpdateLong > 100) {
+                                    // Store the update time.
+                                    lastSnackbarUpdateLong = currentTimeLong
+
+                                    // Update the UI.
+                                    withContext(Dispatchers.Main) {
+                                        // Check to see if the file size is known.
+                                        if (fileSize == -1L) {  // The size of the download file is not known.
+                                            // Update the snackbar.
+                                            savingFileSnackbar.setText(activity.getString(R.string.saving_file_progress, formattedNumberOfBytesDownloadedString, fileNameString))
+                                        } else {  // The size of the download file is known.
+                                            // Calculate the download percentage.
+                                            val downloadPercentage = downloadedBytesCounterLong * 100 / fileSize
+
+                                            // Update the snackbar.
+                                            savingFileSnackbar.setText(activity.getString(R.string.saving_file_percentage_progress, downloadPercentage, formattedNumberOfBytesDownloadedString, formattedFileSize,
+                                                fileNameString)
+                                            )
+                                        }
                                     }
                                 }
                             }

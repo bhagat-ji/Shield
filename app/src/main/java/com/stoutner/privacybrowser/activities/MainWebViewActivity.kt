@@ -87,6 +87,7 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 
@@ -532,7 +533,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
-        // Get the theme entry values string array.
+        // Get the entry values string arrays.
         val appThemeEntryValuesStringArray = resources.getStringArray(R.array.app_theme_entry_values)
 
         // Get the current theme status.
@@ -1976,7 +1977,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             R.id.save_url -> {  // Save URL.
                 // Check the download preference.
                 if (downloadWithExternalApp)  // Download with an external app.
-                    downloadUrlWithExternalApp(currentWebView!!.currentUrl)
+                    saveWithExternalApp(currentWebView!!.currentUrl)
                 else  // Handle the download inside of Privacy Browser.  The dialog will be displayed once the file size and the content disposition have been acquired.
                     PrepareSaveDialogCoroutine.prepareSaveDialog(this, supportFragmentManager, currentWebView!!.currentUrl, currentWebView!!.settings.userAgentString, currentWebView!!.acceptCookies)
 
@@ -2660,7 +2661,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 contextMenu.add(R.string.save_url).setOnMenuItemClickListener {
                     // Check the download preference.
                     if (downloadWithExternalApp)  // Download with an external app.
-                        downloadUrlWithExternalApp(linkUrl)
+                        saveWithExternalApp(linkUrl)
                     else  // Handle the download inside of Privacy Browser.  The dialog will be displayed once the file size and the content disposition have been acquired.
                         PrepareSaveDialogCoroutine.prepareSaveDialog(this, supportFragmentManager, linkUrl, currentWebView!!.settings.userAgentString, currentWebView!!.acceptCookies)
 
@@ -2744,7 +2745,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 contextMenu.add(R.string.save_image).setOnMenuItemClickListener {
                     // Check the download preference.
                     if (downloadWithExternalApp) {  // Download with an external app.
-                        downloadUrlWithExternalApp(imageUrl)
+                        saveWithExternalApp(imageUrl)
                     } else {  // Handle the download inside of Privacy Browser.  The dialog will be displayed once the file size and the content disposition have been acquired.
                         PrepareSaveDialogCoroutine.prepareSaveDialog(this, supportFragmentManager, imageUrl, currentWebView!!.settings.userAgentString, currentWebView!!.acceptCookies)
                     }
@@ -2868,7 +2869,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 contextMenu.add(R.string.save_image).setOnMenuItemClickListener {
                     // Check the download preference.
                     if (downloadWithExternalApp)  // Download with an external app.
-                        downloadUrlWithExternalApp(imageUrl)
+                        saveWithExternalApp(imageUrl)
                     else  // Handle the download inside of Privacy Browser.  The dialog will be displayed once the file size and the content disposition have been acquired.
                         PrepareSaveDialogCoroutine.prepareSaveDialog(this, supportFragmentManager, imageUrl, currentWebView!!.settings.userAgentString, currentWebView!!.acceptCookies)
 
@@ -2913,7 +2914,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 contextMenu.add(R.string.save_url).setOnMenuItemClickListener {
                     // Check the download preference.
                     if (downloadWithExternalApp)  // Download with an external app.
-                        downloadUrlWithExternalApp(linkUrl)
+                        saveWithExternalApp(linkUrl)
                     else  // Handle the download inside of Privacy Browser.  The dialog will be displayed once the file size and the content disposition have been acquired.
                         PrepareSaveDialogCoroutine.prepareSaveDialog(this, supportFragmentManager, linkUrl, currentWebView!!.settings.userAgentString, currentWebView!!.acceptCookies)
 
@@ -3086,12 +3087,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         defaultWideViewport = sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true)
         defaultDisplayWebpageImages = sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true)
 
-        // Get the WebView theme entry values string array.  This is done here so that expensive resource requests are not made each time a domain is loaded.
+        // Get the string arrays.  These are done here so that expensive resource requests are not made each time a domain is loaded.
         webViewThemeEntryValuesStringArray = resources.getStringArray(R.array.webview_theme_entry_values)
-
-        // Get the user agent string arrays.  These are done here so that expensive resource requests are not made each time a domain is loaded.
         userAgentDataArray = resources.getStringArray(R.array.user_agent_data)
         userAgentNamesArray = resources.getStringArray(R.array.user_agent_names)
+        val downloadProviderEntryValuesStringArray = resources.getStringArray(R.array.download_provider_entry_values)
 
         // Get the user agent array adapters.  These are done here so that expensive resource requests are not made each time a domain is loaded.
         userAgentDataArrayAdapter = ArrayAdapter.createFromResource(this, R.array.user_agent_data, R.layout.spinner_item)
@@ -3104,8 +3104,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         proxyMode = sharedPreferences.getString(getString(R.string.proxy_key), getString(R.string.proxy_default_value))!!
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false)
         hideAppBar = sharedPreferences.getBoolean(getString(R.string.hide_app_bar_key), true)
-        downloadWithExternalApp = sharedPreferences.getBoolean(getString(R.string.download_with_external_app_key), false)
+        val downloadProvider = sharedPreferences.getString(getString(R.string.download_provider_key), getString(R.string.download_provider_default_value))!!
         scrollAppBar = sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), false)
+
+        // Determine if downloading should be handled by an external app.
+        downloadWithExternalApp = (downloadProvider == downloadProviderEntryValuesStringArray[2])
 
         // Apply the saved proxy mode if the app has been restarted.
         if (savedProxyMode != null) {
@@ -4174,20 +4177,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         bookmarksListView.setSelection(0)
     }
 
-    private fun downloadUrlWithExternalApp(url: String) {
-        // Create a download intent.  Not specifying the action type will display the maximum number of options.
-        val downloadIntent = Intent()
-
-        // Set the URI and the mime type.
-        downloadIntent.setDataAndType(Uri.parse(url), "text/html")
-
-        // Flag the intent to open in a new task.
-        downloadIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-        // Show the chooser.
-        startActivity(Intent.createChooser(downloadIntent, getString(R.string.download_with_external_app)))
-    }
-
     private fun exitFullScreenVideo() {
         // Re-enable the screen timeout.
         fullScreenVideoFrameLayout.keepScreenOn = false
@@ -4970,13 +4959,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         registerForContextMenu(nestedScrollWebView)
 
         // Allow the downloading of files.
-        nestedScrollWebView.setDownloadListener { downloadUrlString: String?, userAgent: String?, contentDisposition: String?, mimetype: String?, contentLength: Long ->
-            // Check the download preference.
+        nestedScrollWebView.setDownloadListener { downloadUrlString: String, userAgent: String, contentDisposition: String, mimetype: String, contentLength: Long ->
+            // Use the specified download provider.
             if (downloadWithExternalApp) {  // Download with an external app.
-                downloadUrlWithExternalApp(downloadUrlString!!)
-            } else {  // Handle the download inside of Privacy Browser.
-                // Define a formatted file size string.
-
+                // Download with an external app.
+                saveWithExternalApp(downloadUrlString)
+            } else {  // Download with Privacy Browser or Android's download manager.
                 // Process the content length if it contains data.
                 val formattedFileSizeString = if (contentLength > 0) {  // The content length is greater than 0.
                     // Format the content length as a string.
@@ -4987,10 +4975,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
 
                 // Get the file name from the content disposition.
-                val fileNameString = UrlHelper.getFileName(this, contentDisposition, mimetype, downloadUrlString!!)
+                val fileNameString = UrlHelper.getFileName(this, contentDisposition, mimetype, downloadUrlString)
 
-                // Instantiate the save dialog.
-                val saveDialogFragment = SaveDialog.saveUrl(downloadUrlString, fileNameString, formattedFileSizeString, userAgent!!, nestedScrollWebView.acceptCookies)
+                // Instantiate the save dialog according.
+                val saveDialogFragment = SaveDialog.saveUrl(downloadUrlString, fileNameString, formattedFileSizeString, userAgent, nestedScrollWebView.acceptCookies)
 
                 // Try to show the dialog.  The download listener continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
                 try {
@@ -6230,7 +6218,76 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         return sanitizedUrlString
     }
 
-    override fun saveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment) {
+    override fun saveWithAndroidDownloadManager(dialogFragment: DialogFragment) {
+        // Get the dialog.
+        val dialog = dialogFragment.dialog!!
+
+        // Get handles for the dialog views.
+        val dialogUrlEditText = dialog.findViewById<EditText>(R.id.url_edittext)
+        val downloadDirectoryRadioGroup = dialog.findViewById<RadioGroup>(R.id.download_directory_radiogroup)
+        val dialogFileNameEditText = dialog.findViewById<EditText>(R.id.file_name_edittext)
+
+        // Get the string from the edit texts, which may have been modified by the user.
+        val saveUrlString = dialogUrlEditText.text.toString()
+        val fileNameString = dialogFileNameEditText.text.toString()
+
+        // Get a handle for the system download service.
+        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+
+        // Parse the URL.
+        val downloadRequest = DownloadManager.Request(Uri.parse(saveUrlString))
+
+        // Pass cookies to download manager if cookies are enabled.  This is required to download files from websites that require a login.
+        // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+        if (cookieManager.acceptCookie()) {
+            // Get the cookies for the URL.
+            val cookiesString = cookieManager.getCookie(saveUrlString)
+
+            // Add the cookies to the download request.  In the HTTP request header, cookies are named `Cookie`.
+            downloadRequest.addRequestHeader("Cookie", cookiesString)
+        }
+
+        // Get the download directory.
+        val downloadDirectory = when (downloadDirectoryRadioGroup.checkedRadioButtonId) {
+            R.id.downloads_radiobutton -> Environment.DIRECTORY_DOWNLOADS
+            R.id.documents_radiobutton -> Environment.DIRECTORY_DOCUMENTS
+            R.id.pictures_radiobutton -> Environment.DIRECTORY_PICTURES
+            else -> Environment.DIRECTORY_MUSIC
+        }
+
+        // Set the download destination.
+        downloadRequest.setDestinationInExternalPublicDir(downloadDirectory, fileNameString)
+
+        // Allow media scanner to index the download if it is a media file.  This is automatic for API >= 29.
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT <= 28)
+            downloadRequest.allowScanningByMediaScanner()
+
+        // Add the URL as the description for the download.
+        downloadRequest.setDescription(saveUrlString)
+
+        // Show the download notification after the download is completed.
+        downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+
+        // Initiate the download.
+        downloadManager.enqueue(downloadRequest)
+    }
+
+    private fun saveWithExternalApp(url: String) {
+        // Create a download intent.  Not specifying the action type will display the maximum number of options.
+        val downloadIntent = Intent()
+
+        // Set the URI and the mime type.
+        downloadIntent.setDataAndType(Uri.parse(url), "text/html")
+
+        // Flag the intent to open in a new task.
+        downloadIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+        // Show the chooser.
+        startActivity(Intent.createChooser(downloadIntent, getString(R.string.download_with_external_app)))
+    }
+
+    override fun saveWithPrivacyBrowser(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment) {
         // Store the URL.  This will be used in the save URL activity result launcher.
         saveUrlString = if (originalUrlString.startsWith("data:")) {
             // Save the original URL.
@@ -6242,7 +6299,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Get a handle for the dialog URL edit text.
             val dialogUrlEditText = dialog.findViewById<EditText>(R.id.url_edittext)
 
-            // Get the URL from the edit text, which may have been modified.
+            // Get the URL from the edit text, which may have been modified by the user.
             dialogUrlEditText.text.toString()
         }
 

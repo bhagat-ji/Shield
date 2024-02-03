@@ -215,6 +215,12 @@
     <string name="bytes">bytes</string>
     <string name="unknown_size">unknown size</string>
     <string name="invalid_url">invalid URL</string>
+    <string name="blob_url_warning">Privacy Browser cannot currently download blob URLs.</string>
+    <string name="data_url_warning">Android’s download manager cannot handle data URLs.</string>
+    <string name="download_directory">Download directory</string>
+    <string name="documents">Documents</string>
+    <string name="pictures">Pictures</string>
+    <string name="music">Music</string>
     <string name="saving_file">Saving file:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Saving file:\u0020 %1$s bytes - %2$s</string>
     <string name="saving_file_percentage_progress">Saving file:\u0020 %1$d%% - %2$s bytes / %3$s bytes - %4$s</string>
@@ -716,8 +722,22 @@
         <string name="open_intents_in_new_tab_summary">Intents are links sent from other apps.</string>
         <string name="swipe_to_refresh">Swipe to refresh</string>
         <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
-        <string name="download_with_external_app">Download with external app</string>
-        <string name="download_with_external_app_summary">External apps do not honor Privacy Browser’s proxy settings and do not have access to cookies
+        <string name="download_provider">Download provider</string>
+        <string-array name="download_provider_entries">
+            <item>Privacy Browser</item>
+            <item>Android download manager</item>
+            <item>External app</item>
+        </string-array>
+        <string-array name="download_provider_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
+            <item>Privacy Browser</item>
+            <item>Android download manager</item>
+            <item>External app</item>
+        </string-array>
+        <string name="download_with_privacy_browser">Privacy Browser - Privacy Browser’s built-in downloader is simple, but it has the advantage of honoring the proxy and using cookies (if enabled),
+            as well as being able to save data: URLs.</string>
+        <string name="download_with_android_download_manager">Android download manager - Android’s download manager does not honor Privacy Browser’s proxy settings,
+            but it does have access to cookies (meaning that files downloaded from sites that require a login will probably work).</string>
+        <string name="download_with_external_app">External app - External apps do not honor Privacy Browser’s proxy settings and do not have access to cookies
             (meaning that it is unlikely that files downloaded from sites that require a login will work).</string>
         <string name="scroll_app_bar">Scroll the app bar</string>
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
@@ -771,7 +791,7 @@
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
     <string name="display_webpage_images_key" translatable="false">display_webpage_images</string>
     <string name="dom_storage_key" translatable="false">dom_storage</string>
-    <string name="download_with_external_app_key" translatable="false">download_with_external_app</string>
+    <string name="download_provider_key" translatable="false">download_provider</string>
     <string name="easylist_key" translatable="false">easylist</string>
     <string name="easyprivacy_key" translatable="false">easyprivacy</string>
     <string name="fanboys_annoyance_list_key" translatable="false">fanboys_annoyance_list</string>
@@ -803,6 +823,7 @@
     <!-- Non-translatable preference default values. -->
     <string name="app_theme_default_value" translatable="false">System default</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
+    <string name="download_provider_default_value" translatable="false">Privacy Browser</string>
     <string name="font_size_default_value" translatable="false">100</string>
     <string name="homepage_default_value" translatable="false">https://www.mojeek.com/</string>
     <string name="proxy_custom_url_default_value" translatable="false">socks://localhost:9050</string>

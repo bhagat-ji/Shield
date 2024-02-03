@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2020-2022 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -541,8 +541,6 @@
         <string name="swipe_to_refresh">Deslize para atualizar</string>
         <string name="swipe_to_refresh_summary">Alguns sites não funcionam bem se deslizar para atualizar estiver habilitado.</string>
         <string name="download_with_external_app">Download com aplicativo externo</string>
-        <string name="download_with_external_app_summary">Aplicativos externos não respeitarão as configurações de proxy do Privacy Browser e não terão acesso a cookies
-            (o que significa que é improvável que os arquivos baixados de sites que exigem login funcionem).</string>
         <string name="scroll_app_bar">Role a barra de aplicativos</string>
         <string name="scroll_app_bar_summary">Role a barra de aplicativos para fora da parte superior da tela quando o WebView rola para baixo.</string>
         <string name="bottom_app_bar">Barra de aplicativos inferior</string>

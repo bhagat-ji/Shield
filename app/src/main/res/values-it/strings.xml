@@ -3,7 +3,7 @@
 <!--
   Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2023 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2024 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -639,8 +639,8 @@
         <string name="hide_app_bar">Nascondi la barra dell\'applicazione</string>
         <string name="hide_app_bar_summary">Nasconde la barra che contiene l\'URL.</string>
         <string name="display_under_cutouts">Visualizza sotto i ritagli dello schermo</string>
-        <string name="display_under_cutouts_summary">Visualizza il sito web sotto i ritagli dello schermo come quello della fotocamera. When this is enabled, Privacy Browser will also be drawn under the keyboard.
-            La modifica di questa impostazione provoca il riavvio di Privacy Browser.</string>
+        <string name="display_under_cutouts_summary">Visualizza il sito web sotto i ritagli dello schermo come quello della fotocamera.
+            Quando questa opzione è abilitata, Privacy Browser sarà anche visualizzato sotto alla tastiera. La modifica di questa impostazione provoca il riavvio di Privacy Browser.</string>
     <string name="clear_everything">Elimina tutto</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Cancella i cookies, il DOM storage, i dati dei moduli, il logcat e la cache di WebView.  Cancella completamente le cartelle “app_webview” e “cache”.</string>
@@ -662,8 +662,6 @@
         <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="download_with_external_app">Scarica con una applicazione esterna</string>
-        <string name="download_with_external_app_summary">Le applicazioni esterne non rispetteranno le impostazioni proxy di Privacy Browser’s proxy e non accederanno ai cookie
-            (ovvero è improbabile che un download di file da siti che richiedano il login funzioni).</string>
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>
         <string name="scroll_app_bar_summary">Permette lo scorrere della barra dell\'applicazione dalla parte alta dello schermo quando si effettua lo scrolling.</string>
         <string name="bottom_app_bar">Barra dell\'app in basso</string>

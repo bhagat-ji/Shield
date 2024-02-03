@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -26,11 +26,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -43,11 +46,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 // Define the private class constants.
-private const val URL_STRING = "url_string"
-private const val FILE_SIZE_STRING = "file_size_string"
-private const val FILE_NAME_STRING = "file_name_string"
-private const val USER_AGENT_STRING = "user_agent_string"
-private const val COOKIES_ENABLED = "cookies_enabled"
+private const val URL_STRING = "A"
+private const val FILE_SIZE_STRING = "B"
+private const val FILE_NAME_STRING = "C"
+private const val USER_AGENT_STRING = "D"
+private const val COOKIES_ENABLED = "E"
 
 class SaveDialog : DialogFragment() {
     companion object {
@@ -78,7 +81,11 @@ class SaveDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface SaveListener {
-        fun saveUrl(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment)
+        // Save with Android's download manager.
+        fun saveWithAndroidDownloadManager(dialogFragment: DialogFragment)
+
+        // Save with Privacy Browser.
+        fun saveWithPrivacyBrowser(originalUrlString: String, fileNameString: String, dialogFragment: DialogFragment)
     }
 
     override fun onAttach(context: Context) {
@@ -90,12 +97,28 @@ class SaveDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // Get the arguments
+        val arguments = requireArguments()
+
         // Get the arguments from the bundle.
-        val originalUrlString = requireArguments().getString(URL_STRING)!!
-        var fileNameString = requireArguments().getString(FILE_NAME_STRING)!!
-        val fileSizeString = requireArguments().getString(FILE_SIZE_STRING)!!
-        val userAgentString = requireArguments().getString(USER_AGENT_STRING)!!
-        val cookiesEnabled = requireArguments().getBoolean(COOKIES_ENABLED)
+        val originalUrlString = arguments.getString(URL_STRING)!!
+        var fileNameString = arguments.getString(FILE_NAME_STRING)!!
+        val fileSizeString = arguments.getString(FILE_SIZE_STRING)!!
+        val userAgentString = arguments.getString(USER_AGENT_STRING)!!
+        val cookiesEnabled = arguments.getBoolean(COOKIES_ENABLED)
+
+        // Get the download provider entry values string array.
+        val downloadProviderEntryValuesStringArray = resources.getStringArray(R.array.download_provider_entry_values)
+
+        // Get a handle for the shared preferences.
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+
+        // Get the preference.
+        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
+        val downloadProvider = sharedPreferences.getString(getString(R.string.download_provider_key), getString(R.string.download_provider_default_value))!!
+
+        // Determine the download provider.
+        val privacyBrowserDownloadProvider = downloadProvider == downloadProviderEntryValuesStringArray[0]
 
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -114,18 +137,15 @@ class SaveDialog : DialogFragment() {
 
         // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save) { _: DialogInterface, _: Int ->
-            // Return the dialog fragment to the parent activity.
-            saveListener.saveUrl(originalUrlString, fileNameString, this)
+            // Save the URL with the selected download provider.
+            if (privacyBrowserDownloadProvider)  // Download with Privacy Browser.
+                saveListener.saveWithPrivacyBrowser(originalUrlString, fileNameString, this)
+            else  // Download with Android's download manager.
+                saveListener.saveWithAndroidDownloadManager(this)
         }
 
         // Create an alert dialog from the builder.
         val alertDialog = dialogBuilder.create()
-
-        // Get a handle for the shared preferences.
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-
-        // Get the screenshot preference.
-        val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -138,10 +158,19 @@ class SaveDialog : DialogFragment() {
         // Get handles for the layout items.
         val urlEditText = alertDialog.findViewById<EditText>(R.id.url_edittext)!!
         val fileSizeTextView = alertDialog.findViewById<TextView>(R.id.file_size_textview)!!
+        val blobUrlWarningTextView = alertDialog.findViewById<TextView>(R.id.blob_url_warning_textview)!!
+        val dataUrlWarningTextView = alertDialog.findViewById<TextView>(R.id.data_url_warning_textview)!!
+        val androidDownloadManagerLinearLayout = alertDialog.findViewById<LinearLayout>(R.id.android_download_manager_linearlayout)!!
+        val fileNameEditText = alertDialog.findViewById<TextView>(R.id.file_name_edittext)!!
         val saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
-        // Set the file size text view.
+        // Display the extra views if using Android's download manager.
+        if (!privacyBrowserDownloadProvider)
+            androidDownloadManagerLinearLayout.visibility = View.VISIBLE
+
+        // Populate the views.
         fileSizeTextView.text = fileSizeString
+        fileNameEditText.text = fileNameString
 
         // Populate the URL edit text according to the type.  This must be done before the text change listener is created below so that the file size isn't requested again.
         if (originalUrlString.startsWith("data:")) {  // The URL contains the entire data of an image.
@@ -153,44 +182,101 @@ class SaveDialog : DialogFragment() {
 
             // Disable the editing of the URL edit text.
             urlEditText.inputType = InputType.TYPE_NULL
+
+            // Display the warning if using Android's download manager.
+            if (!privacyBrowserDownloadProvider) {
+                // Display the data URL warning.
+                dataUrlWarningTextView.visibility = View.VISIBLE
+
+                // Disable the save button.
+                saveButton.isEnabled = false
+            }
         } else {  // The URL contains a reference to the location of the data.
             // Populate the URL edit text with the full URL.
             urlEditText.setText(originalUrlString)
         }
 
-        // Update the file size when the URL changes.
+        // Handle blob URLs.
+        if (originalUrlString.startsWith("blob:")) {
+            // Display the blob URL warning.
+            blobUrlWarningTextView.visibility = View.VISIBLE
+
+            // Disable the save button.
+            saveButton.isEnabled = false
+        }
+
+        // Update the UI when the URL changes.
         urlEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+            override fun beforeTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {
                 // Do nothing.
             }
 
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+            override fun onTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {
                 // Do nothing.
             }
 
-            override fun afterTextChanged(editable: Editable) {
-                // Get the current URL to save.
+            override fun afterTextChanged(editable: Editable?) {
+                // Get the contents of the edit texts.
                 val urlToSave = urlEditText.text.toString()
+                val fileName = fileNameEditText.text.toString()
 
-                // Enable the save button if the URL is populated.
-                saveButton.isEnabled = urlToSave.isNotEmpty()
+                // Determine if this is a blob URL.
+                val blobUrl = urlToSave.startsWith("blob:")
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    // Create a URL size string.
-                    var fileNameAndSize: Pair<String, String>
+                // Set the display status of the blob warning.
+                if (blobUrl)
+                    blobUrlWarningTextView.visibility = View.VISIBLE
+                else
+                    blobUrlWarningTextView.visibility = View.GONE
 
-                    // Get the URL size on the IO thread.
-                    withContext(Dispatchers.IO) {
-                        // Get the updated file name and size.
-                        fileNameAndSize = UrlHelper.getNameAndSize(requireContext(), urlToSave, userAgentString, cookiesEnabled)
+                // Enable the save button if the edit texts are populated and this isn't a blob URL.
+                saveButton.isEnabled = urlToSave.isNotEmpty() && fileName.isNotEmpty() && !blobUrl
 
-                        // Save the updated file name.
-                        fileNameString = fileNameAndSize.first
+                // Determine if this is a data URL.
+                val dataUrl = urlToSave.startsWith("data:")
+
+                // Only process the URL if it is not a data URL.
+                if (!dataUrl) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        // Create a URL size string.
+                        var fileNameAndSize: Pair<String, String>
+
+                        // Get the URL size on the IO thread.
+                        withContext(Dispatchers.IO) {
+                            // Get the updated file name and size.
+                            fileNameAndSize = UrlHelper.getNameAndSize(requireContext(), urlToSave, userAgentString, cookiesEnabled)
+
+                            // Save the updated file name.
+                            fileNameString = fileNameAndSize.first
+                        }
+
+                        // Display the updated file size.
+                        fileSizeTextView.text = fileNameAndSize.second
                     }
-
-                    // Display the updated URL.
-                    fileSizeTextView.text = fileNameAndSize.second
                 }
+            }
+        })
+
+        // Update the UI when the file name changes.
+        fileNameEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing.
+            }
+
+            override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Do nothing.
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                // Get the contents of the edit texts.
+                val urlToSave = urlEditText.text.toString()
+                val fileName = fileNameEditText.text.toString()
+
+                // Determine if this is a blob URL.
+                val blobUrl = urlToSave.startsWith("blob:")
+
+                // Enable the save button if the edit texts are populated and this isn't a blob URL (or a data URL using Android's download manager).
+                saveButton.isEnabled = urlToSave.isNotEmpty() && fileName.isNotEmpty() && !blobUrl && !dataUrlWarningTextView.isVisible
             }
         })
 
