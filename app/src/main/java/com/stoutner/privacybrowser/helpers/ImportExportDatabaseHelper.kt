@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -58,7 +58,7 @@ private const val DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar
 private const val DISPLAY_UNDER_CUTOUTS = "display_under_cutouts"
 private const val DISPLAY_WEBPAGE_IMAGES = "display_webpage_images"
 private const val DOM_STORAGE = "dom_storage"
-private const val DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app"
+private const val DOWNLOAD_PROVIDER = "download_provider"
 private const val EASYLIST = "easylist"
 private const val EASYPRIVACY = "easyprivacy"
 private const val FANBOYS_ANNOYANCE_LIST = "fanboys_annoyance_list"
@@ -357,22 +357,27 @@ class ImportExportDatabaseHelper {
                 importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $COOKIES = first_party_cookies")
 
                 // Create the new download with external app and bottom app bar columns.
-                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $DOWNLOAD_WITH_EXTERNAL_APP BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN download_with_external_app BOOLEAN")
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $BOTTOM_APP_BAR BOOLEAN")
 
                 // Get the current values for the new columns.
-                val downloadWithExternalApp = sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false)
                 val bottomAppBar = sharedPreferences.getBoolean(BOTTOM_APP_BAR, false)
+                val downloadProviderString = sharedPreferences.getString(DOWNLOAD_PROVIDER, context.getString(R.string.download_provider_default_value))
 
-                // Populate the preferences table with the current download with external app value.
-                // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
-                // <https://developer.android.com/reference/android/database/sqlite/package-summary>
-                if (downloadWithExternalApp)
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DOWNLOAD_WITH_EXTERNAL_APP = 1")
-                else
-                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DOWNLOAD_WITH_EXTERNAL_APP = 0")
+                // Get the download provider entry values string array.
+                val tempDownloadProviderEntryValuesStringArray = context.resources.getStringArray(R.array.download_provider_entry_values)
+
+                // Populate the new download with external app preference.  It was added in this version of the schema, but removed in version 18.
+                // The new preference, `download_provider`, converts `download_with_external_app`, so it needs to exist.
+                // This code sets `download_with_external_app` to be as similar as possible to the current preference in the settings.
+                if (downloadProviderString == tempDownloadProviderEntryValuesStringArray[0])  // Download with Privacy Browser.
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET download_with_external_app = 0")
+                else  // Download with external app.
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET download_with_external_app = 1")
 
                 // Populate the preferences table with the current bottom app bar value.
+                // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
+                // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 if (bottomAppBar)
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $BOTTOM_APP_BAR = 1")
                 else
@@ -493,8 +498,9 @@ class ImportExportDatabaseHelper {
 
             // Upgrade from schema version 17, first used in Privacy Browser 3.15, to schema version 18, first used in Privacy Browser 3.17.
             if (importDatabaseVersion < 18) {
-                // Create the new display under cutout column.
+                // Create the new columns.
                 importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $DISPLAY_UNDER_CUTOUTS BOOLEAN")
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $DOWNLOAD_PROVIDER TEXT")
 
                 // Get the current display under cutout value.
                 val displayUnderCutouts = sharedPreferences.getBoolean(DISPLAY_UNDER_CUTOUTS, false)
@@ -506,6 +512,27 @@ class ImportExportDatabaseHelper {
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DISPLAY_UNDER_CUTOUTS = 1")
                 else
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DISPLAY_UNDER_CUTOUTS = 0")
+
+                // Get the download with external app cursor.
+                val downloadWithExternalAppCursor = importDatabase.rawQuery("SELECT download_with_external_app FROM $PREFERENCES_TABLE", null)
+
+                // Move to the first entry.
+                downloadWithExternalAppCursor.moveToFirst()
+
+                // Get the old download with external app setting.
+                val downloadWithExternalApp = (downloadWithExternalAppCursor.getInt(downloadWithExternalAppCursor.getColumnIndexOrThrow("download_with_external_app")) == 1)
+
+                // Close the cursor.
+                downloadWithExternalAppCursor.close()
+
+                // Get the download provider entry values string array.
+                val downloadProviderEntryValuesStringArray = context.resources.getStringArray(R.array.download_provider_entry_values)
+
+                // Populate the new download provider preference.
+                if (downloadWithExternalApp)  // Download with external app.
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DOWNLOAD_PROVIDER = '${downloadProviderEntryValuesStringArray[2]}'")
+                else  // Download with Privacy Browser.
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DOWNLOAD_PROVIDER = '${downloadProviderEntryValuesStringArray[0]}'")
             }
 
             /* End of database upgrade logic. */
@@ -767,7 +794,7 @@ class ImportExportDatabaseHelper {
                 .putString(PREFERENCES_FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_FONT_SIZE)))
                 .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(OPEN_INTENTS_IN_NEW_TAB)) == 1)
                 .putBoolean(PREFERENCES_SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_SWIPE_TO_REFRESH)) == 1)
-                .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
+                .putString(DOWNLOAD_PROVIDER, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(DOWNLOAD_PROVIDER)))
                 .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SCROLL_APP_BAR)) == 1)
                 .putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BOTTOM_APP_BAR)) == 1)
                 .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
@@ -979,7 +1006,7 @@ class ImportExportDatabaseHelper {
                     "$PREFERENCES_FONT_SIZE TEXT, " +
                     "$OPEN_INTENTS_IN_NEW_TAB BOOLEAN, " +
                     "$PREFERENCES_SWIPE_TO_REFRESH BOOLEAN, " +
-                    "$DOWNLOAD_WITH_EXTERNAL_APP BOOLEAN, " +
+                    "$DOWNLOAD_PROVIDER TEXT, " +
                     "$SCROLL_APP_BAR BOOLEAN, " +
                     "$BOTTOM_APP_BAR BOOLEAN, " +
                     "$DISPLAY_ADDITIONAL_APP_BAR_ICONS BOOLEAN, " +
@@ -1032,7 +1059,7 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(PREFERENCES_FONT_SIZE, sharedPreferences.getString(PREFERENCES_FONT_SIZE, context.getString(R.string.font_size_default_value)))
             preferencesContentValues.put(OPEN_INTENTS_IN_NEW_TAB, sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true))
             preferencesContentValues.put(PREFERENCES_SWIPE_TO_REFRESH, sharedPreferences.getBoolean(PREFERENCES_SWIPE_TO_REFRESH, true))
-            preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false))
+            preferencesContentValues.put(DOWNLOAD_PROVIDER, sharedPreferences.getString(DOWNLOAD_PROVIDER, context.getString(R.string.download_provider_default_value)))
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true))
             preferencesContentValues.put(BOTTOM_APP_BAR, sharedPreferences.getBoolean(BOTTOM_APP_BAR, false))
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false))

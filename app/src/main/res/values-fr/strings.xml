@@ -115,8 +115,8 @@
     <string name="home">Accueil</string>
     <string name="back">Précédent</string>
     <string name="forward">Suivant</string>
-    <string name="scroll_to_bottom">Faire défiler vers le bas</string>
-        <string name="scroll_to_top">Faire défiler vers le haut</string>
+    <string name="scroll_to_bottom">Bas de page</string>
+        <string name="scroll_to_top">Haut de page</string>
     <string name="history">Historique</string>
         <string name="clear_history">Vider l\'historique</string>
     <string name="open">Ouvrir</string>
@@ -636,8 +636,8 @@
         <string name="hide_app_bar">Masquer la barre d\'application</string>
         <string name="hide_app_bar_summary">Masquer la barre d\'applications contenant l\'URL.</string>
         <string name="display_under_cutouts">Afficher sous les éléments découpés</string>
-        <string name="display_under_cutouts_summary">Affiche le site web sous les éléments découpés, tels que les encoches d\'appareil photo. When this is enabled, Privacy Browser will also be drawn under the keyboard.
-            La modification de ce paramètre entraînera le redémarrage de Privacy Browser.</string>
+        <string name="display_under_cutouts_summary">Affiche le site web sous les éléments découpés, tels que les encoches d\'appareil photo.
+            Lorsque ce paramètre est activé, Privacy Browser sera également affiché sous le clavier. La modification de ce paramètre entraînera le redémarrage de Privacy Browser.</string>
     <string name="clear_everything">Tout effacer</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache de WebView.
