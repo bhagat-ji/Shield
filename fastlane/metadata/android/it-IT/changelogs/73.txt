@@ -1,0 +1,10 @@
+• Ampliamento delle opzioni per il provider dei download che può essere Privacy Browser, il download manager di Android o una app esterna.
+• Rimozione di spazio sprecato tra l'icona del cassetto di navigazione e la barra delle URL.
+• Aggiunta la voce per lo spostamento in fondo o all'inizio nel menù di navigazione.
+• Aggiunta una opzione per mostrare i ritagli dello schermo sotto alla fotocamera nella modalità di navigazione a schermo intero.
+• Correzione di un crash per cui talvolta venivano create schede di navigazione senza la corrispondente pagina.
+• Sistemazione di un raro problema provocato dall'impostazione come attiva della pagina sbagliata dopo la creazione di una nuova scheda.
+• Sistemazione dell'aggiornamento dell'icona preferita durante la navigazione della cronologia.
+• Modifica dell'impostazione predefinita per lo scrolling della barra dell'app in falso nelle nuove installazioni.
+• Effettuati diversi piccoli miglioramenti all'interfaccia utente.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

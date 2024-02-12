@@ -27,10 +27,9 @@ android {
 
     defaultConfig {
         minSdk 24
-        //noinspection EditedTargetSdkVersion
         targetSdk 34
-        versionCode 72
-        versionName "3.16"
+        versionCode 73
+        versionName "3.17"
         resourceConfigurations += ['en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN']
     }
 
@@ -95,7 +94,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'androidx.webkit:webkit:1.9.0'
+    implementation 'androidx.webkit:webkit:1.10.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'

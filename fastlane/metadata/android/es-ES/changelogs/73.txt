@@ -1,0 +1,10 @@
+• Ampliar las opciones del proveedor de descargas para que sean Navegador Privado, el gestor de descargas de Android, y una app externa.
+• Eliminar el espacio desperdiciado entre el icono del cajón de navegación y la barra URL.
+• Añadir una entrada de desplazamiento hacia abajo/arriba en el menú de navegación.
+• Añadir una opción para mostrar bajo los recortes de cámara en el modo de navegación a pantalla completa.
+• Corregir un fallo causado por una pestaña que a veces se crea sin una página correspondiente.
+• Solucionar un problema raro causado por la página incorrecta que se establece como activa tras la creación de una nueva pestaña.
+• Corregir la actualización de los iconos favoritos al navegar por el historial.
+• Cambiar el valor por defecto para desplazamiento de la barra de aplicaciones a false en nuevas instalaciones.
+• Realizar varias pequeñas mejoras en la interfaz de usuario.
+• Actualizada la traducción al español proporcionada por Jose A. León.

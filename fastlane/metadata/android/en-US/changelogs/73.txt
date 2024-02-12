@@ -1,0 +1,9 @@
+• Expand the download provider options to be Privacy Browser, Android’s download manager, and an external app.
+• Remove wasted space between the navigation drawer icon and the URL bar.
+• Add a scroll to bottom/top entry in the navigation menu.
+• Add an option to display under camera cutouts in full-screen browsing mode.
+• Fix a crash caused by a tab sometimes being created without a corresponding page.
+• Fix a rare problem caused by the incorrect page being set as active after the creation of a new tab.
+• Fix the updating of favorite icons when navigating history.
+• Change the default for scrolling the app bar to false on new installs.
+• Make several small user interface improvements.

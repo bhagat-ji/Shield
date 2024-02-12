@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019,2021-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2019, 2021-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -1431,7 +1431,7 @@ class ParseFilterListHelper {
 
                                 //Log.i("FilterLists", headers.get(1)[0] + " main block list added:  " + firstEntry + " , " + secondEntry + "  -  " + originalFilterListEntry)
                             }
-                        } else {  // Main block list single entry.
+                        } else if (filterListEntry.isNotBlank()){  // Main block list single entry.
                             // Create an entry string array.
                             val singleEntry = arrayOf(filterListEntry, originalFilterListEntry)
 
@@ -1439,6 +1439,10 @@ class ParseFilterListHelper {
                             mainBlockList.add(singleEntry)
 
                             //Log.i("FilterLists", headers.get(1)[0] + " main block list added:  " + filterListEntry + "  -  " + originalFilterListEntry)
+                        } else {  // The entry is blank (empty or all white spaces).
+                            // Do nothing.
+
+                            //Log.i("FilterLists", "${headers[1][0]} not added:  $filterListEntry,  $originalFilterListEntry")
                         }
                     }
                 } else {  // Main block list entries.
@@ -1603,7 +1607,7 @@ class ParseFilterListHelper {
 
                                 //Log.i("FilterLists", headers.get(1)[0] + " main block list added:  " + firstEntry + " , " + secondEntry + "  -  " + originalFilterListEntry)
                             }
-                        } else {  // Main block list single entry.
+                        } else if (filterListEntry.isNotBlank()){  // Main block list single entry.
                             // Create an entry string array.
                             val singleEntry = arrayOf(filterListEntry, originalFilterListEntry)
 
@@ -1611,6 +1615,10 @@ class ParseFilterListHelper {
                             mainBlockList.add(singleEntry)
 
                             //Log.i("FilterLists", headers.get(1)[0] + " main block list added:  " + filterListEntry + "  -  " + originalFilterListEntry)
+                        } else {  // The entry is blank (empty or all white spaces).
+                            // Do nothing.
+
+                            //Log.i("FilterLists", "${headers[1][0]} not added:  $filterListEntry,  $originalFilterListEntry")
                         }
                     }
                 }

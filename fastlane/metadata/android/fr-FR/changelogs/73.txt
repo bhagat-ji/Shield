@@ -1,0 +1,10 @@
+• Étendre les options du fournisseur de téléchargement pour inclure Privacy Browser, le gestionnaire de téléchargement d'Android et une application externe.
+• Supprimer l'espace perdu entre l'icône du tiroir de navigation et la barre d'URL.
+• Ajouter une entrée pour défiler vers le bas/haut dans le menu de navigation.
+• Ajouter une option pour afficher sous les découpages de la caméra en mode de navigation en plein écran.
+• Corriger un plantage causé par un onglet parfois créé sans page correspondante.
+• Corriger un problème rare causé par la page incorrecte étant définie comme active après la création d'un nouvel onglet.
+• Corriger la mise à jour des icônes favorites lors de la navigation dans l'historique.
+• Changer la valeur par défaut pour le défilement de la barre d'application à false lors des nouvelles installations.
+• Apporter plusieurs petites améliorations de l'interface utilisateur.
+• Traduction française mise à jour fournie par Kévin L.

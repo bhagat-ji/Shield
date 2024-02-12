@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 202311171932
+! Version: 202402070111
 ! Title: Fanboy's Social Blocking List
-! Last modified: 17 Nov 2023 19:32 UTC
+! Last modified: 07 Feb 2024 01:11 UTC
 ! Expires: 4 days (update frequency)
 ! *** easylist:template_header.txt ***
 ! 
@@ -16,6 +16,7 @@
 ! 
 ! --------------------------General blocking rules-----------------------------!
 ! *** easylist:fanboy-addon/fanboy_social_general_block.txt ***
+! fanboy_social_general_block.txt
 -buttons-facebook.
 -buttons-twitter.
 -facebook-likeButton-
@@ -27,11 +28,6 @@
 -follow-icons.
 -follow-us-icons.
 -followicons.
--footer-igram.
--footer-social-
--footer-social.
--footer-youtube-
--footer_social.
 -redes-facebook.
 -redes-gplus.
 -redes-instagram.
@@ -41,14 +37,12 @@
 -share-bar/$~stylesheet
 -share-buttons2.
 -share-buttons3/$~stylesheet
--share-master/
 -share-save/
 -share-sprite-
 -share-sprite.
 -share-tools-
 -share-twiiter.
 -share-whatsapp.
--share2-master/
 -sharebar-
 -sharebar.
 -ShareButton2.
@@ -61,16 +55,12 @@
 -slide-social-
 -social-panel.
 -social-panel/
--social-pinterest-
 -social-popup-
 -social-post-sharer/$~stylesheet
--social-profiles-
 -social-sidebar.
 -Social-Sidebar/
 -social-slider/
 -social-twitterhover-
--social-widget1.
--socialbar.
 -sociaux.$domain=~centres-sociaux.fr
 -sprite-social-
 -sticky-social/
@@ -81,10 +71,6 @@
 -webicon-linkedin-
 -webicon-twitter-
 -webicon-youtube-
-.bzshare.
-.bztotalshare.
-.dkshare.
-.dktotalshare.
 .easyshare:
 .facebookLikePopUp.
 .fb-like/
@@ -151,46 +137,27 @@
 /button_share.
 /button_social_
 /bwSocialIcons.
-/bz-share.
-/bz_share/*
+/cevhershare.js
 /chs/share/*
 /cht/share/*
 /circle_share.
 /cnw.share.
-/color-facebook-
-/color-twitter-
 /commentshareicons.
 /common/sns/*
 /common/sns_
 /commons/social/*
 /commonSprites/social/*
-/context-social.
-/controller/share-
-/contshare.
-/cool-share/*
-/crowdbooster-
-/crowdbooster_
-/css/social-$~stylesheet
-/custom-share.
-/customSocialBar/*$~stylesheet
-/dk-share.
-/e-social-
-/e-social.
-/e_social/*
-/e_social_
-/ej-socialslider/*
+/cool-share/plugin.js
+/diggdigg-floating-bar.js
+/ej-socialslider/static/slideout.js
 /emailaddthis.
-/essential/social-
-/facebkiconnet/*
 /facebook-fan.
 /facebook-follow-
 /facebook-footer-
 /facebook-page-popup-cadence/*$~stylesheet
+/facebook-page-promoter-lightbox/includes/launch/launch.min.js
 /facebook-pagelike-widget/*
 /facebook-popup-
-/facebook-send-button.
-/facebook-share-
-/facebook-share.
 /facebook-side.
 /facebook-vertical.
 /facebook/likes?
@@ -198,11 +165,7 @@
 /facebook_badge.
 /facebook_footer.
 /facebook_like_button.
-/facebook_out.
 /facebook_ppd.
-/facebook_share.
-/facebook_share_
-/facebook_side_
 /facebook_sidebar.
 /facebook_social.
 /Facebook_Social_
@@ -212,10 +175,6 @@
 /FacebookFanWidgetFrame.
 /facebookFooterIcon-
 /facebookHeader.
-/facebookmall.
-/facebookon.
-/facebookpin.
-/facebookred.
 /facebooksharebutton.
 /FacebookShares?
 /facebooksmall2.
@@ -231,6 +190,7 @@
 /fb-traffic-pop.
 /fb-traffic-pop/*
 /fb-widget.
+/fb_modeles.css
 /fb_side.
 /fb_small.
 /fb_subscribe.
@@ -245,10 +205,7 @@
 /fbsubscribe.
 /feedburner_64.
 /FeedlyButton_
-/feeds/facebook_
-/feeds/twitter_
 /feedSprite_
-/fh_social.
 /floating-social/*
 /floating-wpp.min.
 /flw-twitter.
@@ -272,62 +229,17 @@
 /follow-with-google-
 /follow-youtube.
 /follow/Facebook-
-/follow/Google+
-/follow/google-
 /follow/Twitter-
 /follow/YouTube-
 /follow_instagram.
 /followusontwitter.
-/footer-facebook-
-/footer-facebook.
-/footer-fb-
-/footer-google-
-/footer-google.
-/footer-instagram-
-/footer-Instagram.
-/footer-linkedin-
-/footer-linkedin.
-/footer-pintrest.
-/footer-social
-/footer-twitter-
-/footer-twitter.
-/footer-vk-
-/footer-youtube-
-/footer/facebook-
-/footer/facebook.
-/footer/facebook_
-/footer/instagram-
-/footer/instagram.
-/footer/linkedin.
-/footer/pinterest.
-/footer/social-
-/footer/social/*
-/footer/social_
-/footer/twit-
-/footer/twitter-
-/footer/twitter.
-/footer/twitter_
-/footer/youtube.
-/footer_facebook.
-/footer_pinterest-
-/footer_sociale.
-/footer_socials_
-/footer_twitter.
-/footer_twitter_
-/footer_youtube.
-/footerFacebookIcon.
-/footerSocialIcons.
-/footerSocialNet2.
-/footerSocialSprite.
-/footerTwitterIcon.
 /gadgets/Social/*
 /gallery/social/*$image
+/gen-share-master/assets/js/frontend/application.min.js
 /GetPocketButton_
 /gfx/socials/*
 /gg-share.
 /gigya-socialize-for-wordpress/*$~script,~stylesheet
-/github_icon.
-/givememydigg.
 /gm-button-social.
 /graphics/share/*
 /guys_social.
@@ -338,208 +250,125 @@
 /header_socials.
 /headerSocialIcons.
 /headline_share_
-/highlight-and-share-
-/highlight-and-share.
-/highlight-and-share/*
+/highlight-and-share.js
 /highlight_share.
-/ic-share-
-/ic_delicious.
-/ic_digg.
-/ic_facebook.
-/ic_facebook_
-/ic_reddit.
-/ic_share.
-/ic_stumbleupon.
-/ic_twitter.
-/ic_twitter_
 /icon_share_
 /icon_sharethis_
 /icon_sns_
-/icon_social1.
-/icon_social2.
-/icon_social3.
-/icon_social4.
-/icon_social_
-/icona-social-
-/icona-social.
-/icone_social/*
 /icons-follow-
-/instagram-footer-
-/itpsocialbuttons/*
-/ja/share/*
-/Javascripts/Social.
-/jiathis_share.
-/jinda-facebook-lightbox/*
-/jquery-pin-it-
+/Images/mobile-share-
+/itpsocialbuttons/images/*
+/itpsocialbuttons/style.css
+/Javascripts/Social.js
+/jiathis_share.css
+/jinda-facebook-lightbox/public/*
+/jquery-pin-it-button-for-images/js/jpibfi.client.js
+/jquery.shareaholic-publishers-sb.min.js
 /jquery.stp.min.js
-/kor/share/*
-/layoutsharedelicious.
-/layoutshareyahoo.
-/lg-share.
-/li_share.
-/lib.share/*
-/liinkedInBtn.
-/like-facebook-
-/like-facebook_
-/like-follow.
-/like-follow_
-/like_button.
-/likebox.
-/likefacebook.
+/lg-share.js
+/like_button.js
+/like_button.png
+/likebox.php
+/likefacebook.jpg
+/likefacebook.png
 /likegate.js
-/likesScript.
-/linkedin_footer.
-/LinkedInShare.
-/menusbhshare2.
-/mobile-share-
-/mobile-sharing/*
-/mobilesharetools.
-/mod_socialmedialinks/*
-/mod_socialslider/*
-/modeles_facebook/*
-/mtsocialgroup_
-/myshare/*
-/navtumblr.
-/nc-follow1.
-/needsharebutton.
-/news_share_
-/newshare/*
-/newsharecounts.
-/newSideShare/*
-/outsidesocialsprite.
-/overlayShare.
+/likesScript.js
+/mod_socialmedialinks/icons/*
+/mod_socialmedialinks/style.css
+/mod_socialslider/tmpl/*
+/myshare/assets/js/*
+/needsharebutton.js
+/needsharebutton.min.css
+/o3-social-share-styles.css
+/overlayShare.js
 /pandalocker.$script
-/partnerNavSocialButtons.
-/pin-interest-icon.
-/pin-share.
-/pin_it_button.
-/pinit-btn.
-/pinit-button.
+/pin_it_button.png
+/pinit-button.png
 /pinit.html?
-/pinit_footer.
-/pinShare.
-/pinterest-button12.
-/pinterest-footer-
-/pinterest-over.
-/pinterest-sidebar.
-/pinterest_badge_
-/pinterest_tag.
-/pinterestbutton.
-/PinterestIcon.
-/pinterestsquare.
-/pintrest-button.
-/plugins/add-to-any-subscribe/*$image
-/plugins/add-to-any/*$~stylesheet
-/plugins/anmiated-twitter-bird/*
+/pinterest-footer-icon.png
+/pinterest-footer-icon.svg
+/pinterest-footer-svg.ashx
+/pinterest-footer.ashx
+/pinterest-for-woocommerce-save-button.min.js
+/pinterest-for-woocommerce-tracking.min.js
+/pinterest-over.jpg
+/pinterest-over.png
+/pinterest_tag.js
+/pintrest-button.png
+/plugins/add-to-any-subscribe/subscribe_
+/plugins/add-to-any/addtoany.min.js
+/plugins/anmiated-twitter-bird/js/tripleflap.js
 /plugins/bookmarkify/*
-/plugins/delicious-bookmark-button/*
-/plugins/digg-digg/*$~stylesheet
-/plugins/diggclick/*$~stylesheet
-/plugins/dpSocialShare/*$~stylesheet
+/plugins/delicious-bookmark-button/delit.js
+/plugins/dpSocialShare/js/jquery.dpSocialShare.js
 /plugins/easy-facebook-likebox/*
-/plugins/easy-twitter-
-/plugins/facebook-button-plugin/*
-/plugins/facebook-fanbox-popup/*
-/plugins/facebook-like-content-locker/*
+/plugins/easy-twitter-feeds/public/js/widget.js
+/plugins/facebook-button-plugin/js/script.js
+/plugins/facebook-fanbox-popup/assets/js/spu.js
+/plugins/facebook-like-content-locker/js/pop.js
 /plugins/facebook-page-promoter-$~stylesheet
-/plugins/facebookpopuppro/*
-/plugins/flare/*$~stylesheet
-/plugins/fv-sharing/*$~stylesheet
-/plugins/getsocial/*
-/plugins/knxdt-bookmarks-wordpress-plugin/*
+/plugins/facebookpopuppro/js/facebookpopup.js
+/plugins/getsocial/lib/getsocial.js
+/plugins/knxdt-bookmarks-wordpress-plugin/css/style.css
 /plugins/light-social/*$~stylesheet
-/plugins/like-box-pro/*
-/plugins/like-fb/*
-/plugins/mashsharer/*$~stylesheet
-/plugins/osd-social-media-sharing/*
-/plugins/pinterest-$~stylesheet
-/plugins/rt-social/*$~stylesheet
-/plugins/sexybookmarks/*$~stylesheet
-/plugins/share-social/*$~stylesheet
+/plugins/like-box-pro/includes/javascript/front_end_js.js
+/plugins/like-fb/js/popup.js
+/plugins/mashsharer/assets/js/mashsb.min.js
+/plugins/osd-social-media-sharing/includes/style.css
+/plugins/pinterest-pin-it-button-on-image-hover-and-post/js/pinit.js
+/plugins/rtsocial/js/rtss-main.js
+/plugins/share-and-follow/*$image
+/plugins/share-social/icons/*$image
 /plugins/simple-social-sharing-widgets-icons/*$~stylesheet
-/plugins/slide-in/*$script
-/plugins/sociable-$~stylesheet
+/plugins/slide-in/js/wdsi.js
+/plugins/sociable-re/images/*
 /plugins/sociable/*$~stylesheet
-/plugins/socialbox/*
-/plugins/socialfans-counter/*
-/plugins/socialgrid/*$~stylesheet
-/plugins/StickySocialBar/*
-/plugins/subscribe-connect-follow-widget/*$~stylesheet
+/plugins/socialbox/assets/*
+/plugins/socialfans-counter/assets/js/socialfans-script.js
+/plugins/socialgrid/static/img/*
+/plugins/StickySocialBar/js/sharefront.js
+/plugins/subscribe-connect-follow-widget/images/*
 /plugins/tweet-this/icons/*
-/plugins/tweetmeme/*
+/plugins/tweetmeme/button.js
 /plugins/ultimate-follow-me/*
-/plugins/ultimate-social-deux/*$~stylesheet
-/plugins/viperbar/*
+/plugins/ultimate-social-deux/public/assets/js/min/us.script-min.js
+/plugins/viperbar/client/js/front.js
 /plugins/wordpress-social-ring/*
-/plugins/wp-plus-one/*
-/plugins/wp-share-to-xing/*
-/plugins/wp-social-toolbar-pro/*
-/plugins/wp-tweet-button/*
-/popinfacebook.
-/popups/facebook_
-/printarest.
-/prisna-social-counter.
-/prn.share.
-/qq_share_
-/reddit-share.
-/reddit-small.
+/plugins/wp-plus-one/wp-plus-one.js
+/plugins/wp-social-toolbar-pro/js/corescripts.js
+/plugins/wp-tweet-button/tweetn.png
+/prisna-social-counter.css
+/qa-social-share.css
 /Resources/twitter-$~xmlhttprequest
-/rrshare.
-/rtsocial/*
-/rw_share_
-/sc-twitter-
-/scrollShareMenu.
-/semsocial.*/widgets.
-/seomoz_35.
-/share-actions.
-/share-actions/*
-/share-addtoany.
-/share-and-follow/*$~stylesheet
-/share-bar/*
+/rrshare.js
+/scrollShareMenu.html
+/share-bar-1.min.js
+/share-bar/build/index.js
+/share-bar/share-bar.js
 /share-button?
-/share-controller.
-/share-count.
-/share-count/*
-/share-footer.
-/share-on-diaspora/*
-/share-pinterest-
-/share-social-
-/share-sprite-
-/share-sprite.$~image
-/share-this-
-/share-tools-
-/share-twitter-
-/share-twitter.
-/share-twitter1a.
+/share-controller.js
+/share-controller.min.js
+/share-leadoff-public.js
+/share-on-diaspora-css.php
 /share.php?buttons=
 /share/count?
-/share/final.
 /share/footer/*
 /share/frame/*
 /share42.js
-/share42_
-/share_28x13.
-/share_bebo.
-/share_blogger.
 /share_button?
-/share_byline_
-/share_count.
-/share_iframe.
-/share_popup.
-/share_save_
-/share_sprite.
-/share_sprite_
-/share_tiwwer.
-/share_toolbar.
-/share_v1_
-/share_view.
-/share_wechat.
-/share_weibo.
+/share_count.js
+/share_iframe.js
+/share_popup.js
+/share_sprite.png
+/share_toolbar.js
+/share_view.js
+/share_wechat.jpg
+/share_wechat.png
+/share_weibo.jpg
+/share_weibo.png
 /shareaholic.js
-/shareaholic/*
-/shareamex/*
-/shareArrow.
-/sharebar.
+/shareArrow.png
+/sharebar.js
 /shareBar/*
 /sharebars/*
 /shareBtn_
@@ -553,7 +382,7 @@
 /shared/btn_
 /shared/social/*
 /sharedaddy.js
-/sharedaddy/*$image,script
+/sharedaddy/sharing.min.js
 /sharedcount.
 /shareFacebook.
 /Sharefb.
@@ -751,21 +580,17 @@
 /suivez-nous-google.
 /suivez-nous-twitter.
 /suivez-nous-youtube.
-/synved-social/*
+/synved-social/image/*
 /tabs/social/*
-/toolbar-digg.
-/toolbar-facebook.
-/toolbar_twitter.
+/tarful-share-public.js
+/tools/newSideShare/*
 /tweet_footer.
 /tweetbutton.
 /tweetcount.
 /tweetgrid.
-/tweetshare.
 /twfollowfp.
 /twfooter.
 /twitbadge.
-/twitbutton.
-/twittbutton.
 /twitter-follow-
 /twitter-footer-
 /twitter-timeline-
@@ -783,8 +608,6 @@
 /twitter_tasto_
 /twitterbadge.
 /twitterbadge/*
-/twitterbigicon.
-/twitterBtmIcon.
 /twitterFetcher_
 /twitterfloat.js
 /twitterfollow.
@@ -796,20 +619,14 @@
 /twittersquare.
 /twitterwidget.
 /twitterWidgetHeader.
-/twitthis_
-/ucShare.
-/UIFollow.
-/utube-icon.
 /validateArticleShareCount.
-/viber_button.
 /videojs-share.
 /view/share_
 /view_social_
 /viewboxTraffic_min.js
 /visual/social/*
 /vk_button.
-/vkontakte2_icon.
-/weiboshare.
+/weiboshare.html
 /whatsapp-button.
 /whatsapp_button.
 /whatsapp_icon.
@@ -831,17 +648,11 @@
 /wp-followme/*
 /wp-social-media-
 /wp-social-toolbar/*
-/wpsocial.
-/xico-social-
-/xicon_share.
 /xnapp/share/*
-/xshare_
 /xsocial-icons.
 /xsocial_sprites_
-/ya-share.
+/ya-share.js
 _facebook_banner/
-_facebookbadge.
-_fbshare.
 _footer_share_
 _footer_socials.
 _footer_twitter.
@@ -862,13 +673,6 @@ _social_badge_$~xmlhttprequest
 _social_bookmark/
 _social_bookmarks/
 _social_footer_
-_social_media_button_
-_social_media_icons_
-_social_share/
-_social_share_
-_social_shares.
-_socialBadges.
-_socialbar_
 _socialfancysliders/
 _socialmediabox_
 _socialtoggle.
@@ -881,6 +685,7 @@ _twitter_follow.
 /wp-content/plugins/videolock/*$script
 ! ------------------------General element hiding rules-------------------------!
 ! *** easylist:fanboy-addon/fanboy_social_general_hide.txt ***
+! fanboy_social_general_hide.txt
 ###BottomSocialLinks
 ###FBslideout
 ###FaceBookStayInTouch
@@ -1134,18 +939,7 @@ _twitter_follow.
 ###bylineShare
 ###bylineSocialMore
 ###c-main-share-bar
-###c_bSOCIAL
-###cevhershare
-###cf2_facebook
-###ch-follow-us
-###cht-shr
-###cite_social
-###classified-social
-###click_share
 ###cm-social-overlay
-###cmdFacebook
-###cmdLinkedIn
-###cmdTwitter
 ###cmg-head-share-menu
 ###cmg_facebook
 ###cmg_instagram
@@ -1153,24 +947,11 @@ _twitter_follow.
 ###cmsms_latest_bottom_tweets
 ###cnnShare2
 ###cns-social-links
-###cntr_us_social
-###cojp_social
-###colBoxTwitterLink
-###coma_social_share
 ###commentsShare
 ###communityshare
-###component-sharethis
-###component-sharethis-horiz-border
-###condividi-footer
-###connect-facebook
-###connect-googleplus
-###connect-social-media
-###connect-twitter
-###connectFacebookLink
 ###connectWithUs
 ###connect_share
 ###consol-share
-###container-like-button
 ###container-reseaux-sociaux
 ###content-article-share
 ###content-share-top
@@ -1179,14 +960,9 @@ _twitter_follow.
 ###content-social-2
 ###content-socialshare
 ###contentSharerResult
-###content_block_sidebar_social_media_teaser
 ###content_share
-###contentfb
 ###contributor-social-media
 ###count_r2r
-###cpf-viewbox-sharebar
-###cphBanner_Banner_divBannerShare
-###cphPageComponents_aShareMail
 ###crestashareicon
 ###crestashareiconincontent
 ###csSocial
@@ -1207,21 +983,14 @@ _twitter_follow.
 ###custom-social
 ###custom-tweet-button
 ###custom_share
-###customtwitter
-###cv-home-social-bar
-###cw_tweets_module
 ###cxShareLinks
-###dailydot-socialbar
 ###dcssb-facebook
 ###dcssb-plusone
 ###dcssb-twitter
 ###dd-footer-social
 ###dd-navigation-social
-###deals-social
-###deeplinks-share
 ###desktop-share-wrapper
 ###desktop-social-buttons
-###detailHeadlineStickySocial
 ###details-share-icon-link
 ###dhSocial
 ###diaspora-button-container
@@ -1246,8 +1015,6 @@ _twitter_follow.
 ###dl_share_icons
 ###donate-social
 ###drop-btn-share
-###dropdown-share
-###dsp_ftr_social
 ###dvTwitter
 ###e_mailit_custom_position
 ###ea-social-footer-links
@@ -1267,8 +1034,6 @@ _twitter_follow.
 ###et-social-icons
 ###eut-post-social-bar
 ###eventSocialMedia
-###ewpd-share
-###extra-share
 ###f-social
 ###fShare
 ###fa_share
@@ -1636,17 +1401,9 @@ _twitter_follow.
 ###footer_socialmedia
 ###footer_tweet
 ###footer_widget_social
-###footerlinked
-###footertopShare
-###footertwit
-###footerutube
-###fp-accordion
-###friends-2-follow-widget
 ###fsb-social-bar
-###full-story-share
 ###galleryPlayerShare
 ###galleryShare
-###gallery_side_share_buttons
 ###gc-facebook
 ###gc-twitter
 ###getSocial
@@ -1983,37 +1740,23 @@ _twitter_follow.
 ###node-share-top
 ###nodeshare
 ###not-signed-in-social
-###o3-social-share
 ###offer_social
-###omegaSharer
-###omni-digg-most-dugg
-###omni-fb-activity-feed
-###opera-social
 ###orkut_share
 ###other-social-bar
-###overftrboxsocial
-###overlay-facebook
 ###pShareContent
 ###pSocialPrint
-###page-header-facebook
-###page-header-twitter
-###page-header-youtube
 ###page-share
 ###pageFooterSocial
 ###pageHeaderTopSocial
 ###pageIconGoogle
 ###pageIconTwitter
-###pageShareTall
 ###page_like_box
 ###page_shareButton
 ###pageshare
 ###panel-social
 ###panelSocial
-###panoInfoShare
-###paraticPostShareButtons
 ###partShare
 ###peek-share
-###persistent-share
 ###pinfollow
 ###pins-feed-follow
 ###pinshare
@@ -2027,13 +1770,7 @@ _twitter_follow.
 ###playerShare
 ###plug-facebook
 ###plug-twitter
-###pm-vc-share
-###pm-vc-share-content
 ###pmFacebook
-###popShare1
-###popShare2
-###popinfacebook
-###popsugar-social-bar
 ###popup-social
 ###popupFbLikeBox
 ###popup_social
@@ -2061,7 +1798,6 @@ _twitter_follow.
 ###postshare
 ###pp-share-menu
 ###pp-social
-###primarySocialSharing
 ###reseau-social
 ###reseaux-sociaux
 ###reseaux_sociaux
@@ -2076,16 +1812,11 @@ _twitter_follow.
 ###rightSocialGoogle
 ###rightSocialLinkedin
 ###rightSocialTwitter
-###rightbtn_digg
-###rightbtn_facebook
-###rightbtn_twitter
 ###rightshare
 ###rightsocial
 ###rr-social-widget-chiclets
 ###rr-social-widget-facebook
 ###rr-social-widget-twitter
-###rrSocialNetworks
-###rr_facebook
 ###rr_social_tout
 ###rsShareToggleBtn
 ###rs_facebook
@@ -2094,20 +1825,15 @@ _twitter_follow.
 ###rshare
 ###rsociaux
 ###rt_social
-###rww-fb-like
 ###sb-social
 ###sb_facebook
 ###sb_fb_like
 ###sb_instagram
-###sbookmarks_left
-###screenShareoverlay
-###scribol-fb-like
 ###scroll-social
 ###scrollingSocial
 ###sdac_footer_facebook_widget-3
 ###section-footer-social
 ###section-header-follow
-###selection-sharer-popover
 ###selectionShare
 ###selectionShareable
 ###share-above-desktop
@@ -2131,11 +1857,6 @@ _twitter_follow.
 ###share-buttons
 ###share-card
 ###share-center-pro
-###share-cont
-###share-content
-###share-count
-###share-digg
-###share-email
 ###share-facebook
 ###share-facebook-menu
 ###share-fb
@@ -2154,8 +1875,6 @@ _twitter_follow.
 ###share-module-top
 ###share-more
 ###share-nav
-###share-open
-###share-options-article
 ###share-panel-vert
 ###share-pinterest
 ###share-post
@@ -2322,13 +2041,10 @@ _twitter_follow.
 ###share_spot
 ###share_this
 ###share_to
-###share_to_scoopit_share
 ###share_tools
 ###share_top
 ###share_tw
 ###share_twitter
-###share_twitter-share_desktopSocialBar
-###share_twitter_trigger
 ###share_video
 ###share_wrap
 ###share_wrapper
@@ -2338,7 +2054,6 @@ _twitter_follow.
 ###sharebar-contenuto
 ###sharebar-custom
 ###sharebar-global
-###sharebar-inner-top-sticky
 ###sharebar-side
 ###sharebar-sticky-oas
 ###sharebar-wrapper
@@ -2376,12 +2091,10 @@ _twitter_follow.
 ###sharemark
 ###shareme
 ###shareme-nav
-###sharemenu-wrap
 ###shareplus
 ###shareplus_overlay
 ###shareplus_sticker
 ###sharepost
-###sharepost_willsong
 ###sharer
 ###sharer-box
 ###sharer-toggle
@@ -2487,10 +2200,7 @@ _twitter_follow.
 ###sm-share-cnt
 ###sm_follow_us
 ###sm_share
-###smartsharing-left
-###smj-sharebar-vertical
 ###smthemes_share
-###snashareLink
 ###sns-btn
 ###snsBlockArea
 ###snsFollow
@@ -2498,10 +2208,6 @@ _twitter_follow.
 ###snsWrapperTop
 ###sns_bar
 ###sns_btns
-###so-share
-###socailBarComponentDiv_page
-###socailfootericon
-###sociactionsb
 ###social-2
 ###social-actions
 ###social-aside
@@ -2559,7 +2265,6 @@ _twitter_follow.
 ###social-followers-group
 ###social-foot
 ###social-footer
-###social-gplus
 ###social-grid-container
 ###social-head
 ###social-header
@@ -2577,7 +2282,6 @@ _twitter_follow.
 ###social-like-us
 ###social-link
 ###social-link-menu
-###social-linkedin32x32
 ###social-links
 ###social-links-big
 ###social-links-bottom
@@ -2589,13 +2293,8 @@ _twitter_follow.
 ###social-links-top
 ###social-links-twitter
 ###social-loop
-###social-louis
-###social-lyrics
-###social-media-activity
 ###social-media-bar
 ###social-media-bar-h
-###social-media-block-bottom-entry
-###social-media-block-top-entry
 ###social-media-box
 ###social-media-footer
 ###social-media-header
@@ -2677,7 +2376,6 @@ _twitter_follow.
 ###social-subscribe-search
 ###social-tabs
 ###social-text
-###social-toolbar
 ###social-toolbox
 ###social-tools-bottom-container
 ###social-tools-panel
@@ -3980,6 +3678,7 @@ _twitter_follow.
 ##.article_shares_mobile
 ##.article_sharing
 ##.article_social
+##.article_social_share
 ##.article_social_sharing_box
 ##.article_social_wrap
 ##.article_socials
@@ -4370,6 +4069,7 @@ _twitter_follow.
 ##.boxSocial
 ##.box_ShareContent
 ##.box_condivisione
+##.box_followme
 ##.box_msg_social
 ##.box_social
 ##.box_social_media
@@ -5351,6 +5051,7 @@ _twitter_follow.
 ##.facebookshare
 ##.facebookshare_div
 ##.facewrapper
+##.fastsocialshare_container
 ##.fb-activity-module
 ##.fb-activity-widget
 ##.fb-cont
@@ -6808,6 +6509,7 @@ _twitter_follow.
 ##.js-sc-share-button
 ##.js-sd-social
 ##.js-selection-twitter
+##.js-share-article
 ##.js-share-body
 ##.js-share-btn
 ##.js-share-button
@@ -6869,6 +6571,7 @@ _twitter_follow.
 ##.jssocials-share-pinterest
 ##.jssocials-shares
 ##.juiz_sps_item
+##.jupiterx-social-share-wrapper
 ##.jw-button-share
 ##.jw-settings-sharing
 ##.jw-sharing-dock-btn
@@ -7371,6 +7074,7 @@ _twitter_follow.
 ##.meta-share-bottom
 ##.meta-share-count
 ##.meta-share-expand
+##.meta-share-post-social-header
 ##.meta-share-top
 ##.meta-share-wrapper
 ##.meta-shares
@@ -9362,15 +9066,11 @@ _twitter_follow.
 ##.shares__item
 ##.shares_icon
 ##.shares_tally
-##.sharescoopit
-##.shareseo_liked
-##.sharesheet__toggle
 ##.sharesocial
 ##.sharesocials
 ##.sharetags
 ##.sharetastic
 ##.sharetext
-##.sharethefacts-share-button
 ##.sharethis
 ##.sharethis-bar
 ##.sharethis-bottom
@@ -9618,6 +9318,7 @@ _twitter_follow.
 ##.single-fb-share
 ##.single-item-share
 ##.single-meta-sharing
+##.single-post-meta-data__social-sharing
 ##.single-post-share
 ##.single-post-share-box-container
 ##.single-post-sharing-button
@@ -10490,7 +10191,6 @@ _twitter_follow.
 ##.social-to
 ##.social-toggle
 ##.social-tool
-##.social-toolbar
 ##.social-toolbar__wrap
 ##.social-tools-additional
 ##.social-tools-bottom
@@ -11354,8 +11054,6 @@ _twitter_follow.
 ##.story-tool-share
 ##.story-tools-social
 ##.story-top-social
-##.storySocial_lng
-##.storySocial_short
 ##.story__share
 ##.story__social
 ##.story_allsocial
@@ -11492,6 +11190,7 @@ _twitter_follow.
 ##.td-social-sharing
 ##.td-social-sharing-button
 ##.td-social-wrap
+##.td_block_social_counter
 ##.td_shareus
 ##.td_social_counter
 ##.td_social_type
@@ -12056,19 +11755,10 @@ _twitter_follow.
 ##.vf-share-icon
 ##.vf-share-option
 ##.vf-share-options
-##.vfa-f2-social-icons
 ##.vgc-social
-##.vgtrk-bar-social-wrap
-##.vgtrk_soc_links
-##.vhb-c-social-media
-##.vhb-page-navigation-social
-##.vhb-share-social-media-button
 ##.vhs-social
 ##.vidSocialBar
 ##.video--share
-##.video-clip-social-buttons
-##.video-clip-social-buttons-fb-like
-##.video-details__show-buttons-cta-youtube
 ##.video-page-social
 ##.video-share
 ##.video-share-b
@@ -12083,17 +11773,8 @@ _twitter_follow.
 ##.video_share_item
 ##.video_share_tools
 ##.videofull__share
-##.view-collection-social-media-promo
-##.view-kde-social-page
 ##.view_share
-##.viewer__sharing
-##.viewer__sharing__item
-##.viewer__sharing__items
 ##.views-field-addtoany-share-2
-##.villatheme_social_links
-##.vip__share-panel
-##.viral-button-pinterest
-##.viralShare
 ##.vjs-facebook
 ##.vjs-icon-share
 ##.vjs-share-block
@@ -12134,12 +11815,7 @@ _twitter_follow.
 ##.vshare
 ##.vuukle-powerbar
 ##.vuukle-powerbar-vertical
-##.vxp-share__channel-link
 ##.w-button-social
-##.w-content-details-article-extra-sharing
-##.w-content-details-sharing
-##.w-icon-share-facebook
-##.w-icon-share-twitter
 ##.w-share
 ##.w-shareontwitter
 ##.w-sharing
@@ -12555,6 +12231,7 @@ _twitter_follow.
 ##a[href^="https://simpleshare.io/go?"]
 ##a[href^="https://t.me/share/url?"]
 ##a[href^="https://telegram.me/share/url?"]
+##a[href^="https://twitter.com/intent/tweet?"]
 ##a[href^="https://wa.me/?text="]
 ##a[href^="https://www.buttons.social/share/#"]
 ##a[href^="https://www.facebook.com/dialog/feed?"]
@@ -12634,6 +12311,7 @@ _twitter_follow.
 ##.feature > #tell-a-friend
 ! -------------------------Third-party blocking rules--------------------------!
 ! *** easylist:fanboy-addon/fanboy_social_thirdparty.txt ***
+! fanboy_social_thirdparty.txt
 ||addnow.com^$third-party
 ||addthis.com^$third-party
 ||addthiscdn.com^$domain=~addthis.com
@@ -12672,6 +12350,7 @@ _twitter_follow.
 ||facebook.com/widgets/recommendations.php?$third-party
 ||facebook.com^*/plugins/like.php?$third-party
 ||facebook.com^*/plugins/page.php?$third-party
+||facebook.com^*/plugins/share_button.php?$third-party
 ||fark.com^$script,third-party
 ||feedly.com/img/follows/$third-party
 ||figshare.com^$third-party
@@ -12779,15 +12458,18 @@ _twitter_follow.
 ||zextit.com/partners/$third-party
 ! --------------------------Specific blocking filters--------------------------!
 ! *** easylist:fanboy-addon/fanboy_social_specific_block.txt ***
+! fanboy_social_specific_block.txt
 ||ipaddress.com/shariff/
 ||naturalnews.com/getviews2.
 ||people.com.cn/img/2020fenxiang/
 ! ------------------------Specific element hiding rules------------------------!
 ! *** easylist:fanboy-addon/fanboy_social_specific_hide.txt ***
+! fanboy_social_specific_hide.txt
 artistdirect.com###FollowBut
 iflscience.com###FollowOnGoogleNewsBtn
 c-sharpcorner.com###IconContainer
 catholicculture.org###SM_area
+amazon.ae,amazon.ca,amazon.cn,amazon.co.jp,amazon.co.uk,amazon.com,amazon.com.au,amazon.com.be,amazon.com.br,amazon.com.mx,amazon.com.tr,amazon.de,amazon.eg,amazon.es,amazon.fr,amazon.in,amazon.it,amazon.nl,amazon.pl,amazon.sa,amazon.se,amazon.sg###Share
 url-encode-decode.com###ShareModal
 hakone-japan.com###SideSocial
 molecularrecipes.com###Social
@@ -12797,6 +12479,7 @@ torrentsafe.com###addthisimage
 9to5google.com,9to5mac.com,dronedj.com,electrek.co###after_disclaimer_placement
 physics.aps.org###aps-share-widget
 houstonpublicmedia.org###article-share
+theepochtimes.com###article-share-it-now
 scoop.co.nz###article-tools
 dailymail.co.uk###articleIconLinksContainer
 fnlondon.com###article_tools
@@ -12894,6 +12577,7 @@ lethbridgenewsnow.com###social-share-icons
 lasvegassun.com###socialSidebar
 theepochtimes.com###social_share_widget
 salon.com###social_total
+pastebin.pl###socials
 spiked-online.com###spikedShareBar
 thejournal.ie###sticky-share-button-redesign
 democracynow.org###story_social
@@ -12929,6 +12613,7 @@ embed.listcorp.com##.CompanyPage2CompanyPageAbout__share
 nutraingredients-asia.com,nutraingredients-latam.com,nutraingredients-usa.com,nutraingredients.com##.Detail-share
 federalnewsnetwork.com##.Entry-infoSocial
 nutraingredients-asia.com,nutraingredients-latam.com,nutraingredients-usa.com,nutraingredients.com##.Follow
+earth.com##.Footer_social_bar__E9yGn
 coingape.com##.GoogleFollws
 gadgetsnow.com##.KkbaU
 thecity.nyc##.Navigation-items-social
@@ -12977,6 +12662,7 @@ wionews.com##.article-share-data
 freebeacon.com##.article-share-icons
 babylonbee.com,notthebee.com##.article-shareables
 forbes.com,phillyvoice.com##.article-sharing
+forexlive.com##.article-slot__socials
 newrepublic.com##.article-social
 heraldscotland.com##.article-sticky-social
 dailystar.com.lb,eurekalert.org##.article-tools
@@ -12986,7 +12672,9 @@ techcrunch.com##.article__floating-wrap
 english.nv.ua##.article__footer__additional_share
 u.today##.article__gnews
 rt.com##.article__google-news
+armeniasputnik.am,spnfa.ir,sputnik-abkhazia.info,sputnik-georgia.com,sputnik-ossetia.com,sputnik.af,sputnik.az,sputnik.by,sputnik.kg,sputnik.kz,sputnik.tj,sputnikarabic.ae,sputnikglobe.com,sputniknews.africa,sputniknews.cn,sputniknews.com,sputniknews.com.tr,sputniknews.in,sputniknews.jp,sputniknews.lat,sputniknews.ru,sputniknews.uz,sputniknews.vn,sputniknewsbr.com.br,sputnikportal.rs##.article__news-services-subscribe
 wnep.com##.article__sharing
+greenbuildingadvisor.com##.article__social
 news18.com##.article_bnow
 salemnews.net##.article_details_icons
 news18.com##.article_follow_1
@@ -13006,6 +12694,7 @@ dezeen.com##.badges
 butwhytho.net##.bam-topbar-social
 dxomark.com##.banner
 beebom.com##.beebom-social-share
+firstpost.com##.bg-mail
 beincrypto.com##.bg-primary-blue
 libdems.org.uk##.bg-twitter
 military.com##.block--addtoanyadv
@@ -13020,22 +12709,26 @@ butwhytho.net##.bm-social-sharing
 9to5linux.com##.bm-social-top
 breitbart.com##.bnn-social-share
 crn.com##.border-all-mid-gray-rounded
+cardiff.ac.uk##.box-services
 bangkokpost.com##.boxnav--social
 purewow.com##.btn--email
 insidethegames.biz##.btn-block.btn
 purewow.com##.btn-classic
 devdiscourse.com##.btn-connect
 newsroom.co.nz##.btn-email
-agrimag.co.za,automart.co.za##.btn-facebook
+agrimag.co.za,androidpolice.com,automart.co.za##.btn-facebook
 androidpolice.com##.btn-flipboard
 equinix.com##.btn-group
 psu.edu##.btn-link
+androidpolice.com##.btn-linkedIn
 androidpolice.com,cbr.com,collider.com,dualshockers.com,gamerant.com,howtogeek.com,makeuseof.com,movieweb.com,pocketnow.com,thegamer.com,thetravel.com,xda-developers.com##.btn-mail
+androidpolice.com##.btn-reddit
 junkmail.co.za##.btn-sm
 thetyee.ca##.btn-social-icon
 newsroom.co.nz##.btn-tweet
-agrimag.co.za,androidpolice.com,automart.co.za,maketecheasier.com##.btn-twitter
+agrimag.co.za,automart.co.za,maketecheasier.com##.btn-twitter
 agrimag.co.za,androidpolice.com,automart.co.za##.btn-whatsapp
+androidpolice.com##.btn-x
 unz.com##.button-holder
 healthline.com##.button-wrapper
 livescience.com##.buttons-social
@@ -13061,6 +12754,7 @@ u.today##.card__subscribe
 androidpcreview.com##.cb__share-box
 cgdirector.com##.cgd-social-wrapper
 progressive.org##.chicklets
+thecinemaholic.com##.cinemaholic-share
 khmertimeskh.com##.cisc-box
 financialexpress.com##.click-event-telegrame
 businesstoday.in##.cmp_shr_btn
@@ -13069,6 +12763,7 @@ thenationalpulse.com##.code-block-3
 thenationalpulse.com##.code-block-8
 neatorama.com##.col-4
 sciencenorway.no##.color_mobile_bg-forskersonen-primary
+stuff.co.nz##.comment-and-share
 usatoday.com##.component--shareline
 goal.com##.component-share
 goal.com##.component-social-twitter
@@ -13090,6 +12785,7 @@ columbian.com##.cta
 ithinkdiff.com##.custom-html-widget
 therighthairstyles.com##.custom-pinterest-wrap
 similarweb.com##.data-we-share
+cracked.com##.desktop-controls
 ubisoft.com##.desktop-only
 sbs.com.au##.dfIqLC
 strategic-culture.org##.dk-social__items
@@ -13126,6 +12822,7 @@ bearingarms.com,hotair.com,redstate.com##.fb-social
 abajournal.com,buddytv.com,comingsoon.net,elektronista.dk,gospelway.com,gpforums.co.nz,masslive.com,mlive.com,modamee.com,searchengineland.com,shocktillyoudrop.com,topsecretwriters.com##.fb_iframe_widget
 foodbeast.com##.fdbst-share-button
 sacurrent.com##.fdn-icon-button-smaller
+phoenixnewtimes.com##.fdn-site-header-social-icons
 eadaily.com##.feed
 straitstimes.com##.field-name-telegram
 peepingmoon.com##.fixed-action-btn
@@ -13136,7 +12833,6 @@ thehackernews.com##.float-share
 billionaireimmo.com##.floating-buttons
 nypost.com##.floating-share
 nypost.com##.floating-share-wrap
-firstpost.com##.floating-social-div
 thehackernews.com##.follow-box
 businesstech.co.za,mybroadband.co.za##.follow-buttons
 ctrl.blog,ein-herz-fuer-kinder.de##.follow-container
@@ -13144,6 +12840,7 @@ indiatvnews.com##.follow-google
 autocarindia.com##.follow-google-news-p
 grubstreet.com##.follow-list
 opendemocracy.net##.follow-od
+amoledo.com##.follow-please
 gptoday.net##.follow-section
 thetablet.co.uk##.follow-the-tablet
 alarabiya.net,ausgamers.com,cloudwards.net,notateslaapp.com,republicworld.com,timeslive.co.za,trueachievements.com##.follow-us
@@ -13157,6 +12854,7 @@ moviemistakes.com##.followbuttons
 zimbabwesituation.com##.followdesktop
 rbth.com##.follows-channel
 telegraphindia.com##.followusbox
+thejc.com##.foot__socials
 dot.la##.foot_bar
 dot.la##.foot_social
 leisurewheels.co.za##.footer-column-3
@@ -13169,6 +12867,7 @@ f1i.com##.footer-right
 tampabay.com##.footer-segment-bottom__social-list
 myanimelist.net##.footer-social-media
 rightstufanime.com##.footer-social-nav
+averagelinuxuser.com##.footer-svg-icons
 goingawesomeplaces.com##.footer-widgets
 cfl.ca##.footer1
 loewe.tv##.footerIcons
@@ -13217,8 +12916,11 @@ tilifony.com##.header_google_button
 tilifony.com##.header_twitter_button
 touristspy.com##.heateor_sss_follow_icons_container
 total-croatia-news.com##.helix-social-share
+firstpost.com##.home
 manutd.com##.home-content-panel__details-social__main-holder
 apa.org##.horizontal-icon-bar
+noisypixel.net##.hw-el-share
+noisypixel.net##.hw-toolbar-navplus
 dictionary.cambridge.org##.i-facebook
 dictionary.cambridge.org##.i-twitter
 classicalite.com##.ic_bt
@@ -13234,7 +12936,8 @@ informationisbeautiful.net##.iib-viz-section--share
 designcurial.com##.image-tools
 olympics.com##.indexstyles__SocialMedia-sc-1np4juy-1
 theinertia.com##.inertia-social-ad
-inews.co.uk##.inews__post-byline__share
+inews.co.uk##.inews__footer__menus__icons
+inews.co.uk##.inews__post-share
 ebay.co.uk,ebay.com.au##.info > .share
 labiotech.eu##.inline-block.space-y-8
 themessenger.com##.inline-flex
@@ -13305,8 +13008,11 @@ chess.com##.navigation-footer-platforms-component
 newsbusters.org##.nb-twitter-block
 ncaa.com##.ncaa-share-hanger
 nerdist.com##.nerdist-social-share
+taiwebs.com##.networking
+thepostmillennial.com##.networks
 screenshot-media.com##.new-home-banner
 aimp.ru##.news_story > div
+nfl.com##.nfl-c-article__share-bar
 news18.com##.nhsocial
 nist.gov##.nist-social__wrapper
 trendy.letudiant.fr##.nl-social
@@ -13336,11 +13042,12 @@ audacy.com##.podcast-lead__social
 thefinance.sg##.popup
 tsunagujapan.com##.post-article_sns
 theashleysrealityroundup.com##.post-links
-earthsky.org##.post-share
+earthsky.org,gidhaur.com##.post-share
 aceshowbiz.com##.post-share-area
 rockstarintel.com##.post-share-float
 foodandwaterwatch.org,publicbooks.org##.post-social-share
 blockclubchicago.org##.post-social-sharing__list
+bnnbreaking.com##.post__share-block
 eurointegration.com.ua##.post__social
 cointelegraph.com##.post__socials-block
 captainaltcoin.com,celebritycruises.com##.post_share
@@ -13368,10 +13075,12 @@ sabcsport.com##.sabc_footer_btm_social
 sabcsport.com##.sabc_social_box
 alaskahighwaynews.ca,bowenislandundercurrent.com,burnabynow.com,coastreporter.net,cochraneeagle.ca,delta-optimist.com,lakelandtoday.ca,moosejawtoday.com,mountainviewtoday.ca,newwestrecord.ca,nsnews.com,piquenewsmagazine.com,princegeorgecitizen.com,prpeak.com,richmond-news.com,rmoutlook.com,squamishchief.com,stalbertgazette.com,theorca.ca,timescolonist.com,tricitynews.com,vancouverisawesome.com,westernwheel.ca##.sc
 sasktoday.ca##.sc-expanded
+radio-canada.ca##.sc-sa6od2-0
 shopclues.com##.sc_socialconnection
 oracle.com##.scl-icons
 cars.com##.sds-social-share
 frieze.com,newsroom.unsw.edu.au##.service-links
+midasbuy.com##.set-bottom-footer
 mpost.io##.sfsi_centered_icon
 nationaldaycalendar.com##.sfsiplus_inerCnt
 bravotube.net##.sh
@@ -13379,7 +13088,7 @@ skinnyms.com,texasmonthly.com##.share-article
 rpgfan.com##.share-bar
 buzzfeed.com##.share-bar_buzzfeed___uZ4R
 beincrypto.com##.share-block
-scientificamerican.com##.share-box
+calcioefinanza.it,news-medical.net,scientificamerican.com##.share-box
 ibtimes.co.in##.share-btn-wrp
 tastecooking.com##.share-button
 apptrigger.com##.share-capture
@@ -13393,7 +13102,7 @@ mymodernmet.com##.share-it-side
 thenationalpulse.com##.share-layout-stack
 nymag.com,thisismoney.co.uk##.share-link
 thenewstack.io##.share-media
-fintech.tv##.share-news
+fintech.tv,war.ukraine.ua##.share-news
 ig.com.br,rebelnews.com##.share-page
 commondreams.org,spectrum.ieee.org##.share-panel
 aajtak.in,gnttv.com,indiatoday.in,indiatodayne.in##.share-social-icons
@@ -13460,7 +13169,7 @@ cinenews.be##.social-line
 businesspost.ie##.social-links-wrapper
 denofgeek.com##.social-links__anchor--sharing
 securityaffairs.com,trtworld.com,watchesbysjx.com##.social-media
-gamingbolt.com##.social-media-container
+cyberdaily.au,gamingbolt.com##.social-media-container
 outlookindia.com,pgpf.org##.social-media-icons
 defenseone.com##.social-media-icons-container
 knowablemagazine.org,ucl.ac.uk##.social-media-links
@@ -13468,16 +13177,17 @@ knowablemagazine.org,ucl.ac.uk##.social-media-links
 trumparea.com##.social-media-top
 mg.co.za##.social-meks
 insideclimatenews.org,joblo.com##.social-menu
+birdsandblooms.com,familyhandyman.com,rd.com,tasteofhome.com,thehealthy.com##.social-menu-desktop
 steveharveyfm.com##.social-network-icons
 businessinsider.in##.social-panel-rgt
 facethefactsusa.org##.social-profiles
 businesstech.co.za##.social-section
-coindesk.com##.social-share
+coindesk.com,crn.com##.social-share
 iflscience.com##.social-share-elements
 nashvillescene.com,stltoday.com##.social-share-links
 thenationalnews.com##.social-share-rail__sticky
 rappler.com##.social-share__actions
-byjus.com,maxabout.com,news24.com,politico.eu##.social-sharing
+byjus.com,malaymail.com,maxabout.com,news24.com,politico.eu,thepostmillennial.com##.social-sharing
 officialcharts.com##.social-sharing-bar
 trip101.com##.social-sharing-sidebar
 mintpressnews.com,online-tech-tips.com##.social-signup
@@ -13488,6 +13198,7 @@ politico.com##.social-tools__list
 mmorpg.com##.social-web
 gnttv.com##.social-widget
 dailymail.co.uk##.socialContainer-1Yly1
+relationshiphero.com##.socialIcons
 macrumors.com##.socialMedia--3i9tSnAb
 tech.hindustantimes.com##.socialWidgets
 faithwire.com##.social__buttons
@@ -13512,7 +13223,9 @@ today.rtl.lu##.socialbar
 bidorbuy.co.za##.socialnetwork
 tecmint.com##.socialprofiles
 blog.resy.com##.socials2
+ntvkenya.co.ke##.socials_bar
 traveltriangle.com##.socialshare_box
+citizen.digital##.socilamedia-share-btns
 mpost.io##.space-footer-top-soc
 bingehulu.com##.spc-social-follow
 total-croatia-news.com##.sppb-addon-social-media
@@ -13535,31 +13248,36 @@ futurity.org##.sticy-share-block
 bqprime.com##.story-base-template-m__share-floating-expanded__1E6W0
 aetv.com,wccftech.com##.story-share
 wccftech.com##.story-share-bottom
-etonline.com##.story__links
+stuff.co.nz##.stuff-article-sharebar
 barrons.com##.style--save-and-share-container--KMiFF4od
 methodshop.com##.style-mai-share
+thecollegefix.com##.styled-social-box
 aeon.co##.styled__Container-sc-19sp5ho-0
 nationalheraldindia.com##.styles-m__sticky-social-share__fJQ4J
 patch.com##.styles_SocialShare__lQpUq
+firstpost.com##.subcrbe_btn
 todayonline.com##.subcription-two
 npr.org,symmetrymagazine.org,thefinance.sg,topbet.eu##.subscribe
 jasonwatmore.com##.subscribe-buttons
 newsandguts.com##.subscribeBar
 techweekmag.com##.supersharer
+locals.com##.support-now
 arigatojapan.co.jp##.swp-hover-pin-button
 elements.visualcapitalist.com,marktechpost.com##.swp_social_panel
 echonewshub.com,jugomobile.com##.t-shared-sec
 okgoals.com##.tabrow
 gamingbolt.com##.tag-social-media
 thediplomat.com##.td-follow
-techgenyz.com##.td-post-sharing
+jewishpress.com,techgenyz.com##.td-post-sharing
 opindia.com##.tdi_134
 carnewschina.com##.tds-button
 tecmint.com##.tecmint-float-social-wrapper
 asiaone.com##.telegram-share-wrapper
 insidebitcoins.com##.telegrame_cta_content
 decrypt.co##.text-neutral-700
+twitchy.com##.thm-sc
 chinadaily.com.cn##.three-right
+stuff.co.nz##.tik4-sharing
 ncaa.com##.tile-follow
 30seconds.com##.tip-share
 techlila.com##.tl-social
@@ -13599,7 +13317,9 @@ euractiv.com##.vsac-social-reddit
 euractiv.com##.vsac-social-twitter
 amgreatness.com##.w-full.mb-10
 ctrl.blog##.webshare
+firstpost.com##.whats-app-desc
 getthetechnow.com##.whatsapp
+business-standard.com##.whtsppchannle
 bingehq.com##.widget-social-b
 madinamerica.com##.widget_a2a_share_save_widget
 fandomwire.com##.widget_bimber_widget_facebook_page
@@ -13610,6 +13330,7 @@ vgleaks.com##.widget_et_social_followers
 mediapost.com##.widget_group
 mobilemarketingreads.com##.widget_media_image
 411mania.com##.widget_sm411_widget
+fandom.com##.wikia-bar-anon
 telesurenglish.net##.wpRedesFoot
 butterwithasideofbread.com##.wprm-call-to-action
 manhwatop.com##.wrap_social_account
@@ -13617,9 +13338,13 @@ coinspeaker.com##.wrapp_aside-share
 spring.org.uk##.yasip.widget
 application-remuneratrice.com##.zd-social
 wdwmagic.com##.zocial
+retbit.com##.zox-post-soc-scroll-out
+retbit.com##.zox-post-soc-stat
 footwearnews.com,indiewire.com##[class^="_socialMedia_"]
 motortrend.com##[data-c="social-share"]
 sundayworld.com##[data-testid="article-share"]
+dw.com##[data-tracking-name="footer-section-social-media"]
+dw.com##[data-tracking-name^="sharing-icons-"]
 eteknix.com##[href="https://bit.ly/39WhWFF"]
 eteknix.com##[href="https://bit.ly/3pozgtL"]
 eteknix.com##[href="https://bit.ly/3qLFns9"]
@@ -13632,17 +13357,20 @@ colourlovers.com##a.mr-10.left > [src]
 telekom.com##a[title="Share"]
 invezz.com##button[data-sharer]
 lonelyplanet.com##button[data-taggyid]
+fifa.com##div[class*="article-section_shareButton_"]
 theatlantic.com##div[class^="ArticleShare_"]
 cnbc.com##div[class^="SocialShare-"]
 wired.com##div[class^="StickyBoxWrapper"]
 bloomberg.com##div[class^="share-article-button_"]
 newsday.com##div[class^="share-tools"]
+editorji.com##div[class^="share-widget_"]
 today.com##div[class^="share_"]
 barandbench.com##div[class^="social-share-"]
 thisismoney.co.uk##div[class^="socialContainer-"]
 cpr.org,technologyreview.com##div[class^="socialList_"]
 reuters.com##div[class^="social__container_"]
 psyche.co##div[class^="styled__SocialLinks-"]
+semafor.com##div[class^="styles_shareWrapper_"]
 cheddar.com##div[class^="video__share_"]
 abc.net.au##div[data-component="ShareUtility"]
 artforum.com##div[data-component="social-media"]
@@ -13653,33 +13381,33 @@ skeptoid.com##td > .nomobile
 gmx.net##ui-social
 dailymail.co.uk,thisismoney.co.uk##ul[class^="linksHolder-"]
 ! ! .share-links
-ansa.it,cryptopotato.com,eff.org,ewn.co.za,hannity.com,jurist.org,menselijklichaam.nl,mobilesyrup.com,mole24.it,sampdoria.it,upcomingvinyl.com,vivercomsaude.site##.share-links
+ansa.it,cryptopotato.com,eff.org,ewn.co.za,hannity.com,jurist.org,lagaceta.com.ec,menselijklichaam.nl,mobilesyrup.com,mole24.it,sampdoria.it,upcomingvinyl.com,vivercomsaude.site##.share-links
 ! ! .share-buttons
-adressa.no,alwatanvoice.com,apk4free.org,auto-moto.com,criminaljusticedegreehub.com,datingscammer.info,design-milk.com,diariolasamericas.com,diariouno.com.ar,ff-bz.com,gamosaurus.com,investigativepost.org,letrap.com.ar,mediaplaynews.com,metro.co.uk,nbcbayarea.com,nbcboston.com,nbcchicago.com,nbcconnecticut.com,nbcdfw.com,nbclosangeles.com,nbcmiami.com,nbcnewyork.com,nbcphiladelphia.com,nbcsandiego.com,nbcwashington.com,necn.com,olhardigital.com.br,psychologies.com,psychologytoday.com,robbreport.com,spy.com,telemundo20.com,telemundo31.com,telemundo33.com,telemundo40.com,telemundo47.com,telemundo48elpaso.com,telemundo49.com,telemundo51.com,telemundo52.com,telemundo62.com,telemundoareadelabahia.com,telemundoarizona.com,telemundochicago.com,telemundodallas.com,telemundodenver.com,telemundofresno.com,telemundohouston.com,telemundolasvegas.com,telemundonuevainglaterra.com,telemundonuevomexico.com,telemundopr.com,telemundosanantonio.com,telemundoutah.com,telemundowashingtondc.com,tenor.com,vlaamskijken.nl##.share-buttons
+adressa.no,alwatanvoice.com,apk4free.org,auto-moto.com,bank.gov.ua,criminaljusticedegreehub.com,datingscammer.info,design-milk.com,diariolasamericas.com,diariouno.com.ar,exputer.com,ff-bz.com,gamosaurus.com,investigativepost.org,letrap.com.ar,mediaplaynews.com,metro.co.uk,nbcbayarea.com,nbcboston.com,nbcchicago.com,nbcconnecticut.com,nbcdfw.com,nbclosangeles.com,nbcmiami.com,nbcnewyork.com,nbcphiladelphia.com,nbcsandiego.com,nbcwashington.com,necn.com,olhardigital.com.br,pastebin.pl,psychologies.com,psychologytoday.com,robbreport.com,spy.com,telemundo20.com,telemundo31.com,telemundo33.com,telemundo40.com,telemundo47.com,telemundo48elpaso.com,telemundo49.com,telemundo51.com,telemundo52.com,telemundo62.com,telemundoareadelabahia.com,telemundoarizona.com,telemundochicago.com,telemundodallas.com,telemundodenver.com,telemundofresno.com,telemundohouston.com,telemundolasvegas.com,telemundonuevainglaterra.com,telemundonuevomexico.com,telemundopr.com,telemundosanantonio.com,telemundoutah.com,telemundowashingtondc.com,tenor.com,vlaamskijken.nl##.share-buttons
 ! ! .ActionBar
 aboutamazon.co.uk,aboutamazon.com,aboutamazon.de,aboutamazon.it,adn40.mx,chronicle.com,deseret.com,iowapublicradio.org,laist.com,nepm.org,suntimes.com,tvazteca.com,washingtonexaminer.com,wgbh.org##.ActionBar
 ! ! .social
-12tomatoes.com,20minutes.fr,20minutos.es,6abc.com,a2tv.com.tr,abc11.com,abc13.com,abc30.com,abc7.com,abc7chicago.com,abc7news.com,abc7ny.com,abola.pt,affaritaliani.it,africa1.com,agrositio.com.ar,aica.org,al-ain.com,al-akhbar.com,al-shabaka.org,al-sharq.com,alaqsavoice.ps,albaceteabierto.es,albawabhnews.com,algemeiner.com,alligator-sunglasses.com,allkpop.com,altoadige.it,amicidicasa.it,angeloparodi.it,angolotesti.it,apkmb.com,armageddonexpo.com,aruba.it,assopoker.com,atv.com.tr,atv.hu,auto.it,autofoco.pt,avira.com,avivaitalia.it,az.com.na,aztesti.it,badtaste.it,banca5.com,bancaprivataleasing.it,beatsbydre.com,bet.com,bioisotherm.it,bleacherreport.com,bnr.nl,bobvila.com,borsadelcredito.it,boursier.com,budapester.hu,businessinsider.com,businessinsider.de,businesslive.co.za,businesstoday.in,c-span.org,calcionapoli1926.it,carmagazine.co.uk,caustica.co,cdt.ch,centerblog.net,chimeraos.org,cielotv.it,cipiacecucinare.it,cittaceleste.it,cityam.com,clarin.com,classicalite.com,classifieds.co.zw,clearancejobs.com,clm21.es,cmt.com,cmu.edu,cnnindonesia.com,collectorsweekly.com,comicbook.com,comicbookmovie.com,conjur.com.br,coopcasarsa.it,corriere.it,corrierecomunicazioni.it,courrierinternational.com,creditosportivo.it,dagospia.com,dailymaverick.co.za,dailysignal.com,damndelicious.net,dastelefonbuch.de,deabyday.tv,debate.com.mx,deepsilver.com,democracynow.org,dequo.it,derbyderbyderby.it,dererker.it,dhakacourier.com.bd,diariodelweb.it,diarioti.com,dispatchlive.co.za,doctissimo.fr,dpreview.com,dr.com.tr,dunsguide.co.il,ecranlarge.com,elconsolto.com,elmundofinanciero.com,elvenar.com,entywbas.com,epicgames.com,err.ee,estrelando.com.br,estrellatv.com,etcanada.com,eurogamer.it,euronics.it,europages.cn,europages.co.hu,europages.dk,europages.ee,europages.es,europages.eu,europages.fi,europages.fr,europages.gr,europages.hk,europages.it,europages.lt,europages.lv,europages.nl,europages.pl,europages.se,europages.si,europapress.es,europe1.fr,eurospin.it,fakartany.com,fantamagazine.com,fcinter1908.it,fiercewireless.com,filmitalia.org,finanzaonline.com,fivebooks.com,fm-world.it,fmglobal.com,forbes.ru,formulatv.com,forzaroma.info,foxcharleston.com,gamergen.com,gay.it,gazzetta.it,gazzettaregionale.it,gedidigital.it,gediwatch.it,giornaledibrescia.it,giornaletrentino.it,globalist.it,gmx.com,gmx.fr,goldenline.pl,golssip.it,grandhotel-et-des-palmes.com,greencarreports.com,grostracteurspassion.com,gse.it,guardian.ng,guildwars2.com,gulfstream.com,gunviolencearchive.org,haber7.com,hannibaltv.com.tn,hawaii.com,hdmotori.it,healthychild.org,hellas1903.it,hellogiggles.com,heraldlive.co.za,hispanidad.com,howtogeek.com,html.it,hub.jhu.edu,hvg.hu,ibtimes.co.in,idiva.com,ildolomiti.it,ilgiornale.it,iliketomakestuff.com,ilmilanista.it,ilpost.it,ilposticipo.it,ilsole24ore.com,ilsussidiario.net,imadrassa.com,impresspages.org,indiatvnews.com,indypendent.org,infomotori.com,informador.mx,infosat.de,infoworld.com,inmoto.it,insideedition.com,insider.com,interior-news.com,iol.pt,irannewsdaily.com,islamweb.net,isprime.com,istat.it,italiaoggi.it,itasportpress.it,ivid.it,jamescoyle.net,jeep.co.nz,jeu.video,journaldugeek.com,juvenews.eu,kabeleins.de,kataweb.it,klassikradio.de,knack.be,korben.info,lacivertdergi.com,ladepeche.fr,lapressa.it,laprovinciadivarese.it,lasicilia.it,latvija.lv,lavozdeltajo.com,leboncoin.fr,ledevoir.com,legacoop.coop,lemondeinformatique.fr,leseclaireuses.com,lethbridgeherald.com,liberoquotidiano.it,libertaddigital.com,libremercado.com,linkiesta.it,lorientlejour.com,luinonotizie.it,madanichannel.tv,mader.bz.it,madridiario.es,magnoliatv.it,marketingtribune.nl,marvel.com,masterinvestor.co.uk,mdspa.it,mediagol.it,medicinehatnews.com,mediocredito.it,medisite.fr,meetingrimini.org,metropol.hu,mikronis.hr,milanofinanza.it,misk.tn,mk.ru,mobileapk.info,mobilenews.jp,monacomatin.mc,mondaymag.com,mondoudinese.it,moneyversed.com,monovolume.cc,monthlyreview.org,moto.it,motonline.com.br,motorionline.com,moviechat.org,mtv.it,mumbrella.com.au,myevreview.com,naturalborngamers.it,neowin.net,nintendolife.com,notiziecalciomercato.eu,nplusonemag.com,ntdtv.com,numericalcio.it,nzgeo.com,nzx.com,odia.ig.com.br,olivetti.com,omdb.org,omnialyrics.it,oo-software.com,opendns.com,opinione.it,ornews.it,ox.ac.uk,padovasport.tv,paginasamarillas.es,paginasiete.bo,pap.pl,pauta.cl,pentapostagma.gr,petitfute.com,petrolicious.com,peugeot.de,phanteks.com,phonearena.com,pianetamilan.it,pneusnews.it,pokernews.com,portaldotransito.com.br,professionearchitetto.it,proiezionidiborsa.it,prosieben.de,protonvpn.com,publico.es,publish0x.com,purexbox.com,pushsquare.com,qualcomm.com,qualenergia.it,quice.it,radbox.me,radio.cz,radiocitymilano.it,radionacional.com.ar,radioorient.com,ran.de,raya.ps,razon.com.mx,red-buzz.com,regione.piemonte.it,register724.com,renaultsport.com,republikein.com.na,responsibility.org,retailmenot.com,rickey.org,rmcsport.net,rollingstone.it,roncadin.it,ropeofsilicon.com,rossopomodoro.it,rottentomatoes.com,rtcc.org,rtlnieuws.nl,rts.rs,russia-insider.com,rustica.fr,samachar.com,sanook.com,sardiniapost.it,sat.tv,sat1.de,scalescale.com,schiit-europe.com,schuttevaer.nl,sciencenorway.no,scmp.com,scorpionbay.com,scottishconservatives.com,scottishlabour.org.uk,searchmarketingexpo.com,seattleweekly.com,sectionstudios.com,seen.de,sex.com,sfist.com,shacknews.com,shanghaiist.com,shefinds.com,singaporeair.com,sixx.de,skynews.com.au,slurpee.com.au,soccerway.com,sofarsogood.fr,softexia.com,solidfiles.com,sorgenia.it,sparknotes.com,spgpromos.com,spin.com,sport.es,sportnews.bz,sportsmole.co.uk,spratings.com,stackpath.com,stardock.com,sucuri.net,sudouest.fr,supermacs.ie,suzuki.it,swedroid.se,sygic.com,t3.com,tacticalshit.com,tari.it,techpowerup.com,telegiz.com,testimania.com,the-sun.com,the-voice-of-germany.de,thedissolve.com,thepeninsulaqatar.com,therese-moelk.at,theringreport.com,thescottishsun.co.uk,thesun.co.uk,thesun.ie,thomann.de,thomson,ti.com,tichyseinblick.de,tickld.com,timeslive.co.za,timesofisrael.com,tmonews.com,todomecanica.com,todomercadoweb.es,top.de,toronews.net,tourhebdo.com,trust.zone,tt.com,tuacasa.com.br,tubestart.com,tuttobolognaweb.it,tuttomercatoweb.com,tweakers.net,twr.org,typomaps.net,u.tv,ucl.ac.uk,uk-mkivs.net,ultimominuto.news,unica.it,unita.it,units.it,urbanomnibus.net,utorrent.com,veol.hu,vg247.com,vg247.it,victoriassecret.com,vijesti.me,violanews.com,viralnova.com,vitatrentina.it,viveregiovani.it,voetbal24.be,voetbalnieuws.be,vortice.it,voxafrica.com,wallpaper.com,wallstreetitalia.com,wantedonline.co.za,washwasha.org,wbez.org,wdet.org,we.com.na,webs.com,wegotthiscovered.com,willyweather.com,woot.com,workersliberty.org,yachtingjournal.com##.social
+12tomatoes.com,20minutes.fr,20minutos.es,6abc.com,a2tv.com.tr,abc11.com,abc13.com,abc30.com,abc7.com,abc7chicago.com,abc7news.com,abc7ny.com,abola.pt,affaritaliani.it,africa1.com,agrositio.com.ar,aica.org,al-ain.com,al-akhbar.com,al-shabaka.org,al-sharq.com,alaqsavoice.ps,albaceteabierto.es,albawabhnews.com,algemeiner.com,alligator-sunglasses.com,allkpop.com,altoadige.it,amicidicasa.it,angeloparodi.it,angolotesti.it,apkmb.com,armageddonexpo.com,aruba.it,assopoker.com,atv.com.tr,atv.hu,auto.it,autofoco.pt,avira.com,avivaitalia.it,az.com.na,aztesti.it,badtaste.it,banca5.com,bancaprivataleasing.it,beatsbydre.com,bet.com,bioisotherm.it,bleacherreport.com,bnr.nl,bobvila.com,borsadelcredito.it,boursier.com,budapester.hu,businessinsider.com,businessinsider.de,businesslive.co.za,businesstoday.in,c-span.org,calcionapoli1926.it,carmagazine.co.uk,caustica.co,cdt.ch,centerblog.net,chimeraos.org,christiantoday.co.nz,christiantoday.com.au,cielotv.it,cipiacecucinare.it,cittaceleste.it,cityam.com,clarin.com,classicalite.com,classifieds.co.zw,clearancejobs.com,clm21.es,cmt.com,cmu.edu,cnnindonesia.com,collectorsweekly.com,comicbook.com,comicbookmovie.com,conjur.com.br,coopcasarsa.it,correiobraziliense.com.br,corriere.it,corrierecomunicazioni.it,courrierinternational.com,creditosportivo.it,dagospia.com,dailymaverick.co.za,dailysignal.com,damndelicious.net,dastelefonbuch.de,deabyday.tv,debate.com.mx,deepsilver.com,democracynow.org,dequo.it,derbyderbyderby.it,dererker.it,dhakacourier.com.bd,diariodelweb.it,diarioti.com,dispatchlive.co.za,doctissimo.fr,dpreview.com,dr.com.tr,dunsguide.co.il,ecranlarge.com,eetimes.com,elconsolto.com,elmundofinanciero.com,elvenar.com,entywbas.com,epicgames.com,err.ee,estrelando.com.br,estrellatv.com,etcanada.com,eurogamer.it,euronics.it,europages.cn,europages.co.hu,europages.dk,europages.ee,europages.es,europages.eu,europages.fi,europages.fr,europages.gr,europages.hk,europages.it,europages.lt,europages.lv,europages.nl,europages.pl,europages.se,europages.si,europapress.es,europe1.fr,eurospin.it,extra.ec,fakartany.com,fantamagazine.com,fcinter1908.it,fiercewireless.com,filmitalia.org,finanzaonline.com,fivebooks.com,fm-world.it,fmglobal.com,forbes.ru,formulatv.com,forzaroma.info,foxcharleston.com,gamergen.com,gay.it,gazzetta.it,gazzettaregionale.it,gedidigital.it,gediwatch.it,gidhaur.com,giornaledibrescia.it,giornaletrentino.it,globalist.it,gmx.com,gmx.fr,goldenline.pl,golssip.it,grandhotel-et-des-palmes.com,greencarreports.com,grostracteurspassion.com,gse.it,guardian.ng,guildwars2.com,gulfstream.com,gunviolencearchive.org,haber7.com,hannibaltv.com.tn,hawaii.com,hdmotori.it,healthychild.org,hellas1903.it,hellogiggles.com,heraldlive.co.za,hispanidad.com,howtogeek.com,html.it,hub.jhu.edu,hvg.hu,ibtimes.co.in,idiva.com,ildolomiti.it,ilgiornale.it,iliketomakestuff.com,ilmilanista.it,ilpost.it,ilposticipo.it,ilsole24ore.com,ilsussidiario.net,imadrassa.com,impresspages.org,indiatvnews.com,indypendent.org,infomotori.com,informador.mx,infosat.de,infoworld.com,inmoto.it,insideedition.com,insider.com,interior-news.com,iol.pt,irannewsdaily.com,islamweb.net,isprime.com,istat.it,italiaoggi.it,itasportpress.it,ivid.it,jamescoyle.net,jeep.co.nz,jeu.video,journaldugeek.com,juvenews.eu,kabeleins.de,kataweb.it,klassikradio.de,knack.be,korben.info,lacivertdergi.com,ladepeche.fr,lapressa.it,laprovinciadivarese.it,lasicilia.it,latvija.lv,lavozdeltajo.com,leboncoin.fr,ledevoir.com,legacoop.coop,lemondeinformatique.fr,leseclaireuses.com,lethbridgeherald.com,liberoquotidiano.it,libertaddigital.com,libremercado.com,linkiesta.it,lorientlejour.com,luinonotizie.it,madanichannel.tv,mader.bz.it,madridiario.es,magnoliatv.it,marketingtribune.nl,marvel.com,masterinvestor.co.uk,mdspa.it,mediagol.it,medicinehatnews.com,mediocredito.it,medisite.fr,meetingrimini.org,metropol.hu,mikronis.hr,milanofinanza.it,misk.tn,mk.ru,mobileapk.info,mobilenews.jp,monacomatin.mc,mondaymag.com,mondoudinese.it,moneyversed.com,monovolume.cc,monthlyreview.org,moto.it,motonline.com.br,motorionline.com,moviechat.org,mtv.it,muckraker.com,mumbrella.com.au,myevreview.com,naturalborngamers.it,neowin.net,nintendolife.com,notiziecalciomercato.eu,nplusonemag.com,ntdtv.com,numericalcio.it,nzgeo.com,nzx.com,odia.ig.com.br,olivetti.com,omdb.org,omnialyrics.it,oo-software.com,opendns.com,opinione.it,ornews.it,ox.ac.uk,padovasport.tv,paginasamarillas.es,paginasiete.bo,pap.pl,pauta.cl,pentapostagma.gr,petitfute.com,petrolicious.com,peugeot.de,phanteks.com,phonearena.com,pianetamilan.it,pneusnews.it,pokernews.com,portaldotransito.com.br,professionearchitetto.it,proiezionidiborsa.it,prosieben.de,protonvpn.com,publico.es,publish0x.com,purexbox.com,pushsquare.com,qualcomm.com,qualenergia.it,quice.it,radbox.me,radio.cz,radiocitymilano.it,radionacional.com.ar,radioorient.com,ran.de,ranactive.de,raya.ps,razon.com.mx,red-buzz.com,regione.piemonte.it,register724.com,renaultsport.com,republikein.com.na,responsibility.org,retailmenot.com,rickey.org,rmcsport.net,rollingstone.it,roncadin.it,ropeofsilicon.com,rossopomodoro.it,rottentomatoes.com,rtcc.org,rtlnieuws.nl,rts.rs,russia-insider.com,rustica.fr,samachar.com,sanook.com,sardiniapost.it,sat.tv,sat1.de,scalescale.com,schiit-europe.com,schuttevaer.nl,sciencenorway.no,scmp.com,scorpionbay.com,scottishconservatives.com,scottishlabour.org.uk,searchmarketingexpo.com,seattleweekly.com,sectionstudios.com,seen.de,sex.com,sfist.com,shacknews.com,shanghaiist.com,shefinds.com,singaporeair.com,sixx.de,skynews.com.au,slurpee.com.au,soccerway.com,sofarsogood.fr,softexia.com,solidfiles.com,sorgenia.it,sparknotes.com,spgpromos.com,spin.com,sport.es,sportnews.bz,sportsmole.co.uk,spratings.com,stackpath.com,stardock.com,sucuri.net,sudouest.fr,supermacs.ie,suzuki.it,swedroid.se,sygic.com,t3.com,tacticalshit.com,tari.it,techpowerup.com,telegiz.com,testimania.com,the-sun.com,the-voice-of-germany.de,thedissolve.com,thepeninsulaqatar.com,therese-moelk.at,theringreport.com,thescottishsun.co.uk,thesun.co.uk,thesun.ie,thomann.de,thomson,ti.com,tichyseinblick.de,tickld.com,timeslive.co.za,timesofisrael.com,tmonews.com,todomecanica.com,todomercadoweb.es,top.de,toronews.net,tourhebdo.com,trust.zone,tt.com,tuacasa.com.br,tubestart.com,tuttobolognaweb.it,tuttomercatoweb.com,tweakers.net,twr.org,typomaps.net,u.tv,ucl.ac.uk,uk-mkivs.net,ultimominuto.news,unica.it,unita.it,units.it,urbanomnibus.net,utorrent.com,veol.hu,vg247.com,vg247.it,victoriassecret.com,vijesti.me,violanews.com,viralnova.com,vitatrentina.it,viveregiovani.it,voetbal24.be,voetbalnieuws.be,vortice.it,voxafrica.com,vz.ru,wallpaper.com,wallstreetitalia.com,wantedonline.co.za,washwasha.org,wbez.org,wdet.org,we.com.na,webs.com,wegotthiscovered.com,willyweather.com,woot.com,workersliberty.org,yachtingjournal.com##.social
 ! ! #share
-bulawayo24.com,canavesenews.it,dbknews.com,designtaxi.com,foreca.fi,hqbabes.com,hqsluts.com,keepone.net,memuplay.com,monstercockland.com,sohu.com,sputnik-abkhazia.ru,sputnik-georgia.ru,sputnik-ossetia.ru,sputniknewslv.com,themoviedb.org,voltairenet.org,xvideos-br.com,xxxymovies.com###share
+bulawayo24.com,canavesenews.it,dbknews.com,designtaxi.com,foreca.fi,hqbabes.com,hqsluts.com,keepone.net,libsyn.com,memuplay.com,monstercockland.com,sohu.com,sputnik-abkhazia.ru,sputnik-georgia.ru,sputnik-ossetia.ru,sputniknewslv.com,themoviedb.org,voltairenet.org,xvideos-br.com,xxxymovies.com###share
 ! ! .share
-411mania.com,9gag.com,abril.com.br,actiefwonen.be,administradores.com.br,al-shabaka.org,al-sharq.com,alfredopedulla.com,algemeiner.com,alibaba.com,alu.jp,amica.it,ara.cat,areanapoli.it,aristeguinoticias.com,arizonasports.com,asia.nikkei.com,astanatimes.com,at5.nl,autodidacts.io,autoline-az.com,autoline-br.com,autoline-eu.fr,autoline-eu.it,autoline-eu.kz,autoline-eu.ru,autoline-eu.se,autoline-ge.com,autoline-nl.be,autoline-ru.ee,autoline-ru.lt,autoline-ru.lv,autoline-tm.com,autoline.be,autoline.bo,autoline.by,autoline.com.pl,autoline.com.py,autoline.com.ua,autoline.es,autoline.kg,autoline.lu,autoline.lv,autoline.md,autoline.me,autoline.nl,autoline.pe,autoline.pt,autoline.ro,autoline.tj,autoline.ua,autoline.uz,basketinside.com,bianconeranews.it,bilibili.com,blogtivvu.com,brundisium.net,businessam.be,buzzmoica.fr,c-span.org,cardealermagazine.co.uk,carpicalcionews.it,cbc.ca,cctv.com,cdt.ch,ch-aviation.com,chicercacasa.it,cittaceleste.it,clarin.com,classicandsportscar.com,cna.com.tw,cnbcindonesia.com,cncnews.cn,cnnindonesia.com,cnnturk.com,columbian.com,commentwiki.fr,comune.torino.it,coopcasarsa.it,corsedimoto.com,cricket.com.au,crusoe.com.br,crypto.news,cryptopotato.com,dailycaller.com,dailymail.co.uk,dailytrust.com,dancestarparty.com,democracynow.org,devisesquare.com,dictionary.com,diningcity.be,diningcity.hu,diningcity.nl,downzen.com,dr.dk,ecoaustral.com,ecommercemag.fr,eleconomista.com.mx,elgrafico.com,elperiodico.cat,elperiodico.com,em.com.br,epochtimes.com.br,epochtimes.fr,epochtimes.nl,euobserver.com,exchangerates.org.uk,exclusivo.com.br,fairplanet.org,fantamagazine.com,fcinter1908.it,firenzeviola.it,flowingdata.com,food.com,foodnetwork.it,football365.com,forzaroma.info,fotomac.com.tr,franceinter.fr,francetvinfo.fr,frandroid.com,freespeech.org,funweek.it,gamespot.com,gamingonlinux.com,gazeta.pl,gazzamercato.it,gazzetta.it,geekwire.com,gettyimages.be,gettyimages.dk,gettyimages.es,gettyimages.fr,gettyimages.it,gettyimages.nl,gettyimages.pt,gettyimages.se,gids.tv,globo.com,golssip.it,good.is,gumtree.co.za,hispantv.com,huuto.net,hvg.hu,hyundai.co.nz,idcquan.com,ildolomiti.it,ilmilanista.it,ilsecoloxix.it,ilsussidiario.net,ilviaggiatorgoloso.it,insomnia.gr,intesasanpaolo.com,isaechia.it,itasportpress.it,jornada.com.mx,juvenews.eu,kingarthurbaking.com,kmfa.org,knjizara-dominovic.hr,ktar.com,lagranepoca.com,laleggepertutti.it,landrover.be,landrover.ch,landrover.com.br,landrover.com.cn,landrover.dk,landrover.es,landrover.fr,landrover.hu,landrover.it,landrover.lv,landrover.nl,landrover.pt,landrover.ru,landrover.se,landroverkz.com,lantidiplomatico.it,laprensagrafica.com,lastampa.it,lavozdegalicia.es,lifegate.it,lifezette.com,ltn.com.tw,maannews.net,madeinbz.info,mail.ru,mediacorp.sg,mediagol.it,megasesso.com,metropolitano.it,milesplit.com,miur.gov.it,mobilita.org,monacomatin.mc,mondoudinese.it,mynorthwest.com,nachrichten.it,napi.hu,neoplan.com,new.qq.com,newhua.com,news.unl.edu,newsmaxtv.com,newsmonkey.be,nicematin.com,nieuwsblad.be,nos.nl,ntn24.com,numericalcio.it,nuus.hu,oantagonista.com,obastidor.com.br,omglinux.com,otempo.com.br,padovasport.tv,paginegialle.it,panorama.it,passioneinter.com,perlaretorica.it,pianetagenoa1893.net,pianetamilan.it,planetrugby.com,planetware.com,portaldotransito.com.br,qz.com,r7.com,radiotirol.it,radiotoday.com.au,ravennanotizie.it,rbc.ua,recyclingproductnews.com,reductress.com,responsiblestatecraft.org,reteimprese.it,rftvoficial.com.br,ria.ru,romadailynews.it,rxresource.org,sanmarinortv.sm,sasomange.rs,sassuolocalcionews.it,scholarlykitchen.sspnet.org,segmentnext.com,slantmagazine.com,speakingtree.in,sportavellino.it,sputnikportal.rs,steampowered.com,suedtirol1.it,supereva.it,tag43.it,taiwanheute.tw,taiwantoday.tw,takvim.com.tr,tenniscircus.com,theringreport.com,thisiscolossal.com,tivusat.tv,toronews.net,toy-people.com,trend-online.com,tuttobolognaweb.it,u.today,uol.com.br,va.se,valeursactuelles.com,vastoweb.com,vavradyo.com.tr,vectorstock.com,violanews.com,viveusa.mx,webdunia.com,wikiway.com,xxxymovies.com,yougov.com##.share
+411mania.com,9gag.com,abril.com.br,actiefwonen.be,administradores.com.br,al-shabaka.org,al-sharq.com,alfredopedulla.com,algemeiner.com,alibaba.com,alu.jp,amica.it,ara.cat,areanapoli.it,aristeguinoticias.com,arizonasports.com,asia.nikkei.com,astanatimes.com,at5.nl,autodidacts.io,autoline-az.com,autoline-br.com,autoline-eu.fr,autoline-eu.it,autoline-eu.kz,autoline-eu.ru,autoline-eu.se,autoline-ge.com,autoline-nl.be,autoline-ru.ee,autoline-ru.lt,autoline-ru.lv,autoline-tm.com,autoline.be,autoline.bo,autoline.by,autoline.com.pl,autoline.com.py,autoline.com.ua,autoline.es,autoline.kg,autoline.lu,autoline.lv,autoline.md,autoline.me,autoline.nl,autoline.pe,autoline.pt,autoline.ro,autoline.tj,autoline.ua,autoline.uz,averagelinuxuser.com,basketinside.com,bianconeranews.it,bilibili.com,blogtivvu.com,brundisium.net,businessam.be,buzzmoica.fr,c-span.org,cardealermagazine.co.uk,carpicalcionews.it,cbc.ca,cctv.com,cdt.ch,ch-aviation.com,chicercacasa.it,cittaceleste.it,clarin.com,classicandsportscar.com,cna.com.tw,cnbcindonesia.com,cncnews.cn,cnnindonesia.com,cnnturk.com,columbian.com,commentwiki.fr,comune.torino.it,coopcasarsa.it,corsedimoto.com,cricket.com.au,crusoe.com.br,crypto.news,cryptopotato.com,dailycaller.com,dailymail.co.uk,dailytrust.com,dancestarparty.com,democracynow.org,devisesquare.com,dictionary.com,diningcity.be,diningcity.hu,diningcity.nl,downzen.com,dr.dk,ecoaustral.com,ecommercemag.fr,eleconomista.com.mx,elgrafico.com,elperiodico.cat,elperiodico.com,elquindiano.com,em.com.br,epochtimes.com.br,epochtimes.fr,epochtimes.nl,euobserver.com,exchangerates.org.uk,exclusivo.com.br,fairplanet.org,fantamagazine.com,fcinter1908.it,firenzeviola.it,flowingdata.com,food.com,foodnetwork.it,football365.com,forzaroma.info,fotomac.com.tr,franceinter.fr,francetvinfo.fr,frandroid.com,freespeech.org,funweek.it,gamespot.com,gamingonlinux.com,gazeta.pl,gazzamercato.it,gazzetta.it,geekwire.com,gettyimages.be,gettyimages.dk,gettyimages.es,gettyimages.fr,gettyimages.it,gettyimages.nl,gettyimages.pt,gettyimages.se,gids.tv,globo.com,golssip.it,good.is,gumtree.co.za,hispantv.com,huuto.net,hvg.hu,hyundai.co.nz,idcquan.com,ildolomiti.it,ilmilanista.it,ilsecoloxix.it,ilsussidiario.net,ilviaggiatorgoloso.it,insomnia.gr,intesasanpaolo.com,isaechia.it,itasportpress.it,jornada.com.mx,juvenews.eu,kingarthurbaking.com,kmfa.org,knjizara-dominovic.hr,ktar.com,lagranepoca.com,laleggepertutti.it,landrover.be,landrover.ch,landrover.com.br,landrover.com.cn,landrover.dk,landrover.es,landrover.fr,landrover.hu,landrover.it,landrover.lv,landrover.nl,landrover.pt,landrover.ru,landrover.se,landroverkz.com,lantidiplomatico.it,laprensagrafica.com,lastampa.it,lavozdegalicia.es,lifegate.it,lifezette.com,ltn.com.tw,maannews.net,madeinbz.info,mail.ru,mediacorp.sg,mediagol.it,megasesso.com,metropolitano.it,milesplit.com,miur.gov.it,mobilita.org,monacomatin.mc,mondoudinese.it,mynorthwest.com,nachrichten.it,napi.hu,neoplan.com,new.qq.com,newhua.com,news.unl.edu,newsmaxtv.com,newsmonkey.be,nicematin.com,nieuwsblad.be,nos.nl,ntn24.com,numericalcio.it,nuus.hu,oantagonista.com,obastidor.com.br,omglinux.com,otempo.com.br,padovasport.tv,paginegialle.it,panorama.it,passioneinter.com,perlaretorica.it,pianetagenoa1893.net,pianetamilan.it,planetrugby.com,planetware.com,portaldotransito.com.br,qz.com,r7.com,radiotirol.it,radiotoday.com.au,ravennanotizie.it,rbc.ua,recyclingproductnews.com,reductress.com,responsiblestatecraft.org,reteimprese.it,rftvoficial.com.br,ria.ru,romadailynews.it,rxresource.org,sanmarinortv.sm,sasomange.rs,sassuolocalcionews.it,scholarlykitchen.sspnet.org,segmentnext.com,slantmagazine.com,sleepfoundation.org,speakingtree.in,sportando.basketball,sportavellino.it,sputnikportal.rs,steampowered.com,suedtirol1.it,supereva.it,tag43.it,taiwanheute.tw,taiwantoday.tw,takvim.com.tr,tenniscircus.com,the-decoder.com,theringreport.com,thisiscolossal.com,tivusat.tv,toronews.net,toy-people.com,trend-online.com,tuttobolognaweb.it,u.today,uol.com.br,va.se,valeursactuelles.com,vastoweb.com,vavradyo.com.tr,vectorstock.com,violanews.com,viveusa.mx,vz.ru,webdunia.com,wikiway.com,xxxymovies.com,yougov.com##.share
 ! ! .share-button
-almanar.com.lb,bergamonews.it,fantasymagazine.it##.share-button
+almanar.com.lb,bergamonews.it,fantasymagazine.it,tirto.id##.share-button
 ! ! .twitter
 agenziacasaclima.it,anandtech.com,bdonline.co.uk,buzzfil.com,cadenaazul.com,catapult.co,clubic.com,filmgo.org,gameranx.com,habrahabr.ru,howtogeek.com,iexprofs.nl,ifun.de,ilfoglio.it,iphone-ticker.de,lci.tf1.fr,lesoir.be,lounge.fm,ludokado.com,mf24.pl,miningjournal.net,nikkei-cnbc.co.jp,ondacero.es,peoplesweather.com,programme-tv.net,rfm.fr,richersounds.com,screendaily.com,shortlist.com,teleticino.ch,todomercadoweb.es,tripstodiscover.com,trt.net.tr,trueachievements.com,truesteamachievements.com,tuttomercatoweb.com,webnews.it,yoink.com##.twitter
 ! ! .socials
-addictivetips.com,ambito.com,anews.com.tr,animeworld.tv,az.nl,bazar.it,dacast.com,einbecker-morgenpost.de,ezalenyeg.hu,hirtv.hu,instant-gaming.com,iranpress.com,kyivpost.com,laprovinciadicomo.it,mob.org,ouest-france.fr,radiolina.it,recyclingproductnews.com,rt.com,secoloditalia.it,videolina.it##.socials
+addictivetips.com,ambito.com,anews.com.tr,animeworld.tv,az.nl,bazar.it,cracked.com,dacast.com,einbecker-morgenpost.de,ezalenyeg.hu,fastweb.it,hirtv.hu,instant-gaming.com,ipwatchdog.com,iranpress.com,kyivpost.com,laprovinciadicomo.it,mob.org,ouest-france.fr,radiolina.it,recyclingproductnews.com,rt.com,secoloditalia.it,thejc.com,videolina.it##.socials
 ! ! .social-icons
-abc13.com,changer4u.com,cuevanahd.net,davidwalsh.name,dcrainmaker.com,dreambigtravelfarblog.com,esquerdaonline.com.br,futurity.org,glas-javnosti.rs,ijr.com,justthenews.com,letras.mus.br,liliputing.com,nypost.com,observer.com,pelisplus2.ai,pink.rs,publicdomainreview.org,screenshot-media.com,superporn.com,thetoyinsider.com,thewindowsclub.com,trtafrika.com,trtarabi.com,trtbalkan.com,trtdeutsch.com,trtfrancais.com,trtrussian.com##.social-icons
+abc13.com,akkogear.com.vn,changer4u.com,cuevanahd.net,davidwalsh.name,dcrainmaker.com,dreambigtravelfarblog.com,esquerdaonline.com.br,futurity.org,glas-javnosti.rs,ijr.com,justthenews.com,letras.mus.br,liliputing.com,nypost.com,observer.com,pelisplus2.ai,pink.rs,publicdomainreview.org,scmagazine.com,screenshot-media.com,superporn.com,the-decoder.com,thetoyinsider.com,thewindowsclub.com,trtafrika.com,trtarabi.com,trtbalkan.com,trtdeutsch.com,trtfrancais.com,trtrussian.com##.social-icons
 ! ! .article-share
 ansa.it,az.com.na,azernews.az,b92.net,gfinityesports.com,huffingtonpost.fr,iltalehti.fi,interfax.com.ua,iol.co.za,nekretnine.rs,neowin.net,news.artnet.com,prva.rs,skyticket.com,stealthoptional.com,thefederalist.com##.article-share
 ! ! .shares
-bulawayo24.com,foodbeast.com,forbes.ru,iol.pt,tn.com.ar,twistedfood.co.uk##.shares
+bulawayo24.com,foodbeast.com,forbes.ru,iol.pt,levantenews.it,tn.com.ar,twistedfood.co.uk##.shares
 ! ! .sharing
-astrologyzone.com,bigleaguepolitics.com,goedgevoel.be,indiatoday.in,marketingweek.com,metacritic.com,numberempire.com,ornews.it,screenrant.com,spectator.com.au,thepointsguy.com##.sharing
+amoledo.com,astrologyzone.com,bigleaguepolitics.com,goedgevoel.be,indiatoday.in,marketingweek.com,metacritic.com,numberempire.com,ornews.it,screenrant.com,spectator.com.au,thepointsguy.com##.sharing
 ! ! .social-bar
-bearingarms.com,heraldscotland.com,hotair.com,ilsettimanale.online,pjmedia.com,redstate.com,salisburyjournal.co.uk,townhall.com##.social-bar
+bearingarms.com,heraldscotland.com,hotair.com,ilsettimanale.online,pjmedia.com,redstate.com,salisburyjournal.co.uk,thecollegefix.com,townhall.com##.social-bar
 ! ! .social-container
 dibujos.net,dispatchlive.co.za,heraldlive.co.za,motherjones.com,novabh.tv,onet.pl,online-convert.com,sowetanlive.co.za,timeslive.co.za##.social-container
 ! ! .social-network
@@ -13691,7 +13419,7 @@ atomic-robo.com,autobelle.it,canavesenews.it,chnetwork.org,classicreload.com,don
 ! ! .liCompartir
 ilmeteo.net,meteored.cl,meteored.com.ar,meteored.mx,tameteo.com,tempo.com,tempo.pt,tiempo.com##.liCompartir
 ! ! .social-buttons
-crimeonline.com,fivebooks.com,informer.com,open.online,opencritic.com,redvoicemedia.com,religionnews.com,tarreo.com,upcomingvinyl.com##.social-buttons
+crimeonline.com,fivebooks.com,informer.com,open.online,opencritic.com,redvoicemedia.com,religionnews.com,tarreo.com,thecollegefix.com,upcomingvinyl.com##.social-buttons
 ! ! .uc-social-bar-wrapper
 n1info.ba,n1info.hr,n1info.rs,n1info.si,nova.rs##.uc-social-bar-wrapper
 ! ! .tw
@@ -13719,7 +13447,7 @@ cadenaazul.com,ilfoglio.it,peoplesweather.com,rfm.fr,sassymamahk.com,zoom.earth#
 ! ! .Share
 7kanal.co.il,focusjunior.it,inn.co.il##.Share
 ! ! .social-links
-anothermag.com,armageddonexpo.com,averiecooks.com,bnn.de,bolina.it,cgchannel.com,classic105.com,diariolasamericas.com,ebu.io,fullfact.org,hannity.com,i24news.tv,insurancejournal.com,metro.us,mobilesyrup.com,nextplay.nl,oann.com,quantamagazine.org,realnewsmontana.com,rocketbeans.tv,screencrush.com,skinnyms.com,sowetanlive.co.za,stoneyroads.com,thedailystar.net,tuasaude.com,wantedonline.co.za,wijwedden.net##.social-links
+anothermag.com,armageddonexpo.com,averiecooks.com,bnn.de,bolina.it,cgchannel.com,classic105.com,diariolasamericas.com,ebu.io,fortune.com,fullfact.org,hannity.com,i24news.tv,insurancejournal.com,metro.us,mobilesyrup.com,nextplay.nl,oann.com,quantamagazine.org,realnewsmontana.com,rocketbeans.tv,screencrush.com,skinnyms.com,sowetanlive.co.za,stoneyroads.com,thedailystar.net,tuasaude.com,wantedonline.co.za,wijwedden.net##.social-links
 ! ! .social-link
 english.nv.ua,jenkemmag.com,largus.fr,masterduelmeta.com,merriam-webster.com##.social-link
 ! ! .google-news
@@ -13753,17 +13481,23 @@ bbc.com##div[class*="TagShareWrapper"]
 ! Include ubO specific
 ! #include fanboy_social_specific_uBO.txt
 ! *** easylist:fanboy-addon/fanboy_social_specific_ABP.txt ***
-! ABP-specific fixes
+! fanboy_social_specific_ABP.txt
+! Sorted alphabetically by the domain
+relationshiphero.com#?#div:-abp-has(+ .socialIcons)
+viranomaisuutiset.fi#?#.wpb_wrapper.td_block_wrap:-abp-has(a[href^="https://whatsapp.com"])
 ! ------------------------Rules for international sites------------------------!
 ! *** easylist:fanboy-addon/fanboy_social_international.txt ***
+! fanboy_social_international.txt
 ! 
 ! ---------- Non-English Social Media Elements ----------
 ! 
 delfi.ee##.article__info > .article-utility
 delfi.ee##.article__social
+akkogear.com.vn##.box_fixRight
 baoquocte.vn##.bqt-share-social
 360.cymru##.buttons
 gnttv.com##.social_tracking_home
+news.bg##.twitter-icon
 ||probook.bg/like?$third-party
 ! 
 ! ---------- German Site Specific Hiding Rules ----------
@@ -13782,6 +13516,7 @@ wienerzeitung.at##.article-toolbar
 snanews.de##.article__google-news
 fnp.de,sport1.de##.bookmarks
 pipeline.de##.bookspalte
+adticket.de##.c-ticket-fan__social-icons
 soeren-hentzschel.at##.circle-icons
 deutsche-startups.de##.connectButtons
 hornoxe.com##.custom-html-widget
@@ -13798,19 +13533,24 @@ nachrichten.at##.mainFooter__socialItem
 ndr.de##.meta
 laut.de##.module-share
 mtb-news.de##.mtbnews-sharing-buttons
+it-daily.net##.ns-buttons
 onvista.de##.ov-article__sharebar
 streamkiste.tv##.sb
+teltarif.de##.sbm
 orf.at##.share-dialog
 gameswelt.de##.share__bottom
 gameswelt.de##.share__top
 mindfactory.de##.sliderbar
 derfinanzinvestor.de,esg-aktien.de,inv3st.de,kapitalerhoehungen.de##.smIconsWrap
+urlaubsguru.de##.smeShare
 formel1.de##.social-buttons_container
 deutsche-wirtschafts-nachrichten.de##.social-line
+golem.de##.social-tools
 suedtirolnews.it,thueringer-allgemeine.de##.socialbar
 snanews.de##.socialnetwork
 sportnews.bz##.socialshare
 geo.de##.soucials
+bafoeg-rechner.de,studis-online.de##.ston-shareicn
 presseportal.de##.story-sharing
 t3n.de##.tg-social-bottom
 kleinezeitung.at##.tik4-sharing
@@ -13837,6 +13577,7 @@ sudhorizons.dz###jm_sl_navigation
 ouedkniss.com###partager
 comment-contacter.fr###sfsi_floater
 palais-de-la-voiture.com###socialmenu
+nl7za.com###tele
 lopinion.fr##.Page-actions
 radiofrance.fr##.ShareManager
 francebleu.fr##.ShareNetwork
@@ -13845,6 +13586,7 @@ auto-moto.com##.bloc-partage
 coreight.com##.bloc_reseau
 ledojomanga.com##.btns-partage
 gossip-room.fr##.bubblegum
+allocine.fr##.button-sign-social
 rfm.fr##.communities
 justgeek.fr##.cs-meta-shares
 sanarmed.com##.dQkCRJ
@@ -13972,6 +13714,7 @@ smulderstextiel.nl##.favshare-holder
 100p.nl##.holder-social
 twentefans.nl##.js-share
 iexprofs.nl,participaties.nl##.linkbar
+schrijvenonline.org##.rrssb
 nextplay.nl##.share_item
 bricovideo.ovh##.social-icon
 menselijklichaam.nl##.social-wrapper
@@ -14004,6 +13747,7 @@ forssanlehti.fi#?#.herald-single-sticky:-abp-has(.herald-share)
 ! 
 enternity.gr###enternity_social_dialog
 capital.gr##.controls
+tilestwra.com##.post-google-news-link
 ! 
 ! ---------- Hebrew Site Specific Hiding Rules ----------
 ! 
@@ -14124,6 +13868,8 @@ showprice.it##.link_invia_amico
 ilsole24ore.com##.list-inline--tools
 mrw.it##.lista-is
 centrometeoitaliano.it##.lista-social
+lapresse.it,lapresse.us##.lp-social-post
+internazionale.it##.magazine-article-share-tools
 ansa.it##.media-share
 urbantv.info##.meks_ess
 andreagaleazzi.com##.mercatino-toggle
@@ -14154,6 +13900,7 @@ giornaleradio.fm##.sh_wa
 rainews.it##.share-toggler
 atletica.tv##.share-tool
 ilmeteo.net##.shared
+cronacheancona.it##.sharing_icons_wrapper
 mediaset.it##.shr
 ilmeteo.net##.siguenos-reducido
 assopoker.com##.singlemeta
@@ -14182,6 +13929,7 @@ agensir.it##.temporary-skin-adv
 nurse24.it##.toolbar
 radioinblu.it##.top_nav_social
 maremmanews.it##.ts-social-list-item
+fastweb.it##.tutplus-socials
 sorrisi.com##.tvsc-footer-social
 sorrisi.com##.tvsc-social-share
 alfredopedulla.com##.tw-banner
@@ -14193,6 +13941,8 @@ ilsole24ore.com##[data-type="fb"]
 ilsole24ore.com##[data-type="in"]
 ilsole24ore.com##[data-type="tw"]
 agendadigitale.eu,corrierecomunicazioni.it,economyup.it,insuranceup.it##a[href="#condivisioni"]
+ilgiorno.it,ilrestodelcarlino.it,iltelegrafolivorno.it,lanazione.it,quotidiano.net##div[class^="SocialShare_"]
+ilgiorno.it,ilrestodelcarlino.it,iltelegrafolivorno.it,lanazione.it,quotidiano.net##div[class^="WhatsApp_"]
 blogsicilia.it##div[style="margin-top: 15px;display: block;padding-left: 18px;font-size: 45px;position: relative;clear: both;"]
 ||napolimagazine.com/web/img/iconefooter/
 ||napolimagazine.com/web/img/iconetop/
@@ -14206,6 +13956,8 @@ blogsicilia.it##div[style="margin-top: 15px;display: block;padding-left: 18px;fo
 ! 
 ! ---------- Japanese Site Specific Hiding Rules ----------
 ! 
+knivesout.jp###Jfacebook
+knivesout.jp###Jtwitter
 srad.jp###article-bottom
 ntv.co.jp###sns
 news.j-wave.co.jp###snsLink
@@ -14224,6 +13976,7 @@ ismedia.jp##.header-tw
 suumo.jp##.headlinks
 zaikei.co.jp##.ninja_onebutton
 nikkei-cnbc.co.jp##.officialAccount
+knivesout.jp##.sharetxt
 iphone-mania.jp##.single_s_bt
 bestcarweb.jp,biglobe.ne.jp,videor.co.jp##.sns
 oricon.co.jp,videor.co.jp##.sns-box
@@ -14288,6 +14041,7 @@ virtualeye.pl##.ssmw-handler
 ! ---------- Portuguese Site Specific Hiding Rules ----------
 ! 
 baixaki.com.br###bxkapp
+uai.com.br###communit-box
 reclameaqui.com.br###footer-social-links
 superesportes.com.br###google-news
 meutimao.com.br###redes_sociais
@@ -14304,6 +14058,7 @@ yamaha-motor.com.br##.barra-midias
 vrum.com.br##.barradeacoes__acionarredessociais
 jornalrazao.com##.bn-block-brand
 otempo.com.br##.botao-google-news
+megacidade.com##.botoes-compartilhar
 nerdrecomenda.com.br##.box--share-single-page
 nerdrecomenda.com.br##.box-networks
 esportesdp.com.br##.btn-share
@@ -14335,9 +14090,11 @@ pinkluna.com.br##.lista-redes
 atarde.com.br,folhadelondrina.com.br##.mw-botaoGoogle
 noticiasaominuto.com##.news-social-bottom
 suno.com.br##.newsContent__article__meta__socials
+noataque.com.br##.noticia-share
 recordeuropa.com##.partilha
 mercadowebminas.com.br##.post-sharing-menu
 jornaldocomercio.com,tvcultura.com.br##.redes
+defatoonline.com.br##.row_gn
 oantagonista.com.br##.share-posts
 gkpb.com.br##.sigaInstagram
 netcine.to##.soci
@@ -14386,12 +14143,14 @@ sibnet.ru###telegram_push
 rosphoto.com###widget
 5-tv.ru##._links
 1prime.ru##.action-buttons
+ria.ru##.article__aggr
 realnienovosti.com##.awesome
 5-tv.ru##.blockOk
 gtrk.tv##.footer-social-wrap
 rosphoto.com##.ft-soc-block
 free-kassa.ru##.h-soc
 1prime.ru##.header__buttons
+interfax.ru##.header__soc
 avtoradio.ru##.in
 interfax.ru##.inIco
 tvrus.eu##.menu-icons
@@ -14437,8 +14196,10 @@ vreme.com##.vr-sharing
 ! 
 dontorrent.uno###DonTelegram
 cuencanews.es###buttons
+henaojara.net###cht-shr
 emol.com###cuDetalle_cuBarraSocial_redesSociales
 soychile.cl###facebook
+superluchas.com###gp-social-share
 mediterraneodigital.com###jj_sl_navigation
 notiactual.com###redes
 perfil.com###redesArticulo
@@ -14446,6 +14207,7 @@ emol.com###redesSociales
 milenio.com###share-icons-container
 hispantv.com###sharings-footer
 3djuegos.com###siguenos
+valoraanalitik.com###social-bar-valora
 excelsior.com.mx###social-bottom-node
 excelsior.com.mx###social-top-node
 europapress.es###subnavegacionFixed
@@ -14470,10 +14232,12 @@ ara.cat##.ara-header-social
 elespanol.com##.article__footer-nav
 los40.com##.base_redes_sociales_fotogaleria
 de10.com.mx,elgrafico.mx##.botonGoogleNews
+ecuavisa.com##.boton_ws
 cooperativa.cl##.botones-redes-sociales
 bigbangnews.com##.box-followvertical
 diarimes.com##.box-social-com
 tonica.la##.boxinstagram
+ecuavisa.com##.btn-compartir
 noticiasrcn.com##.btn-google-news
 tribuna.com.mx##.btn-seguinos-gnews
 eltiempo.com##.btn_googlelink
@@ -14482,11 +14246,12 @@ cadenaser.com##.c-sn
 clubdelsubscriptor.cat##.club-producte-social
 cadenaser.com,caracol.com.co,wradio.com.co##.cnt-interaccion
 elmundofinanciero.com##.comparte_noticia
-el9nou.cat,lanacion.com.ar,qmusica.tv##.compartir
+el9nou.cat,lanacion.com.ar,psicologia-online.com,qmusica.tv,revistafamilia.ec##.compartir
 abc.es##.compartir-mas
 americateve.com##.compartir-nota
 elmostrador.cl##.compartir-noticia
 eitb.eus##.compartir_sociales
+portafolio.co##.container__boton-whatsapp
 caustica.co,futbolred.com,portafolio.co##.container__btngoogle
 wapa.pe##.container_shared--internal
 elcolombiano.com##.contenedor-google-noticias
@@ -14502,33 +14267,39 @@ semana.com##.footer-google-news
 a24.com,perfil.com##.footer-redes
 ara.cat##.footer-rrss
 rivanimation.com##.footer-social-wrapper
+portafolio.co##.footer__redes
 elmostrador.cl##.gnews-container
+ecuavisa.com##.google-news
+metroecuador.com.ec##.googlenews-btn
 diariodecuyo.com.ar##.group-redes
 ultimominuto.news##.header__follow
 cnnespanol.cnn.com##.headerradio__social
 abc.es##.herramientas
 economiahoy.mx##.ic-rs
 eluniversal.com.mx##.in-img
+mdzol.com##.interacciones
 movistar.es##.link-redes
 voydeviaje.com.ar##.list-icons
 telesurtv.net##.liveRedes
 canalnet.tv##.main-video-single__socials
-genbeta.com##.menu-follow
+vidaextra.com##.masthead-nav-social
+genbeta.com,vidaextra.com##.menu-follow
 show.news,tonica.la##.mod--googlenews
 cadenaser.com##.modulo_compartir
 depor.com##.nav__story-social-network
 tonica.la##.newsvideo__share
 0221.com.ar##.notapage_sticky
 de10.com.mx##.pane-rate-widgetk
+vidaextra.com##.post-comments-shortcut
 beteve.cat##.post-share-sms
 biobiochile.cl##.post-social-container
 gamestorrents.fm##.principio_plugin
-crea-mexico.com,elobservador.com.uy,futbol.com.uy,futbolred.com,montevideo.com.uy,mvsnoticias.com,pantallazo.com.uy,telesurtv.net##.redes
+biobiochile.cl,crea-mexico.com,elobservador.com.uy,futbol.com.uy,futbolred.com,montevideo.com.uy,mvsnoticias.com,pantallazo.com.uy,telesurtv.net##.redes
 biobiochile.cl##.redes-container
 diariodecuyo.com.ar##.redes-left
 telesurtv.net##.redesHeader
 futbolred.com##.redes__articulo
-cadenaser.com,globovision.com,informacion.es##.rrss
+cadenaser.com,deia.eus,diaridegirona.cat,diariocordoba.com,diariodeibiza.es,diariodemallorca.es,elcorreogallego.es,eldia.es,elperiodicodearagon.com,elperiodicoextremadura.com,elperiodicomediterraneo.com,emporda.info,farodevigo.es,globovision.com,informacion.es,laopinioncoruna.es,laopiniondemalaga.es,laopiniondezamora.es,laprovincia.es,levante-emv.com,lne.es,mallorcazeitung.es,noticiasdealava.eus,noticiasdegipuzkoa.eus,noticiasdenavarra.com,regio7.cat,superdeporte.es##.rrss
 aurora-israel.co.il##.rrss-link
 elcomercio.pe##.s-buttons
 betano.com##.sb-footer__notes__socials
@@ -14536,13 +14307,16 @@ elpais.com.uy##.section-rrss-wrapper
 cnnespanol.cnn.com##.section__social
 as.com##.sh-bar
 cnnespanol.cnn.com##.share-buttons-style-two
-eltiempo.com##.share-options
+eltiempo.com,expreso.ec,extra.ec##.share-options
+portafolio.co##.share-redes
 cnnespanol.cnn.com##.share__radios
+nupcias.mx##.share_alt
 vidasana.sv##.sharedButtons
 eltiempo.com##.sharrre
 expansion.com##.siguenos
 larazon.es##.site-footer__rrss
 ansalatina.com##.social-button
+ecuavisa.com##.social-menu
 revistalideres.ec##.social-nav
 gasteizhoy.com##.social-new
 perfil.com##.social-topsharing
@@ -14564,7 +14338,7 @@ eluniversal.com.mx##.uni_videoRedes
 europafm.com,ondacero.es##.vermas
 unanimodeportes.com##.widget_custom_html
 telesurtv.net##.wpRedesFoot
-hobbyconsolas.com##div[class^="share-bar_"]
+businessinsider.es,hobbyconsolas.com##div[class^="share-bar_"]
 hobbyconsolas.com##div[class^="social-list_"]
 publicar.com##img[style="margin: 0px 10px; float: left; width: 26px;"]
 ! 
@@ -14588,6 +14362,7 @@ haberinadresi.com,minika.com.tr##.sosyal
 diyanet.tv##.sosyal-alt-ust
 ! ---------------------------------Allowlists----------------------------------!
 ! *** easylist:fanboy-addon/fanboy_social_allowlist_general_hide.txt ***
+! fanboy_social_allowlist_general_hide.txt
 gifyagusi.pl#@##fan-exit
 gifyagusi.pl#@##fanback
 facebook.com#@##fb_header
@@ -14689,9 +14464,11 @@ medialeaks.ru#@#.social-widgets
 keepa.com#@#.socialButtons
 kuriertczewski.pl#@#.social_header
 ixbt.com#@#.social_links
+40ton.net#@#.td-post-sharing-top
 nothiefsallowed.com#@#.twitter-timeline
 petsmart.com#@#a[href^="https://www.facebook.com/sharer/sharer.php"]
 ! *** easylist:fanboy-addon/fanboy_social_allowlist.txt ***
+! fanboy_social_allowlist.txt
 @@/angular-facebook.js
 @@/wp-content/plugins/bwp-minify/min/?*,wp-content$script,stylesheet,~third-party
 @@/wp-content/plugins/share-this-image/*$~third-party
