@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2020-2022, 2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -23,7 +23,6 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
-import android.os.Build
 import android.provider.OpenableColumns
 import android.widget.LinearLayout
 
@@ -53,26 +52,20 @@ object SaveAboutVersionImageCoroutine {
                 // Instantiate a file name string.
                 val fileNameString: String
 
-                // Query the exact file name if the API >= 26.
-                if (Build.VERSION.SDK_INT >= 26) {  // The API >= 26.
-                    // Get a cursor from the content resolver.
-                    val contentResolverCursor = activity.contentResolver.query(fileUri, null, null, null)
+                // Get a cursor from the content resolver.
+                val contentResolverCursor = activity.contentResolver.query(fileUri, null, null, null)
 
-                    // Get the file display name if the content resolve cursor is not null.
-                    if (contentResolverCursor != null) {  // The content resolve cursor is not null.
-                        // Move to the first row.
-                        contentResolverCursor.moveToFirst()
+                // Get the file display name if the content resolve cursor is not null.
+                if (contentResolverCursor != null) {  // The content resolve cursor is not null.
+                    // Move to the first row.
+                    contentResolverCursor.moveToFirst()
 
-                        // Get the file name from the cursor.
-                        fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+                    // Get the file name from the cursor.
+                    fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                        // Close the cursor.
-                        contentResolverCursor.close()
-                    } else {  // The content resolve cursor is null.
-                        // Use the URI last path segment as the file name string.
-                        fileNameString = fileUri.lastPathSegment.toString()
-                    }
-                } else {  // The API is < 26.
+                    // Close the cursor.
+                    contentResolverCursor.close()
+                } else {  // The content resolve cursor is null.
                     // Use the URI last path segment as the file name string.
                     fileNameString = fileUri.lastPathSegment.toString()
                 }
@@ -86,16 +79,15 @@ object SaveAboutVersionImageCoroutine {
                     savingImageSnackbar.show()
                 }
 
-                // Create the about version bitmap.  This can be replaced by PixelCopy once the minimum API >= 26.
-                // Once the Minimum API >= 26 Bitmap.Config.RBGA_F16 can be used instead of ARGB_8888.  The linear layout commands must be run on the UI thread.
-                val aboutVersionBitmap = Bitmap.createBitmap(aboutVersionLinearLayout.width, aboutVersionLinearLayout.height, Bitmap.Config.ARGB_8888)
+                // Create an empty bitmap with the dimensions of the linear layout.  Once the minimum API >= 33 Bitmap.Config.RGBA_1010102 can be used instead of RBGA_F16.
+                val aboutVersionBitmap = Bitmap.createBitmap(aboutVersionLinearLayout.width, aboutVersionLinearLayout.height, Bitmap.Config.RGBA_F16)
 
                 // Create a canvas.
                 val aboutVersionCanvas = Canvas(aboutVersionBitmap)
 
                 // Use the main thread to interact with the linear layout.
                 withContext(Dispatchers.Main) {
-                    // Draw the current about version onto the bitmap.
+                    // Draw the current about version onto the bitmap.  It might be possible to do this with PixelCopy, but I am not sure that would be any better.
                     aboutVersionLinearLayout.draw(aboutVersionCanvas)
                 }
 
@@ -103,7 +95,7 @@ object SaveAboutVersionImageCoroutine {
                 val aboutVersionByteArrayOutputStream = ByteArrayOutputStream()
 
                 // Convert the bitmap to a PNG.  `0` is for lossless compression (the only option for a PNG).  This compression takes a long time.
-                // Once the minimum API >= 30 this could be replaced with WEBP_LOSSLESS.
+                // Once the minimum API >= 30 this can be replaced with WEBP_LOSSLESS.
                 aboutVersionBitmap.compress(Bitmap.CompressFormat.PNG, 0, aboutVersionByteArrayOutputStream)
 
                 // Create a file creation disposition string.

@@ -36,11 +36,8 @@
     <string name="cookies_disabled">Cookies disabilitati</string>
     <string name="dom_storage_enabled">DOM Storage abilitato</string>
     <string name="dom_storage_disabled">DOM Storage disabilitato</string>
-    <string name="form_data_enabled">Dati dei Moduli abilitati</string>
-    <string name="form_data_disabled">Dati dei Moduli disabilitati</string>
     <string name="cookies_deleted">Cookies eliminati</string>
     <string name="dom_storage_deleted">DOM Storage eliminato</string>
-    <string name="form_data_deleted">Dati dei Moduli eliminati</string>
     <string name="open_navigation_drawer">Apri il menu di navigazione</string>
     <string name="close_navigation_drawer">Chiudi il menu di navigazione</string>
     <string name="pin_drawer">Fissa il cassetto</string>
@@ -135,11 +132,9 @@
     <string name="stop">Stop</string>
     <string name="cookies">Cookies</string>
     <string name="dom_storage">DOM storage</string>
-    <string name="form_data">Dati dei moduli</string>
     <string name="clear_data">Elimina dati</string>
         <string name="clear_cookies">Elimina cookies</string>
         <string name="clear_dom_storage">Elimina DOM storage</string>
-        <string name="clear_form_data">Elimina dati dei moduli</string>
         <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
         <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="options_block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
@@ -360,11 +355,6 @@
         <item>DOM storage abilitato</item>
         <item>DOM storage disabilitato</item>
     </string-array>
-    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
-        <item>Default di Sistema</item>
-        <item>Dati dei Form abilitati</item>
-        <item>Dati dei Form disabilitati</item>
-    </string-array>
     <string-array name="easylist_array">
         <item>Default di Sistema</item>
         <item>EasyList abilitata</item>
@@ -546,8 +536,6 @@
             Quando la scheda attiva ha i cookies abilitati, anche ogni altra richiesta di rete effettuata in background da altre schede ha i cookies abilitati.</string>
         <string name="dom_storage_preference">DOM Storage</string>
         <string name="dom_storage_preference_summary">JavaScript deve essere  abilitato per permettere il funzionamento del Document Object Model storage.</string>
-        <string name="save_form_data_preference">Dati dei moduli</string>
-        <string name="save_form_data_preference_summary">I dati dei moduli salvati permettono di auto-compilare i campi dei moduli nei siti web.</string>
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -642,14 +630,11 @@
         <string name="display_under_cutouts_summary">Visualizza il sito web sotto i ritagli dello schermo come quello della fotocamera.
             Quando questa opzione è abilitata, Privacy Browser sarà anche visualizzato sotto alla tastiera. La modifica di questa impostazione provoca il riavvio di Privacy Browser.</string>
     <string name="clear_everything">Elimina tutto</string>
-        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Cancella i cookies, il DOM storage, i dati dei moduli, il logcat e la cache di WebView.  Cancella completamente le cartelle “app_webview” e “cache”.</string>
+        <string name="clear_everything_summary">Cancella i cookies, il DOM storage, il logcat e la cache di WebView.  Cancella completamente le cartelle “app_webview” e “cache”.</string>
         <string name="clear_cookies_preference">Elimina i cookie</string>
         <string name="clear_cookies_summary">Cancella i cookies.</string>
         <string name="clear_dom_storage_preference">Elimina il DOM storage</string>
         <string name="clear_dom_storage_summary">Cancella solo il DOM storage.</string>
-        <string name="clear_form_data_preference">Elimina i dati dei moduli</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_form_data_summary">Cancella solo i dati dei moduli.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_logcat">Elimina il logcat</string>
         <string name="clear_logcat_summary">Cancella il logcat.</string>
         <string name="clear_cache">Elimina la cache</string>

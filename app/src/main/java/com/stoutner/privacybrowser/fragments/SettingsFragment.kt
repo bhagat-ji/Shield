@@ -33,7 +33,6 @@ import android.widget.ArrayAdapter
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 
 import com.stoutner.privacybrowser.R
@@ -65,7 +64,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var clearCookiesPreference: Preference
     private lateinit var clearDomStoragePreference: Preference
     private lateinit var clearEverythingPreference: Preference
-    private lateinit var clearFormDataPreference: Preference  // The clear form data preference can be removed once the minimum API >= 26.
     private lateinit var clearLogcatPreference: Preference
     private lateinit var cookiesPreference: Preference
     private lateinit var customUserAgentPreference: Preference
@@ -80,7 +78,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var fanboyAnnoyanceListPreference: Preference
     private lateinit var fanboySocialBlockingListPreference: Preference
     private lateinit var fontSizePreference: Preference
-    private lateinit var formDataPreference: Preference  // The form data preference can be removed once the minimum API >= 26.
     private lateinit var fullScreenBrowsingModePreference: Preference
     private lateinit var hideAppBarPreference: Preference
     private lateinit var displayUnderCutoutsPreference: Preference
@@ -127,7 +124,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         javaScriptPreference = findPreference(getString(R.string.javascript_key))!!
         cookiesPreference = findPreference(getString(R.string.cookies_key))!!
         domStoragePreference = findPreference(getString(R.string.dom_storage_key))!!
-        formDataPreference = findPreference(getString(R.string.save_form_data_key))!!  // The form data preference can be removed once the minimum API >= 26.
         userAgentPreference = findPreference(getString(R.string.user_agent_key))!!
         customUserAgentPreference = findPreference(getString(R.string.custom_user_agent_key))!!
         incognitoModePreference = findPreference(getString(R.string.incognito_mode_key))!!
@@ -151,7 +147,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         clearEverythingPreference = findPreference(getString(R.string.clear_everything_key))!!
         clearCookiesPreference = findPreference(getString(R.string.clear_cookies_key))!!
         clearDomStoragePreference = findPreference(getString(R.string.clear_dom_storage_key))!!
-        clearFormDataPreference = findPreference(getString(R.string.clear_form_data_key))!!  // The clear form data preference can be removed once the minimum API >= 26.
         clearLogcatPreference = findPreference(getString(R.string.clear_logcat_key))!!
         clearCachePreference = findPreference(getString(R.string.clear_cache_key))!!
         homepagePreference = findPreference(getString(R.string.homepage_key))!!
@@ -183,17 +178,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val fanboySocialBlockingEnabled = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
         val fullScreenBrowsingMode = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false)
         val clearEverything = sharedPreferences.getBoolean(getString(R.string.clear_everything_key), true)
-
-        // Remove the form data preferences if the API is >= 26 as they no longer do anything.
-        if (Build.VERSION.SDK_INT >= 26) {
-            // Get handles for the categories.
-            val privacyCategory = findPreference<PreferenceCategory>(getString(R.string.privacy_category_key))!!
-            val clearAndExitCategory = findPreference<PreferenceCategory>(getString(R.string.clear_and_exit_category_key))!!
-
-            // Remove the form data preferences.
-            privacyCategory.removePreference(formDataPreference)
-            clearAndExitCategory.removePreference(clearFormDataPreference)
-        }
 
         // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
         fanboySocialBlockingListPreference.isEnabled = !fanboyAnnoyanceListEnabled
@@ -271,7 +255,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Set the status of the clear and exit preferences.
         clearCookiesPreference.isEnabled = !clearEverything
         clearDomStoragePreference.isEnabled = !clearEverything
-        clearFormDataPreference.isEnabled = !clearEverything  // Clear form data can be removed once the minimum API is >= 26.
         clearLogcatPreference.isEnabled = !clearEverything
         clearCachePreference.isEnabled = !clearEverything
 
@@ -342,14 +325,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 domStoragePreference.setIcon(R.drawable.dom_storage_disabled)
         } else {  // JavaScript is disabled.  DOM storage should be ghosted.
             domStoragePreference.setIcon(R.drawable.dom_storage_ghosted)
-        }
-
-        // Set the save form data icon if API < 26.  Save form data has no effect on API >= 26.
-        if (Build.VERSION.SDK_INT < 26) {
-            if (sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false))
-                formDataPreference.setIcon(R.drawable.form_data_enabled)
-            else
-                formDataPreference.setIcon(R.drawable.form_data_disabled)
         }
 
         // Set the custom user agent icon.
@@ -494,14 +469,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             clearDomStoragePreference.setIcon(R.drawable.clear_dom_storage_enabled)
         else
             clearDomStoragePreference.setIcon(R.drawable.clear_dom_storage_disabled)
-
-        // Set the clear form data icon if the API < 26.  It has no effect on newer versions of Android.
-        if (Build.VERSION.SDK_INT < 26) {
-            if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_form_data_key), true))
-                clearFormDataPreference.setIcon(R.drawable.clear_form_data_enabled)
-            else
-                clearFormDataPreference.setIcon(R.drawable.clear_form_data_disabled)
-        }
 
         // Set the clear logcat icon.
         if (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true))
@@ -677,14 +644,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         domStoragePreference.setIcon(R.drawable.dom_storage_enabled)
                     else
                         domStoragePreference.setIcon(R.drawable.dom_storage_disabled)
-                }
-
-                getString(R.string.save_form_data_key) -> {  // Saved form data can be removed once the minimum API >= 26.
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false))
-                        formDataPreference.setIcon(R.drawable.form_data_enabled)
-                    else
-                        formDataPreference.setIcon(R.drawable.form_data_disabled)
                 }
 
                 getString(R.string.user_agent_key) -> {
@@ -965,7 +924,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     // Update the status of the clear and exit preferences.
                     clearCookiesPreference.isEnabled = !newClearEverythingBoolean
                     clearDomStoragePreference.isEnabled = !newClearEverythingBoolean
-                    clearFormDataPreference.isEnabled = !newClearEverythingBoolean  // Clear form data can be removed once the minimum API >= 26.
                     clearLogcatPreference.isEnabled = !newClearEverythingBoolean
                     clearCachePreference.isEnabled = !newClearEverythingBoolean
 
@@ -986,14 +944,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         clearDomStoragePreference.setIcon(R.drawable.clear_dom_storage_enabled)
                     else
                         clearDomStoragePreference.setIcon(R.drawable.clear_dom_storage_disabled)
-
-                    // Update the clear form data preference icon if the API < 26.
-                    if (Build.VERSION.SDK_INT < 26) {
-                        if (newClearEverythingBoolean || sharedPreferences.getBoolean(getString(R.string.clear_form_data_key), true))
-                            clearFormDataPreference.setIcon(R.drawable.clear_form_data_enabled)
-                        else
-                            clearFormDataPreference.setIcon(R.drawable.clear_form_data_disabled)
-                    }
 
                     // Update the clear logcat preference icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean(getString(R.string.clear_logcat_key), true))
@@ -1022,14 +972,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         clearDomStoragePreference.setIcon(R.drawable.clear_dom_storage_enabled)
                     else
                         clearDomStoragePreference.setIcon(R.drawable.clear_dom_storage_disabled)
-                }
-
-                getString(R.string.clear_form_data_key) -> {
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.clear_form_data_key), true))
-                        clearFormDataPreference.setIcon(R.drawable.clear_form_data_enabled)
-                    else
-                        clearFormDataPreference.setIcon(R.drawable.clear_form_data_disabled)
                 }
 
                 getString(R.string.clear_logcat_key) -> {

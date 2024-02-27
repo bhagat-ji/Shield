@@ -42,11 +42,8 @@
     <string name="cookies_disabled">Cookies disabled</string>
     <string name="dom_storage_enabled">DOM Storage enabled</string>
     <string name="dom_storage_disabled">DOM Storage disabled</string>
-    <string name="form_data_enabled">Form Data enabled</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="form_data_disabled">Form Data disabled</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="cookies_deleted">Cookies deleted</string>
     <string name="dom_storage_deleted">DOM Storage deleted</string>
-    <string name="form_data_deleted">Form Data deleted</string>
     <string name="open_navigation_drawer">Open navigation drawer</string>
     <string name="close_navigation_drawer">Close navigation drawer</string>
     <string name="pin_drawer">Pin drawer</string>
@@ -140,11 +137,9 @@
     <string name="stop">Stop</string>
     <string name="cookies">Cookies</string>
     <string name="dom_storage">DOM Storage</string>
-    <string name="form_data">Form Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Clear Data</string>
         <string name="clear_cookies">Clear Cookies</string>
         <string name="clear_dom_storage">Clear DOM Storage</string>
-        <string name="clear_form_data">Clear Form Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
         <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">Block All Third-Party Requests</string>
@@ -374,11 +369,6 @@
         <item>DOM storage enabled</item>
         <item>DOM storage disabled</item>
     </string-array>
-    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
-        <item>System default</item>
-        <item>Form data enabled</item>
-        <item>Form data disabled</item>
-    </string-array>
     <string-array name="easylist_array">
         <item>System default</item>
         <item>EasyList enabled</item>
@@ -562,8 +552,6 @@
             When the active tab has cookies enabled, any network request made in the background by another tab also has cookies enabled.</string>
         <string name="dom_storage_preference">DOM storage</string>
         <string name="dom_storage_preference_summary">JavaScript must be enabled for Document Object Model storage to function.</string>
-        <string name="save_form_data_preference">Form data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="save_form_data_preference_summary">Saved form data can auto-populate fields on websites.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -703,14 +691,11 @@
         <string name="display_under_cutouts_summary">Draw the website under cutouts, like camera notches. When this is enabled, Privacy Browser will also be drawn under the keyboard.
             Changing this setting will restart Privacy Browser.</string>
     <string name="clear_everything">Clear everything</string>
-        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Clears cookies, DOM storage, form data, the logcat, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
+        <string name="clear_everything_summary">Clears cookies, DOM storage, the logcat, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
         <string name="clear_cookies_preference">Clear cookies</string>
         <string name="clear_cookies_summary">Clears cookies.</string>
         <string name="clear_dom_storage_preference">Clear DOM storage</string>
         <string name="clear_dom_storage_summary">Clears DOM storage.</string>
-        <string name="clear_form_data_preference">Clear form data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_form_data_summary">Clears form data.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_logcat">Clear logcat</string>
         <string name="clear_logcat_summary">Clears the logcat.</string>
         <string name="clear_cache">Clear cache</string>
@@ -785,7 +770,6 @@
     <string name="clear_cookies_key" translatable="false">clear_cookies</string>
     <string name="clear_dom_storage_key" translatable="false">clear_dom_storage</string>
     <string name="clear_everything_key" translatable="false">clear_everything</string>
-    <string name="clear_form_data_key" translatable="false">clear_form_data</string>  <!-- The clear form data string can be removed once the minimum API >= 26. -->
     <string name="clear_logcat_key" translatable="false">clear_logcat</string>
     <string name="custom_user_agent_key" translatable="false">custom_user_agent</string>
     <string name="display_additional_app_bar_icons_key" translatable="false">display_additional_app_bar_icons</string>
@@ -808,7 +792,6 @@
     <string name="privacy_category_key" translatable="false">privacy</string>
     <string name="proxy_key" translatable="false">proxy</string>
     <string name="proxy_custom_url_key" translatable="false">proxy_custom_url</string>
-    <string name="save_form_data_key" translatable="false">save_form_data</string>  <!--The form data string can be removed once the minimum API >= 26. -->
     <string name="scroll_app_bar_key" translatable="false">scroll_app_bar</string>
     <string name="search_custom_url_key" translatable="false">search_custom_url</string>
     <string name="search_key" translatable="false">search</string>

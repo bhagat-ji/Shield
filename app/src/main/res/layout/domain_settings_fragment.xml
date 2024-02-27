@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -206,50 +206,6 @@
 
             <TextView
                 android:id="@+id/dom_storage_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="36dp"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- Form Data. This may be removed one the minimum API >= 26. -->
-        <LinearLayout
-            android:id="@+id/form_data_linearlayout"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:padding="12dp" >
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:text="@string/form_data" />
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/form_data_imageview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/form_data_enabled"
-                    app:tint="@color/yellow_icon_selector"
-                    android:contentDescription="@string/form_data" />
-
-                <Spinner
-                    android:id="@+id/form_data_spinner"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/form_data_textview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"

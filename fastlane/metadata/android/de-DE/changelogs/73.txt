@@ -1,0 +1,10 @@
+• Optionen für die Download Provider erweitert, sodass nun Privacy Browser, Androids Download Manager oder eine externe App gewählt werden kann.
+• Verschwendeter Platz zwischen dem Navigations-Menü-Icon und der URL-Leiste entfernt.
+• Neuer Eintrag für "Nach oben/unten scrollen" im Navigations-Menü hinzugefügt.
+• Option für Anzeige unter Kamera-Ausschnitt im Vollbild-Modus hinzugefügt.
+• Fehler behoben, durch den gelegentlich Tabs ohne entsprechende Seiten geöffnet wurden.
+• Selten auftretender Fehler behoben, durch welchen nach der Erstellung neuer Tabs falsche Seiten als aktiv gesetzt wurden.
+• Fehler beim Aktualisieren von Favoriten-Icons beim Navigieren im Verlauf behoben.
+• Vorgabe für das Scrollen der App-Leiste bei Neu-Installation deaktiviert.
+• Diverse kleine Verbesserungen an der Benutzer-Oberfläche.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -50,9 +50,9 @@ import com.stoutner.privacybrowser.R
 import java.io.ByteArrayOutputStream
 
 // Define the private class constants.
-private const val SHORTCUT_NAME = "shortcut_name"
-private const val URL_STRING = "url_string"
-private const val FAVORITE_ICON_BYTE_ARRAY = "favorite_icon_byte_array"
+private const val SHORTCUT_NAME = "A"
+private const val URL_STRING = "B"
+private const val FAVORITE_ICON_BYTE_ARRAY = "C"
 
 class CreateHomeScreenShortcutDialog : DialogFragment() {
     companion object {
@@ -239,7 +239,7 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
         val shortcutName = shortcutNameEditText.text.toString()
         val urlString = urlEditText.text.toString()
 
-        // Convert the favorite icon bitmap to an icon.  `IconCompat` must be used until the minimum API >= 26.
+        // Convert the favorite icon bitmap to an icon.
         val favoriteIcon = IconCompat.createWithBitmap(favoriteIconBitmap)
 
         // Create a shortcut intent.
@@ -262,7 +262,7 @@ class CreateHomeScreenShortcutDialog : DialogFragment() {
         shortcutInfoBuilder.setIntent(shortcutIntent)
         shortcutInfoBuilder.setShortLabel(shortcutName)
 
-        // Add the shortcut to the home screen.  `ShortcutManagerCompat` can be switched to `ShortcutManager` once the minimum API >= 26.
+        // Add the shortcut to the home screen.
         ShortcutManagerCompat.requestPinShortcut(requireContext(), shortcutInfoBuilder.build(), null)
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -22,7 +22,6 @@ package com.stoutner.privacybrowser.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
@@ -73,7 +72,6 @@ import com.stoutner.privacybrowser.helpers.ENABLE_EASYLIST
 import com.stoutner.privacybrowser.helpers.ENABLE_EASYPRIVACY
 import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_ANNOYANCE_LIST
 import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST
-import com.stoutner.privacybrowser.helpers.ENABLE_FORM_DATA
 import com.stoutner.privacybrowser.helpers.ENABLE_JAVASCRIPT
 import com.stoutner.privacybrowser.helpers.ENABLE_ULTRAPRIVACY
 import com.stoutner.privacybrowser.helpers.FONT_SIZE
@@ -142,7 +140,6 @@ class DomainSettingsFragment : Fragment() {
         val javaScriptDefault = sharedPreferences.getBoolean(getString(R.string.javascript_key), false)
         val cookiesDefault = sharedPreferences.getBoolean(getString(R.string.cookies_key), false)
         val domStorageDefault = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
-        val formDataDefault = sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false)  // The form data views can be remove once the minimum API >= 26.
         val userAgentDefault = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
         val customUserAgentStringDefault = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
         val easyListDefault = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
@@ -173,10 +170,6 @@ class DomainSettingsFragment : Fragment() {
         val domStorageImageView = domainSettingsView.findViewById<ImageView>(R.id.dom_storage_imageview)
         val domStorageSpinner = domainSettingsView.findViewById<Spinner>(R.id.dom_storage_spinner)
         val domStorageTextView = domainSettingsView.findViewById<TextView>(R.id.dom_storage_textview)
-        val formDataLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.form_data_linearlayout)  // The form data views can be remove once the minimum API >= 26.
-        val formDataImageView = domainSettingsView.findViewById<ImageView>(R.id.form_data_imageview)  // The form data views can be remove once the minimum API >= 26.
-        val formDataSpinner = domainSettingsView.findViewById<Spinner>(R.id.form_data_spinner)  // The form data views can be remove once the minimum API >= 26.
-        val formDataTextView = domainSettingsView.findViewById<TextView>(R.id.form_data_textview)  // The form data views can be remove once the minimum API >= 26.
         val userAgentLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.user_agent_linearlayout)
         val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
         val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
@@ -265,10 +258,6 @@ class DomainSettingsFragment : Fragment() {
         val currentIpAddressesRadioButton = domainSettingsView.findViewById<RadioButton>(R.id.current_ip_addresses_radiobutton)
         val currentIpAddressesTextView = domainSettingsView.findViewById<TextView>(R.id.current_ip_addresses_textview)
 
-        // Hide the form data linear layout if the API >= 26.
-        if (Build.VERSION.SDK_INT >= 26)
-            formDataLinearLayout.visibility = View.GONE
-
         // Initialize the database handler.
         val domainsDatabaseHelper = DomainsDatabaseHelper(requireContext())
 
@@ -283,7 +272,6 @@ class DomainSettingsFragment : Fragment() {
         val javaScriptInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT))
         val cookiesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(COOKIES))
         val domStorageInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE))
-        val formDataInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA))  // Form data can be remove once the minimum API >= 26.
         val currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(USER_AGENT))
         val easyListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
         val easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
@@ -316,7 +304,6 @@ class DomainSettingsFragment : Fragment() {
         val javaScriptArrayAdapter = ArrayAdapter.createFromResource(context, R.array.javascript_array, R.layout.spinner_item)
         val cookiesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.cookies_array, R.layout.spinner_item)
         val domStorageArrayAdapter = ArrayAdapter.createFromResource(context, R.array.dom_storage_array, R.layout.spinner_item)
-        val formDataArrayAdapter = ArrayAdapter.createFromResource(context, R.array.form_data_array, R.layout.spinner_item)  // Form data can be remove once the minimum API >= 26.
         val translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item)
         val easyListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easylist_array, R.layout.spinner_item)
         val easyPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easyprivacy_array, R.layout.spinner_item)
@@ -335,7 +322,6 @@ class DomainSettingsFragment : Fragment() {
         javaScriptArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         cookiesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         domStorageArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        formDataArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)  // Form data can be remove once the minimum API >= 26.
         translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         easyListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         easyPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
@@ -354,7 +340,6 @@ class DomainSettingsFragment : Fragment() {
         javaScriptSpinner.adapter = javaScriptArrayAdapter
         cookiesSpinner.adapter = cookiesArrayAdapter
         domStorageSpinner.adapter = domStorageArrayAdapter
-        formDataSpinner.adapter = formDataArrayAdapter  // Form data can be remove once the minimum API >= 26.
         userAgentSpinner.adapter = translatedUserAgentArrayAdapter
         easyListSpinner.adapter = easyListArrayAdapter
         easyPrivacySpinner.adapter = easyPrivacyArrayAdapter
@@ -373,7 +358,6 @@ class DomainSettingsFragment : Fragment() {
         javaScriptTextView.setOnClickListener { javaScriptSpinner.performClick() }
         cookiesTextView.setOnClickListener { cookiesSpinner.performClick() }
         domStorageTextView.setOnClickListener { domStorageSpinner.performClick() }
-        formDataTextView.setOnClickListener { formDataSpinner.performClick() }  // Form data can be remove once the minimum API >= 26.
         userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
         easyListTextView.setOnClickListener { easyListSpinner.performClick() }
         easyPrivacyTextView.setOnClickListener { easyPrivacySpinner.performClick() }
@@ -392,7 +376,6 @@ class DomainSettingsFragment : Fragment() {
         javaScriptSpinner.setSelection(javaScriptInt)
         cookiesSpinner.setSelection(cookiesInt)
         domStorageSpinner.setSelection(domStorageInt)
-        formDataSpinner.setSelection(formDataInt)
         easyListSpinner.setSelection(easyListInt)
         easyPrivacySpinner.setSelection(easyPrivacyInt)
         fanboysAnnoyanceListSpinner.setSelection(fanboysAnnoyanceListInt)
@@ -409,7 +392,6 @@ class DomainSettingsFragment : Fragment() {
         populateTextView(javaScriptDefault, javaScriptArrayAdapter, javaScriptTextView)
         populateTextView(cookiesDefault, cookiesArrayAdapter, cookiesTextView)
         populateTextView(domStorageDefault, domStorageArrayAdapter, domStorageTextView)
-        populateTextView(formDataDefault, formDataArrayAdapter, formDataTextView)
         populateTextView(easyListDefault, easyListArrayAdapter, easyListTextView)
         populateTextView(easyPrivacyDefault, easyPrivacyArrayAdapter, easyPrivacyTextView)
         populateTextView(fanboysAnnoyanceListDefault, fanboysAnnoyanceListArrayAdapter, fanboysAnnoyanceListTextView)
@@ -424,7 +406,6 @@ class DomainSettingsFragment : Fragment() {
         // Set the icon and text view settings.  Non-standard items are handled individually below.
         setIconAndTextViewSettings(cookiesInt, cookiesDefault, cookiesLinearLayout, cookiesImageView, cookiesTextView)
         setIconAndTextViewSettings(domStorageInt, domStorageDefault, domStorageLinearLayout, domStorageImageView, domStorageTextView)
-        setIconAndTextViewSettings(formDataInt, formDataDefault, formDataLinearLayout, formDataImageView, formDataTextView)
         setIconAndTextViewSettings(easyListInt, easyListDefault, easyListLinearLayout, easyListImageView, easyListTextView)
         setIconAndTextViewSettings(easyPrivacyInt, easyPrivacyDefault, easyPrivacyLinearLayout, easyPrivacyImageView, easyListTextView)
         setIconAndTextViewSettings(fanboysAnnoyanceListInt, fanboysAnnoyanceListDefault, fanboysAnnoyanceListLinearLayout, fanboysAnnoyanceListImageView, fanboysAnnoyanceListTextView)
@@ -1056,20 +1037,6 @@ class DomainSettingsFragment : Fragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Do nothing.
-            }
-        }
-
-        // Set the form data spinner listener.  It can be removed once the minimum API >= 26.
-        if (Build.VERSION.SDK_INT < 26) {
-            formDataSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    // Update the icon and the text view settings.
-                    setIconAndTextViewSettings(position, formDataDefault, formDataLinearLayout, formDataImageView, formDataTextView)
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    // Do nothing.
-                }
             }
         }
 

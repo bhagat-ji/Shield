@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -31,11 +31,8 @@
     <string name="javascript_disabled">JavaScript devre dışı</string>
     <string name="dom_storage_enabled">DOM Depolama etkin</string>
     <string name="dom_storage_disabled">DOM Depolama devre dışı</string>
-    <string name="form_data_enabled">Form Verisi etkin</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="form_data_disabled">Form Verisi devre dışı</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="cookies_deleted">Çerezler silindi</string>
     <string name="dom_storage_deleted">DOM Depolama silindi</string>
-    <string name="form_data_deleted">Form Verisi silindi</string>
     <string name="open_navigation_drawer">Gezinti Menüsünü aç</string>
     <string name="close_navigation_drawer">Gezinti Menüsünü kapa</string>
     <string name="unrecognized_url">Onaylanmamış URL:\u0020 %1$s</string>
@@ -120,11 +117,9 @@
     <string name="refresh">Yenile</string>
     <string name="stop">Dur</string>
     <string name="dom_storage">DOM Depolama</string>
-    <string name="form_data">Form Verisi</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Veriyi temizle</string>
         <string name="clear_cookies">Çerezleri temizle</string>
         <string name="clear_dom_storage">DOM Depolamayı temizle</string>
-        <string name="clear_form_data">Form Verisini temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
         <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri engelle</string>
@@ -369,8 +364,6 @@
     <string name="privacy">Gizlilik</string>
         <string name="javascript_preference_summary">JavaScript, web sitelerin cihazdaki programları (scriptler) çalıştırmasına izin verir.</string>
         <string name="dom_storage_preference">DOM depolama</string>
-        <string name="save_form_data_preference">Form verisi</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="save_form_data_preference_summary">Kaydedilen form verisi, web sitelerdeki boşlukları otomatik olarak dolduracaktır.</string>
         <string name="user_agent">Kullanıcı aracısı</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -434,12 +427,10 @@
         <string name="hide_app_bar">Uygulama çubuğunu gizle</string>
         <string name="hide_app_bar_summary">URL içeren uygulama çubuğunu gizler.</string>
     <string name="clear_everything">Her şeyi temizle</string>
-        <string name="clear_everything_summary">Çerezleri, DOM depolamayı, form verisini ve WebView ön belleğini temizler. Sonrasında, manuel olarak bütün “app_webview” ve “cache” dizinlerini siler.</string>
+        <string name="clear_everything_summary">Çerezleri, DOM depolamayı, ve WebView ön belleğini temizler. Sonrasında, manuel olarak bütün “app_webview” ve “cache” dizinlerini siler.</string>
         <string name="clear_cookies_preference">Çerezleri temizle</string>
         <string name="clear_dom_storage_preference">DOM Depolamayı temizle</string>
         <string name="clear_dom_storage_summary">DOM Depolamayı temizler.</string>
-        <string name="clear_form_data_preference">Form verisini temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_form_data_summary">Form verisini temizler.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_cache">Önbelleği temizle</string>
         <string name="clear_cache_summary">WebView önbelleğini temizler.</string>
     <string name="general">Genel</string>

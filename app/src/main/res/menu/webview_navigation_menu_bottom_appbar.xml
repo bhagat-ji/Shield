@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -22,7 +22,7 @@
     <item
         android:id="@+id/about"
         android:title="@string/about"
-        android:icon="@drawable/about"
+        android:icon="@drawable/about_blue"
         android:orderInCategory="10" />
 
     <item

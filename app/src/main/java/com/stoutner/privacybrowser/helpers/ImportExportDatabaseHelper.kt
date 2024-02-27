@@ -38,7 +38,7 @@ import java.io.OutputStream
 import java.util.Date
 
 // Define the public constants.
-const val IMPORT_EXPORT_SCHEMA_VERSION = 18
+const val IMPORT_EXPORT_SCHEMA_VERSION = 19
 const val EXPORT_SUCCESSFUL = "A"
 const val IMPORT_SUCCESSFUL = "B"
 
@@ -51,7 +51,6 @@ private const val CLEAR_CACHE = "clear_cache"
 private const val CLEAR_COOKIES = "clear_cookies"
 private const val CLEAR_DOM_STORAGE = "clear_dom_storage"
 private const val CLEAR_EVERYTHING = "clear_everything"
-private const val CLEAR_FORM_DATA = "clear_form_data"  // Clear form data can be removed once the minimum API >= 26.
 private const val CLEAR_LOGCAT = "clear_logcat"
 private const val CUSTOM_USER_AGENT = "custom_user_agent"
 private const val DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons"
@@ -75,7 +74,6 @@ private const val PREFERENCES_TABLE = "preferences"
 private const val PREFERENCES_USER_AGENT = "user_agent"
 private const val PROXY = "proxy"
 private const val PROXY_CUSTOM_URL = "proxy_custom_url"
-private const val SAVE_FORM_DATA = "save_form_data"
 private const val SEARCH = "search"
 private const val SEARCH_CUSTOM_URL = "search_custom_url"
 private const val SCROLL_APP_BAR = "scroll_app_bar"
@@ -401,11 +399,14 @@ class ImportExportDatabaseHelper {
             }
 
             // Upgrade from schema version 15, first used in Privacy Browser 3.11, to schema version 16, first used in Privacy Browser 3.12.
-            // This upgrade removed the `x_requested_with_header` from the domains and preferences tables.
+            // This upgrade removed `x_requested_with_header` from the domains and preferences tables.
             // There is no need to delete the columns as they will simply be ignored by the import.
 
             // Upgrade from schema version 16, first used in Privacy Browser 3.12, to schema version 17, first used in Privacy Browser 3.15.
             if (importDatabaseVersion < 17) {
+                // This upgrade removed `parentfolder` from the Bookmarks table.
+                // There is no need to delete the column as they will simply be ignored by the import.
+
                 // Add the folder ID column.
                 importDatabase.execSQL("ALTER TABLE $BOOKMARKS_TABLE ADD COLUMN $FOLDER_ID INTEGER")
 
@@ -490,10 +491,74 @@ class ImportExportDatabaseHelper {
                 // Close the bookmarks cursor.
                 bookmarksCursor.close()
 
-                // This upgrade removed the old `parentfolder` string column.
-                // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
-                // It will be a while before that is supported in Android.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
-                // Although a new table could be created and all the data copied to it, I think I will just leave the old parent folder column.  It will be wiped out the next time an import is run.
+                // Get the current switch default values.
+                val javaScriptDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.javascript_key), false)
+                val cookiesDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.cookies_key), false)
+                val domStorageDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.dom_storage_key), false)
+                val easyListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easylist_key), true)
+                val easyPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easyprivacy_key), true)
+                val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_annoyance_list_key), true)
+                val fanboysSocialBlockingListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_social_blocking_list), true)
+                val ultraListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultralist_key), true)
+                val ultraPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultraprivacy_key), true)
+                val blockAllThirdPartyRequestsDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.block_all_third_party_requests_key), false)
+
+                // Get a domains cursor.
+                val importDomainsConversionCursor = importDatabase.rawQuery("SELECT * FROM $DOMAINS_TABLE", null)
+
+                // Get the domains column indexes.
+                val javaScriptColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
+                val cookiesColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(COOKIES)
+                val domStorageColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
+                val easyListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+                val easyPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+                val fanboysAnnoyanceListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
+                val fanboysSocialBlockingListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
+                val ultraListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ULTRALIST)
+                val ultraPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)
+                val blockAllThirdPartyRequestsColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
+
+                // Convert the domain from the switch booleans to the spinner integers.
+                for (i in 0 until importDomainsConversionCursor.count) {
+                    // Move to the current record.
+                    importDomainsConversionCursor.moveToPosition(i)
+
+                    // Get the domain current values.
+                    val javaScriptDomainCurrentValue = importDomainsConversionCursor.getInt(javaScriptColumnIndex)
+                    val cookiesDomainCurrentValue = importDomainsConversionCursor.getInt(cookiesColumnIndex)
+                    val domStorageDomainCurrentValue = importDomainsConversionCursor.getInt(domStorageColumnIndex)
+                    val easyListDomainCurrentValue = importDomainsConversionCursor.getInt(easyListColumnIndex)
+                    val easyPrivacyDomainCurrentValue = importDomainsConversionCursor.getInt(easyPrivacyColumnIndex)
+                    val fanboysAnnoyanceListCurrentValue = importDomainsConversionCursor.getInt(fanboysAnnoyanceListColumnIndex)
+                    val fanboysSocialBlockingListCurrentValue = importDomainsConversionCursor.getInt(fanboysSocialBlockingListColumnIndex)
+                    val ultraListCurrentValue = importDomainsConversionCursor.getInt(ultraListColumnIndex)
+                    val ultraPrivacyCurrentValue = importDomainsConversionCursor.getInt(ultraPrivacyColumnIndex)
+                    val blockAllThirdPartyRequestsCurrentValue = importDomainsConversionCursor.getInt(blockAllThirdPartyRequestsColumnIndex)
+
+                    // Instantiate a domain content values.
+                    val domainContentValues = ContentValues()
+
+                    // Populate the domain content values.
+                    domainContentValues.put(ENABLE_JAVASCRIPT, convertFromSwitchToSpinner(javaScriptDefaultValue, javaScriptDomainCurrentValue))
+                    domainContentValues.put(COOKIES, convertFromSwitchToSpinner(cookiesDefaultValue, cookiesDomainCurrentValue))
+                    domainContentValues.put(ENABLE_DOM_STORAGE, convertFromSwitchToSpinner(domStorageDefaultValue, domStorageDomainCurrentValue))
+                    domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
+                    domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
+                    domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
+                    domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, convertFromSwitchToSpinner(fanboysSocialBlockingListDefaultValue, fanboysSocialBlockingListCurrentValue))
+                    domainContentValues.put(ULTRALIST, convertFromSwitchToSpinner(ultraListDefaultValue, ultraListCurrentValue))
+                    domainContentValues.put(ENABLE_ULTRAPRIVACY, convertFromSwitchToSpinner(ultraPrivacyDefaultValue, ultraPrivacyCurrentValue))
+                    domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, convertFromSwitchToSpinner(blockAllThirdPartyRequestsDefaultValue, blockAllThirdPartyRequestsCurrentValue))
+
+                    // Get the current database ID.
+                    val currentDatabaseId = importDomainsConversionCursor.getInt(importDomainsConversionCursor.getColumnIndexOrThrow(ID))
+
+                    // Update the row for the specified database ID.
+                    importDatabase.update(DOMAINS_TABLE, domainContentValues, "$ID = $currentDatabaseId", null)
+                }
+
+                // Close the cursor.
+                importDomainsConversionCursor.close()
             }
 
             // Upgrade from schema version 17, first used in Privacy Browser 3.15, to schema version 18, first used in Privacy Browser 3.17.
@@ -506,7 +571,7 @@ class ImportExportDatabaseHelper {
                 val displayUnderCutouts = sharedPreferences.getBoolean(DISPLAY_UNDER_CUTOUTS, false)
 
                 // Populate the preferences table with the current display under cutouts value.
-                // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
+                // This can switch to using the variables directly once the minimum API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
                 // <https://developer.android.com/reference/android/database/sqlite/package-summary>
                 if (displayUnderCutouts)
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DISPLAY_UNDER_CUTOUTS = 1")
@@ -534,6 +599,11 @@ class ImportExportDatabaseHelper {
                 else  // Download with Privacy Browser.
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $DOWNLOAD_PROVIDER = '${downloadProviderEntryValuesStringArray[0]}'")
             }
+
+            // Upgrade from schema version 18, first used in Privacy Browser 3.17, to schema version 19, first used in Privacy Browser 3.18.
+            // This upgrade removed `enableformdata` from the Domains table and `save_form_data` and `clear_form_data` from the Preferences table.
+            // There is no need to delete the columns as they will simply be ignored by the import.
+
 
             /* End of database upgrade logic. */
 
@@ -580,82 +650,6 @@ class ImportExportDatabaseHelper {
                 importBookmarksCursor.moveToNext()
             }
 
-            // Upgrade from schema version 16, first used in Privacy Browser 3.12, to schema version 17, first used in Privacy Browser 3.15.
-            if (importDatabaseVersion < 16) {
-                // Get the current switch default values.
-                val javaScriptDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.javascript_key), false)
-                val cookiesDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.cookies_key), false)
-                val domStorageDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.dom_storage_key), false)
-                val formDataDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.save_form_data_key), false)
-                val easyListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easylist_key), true)
-                val easyPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easyprivacy_key), true)
-                val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_annoyance_list_key), true)
-                val fanboysSocialBlockingListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_social_blocking_list), true)
-                val ultraListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultralist_key), true)
-                val ultraPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultraprivacy_key), true)
-                val blockAllThirdPartyRequestsDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.block_all_third_party_requests_key), false)
-
-                // Get a domains cursor.
-                val importDomainsConversionCursor = importDatabase.rawQuery("SELECT * FROM $DOMAINS_TABLE", null)
-
-                // Get the domains column indexes.
-                val javaScriptColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
-                val cookiesColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(COOKIES)
-                val domStorageColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
-                val formDataColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)
-                val easyListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
-                val easyPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
-                val fanboysAnnoyanceListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
-                val fanboysSocialBlockingListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
-                val ultraListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ULTRALIST)
-                val ultraPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)
-                val blockAllThirdPartyRequestsColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
-
-                // Convert the domain from the switch booleans to the spinner integers.
-                for (i in 0 until importDomainsConversionCursor.count) {
-                    // Move to the current record.
-                    importDomainsConversionCursor.moveToPosition(i)
-
-                    // Get the domain current values.
-                    val javaScriptDomainCurrentValue = importDomainsConversionCursor.getInt(javaScriptColumnIndex)
-                    val cookiesDomainCurrentValue = importDomainsConversionCursor.getInt(cookiesColumnIndex)
-                    val domStorageDomainCurrentValue = importDomainsConversionCursor.getInt(domStorageColumnIndex)
-                    val formDataDomainCurrentValue = importDomainsConversionCursor.getInt(formDataColumnIndex)
-                    val easyListDomainCurrentValue = importDomainsConversionCursor.getInt(easyListColumnIndex)
-                    val easyPrivacyDomainCurrentValue = importDomainsConversionCursor.getInt(easyPrivacyColumnIndex)
-                    val fanboysAnnoyanceListCurrentValue = importDomainsConversionCursor.getInt(fanboysAnnoyanceListColumnIndex)
-                    val fanboysSocialBlockingListCurrentValue = importDomainsConversionCursor.getInt(fanboysSocialBlockingListColumnIndex)
-                    val ultraListCurrentValue = importDomainsConversionCursor.getInt(ultraListColumnIndex)
-                    val ultraPrivacyCurrentValue = importDomainsConversionCursor.getInt(ultraPrivacyColumnIndex)
-                    val blockAllThirdPartyRequestsCurrentValue = importDomainsConversionCursor.getInt(blockAllThirdPartyRequestsColumnIndex)
-
-                    // Instantiate a domain content values.
-                    val domainContentValues = ContentValues()
-
-                    // Populate the domain content values.
-                    domainContentValues.put(ENABLE_JAVASCRIPT, convertFromSwitchToSpinner(javaScriptDefaultValue, javaScriptDomainCurrentValue))
-                    domainContentValues.put(COOKIES, convertFromSwitchToSpinner(cookiesDefaultValue, cookiesDomainCurrentValue))
-                    domainContentValues.put(ENABLE_DOM_STORAGE, convertFromSwitchToSpinner(domStorageDefaultValue, domStorageDomainCurrentValue))
-                    domainContentValues.put(ENABLE_FORM_DATA, convertFromSwitchToSpinner(formDataDefaultValue, formDataDomainCurrentValue))
-                    domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
-                    domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
-                    domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
-                    domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, convertFromSwitchToSpinner(fanboysSocialBlockingListDefaultValue, fanboysSocialBlockingListCurrentValue))
-                    domainContentValues.put(ULTRALIST, convertFromSwitchToSpinner(ultraListDefaultValue, ultraListCurrentValue))
-                    domainContentValues.put(ENABLE_ULTRAPRIVACY, convertFromSwitchToSpinner(ultraPrivacyDefaultValue, ultraPrivacyCurrentValue))
-                    domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, convertFromSwitchToSpinner(blockAllThirdPartyRequestsDefaultValue, blockAllThirdPartyRequestsCurrentValue))
-
-                    // Get the current database ID.
-                    val currentDatabaseId = importDomainsConversionCursor.getInt(importDomainsConversionCursor.getColumnIndexOrThrow(ID))
-
-                    // Update the row for the specified database ID.
-                    importDatabase.update(DOMAINS_TABLE, domainContentValues, "$ID = $currentDatabaseId", null)
-                }
-
-                // Close the cursor.
-                importDomainsConversionCursor.close()
-            }
-
             // Close the bookmarks cursor and database.
             importBookmarksCursor.close()
             bookmarksDatabaseHelper.close()
@@ -678,7 +672,6 @@ class ImportExportDatabaseHelper {
             val domainJavaScriptColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
             val domainCookiesColumnIndex = importDomainsCursor.getColumnIndexOrThrow(COOKIES)
             val domainDomStorageColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
-            val domainFormDataColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)  // Form data can be removed once the minimum API >= 26.
             val domainEasyListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
             val domainEasyPrivacyColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
             val domainFanboysAnnoyanceListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
@@ -714,7 +707,6 @@ class ImportExportDatabaseHelper {
                 domainContentValues.put(ENABLE_JAVASCRIPT, importDomainsCursor.getInt(domainJavaScriptColumnIndex))
                 domainContentValues.put(COOKIES, importDomainsCursor.getInt(domainCookiesColumnIndex))
                 domainContentValues.put(ENABLE_DOM_STORAGE, importDomainsCursor.getInt(domainDomStorageColumnIndex))
-                domainContentValues.put(ENABLE_FORM_DATA, importDomainsCursor.getInt(domainFormDataColumnIndex))  // Form data can be removed once the minimum API >= 26.
                 domainContentValues.put(ENABLE_EASYLIST, importDomainsCursor.getInt(domainEasyListColumnIndex))
                 domainContentValues.put(ENABLE_EASYPRIVACY, importDomainsCursor.getInt(domainEasyPrivacyColumnIndex))
                 domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, importDomainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
@@ -763,7 +755,6 @@ class ImportExportDatabaseHelper {
                 .putBoolean(JAVASCRIPT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(JAVASCRIPT)) == 1)
                 .putBoolean(COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(COOKIES)) == 1)
                 .putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOM_STORAGE)) == 1)
-                .putBoolean(SAVE_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SAVE_FORM_DATA)) == 1)  // Save form data can be removed once the minimum API >= 26.
                 .putString(PREFERENCES_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_USER_AGENT)))
                 .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(CUSTOM_USER_AGENT)))
                 .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(INCOGNITO_MODE)) == 1)
@@ -787,7 +778,6 @@ class ImportExportDatabaseHelper {
                 .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_EVERYTHING)) == 1)
                 .putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_COOKIES)) == 1)
                 .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_DOM_STORAGE)) == 1)
-                .putBoolean(CLEAR_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_FORM_DATA)) == 1)  // Clear form data can be removed once the minimum API >= 26.
                 .putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_LOGCAT)) == 1)
                 .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_CACHE)) == 1)
                 .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(HOMEPAGE)))
@@ -895,7 +885,6 @@ class ImportExportDatabaseHelper {
             val domainJavaScriptColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
             val domainCookiesColumnIndex = domainsCursor.getColumnIndexOrThrow(COOKIES)
             val domainDomStorageColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
-            val domainFormDataColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)  // Form data can be removed once the minimum API >= 26.
             val domainEasyListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
             val domainEasyPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
             val domainFanboysAnnoyanceListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
@@ -931,7 +920,6 @@ class ImportExportDatabaseHelper {
                 domainContentValues.put(ENABLE_JAVASCRIPT, domainsCursor.getInt(domainJavaScriptColumnIndex))
                 domainContentValues.put(COOKIES, domainsCursor.getInt(domainCookiesColumnIndex))
                 domainContentValues.put(ENABLE_DOM_STORAGE, domainsCursor.getInt(domainDomStorageColumnIndex))
-                domainContentValues.put(ENABLE_FORM_DATA, domainsCursor.getInt(domainFormDataColumnIndex))  // Form data can be removed once the minimum API >= 26.
                 domainContentValues.put(ENABLE_EASYLIST, domainsCursor.getInt(domainEasyListColumnIndex))
                 domainContentValues.put(ENABLE_EASYPRIVACY, domainsCursor.getInt(domainEasyPrivacyColumnIndex))
                 domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
@@ -975,7 +963,6 @@ class ImportExportDatabaseHelper {
                     "$JAVASCRIPT BOOLEAN, " +
                     "$COOKIES BOOLEAN, " +
                     "$DOM_STORAGE BOOLEAN, " +
-                    "$SAVE_FORM_DATA BOOLEAN, " +
                     "$PREFERENCES_USER_AGENT TEXT, " +
                     "$CUSTOM_USER_AGENT TEXT, " +
                     "$INCOGNITO_MODE BOOLEAN, " +
@@ -999,7 +986,6 @@ class ImportExportDatabaseHelper {
                     "$CLEAR_EVERYTHING BOOLEAN, " +
                     "$CLEAR_COOKIES BOOLEAN, " +
                     "$CLEAR_DOM_STORAGE BOOLEAN, " +
-                    "$CLEAR_FORM_DATA BOOLEAN, " +
                     "$CLEAR_LOGCAT BOOLEAN, " +
                     "$CLEAR_CACHE BOOLEAN, " +
                     "$HOMEPAGE TEXT, " +
@@ -1028,7 +1014,6 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(JAVASCRIPT, sharedPreferences.getBoolean(JAVASCRIPT, false))
             preferencesContentValues.put(COOKIES, sharedPreferences.getBoolean(COOKIES, false))
             preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean(DOM_STORAGE, false))
-            preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean(SAVE_FORM_DATA, false))  // Save form data can be removed once the minimum API >= 26.
             preferencesContentValues.put(PREFERENCES_USER_AGENT, sharedPreferences.getString(PREFERENCES_USER_AGENT, context.getString(R.string.user_agent_default_value)))
             preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)))
             preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false))
@@ -1052,7 +1037,6 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true))
             preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean(CLEAR_COOKIES, true))
             preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean(CLEAR_DOM_STORAGE, true))
-            preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean(CLEAR_FORM_DATA, true))  // Clear form data can be removed once the minimum API >= 26.
             preferencesContentValues.put(CLEAR_LOGCAT, sharedPreferences.getBoolean(CLEAR_LOGCAT, true))
             preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true))
             preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)))

@@ -40,11 +40,8 @@
     <string name="cookies_disabled">关闭 Cookies</string>
     <string name="dom_storage_enabled">开启 DOM 储存</string>
     <string name="dom_storage_disabled">关闭 DOM 储存</string>
-    <string name="form_data_enabled">启用表单数据</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="form_data_disabled">关闭表单数据</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="cookies_deleted">删除 Cookies</string>
     <string name="dom_storage_deleted">删除 DOM 储存</string>
-    <string name="form_data_deleted">删除表单数据</string>
     <string name="open_navigation_drawer">打开导航栏</string>
     <string name="close_navigation_drawer">关闭导航栏</string>
     <string name="pin_drawer">引脚栏</string>
@@ -134,11 +131,9 @@
     <string name="stop">暂停</string>
     <string name="cookies">Cookies</string>
     <string name="dom_storage">DOM 储存</string>
-    <string name="form_data">表单数据</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">清空数据</string>
         <string name="clear_cookies">清空 Cookies</string>
         <string name="clear_dom_storage">清空 DOM 储存</string>
-        <string name="clear_form_data">清楚表单数据</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
         <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">阻止所有第三方请求</string>
@@ -439,8 +434,6 @@
         <string name="cookies_preference_summary">Cookies 是应用程序级的设置，当活动的页面允许cookies，后台的其他请求网络的页面也允许cookies.</string>
         <string name="dom_storage_preference">DOM 储存</string>
         <string name="dom_storage_preference_summary">JavaScript 必须启用，DOM才能工作.</string>
-        <string name="save_form_data_preference">保存表单数据</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="save_form_data_preference_summary">保存的表单数据可以自动填写网页的一些字段.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -523,14 +516,10 @@
         <string name="hide_app_bar">隐藏应用栏</string>
         <string name="hide_app_bar_summary">隐藏包含URL的应用栏.</string>
     <string name="clear_everything">清除所有</string>
-        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">清除cookies,DOM储存,表单数据,日志,WebView缓存，之后手动删除app_WebView缓存</string>
         <string name="clear_cookies_preference">清除 cookies</string>
         <string name="clear_cookies_summary">清除 cookies.</string>
         <string name="clear_dom_storage_preference">清除 DOM 储存</string>
         <string name="clear_dom_storage_summary">清除 DOM 储存.</string>
-        <string name="clear_form_data_preference">清除表单数据</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_form_data_summary">清除表单数据.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_logcat">清除日志</string>
         <string name="clear_logcat_summary">清除日志.</string>
         <string name="clear_cache">清除缓存</string>

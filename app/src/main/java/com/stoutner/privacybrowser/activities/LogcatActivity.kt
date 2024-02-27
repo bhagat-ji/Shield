@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -87,23 +87,17 @@ class LogcatActivity : AppCompatActivity() {
                     }
                 }
 
-                // Initialize the file name string from the file URI last path segment.
-                var fileNameString = fileUri.lastPathSegment
+                // Get a cursor from the content resolver.
+                val contentResolverCursor = contentResolver.query(fileUri, null, null, null)!!
 
-                // Query the exact file name if the API >= 26.
-                if (Build.VERSION.SDK_INT >= 26) {
-                    // Get a cursor from the content resolver.
-                    val contentResolverCursor = contentResolver.query(fileUri, null, null, null)!!
+                // Move to the fist row.
+                contentResolverCursor.moveToFirst()
 
-                    // Move to the fist row.
-                    contentResolverCursor.moveToFirst()
+                // Get the file name from the cursor.
+                val fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                    // Get the file name from the cursor.
-                    fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
-                    // Close the cursor.
-                    contentResolverCursor.close()
-                }
+                // Close the cursor.
+                contentResolverCursor.close()
 
                 // Display a snackbar with the saved logcat information.
                 Snackbar.make(logcatTextView, getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show()

@@ -694,7 +694,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val javaScriptSpinner = view.findViewById<Spinner>(R.id.javascript_spinner)
         val cookiesSpinner = view.findViewById<Spinner>(R.id.cookies_spinner)
         val domStorageSpinner = view.findViewById<Spinner>(R.id.dom_storage_spinner)
-        val formDataSpinner = view.findViewById<Spinner>(R.id.form_data_spinner) // Form data can be removed once the minimum API >= 26.
         val userAgentSpinner = view.findViewById<Spinner>(R.id.user_agent_spinner)
         val customUserAgentEditText = view.findViewById<EditText>(R.id.custom_user_agent_edittext)
         val easyListSpinner = view.findViewById<Spinner>(R.id.easylist_spinner)
@@ -720,7 +719,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         val javaScriptInt = javaScriptSpinner.selectedItemPosition
         val cookiesInt = cookiesSpinner.selectedItemPosition
         val domStorageInt = domStorageSpinner.selectedItemPosition
-        val formDataInt = formDataSpinner.selectedItemPosition // Form data can be removed once the minimum API >= 26.
         val userAgentSwitchPosition = userAgentSpinner.selectedItemPosition
         val easyListInt = easyListSpinner.selectedItemPosition
         val easyPrivacyInt = easyPrivacySpinner.selectedItemPosition
@@ -762,7 +760,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             fontSizeInt = customFontSizeEditText.text.toString().toInt()
 
         // Save the domain settings.
-        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScriptInt, cookiesInt, domStorageInt, formDataInt, userAgentName, easyListInt, easyPrivacyInt, fanboysAnnoyanceInt,
+        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScriptInt, cookiesInt, domStorageInt, userAgentName, easyListInt, easyPrivacyInt, fanboysAnnoyanceInt,
             fanboysSocialBlockingInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
             pinnedSslCertificate, pinnedIpAddress)
 

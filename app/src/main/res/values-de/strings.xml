@@ -40,11 +40,8 @@
     <string name="cookies_disabled">Cookies deaktiviert</string>
     <string name="dom_storage_enabled">DOM-Speicher aktiviert</string>
     <string name="dom_storage_disabled">DOM-Speicher deaktiviert</string>
-    <string name="form_data_enabled">Formulardaten aktiviert</string>
-    <string name="form_data_disabled">Formulardaten deaktiviert</string>
     <string name="cookies_deleted">Cookies gelöscht</string>
     <string name="dom_storage_deleted">DOM-Speicher gelöscht</string>
-    <string name="form_data_deleted">Formulardaten gelöscht</string>
     <string name="open_navigation_drawer">Navigationspanel öffnen</string>
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
     <string name="pin_drawer">Menü anpinnen</string>
@@ -139,11 +136,9 @@
     <string name="stop">Stop</string>
     <string name="cookies">Cookies</string>
     <string name="dom_storage">DOM-Speicher</string>
-    <string name="form_data">Formulardaten</string>
     <string name="clear_data">Daten löschen</string>
         <string name="clear_cookies">Cookies löschen</string>
         <string name="clear_dom_storage">DOM-Speicher löschen</string>
-        <string name="clear_form_data">Formulardaten löschen</string>
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
         <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
         <string name="options_block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
@@ -364,11 +359,6 @@
         <item>DOM-Speicher aktiviert</item>
         <item>DOM-Speicher deaktiviert</item>
     </string-array>
-    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
-        <item>Systemeinstellung</item>
-        <item>Formulardaten aktiviert</item>
-        <item>Formulardaten deaktiviert</item>
-    </string-array>
     <string-array name="easylist_array">
         <item>Systemeinstellung</item>
         <item>EasyList aktiviert</item>
@@ -544,8 +534,6 @@
             Sind Cookies im aktiven Tab aktiviert, sind diese auch für alle Netzwerk-Anfragen anderer Tabs im Hintergrund aktiviert.</string>
         <string name="dom_storage_preference">DOM-Speicher</string>
         <string name="dom_storage_preference_summary">JavaScript muss aktiviert sein, damit der DOM-(Document Object Model)-Speicher funktioniert.</string>
-        <string name="save_form_data_preference">Formulardaten</string>
-        <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
         <string name="user_agent">User Agent</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -639,14 +627,11 @@
         <string name="display_under_cutouts_summary">Zeigt die Internetseite unterhalb von Ausschnitten wie etwa Kamera-Einbuchtungen.
             Ist diese Option aktiv, wrd Privacy Browser auch unterhalb der Tastatur dargestellt. Das Ändern dieser Einstellung startet Privacy Browser neu.</string>
     <string name="clear_everything">Alles löschen</string>
-        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, Formular-Daten, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
+        <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
         <string name="clear_cookies_preference">Cookies löschen</string>
         <string name="clear_cookies_summary">Löscht Cookies.</string>
         <string name="clear_dom_storage_preference">DOM Storage löschen</string>
         <string name="clear_dom_storage_summary">Löscht DOM storage (aka Web Storage oder Supercookies).</string>
-        <string name="clear_form_data_preference">Formulardaten löschen</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_form_data_summary">Löscht in Formulare eingegebene Daten.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_logcat">Logcat leeren</string>
         <string name="clear_logcat_summary">Leert das Logcat Systemlogbuch.</string>
         <string name="clear_cache">Cache löschen</string>

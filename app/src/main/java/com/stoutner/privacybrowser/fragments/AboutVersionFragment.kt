@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -41,11 +41,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.webkit.WebViewCompat
 
 import com.google.android.material.snackbar.Snackbar
 
@@ -162,23 +162,17 @@ class AboutVersionFragment : Fragment() {
     private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
-            // Initialize the file name string from the file URI last path segment.
-            var fileNameString = fileUri.lastPathSegment
+            // Get a cursor from the content resolver.
+            val contentResolverCursor = requireActivity().contentResolver.query(fileUri, null, null, null)!!
 
-            // Query the exact file name if the API >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
-                // Get a cursor from the content resolver.
-                val contentResolverCursor = requireActivity().contentResolver.query(fileUri, null, null, null)!!
+            // Move to the first row.
+            contentResolverCursor.moveToFirst()
 
-                // Move to the first row.
-                contentResolverCursor.moveToFirst()
+            // Get the file name from the cursor.
+            val fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                // Get the file name from the cursor.
-                fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
-                // Close the cursor.
-                contentResolverCursor.close()
-            }
+            // Close the cursor.
+            contentResolverCursor.close()
 
             try {
                 // Get the about version string.
@@ -307,8 +301,8 @@ class AboutVersionFragment : Fragment() {
         val serialNumberLabel = getString(R.string.serial_number)
         val signatureAlgorithmLabel = getString(R.string.signature_algorithm)
 
-        // Get the current WebView package info.  This can be replaced by the direct call once the minimum API >= 26.  <https://developer.android.com/reference/android/webkit/WebView#getCurrentWebViewPackage()>
-        val webViewPackageInfo = WebViewCompat.getCurrentWebViewPackage(requireContext())!!
+        // Get the current WebView package info.
+        val webViewPackageInfo = WebView.getCurrentWebViewPackage()!!
 
         // Get the device's information and store it in strings.
         val brand = Build.BRAND

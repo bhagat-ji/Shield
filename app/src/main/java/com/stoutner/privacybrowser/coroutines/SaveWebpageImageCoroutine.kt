@@ -1,5 +1,5 @@
 /*
- * Copyright0 2019-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright0 2019-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -23,7 +23,6 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
-import android.os.Build
 import android.provider.OpenableColumns
 
 import com.google.android.material.snackbar.Snackbar
@@ -42,26 +41,17 @@ class SaveWebpageImageCoroutine {
     fun save(activity: Activity, fileUri: Uri, nestedScrollWebView: NestedScrollWebView) {
         // Use a coroutine to save the webpage image.
         CoroutineScope(Dispatchers.Main).launch {
-            // Create a file name string.
-            val fileNameString: String
+            // Get a cursor from the content resolver.
+            val contentResolverCursor = activity.contentResolver.query(fileUri, null, null, null)
 
-            // Query the exact file name if the API >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
-                // Get a cursor from the content resolver.
-                val contentResolverCursor = activity.contentResolver.query(fileUri, null, null, null)
+            // Move to the first row.
+            contentResolverCursor!!.moveToFirst()
 
-                // Move to the first row.
-                contentResolverCursor!!.moveToFirst()
+            // Get the file name from the cursor.
+            val fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                // Get the file name from the cursor.
-                fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
-                // Close the cursor.
-                contentResolverCursor.close()
-            } else {
-                // Use the file URI last path segment as the file name string.
-                fileNameString = fileUri.lastPathSegment!!
-            }
+            // Close the cursor.
+            contentResolverCursor.close()
 
             // Create a saving image snackbar.
             val savingImageSnackbar = Snackbar.make(nestedScrollWebView, activity.getString(R.string.processing_image, fileNameString), Snackbar.LENGTH_INDEFINITE)
@@ -69,7 +59,8 @@ class SaveWebpageImageCoroutine {
             // Display the saving image snackbar.
             savingImageSnackbar.show()
 
-            // Create a webpage bitmap.  Once the Minimum API >= 26 Bitmap.Config.RBGA_F16 can be used instead of ARGB_8888.  The nested scroll WebView commands must be run on the UI thread.
+            // Create a webpage bitmap.  Once the Minimum API >= 33 Bitmap.Config.RGBA_1010102 can be used instead of ARGB_8888.
+            // RGBA_F16 can't be used because it produces black output for the part of page not currently visible on the screen.
             val webpageBitmap = Bitmap.createBitmap(nestedScrollWebView.getHorizontalScrollRange(), nestedScrollWebView.getVerticalScrollRange(), Bitmap.Config.ARGB_8888)
 
             // Create a canvas.
@@ -115,7 +106,6 @@ class SaveWebpageImageCoroutine {
                         Snackbar.make(nestedScrollWebView, activity.getString(R.string.error_saving_file, fileNameString, exception), Snackbar.LENGTH_INDEFINITE).show()
                     }
                 }
-
             }
         }
     }

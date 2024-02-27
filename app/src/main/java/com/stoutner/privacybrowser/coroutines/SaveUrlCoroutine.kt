@@ -22,7 +22,6 @@ package com.stoutner.privacybrowser.coroutines
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.provider.OpenableColumns
 import android.util.Base64
 import android.webkit.CookieManager
@@ -53,26 +52,17 @@ class SaveUrlCoroutine {
 
         // Use a coroutine to save the URL.
         CoroutineScope(Dispatchers.Main).launch {
-            // Create a file name string.
-            val fileNameString: String
+            // Get a cursor from the content resolver.
+            val contentResolverCursor = activity.contentResolver.query(fileUri, null, null, null)!!
 
-            // Query the exact file name if the API >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
-                // Get a cursor from the content resolver.
-                val contentResolverCursor = activity.contentResolver.query(fileUri, null, null, null)!!
+            // Move to the first row.
+            contentResolverCursor.moveToFirst()
 
-                // Move to the first row.
-                contentResolverCursor.moveToFirst()
+            // Get the file name from the cursor.
+            val fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                // Get the file name from the cursor.
-                fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
-                // Close the cursor.
-                contentResolverCursor.close()
-            } else {
-                // Use the file URI last path segment as the file name string.
-                fileNameString = fileUri.lastPathSegment!!
-            }
+            // Close the cursor.
+            contentResolverCursor.close()
 
             // Get a handle for the no swipe view pager.
             val webViewViewPager2 = activity.findViewById<ViewPager2>(R.id.webview_viewpager2)
@@ -155,9 +145,9 @@ class SaveUrlCoroutine {
                             val inputStream: InputStream = BufferedInputStream(httpUrlConnection.inputStream)
 
                             // Initialize the conversion buffer byte array.
-                            // This is set to a 100,000 bytes so that frequent updating of the snackbar doesn't freeze the interface on download, although `inputStream.read` currently used 8,000 as an upper limit.
+                            // This is set to a 50,000 bytes so that frequent updating of the snackbar doesn't freeze the interface on download, although `inputStream.read` currently uses 8,000 as an upper limit.
                             // <https://redmine.stoutner.com/issues/709>
-                            val conversionBufferByteArray = ByteArray(100_000)
+                            val conversionBufferByteArray = ByteArray(50_000)
 
                             // Initialize the longs.
                             var downloadedBytesCounterLong: Long = 0

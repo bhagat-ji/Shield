@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2017,2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2017, 2020, 2022-2024 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -34,12 +34,12 @@
         android:orderInCategory="20"
         app:showAsAction="ifRoom" />
 
-    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/move_to_folder"
         android:title="@string/move_to_folder"
         android:orderInCategory="30"
-        android:icon="@drawable/move_to_folder"
+        android:icon="@drawable/move_to_folder_blue"
+        android:iconTint="@color/icon"
         app:showAsAction="ifRoom" />
 
     <item
@@ -49,7 +49,6 @@
         android:icon="@drawable/edit"
         app:showAsAction="ifRoom" />
 
-    <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/delete_bookmark"
         android:title="@string/delete"

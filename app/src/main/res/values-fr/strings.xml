@@ -36,11 +36,8 @@
     <string name="cookies_disabled">Cookies désactivés</string>
     <string name="dom_storage_enabled">Stockage du DOM activé</string>
     <string name="dom_storage_disabled">Stockage du DOM désactivé</string>
-    <string name="form_data_enabled">Données de formulaires activé</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="form_data_disabled">Données de formulaires désactivé</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="cookies_deleted">Cookies supprimés</string>
     <string name="dom_storage_deleted">Stockage du DOM supprimé</string>
-    <string name="form_data_deleted">Données de formulaires supprimées</string>
     <string name="open_navigation_drawer">Ouvrir le panneau de navigation</string>
     <string name="close_navigation_drawer">Fermer le panneau de navigation</string>
     <string name="pin_drawer">Épingler le panneau</string>
@@ -135,11 +132,9 @@
     <string name="stop">Stop</string>
     <string name="cookies">Cookies</string>
     <string name="dom_storage">Stockage DOM</string>
-    <string name="form_data">Formulaire de données</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Effacer les données</string>
         <string name="clear_cookies">Effacer les cookies</string>
         <string name="clear_dom_storage">Effacer le stockage du DOM</string>
-        <string name="clear_form_data">Effacer les données de formulaire</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
         <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">Bloquer toutes les requêtes tierces parties</string>
@@ -360,11 +355,6 @@
         <item>Stockage du DOM activé</item>
         <item>Stockage du DOM désactivé</item>
     </string-array>
-    <string-array name="form_data_array">  <!-- Form data can be removed once the minimum API >= 26. -->
-        <item>Valeur système</item>
-        <item>Données de formulaire activées</item>
-        <item>Données de formulaire désactivées</item>
-    </string-array>
     <string-array name="easylist_array">
         <item>Valeur système</item>
         <item>EasyList activé</item>
@@ -544,8 +534,6 @@
             toute requête réseau effectuée en arrière-plan par un autre onglet a également les cookies activés.</string>
         <string name="dom_storage_preference">Stockage du DOM</string>
         <string name="dom_storage_preference_summary">JavaScript doit être activé pour que le stockage du Document Object Model fonctionne.</string>
-        <string name="save_form_data_preference">Formulaire de données</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="save_form_data_preference_summary">Les formulaires de données sauvegardés peuvent remplir automatiquement des champs sur les sites web.</string>
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -639,15 +627,11 @@
         <string name="display_under_cutouts_summary">Affiche le site web sous les éléments découpés, tels que les encoches d\'appareil photo.
             Lorsque ce paramètre est activé, Privacy Browser sera également affiché sous le clavier. La modification de ce paramètre entraînera le redémarrage de Privacy Browser.</string>
     <string name="clear_everything">Tout effacer</string>
-        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache de WebView.
-            Supprime ensuite manuellement les répertoires entiers «app_webview» et «cache».</string>
+        <string name="clear_everything_summary">Efface les cookies, le stockage DOM, le logcat et le cache de WebView. Supprime ensuite manuellement les répertoires entiers «app_webview» et «cache».</string>
         <string name="clear_cookies_preference">Effacer les cookies</string>
         <string name="clear_cookies_summary">Efface les cookies.</string>
         <string name="clear_dom_storage_preference">Effacer le stockage DOM</string>
         <string name="clear_dom_storage_summary">Efface le stockage du DOM.</string>
-        <string name="clear_form_data_preference">Effacer les données de formulaire</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_form_data_summary">Efface les données de formulaire.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_logcat">Vider logcat</string>
         <string name="clear_logcat_summary">Vide le logcat.</string>
         <string name="clear_cache">Effacer cache</string>

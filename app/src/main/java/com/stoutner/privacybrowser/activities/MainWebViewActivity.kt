@@ -76,7 +76,6 @@ import android.webkit.WebSettings
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.webkit.WebViewDatabase
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
@@ -152,7 +151,6 @@ import com.stoutner.privacybrowser.helpers.ENABLE_EASYLIST
 import com.stoutner.privacybrowser.helpers.ENABLE_EASYPRIVACY
 import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_ANNOYANCE_LIST
 import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST
-import com.stoutner.privacybrowser.helpers.ENABLE_FORM_DATA
 import com.stoutner.privacybrowser.helpers.ENABLE_JAVASCRIPT
 import com.stoutner.privacybrowser.helpers.ENABLE_ULTRAPRIVACY
 import com.stoutner.privacybrowser.helpers.ENABLED
@@ -290,7 +288,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var optionsClearCookiesMenuItem: MenuItem
     private lateinit var optionsClearDataMenuItem: MenuItem
     private lateinit var optionsClearDomStorageMenuItem: MenuItem
-    private lateinit var optionsClearFormDataMenuItem: MenuItem
     private lateinit var optionsCookiesMenuItem: MenuItem
     private lateinit var optionsDarkWebViewMenuItem: MenuItem
     private lateinit var optionsDisplayImagesMenuItem: MenuItem
@@ -308,7 +305,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var optionsProxyNoneMenuItem: MenuItem
     private lateinit var optionsProxyTorMenuItem: MenuItem
     private lateinit var optionsRefreshMenuItem: MenuItem
-    private lateinit var optionsSaveFormDataMenuItem: MenuItem
     private lateinit var optionsSwipeToRefreshMenuItem: MenuItem
     private lateinit var optionsUltraListMenuItem: MenuItem
     private lateinit var optionsUltraPrivacyMenuItem: MenuItem
@@ -363,7 +359,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var defaultEasyPrivacy = true
     private var defaultFanboysAnnoyanceList = true
     private var defaultFanboysSocialBlockingList = true
-    private var defaultFormData = false  // Form data can be removed once the minimum API >= 26.
     private var defaultProgressViewEndOffset = 0
     private var defaultProgressViewStartOffset = 0
     private var defaultJavaScript = false
@@ -421,23 +416,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private val saveWebpageArchiveActivityResultLauncher = registerForActivityResult<String, Uri>(ActivityResultContracts.CreateDocument("multipart/related")) { fileUri ->
         // Only save the webpage archive if the file URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
-            // Initialize the file name string from the file URI last path segment.
-            var fileNameString = fileUri.lastPathSegment
+            // Get a cursor from the content resolver.
+            val contentResolverCursor = contentResolver.query(fileUri, null, null, null)!!
 
-            // Query the exact file name if the API >= 26.
-            if (Build.VERSION.SDK_INT >= 26) {
-                // Get a cursor from the content resolver.
-                val contentResolverCursor = contentResolver.query(fileUri, null, null, null)!!
+            // Move to the fist row.
+            contentResolverCursor.moveToFirst()
 
-                // Move to the fist row.
-                contentResolverCursor.moveToFirst()
+            // Get the file name from the cursor.
+            val fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                // Get the file name from the cursor.
-                fileNameString = contentResolverCursor.getString(contentResolverCursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
-                // Close the cursor.
-                contentResolverCursor.close()
-            }
+            // Close the cursor.
+            contentResolverCursor.close()
 
             // Use a coroutine to save the file.
             CoroutineScope(Dispatchers.Main).launch {
@@ -1049,11 +1038,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val optionsBookmarksMenuItem = menu.findItem(R.id.bookmarks)
         optionsCookiesMenuItem = menu.findItem(R.id.cookies)
         optionsDomStorageMenuItem = menu.findItem(R.id.dom_storage)
-        optionsSaveFormDataMenuItem = menu.findItem(R.id.save_form_data) // Form data can be removed once the minimum API >= 26.
         optionsClearDataMenuItem = menu.findItem(R.id.clear_data)
         optionsClearCookiesMenuItem = menu.findItem(R.id.clear_cookies)
         optionsClearDomStorageMenuItem = menu.findItem(R.id.clear_dom_storage)
-        optionsClearFormDataMenuItem = menu.findItem(R.id.clear_form_data) // Form data can be removed once the minimum API >= 26.
         optionsEasyListMenuItem = menu.findItem(R.id.easylist)
         optionsEasyPrivacyMenuItem = menu.findItem(R.id.easyprivacy)
         optionsFanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list)
@@ -1091,13 +1078,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
         updatePrivacyIcons(false)
 
-        // Only display the form data menu items if the API < 26.
-        optionsSaveFormDataMenuItem.isVisible = Build.VERSION.SDK_INT < 26
-        optionsClearFormDataMenuItem.isVisible = Build.VERSION.SDK_INT < 26
-
-        // Disable the clear form data menu item if the API >= 26 so that the status of the main Clear Data is calculated correctly.
-        optionsClearFormDataMenuItem.isEnabled = Build.VERSION.SDK_INT < 26
-
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {  // Display the additional icons.
             optionsRefreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
@@ -1114,7 +1094,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Set the title.
             optionsRefreshMenuItem.setTitle(R.string.stop)
 
-            // Set the icon if it is displayed in the app bar.  Once the minimum API is >= 26, the blue and black icons can be combined with a tint list.
+            // Set the icon if it is displayed in the app bar.
             if (displayAdditionalAppBarIcons)
                 optionsRefreshMenuItem.setIcon(R.drawable.close_blue)
         }
@@ -1147,8 +1127,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Set the status of the menu item checkboxes.
             optionsDomStorageMenuItem.isChecked = currentWebView!!.settings.domStorageEnabled
-            @Suppress("DEPRECATION")
-            optionsSaveFormDataMenuItem.isChecked = currentWebView!!.settings.saveFormData  // Form data can be removed once the minimum API >= 26.
             optionsEasyListMenuItem.isChecked = currentWebView!!.easyListEnabled
             optionsEasyPrivacyMenuItem.isChecked = currentWebView!!.easyPrivacyEnabled
             optionsFanboysAnnoyanceListMenuItem.isChecked = currentWebView!!.fanboysAnnoyanceListEnabled
@@ -1218,18 +1196,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Enable Clear DOM Storage if there is any.
         optionsClearDomStorageMenuItem.isEnabled = localStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0
 
-        // Enable Clear Form Data is there is any.  This can be removed once the minimum API >= 26.
-        if (Build.VERSION.SDK_INT < 26) {
-            // Get the WebView database.
-            val webViewDatabase = WebViewDatabase.getInstance(this)
-
-            // Enable the clear form data menu item if there is anything to clear.
-            @Suppress("DEPRECATION")
-            optionsClearFormDataMenuItem.isEnabled = webViewDatabase.hasFormData()
-        }
-
         // Enable Clear Data if any of the submenu items are enabled.
-        optionsClearDataMenuItem.isEnabled = (optionsClearCookiesMenuItem.isEnabled || optionsClearDomStorageMenuItem.isEnabled || optionsClearFormDataMenuItem.isEnabled)
+        optionsClearDataMenuItem.isEnabled = (optionsClearCookiesMenuItem.isEnabled || optionsClearDomStorageMenuItem.isEnabled)
 
         // Disable Fanboy's Social Blocking List menu item if Fanboy's Annoyance List is checked.
         optionsFanboysSocialBlockingListMenuItem.isEnabled = !optionsFanboysAnnoyanceListMenuItem.isChecked
@@ -1473,32 +1441,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 true
             }
 
-            R.id.save_form_data -> {  // Form data.  This can be removed once the minimum API >= 26.
-                // Switch the status of saveFormDataEnabled.
-                @Suppress("DEPRECATION")
-                currentWebView!!.settings.saveFormData = !currentWebView!!.settings.saveFormData
-
-                // Update the menu checkbox.
-                @Suppress("DEPRECATION")
-                menuItem.isChecked = currentWebView!!.settings.saveFormData
-
-                // Display a snackbar.
-                @Suppress("DEPRECATION")
-                if (currentWebView!!.settings.saveFormData)
-                    Snackbar.make(webViewViewPager2, R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show()
-                else
-                    Snackbar.make(webViewViewPager2, R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show()
-
-                // Update the privacy icon.
-                updatePrivacyIcons(true)
-
-                // Reload the current WebView.
-                currentWebView!!.reload()
-
-                // Consume the event.
-                true
-            }
-
             R.id.clear_cookies -> {  // Clear cookies.
                 // Create a snackbar.
                 Snackbar.make(webViewViewPager2, R.string.cookies_deleted, Snackbar.LENGTH_LONG)
@@ -1565,28 +1507,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                                 // Manually delete the DOM storage files after 200 milliseconds.
                                 deleteDomStorageHandler.postDelayed(deleteDomStorageRunnable, 200)
-                            }
-                        }
-                    })
-                    .show()
-
-                // Consume the event.
-                true
-            }
-
-            R.id.clear_form_data -> {  // Clear form data.  This can be remove once the minimum API >= 26.
-                // Create a snackbar.
-                Snackbar.make(webViewViewPager2, R.string.form_data_deleted, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.undo) {}  // Everything will be handled by `onDismissed()` below.
-                    .addCallback(object : Snackbar.Callback() {
-                        override fun onDismissed(snackbar: Snackbar, event: Int) {
-                            if (event != DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
-                                // Get a handle for the webView database.
-                                val webViewDatabase = WebViewDatabase.getInstance(applicationContext)
-
-                                // Delete the form data.
-                                @Suppress("DEPRECATION")
-                                webViewDatabase.clearFormData()
                             }
                         }
                     })
@@ -2167,19 +2087,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     val wideViewportInt = calculateSettingsInt(currentWebView!!.settings.useWideViewPort, sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true))
                     val displayImagesInt = calculateSettingsInt(currentWebView!!.settings.loadsImagesAutomatically, sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true))
 
-                    // Initialize the form data int.
-                    var formDataInt = SYSTEM_DEFAULT
-
-                    // Set the form data int, which can be removed once the minimum API >= 26.
-                    @Suppress("DEPRECATION")
-                    if (Build.VERSION.SDK_INT < 26) {
-                        // Get the form data status.
-                        val formDataEnabled = currentWebView!!.settings.saveFormData
-
-                        // Calculate the form data Int.
-                        formDataInt = calculateSettingsInt(formDataEnabled, sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false))
-                    }
-
                     // Get the current user agent string.
                     val currentUserAgentString = currentWebView!!.settings.userAgentString
 
@@ -2261,7 +2168,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         LIGHT_THEME
 
                     // Create the domain and store the database ID.
-                    val newDomainDatabaseId = domainsDatabaseHelper!!.addDomain(currentDomain, javaScriptInt, cookiesInt, domStorageInt, formDataInt, userAgentName, easyListInt, easyPrivacyInt,
+                    val newDomainDatabaseId = domainsDatabaseHelper!!.addDomain(currentDomain, javaScriptInt, cookiesInt, domStorageInt, userAgentName, easyListInt, easyPrivacyInt,
                                                                                 fanboysAnnoyanceListInt, fanboysSocialBlockingListInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, fontSizeInt,
                                                                                 swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayImagesInt)
 
@@ -3072,7 +2979,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         defaultJavaScript = sharedPreferences.getBoolean(getString(R.string.javascript_key), false)
         defaultCookies = sharedPreferences.getBoolean(getString(R.string.cookies_key), false)
         defaultDomStorage = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
-        defaultFormData = sharedPreferences.getBoolean(getString(R.string.save_form_data_key), false)  // Form data can be removed once the minimum API >= 26.
         defaultEasyList = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
         defaultEasyPrivacy = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
         defaultFanboysAnnoyanceList = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
@@ -3339,7 +3245,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 val javaScriptInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT))
                 val cookiesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(COOKIES))
                 val domStorageInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE))
-                val formDataInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA))  // Form data can be removed once the minimum API >= 26.
                 val easyListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
                 val easyPrivacyInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
                 val fanboysAnnoyanceListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
@@ -3390,17 +3295,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     SYSTEM_DEFAULT -> nestedScrollWebView.settings.domStorageEnabled = defaultDomStorage
                     ENABLED -> nestedScrollWebView.settings.domStorageEnabled = true
                     DISABLED -> nestedScrollWebView.settings.domStorageEnabled = false
-                }
-
-                // Apply the form data setting if the API < 26.
-                @Suppress("DEPRECATION")
-                if (Build.VERSION.SDK_INT < 26) {
-                    // Set the form data status.
-                    when (formDataInt) {
-                        SYSTEM_DEFAULT -> nestedScrollWebView.settings.saveFormData = defaultFormData
-                        ENABLED -> nestedScrollWebView.settings.saveFormData = true
-                        DISABLED -> nestedScrollWebView.settings.saveFormData = false
-                    }
                 }
 
                 // Set the EasyList status.
@@ -3606,11 +3500,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Apply the default cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.acceptCookies)
-
-                // Apply the form data setting if the API < 26.
-                if (Build.VERSION.SDK_INT < 26)
-                    @Suppress("DEPRECATION")
-                    nestedScrollWebView.settings.saveFormData = defaultFormData
 
                 // Apply the default font size setting.
                 try {
@@ -3917,26 +3806,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 deleteQuotaManagerProcess.waitFor()
                 deleteQuotaManagerJournalProcess.waitFor()
                 deleteDatabaseProcess.waitFor()
-            } catch (exception: Exception) {
-                // Do nothing if an error is thrown.
-            }
-        }
-
-        // Clear form data if the API < 26.
-        if (Build.VERSION.SDK_INT < 26 && (clearEverything || sharedPreferences.getBoolean(getString(R.string.clear_form_data_key), true))) {
-            // Ask the WebView database to clear the form data.
-            @Suppress("DEPRECATION")
-            WebViewDatabase.getInstance(this).clearFormData()
-
-            // Manually delete the form data database, as the WebView database sometimes will not flush its changes to disk before system exit is run.
-            try {
-                // A string array must be used because the database contains a space and `Runtime.exec` will not otherwise escape the string correctly.
-                val deleteWebDataProcess = runtime.exec(arrayOf("rm", "-f", "$privateDataDirectoryString/app_webview/Web Data"))
-                val deleteWebDataJournalProcess = runtime.exec(arrayOf("rm", "-f", "$privateDataDirectoryString/app_webview/Web Data-journal"))
-
-                // Wait until the processes have finished.
-                deleteWebDataProcess.waitFor()
-                deleteWebDataJournalProcess.waitFor()
             } catch (exception: Exception) {
                 // Do nothing if an error is thrown.
             }

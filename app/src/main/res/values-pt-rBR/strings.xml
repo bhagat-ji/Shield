@@ -36,11 +36,8 @@
     <string name="cookies_disabled">Cookies desativados</string>
     <string name="dom_storage_enabled">Armazenamento DOM ativado</string>
     <string name="dom_storage_disabled">Armazenamento DOM desativado</string>
-    <string name="form_data_enabled">Dados de formulário habilitados</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="form_data_disabled">Dados de formulário desabilitados</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="cookies_deleted">Cookies excluídos</string>
     <string name="dom_storage_deleted">Armazenamento DOM excluído</string>
-    <string name="form_data_deleted">Dados do formulário excluídos</string>
     <string name="open_navigation_drawer">Abrir a caixa de navegação</string>
     <string name="close_navigation_drawer">Fechar a caixa de navegação</string>
     <string name="unrecognized_url">URL desconhecida:\u0020 %1$s</string>
@@ -129,11 +126,9 @@
     <string name="stop">Parar</string>
     <string name="cookies">Cookies</string>
     <string name="dom_storage">Armazenamento DOM</string>
-    <string name="form_data">Dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Limpar dados</string>
         <string name="clear_cookies">Limpar Cookies</string>
         <string name="clear_dom_storage">Limpar Armazenamento DOM</string>
-        <string name="clear_form_data">Clear Form Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="options_fanboys_annoyance_list">Lista de Aborrecimento Fanboy’s</string>
         <string name="options_fanboys_social_blocking_list">Lista de bloqueio social Fanboy’s</string>
         <string name="options_block_all_third_party_requests">Bloquear todas as solicitações de terceiros</string>
@@ -435,9 +430,6 @@
             Quando a guia ativa tem cookies habilitados, qualquer solicitação de rede feita em segundo plano por outra guia também tem cookies habilitados.</string>
         <string name="dom_storage_preference">Armazenamento DOM</string>
         <string name="dom_storage_preference_summary">O JavaScript deve estar habilitado para que o armazenamento do Document Object Model funcione.</string>
-        <string name="save_form_data_preference">Dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="save_form_data_preference_summary">Dados de formulário salvos podem preencher campos automaticamente em sites.</string>
-        <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="user_agent">Agente do usuário</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -521,14 +513,11 @@
         <string name="hide_app_bar">Ocultar a barra de aplicativos</string>
         <string name="hide_app_bar_summary">Oculte a barra de aplicativos que contém o URL.</string>
     <string name="clear_everything">Limpar tudo</string>
-        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
-        <string name="clear_everything_summary">Limpa cookies, armazenamento DOM, dados de formulário e cache do WebView. Em seguida, exclui manualmente todos os diretórios “app_webview” e “cache”.</string>
+        <string name="clear_everything_summary">Limpa cookies, armazenamento DOM, e cache do WebView. Em seguida, exclui manualmente todos os diretórios “app_webview” e “cache”.</string>
         <string name="clear_cookies_preference">Limpar cookies</string>
         <string name="clear_cookies_summary">Limpar os cookies.</string>
         <string name="clear_dom_storage_preference">Limpar armazenamento DOM</string>
         <string name="clear_dom_storage_summary">Limpa o armazenamento DOM.</string>
-        <string name="clear_form_data_preference">Limpar dados do formulário</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-        <string name="clear_form_data_summary">Limpa os dados do formulário.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_logcat">Limpar Logcat</string>
         <string name="clear_logcat_summary">Limpar os Logcats.</string>
         <string name="clear_cache">Limpar cache</string>

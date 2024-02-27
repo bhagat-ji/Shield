@@ -19792,7 +19792,6 @@ abema.tv##+js(rmnt, script, NREUM)
 ||om.aopa.org^
 ||om.burberry.com^
 ||om.cbsi.com^
-||om.churchofjesuschrist.org^
 ||om.cyberrentals.com^
 ||om.dowjoneson.com^
 ||om.escapehomes.com^

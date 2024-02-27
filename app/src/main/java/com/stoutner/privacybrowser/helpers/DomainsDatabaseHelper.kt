@@ -31,7 +31,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 
 // Define the class constants.
-private const val SCHEMA_VERSION = 16
+private const val SCHEMA_VERSION = 17
 
 // Define the public database constants.
 const val DOMAINS_DATABASE = "domains.db"
@@ -54,7 +54,6 @@ const val ENABLE_EASYLIST = "enableeasylist"
 const val ENABLE_EASYPRIVACY = "enableeasyprivacy"
 const val ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist"
 const val ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist"
-const val ENABLE_FORM_DATA = "enableformdata" // Form data can be removed once the minimum API >= 26.
 const val ENABLE_JAVASCRIPT = "enablejavascript"
 const val ENABLE_ULTRAPRIVACY = "enableultraprivacy"
 const val FONT_SIZE = "fontsize"
@@ -83,7 +82,6 @@ const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
         "$ENABLE_JAVASCRIPT INTEGER, " +
         "$COOKIES INTEGER, " +
         "$ENABLE_DOM_STORAGE INTEGER, " +
-        "$ENABLE_FORM_DATA INTEGER, " +
         "$USER_AGENT TEXT, " +
         "$ENABLE_EASYLIST INTEGER, " +
         "$ENABLE_EASYPRIVACY INTEGER, " +
@@ -269,7 +267,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             val javaScriptDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.javascript_key), false)
             val cookiesDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.cookies_key), false)
             val domStorageDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.dom_storage_key), false)
-            val formDataDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.save_form_data_key), false)
             val easyListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.easylist_key), true)
             val easyPrivacyDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.easyprivacy_key), true)
             val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_annoyance_list_key), true)
@@ -285,7 +282,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             val javaScriptColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
             val cookiesColumnIndex = domainsCursor.getColumnIndexOrThrow(COOKIES)
             val domStorageColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
-            val formDataColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FORM_DATA)
             val easyListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
             val easyPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
             val fanboysAnnoyanceListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
@@ -303,7 +299,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
                 val javaScriptDomainCurrentValue = domainsCursor.getInt(javaScriptColumnIndex)
                 val cookiesDomainCurrentValue = domainsCursor.getInt(cookiesColumnIndex)
                 val domStorageDomainCurrentValue = domainsCursor.getInt(domStorageColumnIndex)
-                val formDataDomainCurrentValue = domainsCursor.getInt(formDataColumnIndex)
                 val easyListDomainCurrentValue = domainsCursor.getInt(easyListColumnIndex)
                 val easyPrivacyDomainCurrentValue = domainsCursor.getInt(easyPrivacyColumnIndex)
                 val fanboysAnnoyanceListCurrentValue = domainsCursor.getInt(fanboysAnnoyanceListColumnIndex)
@@ -319,7 +314,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
                 domainContentValues.put(ENABLE_JAVASCRIPT, convertFromSwitchToSpinner(javaScriptDefaultValue, javaScriptDomainCurrentValue))
                 domainContentValues.put(COOKIES, convertFromSwitchToSpinner(cookiesDefaultValue, cookiesDomainCurrentValue))
                 domainContentValues.put(ENABLE_DOM_STORAGE, convertFromSwitchToSpinner(domStorageDefaultValue, domStorageDomainCurrentValue))
-                domainContentValues.put(ENABLE_FORM_DATA, convertFromSwitchToSpinner(formDataDefaultValue, formDataDomainCurrentValue))
                 domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
                 domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
                 domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
@@ -334,6 +328,12 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
                 // Update the row for the specified database ID.
                 domainsDatabase.update(DOMAINS_TABLE, domainContentValues, "$ID = $currentDatabaseId", null)
             }
+
+            // Upgrade from schema version 16, first used in Privacy Browser 3.15, to schema version 17, first used in Privacy Browser 3.18.
+            // This upgrade removed `enableformdata`.
+            // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
+            // That will not be supported in Android until the minimum API >= 34.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
+            // Although a new table could be created and all the data copied to it, I think I will just leave the `enableformdata` column.  It will be wiped out the next time an import is run.
 
             // Close the cursor.
             domainsCursor.close()
@@ -410,11 +410,11 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
 
     fun addDomain(domainName: String): Int {
         // Add the domain with default settings.
-        return addDomain(domainName, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, appContext.getString(R.string.system_default_user_agent), SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT,
+        return addDomain(domainName, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, appContext.getString(R.string.system_default_user_agent), SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT,
                          SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT)
     }
 
-    fun addDomain(domainName: String, javaScriptInt: Int, cookiesInt: Int, domStorageInt: Int, formDataInt: Int, userAgentName: String, easyListInt: Int, easyPrivacyInt: Int, fanboysAnnoyanceListInt: Int,
+    fun addDomain(domainName: String, javaScriptInt: Int, cookiesInt: Int, domStorageInt: Int, userAgentName: String, easyListInt: Int, easyPrivacyInt: Int, fanboysAnnoyanceListInt: Int,
                   fanboysSocialBlockingListInt: Int, ultraListInt: Int, ultraPrivacyInt: Int, blockAllThirdPartyRequestsInt: Int, fontSizeInt: Int, swipeToRefreshInt: Int, webViewThemeInt: Int,
                   wideViewportInt: Int, displayImagesInt: Int): Int {
         // Instantiate a content values.
@@ -425,7 +425,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ENABLE_JAVASCRIPT, javaScriptInt)
         domainContentValues.put(COOKIES, cookiesInt)
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorageInt)
-        domainContentValues.put(ENABLE_FORM_DATA, formDataInt) // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(USER_AGENT, userAgentName)
         domainContentValues.put(ENABLE_EASYLIST, easyListInt)
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyInt)
@@ -453,7 +452,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         return newDomainDatabaseId
     }
 
-    fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, formData: Int, userAgent: String, easyList: Int, easyPrivacy: Int, fanboysAnnoyance: Int,
+    fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, userAgent: String, easyList: Int, easyPrivacy: Int, fanboysAnnoyance: Int,
                      fanboysSocialBlocking: Int, ultraList: Int, ultraPrivacy: Int, blockAllThirdPartyRequests: Int, fontSize: Int, swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int,
                      pinnedSslCertificate: Boolean, pinnedIpAddresses: Boolean) {
 
@@ -465,7 +464,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ENABLE_JAVASCRIPT, javaScript)
         domainContentValues.put(COOKIES, cookies)
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorage)
-        domainContentValues.put(ENABLE_FORM_DATA, formData) // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(USER_AGENT, userAgent)
         domainContentValues.put(ENABLE_EASYLIST, easyList)
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy)
