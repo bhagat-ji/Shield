@@ -5899,11 +5899,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Get the favorite icon image view from the tab.
         val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
 
-        // Set the previous favorite icon.
+        // Store the previous favorite icon.
         if (previousFavoriteIcon == null)
-            tabFavoriteIconImageView.setImageBitmap(defaultFavoriteIconBitmap)
+            currentWebView!!.setFavoriteIcon(defaultFavoriteIconBitmap)
         else
-            tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(previousFavoriteIcon, 64, 64, true))
+            currentWebView!!.setFavoriteIcon(previousFavoriteIcon)
+
+        // Display the previous favorite icon in the tab.
+        tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(currentWebView!!.getFavoriteIcon(), 64, 64, true))
 
         // Load the history entry.
         currentWebView!!.goBackOrForward(steps)
