@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -29,7 +29,6 @@ import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
-import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -43,7 +42,7 @@ import com.stoutner.privacybrowser.dataclasses.HistoryDataClass
 import com.stoutner.privacybrowser.views.NestedScrollWebView
 
 // Define the class constants.
-private const val WEBVIEW_FRAGMENT_ID = "webview_fragment_id"
+private const val WEBVIEW_FRAGMENT_ID = "A"
 
 class UrlHistoryDialog : DialogFragment() {
     companion object {
@@ -70,7 +69,7 @@ class UrlHistoryDialog : DialogFragment() {
 
     // The public interface is used to send information back to the parent activity.
     interface NavigateHistoryListener {
-        fun navigateHistory(url: String, steps: Int)
+        fun navigateHistory(steps: Int)
     }
 
     override fun onAttach(context: Context) {
@@ -181,20 +180,14 @@ class UrlHistoryDialog : DialogFragment() {
         listView.adapter = historyArrayAdapter
 
         // Listen for clicks on entries in the list view.
-        listView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, view: View, _: Int, id: Long ->
+        listView.onItemClickListener = OnItemClickListener { _: AdapterView<*>?, _: View, _: Int, id: Long ->
             // Convert the long ID to an int.
             val itemId = id.toInt()
 
             // Only consume the click if it is not on the current page ID.
             if (itemId != currentPageId) {
-                // Get a handle for the URL text view.
-                val urlTextView = view.findViewById<TextView>(R.id.history_url_textview)
-
-                // Get the URL.
-                val url = urlTextView.text.toString()
-
-                // Invoke the navigate history listener in the calling activity.  These commands cannot be run here because they need access to `applyDomainSettings()`.
-                navigateHistoryListener.navigateHistory(url, currentPageId - itemId)
+                // Invoke the navigate history listener in the calling activity.  Those commands cannot be run here because they need access to `applyDomainSettings()`.
+                navigateHistoryListener.navigateHistory(currentPageId - itemId)
 
                 // Dismiss the alert dialog.
                 alertDialog.dismiss()

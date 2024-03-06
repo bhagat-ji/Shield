@@ -250,6 +250,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Declare the public static variables.
         lateinit var appBarLayout: AppBarLayout
+        lateinit var defaultFavoriteIconBitmap : Bitmap
     }
 
     // Declare the class variables.
@@ -656,6 +657,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Update the bookmarks drawer pinned image view.
             updateBookmarksDrawerPinnedImageView()
 
+            // Get the default favorite icon drawable.
+            val favoriteIconDrawable = AppCompatResources.getDrawable(this, R.drawable.world)
+
+            // Cast the favorite icon drawable to a bitmap drawable.
+            val favoriteIconBitmapDrawable = (favoriteIconDrawable as BitmapDrawable?)!!
+
+            // Store the default favorite icon bitmap.
+            defaultFavoriteIconBitmap = favoriteIconBitmapDrawable.bitmap
+
             // Initialize the app.
             initializeApp()
 
@@ -677,34 +687,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         exitFullScreenVideo()
                         // It shouldn't be possible for the currentWebView to be null, but crash logs indicate it sometimes happens.
                     } else if (currentWebView != null && currentWebView!!.canGoBack()) {  // There is at least one item in the current WebView history.
-                        // Get the current web back forward list.
-                        val webBackForwardList = currentWebView!!.copyBackForwardList()
-
-                        // Get the previous entry data.
-                        val previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
-                        val previousFavoriteIcon = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).favicon
-
-                        // Apply the domain settings.
-                        applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
-
-                        // Get the current tab.
-                        val tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)!!
-
-                        // Get the custom view from the tab.
-                        val tabView = tab.customView!!
-
-                        // Get the favorite icon image view from the tab.
-                        val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
-
-                        // Set the previous favorite icon if it isn't null.
-                        if (previousFavoriteIcon != null)
-                            tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(previousFavoriteIcon, 64, 64, true))
-
-                        // Go back.
-                        currentWebView!!.goBack()
-
-                        // Update the URL edit text after a delay.
-                        updateUrlEditTextAfterDelay()
+                        // Navigate back one page.
+                        navigateHistory(-1)
                     } else {  // Close the current tab.
                         // A view is required because the method is also called by an XML `onClick`.
                         closeTab(null)
@@ -2237,66 +2221,16 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             R.id.back -> {  // Back.
                 // Check if the WebView can go back.
                 if (currentWebView!!.canGoBack()) {
-                    // Get the current web back forward list.
-                    val webBackForwardList = currentWebView!!.copyBackForwardList()
-
-                    // Get the previous entry data.
-                    val previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
-                    val previousFavoriteIcon = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).favicon!!
-
-                    // Apply the domain settings.
-                    applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
-
-                    // Get the current tab.
-                    val tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)!!
-
-                    // Get the custom view from the tab.
-                    val tabView = tab.customView!!
-
-                    // Get the favorite icon image view from the tab.
-                    val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
-
-                    // Set the previous favorite icon.
-                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(previousFavoriteIcon, 64, 64, true))
-
-                    // Load the previous website in the history.
-                    currentWebView!!.goBack()
-
-                    // Update the URL edit text after a delay.
-                    updateUrlEditTextAfterDelay()
+                    // Navigate back one page.
+                    navigateHistory(-1)
                 }
             }
 
             R.id.forward -> {  // Forward.
                 // Check if the WebView can go forward.
                 if (currentWebView!!.canGoForward()) {
-                    // Get the current web back forward list.
-                    val webBackForwardList = currentWebView!!.copyBackForwardList()
-
-                    // Get the next entry data.
-                    val nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex + 1).url
-                    val nextFavoriteIcon = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex + 1).favicon!!
-
-                    // Apply the domain settings.
-                    applyDomainSettings(currentWebView!!, nextUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
-
-                    // Get the current tab.
-                    val tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)!!
-
-                    // Get the custom view from the tab.
-                    val tabView = tab.customView!!
-
-                    // Get the favorite icon image view from the tab.
-                    val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
-
-                    // Set the next favorite icon.
-                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nextFavoriteIcon, 64, 64, true))
-
-                    // Load the next website in the history.
-                    currentWebView!!.goForward()
-
-                    // Update the URL edit text after a delay.
-                    updateUrlEditTextAfterDelay()
+                    // Navigate forward one page.
+                    navigateHistory(+1)
                 }
             }
 
@@ -3171,10 +3105,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             nestedScrollWebView.clearPinnedSslCertificate()
             nestedScrollWebView.pinnedIpAddresses = ""
 
-            // Reset the favorite icon if specified.
+            // Reset the tab if specified.
             if (resetTab) {
                 // Initialize the favorite icon.
-                nestedScrollWebView.initializeFavoriteIcon()
+                nestedScrollWebView.resetFavoriteIcon()
 
                 // Get the current page position.
                 val currentPagePosition = webViewStateAdapter!!.getPositionForId(nestedScrollWebView.webViewFragmentId)
@@ -5942,15 +5876,53 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         loadUrl(currentWebView!!, urlString)
     }
 
-    override fun navigateHistory(url: String, steps: Int) {
+    override fun navigateHistory(steps: Int) {
+        // Get the current web back forward list.
+        val webBackForwardList = currentWebView!!.copyBackForwardList()
+
+        // Calculate the target index.
+        val targetIndex = webBackForwardList.currentIndex + steps
+
+        // Get the previous entry data.
+        val previousUrl = webBackForwardList.getItemAtIndex(targetIndex).url
+        val previousFavoriteIcon = webBackForwardList.getItemAtIndex(targetIndex).favicon
+
         // Apply the domain settings.
-        applyDomainSettings(currentWebView!!, url, resetTab = false, reloadWebsite = false, loadUrl = false)
+        applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
+
+        // Get the current tab.
+        val tab = tabLayout.getTabAt(tabLayout.selectedTabPosition)!!
+
+        // Get the custom view from the tab.
+        val tabView = tab.customView!!
+
+        // Get the favorite icon image view from the tab.
+        val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
+
+        // Set the previous favorite icon.
+        if (previousFavoriteIcon == null)
+            tabFavoriteIconImageView.setImageBitmap(defaultFavoriteIconBitmap)
+        else
+            tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(previousFavoriteIcon, 64, 64, true))
 
         // Load the history entry.
         currentWebView!!.goBackOrForward(steps)
 
-        // Update the URL edit text after a delay.
-        updateUrlEditTextAfterDelay()
+        // Create a handler to update the URL edit box.
+        val urlEditTextUpdateHandler = Handler(Looper.getMainLooper())
+
+        // Create a runnable to update the URL edit box.
+        val urlEditTextUpdateRunnable = Runnable {
+            // Update the URL edit text.
+            urlEditText.setText(currentWebView!!.url)
+
+            // Disable the wide viewport if the source is being viewed.
+            if (currentWebView!!.url!!.startsWith("view-source:"))
+                currentWebView!!.settings.useWideViewPort = false
+        }
+
+        // Update the URL edit text after 50 milliseconds, so that the WebView has enough time to navigate to the new URL.
+        urlEditTextUpdateHandler.postDelayed(urlEditTextUpdateRunnable, 50)
     }
 
     override fun openFile(dialogFragment: DialogFragment) {
@@ -6055,20 +6027,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     override fun pinnedErrorGoBack() {
-        // Get the current web back forward list.
-        val webBackForwardList = currentWebView!!.copyBackForwardList()
-
-        // Get the previous entry URL.
-        val previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.currentIndex - 1).url
-
-        // Apply the domain settings.
-        applyDomainSettings(currentWebView!!, previousUrl, resetTab = false, reloadWebsite = false, loadUrl = false)
-
-        // Go back.
-        currentWebView!!.goBack()
-
-        // Update the URL edit text after a delay.
-        updateUrlEditTextAfterDelay()
+        // Navigate back one page.
+        navigateHistory(-1)
     }
 
     private fun sanitizeUrl(urlString: String): String {
@@ -6355,23 +6315,5 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             if (runInvalidateOptionsMenu)
                 invalidateOptionsMenu()
         }
-    }
-
-    fun updateUrlEditTextAfterDelay() {
-        // Create a handler to update the URL edit box.
-        val urlEditTextUpdateHandler = Handler(Looper.getMainLooper())
-
-        // Create a runnable to update the URL edit box.
-        val urlEditTextUpdateRunnable = Runnable {
-            // Update the URL edit text.
-            urlEditText.setText(currentWebView!!.url)
-
-            // Disable the wide viewport if the source is being viewed.
-            if (currentWebView!!.url!!.startsWith("view-source:"))
-                currentWebView!!.settings.useWideViewPort = false
-        }
-
-        // Update the URL edit text after 50 milliseconds, so that the WebView has enough time to navigate to the new URL.
-        urlEditTextUpdateHandler.postDelayed(urlEditTextUpdateRunnable, 50)
     }
 }

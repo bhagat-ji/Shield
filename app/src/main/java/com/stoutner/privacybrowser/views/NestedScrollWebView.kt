@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2019-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -23,7 +23,6 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.AttributeSet
@@ -32,12 +31,10 @@ import android.webkit.HttpAuthHandler
 import android.webkit.SslErrorHandler
 import android.webkit.WebView
 
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.view.NestedScrollingChild2
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
 
-import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
 
 import java.util.Collections
@@ -143,19 +140,13 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         nestedScrollingChildHelper.isNestedScrollingEnabled = true
 
         // Initialize the favorite icon.
-        initializeFavoriteIcon()
+        resetFavoriteIcon()
     }
 
     // Favorite or default icon.
-    fun initializeFavoriteIcon() {
-        // Get the default favorite icon drawable.
-        val favoriteIconDrawable = getDrawable(context, R.drawable.world)
-
-        // Cast the favorite icon drawable to a bitmap drawable.
-        val favoriteIconBitmapDrawable = (favoriteIconDrawable as BitmapDrawable?)!!
-
+    fun resetFavoriteIcon() {
         // Store the default icon bitmap.
-        favoriteIcon = favoriteIconBitmapDrawable.bitmap
+        favoriteIcon = MainWebViewActivity.defaultFavoriteIconBitmap
 
         // Set the favorite icon height to be 0.  This way any favorite icons presented by the website will overwrite it.
         favoriteIconHeight = 0
