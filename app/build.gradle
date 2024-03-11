@@ -97,7 +97,7 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.10.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.20'
 
     // Include the Google material library.
     implementation 'com.google.android.material:material:1.11.0'

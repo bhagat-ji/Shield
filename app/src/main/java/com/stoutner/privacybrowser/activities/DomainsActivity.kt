@@ -23,7 +23,6 @@ import android.app.Activity
 import android.content.Context
 import android.database.Cursor
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -570,27 +569,21 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
                                     }
                                 } else {  // The snackbar was dismissed without the undo button being pushed.
                                     // Delete the selected domain.
-                                    domainsDatabaseHelper.deleteDomain(databaseIdToDelete)
+                                    val rowsDeleted = domainsDatabaseHelper.deleteDomain(databaseIdToDelete)
 
-                                    // Enable the delete menu item if the system was waiting for a snackbar to be dismissed.
-                                    if (dismissingSnackbar) {
-                                        // Create a runnable to enable the delete menu item.
-                                        val enableDeleteMenuItemRunnable = Runnable {
-                                            // Enable or show the delete menu item according to the display mode.
-                                            if (twoPanedMode)
-                                                deleteMenuItem.isEnabled = true
-                                            else
-                                                deleteMenuItem.isVisible = true
+                                    // Enable the delete menu item.
+                                    // The rows deleted should always be greater than 0, but in all cases they should be greater than -1.
+                                    // This has the effect of tricking the compiler into waiting until after the delete finishes to reenable the delete menu item,
+                                    // because the compiler (probably) can't tell that the response will never be less than -1, so it doesn't compile out the delay.
+                                    if (rowsDeleted > -1) {
+                                        // Enable or show the delete menu item according to the display mode.
+                                        if (twoPanedMode)
+                                            deleteMenuItem.isEnabled = true
+                                        else
+                                            deleteMenuItem.isVisible = true
 
-                                            // Reset the dismissing snackbar tracker.
-                                            dismissingSnackbar = false
-                                        }
-
-                                        // Instantiate a handler running the main looper.
-                                        val handler = Handler(mainLooper)
-
-                                        // Enable or show the delete menu icon after 100 milliseconds to make sure that the previous domain has been deleted from the database.
-                                        handler.postDelayed(enableDeleteMenuItemRunnable, 100)
+                                        // Reset the dismissing snackbar tracker.
+                                        dismissingSnackbar = false
                                     }
 
                                     // Close the activity if back was pressed.

@@ -532,14 +532,17 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainsDatabase.close()
     }
 
-    fun deleteDomain(databaseId: Int) {
+    fun deleteDomain(databaseId: Int) : Int {
         // Get a writable database handle.
         val domainsDatabase = this.writableDatabase
 
         // Delete the row for the specified database ID.
-        domainsDatabase.delete(DOMAINS_TABLE, "$ID = $databaseId", null)
+        val rowsDeleted = domainsDatabase.delete(DOMAINS_TABLE, "$ID = $databaseId", null)
 
         // Close the database handle.
         domainsDatabase.close()
+
+        // Return the delete status.
+        return rowsDeleted
     }
 }
