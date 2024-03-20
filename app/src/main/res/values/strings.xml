@@ -266,6 +266,8 @@
     <string name="create_folder">Create Folder</string>
     <string name="current_bookmark_icon">Current bookmark icon</string>
     <string name="current_folder_icon">Current folder icon</string>
+    <string name="custom_bookmark_icon">Custom bookmark icon</string>
+    <string name="custom_folder_icon">Custom folder icon</string>
     <string name="default_folder_icon">Default folder icon</string>
     <string name="webpage_favorite_icon">Webpage favorite icon</string>
     <string name="bookmark_name">Bookmark name</string>
@@ -275,6 +277,7 @@
     <string name="edit_folder">Edit Folder</string>
     <string name="move_to_folder">Move to Folder</string>
     <string name="move">Move</string>
+    <string name="cannot_use_svg">An SVG cannot currently be used as a bookmark favorite icon.</string>
 
     <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->

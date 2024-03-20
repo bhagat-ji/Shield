@@ -207,11 +207,11 @@ class SaveDialog : DialogFragment() {
 
         // Update the UI when the URL changes.
         urlEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
                 // Do nothing.
             }
 
-            override fun onTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 // Do nothing.
             }
 
@@ -230,7 +230,7 @@ class SaveDialog : DialogFragment() {
                     blobUrlWarningTextView.visibility = View.GONE
 
                 // Enable the save button if the edit texts are populated and this isn't a blob URL.
-                saveButton.isEnabled = urlToSave.isNotEmpty() && fileName.isNotEmpty() && !blobUrl
+                saveButton.isEnabled = urlToSave.isNotBlank() && fileName.isNotBlank() && !blobUrl
 
                 // Determine if this is a data URL.
                 val dataUrl = urlToSave.startsWith("data:")
@@ -259,11 +259,11 @@ class SaveDialog : DialogFragment() {
 
         // Update the UI when the file name changes.
         fileNameEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
                 // Do nothing.
             }
 
-            override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 // Do nothing.
             }
 
@@ -276,7 +276,7 @@ class SaveDialog : DialogFragment() {
                 val blobUrl = urlToSave.startsWith("blob:")
 
                 // Enable the save button if the edit texts are populated and this isn't a blob URL (or a data URL using Android's download manager).
-                saveButton.isEnabled = urlToSave.isNotEmpty() && fileName.isNotEmpty() && !blobUrl && !dataUrlWarningTextView.isVisible
+                saveButton.isEnabled = urlToSave.isNotBlank() && fileName.isNotBlank() && !blobUrl && !dataUrlWarningTextView.isVisible
             }
         })
 

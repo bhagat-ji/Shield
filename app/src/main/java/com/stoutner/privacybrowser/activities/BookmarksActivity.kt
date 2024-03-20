@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -47,6 +47,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.graphics.drawable.toBitmap
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
@@ -706,17 +707,29 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         return true
     }
 
-    override fun createBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+    override fun createBookmark(dialogFragment: DialogFragment) {
         // Get the alert dialog from the fragment.
         val dialog = dialogFragment.dialog!!
 
-        // Get the views from the dialog fragment.
-        val createBookmarkNameEditText = dialog.findViewById<EditText>(R.id.create_bookmark_name_edittext)
-        val createBookmarkUrlEditText = dialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)
+        // Get handles for the views from the dialog fragment.
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
+        val bookmarkNameEditText = dialog.findViewById<EditText>(R.id.bookmark_name_edittext)
+        val bookmarkUrlEditText = dialog.findViewById<EditText>(R.id.bookmark_url_edittext)
 
-        // Extract the strings from the edit texts.
-        val bookmarkNameString = createBookmarkNameEditText.text.toString()
-        val bookmarkUrlString = createBookmarkUrlEditText.text.toString()
+        // Get the strings from the edit texts.
+        val bookmarkNameString = bookmarkNameEditText.text.toString()
+        val bookmarkUrlString = bookmarkUrlEditText.text.toString()
+
+        // Get the selected favorite icon drawable.
+        val favoriteIconDrawable = if (webpageFavoriteIconRadioButton.isChecked)  // The webpage favorite icon is checked.
+            webpageFavoriteIconImageView.drawable
+        else  // The custom favorite icon is checked.
+            customIconImageView.drawable
+
+        // Convert the favorite icon drawable to a bitmap.  Once the minimum API >= 33, this can use Bitmap.Config.RGBA_1010102.
+        val favoriteIconBitmap = favoriteIconDrawable.toBitmap(128, 128, Bitmap.Config.ARGB_8888)
 
         // Create a favorite icon byte array output stream.
         val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -743,32 +756,34 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         bookmarksListView.setSelection(newBookmarkDisplayOrder)
     }
 
-    override fun createBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+    override fun createBookmarkFolder(dialogFragment: DialogFragment) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 
         // Get handles for the views in the dialog fragment.
+        val defaultFolderIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_folder_icon_radiobutton)
+        val defaultFolderIconImageView = dialog.findViewById<ImageView>(R.id.default_folder_icon_imageview)
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
         val folderNameEditText = dialog.findViewById<EditText>(R.id.folder_name_edittext)
-        val defaultIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)
-        val defaultIconImageView = dialog.findViewById<ImageView>(R.id.default_icon_imageview)
 
-        // Get new folder name string.
+        // Get the folder name string.
         val folderNameString = folderNameEditText.text.toString()
 
-        // Set the folder icon bitmap according to the dialog.
-        val folderIconBitmap = if (defaultIconRadioButton.isChecked) {  // Use the default folder icon.
-            // Get the default folder icon drawable.
-            val folderIconDrawable = defaultIconImageView.drawable
+        // Get the selected folder icon drawable.
+        val folderIconDrawable = if (defaultFolderIconRadioButton.isChecked)  // Use the default folder icon.
+            defaultFolderIconImageView.drawable
+        else if (webpageFavoriteIconRadioButton.isChecked)  // Use the webpage favorite icon.
+            webpageFavoriteIconImageView.drawable
+        else  // Use the custom icon.
+            customIconImageView.drawable
 
-            // Convert the folder icon drawable to a bitmap drawable.
-            val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
+        // Cast the folder icon bitmap to a bitmap drawable.
+        val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
 
-            // Convert the folder icon bitmap drawable to a bitmap.
-            folderIconBitmapDrawable.bitmap
-        } else {  // Use the WebView favorite icon.
-            // Copy the favorite icon bitmap to the folder icon bitmap.
-            favoriteIconBitmap
-        }
+        // Convert the folder icon bitmap drawable to a bitmap.
+        val folderIconBitmap = folderIconBitmapDrawable.bitmap
 
         // Create a folder icon byte array output stream.
         val folderIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -798,16 +813,19 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         bookmarksListView.setSelection(0)
     }
 
-    override fun onSaveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap) {
+    override fun saveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 
         // Get handles for the views from the dialog fragment.
+        val currentIconRadioButton = dialog.findViewById<RadioButton>(R.id.current_icon_radiobutton)
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
         val bookmarkNameEditText = dialog.findViewById<EditText>(R.id.bookmark_name_edittext)
         val bookmarkUrlEditText = dialog.findViewById<EditText>(R.id.bookmark_url_edittext)
-        val currentIconRadioButton = dialog.findViewById<RadioButton>(R.id.current_icon_radiobutton)
 
-        // Get the bookmark strings.
+        // Get the strings from the edit texts.
         val bookmarkNameString = bookmarkNameEditText.text.toString()
         val bookmarkUrlString = bookmarkUrlEditText.text.toString()
 
@@ -815,6 +833,15 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         if (currentIconRadioButton.isChecked) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString)
         } else {  // Update the bookmark using the WebView favorite icon.
+            // Get the selected favorite icon drawable.
+            val favoriteIconDrawable = if (webpageFavoriteIconRadioButton.isChecked)  // The webpage favorite icon is checked.
+                webpageFavoriteIconImageView.drawable
+            else  // The custom icon is checked.
+                customIconImageView.drawable
+
+            // Convert the favorite icon drawable to a bitmap.  Once the minimum API >= 33, this can use Bitmap.Config.RGBA_1010102.
+            val favoriteIconBitmap = favoriteIconDrawable.toBitmap(128, 128, Bitmap.Config.ARGB_8888)
+
             // Create a favorite icon byte array output stream.
             val newFavoriteIconByteArrayOutputStream = ByteArrayOutputStream()
 
@@ -838,40 +865,39 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
     }
 
-    override fun onSaveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap) {
+    override fun saveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 
         // Get handles for the views from the dialog fragment.
         val currentFolderIconRadioButton = dialog.findViewById<RadioButton>(R.id.current_icon_radiobutton)
-        val defaultFolderIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)
-        val defaultFolderIconImageView = dialog.findViewById<ImageView>(R.id.default_icon_imageview)
-        val editFolderNameEditText = dialog.findViewById<EditText>(R.id.folder_name_edittext)
+        val defaultFolderIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_folder_icon_radiobutton)
+        val defaultFolderIconImageView = dialog.findViewById<ImageView>(R.id.default_folder_icon_imageview)
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
+        val folderNameEditText = dialog.findViewById<EditText>(R.id.folder_name_edittext)
 
         // Get the new folder name.
-        val newFolderName = editFolderNameEditText.text.toString()
+        val newFolderName = folderNameEditText.text.toString()
 
-        // Check if the favorite icon has changed.
+        // Check if the folder icon has changed.
         if (currentFolderIconRadioButton.isChecked) {  // Only the name has changed.
             // Update the name in the database.
             bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderName)
         } else {  // The icon has changed.
-            // Populate the new folder icon bitmap.
-            val folderIconBitmap: Bitmap = if (defaultFolderIconRadioButton.isChecked) {
-                // Get the default folder icon drawable.
-                val folderIconDrawable = defaultFolderIconImageView.drawable
+            // Get the selected folder icon drawable.
+            val folderIconDrawable = if (defaultFolderIconRadioButton.isChecked)  // The default folder icon is checked.
+                defaultFolderIconImageView.drawable
+            else if (webpageFavoriteIconRadioButton.isChecked)  // The webpage favorite icon is checked.
+                webpageFavoriteIconImageView.drawable
+            else  // The custom icon is checked.
+                customIconImageView.drawable
 
-                // Convert the folder icon drawable to a bitmap drawable.
-                val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
+            // Convert the folder icon drawable to a bitmap.  Once the minimum API >= 33, this can use Bitmap.Config.RGBA_1010102.
+            val folderIconBitmap = folderIconDrawable.toBitmap(128, 128, Bitmap.Config.ARGB_8888)
 
-                // Convert the folder icon bitmap drawable to a bitmap.
-                folderIconBitmapDrawable.bitmap
-            } else {  // Use the WebView favorite icon.
-                // Copy the favorite icon bitmap to the folder icon bitmap.
-                favoriteIconBitmap
-            }
-
-            // Create a folder icon byte array output stream.
+            // Create a new folder icon byte array output stream.
             val newFolderIconByteArrayOutputStream = ByteArrayOutputStream()
 
             // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).

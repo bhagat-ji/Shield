@@ -115,9 +115,9 @@
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
 
-        <!-- Default icon. -->
+        <!-- Default folder icon. -->
         <LinearLayout
-            android:id="@+id/default_icon_linearlayout"
+            android:id="@+id/default_folder_icon_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal"
@@ -125,13 +125,13 @@
             android:layout_marginBottom="6dp" >
 
             <RadioButton
-                android:id="@+id/default_icon_radiobutton"
+                android:id="@+id/default_folder_icon_radiobutton"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_vertical" />
 
             <ImageView
-                android:id="@+id/default_icon_imageview"
+                android:id="@+id/default_folder_icon_imageview"
                 android:layout_height="30dp"
                 android:layout_width="30dp"
                 android:layout_gravity="center_vertical"
@@ -180,11 +180,51 @@
                 android:textColor="?android:textColorPrimary" />
         </LinearLayout>
 
+        <!-- Custom icon. -->
+        <LinearLayout
+            android:id="@+id/custom_icon_linearlayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp" >
+
+            <RadioButton
+                android:id="@+id/custom_icon_radiobutton"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical" />
+
+            <ImageView
+                android:id="@+id/custom_icon_imageview"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="7dp"
+                android:layout_gravity="center_vertical"
+                android:text="@string/custom_folder_icon"
+                android:textSize="18sp"
+                android:textColor="?android:textColorPrimary" />
+        </LinearLayout>
+
+        <!-- Browse button. -->
+        <Button
+            android:id="@+id/browse_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/browse"
+            android:layout_marginBottom="12dp" />
+
         <!-- Folder name.  The text input layout makes the `android:hint` float above the edit text. -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp" >

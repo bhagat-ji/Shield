@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -26,7 +26,6 @@ import android.database.MergeCursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.ActionMode
 import android.view.Menu
@@ -49,6 +48,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
+import androidx.core.graphics.drawable.toBitmap
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.cursoradapter.widget.ResourceCursorAdapter
 import androidx.fragment.app.DialogFragment
@@ -72,8 +72,6 @@ import com.stoutner.privacybrowser.helpers.PARENT_FOLDER_ID
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
 import java.io.ByteArrayOutputStream
-
-import java.util.Arrays
 
 // Define the public class constants.
 const val HOME_FOLDER_DATABASE_ID = -1
@@ -176,15 +174,6 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
             // Combine the matrix cursor and the folders cursor.
             val foldersMergeCursor = MergeCursor(arrayOf(matrixCursor, foldersCursor))
 
-            // Get the default folder bitmap.
-            val defaultFolderDrawable = AppCompatResources.getDrawable(this, R.drawable.folder_blue_bitmap)
-
-            // Cast the default folder drawable to a bitmap drawable.
-            val defaultFolderBitmapDrawable = (defaultFolderDrawable as BitmapDrawable)
-
-            // Convert the default folder bitmap drawable to a bitmap.
-            val defaultFolderBitmap = defaultFolderBitmapDrawable.bitmap
-
             // Create a resource cursor adapter for the spinner.
             val foldersCursorAdapter: ResourceCursorAdapter = object : ResourceCursorAdapter(this, R.layout.bookmarks_databaseview_appbar_spinner_item, foldersMergeCursor, 0) {
                 override fun bindView(view: View, context: Context, cursor: Cursor) {
@@ -207,29 +196,14 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
 
                     // Set the folder icon according to the type.
                     if (foldersMergeCursor.position > 1) {  // Set a user folder icon.
-                        // Initialize a default folder icon byte array output stream.
-                        val defaultFolderIconByteArrayOutputStream = ByteArrayOutputStream()
-
-                        // Covert the default folder bitmap to a PNG and store it in the output stream.  `0` is for lossless compression (the only option for a PNG).
-                        defaultFolderBitmap.compress(Bitmap.CompressFormat.PNG, 0, defaultFolderIconByteArrayOutputStream)
-
-                        // Convert the default folder icon output stream to a byte array.
-                        val defaultFolderIconByteArray = defaultFolderIconByteArrayOutputStream.toByteArray()
-
                         // Get the folder icon byte array from the cursor.
                         val folderIconByteArray = cursor.getBlob(cursor.getColumnIndexOrThrow(FAVORITE_ICON))
 
                         // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
                         val folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.size)
 
-                        // Set the icon according to the type.
-                        if (Arrays.equals(folderIconByteArray, defaultFolderIconByteArray)) {  // The default folder icon is used.
-                            // Set a smaller and darker folder icon, which works well with the spinner.
-                            folderIconImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.folder_dark_blue))
-                        } else {  // A custom folder icon is uses.
-                            // Set the folder image stored in the cursor.
-                            folderIconImageView.setImageBitmap(folderIconBitmap)
-                        }
+                        // Set the folder image stored in the cursor.
+                        folderIconImageView.setImageBitmap(folderIconBitmap)
                     } else {  // Set the `All Folders` or `Home Folder` icon.
                         // Set the gray folder image.
                         folderIconImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.folder_gray))
@@ -668,12 +642,15 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         savedInstanceState.putBoolean(SORT_BY_DISPLAY_ORDER, sortByDisplayOrder)
     }
 
-    override fun saveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int, favoriteIconBitmap: Bitmap) {
+    override fun saveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 
         // Get handles for the views from dialog fragment.
         val currentIconRadioButton = dialog.findViewById<RadioButton>(R.id.current_icon_radiobutton)
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
         val bookmarkNameEditText = dialog.findViewById<EditText>(R.id.bookmark_name_edittext)
         val bookmarkUrlEditText = dialog.findViewById<EditText>(R.id.bookmark_url_edittext)
         val folderSpinner = dialog.findViewById<Spinner>(R.id.bookmark_folder_spinner)
@@ -694,7 +671,16 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         // Update the bookmark.
         if (currentIconRadioButton.isChecked) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderId, displayOrderInt)
-        } else {  // Update the bookmark using the `WebView` favorite icon.
+        } else {  // Update the bookmark using the WebView favorite icon.
+            // Get the selected favorite icon drawable.
+            val favoriteIconDrawable = if (webpageFavoriteIconRadioButton.isChecked)  // The webpage favorite icon is checked.
+                webpageFavoriteIconImageView.drawable
+            else  // The custom favorite icon is checked.
+                customIconImageView.drawable
+
+            // Convert the favorite icon drawable to a bitmap.  Once the minimum API >= 33, this can use Bitmap.Config.RGBA_1010102.
+            val favoriteIconBitmap = favoriteIconDrawable.toBitmap(128, 128, Bitmap.Config.ARGB_8888)
+
             // Create a favorite icon byte array output stream.
             val newFavoriteIconByteArrayOutputStream = ByteArrayOutputStream()
 
@@ -712,47 +698,46 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         updateBookmarksListView()
     }
 
-    override fun saveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int, favoriteIconBitmap: Bitmap) {
+    override fun saveBookmarkFolder(dialogFragment: DialogFragment, selectedFolderDatabaseId: Int) {
         // Get the dialog from the dialog fragment.
         val dialog = dialogFragment.dialog!!
 
         // Get handles for the views from dialog fragment.
         val currentIconRadioButton = dialog.findViewById<RadioButton>(R.id.current_icon_radiobutton)
-        val defaultIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)
-        val defaultIconImageView = dialog.findViewById<ImageView>(R.id.default_icon_imageview)
+        val defaultFolderIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_folder_icon_radiobutton)
+        val defaultFolderIconImageView = dialog.findViewById<ImageView>(R.id.default_folder_icon_imageview)
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
         val folderNameEditText = dialog.findViewById<EditText>(R.id.folder_name_edittext)
         val parentFolderSpinner = dialog.findViewById<Spinner>(R.id.parent_folder_spinner)
         val displayOrderEditText = dialog.findViewById<EditText>(R.id.display_order_edittext)
 
-        // Extract the folder information.
+        // Get the folder information.
         val newFolderNameString = folderNameEditText.text.toString()
         val parentFolderDatabaseId = parentFolderSpinner.selectedItemId.toInt()
         val displayOrderInt = displayOrderEditText.text.toString().toInt()
 
         // Set the parent folder ID.
-        val parentFolderId: Long = if (parentFolderDatabaseId == HOME_FOLDER_DATABASE_ID)  // The home folder is selected.
+        val parentFolderIdLong: Long = if (parentFolderDatabaseId == HOME_FOLDER_DATABASE_ID)  // The home folder is selected.
             HOME_FOLDER_ID
         else  // Get the parent folder name from the database.
             bookmarksDatabaseHelper.getFolderId(parentFolderDatabaseId)
 
         // Update the folder.
         if (currentIconRadioButton.isChecked) {  // Update the folder without changing the favorite icon.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderNameString, parentFolderId, displayOrderInt)
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderNameString, parentFolderIdLong, displayOrderInt)
         } else {  // Update the folder and the icon.
-            // Get the new folder icon bitmap.
-            val folderIconBitmap = if (defaultIconRadioButton.isChecked) {
-                // Get the default folder icon drawable.
-                val folderIconDrawable = defaultIconImageView.drawable
+            // Get the selected folder icon drawable.
+            val folderIconDrawable = if (defaultFolderIconRadioButton.isChecked)  // The default folder icon is checked.
+                defaultFolderIconImageView.drawable
+            else if (webpageFavoriteIconRadioButton.isChecked)  // The webpage favorite icon is checked.
+                webpageFavoriteIconImageView.drawable
+            else  // The custom icon is checked.
+                customIconImageView.drawable
 
-                // Convert the folder icon drawable to a bitmap drawable.
-                val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
-
-                // Convert the folder icon bitmap drawable to a bitmap.
-                folderIconBitmapDrawable.bitmap
-            } else {  // Use the `WebView` favorite icon.
-                // Get a copy of the favorite icon bitmap.
-                favoriteIconBitmap
-            }
+            // Convert the folder icon drawable to a bitmap.  Once the minimum API >= 33, this can use Bitmap.Config.RGBA_1010102.
+            val folderIconBitmap = folderIconDrawable.toBitmap(128, 128, Bitmap.Config.ARGB_8888)
 
             // Create a folder icon byte array output stream.
             val newFolderIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -764,7 +749,7 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
             val newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray()
 
             //  Update the folder and the icon.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderNameString, parentFolderId, displayOrderInt, newFolderIconByteArray)
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderNameString, parentFolderIdLong, displayOrderInt, newFolderIconByteArray)
         }
 
         // Update the list view.

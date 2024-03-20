@@ -3130,7 +3130,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     nestedScrollWebView.previousWebpageTitle = tabTitleTextView.text.toString()
 
                     // Set the default favorite icon as the favorite icon for this tab.
-                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteIcon(), 64, 64, true))
+                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteIcon(), 128, 128, true))
 
                     // Set the loading title text.
                     tabTitleTextView.setText(R.string.loading)
@@ -3885,17 +3885,32 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         }
     }
 
-    override fun createBookmark(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+    override fun createBookmark(dialogFragment: DialogFragment) {
         // Get the dialog.
         val dialog = dialogFragment.dialog!!
 
         // Get the views from the dialog fragment.
-        val createBookmarkNameEditText = dialog.findViewById<EditText>(R.id.create_bookmark_name_edittext)
-        val createBookmarkUrlEditText = dialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
+        val bookmarkNameEditText = dialog.findViewById<EditText>(R.id.bookmark_name_edittext)
+        val bookmarkUrlEditText = dialog.findViewById<EditText>(R.id.bookmark_url_edittext)
 
         // Extract the strings from the edit texts.
-        val bookmarkNameString = createBookmarkNameEditText.text.toString()
-        val bookmarkUrlString = createBookmarkUrlEditText.text.toString()
+        val bookmarkNameString = bookmarkNameEditText.text.toString()
+        val bookmarkUrlString = bookmarkUrlEditText.text.toString()
+
+        // Get the selected favorite icon drawable.
+        val favoriteIconDrawable = if (webpageFavoriteIconRadioButton.isChecked)  // Use the webpage favorite icon.
+            webpageFavoriteIconImageView.drawable
+        else  // Use the custom icon.
+            customIconImageView.drawable
+
+        // Cast the favorite icon bitmap to a bitmap drawable
+        val favoriteIconBitmapDrawable = favoriteIconDrawable as BitmapDrawable
+
+        // Convert the favorite icon bitmap drawable to a bitmap.
+        val favoriteIconBitmap = favoriteIconBitmapDrawable.bitmap
 
         // Create a favorite icon byte array output stream.
         val favoriteIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -3922,32 +3937,34 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         bookmarksListView.setSelection(newBookmarkDisplayOrder)
     }
 
-    override fun createBookmarkFolder(dialogFragment: DialogFragment, favoriteIconBitmap: Bitmap) {
+    override fun createBookmarkFolder(dialogFragment: DialogFragment) {
         // Get the dialog.
         val dialog = dialogFragment.dialog!!
 
         // Get handles for the views in the dialog fragment.
+        val defaultFolderIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_folder_icon_radiobutton)
+        val defaultFolderIconImageView = dialog.findViewById<ImageView>(R.id.default_folder_icon_imageview)
+        val webpageFavoriteIconRadioButton = dialog.findViewById<RadioButton>(R.id.webpage_favorite_icon_radiobutton)
+        val webpageFavoriteIconImageView = dialog.findViewById<ImageView>(R.id.webpage_favorite_icon_imageview)
+        val customIconImageView = dialog.findViewById<ImageView>(R.id.custom_icon_imageview)
         val folderNameEditText = dialog.findViewById<EditText>(R.id.folder_name_edittext)
-        val defaultIconRadioButton = dialog.findViewById<RadioButton>(R.id.default_icon_radiobutton)
-        val defaultIconImageView = dialog.findViewById<ImageView>(R.id.default_icon_imageview)
 
         // Get new folder name string.
         val folderNameString = folderNameEditText.text.toString()
 
         // Set the folder icon bitmap according to the dialog.
-        val folderIconBitmap: Bitmap = if (defaultIconRadioButton.isChecked) {  // Use the default folder icon.
-            // Get the default folder icon drawable.
-            val folderIconDrawable = defaultIconImageView.drawable
+        val folderIconDrawable = if (defaultFolderIconRadioButton.isChecked)  // Use the default folder icon.
+            defaultFolderIconImageView.drawable
+        else if (webpageFavoriteIconRadioButton.isChecked)  // Use the webpage favorite icon.
+            webpageFavoriteIconImageView.drawable
+        else  // Use the custom icon.
+            customIconImageView.drawable
 
-            // Convert the folder icon drawable to a bitmap drawable.
-            val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
+        // Cast the folder icon bitmap to a bitmap drawable.
+        val folderIconBitmapDrawable = folderIconDrawable as BitmapDrawable
 
-            // Convert the folder icon bitmap drawable to a bitmap.
-            folderIconBitmapDrawable.bitmap
-        } else {  // Use the WebView favorite icon.
-            // Copy the favorite icon bitmap to the folder icon bitmap.
-            favoriteIconBitmap
-        }
+        // Convert the folder icon bitmap drawable to a bitmap.
+        val folderIconBitmap = folderIconBitmapDrawable.bitmap
 
         // Create a folder icon byte array output stream.
         val folderIconByteArrayOutputStream = ByteArrayOutputStream()
@@ -4907,7 +4924,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
 
                             // Display the favorite icon in the tab.
-                            tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true))
+                            tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(icon, 128, 128, true))
                         }
                     }
                 }
@@ -5906,7 +5923,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             currentWebView!!.setFavoriteIcon(previousFavoriteIcon)
 
         // Display the previous favorite icon in the tab.
-        tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(currentWebView!!.getFavoriteIcon(), 64, 64, true))
+        tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(currentWebView!!.getFavoriteIcon(), 128, 128, true))
 
         // Load the history entry.
         currentWebView!!.goBackOrForward(steps)

@@ -156,9 +156,9 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         // Store the current favorite icon height.
         favoriteIconHeight = icon.height
 
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        favoriteIcon = if (icon.height > 256 || icon.width > 256)  // Scale the icon before storing it.
-            Bitmap.createScaledBitmap(icon, 256, 256, true)
+        // Scale the favorite icon bitmap down if it is larger than 128 in either direction.  Filtering uses bilinear interpolation.
+        favoriteIcon = if (icon.height > 128 || icon.width > 128)  // Scale the icon before storing it.
+            Bitmap.createScaledBitmap(icon, 128, 128, true)
         else  // Store the icon as presented.
             icon
     }
