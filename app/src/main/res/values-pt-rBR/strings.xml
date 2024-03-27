@@ -529,7 +529,6 @@
         <string name="open_intents_in_new_tab_summary">Conteúdos são links enviados de outros aplicativos.</string>
         <string name="swipe_to_refresh">Deslize para atualizar</string>
         <string name="swipe_to_refresh_summary">Alguns sites não funcionam bem se deslizar para atualizar estiver habilitado.</string>
-        <string name="download_with_external_app">Download com aplicativo externo</string>
         <string name="scroll_app_bar">Role a barra de aplicativos</string>
         <string name="scroll_app_bar_summary">Role a barra de aplicativos para fora da parte superior da tela quando o WebView rola para baixo.</string>
         <string name="bottom_app_bar">Barra de aplicativos inferior</string>

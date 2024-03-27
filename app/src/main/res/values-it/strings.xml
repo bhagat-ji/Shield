@@ -203,6 +203,12 @@
     <string name="bytes">byte</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="invalid_url">URL non valida</string>
+    <string name="blob_url_warning">In questo momento Privacy Browser non può scaricare blob URL.</string>
+    <string name="data_url_warning">Il gestore dei download di Android non può gestire le URL dati.</string>
+    <string name="download_directory">Cartella dei Download</string>
+    <string name="documents">Documenti</string>
+    <string name="pictures">Immagini</string>
+    <string name="music">Musica</string>
     <string name="saving_file">Salvataggio file:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Salvataggio file:\u0020 %1$s byte - %2$s</string>
     <string name="saving_file_percentage_progress">Salvataggio file:\u0020 %1$d%% - %2$s byte / %3$s byte - %4$s</string>
@@ -253,6 +259,8 @@
     <string name="create_folder">Crea Cartella</string>
     <string name="current_bookmark_icon">Icona Segnalibro</string>
     <string name="current_folder_icon">Icona Cartella</string>
+    <string name="custom_bookmark_icon">Icona segnalibro personalizzata</string>
+    <string name="custom_folder_icon">Icona cartella personalizzata</string>
     <string name="default_folder_icon">Icona predefinita cartella</string>
     <string name="webpage_favorite_icon">Icona preferita pagina web</string>
     <string name="bookmark_name">Nome Segnalibro</string>
@@ -262,6 +270,7 @@
     <string name="edit_folder">Modifica Cartella</string>
     <string name="move_to_folder">Sposta nella Cartella</string>
     <string name="move">Sposta</string>
+    <string name="cannot_use_svg">Al momento i file SVG non possono essere utilizzati come icona dei segnalibri.</string>
 
     <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
@@ -646,7 +655,18 @@
         <string name="open_intents_in_new_tab_summary">Gli intenti sono link inviati da altre app.</string>
         <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
-        <string name="download_with_external_app">Scarica con una applicazione esterna</string>
+        <string name="download_provider">Provider dei Download</string>
+        <string-array name="download_provider_entries">
+            <item>Privacy Browser</item>
+            <item>Download manager di Android</item>
+            <item>Applicazione esterna</item>
+        </string-array>
+        <string name="download_with_privacy_browser">Privacy Browser - Il gestore dei download incluso in Privacy Browser è semplice ma ha il vantaggio di rispettare i proxy e di utilizzare i cookie (se abilitati),
+            oltre che la capacità di salvare le URL dati.</string>
+        <string name="download_with_android_download_manager">Gestore dei download di Android - Il gestore dei download di Android non rispetta le impostazioni dei proxy di Privacy Browser ma ha accesso ai cookies
+            (per cui i lo scaricamento di file da siti che richiedono il login probabilmente dovrebbe funzionare).</string>
+        <string name="download_with_external_app">Applicazione esterna - Le applicazioni esterne non rispettano le impostazioni dei proxy di Privacy Browser e non hanno accesso ai cookie
+            (per cui i lo scaricamento di file da siti che richiedono il login difficilmente funzionerà).</string>
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>
         <string name="scroll_app_bar_summary">Permette lo scorrere della barra dell\'applicazione dalla parte alta dello schermo quando si effettua lo scrolling.</string>
         <string name="bottom_app_bar">Barra dell\'app in basso</string>

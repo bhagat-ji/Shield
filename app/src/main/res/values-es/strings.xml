@@ -203,6 +203,12 @@
     <string name="bytes">bytes</string>
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="invalid_url">URL inválida</string>
+    <string name="blob_url_warning">Actualmente Navegador privado no puede descargar URLs de blobs.</string>
+    <string name="data_url_warning">El gestor de descargas de Android no puede gestionar las URLs de datos.</string>
+    <string name="download_directory">Directorio de descargas</string>
+    <string name="documents">Documentos</string>
+    <string name="pictures">Imágenes</string>
+    <string name="music">Música</string>
     <string name="saving_file">Guardando archivo:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Guardando archivo:\u0020 %1$s bytes - %2$s</string>
     <string name="saving_file_percentage_progress">Guardando archivo:\u0020 %1$d%% - %2$s bytes / %3$s bytes - %4$s</string>
@@ -254,6 +260,8 @@
     <string name="create_folder">Crear carpeta</string>
     <string name="current_bookmark_icon">Icono de favorito actual</string>
     <string name="current_folder_icon">Icono de carpeta actual</string>
+    <string name="custom_bookmark_icon">Icono de favorito personalizado</string>
+    <string name="custom_folder_icon">Icono de carpeta personalizado</string>
     <string name="default_folder_icon">Icono de carpeta por defecto</string>
     <string name="webpage_favorite_icon">Icono favorito de página Web</string>
     <string name="bookmark_name">Nombre de favorito</string>
@@ -263,6 +271,7 @@
     <string name="edit_folder">Editar carpeta</string>
     <string name="move_to_folder">Mover a carpeta</string>
     <string name="move">Mover</string>
+    <string name="cannot_use_svg">Actualmente no puede usarse un SVG como icono preferido de un favorito.</string>
 
     <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
@@ -646,7 +655,18 @@
         <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>
         <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
-        <string name="download_with_external_app">Descargar con una app externa</string>
+        <string name="download_provider">Proveedor de descargas</string>
+        <string-array name="download_provider_entries">
+            <item>Navegador Privado</item>
+            <item>Gestor de descargas de Android</item>
+            <item>Aplicación externa</item>
+        </string-array>
+        <string name="download_with_privacy_browser">Navegador Privado - El descargador integrado de Navegador Privado es sencillo, pero tiene la ventaja de respetar el proxy y usar cookies (si están habilitadas),
+            así como la posibilidad de guardar datos: URLs.</string>
+        <string name="download_with_android_download_manager">Gestor de descargas de Android  - El gestor de descargas de Android no respeta la configuración proxy de Navegador Privado,
+            pero sí tiene acceso a las cookies (lo que significa que los archivos descargados de sitios que requieren hacer login probablemente funcionarán).</string>
+        <string name="download_with_external_app">Aplicación externa - Las aplicaciones externas no respetan  la configuración proxy de Navegador Privado y no tienen acceso a las cookies
+            (lo que significa que es poco probable que funcionen los archivos descargados de sitios que requieren hacer login).</string>
         <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
         <string name="bottom_app_bar">Barra inferior de la app</string>

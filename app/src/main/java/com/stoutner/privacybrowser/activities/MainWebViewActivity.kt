@@ -5455,8 +5455,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Instantiate an HTTP authentication dialog.
                 val httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm, nestedScrollWebView.webViewFragmentId)
 
-                // Show the HTTP authentication dialog.
-                httpAuthenticationDialogFragment.show(supportFragmentManager, getString(R.string.http_authentication))
+                // Try to show the dialog.  WebView can receive an HTTP authentication request even after the app has been paused.  Attempting to display a dialog in that state leads to a crash.
+                try {
+                    // Show the HTTP authentication dialog.
+                    httpAuthenticationDialogFragment.show(supportFragmentManager, getString(R.string.http_authentication))
+                } catch (exception: Exception) {  // The dialog could not be shown.
+                    // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
+                    pendingDialogsArrayList.add(PendingDialogDataClass(httpAuthenticationDialogFragment, getString(R.string.http_authentication)))
+                }
             }
 
             override fun onPageStarted(webView: WebView, url: String, favicon: Bitmap?) {
@@ -5694,7 +5700,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Instantiate an SSL certificate error alert dialog.
                     val sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error, nestedScrollWebView.webViewFragmentId)
 
-                    // Try to show the dialog.  The SSL error handler continues to function even when the WebView is paused.  Attempting to display a dialog in that state leads to a crash.
+                    // Try to show the dialog.  The SSL error handler continues to function even when the app has been stopped.  Attempting to display a dialog in that state leads to a crash.
                     try {
                         // Show the SSL certificate error dialog.
                         sslCertificateErrorDialogFragment.show(supportFragmentManager, getString(R.string.ssl_certificate_error))

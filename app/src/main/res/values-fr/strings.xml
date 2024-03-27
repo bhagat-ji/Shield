@@ -643,7 +643,6 @@
         <string name="open_intents_in_new_tab_summary">Les intentions sont des liens envoyés à partir d\'autres applications.</string>
         <string name="swipe_to_refresh">Glisser pour rafraîchir</string>
         <string name="swipe_to_refresh_summary">Certains sites Web ne fonctionnent pas bien lorsque "Glisser pour rafraîchir" est activé.</string>
-        <string name="download_with_external_app">Téléchargement avec une app externe</string>
         <string name="scroll_app_bar">Défilement barre d\'applications</string>
         <string name="scroll_app_bar_summary">Faites défiler la barre d\'applications en haut de l\'écran lorsque WebView défile vers le bas.</string>
         <string name="bottom_app_bar">Barre d\'application en bas</string>

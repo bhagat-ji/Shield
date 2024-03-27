@@ -200,6 +200,12 @@
     <string name="bytes">байтов</string>
     <string name="unknown_size">неизвестный размер</string>
     <string name="invalid_url">неправильный URL</string>
+    <string name="blob_url_warning">В настоящее время Privacy Browser не может загружать blob URL.</string>
+    <string name="data_url_warning">Менеджер загрузок Android не может обрабатывать URL данных.</string>
+    <string name="download_directory">Каталог загрузки</string>
+    <string name="documents">Документы</string>
+    <string name="pictures">Изображения</string>
+    <string name="music">Музыка</string>
     <string name="saving_file">Сохранение файла:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Сохранение файла:\u0020 %1$s байтов - %2$s</string>
     <string name="saving_file_percentage_progress">Сохранение файла:\u0020 %1$d%% - %2$s байтов / %3$s байтов - %4$s</string>
@@ -250,6 +256,8 @@
     <string name="create_folder">Создание папки</string>
     <string name="current_bookmark_icon">Текущий значок закладки</string>
     <string name="current_folder_icon">Текущий значок папки</string>
+    <string name="custom_bookmark_icon">Настраиваемый значок закладки</string>
+    <string name="custom_folder_icon">Настраиваемый значок папки</string>
     <string name="default_folder_icon">Значок папки по умолчанию</string>
     <string name="webpage_favorite_icon">Значок избранной веб-страницы</string>
     <string name="bookmark_name">Имя закладки</string>
@@ -259,6 +267,7 @@
     <string name="edit_folder">Изменить папку</string>
     <string name="move_to_folder">Переместить в папку</string>
     <string name="move">Переместить</string>
+    <string name="cannot_use_svg">В настоящее время SVG нельзя использовать в качестве значка избранных закладок.</string>
 
     <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
@@ -642,7 +651,18 @@
         <string name="open_intents_in_new_tab_summary">Цели - это ссылки, отправленные из других приложений.</string>
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
-        <string name="download_with_external_app">Загрузка во внешнем приложении</string>
+        <string name="download_provider">Провайдер загрузки</string>
+        <string-array name="download_provider_entries">
+            <item>Privacy Browser</item>
+            <item>Менеджер загрузок Android</item>
+            <item>Внешнее приложение</item>
+        </string-array>
+        <string name="download_with_privacy_browser">Privacy Browser - Встроенный загрузчик Privacy Browser прост, но его преимущество в том,
+            что он поддерживает прокси и использует cookie (если они включены), а также позволяет сохранять данные: URL.</string>
+        <string name="download_with_android_download_manager">Менеджер загрузки Android - менеджер загрузки Android не поддерживает настройки прокси Privacy Browser,
+            но у него есть доступ к файлам cookie (это означает, что файлы, загруженные с сайтов, требующих авторизации, будут работать).</string>
+        <string name="download_with_external_app">Внешнее приложение - внешние приложения не поддерживают настройки прокси Privacy Browser и не имеют доступа к файлам cookie
+            (это означает, что файлы, загруженные с сайтов, требующих авторизации, вряд ли будут работать).</string>
         <string name="scroll_app_bar">Прокручивать панель приложения</string>
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="bottom_app_bar">Нижняя панель приложения</string>
