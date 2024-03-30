@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -37,18 +37,10 @@
             android:layout_width="match_parent"
             android:layout_weight="1" >
 
-            <ScrollView
-                android:id="@+id/scrollview"
+            <WebView
+                android:id="@+id/logcat_webview"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent" >
-
-                <TextView
-                    android:id="@+id/logcat_textview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_margin="10dp"
-                    android:textIsSelectable="true" />
-            </ScrollView>
+                android:layout_width="match_parent" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <!-- The app bar theme must be specified here because the activity uses a `NoActionBar` theme. -->

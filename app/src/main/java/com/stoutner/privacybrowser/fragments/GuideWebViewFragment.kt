@@ -1,7 +1,7 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ import androidx.webkit.WebViewFeature
 import com.stoutner.privacybrowser.R
 
 // Define the class constants.
-private const val TAB_NUMBER = "tab_number"
-private const val SCROLL_Y = "scroll_y"
+private const val TAB_NUMBER = "A"
+private const val SCROLL_Y = "B"
 
 class GuideWebViewFragment : Fragment() {
     // Define the class variables.
@@ -135,7 +135,7 @@ class GuideWebViewFragment : Fragment() {
             9 -> tabWebView.loadUrl("https://appassets.androidplatform.net/assets/" + getString(R.string.android_asset_path) + "/guide_interface.html")
         }
 
-        // Scroll the WebView if the saved instance state is not null.
+        // Restore the WebView scroll position if the activity has been restarted.
         if (savedInstanceState != null) {
             tabWebView.post {
                 tabWebView.scrollY = savedInstanceState.getInt(SCROLL_Y)

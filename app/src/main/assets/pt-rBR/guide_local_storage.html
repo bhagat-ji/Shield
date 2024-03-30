@@ -1,9 +1,9 @@
 <!--
-  Copyright © 2016-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2018, 2020-2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2021 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="pt">
     <head>
         <meta charset="UTF-8">
+        <title>Local Storage</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -52,7 +53,7 @@
             Se a guia em segundo plano fizer uma solicitação, por exemplo, para ver se há informações atualizadas, essa solicitação será enviada sem cookies, oque fará com que o site desconecte você.
             Esta é uma limitação que será removida com o lançamento do <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> no 4.x série.</p>
 
-        <p>Se os cookies estiverem habilitados, mas o JavaScript estiver desabilitado, o ícone de privacidade ficará amarelo <img class="inline" src="../shared_images/warning.svg"> como um aviso.</p>
+        <p>Se os cookies estiverem habilitados, mas o JavaScript estiver desabilitado, o ícone de privacidade ficará amarelo <img class="inline" src="../shared_images/warning.svg" alt="Warning"> como um aviso.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Cookies de terceiros</h3>
@@ -69,15 +70,6 @@
             O armazenamento DOM pode conter <a href="https://en.wikipedia.org/wiki/Web_storage#Features">megabytes por site</a>.
             Ao contrário dos cookies, o armazenamento DOM não envia todos os dados nos cabeçalhos com cada solicitação.
             Em vez disso, ele usa JavaScript para ler e gravar dados, o que significa que não funciona quando o JavaScript está desabilitado.</p>
-
-
-        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Dados do Formulário</h3>
-
-        <p>Os dados do formulário contêm informações digitadas em formulários da web, como nomes de usuário, endereços, números de telefone, etc., e os relaciona em uma caixa suspensa em visitas futuras.
-            Ao contrário de outras formas de armazenamento local, os dados do formulário não são enviados ao servidor da web sem interação específica do usuário.
-            A partir do Android Oreo (versão 8.0, API 26), os dados do formulário WebView foram substituídos pelo
-            <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
-            Como tal, os controles para dados de formulário não aparecem mais em dispositivos Android mais recentes.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Limpar e fechar</h3>

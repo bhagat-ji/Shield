@@ -1,9 +1,9 @@
 <!--
-  Copyright © 2017-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2018, 2020-2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018,2021-2022 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2018, 2021-2022 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="it">
     <head>
         <meta charset="UTF-8">
+        <title>Local Storage</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -54,7 +55,7 @@
             quella richiesta sarà inviata senza cookie e questo provocherà il log out dal sito.
             Questa è una limitazione che sarà rimossa con il rilascio di <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> nella serie 4.x.</p>
 
-        <p>Se i cookies sono abilitati ma JavaScript è disabilitato, l'icona della privacy sarà gialla <img class="inline" src="../shared_images/warning.svg"> come avvertimento.</p>
+        <p>Se i cookies sono abilitati ma JavaScript è disabilitato, l'icona della privacy sarà gialla <img class="inline" src="../shared_images/warning.svg" alt="Warning"> come avvertimento.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Cookies di terze parti</h3>
@@ -71,16 +72,6 @@
             <a href="https://en.wikipedia.org/wiki/Web_storage#Features">alcuni megabyte per ogni sito</a>.
             A differenza dei cookies, il DOM storage non invia tutti i dati nelle intestazioni con ogni richiesta.
             Al contrario utilizza JavaScript per leggere e scrivere i dati, il che significa che non può funzionare se JavaScript è disabilitato.</p>
-
-
-        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Dati dei moduli</h3>
-
-        <p>I dati dei moduli contengono informazioni che sono digitate nei web forms, come il nome dell'utente, gli indirizzi, numeri di telefono, ecc.,
-            e li elenca in un menù a tendina in caso di accessi futuri.
-            A differenza delle altre modalità di memorizzazione locale, i dati dei moduli non vengono inviati ai web server senza che ci sia una interazione con l'utente.
-            A partire da Android Oreo (versione 8.0, API 26), i dati dei moduli di WebView sono stati sostituiti dal
-            <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">servizio Autofill</a>.
-            Per questo motivo i controlli dei dati dei moduli non sono presenti nei dispositivi Android più recenti.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Elimina dati ed esci</h3>

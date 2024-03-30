@@ -1,7 +1,7 @@
 /*
- * Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ class GetHeadersBackgroundTask {
                 // Create a buffered string reader for the content data.
                 val bufferedReader = BufferedReader(InputStreamReader(contentResolver.openInputStream(contentUri)))
 
-                // Create a buffered string reader for the content data.
+                // Create a content line string.
                 var contentLineString: String?
 
                 // Get the data from the buffered reader one line at a time.

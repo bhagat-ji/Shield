@@ -1,9 +1,9 @@
 <!--
-  Copyright © 2016-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018, 2020-2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018,2021 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2018, 2021 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="es">
     <head>
         <meta charset="UTF-8">
+        <title>Local Storage</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -52,7 +53,7 @@
             Si la pestaña en segundo plano hace una petición, por ejemplo, para ver si hay información actualizada, esa petición se enviará sin cookies, lo que hará que el sitio web cierre la sesión.
             Esta es una limitación que se eliminará con el lanzamiento de <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> en la serie 4.x.</p>
 
-        <p>Si las cookies están activadas pero JavaScript está desactivado, el icono de privacidad será amarillo <img class="inline" src="../shared_images/warning.svg"> como advertencia.</p>
+        <p>Si las cookies están activadas pero JavaScript está desactivado, el icono de privacidad será amarillo <img class="inline" src="../shared_images/warning.svg" alt="Warning"> como advertencia.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Cookies de terceros</h3>
@@ -68,16 +69,6 @@
             Mientras que el tamaño máximo de almacenamiento combinado para todas las cookies de una sola URL es de 4 kilobytes, el almacenamiento DOM puede soportar
             <a href="https://en.wikipedia.org/wiki/Web_storage#Features">megabytes por sitio</a>. A diferencia de las cookies, el almacenamiento DOM no envía todos los datos de las cabeceras con cada solicitud.
             Más bien, utiliza JavaScript para leer y escribir datos, lo que significa que no funciona cuando JavaScript está desactivado.</p>
-
-
-        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Datos de formulario</h3>
-
-        <p>Los datos de formulario contienen la información introducida en los formularios web, como los nombres de los usuarios, las direcciones, los números de teléfono, etc.,
-            y los listan en un cuadro desplegable en futuras visitas.
-            A diferencia de las otras formas de almacenamiento local, los datos de los formularios no se envían al servidor web sin una interacción específica del usuario.
-            A partir de Android Oreo (versión 8.0, API 26), los datos de formulario de WebView fueron sustituidos por el
-            <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">servicio Autofill o Autorelleno</a>.
-            Por ello, los controles para los datos de los formularios ya no aparecen en los dispositivos Android más nuevos.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Borrar y Salir</h3>

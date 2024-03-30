@@ -1,9 +1,9 @@
 <!--
-  Copyright 2016-2018,2020-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2018, 2020-2024 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2023 Xin.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="zh">
     <head>
         <meta charset="UTF-8">
+        <title>Local Storage</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -43,7 +44,7 @@
             如果你在后台有一个页面需要cookies来登录，而你在一个页面里关闭了cookies，所有页面的cookies都会被关闭。如果在后台的页面发出请求，例如，看有没有新消息，而在没有cookies的情况下需要你重新登录。
             这个限制会在<a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">隐私浏览器</a> 4.x系列中移除。</p>
 
-        <p>如果cookies允许，而JavaScript不允许，隐私盾牌会变成黄色<img class="inline" src="../shared_images/warning.svg">来示警</p>
+        <p>如果cookies允许，而JavaScript不允许，隐私盾牌会变成黄色<img class="inline" src="../shared_images/warning.svg" alt="Warning">来示警</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> 第三方Cookies</h3>
@@ -56,13 +57,6 @@
 
         <p>文本对向储存。也叫网页存储。像cookies一样被储存，单个URL的所有的cookies的最大的组合是4KB，而DOM能储存<a href="https://en.wikipedia.org/wiki/Web_storage#Features">MB</a>。
             不像cookies，DOM储存不在请求头中发送数据，相反，它使用JavaScript来读写数据，意味着在禁用JavaScript时DOM不能工作。</p>
-
-
-        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> 表单数据</h3>
-
-        <p>表单数据包含输入到web表单中的信息，包括用户名。地址，电话等等，并且在表中罗列。不像其他本地存储的表单，没有特定的用户需求，表单不会发送到web中。
-            从Android Oreo (version 8.0, API 26)开始，WebView的表单数据被<a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>取代。
-            因此表单数据控件不会在新的安卓设备中出现</p>
 
 
         <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> 清除并退出</h3>

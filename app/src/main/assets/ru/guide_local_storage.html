@@ -1,7 +1,7 @@
 <!--
-  Copyright © 2016-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2018, 2020-2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="ru">
     <head>
         <meta charset="UTF-8">
+        <title>Local Storage</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -50,7 +51,7 @@
             Если фоновая вкладка делает запрос, например, чтобы узнать, есть ли обновленная информация, этот запрос будет отправлен без файлов cookie, что приведет к разлогиниванию.
             Это ограничение будет устранено с выходом <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> в версии 4.x.</p>
 
-        <p>Если cookie включены и при этом JavaScript отключен, то значок конфиденциальности будет желтого цвета <img class="inline" src="../shared_images/warning.svg"> в качестве предупреждения.</p>
+        <p>Если cookie включены и при этом JavaScript отключен, то значок конфиденциальности будет желтого цвета <img class="inline" src="../shared_images/warning.svg" alt="Warning"> в качестве предупреждения.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Сторонние файлы cookie</h3>
@@ -67,14 +68,6 @@
             то DOM-хранилище может вмещать <a href="https://en.wikipedia.org/wiki/Web_storage#Features">мегабайты на сайт</a>.
             В отличие от cookie, DOM-хранилище не передает все данные в заголовках с каждым запросом.
             Вместо этого оно использует JavaScript для чтения и записи данных, а это означает, что оно не работает, когда JavaScript отключен.</p>
-
-
-        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Данные форм</h3>
-
-        <p>Данные форм содержат информацию, введенную в веб-формы, такую как имена пользователей, адреса, номера телефонов и т.д., и отображаются в выпадающем списке при последующих посещениях.
-            В отличие от других форм локального хранилища, данные форм не передаются на веб-сервер без определенного взаимодействия с пользователем. Начиная с Android Oreo (версия 8.0, API 26),
-            данные форм WebView были заменены <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">сервисом автозаполнения</a>.
-            Таким образом, элементы управления данными формы больше не отображаются на новых Android-устройствах.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Очистить и выйти</h3>

@@ -1,11 +1,11 @@
 <!--
-  Copyright © 2016-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2018, 2020-2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019,2021-2022 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019, 2021-2022 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,9 +20,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="de">
     <head>
         <meta charset="UTF-8">
+        <title>Local Storage</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -56,13 +57,15 @@
             wodurch sie ggf. von der Website abgemeldet werden.
             Diese Einschränkung wird mit <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> in den Versionen 4.x von Privacy Browser behoben werden.</p>
 
-        <p>Wenn Cookies aktiviert sind, aber JavaScript deaktiviert ist, wird das Privatsphären-Icon <img class="inline" src="../shared_images/warning.svg"> zur Warnung in gelb dargestellt.</p>
+        <p>Wenn Cookies aktiviert sind, aber JavaScript deaktiviert ist, wird das Privatsphären-Icon <img class="inline" src="../shared_images/warning.svg" alt="Warning"> zur Warnung in gelb dargestellt.</p>
+
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Drittanbieter-Cookies</h3>
 
         <p>Drittanbieter-Cookies werden von Teilen von Websites gesetzt, die von anderen Servern geladen werden als von dem, dessen Adresse (URL) in der Adresszeile des Browsers angezeigt wird.
             Es gibt eigentlich keinen guten Grund, solche Cookies überhaupt zuzulassen. Ab Privacy Browser Version 3.8 wurde die Option daher entfernt und selbst Google plant,
             <a href="https://www.theverge.com/2020/1/14/21064698/google-third-party-cookies-chrome-two-years-privacy-safari-firefox">Drittanbieter-Cookies in Zukunft zu deaktivieren</a>.</p>
+
 
         <h3><svg class="header"><use href="../shared_images/web.svg#icon"/></svg> DOM-Speicher</h3>
 
@@ -71,13 +74,6 @@
             können im DOM-Speicher <a href="https://en.wikipedia.org/wiki/Web_storage#Features">mehrere Megabytes pro Internet-Seite</a> gespeichert werden.
             Die gespeicherten Daten werden dabei - im Gegensatz zu Cookies - nicht bei jeder Anfrage zur Gänze im Header mitgeschickt,
             sondern mittels JavaScript gelesen und geschrieben, sodass diese Form der Datenspeicherung nicht funktioniert, wenn JavaScript deaktiviert ist.</p>
-
-        <h3><svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Formulardaten</h3>
-
-        <p>Formulardaten enthalten Informationen, die in Web-Formulare eingegeben wurden (wie z.B. Benutzernamen, Adressen, Telefonnummern, usw.) und werden bei späteren Besuchen in Auswahl-Dialogen angezeigt.
-            Im Gegensatz zu in Cookies und im DOM-Speicher gespeicherten Daten werden diese Informationen nur nach Benutzer-Interaktion an den Webserver gesandt. Ab Android Oreo (Version 8.0, API 26) wurden
-            WebViews Formulardaten durch <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Googles Autofill-Service</a> ersetzt.
-            Daher erscheinen Formulardaten auf neueren Android-Geräten nicht mehr.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Bereinigen und Schließen</h3>

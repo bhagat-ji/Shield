@@ -1,7 +1,7 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,19 +43,17 @@ class GuideActivity : AppCompatActivity() {
         val bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
 
         // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
+        if (!allowScreenshots)
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
 
         // Run the default commands.
         super.onCreate(savedInstanceState)
 
         // Set the content view.
-        if (bottomAppBar) {
+        if (bottomAppBar)
             setContentView(R.layout.guide_bottom_appbar)
-        } else {
+        else
             setContentView(R.layout.guide_top_appbar)
-        }
 
         // Get handles for the views.
         val toolbar = findViewById<Toolbar>(R.id.guide_toolbar)

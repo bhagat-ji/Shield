@@ -1,9 +1,9 @@
 <!--
-  Copyright © 2016-2018,2020-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2018, 2020-2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019,2021-2022 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019, 2021-2022 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
+        <title>Local Storage</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -54,7 +55,7 @@
             Si l'onglet d'arrière-plan fait une demande, par exemple, pour voir s'il y a des informations mises à jour, cette demande sera envoyée sans cookies, ce qui fera que le site web vous déconnectera.
             Il s'agit d'une limitation qui sera supprimée avec la sortie de <a href="https://www.stoutner.com/category/privacy-browser-android-roadmap/">Privacy WebView</a> dans la série 4.x.</p>
 
-        <p>Si les cookies sont activés mais que JavaScript est désactivé, l'icône de confidentialité sera jaune <img class="inline" src="../shared_images/warning.svg"> en guise d'avertissement.</p>
+        <p>Si les cookies sont activés mais que JavaScript est désactivé, l'icône de confidentialité sera jaune <img class="inline" src="../shared_images/warning.svg" alt="Warning"> en guise d'avertissement.</p>
 
 
         <h3><svg class="header"><use href="../shared_images/cookie.svg#icon"/></svg> Cookies tiers</h3>
@@ -73,17 +74,7 @@
             Il utilise plutôt JavaScript pour lire et écrire les données, ce qui signifie qu'il ne fonctionne pas lorsque JavaScript est désactivé.</p>
 
 
-        <h3> <svg class="header"><use href="../shared_images/subtitles.svg#icon"/></svg> Données de formulaire</h3>
-
-        <p>Les données de formulaire contiennent les informations saisies dans les formulaires web, comme les noms d'utilisateur, les adresses, les numéros de téléphone,
-            etc. et les répertorient dans une boîte déroulante lors de visites ultérieures.
-            Contrairement aux autres formes de stockage local, les données de formulaire ne sont pas envoyées au serveur web sans interaction spécifique de l'utilisateur.
-            À partir d'Android Oreo (version 8.0, API 26), les données de formulaire de WebView ont été remplacées par le
-            <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">service Autofill</a>.
-            Ainsi, les contrôles des données de formulaire n'apparaissent plus sur les appareils Android plus récents.</p>
-
-
-        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Nettoyer et Quitter<</h3>
+        <h3><svg class="header"><use href="../shared_images/delete_forever.svg#icon"/></svg> Nettoyer et Quitter</h3>
 
         <p>La fonction Nettoyer et Quitter s'exécute chaque fois que le dernier onglet est fermé ou que Nettoyer et Quitter est sélectionnée dans le menu de navigation.
             Par défaut, elle efface les cookies, le stockage DOM, les données de formulaire, le logcat et le cache WebView.

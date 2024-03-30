@@ -1,7 +1,7 @@
 /*
  * Copyright 2019-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@ import android.content.ClipboardManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Base64
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
-import android.widget.TextView
-import android.widget.ScrollView
+import android.webkit.WebView
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -50,29 +50,25 @@ import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.Exception
+
 import java.nio.charset.StandardCharsets
 
 // Define the class constants.
-private const val SCROLLVIEW_POSITION = "scrollview_position"
+private const val SCROLL_Y = "A"
 
 class LogcatActivity : AppCompatActivity() {
-    // Define the class variables.
-    private var scrollViewYPositionInt = 0
+    // Declare the class variables.
+    private lateinit var logcatPlainTextStringBuilder: StringBuilder
 
-    // Define the class views.
+    // Declare the class views.
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var logcatScrollView: ScrollView
-    private lateinit var logcatTextView: TextView
+    private lateinit var logcatWebView: WebView
 
     // Define the save logcat activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
     private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri ->
         // Only save the file if the URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             try {
-                // Get the logcat string.
-                val logcatString = logcatTextView.text.toString()
-
                 // Open an output stream.
                 val outputStream = contentResolver.openOutputStream(fileUri)!!
 
@@ -80,7 +76,7 @@ class LogcatActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.Main).launch {
                     withContext(Dispatchers.IO) {
                         // Write the logcat string to the output stream.
-                        outputStream.write(logcatString.toByteArray(StandardCharsets.UTF_8))
+                        outputStream.write(logcatPlainTextStringBuilder.toString().toByteArray(StandardCharsets.UTF_8))
 
                         // Close the output stream.
                         outputStream.close()
@@ -100,10 +96,10 @@ class LogcatActivity : AppCompatActivity() {
                 contentResolverCursor.close()
 
                 // Display a snackbar with the saved logcat information.
-                Snackbar.make(logcatTextView, getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(logcatWebView, getString(R.string.saved, fileNameString), Snackbar.LENGTH_SHORT).show()
             } catch (exception: Exception) {
                 // Display a snackbar with the error message.
-                Snackbar.make(logcatTextView, getString(R.string.error_saving_logcat, exception.toString()), Snackbar.LENGTH_INDEFINITE).show()
+                Snackbar.make(logcatWebView, getString(R.string.error_saving_logcat, exception.toString()), Snackbar.LENGTH_INDEFINITE).show()
             }
         }
     }
@@ -117,25 +113,22 @@ class LogcatActivity : AppCompatActivity() {
         val bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
 
         // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
+        if (!allowScreenshots)
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
 
         // Run the default commands.
         super.onCreate(savedInstanceState)
 
         // Set the content view.
-        if (bottomAppBar) {
+        if (bottomAppBar)
             setContentView(R.layout.logcat_bottom_appbar)
-        } else {
+        else
             setContentView(R.layout.logcat_top_appbar)
-        }
 
         // Get handles for the views.
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout)
-        logcatScrollView = findViewById(R.id.scrollview)
-        logcatTextView = findViewById(R.id.logcat_textview)
+        logcatWebView = findViewById(R.id.logcat_webview)
 
         // Set the toolbar as the action bar.
         setSupportActionBar(toolbar)
@@ -148,8 +141,8 @@ class LogcatActivity : AppCompatActivity() {
 
         // Implement swipe to refresh.
         swipeRefreshLayout.setOnRefreshListener {
-            // Get the current logcat.
-            getLogcat()
+            // Populate the current logcat.
+            populateLogcat()
         }
 
         // Set the swipe refresh color scheme according to the theme.
@@ -167,14 +160,15 @@ class LogcatActivity : AppCompatActivity() {
         // Set the swipe refresh background color.
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt)
 
-        // Check to see if the activity has been restarted.
-        if (savedInstanceState != null) {
-            // Get the saved scrollview position.
-            scrollViewYPositionInt = savedInstanceState.getInt(SCROLLVIEW_POSITION)
-        }
+        // Restore the WebView scroll position if the activity has been restarted.
+        if (savedInstanceState != null)
+            logcatWebView.scrollY = savedInstanceState.getInt(SCROLL_Y)
 
-        // Get the logcat.
-        getLogcat()
+        // Allow loading of file:// URLs.
+        logcatWebView.settings.allowFileAccess = true
+
+        // Populate the logcat.
+        populateLogcat()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -193,14 +187,14 @@ class LogcatActivity : AppCompatActivity() {
                 val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
                 // Save the logcat in a clip data.
-                val logcatClipData = ClipData.newPlainText(getString(R.string.logcat), logcatTextView.text)
+                val logcatClipData = ClipData.newPlainText(getString(R.string.logcat), logcatPlainTextStringBuilder)
 
                 // Place the clip data on the clipboard.
                 clipboardManager.setPrimaryClip(logcatClipData)
 
                 // Display a snackbar if the API <= 32 (Android 12L).  Beginning in Android 13 the OS displays a notification that covers up the snackbar.
                 if (Build.VERSION.SDK_INT <= 32)
-                    Snackbar.make(logcatTextView, R.string.logcat_copied, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(logcatWebView, R.string.logcat_copied, Snackbar.LENGTH_SHORT).show()
 
                 // Consume the event.
                 true
@@ -222,11 +216,8 @@ class LogcatActivity : AppCompatActivity() {
                     // Wait for the process to finish.
                     process.waitFor()
 
-                    // Reset the scroll view Y position int.
-                    scrollViewYPositionInt = 0
-
                     // Reload the logcat.
-                    getLogcat()
+                    populateLogcat()
                 } catch (exception: Exception) {
                     // Do nothing.
                 }
@@ -246,14 +237,11 @@ class LogcatActivity : AppCompatActivity() {
         // Run the default commands.
         super.onSaveInstanceState(savedInstanceState)
 
-        // Get the scrollview Y position.
-        val scrollViewYPositionInt = logcatScrollView.scrollY
-
-        // Store the scrollview Y position in the bundle.
-        savedInstanceState.putInt(SCROLLVIEW_POSITION, scrollViewYPositionInt)
+        // Store the scroll Y position in the bundle.
+        savedInstanceState.putInt(SCROLL_Y, logcatWebView.scrollY)
     }
 
-    private fun getLogcat() {
+    private fun populateLogcat() {
         try {
             // Get the logcat.  `-b all` gets all the buffers (instead of just crash, main, and system).  `-v long` produces more complete information.  `-d` dumps the logcat and exits.
             val getLogcatProcess = Runtime.getRuntime().exec("logcat -b all -v long -d")
@@ -261,19 +249,88 @@ class LogcatActivity : AppCompatActivity() {
             // Wrap the logcat in a buffered reader.
             val logcatBufferedReader = BufferedReader(InputStreamReader(getLogcatProcess.inputStream))
 
-            // Display the logcat.
-            logcatTextView.text = logcatBufferedReader.readText()
+            // Reset the logcat plain text string.
+            logcatPlainTextStringBuilder = StringBuilder()
+
+            // Create a logcat HTML string builder.
+            val logcatHtmlStringBuilder = StringBuilder()
+
+            // Populate the initial HTML.
+            logcatHtmlStringBuilder.append("<html>")
+            logcatHtmlStringBuilder.append("<head>")
+            logcatHtmlStringBuilder.append("<style>")
+
+            // Set the word break so that lines never exceed the width of the screen.
+            logcatHtmlStringBuilder.append("body { word-break: break-word; }")
+
+            // Set the colors.
+            logcatHtmlStringBuilder.append("@media (prefers-color-scheme: dark) { body { color: #C1C1C1;  /* Gray 350 */ background-color: #303030;  /* Gray 860 */ } }")
+            logcatHtmlStringBuilder.append("span.header { color: #0D47A1;  /* Blue 900 */ } @media (prefers-color-scheme: dark) { span.header { color: #8AB4F8;  /* Violet 500 */ } }")
+            logcatHtmlStringBuilder.append("strong.crash { color: #B71C1C;  /* Red 900. */ } @media (prefers-color-scheme: dark) { strong.crash { color: #E24B4C;  /* Red Night. */ } }")
+            logcatHtmlStringBuilder.append("span.crash { color: #EF5350;  /* Red 400. */ } @media (prefers-color-scheme: dark) { span.crash { color: #EF9A9A;  /* Red Night. */ } }")
+
+            // Close the style tag.
+            logcatHtmlStringBuilder.append("</style>")
+
+            // Respect dark mode.
+            logcatHtmlStringBuilder.append("<meta name=\"color-scheme\" content=\"light dark\">")
+
+            // Start the HTML body.
+            logcatHtmlStringBuilder.append("</head>")
+            logcatHtmlStringBuilder.append("<body>")
+
+            // Create a logcat line string.
+            var logcatLineString: String?
+
+            while (logcatBufferedReader.readLine().also { logcatLineString = it } != null) {
+                // Populate the logcat plain text string builder.
+                logcatPlainTextStringBuilder.append(logcatLineString)
+
+                // Add a line break.
+                logcatPlainTextStringBuilder.append("\n")
+
+                // Trim the string, which is necessary for correct detection of lines that start with `at`.
+                logcatLineString = logcatLineString!!.trim()
+
+                // Apply syntax highlighting to the logcat.
+                if (logcatLineString!!.contains("crash") || logcatLineString!!.contains("Exception") ) {  // Colorize crashes.
+                    logcatHtmlStringBuilder.append("<strong class=\"crash\">")
+                    logcatHtmlStringBuilder.append(logcatLineString)
+                    logcatHtmlStringBuilder.append("</strong>")
+                } else if (logcatLineString!!.startsWith("at") || logcatLineString!!.startsWith("Process:") || logcatLineString!!.contains("FATAL")) {  // Colorize lines relating to crashes.
+                    logcatHtmlStringBuilder.append("<span class=\"crash\">")
+                    logcatHtmlStringBuilder.append(logcatLineString)
+                    logcatHtmlStringBuilder.append("</span>")
+                } else if (logcatLineString!!.startsWith("-")) {  // Colorize the headers.
+                    logcatHtmlStringBuilder.append("<span class=\"header\">")
+                    logcatHtmlStringBuilder.append(logcatLineString)
+                    logcatHtmlStringBuilder.append("</span>")
+                } else if (logcatLineString!!.startsWith("[ ")) {  // Colorize the time stamps.
+                    logcatHtmlStringBuilder.append("<span style=color:gray>")
+                    logcatHtmlStringBuilder.append(logcatLineString)
+                    logcatHtmlStringBuilder.append("</span>")
+                } else {  // Display the standard lines.
+                    logcatHtmlStringBuilder.append(logcatLineString)
+                }
+
+                // Add a line break.
+                logcatHtmlStringBuilder.append("<br>")
+            }
+
+            // Close the HTML.
+            logcatHtmlStringBuilder.append("</body>")
+            logcatHtmlStringBuilder.append("</html>")
+
+            // Encode the logcat HTML.
+            val base64EncodedLogcatHtml: String = Base64.encodeToString(logcatHtmlStringBuilder.toString().toByteArray(Charsets.UTF_8), Base64.NO_PADDING)
+
+            // Load the encoded logcat.
+            logcatWebView.loadData(base64EncodedLogcatHtml, "text/html", "base64")
 
             // Close the buffered reader.
             logcatBufferedReader.close()
         } catch (exception: IOException) {
             // Do nothing.
-        }
-
-        // Update the scroll position after the text is populated.
-        logcatTextView.post {
-            // Set the scroll position.
-            logcatScrollView.scrollY = scrollViewYPositionInt
         }
 
         // Stop the swipe to refresh animation if it is displayed.
