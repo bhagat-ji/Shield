@@ -3,7 +3,7 @@
 <!--
   Copyright 2015-2019,2022-2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,18 +21,20 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal" >
 
     <ImageView
-        android:layout_height="24dp"
-        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="10dp"
+        android:paddingEnd="10dp"
         android:src="@drawable/menu"
         android:contentDescription="@string/navigation_drawer"
-        android:onClick="openNavigationDrawer" />
+        android:onClick="openNavigationDrawer"
+        tools:ignore="RtlSymmetry" />
 
     <!-- A relative layout is used instead of a linear layout because the app bar does not let `android:layout_weight="1"` cause the URL text bar to fill all the available space.
     Placing the edit text inside a relative layout also draws a line under the edit text. -->

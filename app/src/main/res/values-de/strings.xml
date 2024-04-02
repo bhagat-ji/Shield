@@ -9,7 +9,7 @@
 
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -207,6 +207,12 @@
     <string name="bytes">Bytes</string>
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="invalid_url">Ungültige URL</string>
+    <string name="blob_url_warning">Privacy Browser kann aktuell keine Blob-URLs herunterladen.</string>
+    <string name="data_url_warning">Androids Download-Manager kann keine Daten-URLs verarbeiten.</string>
+    <string name="download_directory">Download-Ordner</string>
+    <string name="documents">Dokumente</string>
+    <string name="pictures">Bilder</string>
+    <string name="music">Musik</string>
     <string name="saving_file">Speichere Datei:\u0020 %1$d%% - %2$s</string>
     <string name="saving_file_progress">Speichere Datei:\u0020 %1$s Bytes - %2$s</string>
     <string name="saving_file_percentage_progress">Speichere Datei:\u0020 %1$d%% - %2$s Bytes / %3$s Bytes - %4$s</string>
@@ -257,6 +263,8 @@
     <string name="create_folder">Ordner erstellen</string>
     <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>
     <string name="current_folder_icon">Aktuelles Ordnersymbol</string>
+    <string name="custom_bookmark_icon">Individuelles Lesezeichen-Icon</string>
+    <string name="custom_folder_icon">Individuelles Ordner-Icon</string>
     <string name="default_folder_icon">Standard-Ordnersymbol</string>
     <string name="webpage_favorite_icon">Icon der Website</string>
     <string name="bookmark_name">Name des Lesezeichens</string>
@@ -266,6 +274,7 @@
     <string name="edit_folder">Ordner bearbeiten</string>
     <string name="move_to_folder">In Ordner verschieben</string>
     <string name="move">Verschieben</string>
+    <string name="cannot_use_svg">Aktuell kann kein SVG als Favoriten-Lesezeichen-Icon verwendet werden.</string>
 
     <!-- Bookmarks Contextual App Bar.  Android removes double spaces, but extra spaces can be manually specified with the Unicode `\u0020` formatting.
         The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
@@ -643,6 +652,18 @@
         <string name="open_intents_in_new_tab_summary">Intents sind Links, die von anderen Apps übergeben werden.</string>
         <string name="swipe_to_refresh">Herunterziehen zum Aktualisieren</string>
         <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
+        <string name="download_provider">Download-Provider</string>
+        <string-array name="download_provider_entries">
+            <item>Privacy Browser</item>
+            <item>Android Download-Manager</item>
+            <item>Externe App</item>
+        </string-array>
+        <string name="download_with_privacy_browser">Privacy Browser - Privacy Browsers integrierter Downloader ist einfach, hat jedoch den Vorteil,
+            Proxy-Einstellungen und Cookies (so aktiviert) zu berücksichtigen und Daten-URLs (data:) herunterladen zu können.</string>
+        <string name="download_with_android_download_manager">Android Download-Manager - Androids Download-Manager berücksichtigt Privacy Browsers Proxy-Einstellungen nicht,
+            hat jedoch Zugriff auf Cookies (sodass Downloads von Seiten, die eine Anmeldung erfordern, möglicherweise funktionieren).</string>
+        <string name="download_with_external_app">Externe App - Externe Apps berücksichtigen Privacy Browsers Proxy-Einstellungen nicht und haben keinen Zugriff auf Cookies
+            (sodass Downloads von Seiten, die eine Anmeldung erfordern, vermutlich nicht funktionieren).</string>
         <string name="scroll_app_bar">App-Leiste scrollen</string>
         <string name="scroll_app_bar_summary">Scrollt die App-Leiste mit der URL nach oben, wenn die Webseite gescrollt wird.</string>
         <string name="bottom_app_bar">Untere Anwendungs-Leiste</string>
