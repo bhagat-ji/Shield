@@ -141,7 +141,7 @@
                             android:background="?attr/selectableItemBackground"
                             android:contentDescription="@string/previous"
                             android:onClick="findPreviousOnPage"
-                            app:tint="?attr/findOnPageIconTintColor" />
+                            app:tint="@color/blue_icon" />
 
                         <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
@@ -155,7 +155,7 @@
                             android:background="?attr/selectableItemBackground"
                             android:contentDescription="@string/next"
                             android:onClick="findNextOnPage"
-                            app:tint="?attr/findOnPageIconTintColor" />
+                            app:tint="@color/blue_icon" />
 
                         <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
@@ -169,7 +169,7 @@
                             android:background="?attr/selectableItemBackground"
                             android:contentDescription="@string/close"
                             android:onClick="closeFindOnPage"
-                            app:tint="?attr/findOnPageIconTintColor" />
+                            app:tint="@color/blue_icon" />
                     </LinearLayout>
 
                     <!-- The toolbar. -->

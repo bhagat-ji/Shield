@@ -3,7 +3,7 @@
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,6 +278,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var findOnPageLinearLayout: LinearLayout
     private lateinit var fullScreenVideoFrameLayout: FrameLayout
     private lateinit var initialGrayColorSpan: ForegroundColorSpan
+    private lateinit var inputMethodManager: InputMethodManager
     private lateinit var navigationBackMenuItem: MenuItem
     private lateinit var navigationForwardMenuItem: MenuItem
     private lateinit var navigationHistoryMenuItem: MenuItem
@@ -1852,9 +1853,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 findOnPageEditText.postDelayed({
                     // Set the focus on the find on page edit text.
                     findOnPageEditText.requestFocus()
-
-                    // Get a handle for the input method manager.
-                    val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
 
                     // Display the keyboard.  `0` sets no input flags.
                     inputMethodManager.showSoftInput(findOnPageEditText, 0)
@@ -3859,9 +3857,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Show the toolbar.
         toolbar.visibility = View.VISIBLE
 
-        // Get a handle for the input method manager.
-        val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
-
         // Hide the keyboard.
         inputMethodManager.hideSoftInputFromWindow(toolbar.windowToken, 0)
     }
@@ -4155,7 +4150,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     @SuppressLint("ClickableViewAccessibility")
     private fun initializeApp() {
         // Get a handle for the input method.
-        val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+        inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
 
         // Initialize the color spans for highlighting the URLs.
         initialGrayColorSpan = ForegroundColorSpan(getColor(R.color.gray_500))
@@ -4344,11 +4339,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Search for the string on the page whenever a character changes in the find on page edit text.
         findOnPageEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {
+                // Do nothing.
+            }
 
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+                // Do nothing.
+            }
 
-            override fun afterTextChanged(s: Editable) {
+            override fun afterTextChanged(editable: Editable) {
                 // Search for the text in the WebView if it is not null.  Sometimes on resume after a period of non-use the WebView will be null.
                 currentWebView?.findAllAsync(findOnPageEditText.text.toString())
             }
@@ -4602,9 +4601,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
             }
         }
-
-        // Get a handle for the input method manager.
-        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
         // Set the app bar scrolling.
         nestedScrollWebView.isNestedScrollingEnabled = scrollAppBar
@@ -6191,9 +6187,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Update the privacy icons.  `true` redraws the icons in the app bar.
             updatePrivacyIcons(true)
-
-            // Get a handle for the input method manager.
-            val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
 
             // Get the current URL.
             val urlString = currentWebView!!.url

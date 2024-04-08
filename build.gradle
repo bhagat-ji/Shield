@@ -1,7 +1,7 @@
 /*
  * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

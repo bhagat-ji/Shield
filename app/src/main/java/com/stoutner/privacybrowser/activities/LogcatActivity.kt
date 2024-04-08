@@ -24,12 +24,20 @@ import android.content.ClipboardManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -58,11 +66,15 @@ private const val SCROLL_Y = "A"
 
 class LogcatActivity : AppCompatActivity() {
     // Declare the class variables.
+    private lateinit var inputMethodManager: InputMethodManager
     private lateinit var logcatPlainTextStringBuilder: StringBuilder
 
     // Declare the class views.
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var logcatWebView: WebView
+    private lateinit var searchEditText: EditText
+    private lateinit var searchLinearLayout: LinearLayout
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var toolbar: Toolbar
 
     // Define the save logcat activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
     private val saveLogcatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri ->
@@ -105,6 +117,9 @@ class LogcatActivity : AppCompatActivity() {
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
+        // Run the default commands.
+        super.onCreate(savedInstanceState)
+
         // Get a handle for the shared preferences.
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -116,9 +131,6 @@ class LogcatActivity : AppCompatActivity() {
         if (!allowScreenshots)
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
-        // Run the default commands.
-        super.onCreate(savedInstanceState)
-
         // Set the content view.
         if (bottomAppBar)
             setContentView(R.layout.logcat_bottom_appbar)
@@ -126,7 +138,10 @@ class LogcatActivity : AppCompatActivity() {
             setContentView(R.layout.logcat_top_appbar)
 
         // Get handles for the views.
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar = findViewById(R.id.toolbar)
+        val searchCountTextView = findViewById<TextView>(R.id.search_count_textview)
+        searchLinearLayout = findViewById(R.id.search_linearlayout)
+        searchEditText = findViewById(R.id.search_edittext)
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout)
         logcatWebView = findViewById(R.id.logcat_webview)
 
@@ -160,12 +175,62 @@ class LogcatActivity : AppCompatActivity() {
         // Set the swipe refresh background color.
         swipeRefreshLayout.setProgressBackgroundColorSchemeColor(colorBackgroundInt)
 
+        // Get a handle for the input method manager.
+        inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+
+        // Search for the string on the page whenever a character changes in the search edit text.
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {
+                // Do nothing.
+            }
+
+            override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+                // Do nothing.
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                // Search for the text in the WebView.
+                logcatWebView.findAllAsync(searchEditText.text.toString())
+            }
+        })
+
+        // Set the `check mark` button for the search edit text keyboard to close the soft keyboard.
+        searchEditText.setOnKeyListener { _: View?, keyCode: Int, keyEvent: KeyEvent ->
+            if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
+                // Search for the text in the WebView.
+                logcatWebView.findAllAsync(searchEditText.text.toString())
+
+                // Hide the soft keyboard.
+                inputMethodManager.hideSoftInputFromWindow(logcatWebView.windowToken, 0)
+
+                // Consume the event.
+                return@setOnKeyListener true
+            } else {  // A different key was pressed.
+                // Do not consume the event.
+                return@setOnKeyListener false
+            }
+        }
+
+        // Update the find on page count.
+        logcatWebView.setFindListener { activeMatchOrdinal, numberOfMatches, isDoneCounting ->
+            if (isDoneCounting && (numberOfMatches == 0)) {  // There are no matches.
+                // Set the search count text view to be `0/0`.
+                searchCountTextView.setText(R.string.zero_of_zero)
+            } else if (isDoneCounting) {  // There are matches.
+                // The active match ordinal is zero-based.
+                val activeMatch = activeMatchOrdinal + 1
+
+                // Build the match string.
+                val matchString = "$activeMatch/$numberOfMatches"
+
+                // Update the search count text view.
+                searchCountTextView.text = matchString
+            }
+        }
+
         // Restore the WebView scroll position if the activity has been restarted.
         if (savedInstanceState != null)
             logcatWebView.scrollY = savedInstanceState.getInt(SCROLL_Y)
-
-        // Allow loading of file:// URLs.
-        logcatWebView.settings.allowFileAccess = true
 
         // Populate the logcat.
         populateLogcat()
@@ -182,6 +247,35 @@ class LogcatActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         // Run the commands that correlate to the selected menu item.
         return when (menuItem.itemId) {
+            R.id.search -> {  // Search was selected.
+                // Set the minimum height of the search linear layout to match the toolbar.
+                searchLinearLayout.minimumHeight = toolbar.height
+
+                // Hide the toolbar.
+                toolbar.visibility = View.GONE
+
+                // Show the search linear layout.
+                searchLinearLayout.visibility = View.VISIBLE
+
+                // Display the keyboard once the UI has quiesced.
+                searchLinearLayout.post {
+                    // Set the focus on the find on page edit text.
+                    searchEditText.requestFocus()
+
+                    // Get a handle for the input method manager.
+                    val inputMethodManager = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+
+                    // Display the keyboard.  `0` sets no input flags.
+                    inputMethodManager.showSoftInput(searchEditText, 0)
+                }
+
+                // Resume the WebView timers.  For some reason they get automatically paused, which prevents searching.
+                logcatWebView.resumeTimers()
+
+                // Consume the event.
+                true
+            }
+
             R.id.copy -> {  // Copy was selected.
                 // Get a handle for the clipboard manager.
                 val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -239,6 +333,24 @@ class LogcatActivity : AppCompatActivity() {
 
         // Store the scroll Y position in the bundle.
         savedInstanceState.putInt(SCROLL_Y, logcatWebView.scrollY)
+    }
+
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun closeSearch(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Delete the contents of the search edit text.
+        searchEditText.text = null
+
+        // Clear the highlighted phrases in the logcat WebView.
+        logcatWebView.clearMatches()
+
+        // Hide the search linear layout.
+        searchLinearLayout.visibility = View.GONE
+
+        // Show the toolbar.
+        toolbar.visibility = View.VISIBLE
+
+        // Hide the keyboard.
+        inputMethodManager.hideSoftInputFromWindow(toolbar.windowToken, 0)
     }
 
     private fun populateLogcat() {
@@ -335,5 +447,17 @@ class LogcatActivity : AppCompatActivity() {
 
         // Stop the swipe to refresh animation if it is displayed.
         swipeRefreshLayout.isRefreshing = false
+    }
+
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun searchNext(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Go to the next highlighted phrase on the page. `true` goes forwards instead of backwards.
+        logcatWebView.findNext(true)
+    }
+
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun searchPrevious(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Go to the previous highlighted phrase on the page.  `false` goes backwards instead of forwards.
+        logcatWebView.findNext(false)
     }
 }
