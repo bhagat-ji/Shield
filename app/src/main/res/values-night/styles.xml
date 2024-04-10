@@ -28,14 +28,6 @@
         <item name="android:actionModeBackground">?android:attr/colorBackground</item>
         <item name="android:textColorHighlight">@color/violet_700</item>
         <item name="colorAccent">@color/violet_500</item>
-
-        <!-- Tints. -->
-        <item name="fabIconTintColor">@color/gray_875</item>
-        <item name="navigationIconTintColor">@color/violet_500</item>
-        <item name="progressTintColor">@color/violet_500</item>
-
-        <!-- Drawables. -->
-        <item name="listSelectorDrawable">@drawable/list_selector_night</item>
     </style>
 
     <style name="PrivacyBrowserAppBar" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" >

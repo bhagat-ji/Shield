@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2017,2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017, 2020, 2022-2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,8 +31,10 @@
     <color name="disabled_button_text">@color/gray_500</color>
     <color name="disabled_icon">@color/gray_500</color>
     <color name="domain_settings_url_background">@color/dark_blue_40</color>
+    <color name="fab_icon">@color/gray_875</color>
     <color name="ghosted_icon">@color/gray_700</color>
     <color name="icon">@color/white</color>
+    <color name="list_selector_activated">@color/violet_700</color>
     <color name="parent_folder_text">@color/gray_300</color>
     <color name="red_background">@color/red_700_40</color>
     <color name="red_icon">@color/red_night</color>

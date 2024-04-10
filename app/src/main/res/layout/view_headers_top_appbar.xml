@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,174 +42,173 @@
             android:background="?android:attr/colorBackground"
             android:theme="@style/PrivacyBrowserAppBar" >
 
-            <!-- The frame layout allows the toolbar and the progress bar to occupy the same space. -->
-            <FrameLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent" >
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-
-                <!-- Android automatically uses a different, skinnier drawable with padding for indeterminate horizontal progress bars in API >= 21.
-                    They make this very difficult to override.  https://redmine.stoutner.com/issues/241
-                    `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:minHeight="3dp"
-                    android:layout_gravity="bottom"
-                    android:visibility="gone"
-                    tools:ignore="UnusedAttribute" />
-            </FrameLayout>
+                android:layout_width="match_parent" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swiperefreshlayout"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent">
+        <!-- The frame layout allows the progress bar and the swipe refresh layout to occupy the same space. -->
+        <FrameLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" >
 
-            <ScrollView
-                android:id="@+id/view_source_scrollview"
+            <!-- The progress bar looks best with a minimum height of 3dp for the top app bar and 4dp for the bottom app bar. -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent" >
+                android:layout_width="match_parent"
+                android:layout_gravity="top"
+                android:minHeight="3dp"
+                android:progressTint="@color/blue_text"
+                android:progressBackgroundTint="@color/transparent"
+                android:visibility="gone" />
 
-                <LinearLayout
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swiperefreshlayout"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent">
+
+                <ScrollView
+                    android:id="@+id/view_source_scrollview"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_margin="10dp" >
+                    android:layout_width="match_parent" >
 
-                    <!-- SSL information. -->
-                    <TextView
-                        android:id="@+id/ssl_information_title_textview"
+                    <LinearLayout
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:text="@string/ssl_information"
-                        android:textAlignment="center"
-                        android:textSize="18sp"
-                        android:textColor="@color/blue_text"
-                        android:textStyle="bold" />
+                        android:orientation="vertical"
+                        android:layout_margin="10dp" >
 
-                    <TextView
-                        android:id="@+id/ssl_information_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:textIsSelectable="true"
-                        android:layout_marginBottom="8dp" />
-
-                    <!-- SSL Buttons. -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/ssl_buttons_constraintlayout"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_marginBottom="16dp"
-                        tools:ignore="MissingConstraints" >
-
-                        <androidx.constraintlayout.helper.widget.Flow
+                        <!-- SSL information. -->
+                        <TextView
+                            android:id="@+id/ssl_information_title_textview"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
-                            app:constraint_referenced_ids="ciphers_button,certificate_button"
-                            app:flow_wrapMode="chain"
-                            app:flow_firstHorizontalStyle="packed"
-                            app:flow_horizontalGap="15dp" />
+                            android:text="@string/ssl_information"
+                            android:textAlignment="center"
+                            android:textSize="18sp"
+                            android:textColor="@color/blue_text"
+                            android:textStyle="bold" />
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/ciphers_button"
+                        <TextView
+                            android:id="@+id/ssl_information_textview"
                             android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="@string/ciphers"
-                            android:onClick="showCiphers"
-                            app:backgroundTint="@color/button_background_selector"
-                            android:textColor="@color/button_text_selector"
-                            tools:ignore="ButtonStyle" />
+                            android:layout_width="match_parent"
+                            android:textIsSelectable="true"
+                            android:layout_marginBottom="8dp" />
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/certificate_button"
+                        <!-- SSL Buttons. -->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/ssl_buttons_constraintlayout"
                             android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="@string/certificate"
-                            android:onClick="showCertificate"
-                            app:backgroundTint="@color/button_background_selector"
-                            android:textColor="@color/button_text_selector"
-                            tools:ignore="ButtonStyle" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:layout_width="match_parent"
+                            android:layout_marginBottom="16dp"
+                            tools:ignore="MissingConstraints" >
 
-                    <!-- Request headers. -->
-                    <TextView
-                        android:id="@+id/request_headers_title_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:text="@string/request_headers"
-                        android:textAlignment="center"
-                        android:textSize="18sp"
-                        android:textColor="@color/blue_text"
-                        android:textStyle="bold" />
+                            <androidx.constraintlayout.helper.widget.Flow
+                                android:layout_height="wrap_content"
+                                android:layout_width="match_parent"
+                                app:constraint_referenced_ids="ciphers_button,certificate_button"
+                                app:flow_wrapMode="chain"
+                                app:flow_firstHorizontalStyle="packed"
+                                app:flow_horizontalGap="15dp" />
 
-                    <TextView
-                        android:id="@+id/request_headers_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:textIsSelectable="true"
-                        android:layout_marginBottom="8dp" />
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/ciphers_button"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/ciphers"
+                                android:onClick="showCiphers"
+                                app:backgroundTint="@color/button_background_selector"
+                                android:textColor="@color/button_text_selector"
+                                tools:ignore="ButtonStyle" />
 
-                    <!-- Response message. -->
-                    <TextView
-                        android:id="@+id/response_message_title_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:text="@string/response_message"
-                        android:textAlignment="center"
-                        android:textSize="18sp"
-                        android:textColor="@color/blue_text"
-                        android:textStyle="bold" />
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/certificate_button"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/certificate"
+                                android:onClick="showCertificate"
+                                app:backgroundTint="@color/button_background_selector"
+                                android:textColor="@color/button_text_selector"
+                                tools:ignore="ButtonStyle" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/response_message_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:textIsSelectable="true"
-                        android:layout_marginBottom="8dp" />
+                        <!-- Request headers. -->
+                        <TextView
+                            android:id="@+id/request_headers_title_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="@string/request_headers"
+                            android:textAlignment="center"
+                            android:textSize="18sp"
+                            android:textColor="@color/blue_text"
+                            android:textStyle="bold" />
 
-                    <!-- Response headers. -->
-                    <!-- The title text is set programatically. -->
-                    <TextView
-                        android:id="@+id/response_headers_title_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:textAlignment="center"
-                        android:textSize="18sp"
-                        android:textColor="@color/blue_text"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/request_headers_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:textIsSelectable="true"
+                            android:layout_marginBottom="8dp" />
 
-                    <TextView
-                        android:id="@+id/response_headers_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:textIsSelectable="true"
-                        android:layout_marginBottom="8dp" />
+                        <!-- Response message. -->
+                        <TextView
+                            android:id="@+id/response_message_title_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="@string/response_message"
+                            android:textAlignment="center"
+                            android:textSize="18sp"
+                            android:textColor="@color/blue_text"
+                            android:textStyle="bold" />
 
-                    <!-- Response body. -->
-                    <!-- The title text is set programatically. -->
-                    <TextView
-                        android:id="@+id/response_body_title_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:textAlignment="center"
-                        android:textSize="18sp"
-                        android:textColor="@color/blue_text"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/response_message_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:textIsSelectable="true"
+                            android:layout_marginBottom="8dp" />
 
-                    <TextView
-                        android:id="@+id/response_body_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:textIsSelectable="true" />
-                </LinearLayout>
-            </ScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                        <!-- Response headers. -->
+                        <!-- The title text is set programatically. -->
+                        <TextView
+                            android:id="@+id/response_headers_title_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:textAlignment="center"
+                            android:textSize="18sp"
+                            android:textColor="@color/blue_text"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/response_headers_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:textIsSelectable="true"
+                            android:layout_marginBottom="8dp" />
+
+                        <!-- Response body. -->
+                        <!-- The title text is set programatically. -->
+                        <TextView
+                            android:id="@+id/response_body_title_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:textAlignment="center"
+                            android:textSize="18sp"
+                            android:textColor="@color/blue_text"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/response_body_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:textIsSelectable="true" />
+                    </LinearLayout>
+                </ScrollView>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </FrameLayout>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

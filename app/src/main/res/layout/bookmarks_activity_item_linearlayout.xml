@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017,2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017, 2020, 2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:background="?attr/listSelectorDrawable"
+    android:background="@drawable/list_selector"
     tools:ignore="UseCompoundDrawables" >
 
     <ImageView

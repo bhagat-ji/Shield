@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017,2019-2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017, 2019-2022, 2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="200dp"
         android:src="@drawable/bookmarks"
-        android:tint="?attr/fabIconTintColor"
+        android:tint="@color/fab_icon"
         android:contentDescription="@string/bookmarks" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -103,7 +103,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="130dp"
         android:src="@drawable/create_folder"
-        android:tint="?attr/fabIconTintColor"
+        android:tint="@color/fab_icon"
         android:contentDescription="@string/create_folder" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -114,6 +114,6 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="60dp"
         android:src="@drawable/create_bookmark"
-        android:tint="?attr/fabIconTintColor"
+        android:tint="@color/fab_icon"
         android:contentDescription="@string/create_bookmark" />
 </FrameLayout>

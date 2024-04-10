@@ -190,7 +190,7 @@
             android:layout_width="wrap_content"
             android:layout_gravity="start"
             app:menu="@menu/webview_navigation_menu_top_appbar"
-            app:itemIconTint="?attr/navigationIconTintColor" />
+            app:itemIconTint="@color/blue_icon" />
 
         <!-- Include the bookmarks drawer, which varies based on screen width. -->
         <include layout="@layout/bookmarks_drawer_top_appbar" />
