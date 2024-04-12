@@ -122,7 +122,7 @@
                                 android:text="@string/ciphers"
                                 android:onClick="showCiphers"
                                 app:backgroundTint="@color/button_background_selector"
-                                android:textColor="@color/button_text_selector"
+                                android:textColor="@color/white"
                                 tools:ignore="ButtonStyle" />
 
                             <androidx.appcompat.widget.AppCompatButton
@@ -132,7 +132,7 @@
                                 android:text="@string/certificate"
                                 android:onClick="showCertificate"
                                 app:backgroundTint="@color/button_background_selector"
-                                android:textColor="@color/button_text_selector"
+                                android:textColor="@color/white"
                                 tools:ignore="ButtonStyle" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 

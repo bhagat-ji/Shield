@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2020, 2022-2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,35 +18,15 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- Relative layout is used instead of a linear layout because `supportAppBar` does not let `android:layout_weight="1"` cause the URL text box to fill all the available space. -->
-<RelativeLayout
+<!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key. `android:inputType="textUri"` disables spell check in the `EditText`. -->
+<EditText
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/url_edittext"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent" >
-
-    <ImageView
-        android:id="@+id/back_arrow"
-        android:src="@drawable/back"
-        app:tint="?attr/colorControlNormal"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="14dp"
-        android:contentDescription="@string/back"
-        android:onClick="goBack" />
-
-    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
-        `android:inputType="textUri"` disables spell check in the `EditText`. -->
-    <EditText
-        android:id="@+id/url_edittext"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_toEndOf="@id/back_arrow"
-        android:hint="@string/url"
-        android:imeOptions="actionGo"
-        android:inputType="textUri"
-        android:selectAllOnFocus="true"
-        tools:ignore="Autofill" />
-</RelativeLayout>
+    android:layout_width="match_parent"
+    android:hint="@string/url"
+    android:imeOptions="actionGo"
+    android:inputType="textUri"
+    android:selectAllOnFocus="true"
+    tools:ignore="Autofill" />

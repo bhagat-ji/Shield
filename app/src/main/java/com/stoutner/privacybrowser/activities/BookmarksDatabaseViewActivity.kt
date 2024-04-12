@@ -1,7 +1,7 @@
 /*
  * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,9 +104,8 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         val bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
 
         // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
+        if (!allowScreenshots)
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
 
         // Run the default commands.
         super.onCreate(savedInstanceState)
@@ -129,7 +128,7 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
             setContentView(R.layout.bookmarks_databaseview_top_appbar)
         }
 
-        // Get a handle for the toolbar.
+        // Get handles for the views.
         val toolbar = findViewById<Toolbar>(R.id.bookmarks_databaseview_toolbar)
         bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview)
 

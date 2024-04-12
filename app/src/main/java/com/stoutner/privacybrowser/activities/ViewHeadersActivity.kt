@@ -46,7 +46,6 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.NavUtils
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -152,9 +151,8 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         val bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
 
         // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
+        if (!allowScreenshots)
             window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
 
         // Run the default commands.
         super.onCreate(savedInstanceState)
@@ -167,11 +165,10 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         val userAgent = intent.getStringExtra(USER_AGENT)!!
 
         // Set the content view.
-        if (bottomAppBar) {
+        if (bottomAppBar)
             setContentView(R.layout.view_headers_bottom_appbar)
-        } else {
+        else
             setContentView(R.layout.view_headers_top_appbar)
-        }
 
         // Get a handle for the toolbar.
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -186,7 +183,7 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
         actionBar.setCustomView(R.layout.view_headers_appbar_custom_view)
 
         // Instruct the action bar to display a custom layout.
-        actionBar.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        actionBar.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM or ActionBar.DISPLAY_HOME_AS_UP
 
         // Get handles for the views.
         urlEditText = findViewById(R.id.url_edittext)
@@ -427,7 +424,7 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
-        // Run the appropriate commands.
+        // Run the commands that correlate to the selected menu item.
         when (menuItem.itemId) {
             R.id.copy_headers -> {  // Copy the headers.
                 // Get the headers string.
@@ -502,16 +499,10 @@ class ViewHeadersActivity: AppCompatActivity(), UntrustedSslCertificateListener 
             }
 
             else -> {  // The home button was selected.
-                // Run the parents class on return.
+                // Do not consume the event.  The system will process the home command.
                 return super.onOptionsItemSelected(menuItem)
             }
         }
-    }
-
-    // This method must be named `goBack()` and must have a View argument to match the default back arrow in the app bar or a crash occurs.
-    fun goBack(@Suppress("UNUSED_PARAMETER") view: View) {
-        // Go home.
-        NavUtils.navigateUpFromSameTask(this)
     }
 
     private fun getHeadersString(): String {

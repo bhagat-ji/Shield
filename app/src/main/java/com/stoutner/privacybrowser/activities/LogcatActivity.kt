@@ -246,7 +246,7 @@ class LogcatActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         // Run the commands that correlate to the selected menu item.
-        return when (menuItem.itemId) {
+        when (menuItem.itemId) {
             R.id.search -> {  // Search was selected.
                 // Set the minimum height of the search linear layout to match the toolbar.
                 searchLinearLayout.minimumHeight = toolbar.height
@@ -273,7 +273,7 @@ class LogcatActivity : AppCompatActivity() {
                 logcatWebView.resumeTimers()
 
                 // Consume the event.
-                true
+                return true
             }
 
             R.id.copy -> {  // Copy was selected.
@@ -291,7 +291,7 @@ class LogcatActivity : AppCompatActivity() {
                     Snackbar.make(logcatWebView, R.string.logcat_copied, Snackbar.LENGTH_SHORT).show()
 
                 // Consume the event.
-                true
+                return true
             }
 
             R.id.save -> {  // Save was selected.
@@ -299,7 +299,7 @@ class LogcatActivity : AppCompatActivity() {
                 saveLogcatActivityResultLauncher.launch(getString(R.string.privacy_browser_logcat_txt, BuildConfig.VERSION_NAME))
 
                 // Consume the event.
-                true
+                return true
             }
 
             R.id.clear -> {  // Clear was selected.
@@ -317,12 +317,12 @@ class LogcatActivity : AppCompatActivity() {
                 }
 
                 // Consume the event.
-                true
+                return true
             }
 
-            else -> {  // The home button was pushed.
+            else -> {  // The home button was selected.
                 // Do not consume the event.  The system will process the home command.
-                super.onOptionsItemSelected(menuItem)
+                return super.onOptionsItemSelected(menuItem)
             }
         }
     }
