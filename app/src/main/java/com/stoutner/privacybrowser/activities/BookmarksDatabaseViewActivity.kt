@@ -632,13 +632,13 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
         return true
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    public override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onSaveInstanceState(savedInstanceState)
+        super.onSaveInstanceState(outState)
 
         // Store the class variables in the bundle.
-        savedInstanceState.putInt(CURRENT_FOLDER_DATABASE_ID, currentFolderDatabaseId)
-        savedInstanceState.putBoolean(SORT_BY_DISPLAY_ORDER, sortByDisplayOrder)
+        outState.putInt(CURRENT_FOLDER_DATABASE_ID, currentFolderDatabaseId)
+        outState.putBoolean(SORT_BY_DISPLAY_ORDER, sortByDisplayOrder)
     }
 
     override fun saveBookmark(dialogFragment: DialogFragment, selectedBookmarkDatabaseId: Int) {

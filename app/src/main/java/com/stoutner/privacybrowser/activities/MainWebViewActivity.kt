@@ -393,14 +393,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var ultraPrivacy: ArrayList<List<Array<String>>>? = null
     private var waitingForProxy = false
 
-    // Define the save webpage image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
+    // Define the browse file upload activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
     private val browseFileUploadActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
         // Pass the file to the WebView.
         fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(activityResult.resultCode, activityResult.data))
     }
 
     // Define the save URL activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveUrlActivityResultLauncher = registerForActivityResult<String, Uri>(ActivityResultContracts.CreateDocument("*/*")) { fileUri ->
+    private val saveUrlActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { fileUri ->
         // Only save the URL if the file URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             // Instantiate the save URL coroutine.
@@ -415,7 +415,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     // Define the save webpage archive activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveWebpageArchiveActivityResultLauncher = registerForActivityResult<String, Uri>(ActivityResultContracts.CreateDocument("multipart/related")) { fileUri ->
+    private val saveWebpageArchiveActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("multipart/related")) { fileUri ->
         // Only save the webpage archive if the file URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             // Get a cursor from the content resolver.
@@ -488,7 +488,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     // Define the save webpage image activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
-    private val saveWebpageImageActivityResultLauncher = registerForActivityResult<String, Uri>(ActivityResultContracts.CreateDocument("image/png")) { fileUri ->
+    private val saveWebpageImageActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { fileUri ->
         // Only save the webpage image if the file URI is not null, which happens if the user exited the file picker by pressing back.
         if (fileUri != null) {
             // Instantiate the save webpage image coroutine.
@@ -894,9 +894,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         pendingDialogsArrayList.clear()
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    public override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onSaveInstanceState(savedInstanceState)
+        super.onSaveInstanceState(outState)
 
         // Only save the instance state if the WebView state adapter is not null, which will be the case if the app is restarting to change the initial app theme.
         if (webViewStateAdapter != null) {
@@ -934,11 +934,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             val currentTabPosition = tabLayout.selectedTabPosition
 
             // Store the saved states in the bundle.
-            savedInstanceState.putBoolean(BOOKMARKS_DRAWER_PINNED, bookmarksDrawerPinned)
-            savedInstanceState.putString(PROXY_MODE, proxyMode)
-            savedInstanceState.putParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST, savedNestedScrollWebViewStateArrayList)
-            savedInstanceState.putParcelableArrayList(SAVED_STATE_ARRAY_LIST, savedStateArrayList)
-            savedInstanceState.putInt(SAVED_TAB_POSITION, currentTabPosition)
+            outState.putBoolean(BOOKMARKS_DRAWER_PINNED, bookmarksDrawerPinned)
+            outState.putString(PROXY_MODE, proxyMode)
+            outState.putParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST, savedNestedScrollWebViewStateArrayList)
+            outState.putParcelableArrayList(SAVED_STATE_ARRAY_LIST, savedStateArrayList)
+            outState.putInt(SAVED_TAB_POSITION, currentTabPosition)
         }
     }
 
@@ -5002,26 +5002,17 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Store the file path callback.
                 fileChooserCallback = filePathCallback
 
-                // Create an intent to open a chooser based on the file chooser parameters.
-                val fileChooserIntent = fileChooserParams.createIntent()
+                // Create a file chooser intent.
+                val fileChooserIntent = Intent(Intent.ACTION_GET_CONTENT)
 
-                // Check to see if the file chooser intent resolves to an installed package.
-                if (fileChooserIntent.resolveActivity(packageManager) != null) {  // The file chooser intent is fine.
-                    // Launch the file chooser intent.
-                    browseFileUploadActivityResultLauncher.launch(fileChooserIntent)
-                } else {  // The file chooser intent will cause a crash.
-                    // Create a generic intent to open a chooser.
-                    val genericFileChooserIntent = Intent(Intent.ACTION_GET_CONTENT)
+                // Request an openable file.
+                fileChooserIntent.addCategory(Intent.CATEGORY_OPENABLE)
 
-                    // Request an openable file.
-                    genericFileChooserIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                // Set the file type to everything.  The file chooser params cannot be used to create the intent because it only selects the first specified file type.  See <https://redmine.stoutner.com/issues/1197>.
+                fileChooserIntent.type = "*/*"
 
-                    // Set the file type to everything.
-                    genericFileChooserIntent.type = "*/*"
-
-                    // Launch the generic file chooser intent.
-                    browseFileUploadActivityResultLauncher.launch(genericFileChooserIntent)
-                }
+                // Launch the file chooser intent.
+                browseFileUploadActivityResultLauncher.launch(fileChooserIntent)
 
                 // Handle the event.
                 return true

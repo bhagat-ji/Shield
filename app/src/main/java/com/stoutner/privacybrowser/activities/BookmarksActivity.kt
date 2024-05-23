@@ -1,7 +1,7 @@
 /*
  * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -627,9 +627,9 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         }
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    public override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onSaveInstanceState(savedInstanceState)
+        super.onSaveInstanceState(outState)
 
         // Get the sparse boolean array of the checked items.
         val checkedBookmarksSparseBooleanArray = bookmarksListView.checkedItemPositions
@@ -646,9 +646,9 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
             }
         }
 
-        // Store the variables in the saved instance state.
-        savedInstanceState.putLong(CURRENT_FOLDER_ID, currentFolderId)
-        savedInstanceState.putIntegerArrayList(CHECKED_BOOKMARKS_ARRAY_LIST, checkedBookmarksArrayList)
+        // Store the variables in the out state.
+        outState.putLong(CURRENT_FOLDER_ID, currentFolderId)
+        outState.putIntegerArrayList(CHECKED_BOOKMARKS_ARRAY_LIST, checkedBookmarksArrayList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

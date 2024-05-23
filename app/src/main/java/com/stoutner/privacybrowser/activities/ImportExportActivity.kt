@@ -1,7 +1,7 @@
 /*
- * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -452,25 +452,25 @@ class ImportExportActivity : AppCompatActivity() {
         }
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    public override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onSaveInstanceState(savedInstanceState)
+        super.onSaveInstanceState(outState)
 
         // Save the visibility of the views.
-        savedInstanceState.putInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY, encryptionPasswordTextInputLayout.visibility)
-        savedInstanceState.putInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY, openKeychainRequiredTextView.visibility)
-        savedInstanceState.putInt(SETTINGS_FILE_LOCATION_CARDVIEW_VISIBILITY, settingsFileLocationCardView.visibility)
-        savedInstanceState.putInt(SETTINGS_FILE_NAME_LINEARLAYOUT_VISIBILITY, settingsFileNameLinearLayout.visibility)
-        savedInstanceState.putInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY, openKeychainImportInstructionsTextView.visibility)
-        savedInstanceState.putInt(SETTINGS_IMPORT_EXPORT_BUTTON_VISIBILITY, settingsImportExportButton.visibility)
-        savedInstanceState.putInt(BOOKMARKS_FILE_NAME_LINEARLAYOUT_VISIBILITY, bookmarksFileNameLinearLayout.visibility)
-        savedInstanceState.putInt(BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY, bookmarksImportExportButton.visibility)
+        outState.putInt(ENCRYPTION_PASSWORD_TEXTINPUTLAYOUT_VISIBILITY, encryptionPasswordTextInputLayout.visibility)
+        outState.putInt(OPEN_KEYCHAIN_REQUIRED_TEXTVIEW_VISIBILITY, openKeychainRequiredTextView.visibility)
+        outState.putInt(SETTINGS_FILE_LOCATION_CARDVIEW_VISIBILITY, settingsFileLocationCardView.visibility)
+        outState.putInt(SETTINGS_FILE_NAME_LINEARLAYOUT_VISIBILITY, settingsFileNameLinearLayout.visibility)
+        outState.putInt(OPEN_KEYCHAIN_IMPORT_INSTRUCTIONS_TEXTVIEW_VISIBILITY, openKeychainImportInstructionsTextView.visibility)
+        outState.putInt(SETTINGS_IMPORT_EXPORT_BUTTON_VISIBILITY, settingsImportExportButton.visibility)
+        outState.putInt(BOOKMARKS_FILE_NAME_LINEARLAYOUT_VISIBILITY, bookmarksFileNameLinearLayout.visibility)
+        outState.putInt(BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY, bookmarksImportExportButton.visibility)
 
         // Save the text.
-        savedInstanceState.putString(SETTINGS_FILE_NAME_TEXT, settingsFileNameEditText.text.toString())
-        savedInstanceState.putString(SETTINGS_IMPORT_EXPORT_BUTTON_TEXT, settingsImportExportButton.text.toString())
-        savedInstanceState.putString(BOOKMARKS_FILE_NAME_TEXT, bookmarksFileNameEditText.text.toString())
-        savedInstanceState.putString(BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY, bookmarksImportExportButton.text.toString())
+        outState.putString(SETTINGS_FILE_NAME_TEXT, settingsFileNameEditText.text.toString())
+        outState.putString(SETTINGS_IMPORT_EXPORT_BUTTON_TEXT, settingsImportExportButton.text.toString())
+        outState.putString(BOOKMARKS_FILE_NAME_TEXT, bookmarksFileNameEditText.text.toString())
+        outState.putString(BOOKMARKS_IMPORT_EXPORT_BUTTON_VISIBILITY, bookmarksImportExportButton.text.toString())
     }
 
     fun onClickBookmarksRadioButton(view: View) {

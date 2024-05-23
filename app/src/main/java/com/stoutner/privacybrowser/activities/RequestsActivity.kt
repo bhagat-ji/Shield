@@ -1,7 +1,7 @@
 /*
- * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,15 +245,15 @@ class RequestsActivity : AppCompatActivity(), ViewRequestListener {
         }
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    public override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onSaveInstanceState(savedInstanceState)
+        super.onSaveInstanceState(outState)
 
         // Get the listview position.
         val listViewPosition = requestsListView.firstVisiblePosition
 
         // Store the listview position in the bundle.
-        savedInstanceState.putInt(LISTVIEW_POSITION, listViewPosition)
+        outState.putInt(LISTVIEW_POSITION, listViewPosition)
     }
 
     override fun onPrevious(currentId: Int) {

@@ -327,12 +327,12 @@ class LogcatActivity : AppCompatActivity() {
         }
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    public override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onSaveInstanceState(savedInstanceState)
+        super.onSaveInstanceState(outState)
 
         // Store the scroll Y position in the bundle.
-        savedInstanceState.putInt(SCROLL_Y, logcatWebView.scrollY)
+        outState.putInt(SCROLL_Y, logcatWebView.scrollY)
     }
 
     // The view parameter cannot be removed because it is called from the layout onClick.

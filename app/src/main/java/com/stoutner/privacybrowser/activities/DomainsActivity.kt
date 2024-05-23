@@ -1,7 +1,7 @@
 /*
  * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -603,9 +603,9 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         return true
     }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         // Run the default commands.
-        super.onSaveInstanceState(savedInstanceState)
+        super.onSaveInstanceState(outState)
 
         // Get a handle for the domain settings scrollview.
         val domainSettingsScrollView = findViewById<ScrollView>(R.id.domain_settings_scrollview)
@@ -613,9 +613,9 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
         // Check to see if the domain settings scrollview exists.
         if (domainSettingsScrollView == null) {  // The domain settings are not displayed.
             // Store the domain settings status in the bundle.
-            savedInstanceState.putBoolean(DOMAIN_SETTINGS_DISPLAYED, false)
-            savedInstanceState.putInt(DOMAIN_SETTINGS_DATABASE_ID, -1)
-            savedInstanceState.putInt(DOMAIN_SETTINGS_SCROLL_Y, 0)
+            outState.putBoolean(DOMAIN_SETTINGS_DISPLAYED, false)
+            outState.putInt(DOMAIN_SETTINGS_DATABASE_ID, -1)
+            outState.putInt(DOMAIN_SETTINGS_SCROLL_Y, 0)
         } else {  // The domain settings are displayed.
             // Save any changes that have been made to the domain settings.
             saveDomainSettings(coordinatorLayout)
@@ -624,9 +624,9 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             val domainSettingsScrollY = domainSettingsScrollView.scrollY
 
             // Store the domain settings status in the bundle.
-            savedInstanceState.putBoolean(DOMAIN_SETTINGS_DISPLAYED, true)
-            savedInstanceState.putInt(DOMAIN_SETTINGS_DATABASE_ID, DomainSettingsFragment.databaseId)
-            savedInstanceState.putInt(DOMAIN_SETTINGS_SCROLL_Y, domainSettingsScrollY)
+            outState.putBoolean(DOMAIN_SETTINGS_DISPLAYED, true)
+            outState.putInt(DOMAIN_SETTINGS_DATABASE_ID, DomainSettingsFragment.databaseId)
+            outState.putInt(DOMAIN_SETTINGS_SCROLL_Y, domainSettingsScrollY)
         }
 
         // Check to see if the domains listview exists.
@@ -635,7 +635,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DismissSnackbarI
             val domainsListViewPosition = domainsListView!!.firstVisiblePosition
 
             // Store the listview position in the bundle.
-            savedInstanceState.putInt(LISTVIEW_POSITION, domainsListViewPosition)
+            outState.putInt(LISTVIEW_POSITION, domainsListViewPosition)
         }
     }
 
