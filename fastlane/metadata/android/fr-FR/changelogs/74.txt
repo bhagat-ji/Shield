@@ -1,0 +1,6 @@
+• Correction de certains fichiers qui ne pouvaient pas être sélectionnés dans le sélecteur de fichiers sur certains sites Web.
+• Coloration du logcat et ajout d'une option de recherche.
+• Autoriser la sélection d'une icône de favori de signet à partir du système de fichiers.
+• Correction de nombreux petits problèmes et bugs .
+• Augmentation de l'API minimale à 26 (Android 8.0).
+• Traduction française mise à jour fournie par Kévin L.

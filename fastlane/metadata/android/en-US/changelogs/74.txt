@@ -1,0 +1,5 @@
+• Fix some files not being selectable in the file picker on some websites.
+• Colorize the logcat and add a search option.
+• Allow selecting a bookmark favorite icon from the filesystem.
+• Fix a number of small issues and bugs.
+• Bump the minimum API to 26 (Android 8.0).

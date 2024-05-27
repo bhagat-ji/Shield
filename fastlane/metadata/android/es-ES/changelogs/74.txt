@@ -1,0 +1,6 @@
+• Corregir algunos archivos no seleccionables en el selector de archivos en algunos sitios web.
+• Colorear el logcat y añadir una opción de búsqueda.
+• Permitir la selección de un icono favorito de marcador del sistema de archivos.
+• Arreglar un número de pequeños problemas y bugs.
+• Aumentar la API mínima a 26 (Android 8.0).
+• Actualizada la traducción al español proporcionada por Jose A. León.

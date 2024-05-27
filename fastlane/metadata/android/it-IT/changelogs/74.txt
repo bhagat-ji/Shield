@@ -1,0 +1,6 @@
+• Correzione del problema per cui alcuni file non erano selezionabili nella finestra di dialogo per alcuni siti web.
+• Colorazione del logcat e aggiunta dell'opzione di ricerca.
+• Aggiunta la possibilità di scegliere l'icona dei preferiti dal filesystem.
+• Sistemazione di numerosi e piccoli problemi e bachi.
+• Spostamento della API minima a 26 (Android 8.0).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
