@@ -1,0 +1,1 @@
+• Fehler behoben, durch den Elemente der Navigations-Leiste nicht korrekt angezeigt wurden, wenn sie aktiviert waren.

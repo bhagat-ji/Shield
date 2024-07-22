@@ -1,0 +1,1 @@
+• Corrección de un error por el que los elementos del Cajón de Navegación no se mostraban correctamente si estaban activados.

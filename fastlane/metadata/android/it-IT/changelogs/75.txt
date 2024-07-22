@@ -1,0 +1,1 @@
+• Correzione di un baco per cui gli elementi del Cassetto di Navigazione non erano mostrati correttamente se abilitati.
