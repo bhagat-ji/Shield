@@ -1,7 +1,7 @@
 /*
- * Copyright © 2017-2020,2022 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2017-2020, 2022, 2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,12 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commitNow
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 import com.stoutner.privacybrowser.R
+import com.stoutner.privacybrowser.activities.DOMAIN_SETTINGS_FRAGMENT_TAG
 import com.stoutner.privacybrowser.activities.DomainsActivity
 
 class DomainsListFragment : Fragment() {
@@ -40,12 +42,12 @@ class DomainsListFragment : Fragment() {
     private lateinit var dismissSnackbarInterface: DismissSnackbarInterface
     private lateinit var saveDomainSettingsInterface: SaveDomainSettingsInterface
 
-    // Define the public dismiss snackbar interface.
+    // Define the dismiss snackbar interface.
     interface DismissSnackbarInterface {
         fun dismissSnackbar()
     }
 
-    // Define the public save domain interface.
+    // Define the save domain interface.
     interface SaveDomainSettingsInterface {
         fun saveDomainSettings(view: View)
     }
@@ -74,16 +76,16 @@ class DomainsListFragment : Fragment() {
             // Dismiss the snackbar if it is visible.
             dismissSnackbarInterface.dismissSnackbar()
 
-            // Save the current domain settings if operating in two-paned mode and a domain is currently selected.
-            if (DomainsActivity.twoPanedMode && DomainsActivity.deleteMenuItem.isEnabled) {
-                // Get a handle for the domain settings fragment.
-                val domainSettingsFragment = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container)!!
+            // Get a handle for the old domain settings fragment.
+            val oldDomainSettingsFragment = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container)
 
-                // Get a handle for the domain settings fragment view.
-                val domainSettingsFragmentView = domainSettingsFragment.requireView()
+            // Save the current domain settings if operating in two-paned mode and a domain is currently selected.
+            if (DomainsActivity.twoPanedMode && (oldDomainSettingsFragment != null)) {
+                // Get a handle for the old domain settings fragment view.
+                val oldDomainSettingsFragmentView = oldDomainSettingsFragment.requireView()
 
                 // Save the domain settings.
-                saveDomainSettingsInterface.saveDomainSettings(domainSettingsFragmentView)
+                saveDomainSettingsInterface.saveDomainSettings(oldDomainSettingsFragmentView)
             }
 
             // Store the new current domain database ID, converting it from long to int to match the format of the domains database.
@@ -103,21 +105,13 @@ class DomainsListFragment : Fragment() {
 
             // Check to see if the device is in two paned mode.
             if (DomainsActivity.twoPanedMode) {  // The device in in two-paned mode.
-                // Enable the delete menu item if the system is not waiting for a snackbar to be dismissed.
-                if (!DomainsActivity.dismissingSnackbar) {
-                    // Enable the delete menu item.
-                    DomainsActivity.deleteMenuItem.isEnabled = true
-                }
-
                 // Display the domain settings fragment.
-                supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit()
+                supportFragmentManager.commitNow {
+                    replace(R.id.domain_settings_fragment_container, domainSettingsFragment, DOMAIN_SETTINGS_FRAGMENT_TAG)
+                }
             } else { // The device in in single-paned mode
                 // Save the domains listview position.
                 DomainsActivity.domainsListViewPosition = domainsListView.firstVisiblePosition
-
-                // Show the delete menu item if the system is not waiting for a snackbar to be dismissed.
-                if (!DomainsActivity.dismissingSnackbar)
-                    DomainsActivity.deleteMenuItem.isVisible = true
 
                 // Get a handle for the add domain floating action button.
                 val addDomainFab = requireActivity().findViewById<FloatingActionButton>(R.id.add_domain_fab)
@@ -126,7 +120,9 @@ class DomainsListFragment : Fragment() {
                 addDomainFab.hide()
 
                 // Display the domain settings fragment.
-                supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit()
+                supportFragmentManager.commitNow {
+                    replace(R.id.domains_listview_fragment_container, domainSettingsFragment, DOMAIN_SETTINGS_FRAGMENT_TAG)
+                }
             }
         }
 

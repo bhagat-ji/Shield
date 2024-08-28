@@ -5598,7 +5598,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Check to see if the URL is `about:blank`.
                     if (currentUrl == "about:blank") {  // The WebView is blank.
                         // Display the hint in the URL edit text.
-                        urlEditText.setText("")
+                        urlEditText.text = null
 
                         // Request focus for the URL text box.
                         urlEditText.requestFocus()
@@ -6186,7 +6186,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             if (!loadingNewIntent) {  // A new intent is not being loaded.
                 if ((urlString == null) || (urlString == "about:blank")) {  // The WebView is blank.
                     // Display the hint in the URL edit text.
-                    urlEditText.setText("")
+                    urlEditText.text = null
 
                     // Request focus for the URL text box.
                     urlEditText.requestFocus()

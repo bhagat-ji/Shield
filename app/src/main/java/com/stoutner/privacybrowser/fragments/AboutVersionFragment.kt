@@ -45,7 +45,10 @@ import android.webkit.WebView
 import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 
 import com.google.android.material.snackbar.Snackbar
 
@@ -214,12 +217,88 @@ class AboutVersionFragment : Fragment() {
 
         // Store the arguments in class variables.
         filterListsVersions = requireArguments().getStringArray(FILTERLISTS_VERSIONS)!!
-
-        // Enable the options menu for this fragment.
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(layoutInflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        // Add an options menu.
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Inflate the about version menu.
+                menuInflater.inflate(R.menu.about_version_options_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Run the appropriate commands.
+                when (menuItem.itemId) {
+                    R.id.copy -> {  // Copy.
+                        // Get the about version string.
+                        val aboutVersionString = getAboutVersionString()
+
+                        // Get a handle for the clipboard manager.
+                        val clipboardManager = (requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+
+                        // Place the about version string in a clip data.
+                        val aboutVersionClipData = ClipData.newPlainText(getString(R.string.about), aboutVersionString)
+
+                        // Place the clip data on the clipboard.
+                        clipboardManager.setPrimaryClip(aboutVersionClipData)
+
+                        // Display a snackbar if the API <= 32 (Android 12L).  Beginning in Android 13 the OS displays a notification that covers up the snackbar.
+                        if (Build.VERSION.SDK_INT <= 32)
+                            Snackbar.make(aboutVersionLayout, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show()
+
+                        // Consume the event.
+                        return true
+                    }
+
+                    R.id.share -> {  // Share.
+                        // Get the about version string.
+                        val aboutString = getAboutVersionString()
+
+                        // Create a share intent.
+                        val shareIntent = Intent(Intent.ACTION_SEND)
+
+                        // Add the about version string to the intent.
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, aboutString)
+
+                        // Set the MIME type.
+                        shareIntent.type = "text/plain"
+
+                        // Set the intent to open in a new task.
+                        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                        // Make it so.
+                        startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
+
+                        // Consume the event.
+                        return true
+                    }
+
+                    R.id.save_text -> {  // Save text.
+                        // Open the file picker.
+                        saveAboutVersionTextActivityResultLauncher.launch(getString(R.string.privacy_browser_version_txt, BuildConfig.VERSION_NAME))
+
+                        // Consume the event.
+                        return true
+                    }
+
+                    R.id.save_image -> {  // Save image.
+                        // Open the file picker.
+                        saveAboutVersionImageActivityResultLauncher.launch(getString(R.string.privacy_browser_version_png, BuildConfig.VERSION_NAME))
+
+                        // Consume the event.
+                        return true
+                    }
+
+                    else -> {  // The home button was selected.
+                        // Do not consume the event.
+                        return false
+                    }
+                }
+            }
+
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         // Inflate the layout.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
         aboutVersionLayout = layoutInflater.inflate(R.layout.about_version_scrollview, container, false)
 
@@ -573,84 +652,6 @@ class AboutVersionFragment : Fragment() {
 
         // Return the tab layout.
         return aboutVersionLayout
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
-        // Inflate the about version menu.
-        menuInflater.inflate(R.menu.about_version_options_menu, menu)
-
-        // Run the default commands.
-        super.onCreateOptionsMenu(menu, menuInflater)
-    }
-
-    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
-        // Run the appropriate commands.
-        when (menuItem.itemId) {
-            R.id.copy -> {  // Copy.
-                // Get the about version string.
-                val aboutVersionString = getAboutVersionString()
-
-                // Get a handle for the clipboard manager.
-                val clipboardManager = (requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-
-                // Place the about version string in a clip data.
-                val aboutVersionClipData = ClipData.newPlainText(getString(R.string.about), aboutVersionString)
-
-                // Place the clip data on the clipboard.
-                clipboardManager.setPrimaryClip(aboutVersionClipData)
-
-                // Display a snackbar if the API <= 32 (Android 12L).  Beginning in Android 13 the OS displays a notification that covers up the snackbar.
-                if (Build.VERSION.SDK_INT <= 32)
-                    Snackbar.make(aboutVersionLayout, R.string.version_info_copied, Snackbar.LENGTH_SHORT).show()
-
-                // Consume the event.
-                return true
-            }
-
-            R.id.share -> {  // Share.
-                // Get the about version string.
-                val aboutString = getAboutVersionString()
-
-                // Create a share intent.
-                val shareIntent = Intent(Intent.ACTION_SEND)
-
-                // Add the about version string to the intent.
-                shareIntent.putExtra(Intent.EXTRA_TEXT, aboutString)
-
-                // Set the MIME type.
-                shareIntent.type = "text/plain"
-
-                // Set the intent to open in a new task.
-                shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                // Make it so.
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
-
-                // Consume the event.
-                return true
-            }
-
-            R.id.save_text -> {  // Save text.
-                // Open the file picker.
-                saveAboutVersionTextActivityResultLauncher.launch(getString(R.string.privacy_browser_version_txt, BuildConfig.VERSION_NAME))
-
-                // Consume the event.
-                return true
-            }
-
-            R.id.save_image -> {  // Save image.
-                // Open the file picker.
-                saveAboutVersionImageActivityResultLauncher.launch(getString(R.string.privacy_browser_version_png, BuildConfig.VERSION_NAME))
-
-                // Consume the event.
-                return true
-            }
-
-            else -> {  // The home button was selected.
-                // Run the parents class on return.
-                return super.onOptionsItemSelected(menuItem)
-            }
-        }
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {

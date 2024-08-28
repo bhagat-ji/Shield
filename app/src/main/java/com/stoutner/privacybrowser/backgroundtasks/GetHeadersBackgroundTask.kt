@@ -70,7 +70,7 @@ class GetHeadersBackgroundTask {
 
         // Get the colon string.
         val colonString = application.getString(R.string.colon)
-        val newLineString = System.getProperty("line.separator")
+        val newLineString = System.lineSeparator()
 
         if (urlString.startsWith("content://")) {  // This is a content URL.
             // Attempt to read the content data.  Return an error if this fails.

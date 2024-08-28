@@ -189,7 +189,7 @@ class BookmarksDatabaseViewActivity : AppCompatActivity(), EditBookmarkDatabaseV
                             subfolderSpacerTextView.text = bookmarksDatabaseHelper.getSubfolderSpacer(cursor.getLong(cursor.getColumnIndexOrThrow(FOLDER_ID)))
                         } else {  // The folder is in the home folder.
                             // Reset the subfolder spacer.
-                            subfolderSpacerTextView.text = ""
+                            subfolderSpacerTextView.text = null
                         }
                     }
 
