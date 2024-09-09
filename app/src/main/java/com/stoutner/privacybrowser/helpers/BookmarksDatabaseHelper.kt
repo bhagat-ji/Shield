@@ -1,7 +1,7 @@
 /*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -372,8 +372,7 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
             idsNotToGetStringBuilder.append(databaseIdLong)
         }
 
-        // Return a cursor with all the bookmarks in the specified folder except for those database IDs specified ordered by display order.
-        // The cursor cannot be closed because it will be used in the parent activity.
+        // Return a cursor with all the bookmarks in the specified folder except for those database IDs specified ordered by display order.  The cursor cannot be closed because it will be used in the parent activity.
         return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER_ID = $parentFolderId AND $ID NOT IN ($idsNotToGetStringBuilder) ORDER BY $DISPLAY_ORDER ASC", null)
     }
 
@@ -399,6 +398,51 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
 
         // Return a cursor with all the bookmarks in the specified folder except for those database IDs specified.  The cursor cannot be closed because it is used in the parent activity.
         return bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER_ID = $parentFolderId AND $ID NOT IN ($idsNotToGetStringBuilder)", null)
+    }
+
+    fun getBookmarksSortedAlphabetically(parentFolderId: Long): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // Get the folders sorted alphabetically.
+        val foldersCursor = bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER_ID = $parentFolderId AND $IS_FOLDER = 1 ORDER BY $BOOKMARK_NAME ASC", null)
+
+        // Get the bookmarks sorted alphabetically.
+        val bookmarksCursor = bookmarksDatabase.rawQuery("SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER_ID = $parentFolderId AND $IS_FOLDER = 0 ORDER BY $BOOKMARK_NAME ASC", null)
+
+        // Return the merged cursors.
+        return MergeCursor(arrayOf(foldersCursor, bookmarksCursor))
+    }
+
+    fun getBookmarksSortedAlphabeticallyExcept(exceptIdLongArray: LongArray, parentFolderId: Long): Cursor {
+        // Get a readable database handle.
+        val bookmarksDatabase = this.readableDatabase
+
+        // Prepare a string builder to contain the comma-separated list of IDs not to get.
+        val idsNotToGetStringBuilder = StringBuilder()
+
+        // Extract the array of IDs not to get to the string builder.
+        for (databaseIdLong in exceptIdLongArray) {
+            // Check to see if there is already a number in the builder.
+            if (idsNotToGetStringBuilder.isNotEmpty()) {
+                // This is not the first number, so place a `,` before the new number.
+                idsNotToGetStringBuilder.append(",")
+            }
+
+            // Add the new number to the builder.
+            idsNotToGetStringBuilder.append(databaseIdLong)
+        }
+
+        // Get the folders sorted alphabetically except for those database IDs specified, ordered by name.
+        val foldersCursor = bookmarksDatabase.rawQuery(
+            "SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER_ID = $parentFolderId AND $IS_FOLDER = 1 AND $ID NOT IN ($idsNotToGetStringBuilder) ORDER BY $BOOKMARK_NAME ASC", null)
+
+        // Get the bookmarks sorted alphabetically except for those database IDs specified, ordered by name.
+        val bookmarksCursor = bookmarksDatabase.rawQuery(
+            "SELECT * FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER_ID = $parentFolderId AND $IS_FOLDER = 0 AND $ID NOT IN ($idsNotToGetStringBuilder) ORDER BY $BOOKMARK_NAME ASC", null)
+
+        // Return the merged cursors.
+        return MergeCursor(arrayOf(foldersCursor, bookmarksCursor))
     }
 
     fun getFolderBookmarks(parentFolderId: Long): Cursor {
@@ -720,6 +764,37 @@ class BookmarksDatabaseHelper(context: Context) : SQLiteOpenHelper(context, BOOK
 
         // Close the database handle.
         bookmarksDatabase.close()
+    }
+
+    fun recalculateFolderContentsDisplayOrder(folderId: Long) {
+        // Get a readable database.
+        val bookmarksDatabase = this.readableDatabase
+
+        // Get a cursor with the current content of the folder.
+        val folderContentsCursor = bookmarksDatabase.rawQuery("SELECT $ID, $DISPLAY_ORDER FROM $BOOKMARKS_TABLE WHERE $PARENT_FOLDER_ID = $folderId ORDER BY $DISPLAY_ORDER ASC", null)
+
+        // Get the count of the folder contents.
+        val folderContentsCount = folderContentsCursor.count
+
+        // Get the query columns.
+        val databaseIdColumnInt = folderContentsCursor.getColumnIndexOrThrow(ID)
+        val displayOrderColumnInt = folderContentsCursor.getColumnIndexOrThrow(DISPLAY_ORDER)
+
+        // Move to the first entry.
+        folderContentsCursor.moveToFirst()
+
+        // Update the display order if it isn't currently correct.
+        for (i in 0 until folderContentsCount) {
+            // Use the current value for `i` as the display order if it isn't currently so.
+            if (i != folderContentsCursor.getInt(displayOrderColumnInt))
+                updateDisplayOrder(folderContentsCursor.getInt(databaseIdColumnInt), i)
+
+            // Move to the next entry.
+            folderContentsCursor.moveToNext()
+        }
+
+        // Close the cursor.
+        folderContentsCursor.close()
     }
 
     // Update the bookmark name and URL.

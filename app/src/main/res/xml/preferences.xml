@@ -288,6 +288,12 @@
             app:summary="@string/display_additional_app_bar_icons_summary"
             app:defaultValue="false" />
 
+        <SwitchPreferenceCompat
+            app:key="@string/sort_bookmarks_alphabetically_key"
+            app:title="@string/sort_bookmarks_alphabetically"
+            app:summary="@string/sort_bookmarks_alphabetically_summary"
+            app:defaultValue="false" />
+
         <ListPreference
             app:key="@string/app_theme_key"
             app:title="@string/app_theme"

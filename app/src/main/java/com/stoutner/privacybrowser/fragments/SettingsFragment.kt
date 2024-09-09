@@ -91,6 +91,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var searchCustomURLPreference: Preference
     private lateinit var searchPreference: Preference
     private lateinit var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener
+    private lateinit var sortBookmarksAlphabeticallyPreference: Preference
     private lateinit var swipeToRefreshPreference: Preference
     private lateinit var trackingQueriesPreference: Preference
     private lateinit var translatedUserAgentNamesArray: Array<String>
@@ -157,6 +158,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         scrollAppBarPreference = findPreference(getString(R.string.scroll_app_bar_key))!!
         bottomAppBarPreference = findPreference(getString(R.string.bottom_app_bar_key))!!
         displayAdditionalAppBarIconsPreference = findPreference(getString(R.string.display_additional_app_bar_icons_key))!!
+        sortBookmarksAlphabeticallyPreference = findPreference(getString(R.string.sort_bookmarks_alphabetically_key))!!
         appThemePreference = findPreference(getString(R.string.app_theme_key))!!
         webViewThemePreference = findPreference(getString(R.string.webview_theme_key))!!
         wideViewportPreference = findPreference(getString(R.string.wide_viewport_key))!!
@@ -511,6 +513,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled)
         else
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled)
+
+        // Set the sort bookmarks alphabetically icon.
+        if (sharedPreferences.getBoolean(getString(R.string.sort_bookmarks_alphabetically_key), false))
+            sortBookmarksAlphabeticallyPreference.setIcon(R.drawable.sort_by_alpha_enabled)
+        else
+            sortBookmarksAlphabeticallyPreference.setIcon(R.drawable.sort_by_alpha_disabled)
 
         // Set the WebView theme icon.
         if (webViewThemePreference.isEnabled) {  // The WebView theme preference is enabled.
@@ -1053,6 +1061,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
                     // Restart Privacy Browser.
                     restartPrivacyBrowser()
+                }
+
+                getString(R.string.sort_bookmarks_alphabetically_key) -> {
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean(getString(R.string.sort_bookmarks_alphabetically_key), false))
+                        sortBookmarksAlphabeticallyPreference.setIcon(R.drawable.sort_by_alpha_enabled)
+                    else
+                        sortBookmarksAlphabeticallyPreference.setIcon(R.drawable.sort_by_alpha_disabled)
                 }
 
                 getString(R.string.app_theme_key) -> {

@@ -1,7 +1,7 @@
 /*
  * Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@ import java.io.OutputStream
 import java.util.Date
 
 // Define the public constants.
-const val IMPORT_EXPORT_SCHEMA_VERSION = 19
-const val EXPORT_SUCCESSFUL = "A"
-const val IMPORT_SUCCESSFUL = "B"
+const val IMPORT_EXPORT_SCHEMA_VERSION = 20
+const val EXPORT_SUCCESSFUL = "export_successful"
+const val IMPORT_SUCCESSFUL = "import_successful"
 
 // Define the private class constants.
 private const val ALLOW_SCREENSHOTS = "allow_screenshots"
@@ -77,6 +77,7 @@ private const val PROXY_CUSTOM_URL = "proxy_custom_url"
 private const val SEARCH = "search"
 private const val SEARCH_CUSTOM_URL = "search_custom_url"
 private const val SCROLL_APP_BAR = "scroll_app_bar"
+private const val SORT_BOOKMARKS_ALPHABETICALLY = "sort_bookmarks_alphabetically"
 private const val PREFERENCES_SWIPE_TO_REFRESH = "swipe_to_refresh"
 private const val TRACKING_QUERIES = "tracking_queries"
 private const val ULTRAPRIVACY = "ultraprivacy"
@@ -604,6 +605,23 @@ class ImportExportDatabaseHelper {
             // This upgrade removed `enableformdata` from the Domains table and `save_form_data` and `clear_form_data` from the Preferences table.
             // There is no need to delete the columns as they will simply be ignored by the import.
 
+            // Upgrade from schema version 19, first used in Privacy Browser 3.18, to schema version 20, first used in Privacy Browser 3.19.
+            if (importDatabaseVersion < 20) {
+                // Create the new sort bookmarks alphabetically column.
+                importDatabase.execSQL("ALTER TABLE $PREFERENCES_TABLE ADD COLUMN $SORT_BOOKMARKS_ALPHABETICALLY BOOLEAN")
+
+                // Get the current sort bookmarks alphabetically column.
+                val sortBookmarksAlphabetically = sharedPreferences.getBoolean(SORT_BOOKMARKS_ALPHABETICALLY, false)
+
+                // Populate the preferences table with the current sort bookmarks alphabetically value.
+                // This can switch to using the variables directly once the minimum API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
+                // <https://developer.android.com/reference/android/database/sqlite/package-summary>
+                if (sortBookmarksAlphabetically)
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $SORT_BOOKMARKS_ALPHABETICALLY = 1")
+                else
+                    importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $SORT_BOOKMARKS_ALPHABETICALLY = 0")
+            }
+
 
             /* End of database upgrade logic. */
 
@@ -788,6 +806,7 @@ class ImportExportDatabaseHelper {
                 .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SCROLL_APP_BAR)) == 1)
                 .putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BOTTOM_APP_BAR)) == 1)
                 .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
+                .putBoolean(SORT_BOOKMARKS_ALPHABETICALLY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SORT_BOOKMARKS_ALPHABETICALLY)) == 1)
                 .putString(APP_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(APP_THEME)))
                 .putString(WEBVIEW_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
                 .putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)) == 1)
@@ -996,6 +1015,7 @@ class ImportExportDatabaseHelper {
                     "$SCROLL_APP_BAR BOOLEAN, " +
                     "$BOTTOM_APP_BAR BOOLEAN, " +
                     "$DISPLAY_ADDITIONAL_APP_BAR_ICONS BOOLEAN, " +
+                    "$SORT_BOOKMARKS_ALPHABETICALLY BOOLEAN, " +
                     "$APP_THEME TEXT, " +
                     "$WEBVIEW_THEME TEXT, " +
                     "$WIDE_VIEWPORT BOOLEAN, " +
@@ -1047,6 +1067,7 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true))
             preferencesContentValues.put(BOTTOM_APP_BAR, sharedPreferences.getBoolean(BOTTOM_APP_BAR, false))
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false))
+            preferencesContentValues.put(SORT_BOOKMARKS_ALPHABETICALLY, sharedPreferences.getBoolean(SORT_BOOKMARKS_ALPHABETICALLY, false))
             preferencesContentValues.put(APP_THEME, sharedPreferences.getString(APP_THEME, context.getString(R.string.app_theme_default_value)))
             preferencesContentValues.put(WEBVIEW_THEME, sharedPreferences.getString(WEBVIEW_THEME, context.getString(R.string.webview_theme_default_value)))
             preferencesContentValues.put(WIDE_VIEWPORT, sharedPreferences.getBoolean(WIDE_VIEWPORT, true))

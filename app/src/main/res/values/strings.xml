@@ -734,6 +734,8 @@
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for opening the bookmarks drawer and toggling cookies.
             Changing this setting will restart Privacy Browser.</string>
+        <string name="sort_bookmarks_alphabetically">Sort bookmarks alphabetically</string>
+        <string name="sort_bookmarks_alphabetically_summary">Sort the bookmarks alphabetically, with the folders displayed above the bookmarks. This disables manual ordering of bookmarks.</string>
         <string name="app_theme">App theme</string>
         <string-array name="app_theme_entries">
             <item>System default</item>
@@ -798,6 +800,7 @@
     <string name="scroll_app_bar_key" translatable="false">scroll_app_bar</string>
     <string name="search_custom_url_key" translatable="false">search_custom_url</string>
     <string name="search_key" translatable="false">search</string>
+    <string name="sort_bookmarks_alphabetically_key" translatable="false">sort_bookmarks_alphabetically</string>
     <string name="swipe_to_refresh_key" translatable="false">swipe_to_refresh</string>
     <string name="tracking_queries_key" translatable="false">tracking_queries</string>
     <string name="ultralist_key" translatable="false">ultralist</string>

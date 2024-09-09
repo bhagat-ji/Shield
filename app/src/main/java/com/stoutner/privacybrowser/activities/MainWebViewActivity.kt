@@ -390,6 +390,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var savedStateArrayList: ArrayList<Bundle>? = null
     private var savedTabPosition = 0
     private var scrollAppBar = false
+    private var sortBookmarksAlphabetically = false
     private var ultraPrivacy: ArrayList<List<Array<String>>>? = null
     private var waitingForProxy = false
 
@@ -2944,6 +2945,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         hideAppBar = sharedPreferences.getBoolean(getString(R.string.hide_app_bar_key), true)
         val downloadProvider = sharedPreferences.getString(getString(R.string.download_provider_key), getString(R.string.download_provider_default_value))!!
         scrollAppBar = sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), false)
+        sortBookmarksAlphabetically = sharedPreferences.getBoolean(getString(R.string.sort_bookmarks_alphabetically_key), false)
 
         // Determine if downloading should be handled by an external app.
         downloadWithExternalApp = (downloadProvider == downloadProviderEntryValuesStringArray[2])
@@ -3073,6 +3075,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             @Suppress("DEPRECATION")
             rootFrameLayout.systemUiVisibility = 0
         }
+
+        // Load the bookmarks folder.
+        loadBookmarksFolder()
     }
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
@@ -3923,7 +3928,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         bookmarksDatabaseHelper!!.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolderId, newBookmarkDisplayOrder, favoriteIconByteArray)
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper!!.getBookmarksSortedAlphabetically(currentBookmarksFolderId)
+        else
+            bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -3983,7 +3991,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         bookmarksDatabaseHelper!!.createFolder(folderNameString, currentBookmarksFolderId, displayOrder = 0, folderIconByteArray)
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper!!.getBookmarksSortedAlphabetically(currentBookmarksFolderId)
+        else
+            bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -4395,9 +4406,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Set the drawer titles, which identify the drawer layouts in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer))
         drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks))
-
-        // Load the bookmarks folder.
-        loadBookmarksFolder()
 
         // Handle clicks on bookmarks.
         bookmarksListView.onItemClickListener = AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, id: Long ->
@@ -5768,7 +5776,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     private fun loadBookmarksFolder() {
         // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper!!.getBookmarksSortedAlphabetically(currentBookmarksFolderId)
+        else
+            bookmarksDatabaseHelper!!.getBookmarksByDisplayOrder(currentBookmarksFolderId)
 
         // Populate the bookmarks cursor adapter.
         bookmarksCursorAdapter = object : CursorAdapter(this, bookmarksCursor, false) {

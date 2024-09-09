@@ -73,12 +73,12 @@ import java.io.ByteArrayOutputStream
 import java.util.function.Consumer
 
 // Define the public constants.
-const val CURRENT_FAVORITE_ICON_BYTE_ARRAY = "A"
-const val CURRENT_FOLDER_ID = "B"
-const val CURRENT_TITLE = "C"
+const val CURRENT_FAVORITE_ICON_BYTE_ARRAY = "current_favorite_icon_byte_array"
+const val CURRENT_FOLDER_ID = "current_folder_id"
+const val CURRENT_TITLE = "current_title"
 
 // Define the private constants.
-private const val CHECKED_BOOKMARKS_ARRAY_LIST = "D"
+private const val CHECKED_BOOKMARKS_ARRAY_LIST = "checked_bookmarks_array_list"
 
 class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener,
     EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
@@ -94,6 +94,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
     private var checkingManyBookmarks = false
     private var closeActivityAfterDismissingSnackbar = false
     private var contextualActionMode: ActionMode? = null
+    private var sortBookmarksAlphabetically = false
 
     // Declare the class variables.
     private lateinit var appBar: ActionBar
@@ -113,6 +114,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         // Get the preferences.
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
         val bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
+        sortBookmarksAlphabetically = sharedPreferences.getBoolean(getString(R.string.sort_bookmarks_alphabetically_key), false)
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -234,6 +236,12 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                 deleteBookmarksMenuItem = menu.findItem(R.id.delete_bookmark)
                 selectAllBookmarksMenuItem = menu.findItem(R.id.context_menu_select_all_bookmarks)
 
+                // Hide the move up and down menu items if bookmarks are sorted alphabetically.
+                if (sortBookmarksAlphabetically) {
+                    moveBookmarkUpMenuItem.isVisible = false
+                    moveBookmarkDownMenuItem.isVisible = false
+                }
+
                 // Disable the delete bookmarks menu item if a delete is pending.
                 deleteBookmarksMenuItem.isEnabled = !deletingBookmarks
 
@@ -262,17 +270,26 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     if (numberOfSelectedBookmarks > 0) {
                         // Adjust the action mode and the menu according to the number of selected bookmarks.
                         if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
-                            // Show the applicable menu items.
-                            moveBookmarkUpMenuItem.isVisible = true
-                            moveBookmarkDownMenuItem.isVisible = true
+                            // Update the move menu items if the bookmarks are not sorted alphabetically.
+                            if (!sortBookmarksAlphabetically) {
+                                moveBookmarkUpMenuItem.isVisible = true
+                                moveBookmarkDownMenuItem.isVisible = true
+                            }
+
+                            // Show the edit bookmark menu item.
                             editBookmarkMenuItem.isVisible = true
 
-                            // Update the enabled status of the move icons.
-                            updateMoveIcons()
+                            // Update the enabled status of the move icons if the bookmarks are not sorted alphabetically.
+                            if (!sortBookmarksAlphabetically)
+                                updateMoveIcons()
                         } else {  // More than one bookmark is selected.
-                            // Hide non-applicable `MenuItems`.
-                            moveBookmarkUpMenuItem.isVisible = false
-                            moveBookmarkDownMenuItem.isVisible = false
+                            // Update the move menu items if the bookmarks are not sorted alphabetically.
+                            if (!sortBookmarksAlphabetically) {
+                                moveBookmarkUpMenuItem.isVisible = false
+                                moveBookmarkDownMenuItem.isVisible = false
+                            }
+
+                            // Hide the edit bookmark menu item.
                             editBookmarkMenuItem.isVisible = false
                         }
 
@@ -470,7 +487,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions.clone()
 
                     // Update the bookmarks cursor with the current contents of the bookmarks database except for the specified database IDs.
-                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(checkedBookmarksIdsLongArray, currentFolderId)
+                    bookmarksCursor = if (sortBookmarksAlphabetically)
+                        bookmarksDatabaseHelper.getBookmarksSortedAlphabeticallyExcept(checkedBookmarksIdsLongArray, currentFolderId)
+                    else
+                        bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(checkedBookmarksIdsLongArray, currentFolderId)
 
                     // Update the list view.
                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -482,7 +502,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                             override fun onDismissed(snackbar: Snackbar, event: Int) {
                                 if (event == DISMISS_EVENT_ACTION) {  // The user pushed the undo button.
                                     // Update the bookmarks cursor with the current contents of the bookmarks database, including the "deleted" bookmarks.
-                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+                                    bookmarksCursor = if (sortBookmarksAlphabetically)
+                                        bookmarksDatabaseHelper.getBookmarksSortedAlphabetically(currentFolderId)
+                                    else
+                                        bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
 
                                     // Update the list view.
                                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -516,18 +539,8 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                                         bookmarksDatabaseHelper.deleteBookmark(databaseIdInt)
                                     }
 
-                                    // Update the display order.
-                                    for (i in 0 until bookmarksListView.count) {
-                                        // Get the database ID for the current bookmark.
-                                        val currentBookmarkDatabaseId = bookmarksListView.getItemIdAtPosition(i).toInt()
-
-                                        // Move bookmarks cursor to the current bookmark position.
-                                        bookmarksCursor.moveToPosition(i)
-
-                                        // Update the display order only if it is not correct in the database.
-                                        if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(DISPLAY_ORDER)) != i)
-                                            bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i)
-                                    }
+                                    // Recalculate the display order of the current folder.
+                                    bookmarksDatabaseHelper.recalculateFolderContentsDisplayOrder(currentFolderId)
                                 }
 
                                 // Reset the deleting bookmarks flag.
@@ -747,7 +760,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, currentFolderId, newBookmarkDisplayOrder, favoriteIconByteArray)
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper.getBookmarksSortedAlphabetically(currentFolderId)
+        else
+            bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -804,7 +820,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         bookmarksDatabaseHelper.createFolder(folderNameString, currentFolderId, displayOrder = 0, folderIconByteArray)
 
         // Update the bookmarks cursor with the contents of the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper.getBookmarksSortedAlphabetically(currentFolderId)
+        else
+            bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -859,7 +878,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         contextualActionMode?.finish()
 
         // Update the bookmarks cursor with the contents of the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper.getBookmarksSortedAlphabetically(currentFolderId)
+        else
+            bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -911,7 +933,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         }
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper.getBookmarksSortedAlphabetically(currentFolderId)
+        else
+            bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -953,8 +978,14 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
             bookmarksDatabaseHelper.moveToFolder(databaseIdInt, newFolderId)
         }
 
+        // Recalculate the display order of the current folder.
+        bookmarksDatabaseHelper.recalculateFolderContentsDisplayOrder(currentFolderId)
+
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper.getBookmarksSortedAlphabetically(currentFolderId)
+        else
+            bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor)
@@ -1098,7 +1129,10 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
 
     private fun loadFolder() {
         // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+        bookmarksCursor = if (sortBookmarksAlphabetically)
+            bookmarksDatabaseHelper.getBookmarksSortedAlphabetically(currentFolderId)
+        else
+            bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
 
         // Setup a cursor adapter.
         bookmarksCursorAdapter = object : CursorAdapter(this, bookmarksCursor, false) {
