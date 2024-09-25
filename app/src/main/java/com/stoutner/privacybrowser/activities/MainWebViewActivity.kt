@@ -2449,6 +2449,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Set the target URL as the context menu title.
                 contextMenu.setHeaderTitle(linkUrl)
 
+                // Get a new message from the WebView handler.
+                val hrefMessage = currentWebView!!.handler.obtainMessage()
+
+                // Request the focus node href.
+                currentWebView!!.requestFocusNodeHref(hrefMessage)
+
+                // Get the link text from the href message.
+                val linkText = hrefMessage.data.getString("title")
+
                 // Add an open in new tab entry.
                 contextMenu.add(R.string.open_in_new_tab).setOnMenuItemClickListener {
                     // Load the link URL in a new tab and move to it.
@@ -2528,6 +2537,20 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Consume the event.
                     true
+                }
+
+                // Add a Copy Text entry if the link text is not null.
+                if (linkText != null) {
+                    contextMenu.add(R.string.copy_text).setOnMenuItemClickListener {
+                        // Save the link URL in a clip data.
+                        val srcAnchorTypeTextClipData = ClipData.newPlainText(getString(R.string.copy_text), linkText)
+
+                        // Set the clip data as the clipboard's primary clip.
+                        clipboardManager.setPrimaryClip(srcAnchorTypeTextClipData)
+
+                        // Consume the event.
+                        true
+                    }
                 }
 
                 // Add an empty cancel entry, which by default closes the context menu.
@@ -2794,6 +2817,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Set the target URL as the title of the context menu.
                 contextMenu.setHeaderTitle(linkUrl)
 
+                // Get a new message from the WebView handler.
+                val hrefMessage = currentWebView!!.handler.obtainMessage()
+
+                // Request the focus node href.
+                currentWebView!!.requestFocusNodeHref(hrefMessage)
+
+                // Get the link text from the href message.
+                val linkText = hrefMessage.data.getString("title")
+
                 // Add a write email entry.
                 contextMenu.add(R.string.write_email).setOnMenuItemClickListener {
                     // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
@@ -2827,6 +2859,20 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Consume the event.
                     true
+                }
+
+                // Add a Copy Text entry if the link text is not null.
+                if (linkText != null) {
+                    contextMenu.add(R.string.copy_text).setOnMenuItemClickListener {
+                        // Save the link URL in a clip data.
+                        val srcEmailTypeTextClipData = ClipData.newPlainText(getString(R.string.copy_text), linkText)
+
+                        // Set the clip data as the clipboard's primary clip.
+                        clipboardManager.setPrimaryClip(srcEmailTypeTextClipData)
+
+                        // Consume the event.
+                        true
+                    }
                 }
 
                 // Add an empty cancel entry, which by default closes the context menu.

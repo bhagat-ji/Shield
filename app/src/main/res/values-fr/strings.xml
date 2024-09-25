@@ -671,6 +671,8 @@
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>
         <string name="display_additional_app_bar_icons_summary">Afficher les icônes dans la barre des applications pour actualiser WebView et, s\'il y a de la place,
             pour ouvrir les signets et la gestion des cookies. La modification de ce paramètre entraîne le redémarrage de Privacy Browser.</string>
+        <string name="sort_bookmarks_alphabetically">Trier les favoris par ordre alphabétique</string>
+        <string name="sort_bookmarks_alphabetically_summary">Trier les favoris par ordre alphabétique, avec les dossiers affichés avant les favoris. Cela désactive le tri manuel des favoris.</string>
         <string name="app_theme">Thème de l\'application</string>
         <string-array name="app_theme_entries">
             <item>Par défaut</item>

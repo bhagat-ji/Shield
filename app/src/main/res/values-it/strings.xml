@@ -674,6 +674,9 @@
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento della pagina e, se lo spazio è disponibile,
             per aprire i preferiti e per abilitare o disabilitare i cookie. La modifica di questa impostazione provocherà il riavvio di Privacy Browser.</string>
+        <string name="sort_bookmarks_alphabetically">Elenca i segnalibri alfabeticamente</string>
+        <string name="sort_bookmarks_alphabetically_summary">Elenca i segnalibri in ordine alfabetico, con le cartelle mostrate al di sopra dei segnalibri.
+            Questo disabilita l\'ordinamento manuale dei segnalibri.</string>
         <string name="app_theme">Tema Applicazione</string>
         <string-array name="app_theme_entries">
             <item>Predefinito</item>

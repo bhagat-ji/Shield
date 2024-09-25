@@ -670,6 +670,8 @@
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Показывать в панели приложения значки для обновления WebView и, если есть место, для открытия окна закладок и переключения cookie.
             Изменение этой настройки приведет к перезапуску Privacy Browser.</string>
+        <string name="sort_bookmarks_alphabetically">Сортировка закладок по алфавиту</string>
+        <string name="sort_bookmarks_alphabetically_summary">Отсортировать закладки в алфавитном порядке с отображением папок над закладками. Это отключит ручное упорядочивание закладок.</string>
         <string name="app_theme">Тема приложения</string>
         <string-array name="app_theme_entries">
             <item>По умолчанию</item>

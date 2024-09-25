@@ -1,0 +1,1 @@
+• Correction d'un bug avec les éléments du tiroir de navigation qui ne s'affichaient pas correctement lorsqu'ils étaient activés.
