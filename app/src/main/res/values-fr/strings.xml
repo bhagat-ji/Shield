@@ -179,6 +179,7 @@
     <string name="open_image_in_new_tab">Ouvrir l\'image dans un nouvel onglet</string>
     <string name="share_image">Partager l\'image</string>
     <string name="copy_url">Copier l\'URL</string>
+    <string name="copy_text">Copier le texte</string>
     <string name="email_address">Addresse e-mail</string>
     <string name="copy_email_address">Copier l\'adresse e-mail</string>
     <string name="write_email">Ecrire un e-mail</string>

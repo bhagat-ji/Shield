@@ -176,6 +176,7 @@
     <string name="open_image_in_new_tab">Открыть изображение в новой вкладке</string>
     <string name="share_image">Поделиться изображением</string>
     <string name="copy_url">Копировать URL</string>
+    <string name="copy_text">Скопировать текст</string>
     <string name="email_address">Адрес email</string>
     <string name="copy_email_address">Копировать адрес email</string>
     <string name="write_email">Написать email</string>

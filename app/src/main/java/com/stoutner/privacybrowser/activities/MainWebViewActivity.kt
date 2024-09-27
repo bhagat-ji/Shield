@@ -3592,13 +3592,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Get the color background int from the typed value.
                 val colorBackgroundInt = colorBackgroundTypedValue.data
 
-                // Set the default app bar layout background.
+                // Set the default app bar and status bar backgrounds.
                 appBarLayout.setBackgroundColor(colorBackgroundInt)
+                window.statusBarColor = colorBackgroundInt
             }
 
             ProxyHelper.TOR -> {
-                // Set the app bar background to indicate proxying is enabled.
+                // Set the app bar and status bar backgrounds to indicate proxying is enabled.
                 appBarLayout.setBackgroundResource(R.color.blue_background)
+                window.statusBarColor = getColor(R.color.blue_background)
 
                 // Check to see if Orbot is installed.
                 try {
@@ -3647,8 +3649,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
 
             ProxyHelper.I2P -> {
-                // Set the app bar background to indicate proxying is enabled.
+                // Set the app bar and status bar backgrounds to indicate proxying is enabled.
                 appBarLayout.setBackgroundResource(R.color.blue_background)
+                window.statusBarColor = getColor(R.color.blue_background)
 
                 // Check to see if I2P is installed.
                 try {
@@ -3677,9 +3680,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
             }
 
-            ProxyHelper.CUSTOM ->
-                // Set the app bar background to indicate proxying is enabled.
+            ProxyHelper.CUSTOM -> {
+                // Set the app bar and status bar backgrounds to indicate proxying is enabled.
                 appBarLayout.setBackgroundResource(R.color.blue_background)
+                window.statusBarColor = getColor(R.color.blue_background)
+            }
         }
 
         // Reload the WebViews if requested and not waiting for the proxy.
