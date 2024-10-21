@@ -1,7 +1,7 @@
 <!--
   Copyright 2017, 2022 Soren Stoutner <soren@stoutner.com>.
 
-  This file is derived from `exit_to_app`, which is part of the Android Material icon set.  It is released under the Apache License 2.0.
+  This file is derived from `exit_to_app`, which is part of the Android Material icon set <https://fonts.google.com/icons>.  It is released under the Apache License 2.0.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
 
@@ -16,7 +16,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"

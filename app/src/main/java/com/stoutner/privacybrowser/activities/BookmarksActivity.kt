@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
@@ -105,6 +105,8 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
     private lateinit var currentFavoriteIconByteArray: ByteArray
     private lateinit var moveBookmarkDownMenuItem: MenuItem
     private lateinit var moveBookmarkUpMenuItem: MenuItem
+    private lateinit var moveToTopMenuItem: MenuItem
+    private lateinit var moveToBottomMenuItem: MenuItem
     private lateinit var moveToFolderMenuItem: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -231,6 +233,8 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                 // Get handles for menu items that need to be selectively disabled.
                 moveBookmarkUpMenuItem = menu.findItem(R.id.move_bookmark_up)
                 moveBookmarkDownMenuItem = menu.findItem(R.id.move_bookmark_down)
+                moveToTopMenuItem = menu.findItem(R.id.move_to_top)
+                moveToBottomMenuItem = menu.findItem(R.id.move_to_bottom)
                 moveToFolderMenuItem = menu.findItem(R.id.move_to_folder)
                 editBookmarkMenuItem = menu.findItem(R.id.edit_bookmark)
                 deleteBookmarksMenuItem = menu.findItem(R.id.delete_bookmark)
@@ -240,6 +244,8 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                 if (sortBookmarksAlphabetically) {
                     moveBookmarkUpMenuItem.isVisible = false
                     moveBookmarkDownMenuItem.isVisible = false
+                    moveToTopMenuItem.isVisible = false
+                    moveToBottomMenuItem.isVisible = false
                 }
 
                 // Disable the delete bookmarks menu item if a delete is pending.
@@ -278,10 +284,6 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
 
                             // Show the edit bookmark menu item.
                             editBookmarkMenuItem.isVisible = true
-
-                            // Update the enabled status of the move icons if the bookmarks are not sorted alphabetically.
-                            if (!sortBookmarksAlphabetically)
-                                updateMoveIcons()
                         } else {  // More than one bookmark is selected.
                             // Update the move menu items if the bookmarks are not sorted alphabetically.
                             if (!sortBookmarksAlphabetically) {
@@ -291,6 +293,23 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
 
                             // Hide the edit bookmark menu item.
                             editBookmarkMenuItem.isVisible = false
+                        }
+
+                        //  Update the move icons if not sorting alphabetically.
+                        if (!sortBookmarksAlphabetically) {
+                            // Adjust the visibility of the move to top and bottom menu items.
+                            if ((numberOfSelectedBookmarks == bookmarksListView.count)) {  // All the bookmarks are selected.
+                                // Hide the move to top and bottom menu items.
+                                moveToTopMenuItem.isVisible = false
+                                moveToBottomMenuItem.isVisible = false
+                            } else {  // Not all the bookmarks are selected.
+                                // Show the move to top and bottom menu item.
+                                moveToTopMenuItem.isVisible = true
+                                moveToBottomMenuItem.isVisible = true
+                            }
+
+                            // Update the move icons.
+                            updateMoveIcons()
                         }
 
                         // Display the move to folder menu item if at least one other folder exists.
@@ -365,7 +384,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
 
                     // Scroll to the new bookmark position.
-                    scrollBookmarks(checkedBookmarkNewPosition)
+                    bookmarksListView.setSelection(checkedBookmarkNewPosition)
 
                     // Update the enabled status of the move icons.
                     updateMoveIcons()
@@ -419,6 +438,122 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
 
                     // Update the enabled status of the move icons.
                     updateMoveIcons()
+                } else if (menuItemId == R.id.move_to_top) {  // Move to top.
+                    // Get a list of selected bookmark IDs by display order.
+                    val selectedBookmarkIdsList = getSelectedBookmarkIdsByDisplayOrder()
+
+                    // Update the display order of the bookmarks that are selected.  `newDisplayOrder` is the index, which auto-increments.
+                    for ((newSelectedBookmarkDisplayOrder, bookmarkDatabaseId) in selectedBookmarkIdsList.withIndex()) {
+                        // Set the new bookmark position.
+                        bookmarksDatabaseHelper.updateDisplayOrder(bookmarkDatabaseId, newSelectedBookmarkDisplayOrder)
+                    }
+
+                    // Get the number of bookmarks.
+                    val numberOfSelectedBookmarks = selectedBookmarkIdsList.size
+                    val totalNumberOfBookmarksMinusOne = bookmarksListView.count - 1
+
+                    // Initialize the new unselected bookmark display order.
+                    var newUnselectedBookmarkDisplayOrder = numberOfSelectedBookmarks
+
+                    // Increment the display order of the other bookmarks by the number of selected bookmarks.
+                    for (i in 0..totalNumberOfBookmarksMinusOne) {
+                        // Get the bookmark database ID long at the indicated position.
+                        val bookmarkDatabaseIdLong = bookmarksListView.getItemIdAtPosition(i)
+
+                        // Increment the display order if it isn't one of the selected bookmarks.
+                        if (!selectedBookmarkIdsList.contains(bookmarkDatabaseIdLong.toInt())) {
+                            // Move the bookmarks cursor to the current bookmark position.
+                            bookmarksCursor.moveToPosition(i)
+
+                            // Update the unselected bookmark display order if it has changed.
+                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(DISPLAY_ORDER)) != newUnselectedBookmarkDisplayOrder)
+                                bookmarksDatabaseHelper.updateDisplayOrder(bookmarkDatabaseIdLong.toInt(), newUnselectedBookmarkDisplayOrder)
+
+                            // Increment the new unselected bookmark display order.
+                            ++newUnselectedBookmarkDisplayOrder
+                        }
+                    }
+
+                    // Update the bookmarks cursor with the current contents of the bookmarks database.
+                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+
+                    // Update the list view.
+                    bookmarksCursorAdapter.changeCursor(bookmarksCursor)
+
+                    // Update the enabled status of the move icons.
+                    updateMoveIcons()
+
+                    // Reselect the original bookmarks (the system only automatically does so for those that were visible before the move).
+                    for (i in 0..totalNumberOfBookmarksMinusOne) {
+                        // Reelect the originally selected bookmarks.  Deselect all the other bookmarks.
+                        bookmarksListView.setItemChecked(i, i < numberOfSelectedBookmarks)
+                    }
+
+                    // Scroll to the top.
+                    scrollBookmarks(0)
+                } else if (menuItemId == R.id.move_to_bottom) {  // Move to bottom.
+                    // Get a list of selected bookmark IDs by display order.
+                    val selectedBookmarkIdsList = getSelectedBookmarkIdsByDisplayOrder()
+
+                    // Get the number of bookmarks.
+                    val numberOfSelectedBookmarks = selectedBookmarkIdsList.size
+                    val totalNumberOfBookmarks = bookmarksListView.count
+                    val totalNumberOfBookmarksMinusOne = totalNumberOfBookmarks - 1
+
+                    // Initialize the new selected bookmark display order.
+                    var newSelectedBookmarkDisplayOrder = totalNumberOfBookmarks - numberOfSelectedBookmarks
+
+                    // Update the display order of the bookmarks that are selected.
+                    for (bookmarkDatabaseId in selectedBookmarkIdsList) {
+                        // Set the new bookmark position.
+                        bookmarksDatabaseHelper.updateDisplayOrder(bookmarkDatabaseId, newSelectedBookmarkDisplayOrder)
+
+                        // Increment the new selected bookmark display order.
+                        ++newSelectedBookmarkDisplayOrder
+                    }
+
+                    // Initialize the new unselected bookmark display order.
+                    var newUnselectedBookmarkDisplayOrder = 0
+
+                    // Increment the display order of the bookmarks that are not selected.
+                    for (i in 0..totalNumberOfBookmarksMinusOne) {
+                        // Get the bookmark database ID long at the indicated position.
+                        val bookmarkDatabaseIdLong = bookmarksListView.getItemIdAtPosition(i)
+
+                        // Adjust the display order if it isn't one of the selected bookmarks.
+                        if (!selectedBookmarkIdsList.contains(bookmarkDatabaseIdLong.toInt())) {
+                            // Move the bookmarks cursor to the current bookmark position.
+                            bookmarksCursor.moveToPosition(i)
+
+                            // Update the unselected bookmark display order if it has changed.
+                            if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndexOrThrow(DISPLAY_ORDER)) != newUnselectedBookmarkDisplayOrder)
+                                bookmarksDatabaseHelper.updateDisplayOrder(bookmarkDatabaseIdLong.toInt(), newUnselectedBookmarkDisplayOrder)
+
+                            // Increment the new unselected bookmark display order.
+                            ++newUnselectedBookmarkDisplayOrder
+                        }
+                    }
+
+                    // Update the bookmarks cursor with the current contents of the bookmarks database.
+                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderId)
+
+                    // Update the list view.
+                    bookmarksCursorAdapter.changeCursor(bookmarksCursor)
+
+                    // Update the enabled status of the move icons.
+                    updateMoveIcons()
+
+                    // Calculate th
+                    val firstSelectedBookmarkAtEnd = totalNumberOfBookmarks - numberOfSelectedBookmarks
+
+                    // Reselect the original bookmarks (the system only automatically does so for those that were visible before the move).
+                    for (i in 0..totalNumberOfBookmarksMinusOne) {
+                        // Reelect the originally selected bookmarks.  Deselect all the other bookmarks.
+                        bookmarksListView.setItemChecked(i, i >= firstSelectedBookmarkAtEnd)
+                    }
+
+                    // Scroll to the bottom.
+                    scrollBookmarks(totalNumberOfBookmarksMinusOne)
                 } else if (menuItemId == R.id.move_to_folder) {  // Move to folder.
                     // Instantiate the move to folder alert dialog.
                     val moveToFolderDialog = MoveToFolderDialog.moveBookmarks(currentFolderId, bookmarksListView.checkedItemIds)
@@ -1048,6 +1183,35 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         }
     }
 
+    private fun getSelectedBookmarkIdsByDisplayOrder(): List<Int> {
+        // Create the lists.
+        val selectedBookmarkPositionsList = mutableListOf<Int>()
+        val selectedBookmarkIdsList = mutableListOf<Int>()
+
+        // Get the array of checked bookmark positions.
+        val checkedBookmarkPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
+
+        // Get the checked bookmarks positions sparse boolean array size.
+        val checkedBookmarkPositionsSparseBooleanArraySize = checkedBookmarkPositionsSparseBooleanArray.size()
+
+        // Get the position of the bookmarks that are selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
+        for (i in 0 until checkedBookmarkPositionsSparseBooleanArraySize) {
+            // Check to see if the value for the bookmark is true, meaning it is currently selected.
+            if (checkedBookmarkPositionsSparseBooleanArray.valueAt(i)) {
+                // Add the selected bookmarks positions to the list.
+                selectedBookmarkPositionsList.add(checkedBookmarkPositionsSparseBooleanArray.keyAt(i))
+            }
+        }
+
+        // Get the selected bookmark IDs from their positions.  The selected bookmark positions list will already be sorted by position.
+        for (selectedBookmarkPosition in selectedBookmarkPositionsList) {
+            selectedBookmarkIdsList.add(bookmarksListView.getItemIdAtPosition(selectedBookmarkPosition).toInt())
+        }
+
+        // Return the selected bookmark IDs list.
+        return selectedBookmarkIdsList
+    }
+
     private fun prepareFinish() {
         // Check to see if a snackbar is currently displayed.  If so, it must be closed before exiting so that a pending delete is completed before reloading the list view in the bookmarks drawer.
         if (bookmarksDeletedSnackbar != null && bookmarksDeletedSnackbar!!.isShown) {  // Close the bookmarks deleted snackbar before going home.
@@ -1069,23 +1233,23 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
     }
 
     private fun updateMoveIcons() {
-        // Get a long array of the selected bookmarks.
-        val selectedBookmarksLongArray = bookmarksListView.checkedItemIds
+        // Get a long array of the selected bookmarks IDs.
+        val selectedBookmarkIdsLongArray = bookmarksListView.checkedItemIds
 
         // Get the database IDs for the first, last, and selected bookmarks.
         val firstBookmarkDatabaseId = bookmarksListView.getItemIdAtPosition(0).toInt()
         val lastBookmarkDatabaseId = bookmarksListView.getItemIdAtPosition(bookmarksListView.count - 1).toInt()  // The bookmarks list view is 0 indexed.
-        val selectedBookmarkDatabaseId = selectedBookmarksLongArray[0].toInt()
+        val firstSelectedBookmarkDatabaseId = selectedBookmarkIdsLongArray[0].toInt()
 
         // Update the move bookmark up menu item.
-        if (selectedBookmarkDatabaseId == firstBookmarkDatabaseId) {  // The selected bookmark is in the first position.
-            // Disable the move bookmark up menu item.
+        if (firstSelectedBookmarkDatabaseId == firstBookmarkDatabaseId) {  // The selected bookmark is in the first position.
+            // Disable the menu item.
             moveBookmarkUpMenuItem.isEnabled = false
 
             //  Set the icon.
             moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_disabled)
         } else {  // The selected bookmark is not in the first position.
-            // Enable the move bookmark up menu item.
+            // Enable the menu item.
             moveBookmarkUpMenuItem.isEnabled = true
 
             // Set the icon according to the theme.
@@ -1093,18 +1257,81 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         }
 
         // Update the move bookmark down menu item.
-        if (selectedBookmarkDatabaseId == lastBookmarkDatabaseId) {  // The selected bookmark is in the last position.
-            // Disable the move bookmark down menu item.
+        if (firstSelectedBookmarkDatabaseId == lastBookmarkDatabaseId) {  // The selected bookmark is in the last position.
+            // Disable the menu item.
             moveBookmarkDownMenuItem.isEnabled = false
 
             // Set the icon.
             moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_disabled)
         } else {  // The selected bookmark is not in the last position.
-            // Enable the move bookmark down menu item.
+            // Enable the menu item.
             moveBookmarkDownMenuItem.isEnabled = true
 
             // Set the icon.
             moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled)
+        }
+
+        // Create a list of selected bookmark positions.
+        val selectedBookmarkPositionsList = mutableListOf<Int>()
+
+        // Get the array of checked bookmark positions.
+        val checkedBookmarkPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
+
+        // Get the checked bookmarks positions sparse boolean array size.
+        val checkedBookmarkPositionsSparseBooleanArraySize = checkedBookmarkPositionsSparseBooleanArray.size()
+
+        // Get the position of the bookmarks that are selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
+        for (i in 0 until checkedBookmarkPositionsSparseBooleanArraySize) {
+            // Check to see if the value for the bookmark is true, meaning it is currently selected.
+            if (checkedBookmarkPositionsSparseBooleanArray.valueAt(i)) {
+                // Add the selected bookmarks positions to the list.
+                selectedBookmarkPositionsList.add(checkedBookmarkPositionsSparseBooleanArray.keyAt(i))
+            }
+        }
+
+        // Get the selected bookmark positions list size.
+        val selectedBookmarkPositionsListSize = selectedBookmarkPositionsList.size
+
+        // Create a contiguous selected bookmarks tracker.
+        var selectedBookmarksAreContiguous = true
+
+        for (i in 0 until selectedBookmarkPositionsListSize) {
+            // Check all the items after the first one.
+            if (i > 0) {
+                // Mark the list as not contiguous if any of the bookmark positions jump by more than 1.
+                if (selectedBookmarkPositionsList.elementAt(i) - selectedBookmarkPositionsList.elementAt(i - 1) != 1)
+                    selectedBookmarksAreContiguous = false
+            }
+        }
+
+        // Update the move to top menu item.
+        if (selectedBookmarkIdsLongArray.contains(firstBookmarkDatabaseId.toLong()) && selectedBookmarksAreContiguous) {  // The selected bookmarks contains the first bookmark and they are contiguous.
+            // Disable the menu item.
+            moveToTopMenuItem.isEnabled = false
+
+            // Set the icon.
+            moveToTopMenuItem.setIcon(R.drawable.move_to_top_disabled)
+        } else {  // The selected bookmarks do not contain the first bookmark.
+            // Enable the menu item.
+            moveToTopMenuItem.isEnabled = true
+
+            // Set the icon.
+            moveToTopMenuItem.setIcon(R.drawable.move_to_top_enabled)
+        }
+
+        // Update the move to bottom menu item.
+        if (selectedBookmarkIdsLongArray.contains(lastBookmarkDatabaseId.toLong()) && selectedBookmarksAreContiguous) {  // The selected bookmarks contains the last bookmark and they are contiguous.
+            // Disable the menu item.
+            moveToBottomMenuItem.isEnabled = false
+
+            // Set the icon.
+            moveToBottomMenuItem.setIcon(R.drawable.move_to_bottom_disabled)
+        } else {  // The selected bookmarks do not contain the last bookmark.
+            // Enable the menu item.
+            moveToBottomMenuItem.isEnabled = true
+
+            // Set the icon.
+            moveToBottomMenuItem.setIcon(R.drawable.move_to_bottom_enabled)
         }
     }
 

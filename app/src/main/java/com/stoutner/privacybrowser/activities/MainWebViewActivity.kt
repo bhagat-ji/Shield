@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
@@ -4562,13 +4562,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             navigationScrollToBottomMenuItem.title = getString(R.string.scroll_to_bottom)
 
                             // Set the icon.
-                            navigationScrollToBottomMenuItem.icon = AppCompatResources.getDrawable(applicationContext, R.drawable.move_down_enabled)
+                            navigationScrollToBottomMenuItem.icon = AppCompatResources.getDrawable(applicationContext, R.drawable.move_to_bottom_enabled)
                         } else {  // The WebView is not scrolled to the top.
                             // Set the title.
                             navigationScrollToBottomMenuItem.title = getString(R.string.scroll_to_top)
 
                             // Set the icon.
-                            navigationScrollToBottomMenuItem.icon = AppCompatResources.getDrawable(applicationContext, R.drawable.move_up_enabled)
+                            navigationScrollToBottomMenuItem.icon = AppCompatResources.getDrawable(applicationContext, R.drawable.move_to_top_enabled)
                         }
 
                         // Display the number of blocked requests.

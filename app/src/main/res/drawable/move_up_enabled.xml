@@ -1,13 +1,13 @@
-<!-- This file comes from the Android Material icon set, where it is called `vertical_align_top`.  It is released under the Apache License 2.0 <https://fonts.google.com/icons>. -->
+<!-- This file comes from the Android Material icon set, where it is called `arrow_upward_rounded_fill0_weight400_grade0_24px`.  It is released under the Apache License 2.0 <https://fonts.google.com/icons>. -->
 
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:height="24dp"
     android:width="24dp"
-    android:viewportHeight="24"
-    android:viewportWidth="24" >
+    android:viewportHeight="960"
+    android:viewportWidth="960" >
 
     <path
         android:fillColor="@color/icon"
-        android:pathData="M8,11h3v10h2V11h3l-4,-4 -4,4zM4,3v2h16V3H4z"/>
+        android:pathData="M440,313 L244,509q-12,12 -28,11.5T188,508q-11,-12 -11.5,-28t11.5,-28l264,-264q6,-6 13,-8.5t15,-2.5q8,0 15,2.5t13,8.5l264,264q11,11 11,27.5T772,508q-12,12 -28.5,12T715,508L520,313v447q0,17 -11.5,28.5T480,800q-17,0 -28.5,-11.5T440,760v-447Z" />
 </vector>

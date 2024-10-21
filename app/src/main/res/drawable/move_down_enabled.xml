@@ -1,13 +1,13 @@
-<!-- This file comes from the Android Material icon set, where it is called `vertical_align_bottom`.  It is released under the Apache License 2.0 <https://fonts.google.com/icons>. -->
+<!-- This file comes from the Android Material icon set, where it is called `arrow_downward_rounded_fill0_weight400_grade0_24px`.  It is released under the Apache License 2.0 <https://fonts.google.com/icons>. -->
 
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:height="24dp"
     android:width="24dp"
-    android:viewportHeight="24"
-    android:viewportWidth="24" >
+    android:viewportHeight="960"
+    android:viewportWidth="960" >
 
     <path
         android:fillColor="@color/icon"
-        android:pathData="M16,13h-3V3h-2v10H8l4,4 4,-4zM4,19v2h16v-2H4z"/>
+        android:pathData="M440,647v-447q0,-17 11.5,-28.5T480,160q17,0 28.5,11.5T520,200v447l196,-196q12,-12 28,-11.5t28,12.5q11,12 11.5,28T772,508L508,772q-6,6 -13,8.5t-15,2.5q-8,0 -15,-2.5t-13,-8.5L188,508q-11,-11 -11,-27.5t11,-28.5q12,-12 28.5,-12t28.5,12l195,195Z" />
 </vector>

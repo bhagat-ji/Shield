@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <!--
-  Copyright 2020,2022 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  It is a modified version of `vertical_align_top`, which is part of the Android Material icon set and is released under the Apache License 2.0.
+  It is a modified version of `arrow_upward_rounded_fill0_weight400_grade0_24px`, which is part of the Android Material icon set and is released under the Apache License 2.0 <https://fonts.google.com/icons>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,13 +18,13 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
+    viewBox="0 -960 960 960"
     id="icon" >
 
     <path
-        d="M8 11h3v10h2V11h3l-4-4-4 4zM4 3v2h16V3H4z" />
+        d="M440-647 244-451q-12 12-28 11.5T188-452q-11-12-11.5-28t11.5-28l264-264q6-6 13-8.5t15-2.5q8 0 15 2.5t13 8.5l264 264q11 11 11 27.5T772-452q-12 12-28.5 12T715-452L520-647v447q0 17-11.5 28.5T480-160q-17 0-28.5-11.5T440-200v-447Z" />
 </svg>

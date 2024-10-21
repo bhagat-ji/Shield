@@ -22,7 +22,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Activities. -->
@@ -183,6 +183,7 @@
     <string name="open_image_in_new_tab">Grafik in neuem Tab öffnen</string>
     <string name="share_image">Bild teilen</string>
     <string name="copy_url">URL kopieren</string>
+    <string name="copy_text">Text kopieren</string>
     <string name="email_address">E-Mail-Adresse</string>
     <string name="copy_email_address">E-Mail-Adresse kopieren</string>
     <string name="write_email">E-Mail senden</string>

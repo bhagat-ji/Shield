@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 plugins {
@@ -82,7 +82,7 @@ android {
 
 dependencies {
     // Include the following AndroidX libraries.
-    implementation "androidx.activity:activity-ktx:1.9.2"
+    implementation "androidx.activity:activity-ktx:1.9.3"
     implementation 'androidx.arch.core:core-common:2.2.0'
     implementation 'androidx.arch.core:core-runtime:2.2.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
@@ -94,11 +94,11 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'androidx.webkit:webkit:1.12.0'
+    implementation 'androidx.webkit:webkit:1.12.1'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.20'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.13.0-alpha06'
+    implementation 'com.google.android.material:material:1.13.0-alpha07'
 }
