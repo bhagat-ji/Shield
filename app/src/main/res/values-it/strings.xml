@@ -5,7 +5,7 @@
 
   Translation 2017-2024 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <resources>
     <!-- Activities. -->
@@ -278,6 +278,8 @@
     <string name="selected">Selezionato:\u0020 %1$d</string>
     <string name="move_up">Sposta sopra</string>
     <string name="move_down">Sposta sotto</string>
+    <string name="move_to_top">Sposta in Alto</string>
+    <string name="move_to_bottom">Sposta in Basso</string>
     <string name="edit">Modifica</string>
     <string name="delete">Elimina</string>
     <string name="select_all">Seleziona tutto</string>

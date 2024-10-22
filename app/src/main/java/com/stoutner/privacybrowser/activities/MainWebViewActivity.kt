@@ -630,6 +630,22 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             urlRelativeLayout = findViewById(R.id.url_relativelayout)
             urlEditText = findViewById(R.id.url_edittext)
 
+            // Store the URL when it is changed.  This enables the restoring of partially-typed URLs when tabs change.
+            urlEditText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {
+                    // Do nothing.
+                }
+
+                override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
+                    // Do nothing.
+                }
+
+                override fun afterTextChanged(editable: Editable) {
+                    // Store the URL
+                    currentWebView?.currentUrl = editable.toString()
+                }
+            })
+
             // Initially disable the sliding drawers.  They will be enabled once the filter lists are loaded.
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
@@ -4411,7 +4427,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             override fun afterTextChanged(editable: Editable) {
                 // Search for the text in the WebView if it is not null.  Sometimes on resume after a period of non-use the WebView will be null.
-                currentWebView?.findAllAsync(findOnPageEditText.text.toString())
+                currentWebView?.findAllAsync(editable.toString())
             }
         })
 
@@ -6242,11 +6258,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             updatePrivacyIcons(true)
 
             // Get the current URL.
-            val urlString = currentWebView!!.url
+            val urlString = currentWebView!!.currentUrl
 
             // Update the URL edit text if not loading a new intent.  Otherwise, this will be handled by `onPageStarted()` (if called) and `onPageFinished()`.
             if (!loadingNewIntent) {  // A new intent is not being loaded.
-                if ((urlString == null) || (urlString == "about:blank")) {  // The WebView is blank.
+                if (urlString.isBlank()) {  // The WebView is blank.
                     // Display the hint in the URL edit text.
                     urlEditText.text = null
 
