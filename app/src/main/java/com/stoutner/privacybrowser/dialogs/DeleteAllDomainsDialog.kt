@@ -1,7 +1,7 @@
 /*
- * Copyright 2018-2023 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
  * Privacy Browser Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 package com.stoutner.privacybrowser.dialogs
 
 import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.WindowManager
 
@@ -29,22 +31,44 @@ import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 
-class AboutViewHeadersDialog : DialogFragment() {
+class DeleteAllDomainsDialog : DialogFragment() {
+    // Declare the class variables
+    private lateinit var deleteAllDomainSettingsListener: DeleteAllDomainSettingsListener
+
+    // The public interface is used to send information back to the parent activity.
+    interface DeleteAllDomainSettingsListener {
+        fun deleteAllDomainSettings()
+    }
+
+    override fun onAttach(context: Context) {
+        // Run the default commands.
+        super.onAttach(context)
+
+        // Get a handle for the delete all domain settings listener from the launching context.
+        deleteAllDomainSettingsListener = context as DeleteAllDomainSettingsListener
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use a builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
 
         // Set the icon according to the theme.
-        dialogBuilder.setIcon(R.drawable.about_blue)
+        dialogBuilder.setIcon(R.drawable.delete)
 
         // Set the title.
-        dialogBuilder.setTitle(R.string.about_view_headers)
+        dialogBuilder.setTitle(R.string.delete_all)
 
         // Set the text.
-        dialogBuilder.setMessage(R.string.about_view_headers_message)
+        dialogBuilder.setMessage(R.string.delete_all_domain_settings)
 
-        // Set the close button listener.  Using `null` as the listener closes the dialog without doing anything else.
-        dialogBuilder.setNegativeButton(R.string.close, null)
+        // Set the negative button.  Using `null` as the listener closes the dialog without doing anything else.
+        dialogBuilder.setNegativeButton(R.string.cancel, null)
+
+        // Set the positive button.
+        dialogBuilder.setPositiveButton(R.string.delete, { _: DialogInterface, _: Int ->
+            // Delete all the domain settings.
+            deleteAllDomainSettingsListener.deleteAllDomainSettings()
+        })
 
         // Create an alert dialog from the alert dialog builder.
         val alertDialog = dialogBuilder.create()

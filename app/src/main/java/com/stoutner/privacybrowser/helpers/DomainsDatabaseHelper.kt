@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.helpers
@@ -530,6 +530,20 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
 
         // Close the database handle.
         domainsDatabase.close()
+    }
+
+    fun deleteAllDomains() : Int {
+        // Get a writable database handle.
+        val domainsDatabase = this.writableDatabase
+
+        // Delete the row for the specified database ID.
+        val rowsDeleted = domainsDatabase.delete(DOMAINS_TABLE, "", null)
+
+        // Close the database handle.
+        domainsDatabase.close()
+
+        // Return the delete status.
+        return rowsDeleted
     }
 
     fun deleteDomain(databaseId: Int) : Int {

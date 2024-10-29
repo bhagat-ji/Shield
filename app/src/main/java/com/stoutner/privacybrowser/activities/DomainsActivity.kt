@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
@@ -55,7 +55,7 @@ import com.google.android.material.snackbar.Snackbar
 
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.dialogs.AddDomainDialog
-import com.stoutner.privacybrowser.dialogs.AddDomainDialog.AddDomainListener
+import com.stoutner.privacybrowser.dialogs.DeleteAllDomainsDialog
 import com.stoutner.privacybrowser.fragments.DomainSettingsFragment
 import com.stoutner.privacybrowser.fragments.DomainsListFragment
 import com.stoutner.privacybrowser.helpers.DOMAIN_NAME
@@ -82,11 +82,12 @@ private const val DOMAIN_SETTINGS_DISPLAYED = "domain_settings_displayed"
 private const val DOMAIN_SETTINGS_SCROLL_Y = "domain_settings_scroll_y"
 private const val LISTVIEW_POSITION = "listview_position"
 
-class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragment.DismissSnackbarInterface, DomainsListFragment.SaveDomainSettingsInterface {
+class DomainsActivity : AppCompatActivity(), AddDomainDialog.AddDomainListener, DeleteAllDomainsDialog.DeleteAllDomainSettingsListener, DomainsListFragment.DismissSnackbarInterface,
+    DomainsListFragment.SaveDomainSettingsInterface {
+
     companion object {
         // Define the public variables.
         var currentDomainDatabaseId = 0  // Used in `DomainsListFragment`.
-        var deleteMenuItemEnabled = true
         var dismissingSnackbar = false  // Used in `DomainsListFragment`.
         var domainsListViewPosition = 0  // Used in `DomainsListFragment`.
         var sslEndDateLong: Long = 0  // Used in `DomainsSettingsFragment`.
@@ -119,6 +120,8 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
     private var closeActivityAfterDismissingSnackbar = false
     private var closeOnBack = false
     private var deletedDomainPosition = 0
+    private var deleteMenuItemEnabled = true
+    private var deleteAllMenuItemEnabled = true
     private var domainSettingsDatabaseIdBeforeRestart = 0
     private var domainSettingsDisplayedBeforeRestart = false
     private var domainSettingsScrollY = 0
@@ -274,22 +277,35 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                 // Inflate the menu.
                 menuInflater.inflate(R.menu.domains_options_menu, menu)
 
-                // Get a handle for the delete menu item.
+                // Get a handle for the menu items.
                 val deleteMenuItem = menu.findItem(R.id.delete_domain)
+                val deleteAllMenuItem = menu.findItem(R.id.delete_all)
 
                 // Get the domain settings fragment.
                 val domainSettingsFragment = supportFragmentManager.findFragmentByTag(DOMAIN_SETTINGS_FRAGMENT_TAG)
 
                 // Update the visibility of the delete menu item.
-                if (twoPanedMode)  // The device is in two-paned mode and a domain is selected.
+                if (twoPanedMode) {  // The device is in two-paned mode.
+                    // Show both menu items.
                     deleteMenuItem.isVisible = true
-                else if ((domainSettingsFragment != null) && domainSettingsFragment.isVisible)  // The device is in single-paned mode and the domain settings fragment is visible.
+                    deleteAllMenuItem.isVisible = true
+                } else if ((domainSettingsFragment != null) && domainSettingsFragment.isVisible) {  // The device is in single-paned mode and the domain settings fragment is visible.
+                    // Show the delete menu item.
                     deleteMenuItem.isVisible = true
-                else  // The device is in two-paned mode but no domain is selected (like after deleting a domain) or the device is in single-paned mode and the domains list is visible.
+
+                    // Hide the delete all menu item.
+                    deleteAllMenuItem.isVisible = false
+                } else {  // The device is in single-paned mode and the domains list is visible.
+                    // Hide the delete menu item.
                     deleteMenuItem.isVisible = false
+
+                    // Show the delete all menu item.
+                    deleteAllMenuItem.isVisible = true
+                }
 
                 // Update the status of the delete menu item.
                 deleteMenuItem.isEnabled = deleteMenuItemEnabled
+                deleteAllMenuItem.isEnabled = deleteAllMenuItemEnabled
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -371,9 +387,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                                 // Store the deleted domain position, which is needed if undo is selected in the snackbar.
                                 deletedDomainPosition = domainsListView!!.checkedItemPosition
 
-                                // Disable the delete menu item.
-                                deleteMenuItemEnabled = false
-
                                 // Get a handle for the domain settings fragment.
                                 val domainSettingsFragment = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container)!!
 
@@ -385,10 +398,6 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
 
                                 // Disable the delete menu item.
                                 deleteMenuItemEnabled = false
-
-                                // Invalidate the options menu.
-                                invalidateMenu()
-
                             } else {  // Single-paned mode.
                                 // Instantiate a new domains list fragment.
                                 val domainsListFragment = DomainsListFragment()
@@ -405,30 +414,20 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                             // Get a cursor that does not show the domain to be deleted.
                             val domainsPendingDeleteCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomainExcept(databaseIdToDelete)
 
-                            // Setup the domains pending delete cursor adapter.
-                            val domainsPendingDeleteCursorAdapter: CursorAdapter = object : CursorAdapter(applicationContext, domainsPendingDeleteCursor, false) {
-                                override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
-                                    // Inflate the individual item layout.
-                                    return layoutInflater.inflate(R.layout.domain_name_linearlayout, parent, false)
-                                }
-
-                                override fun bindView(view: View, context: Context, cursor: Cursor) {
-                                    // Get the domain name string.
-                                    val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DOMAIN_NAME))
-
-                                    // Get a handle for the domain name text view.
-                                    val domainNameTextView = view.findViewById<TextView>(R.id.domain_name_textview)
-
-                                    // Display the domain name.
-                                    domainNameTextView.text = domainNameString
-                                }
-                            }
+                            // Populate the domains pending delete cursor adapter.
+                            val domainsPendingDeleteCursorAdapter = populateDomainsCursorAdapter(domainsPendingDeleteCursor)
 
                             // Update the handle for the current domains list view.
                             domainsListView = findViewById(R.id.domains_listview)
 
                             // Update the list view.
                             domainsListView!!.adapter = domainsPendingDeleteCursorAdapter
+
+                            // Disable the delete all menu item if no domains are displayed.
+                            deleteAllMenuItemEnabled = (domainsPendingDeleteCursor.count > 0)
+
+                            // Invalidate the options menu.
+                            invalidateMenu()
 
                             // Display a snackbar.
                             undoDeleteSnackbar = Snackbar.make(domainsListView!!, R.string.domain_deleted, Snackbar.LENGTH_LONG)
@@ -440,7 +439,7 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                                             // Create an arguments bundle.
                                             val argumentsBundle = Bundle()
 
-                                            // Store the domains settings in the arguments bundle.
+                                            // Store the domain settings in the arguments bundle.
                                             argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseIdToDelete)
                                             argumentsBundle.putInt(DomainSettingsFragment.SCROLL_Y, domainSettingsScrollY)
 
@@ -451,28 +450,12 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                                             domainSettingsFragment.arguments = argumentsBundle
 
                                             // Display the correct fragments.
-                                            if (twoPanedMode) {  // The device in in two-paned mode.
+                                            if (twoPanedMode) {  // The device is in two-paned mode.
                                                 // Get a cursor with the current contents of the domains database.
                                                 val undoDeleteDomainsCursor = domainsDatabaseHelper.domainNameCursorOrderedByDomain
 
-                                                // Setup the domains cursor adapter.
-                                                val undoDeleteDomainsCursorAdapter: CursorAdapter = object : CursorAdapter(applicationContext, undoDeleteDomainsCursor, false) {
-                                                    override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
-                                                        // Inflate the individual item layout.
-                                                        return layoutInflater.inflate(R.layout.domain_name_linearlayout, parent, false)
-                                                    }
-
-                                                    override fun bindView(view: View, context: Context, cursor: Cursor) {
-                                                        /// Get the domain name string.
-                                                        val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DOMAIN_NAME))
-
-                                                        // Get a handle for the domain name text view.
-                                                        val domainNameTextView = view.findViewById<TextView>(R.id.domain_name_textview)
-
-                                                        // Display the domain name.
-                                                        domainNameTextView.text = domainNameString
-                                                    }
-                                                }
+                                                // Populate the undo delete domains cursor adapter.
+                                                val undoDeleteDomainsCursorAdapter = populateDomainsCursorAdapter(undoDeleteDomainsCursor)
 
                                                 // Update the domains list view.
                                                 domainsListView!!.adapter = undoDeleteDomainsCursorAdapter
@@ -480,14 +463,15 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                                                 // Select the previously deleted domain in the list view.
                                                 domainsListView!!.setItemChecked(deletedDomainPosition, true)
 
-                                                // Enable the delete menu item.
+                                                // Enable the menu items.
                                                 deleteMenuItemEnabled = true
+                                                deleteAllMenuItemEnabled = true
 
                                                 // Display the domain settings fragment.
                                                 supportFragmentManager.commitNow {
                                                     replace(R.id.domain_settings_fragment_container, domainSettingsFragment, DOMAIN_SETTINGS_FRAGMENT_TAG)
                                                 }
-                                            } else {  // The device in in one-paned mode.
+                                            } else {  // The device is in one-paned mode.
                                                 // Hide the add domain floating action button.
                                                 addDomainFAB.hide()
 
@@ -528,6 +512,17 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                             // Show the Snackbar.
                             undoDeleteSnackbar!!.show()
                         }
+                    }
+
+                    R.id.delete_all -> {  // Delete all.
+                        // Instantiate the delete all domains dialog fragment.
+                        val deleteAllDomainsDialogFragment = DeleteAllDomainsDialog()
+
+                        // Show the delete all domains alert dialog.
+                        deleteAllDomainsDialogFragment.show(supportFragmentManager, getString(R.string.delete_all))
+
+                        // Consume the event.
+                        return true
                     }
                 }
 
@@ -735,6 +730,130 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
         }
     }
 
+    override fun deleteAllDomainSettings() {
+        // Reset close-on-back, which otherwise can cause errors if the system attempts to save settings for a domain that no longer exists.
+        closeOnBack = false
+
+        // Store a copy of the currently selected domain database ID because it could change while the snackbar is displayed.
+        val currentlySelectedDatabaseId = currentDomainDatabaseId
+
+        // Store the domains list view scroll position.
+        val domainsListViewFirstVisiblePosition = domainsListView!!.firstVisiblePosition
+
+        // Update the fragments and menu items.
+        if (twoPanedMode) {  // Two-paned mode.
+            // Store the deleted domain position, which is needed if undo is selected in the snackbar.
+            deletedDomainPosition = domainsListView!!.checkedItemPosition
+
+            // Get a handle for the domain settings fragment.
+            val domainSettingsFragment = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container)!!
+
+            // Get a handle for the domain settings fragment view.
+            val domainSettingsFragmentView = domainSettingsFragment.requireView()
+
+            // Hide the domain settings fragment.
+            domainSettingsFragmentView.visibility = View.INVISIBLE
+
+            // Disable the delete menu item.
+            deleteMenuItemEnabled = false
+        }
+
+        // Disable the delete all menu item.
+        deleteAllMenuItemEnabled = false
+
+        // Invalidate the options menu.
+        invalidateMenu()
+
+        // Create an empty cursor
+        val emptyCursor = domainsDatabaseHelper.getCursorForId(-1)
+
+        // Populate the empty cursor adapter.
+        val emptyCursorAdapter = populateDomainsCursorAdapter(emptyCursor)
+
+        // Update the handle for the current domains list view.
+        domainsListView = findViewById(R.id.domains_listview)
+
+        // Update the list view.
+        domainsListView!!.adapter = emptyCursorAdapter
+
+        // Get a handle for the activity (used in an inner class below).
+        val activity: Activity = this
+
+        // Display a snackbar.
+        undoDeleteSnackbar = Snackbar.make(domainsListView!!, R.string.all_domains_deleted, Snackbar.LENGTH_LONG)
+            .setAction(R.string.undo) {}  // Do nothing because everything will be handled by `onDismissed()` below.
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(snackbar: Snackbar, event: Int) {
+                    //Run commands based on the event.
+                    if (event == DISMISS_EVENT_ACTION) {  // The user pushed the `Undo` button.
+                        // Get a cursor with the current contents of the domains database.
+                        val undoDeleteDomainsCursor = domainsDatabaseHelper.domainNameCursorOrderedByDomain
+
+                        // Populate the undo delete domains cursor adapter.
+                        val undoDeleteDomainsCursorAdapter = populateDomainsCursorAdapter(undoDeleteDomainsCursor)
+
+                        // Update the domains list view.
+                        domainsListView!!.adapter = undoDeleteDomainsCursorAdapter
+
+                        // Redisplay the domain settings in two-paned mode.
+                        if (twoPanedMode) {
+                            // Create an arguments bundle.
+                            val argumentsBundle = Bundle()
+
+                            // Store the domain settings in the arguments bundle.
+                            argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentlySelectedDatabaseId)
+                            argumentsBundle.putInt(DomainSettingsFragment.SCROLL_Y, domainSettingsScrollY)
+
+                            // Instantiate a new domain settings fragment.
+                            val domainSettingsFragment = DomainSettingsFragment()
+
+                            // Add the arguments bundle to the domain settings fragment.
+                            domainSettingsFragment.arguments = argumentsBundle
+
+                            // Select the previously selected domain in the list view.
+                            domainsListView!!.setItemChecked(deletedDomainPosition, true)
+
+                            // Display the domain settings fragment.
+                            supportFragmentManager.commitNow {
+                                replace(R.id.domain_settings_fragment_container, domainSettingsFragment, DOMAIN_SETTINGS_FRAGMENT_TAG)
+                            }
+
+                            // Enable the delete menu item.
+                            deleteMenuItemEnabled = true
+                        }
+
+                        // Restore the domains list view scroll position.
+                        domainsListView!!.setSelection(domainsListViewFirstVisiblePosition)
+
+                        // Enable the delete all menu item.
+                        deleteAllMenuItemEnabled = true
+
+                        // Update the options menu.
+                        invalidateMenu()
+                    } else {  // The snackbar was dismissed without the undo button being pushed.
+                        // Delete all the domains.
+                        val rowsDeleted = domainsDatabaseHelper.deleteAllDomains()
+
+                        // Reset the dismissing snackbar option.
+                        // The rows deleted should always be greater than 0, but in all cases they should be greater than -1.
+                        // This has the effect of tricking the compiler into waiting until after the delete finishes to reenable the delete menu item,
+                        // because the compiler (probably) can't tell that the response will never be less than -1, so it doesn't compile out the delay.
+                        if (rowsDeleted > -1) {
+                            // Reset the dismissing snackbar tracker.
+                            dismissingSnackbar = false
+                        }
+
+                        // Close the activity if back was pressed.
+                        if (closeActivityAfterDismissingSnackbar)
+                            NavUtils.navigateUpFromSameTask(activity)
+                    }
+                }
+            })
+
+        // Show the Snackbar.
+        undoDeleteSnackbar!!.show()
+    }
+
     override fun saveDomainSettings(view: View) {
         // Get handles for the domain settings.
         val domainNameEditText = view.findViewById<EditText>(R.id.domain_settings_name_edittext)
@@ -821,11 +940,8 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
             domainsDatabaseHelper.updatePinnedIpAddresses(currentDomainDatabaseId, currentIpAddresses!!)
     }
 
-    private fun populateDomainsListView(highlightedDomainDatabaseId: Int, domainsListViewPosition: Int) {
-        // Get a cursor with the current contents of the domains database.
-        val domainsCursor = domainsDatabaseHelper.domainNameCursorOrderedByDomain
-
-        // Setup the domains cursor adapter.
+    private fun populateDomainsCursorAdapter(domainsCursor: Cursor) :CursorAdapter {
+        // Populate the domains cursor adapter.
         val domainsCursorAdapter: CursorAdapter = object : CursorAdapter(applicationContext, domainsCursor, false) {
             override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
                 // Inflate the individual item layout.
@@ -833,16 +949,27 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
             }
 
             override fun bindView(view: View, context: Context, cursor: Cursor) {
+                /// Get the domain name string.
+                val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DOMAIN_NAME))
+
                 // Get a handle for the domain name text view.
                 val domainNameTextView = view.findViewById<TextView>(R.id.domain_name_textview)
 
-                // Get the domain name string.
-                val domainNameString = cursor.getString(cursor.getColumnIndexOrThrow(DOMAIN_NAME))
-
-                // Set the domain name.
+                // Display the domain name.
                 domainNameTextView.text = domainNameString
             }
         }
+
+        // Return the domains cursor adapter.
+        return domainsCursorAdapter
+    }
+
+    private fun populateDomainsListView(highlightedDomainDatabaseId: Int, domainsListViewPosition: Int) {
+        // Get a cursor with the current contents of the domains database.
+        val domainsCursor = domainsDatabaseHelper.domainNameCursorOrderedByDomain
+
+        // Populate the domains cursor adapter.
+        val domainsCursorAdapter = populateDomainsCursorAdapter(domainsCursor)
 
         // get a handle for the current domains listview.
         domainsListView = findViewById(R.id.domains_listview)
@@ -898,18 +1025,20 @@ class DomainsActivity : AppCompatActivity(), AddDomainListener, DomainsListFragm
                 replace(R.id.domain_settings_fragment_container, domainSettingsFragment, DOMAIN_SETTINGS_FRAGMENT_TAG)
             }
 
-            // Enable the delete options menu item.
+            // Enable the menu items.
             deleteMenuItemEnabled = true
-
-            // Update the options menu.
-            invalidateMenu()
+            deleteAllMenuItemEnabled = true
         } else if (twoPanedMode) {  // Two-paned mode is enabled but there are no domains.
-            // Disable the delete menu item.
+            // Disable the menu items.
             deleteMenuItemEnabled = false
-
-            // Update the options menu.
-            invalidateMenu()
+            deleteAllMenuItemEnabled = false
+        } else {  // Single-paned mode is enabled and the domains list is displayed.
+            // Set the delete all menu item status according to the number of domains.
+            deleteAllMenuItemEnabled = (domainsCursor.count > 0)
         }
+
+        // Update the options menu.
+        invalidateMenu()
     }
 
     override fun dismissSnackbar() {

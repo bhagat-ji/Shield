@@ -3,7 +3,7 @@
 <!--
   Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
   Privacy Browser Android is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <resources>
     <!-- Activities. -->
@@ -275,6 +275,8 @@
     <string name="selected">выбраны:\u0020 %1$d</string>
     <string name="move_up">Вверх</string>
     <string name="move_down">Вниз</string>
+    <string name="move_to_top">Переместить вверх</string>
+    <string name="move_to_bottom">Переместить вниз</string>
     <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="select_all">Выбрать все</string>
