@@ -18,7 +18,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
 <resources>
@@ -278,6 +278,8 @@
     <string name="selected">Selectionnés : %1$d</string>
     <string name="move_up">Monter</string>
     <string name="move_down">Descendre</string>
+    <string name="move_to_top">Déplacer en haut</string>
+    <string name="move_to_bottom">Déplacer en bas</string>
     <string name="edit">Modifier</string>
     <string name="delete">Supprimer</string>
     <string name="select_all">Tout sélectionner</string>

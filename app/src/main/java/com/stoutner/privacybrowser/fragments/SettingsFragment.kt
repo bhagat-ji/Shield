@@ -1,20 +1,20 @@
-/*
- * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.fragments
@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 
 import com.stoutner.privacybrowser.R
@@ -180,6 +181,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val fanboySocialBlockingEnabled = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
         val fullScreenBrowsingMode = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false)
         val clearEverything = sharedPreferences.getBoolean(getString(R.string.clear_everything_key), true)
+
+        // Remove the display under cutouts preferences if the API is >= 35 as Google broke this functionality.  <https://redmine.stoutner.com/issues/1238>
+        if (Build.VERSION.SDK_INT >= 35) {
+            // Get a handle for the full screen category.
+            val fullScreenCategory = findPreference<PreferenceCategory>(getString(R.string.full_screen_category_key))!!
+
+            // Remove the display under cutouts preferences.
+            fullScreenCategory.removePreference(displayUnderCutoutsPreference)
+        }
 
         // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
         fanboySocialBlockingListPreference.isEnabled = !fanboyAnnoyanceListEnabled

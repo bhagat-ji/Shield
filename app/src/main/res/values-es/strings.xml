@@ -350,8 +350,11 @@
     <string name="add_domain">Añadir dominio</string>
     <string name="domain_name_already_exists">El nombre de dominio ya existe</string>
     <string name="add">Añadir</string>
+    <string name="delete_all">Borrar todo</string>
+    <string name="delete_all_domain_settings">¿Borrar todas las configuraciones de dominio?</string>
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_deleted">Dominio borrado</string>
+    <string name="all_domains_deleted">Todos los dominios eliminados</string>
     <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
     <string-array name="javascript_array">
         <item>Por defecto del sistema</item>

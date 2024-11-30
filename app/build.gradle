@@ -1,20 +1,20 @@
-/*
- * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 plugins {
@@ -23,11 +23,11 @@ plugins {
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 26
-        targetSdk 34
+        targetSdk 35
         versionCode 75
         versionName "3.18.1"
         resourceConfigurations += ['en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN']
@@ -88,9 +88,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
-    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.core:core-ktx:1.15.0'
     implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
@@ -100,5 +100,5 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.20'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.13.0-alpha07'
+    implementation 'com.google.android.material:material:1.13.0-alpha08'
 }

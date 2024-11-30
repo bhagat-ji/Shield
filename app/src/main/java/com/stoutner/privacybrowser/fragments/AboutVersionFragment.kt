@@ -1,20 +1,20 @@
-/*
- * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.fragments
@@ -397,14 +397,8 @@ class AboutVersionFragment : Fragment() {
         val webViewPackageName = webViewPackageInfo.packageName
         val webViewVersion = webViewPackageInfo.versionName
 
-        // Get the Orbot version name if Orbot is installed.
-        val orbot: String = try {
-            // Store the version name.
-            requireContext().packageManager.getPackageInfo("org.torproject.android", 0).versionName
-        } catch (exception: PackageManager.NameNotFoundException) {  // Orbot is not installed.
-            // Store an empty string.
-            ""
-        }
+        // Get the Orbot version name if Orbot is installed.  If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
+        val orbot: String = requireContext().packageManager.getPackageInfo("org.torproject.android", 0)?.versionName ?: ""
 
         // Get the I2P version name if I2P is installed.
         val i2p: String = try {
@@ -420,14 +414,8 @@ class AboutVersionFragment : Fragment() {
             }
         }
 
-        // Get the OpenKeychain version name if it is installed.
-        val openKeychain: String = try {
-            // Store the version name.
-            requireContext().packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName
-        } catch (exception: PackageManager.NameNotFoundException) {  // OpenKeychain is not installed.
-            // Store an empty string.
-            ""
-        }
+        // Get the OpenKeychain version name if it is installed.  If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
+        val openKeychain: String = requireContext().packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0)?.versionName ?: ""
 
         // Create a spannable string builder for the hardware and software text views that need multiple colors of text.
         val brandStringBuilder = SpannableStringBuilder(brandLabel + brand)
@@ -568,8 +556,7 @@ class AboutVersionFragment : Fragment() {
             // Get the first package signature.  Suppress the lint warning about the need to be careful in implementing comparison of certificates for security purposes.
             // Once the minimum API >= 28, `GET_SIGNING_CERTIFICATES` can be used instead.  Once the minimum API >= 33, the newer `getPackageInfo()` may be used.
             @Suppress("DEPRECATION")
-            @SuppressLint("PackageManagerGetSignatures") val packageSignature = requireContext().packageManager.getPackageInfo(requireContext().packageName,PackageManager.GET_SIGNATURES)
-                .signatures[0]
+            @SuppressLint("PackageManagerGetSignatures") val packageSignature = requireContext().packageManager.getPackageInfo(requireContext().packageName,PackageManager.GET_SIGNATURES).signatures!![0]
 
             // Convert the signature to a byte array input stream.
             val certificateByteArrayInputStream: InputStream = ByteArrayInputStream(packageSignature.toByteArray())

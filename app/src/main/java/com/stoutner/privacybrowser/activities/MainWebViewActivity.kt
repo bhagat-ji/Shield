@@ -1,22 +1,22 @@
-/*
- * Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
@@ -369,6 +369,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var defaultUltraPrivacy = true
     private var defaultWideViewport = true
     private var displayAdditionalAppBarIcons = false
+    private var displayUnderCutouts = false
     private var displayingFullScreenVideo = false
     private var domainsDatabaseHelper: DomainsDatabaseHelper? = null
     private var downloadWithExternalApp = false
@@ -515,14 +516,19 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
         bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
         displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false)
-        val displayUnderCutouts = sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false)
 
-        // Display under cutouts if specified.  This must be done here as it doesn't appear to work correctly if handled after the app is fully initialized.
-        if (displayUnderCutouts) {
-            if (Build.VERSION.SDK_INT >= 30)
-                window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
-            else if (Build.VERSION.SDK_INT >= 28)
-                window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        // Displaying under cutouts currently only works on API < 35.  <https://redmine.stoutner.com/issues/1238>
+        if (Build.VERSION.SDK_INT < 35) {
+            // Get the display under cutouts preference.
+            displayUnderCutouts = sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false)
+
+            // Set the display under cutouts mode.  This must be done here as it doesn't appear to work correctly if handled after the app is fully initialized.
+            if (displayUnderCutouts) {
+                if (Build.VERSION.SDK_INT >= 30)
+                    window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                else if (Build.VERSION.SDK_INT >= 28)
+                    window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
         }
 
         // Get the entry values string arrays.
@@ -3610,13 +3616,21 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Set the default app bar and status bar backgrounds.
                 appBarLayout.setBackgroundColor(colorBackgroundInt)
-                window.statusBarColor = colorBackgroundInt
+
+                // Set the background color if the API < 35 (Android 15).  https://redmine.stoutner.com/issues/1169
+                @Suppress("DEPRECATION")
+                if (Build.VERSION.SDK_INT < 35)
+                    window.statusBarColor = colorBackgroundInt
             }
 
             ProxyHelper.TOR -> {
                 // Set the app bar and status bar backgrounds to indicate proxying is enabled.
                 appBarLayout.setBackgroundResource(R.color.blue_background)
-                window.statusBarColor = getColor(R.color.blue_background)
+
+                // Set the background color if the API < 35 (Android 15).  https://redmine.stoutner.com/issues/1169
+                @Suppress("DEPRECATION")
+                if (Build.VERSION.SDK_INT < 35)
+                    window.statusBarColor = getColor(R.color.blue_background)
 
                 // Check to see if Orbot is installed.
                 try {
@@ -3667,7 +3681,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             ProxyHelper.I2P -> {
                 // Set the app bar and status bar backgrounds to indicate proxying is enabled.
                 appBarLayout.setBackgroundResource(R.color.blue_background)
-                window.statusBarColor = getColor(R.color.blue_background)
+
+                // Set the background color if the API < 35 (Android 15).  https://redmine.stoutner.com/issues/1169
+                @Suppress("DEPRECATION")
+                if (Build.VERSION.SDK_INT < 35)
+                    window.statusBarColor = getColor(R.color.blue_background)
 
                 // Check to see if I2P is installed.
                 try {
@@ -3699,7 +3717,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             ProxyHelper.CUSTOM -> {
                 // Set the app bar and status bar backgrounds to indicate proxying is enabled.
                 appBarLayout.setBackgroundResource(R.color.blue_background)
-                window.statusBarColor = getColor(R.color.blue_background)
+
+                // Set the background color if the API < 35 (Android 15).  https://redmine.stoutner.com/issues/1169
+                @Suppress("DEPRECATION")
+                if (Build.VERSION.SDK_INT < 35)
+                    window.statusBarColor = getColor(R.color.blue_background)
             }
         }
 
@@ -4091,6 +4113,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Apply the appropriate full screen mode flags.
         if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+            // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
+            if (Build.VERSION.SDK_INT < 35) {
+                // Disable fits system windows if display under cutouts is enabled.
+                if (displayUnderCutouts)
+                    rootFrameLayout.fitsSystemWindows = false
+            }
+
             // Hide the app bar if specified.
             if (hideAppBar) {
                 // Hide the tab linear layout.
@@ -4111,6 +4140,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             @Suppress("DEPRECATION")
             rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         } else {  // Switch to normal viewing mode.
+            // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
+            if (Build.VERSION.SDK_INT < 35) {
+                // Enable fits system windows if display under cutouts is enabled.
+                if (displayUnderCutouts)
+                    rootFrameLayout.fitsSystemWindows = true
+            }
+
             // Remove the `SYSTEM_UI` flags from the root frame layout.  The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
             @Suppress("DEPRECATION")
             rootFrameLayout.systemUiVisibility = 0
@@ -4708,6 +4744,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Toggle the full screen browsing mode.
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
+                        // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
+                        if (Build.VERSION.SDK_INT < 35) {
+                            // Disable fits system windows if display under cutouts is enabled.
+                            if (displayUnderCutouts)
+                                rootFrameLayout.fitsSystemWindows = false
+                        }
+
                         // Hide the app bar if specified.
                         if (hideAppBar) {  // App bar hiding is enabled.
                             // Close the find on page bar if it is visible.
@@ -4764,6 +4807,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         @Suppress("DEPRECATION")
                         rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     } else {  // Switch to normal viewing mode.
+                        // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
+                        if (Build.VERSION.SDK_INT < 35) {
+                            // Enable fits system windows if display under cutouts is enabled.
+                            if (displayUnderCutouts)
+                                rootFrameLayout.fitsSystemWindows = true
+                        }
+
                         // Show the app bar if it was hidden.
                         if (hideAppBar) {
                             // Show the tab linear layout.
@@ -5033,6 +5083,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Enter full screen video.
             override fun onShowCustomView(video: View, callback: CustomViewCallback) {
+                // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
+                if (Build.VERSION.SDK_INT < 35) {
+                    // Disable fits system windows if display under cutouts is enabled.
+                    if (displayUnderCutouts)
+                        rootFrameLayout.fitsSystemWindows = false
+                }
+
                 // Set the full screen video flag.
                 displayingFullScreenVideo = true
 

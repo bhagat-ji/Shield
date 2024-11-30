@@ -1,26 +1,25 @@
-/*
- * Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2018-2024 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -236,12 +235,8 @@ class ImportExportActivity : AppCompatActivity() {
         // Display the home arrow on the support action bar.
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        // Find out if OpenKeychain is installed.
-        openKeychainInstalled = try {
-            packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName.isNotEmpty()
-        } catch (exception: PackageManager.NameNotFoundException) {
-            false
-        }
+        // Find out if OpenKeychain is installed.  If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is `false`.
+        openKeychainInstalled = packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName?.isNotEmpty() ?: false
 
         // Get handles for the views.
         scrollView = findViewById(R.id.scrollview)

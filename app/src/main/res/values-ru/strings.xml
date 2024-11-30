@@ -346,8 +346,11 @@
     <string name="add_domain">Добавление домена</string>
     <string name="domain_name_already_exists">Доменное имя уже существует</string>
     <string name="add">Добавить</string>
+    <string name="delete_all">Удалить все</string>
+    <string name="delete_all_domain_settings">Удалить все настройки домена?</string>
     <string name="domain_name">Имя домена</string>
     <string name="domain_deleted">Домен удален</string>
+    <string name="all_domains_deleted">Все домены удалены</string>
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. *.stoutner.com)</string>
     <string-array name="javascript_array">
         <item>По умолчанию</item>

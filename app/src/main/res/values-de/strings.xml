@@ -282,6 +282,8 @@
     <string name="selected">Ausgewählt:\u0020 %1$d</string>
     <string name="move_up">Nach oben verschieben</string>
     <string name="move_down">Nach unten verschieben</string>
+    <string name="move_to_top">Nach oben bewegen</string>
+    <string name="move_to_bottom">Nach unten bewegen</string>
     <string name="edit">Bearbeiten</string>
     <string name="delete">Löschen</string>
     <string name="select_all">Alle auswählen</string>
@@ -351,8 +353,11 @@
     <string name="add_domain">Domain hinzufügen</string>
     <string name="domain_name_already_exists">Domain existiert bereits</string>
     <string name="add">Hinzufügen</string>
+    <string name="delete_all">Alle löschen</string>
+    <string name="delete_all_domain_settings">Alle Domain-Einstellungen löschen?</string>
     <string name="domain_name">Domainname</string>
     <string name="domain_deleted">Domain gelöscht</string>
+    <string name="all_domains_deleted">Alle Domains gelöscht</string>
     <string name="domain_name_instructions">*. kann als Wildcard-Subdomain verwendet werden (z.B. *.stoutner.com)</string>
     <string-array name="javascript_array">
         <item>Systemeinstellung</item>
