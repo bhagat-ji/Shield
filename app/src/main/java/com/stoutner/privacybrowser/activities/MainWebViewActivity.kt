@@ -1186,23 +1186,29 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val privateDataDirectoryString = applicationInfo.dataDir
 
         // Get the storage directories.
-        val localStorageDirectory = File("$privateDataDirectoryString/app_webview/Local Storage/")
-        val indexedDBDirectory = File("$privateDataDirectoryString/app_webview/IndexedDB")
+        val localStorageDirectory = File("$privateDataDirectoryString/app_webview/Default/Local Storage/")
+        val sessionStorageDirectory = File("$privateDataDirectoryString/app_webview/Default/Session Storage/")
+        val indexedDBDirectory = File("$privateDataDirectoryString/app_webview/Default/IndexedDB")
 
         // Initialize the number of files counters.
         var localStorageDirectoryNumberOfFiles = 0
+        var sessionStorageDirectoryNumberOfFiles = 0
         var indexedDBDirectoryNumberOfFiles = 0
 
         // Get a count of the number of files in the Local Storage directory.  The list can be null, in which case a `0` is returned.
         if (localStorageDirectory.exists())
             localStorageDirectoryNumberOfFiles = (localStorageDirectory.list())?.size ?: 0
 
+        // Get a count of the number of files in the Local Storage directory.  The list can be null, in which case a `0` is returned.
+        if (sessionStorageDirectory.exists())
+            sessionStorageDirectoryNumberOfFiles = (sessionStorageDirectory.list())?.size ?: 0
+
         // Get a count of the number of files in the IndexedDB directory.  The list can be null, in which case a `0` is returned.
         if (indexedDBDirectory.exists())
             indexedDBDirectoryNumberOfFiles = (indexedDBDirectory.list())?.size ?: 0
 
         // Enable Clear DOM Storage if there is any.
-        optionsClearDomStorageMenuItem.isEnabled = localStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0
+        optionsClearDomStorageMenuItem.isEnabled = localStorageDirectoryNumberOfFiles > 0 || sessionStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0
 
         // Enable Clear Data if any of the submenu items are enabled.
         optionsClearDataMenuItem.isEnabled = (optionsClearCookiesMenuItem.isEnabled || optionsClearDomStorageMenuItem.isEnabled)
@@ -1474,11 +1480,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     .addCallback(object : Snackbar.Callback() {
                         override fun onDismissed(snackbar: Snackbar, event: Int) {
                             if (event != DISMISS_EVENT_ACTION) {  // The snackbar was dismissed without the undo button being pushed.
-                                // Get a handle for the web storage.
-                                val webStorage = WebStorage.getInstance()
-
-                                // Delete the DOM Storage.
-                                webStorage.deleteAllData()
+                                // Ask web storage to clear the DOM storage.
+                                WebStorage.getInstance().deleteAllData()
 
                                 // Initialize a handler to manually delete the DOM storage files and directories.
                                 val deleteDomStorageHandler = Handler(Looper.getMainLooper())
@@ -1494,20 +1497,26 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                                         val privateDataDirectoryString = applicationInfo.dataDir
 
                                         // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                                        val deleteLocalStorageProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Local Storage/"))
+                                        val deleteLocalStorageProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Local Storage/"))
+                                        val deleteSessionStorageProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Session Storage/"))
+                                        val deleteWebDataProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Web Data"))
+                                        val deleteWebDataJournalProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Web Data-journal"))
 
                                         // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                                        val deleteIndexProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/IndexedDB")
-                                        val deleteQuotaManagerProcess = runtime.exec("rm -f $privateDataDirectoryString/app_webview/QuotaManager")
-                                        val deleteQuotaManagerJournalProcess = runtime.exec("rm -f $privateDataDirectoryString/app_webview/QuotaManager-journal")
-                                        val deleteDatabasesProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/databases")
+                                        val deleteIndexProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/IndexedDB")
+                                        val deleteWebStorageProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/WebStorage")
+                                        val deleteDatabasesProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/databases")
+                                        val deleteBlobStorageProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/blob_storage")
 
                                         // Wait for the processes to finish.
                                         deleteLocalStorageProcess.waitFor()
+                                        deleteSessionStorageProcess.waitFor()
+                                        deleteWebDataProcess.waitFor()
+                                        deleteWebDataJournalProcess.waitFor()
                                         deleteIndexProcess.waitFor()
-                                        deleteQuotaManagerProcess.waitFor()
-                                        deleteQuotaManagerJournalProcess.waitFor()
+                                        deleteWebStorageProcess.waitFor()
                                         deleteDatabasesProcess.waitFor()
+                                        deleteBlobStorageProcess.waitFor()
                                     } catch (exception: Exception) {
                                         // Do nothing if an error is thrown.
                                     }
@@ -3818,20 +3827,26 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Manually delete the DOM storage files and directories, as web storage sometimes will not flush its changes to disk before system exit is run.
             try {
                 // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                val deleteLocalStorageProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Local Storage/"))
+                val deleteLocalStorageProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Local Storage/"))
+                val deleteSessionStorageProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Session Storage/"))
+                val deleteWebDataProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Web Data"))
+                val deleteWebDataJournalProcess = runtime.exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Web Data-journal"))
 
                 // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                val deleteIndexProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/IndexedDB")
-                val deleteQuotaManagerProcess = runtime.exec("rm -f $privateDataDirectoryString/app_webview/QuotaManager")
-                val deleteQuotaManagerJournalProcess = runtime.exec("rm -f $privateDataDirectoryString/app_webview/QuotaManager-journal")
-                val deleteDatabaseProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/databases")
+                val deleteIndexProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/IndexedDB")
+                val deleteWebStorageProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/WebStorage")
+                val deleteDatabasesProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/databases")
+                val deleteBlobStorageProcess = runtime.exec("rm -rf $privateDataDirectoryString/app_webview/Default/blob_storage")
 
                 // Wait until the processes have finished.
                 deleteLocalStorageProcess.waitFor()
+                deleteSessionStorageProcess.waitFor()
+                deleteWebDataProcess.waitFor()
+                deleteWebDataJournalProcess.waitFor()
                 deleteIndexProcess.waitFor()
-                deleteQuotaManagerProcess.waitFor()
-                deleteQuotaManagerJournalProcess.waitFor()
-                deleteDatabaseProcess.waitFor()
+                deleteWebStorageProcess.waitFor()
+                deleteDatabasesProcess.waitFor()
+                deleteBlobStorageProcess.waitFor()
             } catch (exception: Exception) {
                 // Do nothing if an error is thrown.
             }
