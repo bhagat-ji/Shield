@@ -63,6 +63,8 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
@@ -259,7 +261,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var bookmarksCursorAdapter: CursorAdapter
     private lateinit var bookmarksListView: ListView
     private lateinit var bookmarksDrawerPinnedImageView: ImageView
+    private lateinit var bookmarksFrameLayout: FrameLayout
     private lateinit var bookmarksTitleTextView: TextView
+    private lateinit var browserFrameLayout: FrameLayout
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var cookieManager: CookieManager
     private lateinit var defaultFontSizeString: String
@@ -285,6 +289,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var navigationRequestsMenuItem: MenuItem
     private lateinit var navigationScrollToBottomMenuItem: MenuItem
     private lateinit var navigationView: NavigationView
+    private lateinit var oldFullScreenVideoFrameLayout: FrameLayout
     private lateinit var optionsAddOrEditDomainMenuItem: MenuItem
     private lateinit var optionsBlockAllThirdPartyRequestsMenuItem: MenuItem
     private lateinit var optionsClearCookiesMenuItem: MenuItem
@@ -327,7 +332,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var optionsWideViewportMenuItem: MenuItem
     private lateinit var proxyHelper: ProxyHelper
     private lateinit var redColorSpan: ForegroundColorSpan
-    private lateinit var rootFrameLayout: FrameLayout
     private lateinit var saveUrlString: String
     private lateinit var searchURL: String
     private lateinit var sharedPreferences: SharedPreferences
@@ -338,6 +342,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var webViewDefaultUserAgent: String
     private lateinit var webViewThemeEntryValuesStringArray: Array<String>
     private lateinit var webViewViewPager2: ViewPager2
+    private lateinit var windowInsetsController: WindowInsetsController
     private lateinit var ultraList: ArrayList<List<Array<String>>>
     private lateinit var urlEditText: EditText
     private lateinit var urlRelativeLayout: RelativeLayout
@@ -516,19 +521,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
         bottomAppBar = sharedPreferences.getBoolean(getString(R.string.bottom_app_bar_key), false)
         displayAdditionalAppBarIcons = sharedPreferences.getBoolean(getString(R.string.display_additional_app_bar_icons_key), false)
+        displayUnderCutouts = sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false)
 
-        // Displaying under cutouts currently only works on API < 35.  <https://redmine.stoutner.com/issues/1238>
-        if (Build.VERSION.SDK_INT < 35) {
-            // Get the display under cutouts preference.
-            displayUnderCutouts = sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false)
-
-            // Set the display under cutouts mode.  This must be done here as it doesn't appear to work correctly if handled after the app is fully initialized.
-            if (displayUnderCutouts) {
-                if (Build.VERSION.SDK_INT >= 30)
-                    window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
-                else if (Build.VERSION.SDK_INT >= 28)
-                    window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-            }
+        // Set the display under cutouts mode.  This must be done here as it doesn't appear to work correctly if handled after the app is fully initialized.
+        if ((Build.VERSION.SDK_INT < 35) && displayUnderCutouts) {
+            if (Build.VERSION.SDK_INT >= 30)
+                window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+            else if (Build.VERSION.SDK_INT >= 28)
+                window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         }
 
         // Get the entry values string arrays.
@@ -589,7 +589,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 setContentView(R.layout.main_framelayout_top_appbar)
 
             // Get handles for the views.
-            rootFrameLayout = findViewById(R.id.root_framelayout)
+            browserFrameLayout = findViewById(R.id.browser_framelayout)
             drawerLayout = findViewById(R.id.drawerlayout)
             coordinatorLayout = findViewById(R.id.coordinatorlayout)
             appBarLayout = findViewById(R.id.appbar_layout)
@@ -602,10 +602,26 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             swipeRefreshLayout = findViewById(R.id.swiperefreshlayout)
             webViewViewPager2 = findViewById(R.id.webview_viewpager2)
             navigationView = findViewById(R.id.navigationview)
+            bookmarksFrameLayout = findViewById(R.id.bookmarks_framelayout)
             bookmarksListView = findViewById(R.id.bookmarks_drawer_listview)
             bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview)
             bookmarksDrawerPinnedImageView = findViewById(R.id.bookmarks_drawer_pinned_imageview)
+            oldFullScreenVideoFrameLayout = findViewById(R.id.old_full_screen_video_framelayout)
             fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout)
+
+            // Get a handle for the window inset controller.
+            if (Build.VERSION.SDK_INT >= 30)
+                windowInsetsController = browserFrameLayout.windowInsetsController!!
+
+            // Set the layout to fit the system windows according to the API.
+            if (Build.VERSION.SDK_INT >= 35) {
+                // Set the browser frame layout to fit system windows.
+                browserFrameLayout.fitsSystemWindows = true
+            } else {
+                // Set the layouts to fit system windows.
+                coordinatorLayout.fitsSystemWindows = true
+                bookmarksFrameLayout.fitsSystemWindows = true
+            }
 
             // Get a handle for the navigation menu.
             val navigationMenu = navigationView.menu
@@ -890,8 +906,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         if (proxyMode != ProxyHelper.NONE)
             applyProxy(false)
 
-        // Reapply any system UI flags.
-        if (displayingFullScreenVideo || inFullScreenBrowsingMode) {  // The system is displaying a website or a video in full screen mode.
+        // Reapply any system UI flags on older APIs.
+        if ((Build.VERSION.SDK_INT < 30) && (displayingFullScreenVideo || inFullScreenBrowsingMode)) {  // The system is displaying a website or a video in full screen mode.
             /* Hide the system bars.
              * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
              * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
@@ -899,9 +915,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
              * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
              */
 
-            // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
             @Suppress("DEPRECATION")
-            rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            browserFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
 
         // Show any pending dialogs.
@@ -3020,6 +3035,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         proxyMode = sharedPreferences.getString(getString(R.string.proxy_key), getString(R.string.proxy_default_value))!!
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false)
         hideAppBar = sharedPreferences.getBoolean(getString(R.string.hide_app_bar_key), true)
+        displayUnderCutouts = sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false)
         val downloadProvider = sharedPreferences.getString(getString(R.string.download_provider_key), getString(R.string.download_provider_default_value))!!
         scrollAppBar = sharedPreferences.getBoolean(getString(R.string.scroll_app_bar_key), false)
         sortBookmarksAlphabetically = sharedPreferences.getBoolean(getString(R.string.sort_bookmarks_alphabetically_key), false)
@@ -3111,8 +3127,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
         }
 
+        // Force an exit of full screen browsing mode if it is now disabled in settings.
+        if (!fullScreenBrowsingModeEnabled)
+            inFullScreenBrowsingMode = false
+
         // Update the full screen browsing mode settings.
-        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+        if (inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
             // Update the visibility of the app bar, which might have changed in the settings.
             if (hideAppBar) {
                 // Hide the tab linear layout.
@@ -3128,29 +3148,37 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 appBar.show()
             }
 
-            /* Hide the system bars.
-             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-             */
+            // Re-enforce the fullscreen flags if the API < 30.
+            if (Build.VERSION.SDK_INT < 30) {
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
 
-            // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-            @Suppress("DEPRECATION")
-            rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                @Suppress("DEPRECATION")
+                window.addFlags(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            }
         } else {  // Privacy Browser is not in full screen browsing mode.
-            // Reset the full screen tracker, which could be true if Privacy Browser was in full screen mode before entering settings and full screen browsing was disabled.
-            inFullScreenBrowsingMode = false
-
             // Show the tab linear layout.
             tabsLinearLayout.visibility = View.VISIBLE
 
             // Show the app bar.
             appBar.show()
 
-            // Remove the `SYSTEM_UI` flags from the root frame layout.  The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-            @Suppress("DEPRECATION")
-            rootFrameLayout.systemUiVisibility = 0
+            // Remove the fullscreen flags if the API < 30.
+            if (Build.VERSION.SDK_INT < 30) {
+                /* Show the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
+
+                @Suppress("DEPRECATION")
+                window.clearFlags(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            }
         }
 
         // Load the bookmarks folder.
@@ -4108,33 +4136,58 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     }
 
     private fun exitFullScreenVideo() {
-        // Re-enable the screen timeout.
-        fullScreenVideoFrameLayout.keepScreenOn = false
-
         // Unset the full screen video flag.
         displayingFullScreenVideo = false
 
-        // Remove all the views from the full screen video frame layout.
-        fullScreenVideoFrameLayout.removeAllViews()
+        // Hide the full screen video according to the API and display under cutouts status.
+        if ((Build.VERSION.SDK_INT < 35) && displayUnderCutouts) {  // The device is running API < 35 and display under cutouts is enabled.
+            // Re-enable the screen timeout.
+            oldFullScreenVideoFrameLayout.keepScreenOn = false
 
-        // Hide the full screen video frame layout.
-        fullScreenVideoFrameLayout.visibility = View.GONE
+            // Remove all the views from the full screen video frame layout.
+            oldFullScreenVideoFrameLayout.removeAllViews()
+
+            // Hide the full screen video frame layout.
+            oldFullScreenVideoFrameLayout.visibility = View.GONE
+        } else {  // The device is running API >= 35 or display under cutouts is disabled.
+            // Re-enable the screen timeout.
+            fullScreenVideoFrameLayout.keepScreenOn = false
+
+            // Remove all the views from the full screen video frame layout.
+            fullScreenVideoFrameLayout.removeAllViews()
+
+            // Hide the full screen video frame layout.
+            fullScreenVideoFrameLayout.visibility = View.GONE
+        }
 
         // Enable the sliding drawers.
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
-        // Show the coordinator layout.
-        coordinatorLayout.visibility = View.VISIBLE
+        // Show the browser view according to the API and display under cutouts status.
+        if ((Build.VERSION.SDK_INT < 35) && displayUnderCutouts) {  // The device is running API < 35 and display under cutouts is enabled.
+            // Display the app bar if it is not supposed to be hidden, the `||` ensures that `!hideAppBar` is only evaluated in `inFullScreenBrowsingMode == true`.
+            if (!inFullScreenBrowsingMode || !hideAppBar) {
+                // Show the tab linear layout.
+                tabsLinearLayout.visibility = View.VISIBLE
 
-        // Apply the appropriate full screen mode flags.
-        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-            // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
-            if (Build.VERSION.SDK_INT < 35) {
-                // Disable fits system windows if display under cutouts is enabled.
-                if (displayUnderCutouts)
-                    rootFrameLayout.fitsSystemWindows = false
+                // Show the app bar.
+                appBar.show()
             }
 
+            // Display the swipe refresh layout (which includes the WebView).
+            swipeRefreshLayout.visibility = View.VISIBLE
+
+            // Enable fits system windows if not in full screen browsing mode.
+            if (!inFullScreenBrowsingMode) {
+                coordinatorLayout.fitsSystemWindows = true
+                bookmarksFrameLayout.fitsSystemWindows = true
+            }
+        } else {  // The device is running API >= 35 or display under cutouts is disabled.
+            browserFrameLayout.visibility = View.VISIBLE
+        }
+
+        // Apply the appropriate full screen mode flags.
+        if (inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
             // Hide the app bar if specified.
             if (hideAppBar) {
                 // Hide the tab linear layout.
@@ -4144,27 +4197,33 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 appBar.hide()
             }
 
-            /* Hide the system bars.
-             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-             */
+            if (Build.VERSION.SDK_INT < 30) {
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
 
-            // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-            @Suppress("DEPRECATION")
-            rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        } else {  // Switch to normal viewing mode.
-            // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
-            if (Build.VERSION.SDK_INT < 35) {
-                // Enable fits system windows if display under cutouts is enabled.
-                if (displayUnderCutouts)
-                    rootFrameLayout.fitsSystemWindows = true
+                @Suppress("DEPRECATION")
+                window.addFlags(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
             }
+        } else {  // Switch to normal viewing mode.
+            // Show the system bars according to the API.
+            if (Build.VERSION.SDK_INT >= 30) {
+                // Show the system bars.
+                windowInsetsController.show(WindowInsets.Type.systemBars())
+            } else {
+                /* Show the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
 
-            // Remove the `SYSTEM_UI` flags from the root frame layout.  The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-            @Suppress("DEPRECATION")
-            rootFrameLayout.systemUiVisibility = 0
+                @Suppress("DEPRECATION")
+                window.clearFlags(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            }
         }
     }
 
@@ -4759,13 +4818,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Toggle the full screen browsing mode.
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
-                        // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
-                        if (Build.VERSION.SDK_INT < 35) {
-                            // Disable fits system windows if display under cutouts is enabled.
-                            if (displayUnderCutouts)
-                                rootFrameLayout.fitsSystemWindows = false
-                        }
-
                         // Hide the app bar if specified.
                         if (hideAppBar) {  // App bar hiding is enabled.
                             // Close the find on page bar if it is visible.
@@ -4811,24 +4863,51 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             }
                         }
 
-                        /* Hide the system bars.
-                         * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                         * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                         */
+                        // Hide the system bars.
+                        if (Build.VERSION.SDK_INT >= 30) {
+                            // Set the system bars to display transiently when swiped.
+                            windowInsetsController.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
-                        // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-                        @Suppress("DEPRECATION")
-                        rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    } else {  // Switch to normal viewing mode.
-                        // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
-                        if (Build.VERSION.SDK_INT < 35) {
-                            // Enable fits system windows if display under cutouts is enabled.
-                            if (displayUnderCutouts)
-                                rootFrameLayout.fitsSystemWindows = true
+                            // Hide the system bars.
+                            windowInsetsController.hide(WindowInsets.Type.systemBars())
+                        } else {
+                            /* Hide the system bars.
+                             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                             */
+
+                            @Suppress("DEPRECATION")
+                            window.addFlags(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
                         }
 
+                        // Disable fits system windows according to the configuration.
+                        if (displayUnderCutouts) {  // Display under cutouts.
+                            // Disable fits system windows according to the API.
+                            if (Build.VERSION.SDK_INT >= 35) {  // The device is running API >= 35.
+                                // Disable fits system windows.
+                                browserFrameLayout.fitsSystemWindows = false
+
+                                // Manually update the padding, which isn't done on API >= 35
+                                browserFrameLayout.setPadding(0, 0, 0, 0)
+                            } else {  // The device is running API < 35.
+                                // Disable fits system windows.
+                                coordinatorLayout.fitsSystemWindows = false
+                                bookmarksFrameLayout.fitsSystemWindows = false
+
+                                // Remove any padding on the bookmarks frame layout.
+                                bookmarksFrameLayout.setPadding(0, 0, 0, 0)
+                            }
+                        } else if (Build.VERSION.SDK_INT < 35) {  // The device is running API < 35 and display under cutouts is disabled.
+                            // Disable fits system windows to display under the navigation bar.
+                            coordinatorLayout.fitsSystemWindows = false
+                            bookmarksFrameLayout.fitsSystemWindows = false
+
+                            // Remove any padding on the bookmarks frame layout.
+                            bookmarksFrameLayout.setPadding(0, 0, 0, 0)
+                        }
+                    } else {  // Switch to normal viewing mode.
                         // Show the app bar if it was hidden.
                         if (hideAppBar) {
                             // Show the tab linear layout.
@@ -4865,9 +4944,36 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             }
                         }
 
-                        // Remove the `SYSTEM_UI` flags from the root frame layout.  The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-                        @Suppress("DEPRECATION")
-                        rootFrameLayout.systemUiVisibility = 0
+                        // Enable fits system windows if display under cutouts is enabled.
+                        if (displayUnderCutouts) {
+                            // Enable fits system windows according to the API.
+                            if (Build.VERSION.SDK_INT >= 35) {
+                                browserFrameLayout.fitsSystemWindows = true
+                            } else {
+                                coordinatorLayout.fitsSystemWindows = true
+                                bookmarksFrameLayout.fitsSystemWindows = true
+                            }
+                        } else if (Build.VERSION.SDK_INT < 35) {  // The device is running API < 35 and display under cutouts is disabled.
+                            // Enable fits system windows.
+                            coordinatorLayout.fitsSystemWindows = true
+                            bookmarksFrameLayout.fitsSystemWindows = true
+                        }
+
+                        // Show the system bars according to the API.
+                        if (Build.VERSION.SDK_INT >= 30) {
+                            // Show the system bars.
+                            windowInsetsController.show(WindowInsets.Type.systemBars())
+                        } else {
+                            /* Show the system bars.
+                             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                             */
+
+                            @Suppress("DEPRECATION")
+                            window.clearFlags(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+                        }
                     }
 
                     // Consume the double-tap.
@@ -4994,21 +5100,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 swipeRefreshLayout.isEnabled = nestedScrollWebView.scrollY == 0
             else  // Disable swipe to refresh.
                 swipeRefreshLayout.isEnabled = false
-
-            // Reinforce the system UI visibility flags if in full screen browsing mode.
-            // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
-            if (inFullScreenBrowsingMode) {
-                /* Hide the system bars.
-                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                 */
-
-                // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-                @Suppress("DEPRECATION")
-                rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            }
         }
 
         // Set the web chrome client.
@@ -5098,44 +5189,75 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Enter full screen video.
             override fun onShowCustomView(video: View, callback: CustomViewCallback) {
-                // Handle display under cutouts for API < 35.  <https://redmine.stoutner.com/issues/1238>
-                if (Build.VERSION.SDK_INT < 35) {
-                    // Disable fits system windows if display under cutouts is enabled.
-                    if (displayUnderCutouts)
-                        rootFrameLayout.fitsSystemWindows = false
-                }
-
                 // Set the full screen video flag.
                 displayingFullScreenVideo = true
 
                 // Hide the keyboard.
                 inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.windowToken, 0)
 
-                // Hide the coordinator layout.
-                coordinatorLayout.visibility = View.GONE
+                // Hide the browser view according to the API.
+                if ((Build.VERSION.SDK_INT < 35) && displayUnderCutouts) {  // The device is running API < 35 and display under cutouts is enabled.
+                    // Hide the tab linear layout.
+                    tabsLinearLayout.visibility = View.GONE
 
-                /* Hide the system bars.
-                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                 */
+                    // Hide the app bar.
+                    appBar.hide()
 
-                // The deprecated command can be switched to `WindowInsetsController` once the minimum API >= 30.
-                @Suppress("DEPRECATION")
-                rootFrameLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    // Hide the swipe refresh layout (which includes the WebView).
+                    swipeRefreshLayout.visibility = View.GONE
+
+                    // Disable fits system windows.
+                    coordinatorLayout.fitsSystemWindows = false
+                    bookmarksFrameLayout.fitsSystemWindows = false
+
+                    // Remove any padding from the bookmark frame layout
+                    bookmarksFrameLayout.setPadding(0, 0, 0, 0)
+                } else {  // The device is running API >= 35 or display under cutouts is disabled.
+                    // Hide the browser view.
+                    browserFrameLayout.visibility = View.GONE
+                }
+
+                // Hide the system bars according to the API.
+                if (Build.VERSION.SDK_INT >= 30) {
+                    // Set the system bars to show transiently when swiped.
+                    windowInsetsController.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+                    // Hide the system bars.
+                    windowInsetsController.hide(WindowInsets.Type.systemBars())
+                } else {
+                    /* Hide the system bars.
+                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                     */
+
+                    @Suppress("DEPRECATION")
+                    window.addFlags(View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+                }
 
                 // Disable the sliding drawers.
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-                // Add the video view to the full screen video frame layout.
-                fullScreenVideoFrameLayout.addView(video)
+                if ((Build.VERSION.SDK_INT < 35) && displayUnderCutouts) {
+                    // Add the video view to the full screen video frame layout.
+                    oldFullScreenVideoFrameLayout.addView(video)
 
-                // Show the full screen video frame layout.
-                fullScreenVideoFrameLayout.visibility = View.VISIBLE
+                    // Show the full screen video frame layout.
+                    oldFullScreenVideoFrameLayout.visibility = View.VISIBLE
 
-                // Disable the screen timeout while the video is playing.  YouTube does this automatically, but not all other videos do.
-                fullScreenVideoFrameLayout.keepScreenOn = true
+                    // Disable the screen timeout while the video is playing.  YouTube does this automatically, but not all other videos do.
+                    oldFullScreenVideoFrameLayout.keepScreenOn = true
+                } else {
+                    // Add the video view to the full screen video frame layout.
+                    fullScreenVideoFrameLayout.addView(video)
+
+                    // Show the full screen video frame layout.
+                    fullScreenVideoFrameLayout.visibility = View.VISIBLE
+
+                    // Disable the screen timeout while the video is playing.  YouTube does this automatically, but not all other videos do.
+                    fullScreenVideoFrameLayout.keepScreenOn = true
+                }
             }
 
             // Exit full screen video.
@@ -5155,7 +5277,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Request an openable file.
                 fileChooserIntent.addCategory(Intent.CATEGORY_OPENABLE)
 
-                // Set the file type to everything.  The file chooser params cannot be used to create the intent because it only selects the first specified file type.  See <https://redmine.stoutner.com/issues/1197>.
+                // Set the file type to everything.  The file chooser params cannot be used to create the intent because it only selects the first specified file type.
+                // See <https://redmine.stoutner.com/issues/1197>.
                 fileChooserIntent.type = "*/*"
 
                 // Launch the file chooser intent.

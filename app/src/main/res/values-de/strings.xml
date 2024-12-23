@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
 
   Translation 2019-2024 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
-
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
-
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Activities. -->
@@ -645,8 +644,6 @@
         <string name="hide_app_bar">App-Leiste verstecken</string>
         <string name="hide_app_bar_summary" tools:ignore="Typos">Versteckt die App-Leiste, die die URL enthält.</string>
         <string name="display_under_cutouts">Unter Aussparungen anzeigen</string>
-        <string name="display_under_cutouts_summary">Zeigt die Internetseite unterhalb von Ausschnitten wie etwa Kamera-Einbuchtungen.
-            Ist diese Option aktiv, wrd Privacy Browser auch unterhalb der Tastatur dargestellt. Das Ändern dieser Einstellung startet Privacy Browser neu.</string>
     <string name="clear_everything">Alles löschen</string>
         <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
         <string name="clear_cookies_preference">Cookies löschen</string>

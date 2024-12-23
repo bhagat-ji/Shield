@@ -699,7 +699,7 @@
         <string name="hide_app_bar_summary">Hide the app bar that contains the URL.</string>
         <string name="display_under_cutouts">Display under cutouts</string>
         <string name="display_under_cutouts_summary">Draw the website under cutouts, like camera notches. When this is enabled, Privacy Browser will also be drawn under the keyboard.
-            Changing this setting will restart Privacy Browser.</string>
+            Changing this setting will restart Privacy Browser on Android &lt; 15.</string>
     <string name="clear_everything">Clear everything</string>
         <string name="clear_everything_summary">Clears cookies, DOM storage, the logcat, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
         <string name="clear_cookies_preference">Clear cookies</string>

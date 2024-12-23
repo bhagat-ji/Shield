@@ -33,7 +33,6 @@ import android.widget.ArrayAdapter
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 
 import com.stoutner.privacybrowser.R
@@ -168,7 +167,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Set the preference dependencies.
         domStoragePreference.dependency = getString(R.string.javascript_key)
         hideAppBarPreference.dependency = getString(R.string.full_screen_browsing_mode_key)
-        displayUnderCutoutsPreference.dependency = getString(R.string.full_screen_browsing_mode_key)
 
         // Get strings from the preferences.
         val userAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
@@ -181,15 +179,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val fanboySocialBlockingEnabled = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
         val fullScreenBrowsingMode = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false)
         val clearEverything = sharedPreferences.getBoolean(getString(R.string.clear_everything_key), true)
-
-        // Remove the display under cutouts preferences if the API is >= 35 as Google broke this functionality.  <https://redmine.stoutner.com/issues/1238>
-        if (Build.VERSION.SDK_INT >= 35) {
-            // Get a handle for the full screen category.
-            val fullScreenCategory = findPreference<PreferenceCategory>(getString(R.string.full_screen_category_key))!!
-
-            // Remove the display under cutouts preferences.
-            fullScreenCategory.removePreference(displayUnderCutoutsPreference)
-        }
 
         // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
         fanboySocialBlockingListPreference.isEnabled = !fanboyAnnoyanceListEnabled
@@ -926,13 +915,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
                 getString(R.string.display_under_cutouts_key) -> {
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), true))
+                    if (sharedPreferences.getBoolean(getString(R.string.display_under_cutouts_key), false))
                         displayUnderCutoutsPreference.setIcon(R.drawable.display_under_cutouts_enabled)
                     else
                         displayUnderCutoutsPreference.setIcon(R.drawable.display_under_cutouts_disabled)
 
-                    // Restart Privacy Browser.
-                    restartPrivacyBrowser()
+                    // Restart Privacy Browser if the API < 35.
+                    if (Build.VERSION.SDK_INT < 35)
+                        restartPrivacyBrowser()
                 }
 
                 getString(R.string.clear_everything_key) -> {

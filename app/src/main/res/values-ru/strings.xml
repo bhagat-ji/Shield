@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2024 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <resources>
     <!-- Activities. -->
@@ -638,8 +639,6 @@
         <string name="hide_app_bar">Скрыть панель приложения</string>
         <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
         <string name="display_under_cutouts">Отображение под вырезом</string>
-        <string name="display_under_cutouts_summary">Отрисовывать сайт под вырезами, например, под камерой. Если эта опция включена, Privacy Browser также будет отображаться под клавиатурой.
-            Изменение этой настройки приведет к перезапуску Privacy Browser.</string>
     <string name="clear_everything">Очистить все</string>
         <string name="clear_everything_summary">Очищает cookie, DOM-хранилище, logcat и кэш WebView. После этого вручную удаляет каталоги "app_webview" и "cache".</string>
         <string name="clear_cookies_preference">Очистить cookie</string>
