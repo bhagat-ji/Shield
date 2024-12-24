@@ -643,6 +643,8 @@
         <string name="hide_app_bar">Nascondi la barra dell\'applicazione</string>
         <string name="hide_app_bar_summary">Nasconde la barra che contiene l\'URL.</string>
         <string name="display_under_cutouts">Visualizza sotto i ritagli dello schermo</string>
+        <string name="display_under_cutouts_summary">Visualizza il sito web sotto i ritagli dello schermo come quello della fotocamera.
+            Quando questa impostazione è abilitata, Privacy Browser sarà anche visualizzato sotto la tastiera. La modifica di questa impostazione provocherà il riavvio di Privacy Browser su Android &lt; 15.</string>
     <string name="clear_everything">Elimina tutto</string>
         <string name="clear_everything_summary">Cancella i cookies, il DOM storage, il logcat e la cache di WebView.  Cancella completamente le cartelle “app_webview” e “cache”.</string>
         <string name="clear_cookies_preference">Elimina i cookie</string>

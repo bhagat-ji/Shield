@@ -1,20 +1,20 @@
-/*
- * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2017-2024 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.backgroundtasks
@@ -126,6 +126,7 @@ class GetHeadersBackgroundTask {
                 // Open a connection to the URL.  No data is actually sent at this point.
                 val httpUrlConnection = url.openConnection(proxy) as HttpURLConnection
 
+
                 // Set the `Host` header property.
                 httpUrlConnection.setRequestProperty("Host", url.host)
 
@@ -195,14 +196,24 @@ class GetHeadersBackgroundTask {
                 requestHeadersBuilder.append("?1")
 
 
+                // Set the `Sec-Fetch-Dest` header property.
+                httpUrlConnection.setRequestProperty("Sec-Fetch-Dest", "document")
+
+                // Add the `Sec-Fetch-User` header to the string builder and format the text.
+                requestHeadersBuilder.append(newLineString)
+                requestHeadersBuilder.append("Sec-Fetch-Dest", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                requestHeadersBuilder.append(colonString)
+                requestHeadersBuilder.append("document")
+
+
                 // Set the `Accept` header property.
-                httpUrlConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
+                httpUrlConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
 
                 // Add the `Accept` header to the string builder and format the text.
                 requestHeadersBuilder.append(newLineString)
                 requestHeadersBuilder.append("Accept", StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 requestHeadersBuilder.append(colonString)
-                requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
+                requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
 
 
                 // Set the `Accept-Language` header property.

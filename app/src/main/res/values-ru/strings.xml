@@ -639,6 +639,8 @@
         <string name="hide_app_bar">Скрыть панель приложения</string>
         <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
         <string name="display_under_cutouts">Отображение под вырезом</string>
+        <string name="display_under_cutouts_summary">Прорисовывать сайт под вырезами, такими как выемки под камеру. Если эта функция включена, Privacy Browser также будет отрисован под клавиатурой.
+            Изменение этого параметра приведет к перезапуску Privacy Browser для Android &lt; 15.</string>
     <string name="clear_everything">Очистить все</string>
         <string name="clear_everything_summary">Очищает cookie, DOM-хранилище, logcat и кэш WebView. После этого вручную удаляет каталоги "app_webview" и "cache".</string>
         <string name="clear_cookies_preference">Очистить cookie</string>
