@@ -1,20 +1,20 @@
-/*
- * Copyright 2020-2023 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2020-2024 Soren Stoutner <soren@stoutner.com>
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.helpers
@@ -220,19 +220,25 @@ object UrlHelper {
             val penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1)
 
             // Markup the beginning of the URL.
-            if (urlString.startsWith("http://")) {  // The protocol is not encrypted.
+            if (urlString.startsWith("https://")) {  // The protocol is encrypted.
+                // De-emphasize the protocol of connections that are encrypted.
+                if (penultimateDotIndex > 0)  // There is more than one subdomain in the domain name.  De-emphasize the protocol and the additional subdomains.
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                else  // There is only one subdomain in the domain name.  De-emphasize only the protocol.
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            } else if (urlString.startsWith("http://")) {  // The protocol is not encrypted.
                 // Highlight the protocol in red.
                 urlEditText.text.setSpan(redColorSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 // De-emphasize subdomains.
                 if (penultimateDotIndex > 0) // There is more than one subdomain in the domain name.
                     urlEditText.text.setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            } else if (urlString.startsWith("https://") || urlString.startsWith("view-source:https://")) {  // The protocol is encrypted.
+            } else if (urlString.startsWith("view-source:https://")) {  // A secure source is being viewed.
                 // De-emphasize the protocol of connections that are encrypted.
                 if (penultimateDotIndex > 0)  // There is more than one subdomain in the domain name.  De-emphasize the protocol and the additional subdomains.
                     urlEditText.text.setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 else  // There is only one subdomain in the domain name.  De-emphasize only the protocol.
-                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    urlEditText.text.setSpan(initialGrayColorSpan, 0, 20, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else if (urlString.startsWith("view-source:http://")) {  // An insecure source is being viewed.
                 // Check to see if subdomains should be de-emphasized.
                 if (penultimateDotIndex > 0) {  // There are subdomains that should be de-emphasized.
