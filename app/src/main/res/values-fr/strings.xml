@@ -637,6 +637,8 @@
         <string name="hide_app_bar">Masquer la barre d\'application</string>
         <string name="hide_app_bar_summary">Masquer la barre d\'applications contenant l\'URL.</string>
         <string name="display_under_cutouts">Afficher sous les éléments découpés</string>
+        <string name="display_under_cutouts_summary">Dessine le site web sous les découpes, comme les encoches de l\'appareil photo.
+            Lorsque cette option est activée, Privacy Browser sera également affiché sous le clavier. La modification de ce paramètre redémarre Privacy Browser sur Android &lt; 15.</string>
     <string name="clear_everything">Tout effacer</string>
         <string name="clear_everything_summary">Efface les cookies, le stockage DOM, le logcat et le cache de WebView. Supprime ensuite manuellement les répertoires entiers «app_webview» et «cache».</string>
         <string name="clear_cookies_preference">Effacer les cookies</string>

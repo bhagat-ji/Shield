@@ -1,0 +1,6 @@
+• Fehler behoben, durch den einige Dateien bei einigen Websites in der Datei-Auswahl nicht auswählbar waren.
+• Logcat eingefärbt und durchsuchbar gemacht.
+• Auswahl eines eigenen Icons für Favoriten-Lesezeichen aus dem Dateisystem ermöglicht.
+• Eine Anzahl kleinerer Probleme und Fehler behoben bzw. korrigiert.
+• Mindest-API auf 26 (Android 8.0) angehoben.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

@@ -1,0 +1,10 @@
+• Add an option to sort bookmarks alphabetically.
+• Add "move to top" and "move to bottom" options for bookmarks.
+• Fix clear DOM storage detection for current WebView versions.
+• Retain edits to the URL bar when switching tabs.
+• Enable copying of link text.
+• Add the ability to delete all domain settings.
+• Colorize the status bar when using a proxy.
+• Fix view source syntax highlighting.
+• Update the Request Headers in View Headers.
+• Bump the target API to 35 (Android 15).

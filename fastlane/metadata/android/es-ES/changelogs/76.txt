@@ -1,0 +1,11 @@
+• Añadir una opción para ordenar los favoritos alfabéticamente.
+• Añadir las opciones "mover arriba" y "mover abajo" para los favoritos.
+• Arreglar la detección de borrar Almacenamiento DOM para las versiones actuales de WebView.
+• Conservar los cambios en la barra URL al cambiar de pestaña.
+• Habilitar la copia de texto de enlace.
+• Añadir la posibilidad de eliminar todas las configuraciones de dominio.
+• Colorear la barra de estado cuando se usa un proxy.
+• Corregir la vista del resaltado de sintaxis del código fuente.
+• Actualizar las Cabeceras de solicitud en Ver Cabeceras.
+• Aumentar el objejtivo API a 35 (Android 15).
+• Actualizada la traducción al español proporcionada por Jose A. León.

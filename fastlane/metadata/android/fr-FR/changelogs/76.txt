@@ -1,0 +1,11 @@
+• Ajout d'une option pour trier les favoris par ordre alphabétique.
+• Ajout des options "déplacer en haut" et "déplacer en bas" pour les favoris.
+• Correction de la détection du stockage DOM pour les versions actuelles de WebView.
+• Conservation des modifications de la barre d'URL lors du changement d'onglet.
+• Activation de la possibilité de copier le texte du lien.
+• Ajout de la possibilité de supprimer tous les paramètres de domaine.
+• Colorisation de la barre de statut lors de l'utilisation d'un proxy.
+• Correction de la mise en surbrillance de la syntaxe lors de l'affichage du code source.
+• Mise à jour des en-têtes de requête dans l'affichage des en-têtes.
+• Élévation de l'API cible à 35 (Android 15).
+• Traduction française mise à jour fournie par Kévin L.

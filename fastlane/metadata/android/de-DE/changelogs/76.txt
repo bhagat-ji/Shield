@@ -1,0 +1,11 @@
+• Option hinzugefügt, um Lesezeichen alphabetisch zu sortieren.
+• Optionen für "Nach oben bewegen" und "Nach unten bewegen" von Lesezeichen hinzugefügt.
+• Problem bei der Erkennung zu löschender DOM-Speicher-Dateien bei aktuellen WebView-Versionen behoben.
+• Änderungen in der URL-Leiste werden beim Wechsel zwischen Tabs beibehalten.
+• Kopieren von Link-Texten aktiviert.
+• Funktion zum Löschen aller Domain-Einstellungen hinzugefügt.
+• Status-Leiste bei der Benutzung eines Proxies eingefärbt.
+• Fehler bei Hervorhebungen bei der Quelltext-Anzeige behoben.
+• Request Headers bei Header-Anzeige aktualisiert.
+• Ziel-API auf 35 (Android 15) angehoben.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

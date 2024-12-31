@@ -644,6 +644,8 @@
         <string name="hide_app_bar">App-Leiste verstecken</string>
         <string name="hide_app_bar_summary" tools:ignore="Typos">Versteckt die App-Leiste, die die URL enthält.</string>
         <string name="display_under_cutouts">Unter Aussparungen anzeigen</string>
+        <string name="display_under_cutouts_summary">Websiten unter Ausparungen (wie z.B. Kamera-Einbuchtungen) darstellen. Wenn diese Option aktiv ist, werden Webseiten auch unterhalb der Tastatur dargestellt.
+            Eine Änderung dieser Option startet Privacy Browser unter Android &lt; 15 neu.</string>
     <string name="clear_everything">Alles löschen</string>
         <string name="clear_everything_summary">Löscht Cookies, DOM-Storage, das Logcat Systemlogbuch und den WebView-Cache, sowie die gesamten “app_webview”- und “cache”-Ordner.</string>
         <string name="clear_cookies_preference">Cookies löschen</string>
