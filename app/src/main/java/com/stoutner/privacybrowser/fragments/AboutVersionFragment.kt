@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -397,8 +397,14 @@ class AboutVersionFragment : Fragment() {
         val webViewPackageName = webViewPackageInfo.packageName
         val webViewVersion = webViewPackageInfo.versionName
 
-        // Get the Orbot version name if Orbot is installed.  If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
-        val orbot: String = requireContext().packageManager.getPackageInfo("org.torproject.android", 0)?.versionName ?: ""
+        // Get the Orbot version name if Orbot is installed.
+        val orbot: String = try {
+            // If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
+            requireContext().packageManager.getPackageInfo("org.torproject.android", 0).versionName ?: ""
+        } catch (exception: PackageManager.NameNotFoundException) {
+            // Store an empty string.
+            ""
+        }
 
         // Get the I2P version name if I2P is installed.
         val i2p: String = try {
@@ -414,8 +420,14 @@ class AboutVersionFragment : Fragment() {
             }
         }
 
-        // Get the OpenKeychain version name if it is installed.  If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
-        val openKeychain: String = requireContext().packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0)?.versionName ?: ""
+        // Get the OpenKeychain version name if it is installed.
+        val openKeychain: String = try {
+            // If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
+            requireContext().packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName ?: ""
+        } catch (exception: PackageManager.NameNotFoundException) {
+            // Store an empty string.
+            ""
+        }
 
         // Create a spannable string builder for the hardware and software text views that need multiple colors of text.
         val brandStringBuilder = SpannableStringBuilder(brandLabel + brand)
