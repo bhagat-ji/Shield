@@ -1,0 +1,1 @@
+• Fix a crash when opening About or Import/Export when third-party apps are not installed.

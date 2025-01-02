@@ -1,0 +1,1 @@
+• Corregir una caída al abrir Acerca De o Importar/Exportar cuando no están instaladas aplicaciones de terceros.
