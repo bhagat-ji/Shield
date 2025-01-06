@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2015-2025 Soren Stoutner <soren@stoutner.com>
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -69,8 +69,8 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
 import android.webkit.HttpAuthHandler
-import android.webkit.ValueCallback
 import android.webkit.SslErrorHandler
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -259,9 +259,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var appBar: ActionBar
     private lateinit var checkFilterListHelper: CheckFilterListHelper
     private lateinit var bookmarksCursorAdapter: CursorAdapter
-    private lateinit var bookmarksListView: ListView
     private lateinit var bookmarksDrawerPinnedImageView: ImageView
     private lateinit var bookmarksFrameLayout: FrameLayout
+    private lateinit var bookmarksHeaderLinearLayout: LinearLayout
+    private lateinit var bookmarksListView: ListView
     private lateinit var bookmarksTitleTextView: TextView
     private lateinit var browserFrameLayout: FrameLayout
     private lateinit var coordinatorLayout: CoordinatorLayout
@@ -603,6 +604,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             webViewViewPager2 = findViewById(R.id.webview_viewpager2)
             navigationView = findViewById(R.id.navigationview)
             bookmarksFrameLayout = findViewById(R.id.bookmarks_framelayout)
+            bookmarksHeaderLinearLayout = findViewById(R.id.bookmarks_header_linearlayout)
             bookmarksListView = findViewById(R.id.bookmarks_drawer_listview)
             bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview)
             bookmarksDrawerPinnedImageView = findViewById(R.id.bookmarks_drawer_pinned_imageview)
@@ -939,8 +941,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Only save the instance state if the WebView state adapter is not null, which will be the case if the app is restarting to change the initial app theme.
         if (webViewStateAdapter != null) {
             // Initialize the saved state array lists.
-            savedStateArrayList = ArrayList<Bundle>()
-            savedNestedScrollWebViewStateArrayList = ArrayList<Bundle>()
+            savedStateArrayList = ArrayList()
+            savedNestedScrollWebViewStateArrayList = ArrayList()
 
             // Get the URLs from each tab.
             for (i in 0 until webViewStateAdapter!!.itemCount) {
@@ -4749,6 +4751,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initializeWebView(nestedScrollWebView: NestedScrollWebView, pagePosition: Int, progressBar: ProgressBar, urlString: String, restoringState: Boolean) {
+        // Fix the bookmarks drawer top padding on API <= 29.
+        if (Build.VERSION.SDK_INT <= 29) {
+            // Set the top padding according to the app bar location.
+            if (bottomAppBar)
+                bookmarksListView.setPadding(bookmarksListView.paddingLeft, swipeRefreshLayout.top, bookmarksListView.paddingRight, bookmarksListView.paddingBottom)
+            else
+                bookmarksHeaderLinearLayout.setPadding(bookmarksHeaderLinearLayout.paddingLeft, appBarLayout.top, bookmarksHeaderLinearLayout.paddingRight, bookmarksHeaderLinearLayout.paddingBottom)
+        }
+
         // Get the WebView theme.
         val webViewTheme = sharedPreferences.getString(getString(R.string.webview_theme_key), getString(R.string.webview_theme_default_value))
 

@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2017-2020, 2022, 2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2017-2020, 2022, 2024-2025 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -25,7 +25,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_gravity="end">
+    android:layout_gravity="end" >
 
     <LinearLayout
         android:layout_height="match_parent"
