@@ -1,0 +1,11 @@
+• Aggiunta l'opzione per ordinare in modo alfabetico i segnalibri.
+• Aggiunte le opzioni per "spostare in cima" and "spostare in fondo" i segnalibri.
+• Sistemazione della rilevazione della pulizia del DOM storage per le versioni attuali di WebView.
+• Mantenimento delle modifiche nella barra dell'URL quando si cambia scheda.
+• Abilitazione della copia del testo dei link.
+• Aggiunta la possibilità di cancellare tutte le impostazioni dei domini.
+• Aggiunta la colorazione della barra di stato quando si utilizza un proxy.
+• Sistemazione della colorazione della sintassi della vista della sorgente.
+• Aggiornamento della richiesta delle intestazioni nella visualizzazione delle intestazioni.
+• Modifica della target API a 35 (Android 15).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.

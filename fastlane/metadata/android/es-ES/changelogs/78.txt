@@ -1,0 +1,1 @@
+• Arreglar el diseño del cajón de favoritos en Android <= 10 (API <= 29).

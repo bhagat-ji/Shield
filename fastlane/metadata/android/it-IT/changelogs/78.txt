@@ -1,0 +1,1 @@
+• Sistemazione del layout del cassetto dei segnalibri per Android <= 10 (API <= 29).

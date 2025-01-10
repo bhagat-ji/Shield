@@ -1,0 +1,1 @@
+• Sistemazione di un crash durante l'apertura delle schede Informazioni o Importa/Esporta quando non sono installate app di terze parti.

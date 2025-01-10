@@ -1,0 +1,1 @@
+• Fix the layout of the bookmarks drawer on Android <= 10 (API <= 29).

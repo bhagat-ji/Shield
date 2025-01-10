@@ -1,0 +1,1 @@
+• Layout der Lesezeichen-Leiste unter Android <= 10 (API <= 29) korrigiert.
