@@ -4676,6 +4676,33 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             override fun onDrawerStateChanged(newState: Int) {
                 if (newState == DrawerLayout.STATE_SETTLING || newState == DrawerLayout.STATE_DRAGGING) {  // A drawer is opening or closing.
+                    // Adjust the scroll position of the navigation drawer.
+                    if (bottomAppBar && navigationDrawerFirstView) {  // The bottom app bar is in use.
+                        // Reset the navigation drawer first view flag.
+                        navigationDrawerFirstView = false
+
+                        // Get a handle for the navigation recycler view.
+                        val navigationRecyclerView = navigationView.getChildAt(0) as RecyclerView
+
+                        // Get the navigation linear layout manager.
+                        val navigationLinearLayoutManager = navigationRecyclerView.layoutManager as LinearLayoutManager
+
+                        // Scroll the navigation drawer to the bottom.
+                        navigationLinearLayoutManager.scrollToPositionWithOffset(14, 0)
+                    } else if (Build.VERSION.SDK_INT < 35 && navigationDrawerFirstView) {  // The top app bar is in use and the API < 35 (which causes the drawer to scroll down for some reason).
+                        // Reset the navigation drawer first view flag.
+                        navigationDrawerFirstView = false
+
+                        // Get a handle for the navigation recycler view.
+                        val navigationRecyclerView = navigationView.getChildAt(0) as RecyclerView
+
+                        // Get the navigation linear layout manager.
+                        val navigationLinearLayoutManager = navigationRecyclerView.layoutManager as LinearLayoutManager
+
+                        // Scroll the navigation drawer to the top.  <
+                        navigationLinearLayoutManager.scrollToPositionWithOffset(0, 0)
+                    }
+
                     // Update the navigation menu items if the WebView is not null.
                     if (currentWebView != null) {
                         // Set the enabled status of the menu items.
@@ -4712,20 +4739,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Clear the focus from from the WebView if it is not null, which can happen if a user opens a drawer while the browser is being resumed.
                     // Clearing the focus from the WebView removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     currentWebView?.clearFocus()
-
-                    if (bottomAppBar && navigationDrawerFirstView) {
-                        // Reset the navigation drawer first view flag.
-                        navigationDrawerFirstView = false
-
-                        // Get a handle for the navigation recycler view.
-                        val navigationRecyclerView = navigationView.getChildAt(0) as RecyclerView
-
-                        // Get the navigation linear layout manager.
-                        val navigationLinearLayoutManager = navigationRecyclerView.layoutManager as LinearLayoutManager
-
-                        // Scroll the navigation drawer to the bottom.
-                        navigationLinearLayoutManager.scrollToPositionWithOffset(13, 0)
-                    }
                 }
             }
         })
