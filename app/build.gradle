@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -82,7 +82,7 @@ android {
 
 dependencies {
     // Include the following AndroidX libraries.
-    implementation "androidx.activity:activity-ktx:1.9.3"
+    implementation "androidx.activity:activity-ktx:1.10.0"
     implementation 'androidx.arch.core:core-common:2.2.0'
     implementation 'androidx.arch.core:core-runtime:2.2.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
@@ -100,5 +100,5 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.21'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.13.0-alpha09'
+    implementation 'com.google.android.material:material:1.13.0-alpha10'
 }

@@ -4,6 +4,7 @@
 .DS_Store
 /build
 /captures
+/.kotlin
 /projectFilesBackup
 
 # Built APK files.

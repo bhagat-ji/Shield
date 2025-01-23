@@ -4811,6 +4811,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             }
         }
 
+        // Disable using the web cache.
+        nestedScrollWebView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+
         // Set the app bar scrolling.
         nestedScrollWebView.isNestedScrollingEnabled = scrollAppBar
 
