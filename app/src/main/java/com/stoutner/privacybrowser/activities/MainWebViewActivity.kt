@@ -358,6 +358,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var bookmarksDatabaseHelper: BookmarksDatabaseHelper? = null
     private var bookmarksDrawerPinned = false
     private var bottomAppBar = false
+    private var closeNavigationDrawer = false
     private var currentWebView: NestedScrollWebView? = null
     private var defaultBlockAllThirdPartyRequests = false
     private var defaultCookies = false
@@ -377,6 +378,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var displayAdditionalAppBarIcons = false
     private var displayUnderCutouts = false
     private var displayingFullScreenVideo = false
+    private var displayingInitialTab = true
     private var domainsDatabaseHelper: DomainsDatabaseHelper? = null
     private var downloadWithExternalApp = false
     private var fullScreenBrowsingModeEnabled = false
@@ -4670,7 +4672,16 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
 
-            override fun onDrawerOpened(drawerView: View) {}
+            override fun onDrawerOpened(drawerView: View) {
+                // Close the navigation drawer if requested.  <https://redmine.stoutner.com/issues/1267>
+                if (closeNavigationDrawer) {
+                    // Reset the close navigation drawer flag.
+                    closeNavigationDrawer = false
+
+                    // Close the navigation drawer.
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            }
 
             override fun onDrawerClosed(drawerView: View) {}
 
@@ -6292,6 +6303,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             currentWebView!!.loadUrl(openFilePath)
         }
     }
+
     // The view parameter cannot be removed because it is called from the layout onClick.
     fun openNavigationDrawer(@Suppress("UNUSED_PARAMETER")view: View) {
         // Open the navigation drawer.
@@ -6452,6 +6464,18 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private fun setCurrentWebView(pageNumber: Int) {
         // Stop the swipe to refresh indicator if it is running
         swipeRefreshLayout.isRefreshing = false
+
+        // Open the navigation drawer if the bottom app bar is enabled and this is the first tab.  <https://redmine.stoutner.com/issues/1267>
+        if (displayingInitialTab && bottomAppBar) {
+            // Open the navigation drawer.
+            drawerLayout.openDrawer(GravityCompat.START)
+
+            // Set the close navigation drawer flag.
+            closeNavigationDrawer = true
+        }
+
+        // Set the displaying initial tab flag to be false.
+        displayingInitialTab = false
 
         // Try to set the current WebView.  This will fail if the WebView has not yet been populated.
         try {

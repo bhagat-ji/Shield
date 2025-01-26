@@ -1,0 +1,2 @@
+• Corregir la posición de desplazamiento del cajón de navegación en Android <= 14 (API <= 34).
+• Desactivar el uso de la caché web.

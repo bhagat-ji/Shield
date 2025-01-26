@@ -1,0 +1,2 @@
+• Fix the navigation drawer scroll position on Android <= 14 (API <= 34).
+• Disable using the web cache.
