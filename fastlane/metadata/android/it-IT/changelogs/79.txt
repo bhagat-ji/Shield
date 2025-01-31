@@ -1,0 +1,3 @@
+• Sistemazione di un crash su alcuni dispositivi quando viene utilizzata la barra dell'app in basso.
+• Sistemazione della posizione dello scorrimento del cassetto di navigazione su Android <= 14 (API <= 34).
+• Disabilitato l'utilizzo della cache web.
