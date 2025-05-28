@@ -101,6 +101,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.scale
+import androidx.core.net.toUri
+import androidx.core.view.isGone
 import androidx.core.view.GravityCompat
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.drawerlayout.widget.DrawerLayout
@@ -575,11 +578,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Store the saved instance state variables.  The deprecated `getParcelableArrayList` can be upgraded once the minimum API >= 33.
                 bookmarksDrawerPinned = savedInstanceState.getBoolean(BOOKMARKS_DRAWER_PINNED)
                 @Suppress("DEPRECATION")
-                savedStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_STATE_ARRAY_LIST)
-                @Suppress("DEPRECATION")
                 savedNestedScrollWebViewStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_NESTED_SCROLL_WEBVIEW_STATE_ARRAY_LIST)
-                savedTabPosition = savedInstanceState.getInt(SAVED_TAB_POSITION)
                 savedProxyMode = savedInstanceState.getString(PROXY_MODE)
+                @Suppress("DEPRECATION")
+                savedStateArrayList = savedInstanceState.getParcelableArrayList(SAVED_STATE_ARRAY_LIST)
+                savedTabPosition = savedInstanceState.getInt(SAVED_TAB_POSITION)
             }
 
             // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
@@ -2100,7 +2103,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     startActivity(domainsIntent)
                 } else {  // Add a new domain.
                     // Get the current URI.
-                    val currentUri = Uri.parse(currentWebView!!.url)
+                    val currentUri = currentWebView!!.url!!.toUri()
 
                     // Get the current domain from the URI.  Use an empty string if it is null.
                     val currentDomain = currentUri.host?: ""
@@ -2340,7 +2343,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         val genericFileManagerIntent = Intent(Intent.ACTION_VIEW)
 
                         // Open the download directory.
-                        genericFileManagerIntent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()), DocumentsContract.Document.MIME_TYPE_DIR)
+                        genericFileManagerIntent.setDataAndType(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString().toUri(), DocumentsContract.Document.MIME_TYPE_DIR)
 
                         // Launch as a new task so that the file manager and Privacy Browser show as separate windows in the recent tasks list.
                         genericFileManagerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -2354,7 +2357,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             val alternateFileManagerIntent = Intent(Intent.ACTION_VIEW)
 
                             // Open the download directory.
-                            alternateFileManagerIntent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()), "resource/folder")
+                            alternateFileManagerIntent.setDataAndType(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString().toUri(), "resource/folder")
 
                             // Launch as a new task so that the file manager and Privacy Browser show as separate windows in the recent tasks list.
                             alternateFileManagerIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -2882,7 +2885,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     val emailIntent = Intent(Intent.ACTION_SENDTO)
 
                     // Parse the url and set it as the data for the intent.
-                    emailIntent.data = Uri.parse("mailto:$linkUrl")
+                    emailIntent.data = "mailto:$linkUrl".toUri()
 
                     // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
                     emailIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -3196,7 +3199,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         nestedScrollWebView.currentUrl = url!!
 
         // Parse the URL into a URI.
-        val uri = Uri.parse(url)
+        val uri = url.toUri()
 
         // Extract the domain from the URI.
         var newHostName = uri.host
@@ -3242,7 +3245,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     nestedScrollWebView.previousWebpageTitle = tabTitleTextView.text.toString()
 
                     // Set the default favorite icon as the favorite icon for this tab.
-                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteIcon(), 128, 128, true))
+                    tabFavoriteIconImageView.setImageBitmap(nestedScrollWebView.getFavoriteIcon().scale(128, 128))
 
                     // Set the loading title text.
                     tabTitleTextView.setText(R.string.loading)
@@ -5168,7 +5171,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Only update the favorite icon if the website has finished loading and the new favorite icon height is greater than the current favorite icon height.
                 // This prevents low resolution icons from replacing high resolution one.
                 // The check for the visibility of the progress bar can possibly be removed once https://redmine.stoutner.com/issues/747 is fixed.
-                if ((progressBar.visibility == View.GONE) && (icon.height > nestedScrollWebView.getFavoriteIconHeight())) {
+                if ((progressBar.isGone) && (icon.height > nestedScrollWebView.getFavoriteIconHeight())) {
                     // Store the new favorite icon.
                     nestedScrollWebView.setFavoriteIcon(icon)
 
@@ -5189,7 +5192,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             val tabFavoriteIconImageView = tabView.findViewById<ImageView>(R.id.favorite_icon_imageview)
 
                             // Display the favorite icon in the tab.
-                            tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(icon, 128, 128, true))
+                            tabFavoriteIconImageView.setImageBitmap(icon.scale(128, 128))
                         }
                     }
                 }
@@ -5348,7 +5351,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     val emailIntent = Intent(Intent.ACTION_SENDTO)
 
                     // Parse the url and set it as the data for the intent.
-                    emailIntent.data = Uri.parse(requestUrlString)
+                    emailIntent.data = requestUrlString.toUri()
 
                     // Open the email program in a new task instead of as part of Privacy Browser.
                     emailIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -5368,7 +5371,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     val dialIntent = Intent(Intent.ACTION_DIAL)
 
                     // Add the phone number to the intent.
-                    dialIntent.data = Uri.parse(requestUrlString)
+                    dialIntent.data = requestUrlString.toUri()
 
                     // Open the dialer in a new task instead of as part of Privacy Browser.
                     dialIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -5388,7 +5391,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     val genericIntent = Intent(Intent.ACTION_VIEW)
 
                     // Add the URL to the intent.
-                    genericIntent.data = Uri.parse(requestUrlString)
+                    genericIntent.data = requestUrlString.toUri()
 
                     // List all apps that can handle the URL instead of just opening the first one.
                     genericIntent.addCategory(Intent.CATEGORY_BROWSABLE)
@@ -5818,7 +5821,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 nestedScrollWebView.currentIpAddresses = ""
 
                 // Get a URI for the current URL.
-                val currentUri = Uri.parse(url)
+                val currentUri = url.toUri()
 
                 // Get the current domain name.
                 val currentDomainName = currentUri.host
@@ -5853,15 +5856,15 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         optionsRefreshMenuItem.setIcon(R.drawable.refresh_enabled)
                 }
 
+                // Clear the cache.  `true` includes disk files.
+                nestedScrollWebView.clearCache(true)
+                
                 // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,
                 // which links to `/data/data/com.stoutner.privacybrowser.standard`.
                 val privateDataDirectoryString = applicationInfo.dataDir
 
-                // Clear the cache, history, and logcat if Incognito Mode is enabled.
+                // Clear the history, and logcat if Incognito Mode is enabled.
                 if (incognitoModeEnabled) {
-                    // Clear the cache.  `true` includes disk files.
-                    nestedScrollWebView.clearCache(true)
-
                     // Clear the back/forward history.
                     nestedScrollWebView.clearHistory()
 
@@ -6133,7 +6136,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
     private fun loadUrlFromTextBox() {
         // Get the text from URL text box and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
-        var unformattedUrlString = urlEditText.text.toString().trim { it <= ' ' }
+        var unformattedUrlString = urlEditText.text.toString().trim()
 
         // Create the formatted URL string.
         var urlString = ""
@@ -6227,7 +6230,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             currentWebView!!.setFavoriteIcon(previousFavoriteIcon)
 
         // Display the previous favorite icon in the tab.
-        tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(currentWebView!!.getFavoriteIcon(), 128, 128, true))
+        tabFavoriteIconImageView.setImageBitmap(currentWebView!!.getFavoriteIcon().scale(128, 128))
 
         // Load the history entry.
         currentWebView!!.goBackOrForward(steps)
@@ -6267,7 +6270,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         if (mhtCheckBox.isChecked) {  // Force opening of an MHT file.
             try {
                 // Get the MHT file input stream.
-                val mhtFileInputStream = contentResolver.openInputStream(Uri.parse(openFilePath))
+                val mhtFileInputStream = contentResolver.openInputStream(openFilePath.toUri())
 
                 // Create a temporary MHT file.
                 val temporaryMhtFile = File.createTempFile(TEMPORARY_MHT_FILE, ".mht", cacheDir)
@@ -6315,7 +6318,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val openWithAppIntent = Intent(Intent.ACTION_VIEW)
 
         // Set the URI but not the MIME type.  This should open all available apps.
-        openWithAppIntent.data = Uri.parse(url)
+        openWithAppIntent.data = url.toUri()
 
         // Flag the intent to open in a new task.
         openWithAppIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -6336,7 +6339,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val openWithBrowserIntent = Intent(Intent.ACTION_VIEW)
 
         // Set the URI and the MIME type.  `"text/html"` should load browser options.
-        openWithBrowserIntent.setDataAndType(Uri.parse(url), "text/html")
+        openWithBrowserIntent.setDataAndType(url.toUri(), "text/html")
 
         // Flag the intent to open in a new task.
         openWithBrowserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -6389,7 +6392,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
 
         // Parse the URL.
-        val downloadRequest = DownloadManager.Request(Uri.parse(saveUrlString))
+        val downloadRequest = DownloadManager.Request(saveUrlString.toUri())
 
         // Pass cookies to download manager if cookies are enabled.  This is required to download files from websites that require a login.
         // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
@@ -6432,7 +6435,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val downloadIntent = Intent()
 
         // Set the URI and the mime type.
-        downloadIntent.setDataAndType(Uri.parse(url), "text/html")
+        downloadIntent.setDataAndType(url.toUri(), "text/html")
 
         // Flag the intent to open in a new task.
         downloadIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

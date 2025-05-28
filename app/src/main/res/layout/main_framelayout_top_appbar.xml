@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2017, 2019-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2017, 2019-2025 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -196,8 +196,8 @@
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <!-- The navigation drawer.
-              `topInsetScrimEnabled="false"` disables the scrim that draws under display cutouts (even thought the white space is maintained).
-               bottomInsetScrimEnabled="false" disables the scrim that draws under the navigation bar.  It is only needed on API < 35. -->
+                `topInsetScrimEnabled="false"` disables the scrim that draws under display cutouts (even thought the white space is maintained).
+                `bottomInsetScrimEnabled="false"` disables the scrim that draws under the navigation bar.  It is only needed on API < 35. -->
             <com.google.android.material.navigation.NavigationView
                 android:id="@+id/navigationview"
                 android:layout_height="match_parent"

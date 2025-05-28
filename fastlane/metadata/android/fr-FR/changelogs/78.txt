@@ -1,0 +1,1 @@
+• Correction de l'agencement du tiroir des favoris sur Android <= 10 (API <= 29).

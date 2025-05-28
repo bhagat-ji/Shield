@@ -1,20 +1,20 @@
-/*
- * Copyright 2019-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2019-2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
@@ -62,7 +62,7 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 // Define the class constants.
-private const val SCROLL_Y = "A"
+private const val SCROLL_Y = "scroll_y"
 
 class LogcatActivity : AppCompatActivity() {
     // Declare the class variables.
@@ -139,9 +139,9 @@ class LogcatActivity : AppCompatActivity() {
 
         // Get handles for the views.
         toolbar = findViewById(R.id.toolbar)
-        val searchCountTextView = findViewById<TextView>(R.id.search_count_textview)
         searchLinearLayout = findViewById(R.id.search_linearlayout)
         searchEditText = findViewById(R.id.search_edittext)
+        val searchCountTextView = findViewById<TextView>(R.id.search_count_textview)
         swipeRefreshLayout = findViewById(R.id.swiperefreshlayout)
         logcatWebView = findViewById(R.id.logcat_webview)
 
@@ -335,24 +335,6 @@ class LogcatActivity : AppCompatActivity() {
         outState.putInt(SCROLL_Y, logcatWebView.scrollY)
     }
 
-    // The view parameter cannot be removed because it is called from the layout onClick.
-    fun closeSearch(@Suppress("UNUSED_PARAMETER")view: View?) {
-        // Delete the contents of the search edit text.
-        searchEditText.text = null
-
-        // Clear the highlighted phrases in the logcat WebView.
-        logcatWebView.clearMatches()
-
-        // Hide the search linear layout.
-        searchLinearLayout.visibility = View.GONE
-
-        // Show the toolbar.
-        toolbar.visibility = View.VISIBLE
-
-        // Hide the keyboard.
-        inputMethodManager.hideSoftInputFromWindow(toolbar.windowToken, 0)
-    }
-
     private fun populateLogcat() {
         try {
             // Get the logcat.  `-b all` gets all the buffers (instead of just crash, main, and system).  `-v long` produces more complete information.  `-d` dumps the logcat and exits.
@@ -447,6 +429,24 @@ class LogcatActivity : AppCompatActivity() {
 
         // Stop the swipe to refresh animation if it is displayed.
         swipeRefreshLayout.isRefreshing = false
+    }
+
+    // The view parameter cannot be removed because it is called from the layout onClick.
+    fun closeSearch(@Suppress("UNUSED_PARAMETER")view: View?) {
+        // Delete the contents of the search edit text.
+        searchEditText.text = null
+
+        // Clear the highlighted phrases in the logcat WebView.
+        logcatWebView.clearMatches()
+
+        // Hide the search linear layout.
+        searchLinearLayout.visibility = View.GONE
+
+        // Show the toolbar.
+        toolbar.visibility = View.VISIBLE
+
+        // Hide the keyboard.
+        inputMethodManager.hideSoftInputFromWindow(toolbar.windowToken, 0)
     }
 
     // The view parameter cannot be removed because it is called from the layout onClick.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2025 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
  *
@@ -65,6 +65,8 @@ import com.stoutner.privacybrowser.helpers.ID
 import com.stoutner.privacybrowser.helpers.PARENT_FOLDER_ID
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 
+import androidx.core.graphics.scale
+
 import java.io.ByteArrayOutputStream
 
 // Define the class constants.
@@ -124,7 +126,7 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
 
                 // Scale the image down if it is greater than 128 pixels in either direction.
                 if ((imageBitmap != null) && ((imageBitmap.height > 128) || (imageBitmap.width > 128)))
-                    imageBitmap = Bitmap.createScaledBitmap(imageBitmap, 128, 128, true)
+                    imageBitmap = imageBitmap.scale(128, 128)
 
                 // Display the new custom favorite icon.
                 customIconImageView.setImageBitmap(imageBitmap)
@@ -263,7 +265,7 @@ class EditBookmarkDatabaseViewDialog : DialogFragment() {
         val matrixCursor = MatrixCursor(matrixCursorColumnNamesArray)
 
         // Add `Home Folder` as the first entry in the matrix folder.
-        matrixCursor.addRow(arrayOf(HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder), HOME_FOLDER_ID))
+        matrixCursor.addRow(arrayOf<Any>(HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder), HOME_FOLDER_ID))
 
         // Get a cursor with the list of all the folders.
         val foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(listOf())

@@ -1,0 +1,3 @@
+• Correction d'un plantage sur certains appareils lors de l'utilisation de la barre d'applications du bas.
+• Correction de la position de défilement du tiroir de navigation sur Android <= 14 (API <= 34).
+• Désactivation de l'utilisation du cache web.

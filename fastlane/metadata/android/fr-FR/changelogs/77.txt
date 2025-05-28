@@ -1,0 +1,1 @@
+• Correction d'un plantage lors de l'ouverture des vues "À propos" ou "Importer/Exporter" lorsque les applications tierces ne sont pas installées.
