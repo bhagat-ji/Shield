@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2019-2020, 2022-2023 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2019-2020, 2022-2023, 2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -143,11 +143,11 @@ class WebViewTabFragment : Fragment() {
                 val savedState = requireArguments().getBundle(SAVED_STATE)!!
                 val savedNestedScrollWebViewState = requireArguments().getBundle(SAVED_NESTED_SCROLL_WEBVIEW_STATE)!!
 
-                // Restore the nested scroll WebView state.
-                nestedScrollWebView.restoreNestedScrollWebViewState(savedNestedScrollWebViewState)
-
                 // Restore the WebView state.
                 nestedScrollWebView.restoreState(savedState)
+
+                // Restore the nested scroll WebView state.
+                nestedScrollWebView.restoreNestedScrollWebViewState(savedNestedScrollWebViewState)
 
                 // Initialize the WebView.
                 newTabListener.initializeWebView(nestedScrollWebView, 0, progressBar, "", true)

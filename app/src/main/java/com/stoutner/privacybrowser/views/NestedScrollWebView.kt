@@ -1,20 +1,20 @@
-/*
- * Copyright 2019-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2019-2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.views
@@ -31,6 +31,7 @@ import android.webkit.HttpAuthHandler
 import android.webkit.SslErrorHandler
 import android.webkit.WebView
 
+import androidx.core.graphics.scale
 import androidx.core.view.NestedScrollingChild2
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
@@ -53,35 +54,36 @@ const val ULTRAPRIVACY = 6
 const val THIRD_PARTY_REQUESTS = 7
 
 // Define the private class constants.
-private const val ACCEPT_COOKIES = "A"
-private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "B"
-private const val CURRENT_DOMAIN_NAME = "C"
-private const val CURRENT_URL = "D"
-private const val DOM_STORAGE_ENABLED = "E"
-private const val DOMAIN_SETTINGS_APPLIED = "F"
-private const val DOMAIN_SETTINGS_DATABASE_ID = "G"
-private const val EASYLIST_ENABLED = "H"
-private const val EASYPRIVACY_ENABLED = "I"
-private const val FANBOYS_ANNOYANCE_LIST_ENABLED = "J"
-private const val FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED = "K"
-private const val FONT_SIZE = "L"
-private const val HAS_PINNED_SSL_CERTIFICATE = "M"
-private const val IGNORE_PINNED_DOMAIN_INFORMATION = "N"
-private const val JAVASCRIPT_ENABLED = "O"
-private const val PINNED_IP_ADDRESSES = "P"
-private const val PINNED_SSL_END_DATE = "Q"
-private const val PINNED_SSL_ISSUED_BY_CNAME = "R"
-private const val PINNED_SSL_ISSUED_BY_ONAME = "S"
-private const val PINNED_SSL_ISSUED_BY_UNAME = "T"
-private const val PINNED_SSL_ISSUED_TO_CNAME = "U"
-private const val PINNED_SSL_ISSUED_TO_ONAME = "V"
-private const val PINNED_SSL_ISSUED_TO_UNAME = "W"
-private const val PINNED_SSL_START_DATE = "X"
-private const val SWIPE_TO_REFRESH = "Y"
-private const val ULTRALIST_ENABLED = "Z"
-private const val ULTRAPRIVACY_ENABLED = "AA"
-private const val USER_AGENT = "AB"
-private const val WIDE_VIEWPORT = "AC"
+private const val ACCEPT_COOKIES = "accept_cookies"
+private const val BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests"
+private const val CURRENT_DOMAIN_NAME = "current_domain_name"
+private const val CURRENT_URL = "current_url"
+private const val DOM_STORAGE_ENABLED = "dom_storage_enabled"
+private const val DOMAIN_SETTINGS_APPLIED = "domain_settings_applied"
+private const val DOMAIN_SETTINGS_DATABASE_ID = "domain_settings_database_id"
+private const val DISPLAY_IMAGES = "display_images"
+private const val EASYLIST_ENABLED = "easylist_enabled"
+private const val EASYPRIVACY_ENABLED = "easyprivacy_enabled"
+private const val FANBOYS_ANNOYANCE_LIST_ENABLED = "fanboys_annoyance_list_enabled"
+private const val FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED = "fanboys_social_blocking_list_enabled"
+private const val FONT_SIZE = "font_size"
+private const val HAS_PINNED_SSL_CERTIFICATE = "has_pinned_ssl_certificate"
+private const val IGNORE_PINNED_DOMAIN_INFORMATION = "ignore_pinned_domain_information"
+private const val JAVASCRIPT_ENABLED = "javascript_enabled"
+private const val PINNED_IP_ADDRESSES = "pinned_ip_addresses"
+private const val PINNED_SSL_END_DATE = "pinned_ssl_end_date"
+private const val PINNED_SSL_ISSUED_BY_CNAME = "pinned_ssl_issued_by_cname"
+private const val PINNED_SSL_ISSUED_BY_ONAME = "pinned_ssl_issued_by_oname"
+private const val PINNED_SSL_ISSUED_BY_UNAME = "pinned_ssl_issued_by_uname"
+private const val PINNED_SSL_ISSUED_TO_CNAME = "pinned_ssl_issued_to_cname"
+private const val PINNED_SSL_ISSUED_TO_ONAME = "pinned_ssl_issued_to_oname"
+private const val PINNED_SSL_ISSUED_TO_UNAME = "pinned_ssl_issued_to_uname"
+private const val PINNED_SSL_START_DATE = "pinned_ssl_start_date"
+private const val SWIPE_TO_REFRESH = "swipe_to_refresh"
+private const val ULTRALIST_ENABLED = "ultralist_enabled"
+private const val ULTRAPRIVACY_ENABLED = "ultraprivacy_enabled"
+private const val USER_AGENT = "user_agent"
+private const val WIDE_VIEWPORT = "wide_viewport"
 
 // NestedScrollWebView extends WebView to handle nested scrolls (scrolling the app bar off the screen).  It also stores extra information about the state of the WebView used by Privacy Browser.
 class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defaultStyle: Int = android.R.attr.webViewStyle) : WebView(context, attributeSet, defaultStyle),
@@ -158,7 +160,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
 
         // Scale the favorite icon bitmap down if it is larger than 128 in either direction.  Filtering uses bilinear interpolation.
         favoriteIcon = if (icon.height > 128 || icon.width > 128)  // Scale the icon before storing it.
-            Bitmap.createScaledBitmap(icon, 128, 128, true)
+            icon.scale(128, 128)
         else  // Store the icon as presented.
             icon
     }
@@ -394,6 +396,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         savedState.putBoolean(DOM_STORAGE_ENABLED, this.settings.domStorageEnabled)
         savedState.putBoolean(DOMAIN_SETTINGS_APPLIED, domainSettingsApplied)
         savedState.putInt(DOMAIN_SETTINGS_DATABASE_ID, domainSettingsDatabaseId)
+        savedState.putBoolean(DISPLAY_IMAGES, settings.loadsImagesAutomatically)
         savedState.putBoolean(EASYLIST_ENABLED, easyListEnabled)
         savedState.putBoolean(EASYPRIVACY_ENABLED, easyPrivacyEnabled)
         savedState.putBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED, fanboysAnnoyanceListEnabled)
@@ -431,6 +434,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         this.settings.domStorageEnabled = savedState.getBoolean(DOM_STORAGE_ENABLED)
         domainSettingsApplied = savedState.getBoolean(DOMAIN_SETTINGS_APPLIED)
         domainSettingsDatabaseId = savedState.getInt(DOMAIN_SETTINGS_DATABASE_ID)
+        settings.loadsImagesAutomatically = savedState.getBoolean(DISPLAY_IMAGES)
         easyListEnabled = savedState.getBoolean(EASYLIST_ENABLED)
         easyPrivacyEnabled = savedState.getBoolean(EASYPRIVACY_ENABLED)
         fanboysAnnoyanceListEnabled = savedState.getBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED)

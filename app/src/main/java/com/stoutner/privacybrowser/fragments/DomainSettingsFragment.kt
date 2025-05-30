@@ -1,20 +1,20 @@
-/*
- * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2017-2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.fragments
@@ -47,6 +47,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 
@@ -885,7 +886,7 @@ class DomainSettingsFragment : Fragment() {
             }
 
             // Set the status of the radio buttons and the card view backgrounds.
-            if (savedSslCardView.visibility == View.VISIBLE) {  // The saved SSL certificate is displayed.
+            if (savedSslCardView.isVisible) {  // The saved SSL certificate is displayed.
                 // Check the saved SSL certificate radio button.
                 savedSslCertificateRadioButton.isChecked = true
 
@@ -894,7 +895,7 @@ class DomainSettingsFragment : Fragment() {
 
                 // Darken the background of the current website SSL certificate linear layout.
                 currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.translucent_background)
-            } else if (currentSslCardView.visibility == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+            } else if (currentSslCardView.isVisible) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
                 // Check the current website SSL certificate radio button.
                 currentWebsiteCertificateRadioButton.isChecked = true
 
@@ -932,7 +933,7 @@ class DomainSettingsFragment : Fragment() {
             currentIpAddressesCardView.visibility = View.VISIBLE
 
             // Set the status of the radio buttons and the card view backgrounds.
-            if (savedIpAddressesCardView.visibility == View.VISIBLE) {  // The saved IP addresses are displayed.
+            if (savedIpAddressesCardView.isVisible) {  // The saved IP addresses are displayed.
                 // Check the saved IP addresses radio button.
                 savedIpAddressesRadioButton.isChecked = true
 
@@ -1358,7 +1359,7 @@ class DomainSettingsFragment : Fragment() {
                 }
 
                 // Set the status of the radio buttons.
-                if (savedSslCardView.visibility == View.VISIBLE) {  // The saved SSL certificate is displayed.
+                if (savedSslCardView.isVisible) {  // The saved SSL certificate is displayed.
                     // Check the saved SSL certificate radio button.
                     savedSslCertificateRadioButton.isChecked = true
 
@@ -1373,7 +1374,7 @@ class DomainSettingsFragment : Fragment() {
 
                     // Scroll to the current website SSL certificate card.
                     savedSslCardView.parent.requestChildFocus(savedSslCardView, savedSslCardView)
-                } else if (currentSslCardView.visibility == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+                } else if (currentSslCardView.isVisible) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
                     // Check the current website SSL certificate radio button.
                     currentWebsiteCertificateRadioButton.isChecked = true
 
@@ -1485,7 +1486,7 @@ class DomainSettingsFragment : Fragment() {
                 currentIpAddressesCardView.visibility = View.VISIBLE
 
                 // Set the status of the radio buttons.
-                if (savedIpAddressesCardView.visibility == View.VISIBLE) {  // The saved IP addresses are visible.
+                if (savedIpAddressesCardView.isVisible) {  // The saved IP addresses are visible.
                     // Check the saved IP addresses radio button.
                     savedIpAddressesRadioButton.isChecked = true
 

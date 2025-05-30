@@ -1,26 +1,25 @@
-/*
- * Copyright © 2021-2023 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2021-2023, 2025 Soren Stoutner <soren@stoutner.com>
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.adapters
 
 import android.content.Context
-import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -29,6 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
+import androidx.core.net.toUri
 import androidx.viewpager.widget.PagerAdapter
 
 import com.stoutner.privacybrowser.R
@@ -99,7 +99,7 @@ class PinnedMismatchPagerAdapter(private val context: Context, private val layou
         val endDateLabel = context.getString(R.string.end_date)
 
         // Convert the URL to a URI.
-        val currentUri = Uri.parse(nestedScrollWebView.url)
+        val currentUri = nestedScrollWebView.url!!.toUri()
 
         // Get the current host from the URI.
         val domainName = currentUri.host
