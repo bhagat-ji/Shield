@@ -1,20 +1,20 @@
-/*
- * Copyright 2019-2023 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2019-2023, 2025 Soren Stoutner <soren@stoutner.com>
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.dialogs
@@ -23,6 +23,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -35,6 +36,7 @@ import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -128,6 +130,12 @@ class OpenDialog : DialogFragment() {
         // Initially disable the open button.
         openButton.isEnabled = false
 
+        // Only display the MHT check box if the API <= 34 (Android 14).
+        if (Build.VERSION.SDK_INT <= 34)
+            mhtCheckBox.visibility = View.VISIBLE
+        else
+            mhtCheckBox.visibility = View.GONE
+
         // Update the status of the open button when the file name changes.
         fileNameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
@@ -182,6 +190,6 @@ class OpenDialog : DialogFragment() {
         super.onSaveInstanceState(savedInstanceState)
 
         // Add the MHT explanation visibility status to the bundle.
-        savedInstanceState.putBoolean(MHT_EXPLANATION_VISIBILITY, mhtExplanationTextView.visibility == View.VISIBLE)
+        savedInstanceState.putBoolean(MHT_EXPLANATION_VISIBILITY, mhtExplanationTextView.isVisible)
     }
 }

@@ -1,20 +1,20 @@
-/*
- * Copyright 2016-2023 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2016-2023, 2025 Soren Stoutner <soren@stoutner.com>
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.dialogs
@@ -22,8 +22,6 @@ package com.stoutner.privacybrowser.dialogs
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -32,6 +30,8 @@ import android.view.WindowManager
 import android.widget.TextView
 
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
@@ -138,7 +138,7 @@ class ViewSslCertificateDialog : DialogFragment() {
             // Populate the certificate class variables if the webpage has an SSL certificate.
             if (hasSslCertificate) {
                 // Convert the URL to a URI.
-                val uri = Uri.parse(nestedScrollWebView.currentUrl)
+                val uri = nestedScrollWebView.currentUrl.toUri()
 
                 // Extract the domain name from the URI.
                 domainString = uri.host!!
@@ -184,7 +184,7 @@ class ViewSslCertificateDialog : DialogFragment() {
         val favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.size)
 
         // Create a drawable version of the favorite icon.
-        val favoriteIconDrawable = BitmapDrawable(resources, favoriteIconBitmap)
+        val favoriteIconDrawable = favoriteIconBitmap.toDrawable(resources)
 
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable)
