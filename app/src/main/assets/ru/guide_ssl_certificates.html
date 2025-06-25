@@ -1,24 +1,26 @@
 <!--
-  Copyright © 2017-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2017-2020, 2022, 2025 Soren Stoutner <soren@stoutner.com>
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="ru">
     <head>
         <meta charset="UTF-8">
+        <title>SSL Certificates</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -39,14 +41,14 @@
         <p>Закрепление сертификата SSL указывает браузеру, что для определенного домена должен быть доверен только один определенный сертификат SSL.
             Любой другой сертификат, даже если он действителен, будет отклонен.</p>
 
-        <img class="center" src="images/pinned_mismatch.png"/>
+        <img class="center" src="images/pinned_mismatch.png" alt="Pinned Mismatch"/>
 
         <p>Срок действия сертификатов SSL истекает в указанную дату, поэтому даже закрепленные сертификаты SSL будут периодически обновляться.
             Как правило, закрепление сертификатов SSL в большинстве случаев не требуется.
             Но для того, кто подозревает, что за ним ведется наблюдение, закрепление сертификата SSL поможет обнаружить и помешать атаке MITM.
             Privacy Browser также имеет возможность закрепления IP-адресов.</p>
 
-        <img class="center" src="images/pinned_ssl_certificate.png"/>
+        <img class="center" src="images/pinned_ssl_certificate.png" alt="Pinned SSL Certificate"/>
 
         <p>Сертификаты SSL могут быть закреплены в настройках домена.
             Помимо защиты от атак MITM, закрепление самоподписанного сертификата для устройства, такого как беспроводной маршрутизатор или точка доступа, удалит сообщение об ошибке,

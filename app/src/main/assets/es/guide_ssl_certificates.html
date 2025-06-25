@@ -1,26 +1,28 @@
 <!--
-  Copyright © 2017-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2017-2020, 2022 Soren Stoutner <soren@stoutner.com>
 
-  Translation 2017,2019 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017, 2019 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="es">
     <head>
         <meta charset="UTF-8">
+        <title>SSL Certificates</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -42,14 +44,14 @@
         <p>Al fijar un certificado SSL se le indica al navegador que sólo se puede confiar en un certificado SSL específico para un dominio en particular.
             Cualquier otro certificado, aunque sea válido, será rechazado.</p>
 
-        <img class="center" src="images/pinned_mismatch.png"/>
+        <img class="center" src="images/pinned_mismatch.png" alt="Pinned Mismatch"/>
 
         <p>Los certificados SSL expiran en una fecha especificada, por lo que incluso los certificados SSL fijados necesitarán legítimamente ser actualizados de vez en cuando.
             Como regla general, fijar los certificados SSL probablemente no sea necesario en la mayoría de los casos.
             Pero para aquellos que sospechan que organizaciones poderosas puedan estar apuntando hacia ellos, la fijación de certificados SSL puede detectar y frustar un ataque MITM.
             Navegador Privado también tiene la capacidad de fijar direcciones IP.</p>
 
-        <img class="center" src="images/pinned_ssl_certificate.png"/>
+        <img class="center" src="images/pinned_ssl_certificate.png" alt="Pinned SSL Certificate"/>
 
         <p>Los certificados SSL pueden ser fijados en Configuración de Dominios.
             Además de proteger contra ataques MITM,

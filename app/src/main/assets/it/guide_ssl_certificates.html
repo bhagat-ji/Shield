@@ -1,26 +1,28 @@
 <!--
-  Copyright © 2017-2020,2022 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2017-2020, 2022, 2025 Soren Stoutner <soren@stoutner.com>
 
-  Translation 2017,2019 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017, 2019 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="it">
     <head>
         <meta charset="UTF-8">
+        <title>SSL Certificates</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -43,14 +45,14 @@
         <p>Lo scopo di appuntare un certificato SSL è quello di dire al browser che solo un determinato certificato SSL è fidato per un particolare dominio.
             Qualsiasi altro certificato, per quanto valido, sarà rifiutato.</p>
 
-        <img class="center" src="images/pinned_mismatch.png"/>
+        <img class="center" src="images/pinned_mismatch.png" alt="Pinned Mismatch"/>
 
         <p>I certificati SSL scadono in corrispondenza di una data specifica, così anche i certificati che sono stati appuntati dovranno essere aggiornati regolarmente.
             Come regola generale, nella maggioranza dei casi, appuntare un certificato SSL non dovrebbe essere necessario.
             Per coloro che sospettano però di essere sorvegliati da qualche organizzazione, appuntare il certificato SSL può permettere di scoprire e sventare un attacco "MITM".
             Privacy Browser permette anche di appuntare gli indirizzi IP.</p>
 
-        <img class="center" src="images/pinned_ssl_certificate.png"/>
+        <img class="center" src="images/pinned_ssl_certificate.png" alt="Pinned SSL Certificate"/>
 
         <p>I certificati SSL possono essere appuntati nelle impostazioni dei domini.
             Oltre a proteggere dagli attacchi “MITM”,

@@ -1,26 +1,28 @@
 <!--
-  Copyright 2017-2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2017-2020, 2022-2023, 2025 Soren Stoutner <soren@stoutner.com>
 
   Translation 2023 Xin.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
-<html>
+<html lang="zh">
     <head>
         <meta charset="UTF-8">
+        <title>SSL Certificate</title>
 
         <link rel="stylesheet" href="../css/theme.css">
 
@@ -36,11 +38,11 @@
 
         <p>固定的证书告诉浏览器一个域名只有一个SSL证书值得信任。其他的证书及时是合法的也会被拒绝。</p>
 
-        <img class="center" src="images/pinned_mismatch.png"/>
+        <img class="center" src="images/pinned_mismatch.png" alt="Pinned Mismatch"/>
 
         <p>SSL证书会在一个指定的日期到期，所以即使是一个固定的SSL证书也需要合法的更新。通常，在大部分使用中不需要固定的证书，但对于那些认为会被攻击的大公司来说，固定的证书可以阻止MITM攻击。隐私浏览器也提供固定IP的功能。</p>
 
-        <img class="center" src="images/pinned_ssl_certificate.png"/>
+        <img class="center" src="images/pinned_ssl_certificate.png" alt="Pinned SSL Certificate"/>
 
         <p>SSL证书可以在域名设置中固定。除了防御MITM攻击，为无线路由器或接入点等设备固定自己签名的证书通常可以消除在每次加载其网站时出现的错误消息。点击活动选项卡会显示当前网站的 SSL 证书。</p>
     </body>
