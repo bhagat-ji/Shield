@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2018-2022, 2024-2025 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2025 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -21,39 +21,51 @@
 
 <!-- `android:fitsSystemWindows="true"` is required for correct layout starting with API >= 35 (Android 15) -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/requests_coordinatorlayout"
+    android:id="@+id/filter_lists_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true" >
 
-    <!-- The linear layout with `orientation="vertical"` keeps the content above the app bar layout. -->
+    <!-- The linear layout with `orientation="vertical"` moves the content below the app bar layout. -->
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- `android:dividerHeight` must be at least `1dp` or the list view is inconsistent in calculating how many requests are displayed. -->
-        <ListView
-            android:id="@+id/requests_listview"
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:divider="@color/transparent"
-            android:dividerHeight="1dp" />
-
         <!-- The app bar theme must be specified here because the activity uses a `NoActionBar` theme. -->
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/requests_appbarlayout"
+            android:id="@+id/filter_lists_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:background="?android:attr/colorBackground"
             android:theme="@style/PrivacyBrowserAppBar" >
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/requests_toolbar"
+                android:id="@+id/filter_lists_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <!-- The sublist spinner. -->
+                <Spinner
+                    android:id="@+id/filter_sublist_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="15dp" />
+            </LinearLayout>
         </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- `android:dividerHeight` must be at least `1dp` or the list view is inconsistent in calculating how many entries are displayed. -->
+        <ListView
+            android:id="@+id/filter_list_listview"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:divider="@color/transparent"
+            android:dividerHeight="1dp" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

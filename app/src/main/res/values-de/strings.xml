@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2016-2026 Soren Stoutner <soren@stoutner.com>
 
   Translation 2019-2024 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
@@ -53,12 +53,11 @@
     <string name="apply">Anwenden</string>
 
     <!-- Loading Filter Lists. -->
-    <string name="loading_easylist">Lade EasyList</string>
-    <string name="loading_easyprivacy">Lade EasyPrivacy</string>
-    <string name="loading_fanboys_annoyance_list">Lade Fanboy’s Annoyance Filterliste</string>
-    <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking Filterliste</string>
-    <string name="loading_ultralist">Lade UltraList</string>
     <string name="loading_ultraprivacy">Lade UltraPrivacy</string>
+    <string name="loading_ultralist">Lade UltraList</string>
+    <string name="loading_easyprivacy">Lade EasyPrivacy</string>
+    <string name="loading_easylist">Lade EasyList</string>
+    <string name="loading_fanboys_annoyance_list">Lade Fanboy’s Annoyance Filterliste</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Website-Icon</string>
@@ -139,7 +138,6 @@
         <string name="clear_cookies">Cookies löschen</string>
         <string name="clear_dom_storage">DOM-Speicher löschen</string>
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
-        <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
         <string name="options_block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
     <string name="page">Seite</string>
         <string name="options_user_agent">User Agent</string>
@@ -322,29 +320,8 @@
     <string name="filterlist">Filter-Liste</string>
     <string name="sublist">Unterliste</string>
         <string name="main_allowlist">Haupt-Positiv-Liste</string>
-        <string name="final_allowlist">Finale Positiv-Liste</string>
-        <string name="domain_allowlist">Domain-Positiv-Liste</string>
-        <string name="domain_initial_allowlist">Domain-Beginn-Positiv-Liste</string>
-        <string name="domain_final_allowlist">Domain-Ende-Positiv-Liste</string>
-        <string name="third_party_allowlist">Drittanbieter-Positiv-Liste</string>
-        <string name="third_party_domain_allowlist">Drittanbieter-Domain-Positiv-Liste</string>
-        <string name="third_party_domain_initial_allowlist">Drittanbieter-Domain-Beginn-Positiv-Liste</string>
         <string name="main_blocklist">Haupt-Negativ-Liste</string>
-        <string name="initial_blocklist">Beginn-Negativ-Liste</string>
-        <string name="final_blocklist">Finale Negativ-Liste</string>
-        <string name="domain_blocklist">Domain-Negativ-Liste</string>
-        <string name="domain_initial_blocklist">Domain-Beginn-Negativ-Liste</string>
-        <string name="domain_final_blocklist">Domain-Ende-Negativ-Liste</string>
-        <string name="domain_regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke in Domains</string>
-        <string name="third_party_blocklist">Drittanbieter-Negativ-Liste</string>
-        <string name="third_party_initial_blocklist">Drittanbieter-Beginn-Negativ-Liste</string>
-        <string name="third_party_domain_blocklist">Drittanbieter-Domain-Negativ-Liste</string>
-        <string name="third_party_domain_initial_blocklist">Drittanbieter-Domain-Beginn-Negativ-Liste</string>
-        <string name="third_party_regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke in Drittanbietern</string>
-        <string name="third_party_domain_regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke in Drittanbieter-Domains</string>
         <string name="regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke</string>
-    <string name="filterlist_entries">Filter-Listen-Einträge</string>
-    <string name="filterlist_original_entry">Filter-Listen-Original-Eintrag</string>
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
@@ -373,35 +350,30 @@
         <item>DOM-Speicher aktiviert</item>
         <item>DOM-Speicher deaktiviert</item>
     </string-array>
-    <string-array name="easylist_array">
+    <string-array name="ultraprivacy_array">
         <item>Systemeinstellung</item>
-        <item>EasyList aktiviert</item>
-        <item>EasyList deaktiviert</item>
-    </string-array>
-    <string-array name="easyprivacy_array">
-        <item>Systemeinstellung</item>
-        <item>EasyPrivacy aktiviert</item>
-        <item>EasyPrivacy deaktiviert</item>
-    </string-array>
-    <string-array name="fanboys_annoyance_list_array">
-        <item>Systemeinstellung</item>
-        <item>Fanboy’s Annoyance Sperrliste aktiviert</item>
-        <item>Fanboy’s Annoyance Sperrliste deaktiviert</item>
-    </string-array>
-    <string-array name="fanboys_social_blocking_list_array">
-        <item>Systemeinstellung</item>
-        <item>Fanboy’s Social Blocking Sperrliste aktiviert</item>
-        <item>Fanboy’s Social Blocking Sperrliste deaktiviert</item>
+        <item>UltraPrivacy aktiviert</item>
+        <item>UltraPrivacy deaktiviert</item>
     </string-array>
     <string-array name="ultralist_array">
         <item>Systemeinstellung</item>
         <item>UltraList aktiviert</item>
         <item>UltraList deaktiviert</item>
     </string-array>
-    <string-array name="ultraprivacy_array">
+    <string-array name="easyprivacy_array">
         <item>Systemeinstellung</item>
-        <item>UltraPrivacy aktiviert</item>
-        <item>UltraPrivacy deaktiviert</item>
+        <item>EasyPrivacy aktiviert</item>
+        <item>EasyPrivacy deaktiviert</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>Systemeinstellung</item>
+        <item>EasyList aktiviert</item>
+        <item>EasyList deaktiviert</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>Systemeinstellung</item>
+        <item>Fanboy’s Annoyance Sperrliste aktiviert</item>
+        <item>Fanboy’s Annoyance Sperrliste deaktiviert</item>
     </string-array>
     <string-array name="block_all_third_party_requests_array">
         <item>Systemeinstellung</item>
@@ -525,12 +497,11 @@
             <string name="system_available_memory">für das System verfügbarer Speicher: \u0020</string>
             <string name="system_total_memory">gesamter System-Speicher: \u0020</string>
             <string name="mebibyte">MiB</string>
-            <string name="easylist_label">EasyList: \u0020</string>
-            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance Sperrliste: \u0020</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking Sperrliste: \u0020</string>
-            <string name="ultralist_label">UltraList: \u0020</string>
             <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance Sperrliste: \u0020</string>
         <string name="package_signature">Paket-Signatur</string>
             <string name="issuer_dn">Aussteller-DN: \u0020</string>
             <string name="subject_dn">Subject DN: \u0020</string>
@@ -591,18 +562,16 @@
         <string name="allow_screenshots">Screenshots zulassen</string>
         <string name="allow_screenshots_summary">Screenshots, Bildschirmvideos und Anzeige auf unsicheren Bildschirmen zulassen. Eine Änderung dieser Einstellung startet Privacy Browser neu.</string>
     <string name="filterlists">Filter-Listen</string>
-        <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Haupt-Filter-Liste für Werbung.</string>
-        <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Haupt-Filter-Liste für Tracker.</string>
-        <string name="fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
-        <string name="fanboys_annoyance_list_summary">Filtert störende Popups und Links. Beinhaltet Fanboy’s Social Blocking Lists.</string>
-        <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
-        <string name="fanboys_social_blocking_list_summary">Filtert Social-Media-Inhalte von Drittanbietern.</string>
-        <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">UltraList filtert Werbung, die von EasyList nicht gefiltert wird, da dies Internet-Seiten beeinträchtigen könnte.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy filtert Tracker, die von EasyPrivacy nicht gefiltert werden, da dies Internet-Seiten beeinträchtigen könnte.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList filtert Werbung, die von EasyList nicht gefiltert wird, da dies Internet-Seiten beeinträchtigen könnte.</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Haupt-Filter-Liste für Tracker.</string>
+        <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Haupt-Filter-Liste für Werbung.</string>
+        <string name="fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
+        <string name="fanboys_annoyance_list_summary">Filtert störende Popups und Links. Beinhaltet Fanboy’s Social Blocking Lists.</string>
         <string name="block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
         <string name="block_all_third_party_requests_summary">Alle Zugriffe auf Dritt-Anbieter-Inhalte zu blockieren verbessert die Privatsphäre, kann jedoch Webseiten verunstalten.</string>
     <string name="url_modification">URL-Bereinigung</string>

@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2026 Soren Stoutner <soren@stoutner.com>
 
   Translation 2019-2024 Kévin L. <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -51,12 +51,11 @@
     <string name="apply">Appliquer</string>
 
     <!-- Loading Filter Lists. -->
-    <string name="loading_easylist">Chargement EasyList</string>
-    <string name="loading_easyprivacy">Chargement EasyPrivacy</string>
-    <string name="loading_fanboys_annoyance_list">Chargement Fanboy’s Annoyance List</string>
-    <string name="loading_fanboys_social_blocking_list">Chargement Fanboy’s Social Blocking List</string>
-    <string name="loading_ultralist">Chargement UltraList</string>
     <string name="loading_ultraprivacy">Chargement UltraPrivacy</string>
+    <string name="loading_ultralist">Chargement UltraList</string>
+    <string name="loading_easyprivacy">Chargement EasyPrivacy</string>
+    <string name="loading_easylist">Chargement EasyList</string>
+    <string name="loading_fanboys_annoyance_list">Chargement Fanboy’s Annoyance List</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Icône de Favoris</string>
@@ -137,7 +136,6 @@
         <string name="clear_cookies">Effacer les cookies</string>
         <string name="clear_dom_storage">Effacer le stockage du DOM</string>
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-        <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">Bloquer toutes les requêtes tierces parties</string>
     <string name="page">Page</string>
         <string name="options_user_agent">User Agent</string>
@@ -320,29 +318,8 @@
     <string name="filterlist">Liste de filtre</string>
     <string name="sublist">Sous-listes</string>
         <string name="main_allowlist">Liste principale d\'autorisation</string>
-        <string name="final_allowlist">Liste finale d\'autorisation</string>
-        <string name="domain_allowlist">Liste d\'autorisation de domaine</string>
-        <string name="domain_initial_allowlist">Liste initiale d\'autorisation de domaine</string>
-        <string name="domain_final_allowlist">Liste finale d\'autorisation de domaine</string>
-        <string name="third_party_allowlist">Liste d\'autorisation de tiers</string>
-        <string name="third_party_domain_allowlist">Liste d\'autorisation de domaine tiers</string>
-        <string name="third_party_domain_initial_allowlist">Liste initiale d\'autorisation de domaine tiers</string>
         <string name="main_blocklist">Liste principale de blocage</string>
-        <string name="initial_blocklist">Liste initiale de blocage</string>
-        <string name="final_blocklist">Liste finale de blocage</string>
-        <string name="domain_blocklist">Liste de blocage de domaine</string>
-        <string name="domain_initial_blocklist">Liste initiale de blocage de domaine</string>
-        <string name="domain_final_blocklist">Liste finale de blocage de domaine</string>
-        <string name="domain_regular_expression_blocklist">Expression régulière de blocage de domaine</string>
-        <string name="third_party_blocklist">Liste de blocage de tiers</string>
-        <string name="third_party_initial_blocklist">Liste initiale de blocage de domaine tiers</string>
-        <string name="third_party_domain_blocklist">Liste de blocage de domaine tiers</string>
-        <string name="third_party_domain_initial_blocklist">Liste initiale de blocage de domaine tiers</string>
-        <string name="third_party_regular_expression_blocklist">Expression régulière de blocage de tiers</string>
-        <string name="third_party_domain_regular_expression_blocklist">Expression régulière de blocage de domaine tiers</string>
         <string name="regular_expression_blocklist">Expression régulière de liste de blocage</string>
-    <string name="filterlist_entries">Liste de filtrage des données</string>
-    <string name="filterlist_original_entry">Liste originale de filtrage des données</string>
 
     <!-- Domains. -->
     <string name="domains">Domaines</string>
@@ -371,35 +348,30 @@
         <item>Stockage du DOM activé</item>
         <item>Stockage du DOM désactivé</item>
     </string-array>
-    <string-array name="easylist_array">
+    <string-array name="ultraprivacy_array">
         <item>Valeur système</item>
-        <item>EasyList activé</item>
-        <item>EasyList désactivé</item>
-    </string-array>
-    <string-array name="easyprivacy_array">
-        <item>Valeur système</item>
-        <item>EasyPrivacy activé</item>
-        <item>EasyPrivacy désactivé</item>
-    </string-array>
-    <string-array name="fanboys_annoyance_list_array">
-        <item>Valeur système</item>
-        <item>Fanboy’s Annoyance List activé</item>
-        <item>Fanboy’s Annoyance List désactivé</item>
-    </string-array>
-    <string-array name="fanboys_social_blocking_list_array">
-        <item>Valeur système</item>
-        <item>Fanboy’s Social Blocking List activé</item>
-        <item>Fanboy’s Social Blocking List désactivé</item>
+        <item>UltraPrivacy activé</item>
+        <item>UltraPrivacy désactivé</item>
     </string-array>
     <string-array name="ultralist_array">
         <item>Valeur système</item>
         <item>UltraList activé</item>
         <item>UltraList désactivé</item>
     </string-array>
-    <string-array name="ultraprivacy_array">
+    <string-array name="easyprivacy_array">
         <item>Valeur système</item>
-        <item>UltraPrivacy activé</item>
-        <item>UltraPrivacy désactivé</item>
+        <item>EasyPrivacy activé</item>
+        <item>EasyPrivacy désactivé</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>Valeur système</item>
+        <item>EasyList activé</item>
+        <item>EasyList désactivé</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>Valeur système</item>
+        <item>Fanboy’s Annoyance List activé</item>
+        <item>Fanboy’s Annoyance List désactivé</item>
     </string-array>
     <string-array name="block_all_third_party_requests_array">
         <item>Valeur système</item>
@@ -521,12 +493,11 @@
             <string name="system_available_memory">Mémoire système disponible :\u0020</string>
             <string name="system_total_memory">Mémoire totale du système :\u0020</string>
             <string name="mebibyte">Mio</string>
-            <string name="easylist_label">EasyList :\u0020</string>
-            <string name="easyprivacy_label">EasyPrivacy :\u0020</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List :\u0020</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List :\u0020</string>
-            <string name="ultralist_label">UltraList :\u0020</string>
             <string name="ultraprivacy_label">UltraPrivacy :\u0020</string>
+            <string name="ultralist_label">UltraList :\u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy :\u0020</string>
+            <string name="easylist_label">EasyList :\u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List :\u0020</string>
         <string name="package_signature">Signature de paquets</string>
             <string name="issuer_dn">DN émetteur :\u0020</string>
             <string name="subject_dn">Dn sujet :\u0020</string>
@@ -587,18 +558,16 @@
         <string name="allow_screenshots">Autoriser captures d\'écrans</string>
         <string name="allow_screenshots_summary">Autoriser les captures d\'écrans, enregistrements vidéo et affichage sur des écrans non-sécurisés. Changer ce paramètre redémarrera Privacy Browser.</string>
     <string name="filterlists">Listes de filtrage</string>
-        <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Liste de filtre publicitaire principale.</string>
-        <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Liste de filtre de suivi principale.</string>
-        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboys_annoyance_list_summary">Filtre les popups et liens gênants. Inclu les listes de blocage de réseaux sociaux Fanboy.</string>
-        <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
-        <string name="fanboys_social_blocking_list_summary">Filtre les contenus tiers de réseaux sociaux.</string>
-        <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">UltraList filtre les publicités qu\'EasyList ne fait pas car cela peut casser certains sites Web.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy filtre les pisteurs qu\'EasyPrivacy ne fait pas car cela peut casser certains sites Web.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList filtre les publicités qu\'EasyList ne fait pas car cela peut casser certains sites Web.</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Liste de filtre de suivi principale.</string>
+        <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Liste de filtre publicitaire principale.</string>
+        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboys_annoyance_list_summary">Filtre les popups et liens gênants. Inclu les listes de blocage de réseaux sociaux Fanboy.</string>
         <string name="block_all_third_party_requests">Bloquer toutes les requêtes tierces</string>
         <string name="block_all_third_party_requests_summary">Le blocage de toutes les requêtes tierces augmente la vie privée, mais détruit de nombreux sites Web.</string>
     <string name="url_modification">Modifications d\'URL</string>

@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2017-2025 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2017-2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -72,7 +72,6 @@ import com.stoutner.privacybrowser.helpers.ENABLE_DOM_STORAGE
 import com.stoutner.privacybrowser.helpers.ENABLE_EASYLIST
 import com.stoutner.privacybrowser.helpers.ENABLE_EASYPRIVACY
 import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_ANNOYANCE_LIST
-import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST
 import com.stoutner.privacybrowser.helpers.ENABLE_JAVASCRIPT
 import com.stoutner.privacybrowser.helpers.ENABLE_ULTRAPRIVACY
 import com.stoutner.privacybrowser.helpers.FONT_SIZE
@@ -143,12 +142,11 @@ class DomainSettingsFragment : Fragment() {
         val domStorageDefault = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
         val userAgentDefault = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))
         val customUserAgentStringDefault = sharedPreferences.getString(getString(R.string.custom_user_agent_key), getString(R.string.custom_user_agent_default_value))
-        val easyListDefault = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
-        val easyPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
-        val fanboysAnnoyanceListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
-        val fanboysSocialBlockingListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
-        val ultraListDefault = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
         val ultraPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true)
+        val ultraListDefault = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
+        val easyPrivacyDefault = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
+        val easyListDefault = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
+        val fanboysAnnoyanceListDefault = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
         val blockAllThirdPartyRequestsDefault = sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false)
         val fontSizeStringDefault = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))
         val swipeToRefreshDefault = sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true)
@@ -175,30 +173,26 @@ class DomainSettingsFragment : Fragment() {
         val userAgentSpinner = domainSettingsView.findViewById<Spinner>(R.id.user_agent_spinner)
         val userAgentTextView = domainSettingsView.findViewById<TextView>(R.id.user_agent_textview)
         val customUserAgentEditText = domainSettingsView.findViewById<EditText>(R.id.custom_user_agent_edittext)
-        val easyListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.easylist_linearlayout)
-        val easyListImageView = domainSettingsView.findViewById<ImageView>(R.id.easylist_imageview)
-        val easyListSpinner = domainSettingsView.findViewById<Spinner>(R.id.easylist_spinner)
-        val easyListTextView = domainSettingsView.findViewById<TextView>(R.id.easylist_textview)
-        val easyPrivacyLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.easyprivacy_linearlayout)
-        val easyPrivacyImageView = domainSettingsView.findViewById<ImageView>(R.id.easyprivacy_imageview)
-        val easyPrivacySpinner = domainSettingsView.findViewById<Spinner>(R.id.easyprivacy_spinner)
-        val easyPrivacyTextView = domainSettingsView.findViewById<TextView>(R.id.easyprivacy_textview)
-        val fanboysAnnoyanceListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.fanboys_annoyance_list_linearlayout)
-        val fanboysAnnoyanceListImageView = domainSettingsView.findViewById<ImageView>(R.id.fanboys_annoyance_list_imageview)
-        val fanboysAnnoyanceListSpinner = domainSettingsView.findViewById<Spinner>(R.id.fanboys_annoyance_list_spinner)
-        val fanboysAnnoyanceListTextView = domainSettingsView.findViewById<TextView>(R.id.fanboys_annoyance_list_textview)
-        val fanboysSocialBlockingListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.fanboys_social_blocking_list_linearlayout)
-        val fanboysSocialBlockingListImageView = domainSettingsView.findViewById<ImageView>(R.id.fanboys_social_blocking_list_imageview)
-        val fanboysSocialBlockingListSpinner = domainSettingsView.findViewById<Spinner>(R.id.fanboys_social_blocking_list_spinner)
-        val fanboysSocialBlockingListTextView = domainSettingsView.findViewById<TextView>(R.id.fanboys_social_blocking_list_textview)
-        val ultraListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.ultralist_linearlayout)
-        val ultraListImageView = domainSettingsView.findViewById<ImageView>(R.id.ultralist_imageview)
-        val ultraListSpinner = domainSettingsView.findViewById<Spinner>(R.id.ultralist_spinner)
-        val ultraListTextView = domainSettingsView.findViewById<TextView>(R.id.ultralist_textview)
         val ultraPrivacyLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.ultraprivacy_linearlayout)
         val ultraPrivacyImageView = domainSettingsView.findViewById<ImageView>(R.id.ultraprivacy_imageview)
         val ultraPrivacySpinner = domainSettingsView.findViewById<Spinner>(R.id.ultraprivacy_spinner)
         val ultraPrivacyTextView = domainSettingsView.findViewById<TextView>(R.id.ultraprivacy_textview)
+        val ultraListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.ultralist_linearlayout)
+        val ultraListImageView = domainSettingsView.findViewById<ImageView>(R.id.ultralist_imageview)
+        val ultraListSpinner = domainSettingsView.findViewById<Spinner>(R.id.ultralist_spinner)
+        val ultraListTextView = domainSettingsView.findViewById<TextView>(R.id.ultralist_textview)
+        val easyPrivacyLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.easyprivacy_linearlayout)
+        val easyPrivacyImageView = domainSettingsView.findViewById<ImageView>(R.id.easyprivacy_imageview)
+        val easyPrivacySpinner = domainSettingsView.findViewById<Spinner>(R.id.easyprivacy_spinner)
+        val easyPrivacyTextView = domainSettingsView.findViewById<TextView>(R.id.easyprivacy_textview)
+        val easyListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.easylist_linearlayout)
+        val easyListImageView = domainSettingsView.findViewById<ImageView>(R.id.easylist_imageview)
+        val easyListSpinner = domainSettingsView.findViewById<Spinner>(R.id.easylist_spinner)
+        val easyListTextView = domainSettingsView.findViewById<TextView>(R.id.easylist_textview)
+        val fanboysAnnoyanceListLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.fanboys_annoyance_list_linearlayout)
+        val fanboysAnnoyanceListImageView = domainSettingsView.findViewById<ImageView>(R.id.fanboys_annoyance_list_imageview)
+        val fanboysAnnoyanceListSpinner = domainSettingsView.findViewById<Spinner>(R.id.fanboys_annoyance_list_spinner)
+        val fanboysAnnoyanceListTextView = domainSettingsView.findViewById<TextView>(R.id.fanboys_annoyance_list_textview)
         val blockAllThirdPartyRequestsLinearLayout = domainSettingsView.findViewById<LinearLayout>(R.id.block_all_third_party_requests_linearlayout)
         val blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById<ImageView>(R.id.block_all_third_party_requests_imageview)
         val blockAllThirdPartyRequestsSpinner = domainSettingsView.findViewById<Spinner>(R.id.block_all_third_party_requests_spinner)
@@ -274,12 +268,11 @@ class DomainSettingsFragment : Fragment() {
         val cookiesInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(COOKIES))
         val domStorageInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE))
         val currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndexOrThrow(USER_AGENT))
-        val easyListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
-        val easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
-        val fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
-        val fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST))
-        val ultraListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ULTRALIST))
         val ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY))
+        val ultraListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ULTRALIST))
+        val easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
+        val easyListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
+        val fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
         val blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS))
         val fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(FONT_SIZE))
         val swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH))
@@ -306,12 +299,11 @@ class DomainSettingsFragment : Fragment() {
         val cookiesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.cookies_array, R.layout.spinner_item)
         val domStorageArrayAdapter = ArrayAdapter.createFromResource(context, R.array.dom_storage_array, R.layout.spinner_item)
         val translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item)
-        val easyListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easylist_array, R.layout.spinner_item)
-        val easyPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easyprivacy_array, R.layout.spinner_item)
-        val fanboysAnnoyanceListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.fanboys_annoyance_list_array, R.layout.spinner_item)
-        val fanboysSocialBlockingListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.fanboys_social_blocking_list_array, R.layout.spinner_item)
-        val ultraListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.ultralist_array, R.layout.spinner_item)
         val ultraPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.ultraprivacy_array, R.layout.spinner_item)
+        val ultraListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.ultralist_array, R.layout.spinner_item)
+        val easyPrivacyArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easyprivacy_array, R.layout.spinner_item)
+        val easyListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.easylist_array, R.layout.spinner_item)
+        val fanboysAnnoyanceListArrayAdapter = ArrayAdapter.createFromResource(context, R.array.fanboys_annoyance_list_array, R.layout.spinner_item)
         val blockAllThirdPartyRequestsArrayAdapter = ArrayAdapter.createFromResource(context, R.array.block_all_third_party_requests_array, R.layout.spinner_item)
         val fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.font_size_array, R.layout.spinner_item)
         val swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.spinner_item)
@@ -319,17 +311,16 @@ class DomainSettingsFragment : Fragment() {
         val wideViewportArrayAdapter = ArrayAdapter.createFromResource(context, R.array.wide_viewport_array, R.layout.spinner_item)
         val displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.spinner_item)
 
-        // Set the drop down view resource on the spinners.
+        // Set the drop-down view resource on the spinners.
         javaScriptArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         cookiesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         domStorageArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        easyListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        easyPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        fanboysAnnoyanceListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        fanboysSocialBlockingListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
-        ultraListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         ultraPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        ultraListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        easyPrivacyArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        easyListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
+        fanboysAnnoyanceListArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         blockAllThirdPartyRequestsArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
         swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items)
@@ -342,12 +333,11 @@ class DomainSettingsFragment : Fragment() {
         cookiesSpinner.adapter = cookiesArrayAdapter
         domStorageSpinner.adapter = domStorageArrayAdapter
         userAgentSpinner.adapter = translatedUserAgentArrayAdapter
-        easyListSpinner.adapter = easyListArrayAdapter
-        easyPrivacySpinner.adapter = easyPrivacyArrayAdapter
-        fanboysAnnoyanceListSpinner.adapter = fanboysAnnoyanceListArrayAdapter
-        fanboysSocialBlockingListSpinner.adapter = fanboysSocialBlockingListArrayAdapter
-        ultraListSpinner.adapter = ultraListArrayAdapter
         ultraPrivacySpinner.adapter = ultraPrivacyArrayAdapter
+        ultraListSpinner.adapter = ultraListArrayAdapter
+        easyPrivacySpinner.adapter = easyPrivacyArrayAdapter
+        easyListSpinner.adapter = easyListArrayAdapter
+        fanboysAnnoyanceListSpinner.adapter = fanboysAnnoyanceListArrayAdapter
         blockAllThirdPartyRequestsSpinner.adapter = blockAllThirdPartyRequestsArrayAdapter
         fontSizeSpinner.adapter = fontSizeArrayAdapter
         swipeToRefreshSpinner.adapter = swipeToRefreshArrayAdapter
@@ -360,12 +350,11 @@ class DomainSettingsFragment : Fragment() {
         cookiesTextView.setOnClickListener { cookiesSpinner.performClick() }
         domStorageTextView.setOnClickListener { domStorageSpinner.performClick() }
         userAgentTextView.setOnClickListener { userAgentSpinner.performClick() }
-        easyListTextView.setOnClickListener { easyListSpinner.performClick() }
-        easyPrivacyTextView.setOnClickListener { easyPrivacySpinner.performClick() }
-        fanboysAnnoyanceListTextView.setOnClickListener { fanboysAnnoyanceListSpinner.performClick() }
-        fanboysSocialBlockingListTextView.setOnClickListener { fanboysSocialBlockingListSpinner.performClick() }
-        ultraListTextView.setOnClickListener { ultraListSpinner.performClick() }
         ultraPrivacyTextView.setOnClickListener { ultraPrivacySpinner.performClick() }
+        ultraListTextView.setOnClickListener { ultraListSpinner.performClick() }
+        easyPrivacyTextView.setOnClickListener { easyPrivacySpinner.performClick() }
+        easyListTextView.setOnClickListener { easyListSpinner.performClick() }
+        fanboysAnnoyanceListTextView.setOnClickListener { fanboysAnnoyanceListSpinner.performClick() }
         blockAllThirdPartyRequestsTextView.setOnClickListener { blockAllThirdPartyRequestsSpinner.performClick() }
         defaultFontSizeTextView.setOnClickListener { fontSizeSpinner.performClick() }
         swipeToRefreshTextView.setOnClickListener { swipeToRefreshSpinner.performClick() }
@@ -377,12 +366,11 @@ class DomainSettingsFragment : Fragment() {
         javaScriptSpinner.setSelection(javaScriptInt)
         cookiesSpinner.setSelection(cookiesInt)
         domStorageSpinner.setSelection(domStorageInt)
-        easyListSpinner.setSelection(easyListInt)
-        easyPrivacySpinner.setSelection(easyPrivacyInt)
-        fanboysAnnoyanceListSpinner.setSelection(fanboysAnnoyanceListInt)
-        fanboysSocialBlockingListSpinner.setSelection(fanboysSocialBlockingListInt)
-        ultraListSpinner.setSelection(ultraListInt)
         ultraPrivacySpinner.setSelection(ultraPrivacyInt)
+        ultraListSpinner.setSelection(ultraListInt)
+        easyPrivacySpinner.setSelection(easyPrivacyInt)
+        easyListSpinner.setSelection(easyListInt)
+        fanboysAnnoyanceListSpinner.setSelection(fanboysAnnoyanceListInt)
         blockAllThirdPartyRequestsSpinner.setSelection(blockAllThirdPartyRequestsInt)
         swipeToRefreshSpinner.setSelection(swipeToRefreshInt)
         webViewThemeSpinner.setSelection(webViewThemeInt)
@@ -393,12 +381,11 @@ class DomainSettingsFragment : Fragment() {
         populateTextView(javaScriptDefault, javaScriptArrayAdapter, javaScriptTextView)
         populateTextView(cookiesDefault, cookiesArrayAdapter, cookiesTextView)
         populateTextView(domStorageDefault, domStorageArrayAdapter, domStorageTextView)
-        populateTextView(easyListDefault, easyListArrayAdapter, easyListTextView)
-        populateTextView(easyPrivacyDefault, easyPrivacyArrayAdapter, easyPrivacyTextView)
-        populateTextView(fanboysAnnoyanceListDefault, fanboysAnnoyanceListArrayAdapter, fanboysAnnoyanceListTextView)
-        populateTextView(fanboysSocialBlockingListDefault, fanboysSocialBlockingListArrayAdapter, fanboysSocialBlockingListTextView)
-        populateTextView(ultraListDefault, ultraListArrayAdapter, ultraListTextView)
         populateTextView(ultraPrivacyDefault, ultraPrivacyArrayAdapter, ultraPrivacyTextView)
+        populateTextView(ultraListDefault, ultraListArrayAdapter, ultraListTextView)
+        populateTextView(easyPrivacyDefault, easyPrivacyArrayAdapter, easyPrivacyTextView)
+        populateTextView(easyListDefault, easyListArrayAdapter, easyListTextView)
+        populateTextView(fanboysAnnoyanceListDefault, fanboysAnnoyanceListArrayAdapter, fanboysAnnoyanceListTextView)
         populateTextView(blockAllThirdPartyRequestsDefault, blockAllThirdPartyRequestsArrayAdapter, blockAllThirdPartyRequestsTextView)
         populateTextView(swipeToRefreshDefault, swipeToRefreshArrayAdapter, swipeToRefreshTextView)
         populateTextView(wideViewportDefault, wideViewportArrayAdapter, wideViewportTextView)
@@ -407,12 +394,11 @@ class DomainSettingsFragment : Fragment() {
         // Set the icon and text view settings.  Non-standard items are handled individually below.
         setIconAndTextViewSettings(cookiesInt, cookiesDefault, cookiesLinearLayout, cookiesImageView, cookiesTextView)
         setIconAndTextViewSettings(domStorageInt, domStorageDefault, domStorageLinearLayout, domStorageImageView, domStorageTextView)
-        setIconAndTextViewSettings(easyListInt, easyListDefault, easyListLinearLayout, easyListImageView, easyListTextView)
-        setIconAndTextViewSettings(easyPrivacyInt, easyPrivacyDefault, easyPrivacyLinearLayout, easyPrivacyImageView, easyListTextView)
-        setIconAndTextViewSettings(fanboysAnnoyanceListInt, fanboysAnnoyanceListDefault, fanboysAnnoyanceListLinearLayout, fanboysAnnoyanceListImageView, fanboysAnnoyanceListTextView)
-        setIconAndTextViewSettings(fanboysSocialBlockingListInt, fanboysSocialBlockingListDefault, fanboysSocialBlockingListLinearLayout, fanboysSocialBlockingListImageView, fanboysSocialBlockingListTextView)
-        setIconAndTextViewSettings(ultraListInt, ultraListDefault, ultraListLinearLayout, ultraListImageView, ultraListTextView)
         setIconAndTextViewSettings(ultraPrivacyInt, ultraPrivacyDefault, ultraPrivacyLinearLayout, ultraPrivacyImageView, ultraPrivacyTextView)
+        setIconAndTextViewSettings(ultraListInt, ultraListDefault, ultraListLinearLayout, ultraListImageView, ultraListTextView)
+        setIconAndTextViewSettings(easyPrivacyInt, easyPrivacyDefault, easyPrivacyLinearLayout, easyPrivacyImageView, easyListTextView)
+        setIconAndTextViewSettings(easyListInt, easyListDefault, easyListLinearLayout, easyListImageView, easyListTextView)
+        setIconAndTextViewSettings(fanboysAnnoyanceListInt, fanboysAnnoyanceListDefault, fanboysAnnoyanceListLinearLayout, fanboysAnnoyanceListImageView, fanboysAnnoyanceListTextView)
         setIconAndTextViewSettings(blockAllThirdPartyRequestsInt, blockAllThirdPartyRequestsDefault, blockAllThirdPartyRequestsLinearLayout, blockAllThirdPartyRequestsImageView,
             blockAllThirdPartyRequestsTextView)
         setIconAndTextViewSettings(swipeToRefreshInt, swipeToRefreshDefault, swipeToRefreshLinearLayout, swipeToRefreshImageView, swipeToRefreshTextView)
@@ -420,10 +406,10 @@ class DomainSettingsFragment : Fragment() {
         setIconAndTextViewSettings(displayImagesInt, displayWebpageImagesDefault, displayImagesLinearLayout, displayImagesImageView, displayImagesTextView)
 
 
-        // Set the domain name from the the database cursor.
+        // Set the domain name from the database cursor.
         domainNameEditText.setText(domainNameString)
 
-        // Setup the pinned labels.
+        // Set up the pinned labels.
         val cNameLabel = getString(R.string.common_name)
         val oNameLabel = getString(R.string.organization)
         val uNameLabel = getString(R.string.organizational_unit)
@@ -486,7 +472,7 @@ class DomainSettingsFragment : Fragment() {
         })
 
 
-        // Set the javaScript icon and text view settings.
+        // Set the JavaScript icon and text view settings.
         when (javaScriptInt) {
             SYSTEM_DEFAULT -> {
                 // Set the icon.
@@ -612,17 +598,6 @@ class DomainSettingsFragment : Fragment() {
             // Set the background color to be blue.
             userAgentLinearLayout.setBackgroundColor(getColor(context, R.color.blue_background))
         }
-
-
-        // Calculate if Fanboy's Annoyance List is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
-        val fanboysAnnoyanceListEnabled = (((fanboysAnnoyanceListInt == 0) && fanboysAnnoyanceListDefault) || (fanboysAnnoyanceListInt == 1))
-
-        // Set Fanboy's Social Blocking List spinner and text view status based on the Annoyance List status.
-        fanboysSocialBlockingListSpinner.isEnabled = !fanboysAnnoyanceListEnabled
-        fanboysSocialBlockingListTextView.isEnabled = !fanboysAnnoyanceListEnabled
-
-        // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
-        fanboysSocialBlockingListImageView.isEnabled = !fanboysAnnoyanceListEnabled
 
 
         // Display the font size settings.
@@ -769,7 +744,7 @@ class DomainSettingsFragment : Fragment() {
         else
             SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslEndDate))
 
-        // Setup the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+        // Set up the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         savedSslIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length, savedSslIssuedToONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         savedSslIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length, savedSslIssuedToUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         savedSslIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length, savedSslIssuedByCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -823,7 +798,7 @@ class DomainSettingsFragment : Fragment() {
             val currentSslStartDateStringBuilder = SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(currentSslStartDate))
             val currentSslEndDateStringBuilder = SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(currentSslEndDate))
 
-            // Setup the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            // Set up the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             currentSslIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length, currentSslIssuedToONameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             currentSslIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length, currentSslIssuedToUNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
             currentSslIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length, currentSslIssuedByCNameStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -1121,57 +1096,11 @@ class DomainSettingsFragment : Fragment() {
             }
         }
 
-        // Set the EasyList spinner listener.
-        easyListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        // Set the UltraPrivacy spinner listener.
+        ultraPrivacySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Update the icon and the text view settings.
-                setIconAndTextViewSettings(position, easyListDefault, easyListLinearLayout, easyListImageView, easyListTextView)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing.
-            }
-        }
-
-        // Set the EasyPrivacy spinner listener.
-        easyPrivacySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the text view settings.
-                setIconAndTextViewSettings(position, easyPrivacyDefault, easyPrivacyLinearLayout, easyPrivacyImageView, easyPrivacyTextView)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing.
-            }
-        }
-
-        // Set the Fanboy's Annoyance List spinner listener.
-        fanboysAnnoyanceListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the text view settings.
-                setIconAndTextViewSettings(position, fanboysAnnoyanceListDefault, fanboysAnnoyanceListLinearLayout, fanboysAnnoyanceListImageView, fanboysAnnoyanceListTextView)
-
-                // Calculate if Fanboy's Annoyance List is enabled, either because it is the system default and that default is enabled, or because it is explicitly set to be enabled for this domain.
-                val updatedFanboysAnnoyanceListEnabled = (((position == 0) && fanboysAnnoyanceListDefault) || (position == 1))
-
-                // Set Fanboy's Social Blocking List spinner and test view status based on the Annoyance List status.
-                fanboysSocialBlockingListSpinner.isEnabled = !updatedFanboysAnnoyanceListEnabled
-                fanboysSocialBlockingListTextView.isEnabled = !updatedFanboysAnnoyanceListEnabled
-
-                // Set the Social Blocking List icon ghosted status based on the Annoyance List status.
-                fanboysSocialBlockingListImageView.isEnabled = !updatedFanboysAnnoyanceListEnabled
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing.
-            }
-        }
-
-        // Set the Fanboy's Social Blocking List spinner listener.
-        fanboysSocialBlockingListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Update the icon and the text view settings.
-                setIconAndTextViewSettings(position, fanboysSocialBlockingListDefault, fanboysSocialBlockingListLinearLayout, fanboysSocialBlockingListImageView, fanboysSocialBlockingListTextView)
+                setIconAndTextViewSettings(position, ultraPrivacyDefault, ultraPrivacyLinearLayout, ultraPrivacyImageView, ultraPrivacyTextView)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -1191,11 +1120,35 @@ class DomainSettingsFragment : Fragment() {
             }
         }
 
-        // Set the UltraPrivacy spinner listener.
-        ultraPrivacySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        // Set the EasyPrivacy spinner listener.
+        easyPrivacySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Update the icon and the text view settings.
-                setIconAndTextViewSettings(position, ultraPrivacyDefault, ultraPrivacyLinearLayout, ultraPrivacyImageView, ultraPrivacyTextView)
+                setIconAndTextViewSettings(position, easyPrivacyDefault, easyPrivacyLinearLayout, easyPrivacyImageView, easyPrivacyTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
+        }
+
+        // Set the EasyList spinner listener.
+        easyListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, easyListDefault, easyListLinearLayout, easyListImageView, easyListTextView)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing.
+            }
+        }
+
+        // Set the Fanboy's Annoyance List spinner listener.
+        fanboysAnnoyanceListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Update the icon and the text view settings.
+                setIconAndTextViewSettings(position, fanboysAnnoyanceListDefault, fanboysAnnoyanceListLinearLayout, fanboysAnnoyanceListImageView, fanboysAnnoyanceListTextView)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -1619,7 +1572,7 @@ class DomainSettingsFragment : Fragment() {
                     // Strip out the lowest subdomain of the certificate Common Name subdomain.
                     certificateCommonNameSubdomain = try {
                         certificateCommonNameSubdomain.substring(certificateCommonNameSubdomain.indexOf(".") + 1)
-                    } catch (e: IndexOutOfBoundsException) {  // The certificate Common Name subdomain ends with a dot.
+                    } catch (_: IndexOutOfBoundsException) {  // The certificate Common Name subdomain ends with a dot.
                         ""
                     }
                 }
@@ -1630,7 +1583,7 @@ class DomainSettingsFragment : Fragment() {
                 // Remove the initial `*.`.
                 val baseCertificateCommonName = certificateCommonName.substring(2)
 
-                // Setup a copy of domain name to test subdomains.
+                // Set up a copy of domain name to test subdomains.
                 var domainNameSubdomain: String = domainName
 
                 // Check all the subdomains in the domain name subdomain against the base certificate Common Name.
@@ -1642,7 +1595,7 @@ class DomainSettingsFragment : Fragment() {
                     // Strip out the lowest subdomain of the domain name subdomain.
                     domainNameSubdomain = try {
                         domainNameSubdomain.substring(domainNameSubdomain.indexOf(".") + 1)
-                    } catch (e: IndexOutOfBoundsException) {  // `domainNameSubdomain` ends with a dot.
+                    } catch (_: IndexOutOfBoundsException) {  // `domainNameSubdomain` ends with a dot.
                         ""
                     }
                 }
@@ -1654,7 +1607,7 @@ class DomainSettingsFragment : Fragment() {
                 val rootDomainName = domainName.substring(2)
                 val rootCertificateCommonName = certificateCommonName.substring(2)
 
-                // Check if one name ends with the contents of the other.  If so, there will be overlap in the their wildcard subdomains.
+                // Check if one name ends with the contents of the other.  If so, there will be overlap in their wildcard subdomains.
                 if (rootDomainName.endsWith(rootCertificateCommonName) || rootCertificateCommonName.endsWith(rootDomainName))
                     domainNamesMatch = true
             }

@@ -1,6 +1,6 @@
 
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2018-2019,2021-2023 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2018-2019, 2021-2023, 2025-2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -20,469 +20,424 @@
 
 package com.stoutner.privacybrowser.helpers
 
-import java.util.ArrayList
+import android.util.Log
+import com.stoutner.privacybrowser.dataclasses.FilterListDataClass
+import com.stoutner.privacybrowser.dataclasses.FilterListEntryDataClass
+import com.stoutner.privacybrowser.dataclasses.FilterOptionDisposition
+import com.stoutner.privacybrowser.dataclasses.MatchedUrlType
+import com.stoutner.privacybrowser.dataclasses.RequestDataClass
+import com.stoutner.privacybrowser.dataclasses.RequestDisposition
+import com.stoutner.privacybrowser.dataclasses.Sublist
+
 import java.util.regex.Pattern
 
-// Define the request disposition options.
-const val REQUEST_DEFAULT = "0"
-const val REQUEST_ALLOWED = "1"
-const val REQUEST_THIRD_PARTY = "2"
-const val REQUEST_BLOCKED = "3"
+
+// The public filter list data classes.
+var easyListDataClass = FilterListDataClass()
+var easyPrivacyDataClass = FilterListDataClass()
+var fanboysAnnoyanceDataClass: FilterListDataClass? = null  // This is nullable so that the app can check to see if it has been restarted.
+var ultraListDataClass = FilterListDataClass()
+var ultraPrivacyDataClass = FilterListDataClass()
 
 class CheckFilterListHelper {
-    fun checkFilterList(currentDomain: String?, resourceUrl: String, isThirdPartyRequest: Boolean, filterList: ArrayList<List<Array<String>>>): Array<String> {
-        // Get the filter list name.
-        val filterListName = filterList[0][1][0]
+    fun checkFilterList(requestDataClass: RequestDataClass, filterListDataClass: FilterListDataClass): Boolean {
+        // Create a continue checking tracker.  If the tracker changes to false, all further checking of the request will be bypassed.
+        var continueChecking = true
 
-        // Process the allow lists.
-        // Main allow list.
-        for (allowListEntry in filterList[MAIN_ALLOWLIST.toInt()]) {
-            when (allowListEntry.size) {
-                // There is one entry.
-                2 -> if (resourceUrl.contains(allowListEntry[0])) {
-                    // Allow the request.
-                    return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, MAIN_ALLOWLIST, allowListEntry[0], allowListEntry[1])
+        // Check the main allow list.
+        for (filterListEntryDataClass in filterListDataClass.mainAllowList) {
+            // Check the applied entry against the request URL.
+            continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.Url, filterListEntryDataClass)
+
+            // Check the applied entry against the request URL with separators.
+            if (continueChecking)
+                continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.UrlWithSeparators, filterListEntryDataClass)
+
+            // Exit the loop if checking should no longer be continued.
+            if (!continueChecking)
+                break
+        }
+
+        // Check the initial domain allow list unless a match has already been found.
+        if (continueChecking) {
+            // Check the initial domain allow list.
+            for (filterListEntryDataClass in filterListDataClass.initialDomainAllowList) {
+                // Check the applied entry against the truncated URL.
+                continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.TruncatedUrl, filterListEntryDataClass)
+
+                //Check the applied entry against the truncated URL with separators.
+                if (continueChecking)
+                    continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.TruncatedUrlWithSeparators, filterListEntryDataClass)
+
+                // Exit the loop if checking should no longer be continued.
+                if (!continueChecking)
+                    break
+            }
+        }
+
+        // Check the regular expression allow list unless a match has already been found.
+        if (continueChecking) {
+            // Check the regular expression allow list.
+            for (filterListEntryDataClass in filterListDataClass.regularExpressionAllowList) {
+                // Check the applied entries.
+                continueChecking = checkRegularExpression(requestDataClass, filterListEntryDataClass)
+
+                // Exit the loop if checking should no longer be continued.
+                if (!continueChecking)
+                    break
+            }
+        }
+
+        // Check the main block list unless a match has already been found.
+        if (continueChecking) {
+            // Check the main block list.
+            for (filterListEntryDataClass in filterListDataClass.mainBlockList) {
+                // Check the applied entry against the request URL.
+                continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.Url, filterListEntryDataClass)
+
+                // Check the applied entry against the request URL with separators.
+                if (continueChecking)
+                    continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.UrlWithSeparators, filterListEntryDataClass)
+
+                // Exit the loop if checking should no longer be continued.
+                if (!continueChecking)
+                    break
+            }
+        }
+
+        // Check the initial domain block list unless a match has already been found.
+        if (continueChecking) {
+            // Check the initial domain block list.
+            for (filterListEntryDataClass in filterListDataClass.initialDomainBlockList) {
+                // Check the applied entry against the truncated URL.
+                continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.TruncatedUrl, filterListEntryDataClass)
+
+                // Check the applied entry against the truncated URL with separators.
+                if (continueChecking)
+                    continueChecking = checkAppliedEntry(requestDataClass, MatchedUrlType.TruncatedUrlWithSeparators, filterListEntryDataClass)
+
+                // Exit the loop if checking should no longer be continued.
+                if (!continueChecking)
+                    break
+            }
+        }
+
+        // Check the regular expression block list unless a match has already been found.
+        if (continueChecking) {
+            // Check the regular expression block list.
+            for (filterListEntryDataClass in filterListDataClass.regularExpressionBlockList) {
+                // Check the applied entries.
+                continueChecking = checkRegularExpression(requestDataClass, filterListEntryDataClass)
+
+                // Exit the loop if checking should no longer be continued.
+                if (!continueChecking)
+                    break
+            }
+        }
+
+        // Return the continue checking status.
+        return continueChecking
+    }
+
+    private fun checkAppliedEntry(requestDataClass : RequestDataClass, matchedUrlType : MatchedUrlType, filterListEntryDataClass : FilterListEntryDataClass) : Boolean {
+        // Populate the URL string according to the matched URL type.
+        var urlString = when (matchedUrlType) {
+            MatchedUrlType.Url -> requestDataClass.requestUrlString
+            MatchedUrlType.UrlWithSeparators -> requestDataClass.requestUrlWithSeparatorsString
+            MatchedUrlType.TruncatedUrl -> requestDataClass.truncatedRequestUrlString
+            MatchedUrlType.TruncatedUrlWithSeparators -> requestDataClass.truncatedRequestUrlWithSeparatorsString
+        }
+
+        // Check the entries according to the number.
+        if (filterListEntryDataClass.singleAppliedEntry) {  // There is a single entry.
+            // Process the initial and final matches.
+            if (filterListEntryDataClass.initialMatch && filterListEntryDataClass.finalMatch) {  // This is both an initial and final match.
+                // Check the URL against the applied entry.
+                if (urlString == filterListEntryDataClass.appliedEntryList[0]) {
+                    // Set the matched URL type.
+                    requestDataClass.matchedUrlType = matchedUrlType
+
+                    // Check the domain status.
+                    return checkDomain(requestDataClass, filterListEntryDataClass)
+                }
+            } else if (filterListEntryDataClass.initialMatch) {  // This is an initial match.
+                // Check the URL against the applied entry.
+                if (urlString.startsWith(filterListEntryDataClass.appliedEntryList[0])) {
+                    // Set the matched URL type.
+                    requestDataClass.matchedUrlType = matchedUrlType
+
+                    // Check the domain status.
+                    return checkDomain(requestDataClass, filterListEntryDataClass)
+                }
+            } else if (filterListEntryDataClass.finalMatch) {  // This is a final match.
+                // Check the URL against the applied entry.
+                if (urlString.endsWith(filterListEntryDataClass.appliedEntryList[0])) {
+                    // Set the matched URL type.
+                    requestDataClass.matchedUrlType = matchedUrlType
+
+                    // Check the domain status.
+                    return checkDomain(requestDataClass, filterListEntryDataClass)
+                }
+            } else {  // There is no initial or final matching.
+                // Check if the URL string contains the applied entry.
+                if (urlString.contains(filterListEntryDataClass.appliedEntryList[0])) {
+                    // Set the matches URL type.
+                    requestDataClass.matchedUrlType = matchedUrlType
+
+                    return checkDomain(requestDataClass, filterListEntryDataClass)
+                }
+            }
+        } else {  // There are multiple entries.
+            // Create a URL matches flag.
+            var urlMatches = true
+
+            // Process initial and final matches.
+            if (filterListEntryDataClass.initialMatch && filterListEntryDataClass.finalMatch) {  // This is both an initial and final match.
+                // Check the URL.
+                if (urlString.startsWith(filterListEntryDataClass.appliedEntryList[0])) {
+                    // Get the number of characters to remove from the front of the URL string.
+                    val charactersToRemove = filterListEntryDataClass.appliedEntryList[0].length
+
+                    // Remove the entry from the front of the modified URL string.
+                    urlString = urlString.substring(charactersToRemove)
+
+                    // Get the entry locations.
+                    val penultimateEntryNumber = (filterListEntryDataClass.sizeOfAppliedEntryList - 1)
+                    val ultimateEntryIndex: Int = penultimateEntryNumber
+
+                    // Check all the middle entries.
+                    for (i in 0 until penultimateEntryNumber) {
+                        // Get the applied entry index, which will be `-1` if it doesn't exist.
+                        val appliedEntryIndex = urlString.indexOf(filterListEntryDataClass.appliedEntryList[i])
+
+                        // Check if the entry was found.
+                        if (appliedEntryIndex >= 0) {  // The entry is contained in the URL string.
+                            // Get the number of characters to remove from teh from of the URL string.
+                            val charactersToRemove = (appliedEntryIndex + filterListEntryDataClass.appliedEntryList[i].length)
+
+                            // Remove the entry from the fron of the modified URL string.
+                            urlString = urlString.substring(charactersToRemove)
+                        } else {  // The entry is not contained in the URL string.
+                            // Mark the URL matches flag as false.
+                            urlMatches = false
+                        }
+                    }
+
+                    // Check the final entry if the URL still matches.
+                    if (urlMatches) {
+                        // Check if the URL string ends with the last applied entry.
+                        if (urlString.endsWith(filterListEntryDataClass.appliedEntryList[ultimateEntryIndex])) {
+                            // Set the matched URL type.
+                            requestDataClass.matchedUrlType = matchedUrlType
+
+                            // Check the domain status.
+                            return checkDomain(requestDataClass, filterListEntryDataClass)
+                        }
+                    }
+                }
+            } else if (filterListEntryDataClass.initialMatch) {  // This is an initial match.
+                // Check the URL.
+                if (urlString.startsWith(filterListEntryDataClass.appliedEntryList[0])) {
+                    // Get the number of characters to remove from the front of the URL string.
+                    val charactersToRemove = filterListEntryDataClass.appliedEntryList[0].length
+
+                    // Remove the entry from the front of the modified URL string.
+                    urlString = urlString.substring(charactersToRemove)
+
+                    // Check the rest of the entries.
+                    for (i in 1 until filterListEntryDataClass.sizeOfAppliedEntryList) {
+                        // Get the applied entry index, which will be `-1` if it doesn't exist.
+                        val appliedEntryIndex = urlString.indexOf(filterListEntryDataClass.appliedEntryList[i])
+
+                        // Check if the entry was found.
+                        if (appliedEntryIndex >= 0) {  // The entry is contained in the URL string.
+                            // Get the number of characters to remove from the front of the URL string.
+                            val charactersToRemove = appliedEntryIndex + filterListEntryDataClass.appliedEntryList[i].length
+
+                            // Remove the entry from the front of the modified URL string.
+                            urlString = urlString.substring(charactersToRemove)
+                        } else {  // The entry is not contained in the URL string.
+                            // Mark the URL matches flag as false.
+                            urlMatches = false
+                        }
+                    }
+
+                    // Check the domain status if the URL still matches.
+                    if (urlMatches) {
+                        // Set the matched URL type.
+                        requestDataClass.matchedUrlType = matchedUrlType
+
+                        // Check the domain status.
+                        return checkDomain(requestDataClass, filterListEntryDataClass)
+                    }
+                }
+            } else if (filterListEntryDataClass.finalMatch) {  // This is a final match.
+                // Get the entry locations.
+                val penultimateEntryNumber= (filterListEntryDataClass.sizeOfAppliedEntryList - 1)
+                val ultimateEntryIndex: Int = penultimateEntryNumber
+
+                // Check all the entries except the last one.
+                for (i in 0 until penultimateEntryNumber - 1) {
+                    // Get the applied entry index, which will be `-1` if it doesn't exist.
+                    val appliedEntryIndex =urlString.indexOf(filterListEntryDataClass.appliedEntryList[i])
+
+                    // Check if the entry was found.
+                    if (appliedEntryIndex >= 0) {  // The entry is contained in the URL string.
+                        // Get the number of characters to remove from teh front of the URL string.
+                        val charactersToRemove = (appliedEntryIndex + filterListEntryDataClass.appliedEntryList[i].length)
+
+                        // Remove the entry from the front of the modified URL string.
+                        urlString = urlString.substring(charactersToRemove)
+                    } else {  // The entry is not contained in the URL string.
+                        // Mark the URL matches flag as false.
+                        urlMatches = false
+                    }
                 }
 
-                // There are two entries.
-                3 -> if (resourceUrl.contains(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1])) {
-                    // Allow the request.
-                    return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, MAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}", allowListEntry[2])
+                // Check the final entry if the URL still matches.
+                if (urlMatches) {
+                    // Check if the URL string ends with the last applied entry.
+                    if (urlString.endsWith(filterListEntryDataClass.appliedEntryList[ultimateEntryIndex])) {
+                        // Set the matched URL type.
+                        requestDataClass.matchedUrlType = matchedUrlType
+
+                        // Check the domain status.
+                        return checkDomain(requestDataClass, filterListEntryDataClass)
+                    }
+                }
+            } else {  // There is no initial or final matching.
+                // Check the URL.
+                for (i in 0 until filterListEntryDataClass.sizeOfAppliedEntryList) {
+                    // Get the applied entry index, which will be `-1` if it doesn't exist.
+                    val appliedEntryIndex = urlString.indexOf(filterListEntryDataClass.appliedEntryList[i])
+
+                    // Check if the entry was found.
+                    if (appliedEntryIndex >= 0) {  // The entry is contained in the URL string.
+                        // Get the number of characters to remove from the front of the URL string.
+                        val charactersToRemove = (appliedEntryIndex + filterListEntryDataClass.appliedEntryList[i].length)
+
+                        // Remove the entry from the front of the modified URL string.
+                        urlString = urlString.substring(charactersToRemove)
+                    } else {  // The entry is not contained in the URL string.
+                        // Mark the URL matches flag as false.
+                        urlMatches = false
+                    }
                 }
 
-                // There are three entries.
-                4 -> if (resourceUrl.contains(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2])) {
-                    // Allow the request.
-                    return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, MAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}", allowListEntry[3])
+                // Check the domain status if the URL still matches.
+                if (urlMatches) {
+                    // Set the matched URL type.
+                    requestDataClass.matchedUrlType = matchedUrlType
+
+                    // Check the domain status.
+                    return checkDomain(requestDataClass, filterListEntryDataClass)
                 }
             }
         }
 
-        // Final allow list.
-        for (allowListEntry in filterList[FINAL_ALLOWLIST.toInt()]) {
-            when (allowListEntry.size) {
-                // There is one entry.
-                2 -> if (resourceUrl.contains(allowListEntry[0])) {
-                    // Allow the request.
-                    return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, FINAL_ALLOWLIST, allowListEntry[0], allowListEntry[1])
-                }
+        // The applied entry doesn't match.  Return `true` to continue processing the URL request.
+        return true
+    }
 
-                // There are two entries.
-                3 -> if (resourceUrl.contains(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1])) {
-                    // Allow the request.
-                    return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, FINAL_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}", allowListEntry[2])
+    private fun checkRegularExpression(requestDataClass : RequestDataClass, filterListEntryDataClass : FilterListEntryDataClass) : Boolean {
+        // Create an applied entry regular expression pattern.
+        val appliedEntryRegularExpressionPattern = Pattern.compile(filterListEntryDataClass.appliedEntryList[0])
+
+        // Check if the regular expression matches the URL string.
+        val regularExpressionMatcher = appliedEntryRegularExpressionPattern.matcher(requestDataClass.requestUrlString)
+
+        // Check the domain status if the regular expression matches.
+        return if (regularExpressionMatcher.matches())
+            checkDomain(requestDataClass, filterListEntryDataClass)
+        else // If the regular expression doesn't match, return `true` to continue processing the URL request.
+            true
+    }
+
+    private fun checkDomain(requestDataClass : RequestDataClass, filterListEntryDataClass : FilterListEntryDataClass) : Boolean {
+        // Check the domain status.
+        if (filterListEntryDataClass.domain == FilterOptionDisposition.Null) {  // Ignore the domain status.
+            // Check the third party status.
+            return checkThirdParty(requestDataClass, filterListEntryDataClass)
+        } else if (filterListEntryDataClass.domain == FilterOptionDisposition.Apply) {  // Block the enumerated domains.
+            // Check each domain.
+            for (blockedDomain in filterListEntryDataClass.domainList) {
+                // Check if the request came from a blocked domain.
+                if (requestDataClass.firstPartyHostString.endsWith(blockedDomain)) {
+                    // Check the third-party status.
+                    return checkThirdParty(requestDataClass, filterListEntryDataClass)
                 }
+            }
+        } else if (filterListEntryDataClass.domain == FilterOptionDisposition.Override) {  // Block domains that are not overridden.
+            // Create a block domain flag.
+            var blockDomain = true
+
+            // Check each overridden domain.
+            for (overriddenDomain in filterListEntryDataClass.domainList) {
+                // Check if the request came from an overridden domain.
+                if (requestDataClass.firstPartyHostString.endsWith(overriddenDomain)) {
+                    // Don't block the domain.
+                    blockDomain = false
+                }
+            }
+
+            // Continue checking if the domain is blocked.
+            if (blockDomain) {
+                // Check the third-party status.
+                return checkThirdParty(requestDataClass, filterListEntryDataClass)
             }
         }
 
-        // Only check the domain lists if the current domain is not null (like `about:blank`).
-        if (currentDomain != null) {
-            // Domain allow list.
-            for (allowListEntry in filterList[DOMAIN_ALLOWLIST.toInt()]) {
-                when (allowListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}", allowListEntry[2])
-                    }
+        // There is a domain specified that doesn't match this request.  Return `true` to continue processing the URL request.
+        return true
+    }
 
-                    // There are two entries.
-                    4 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}", allowListEntry[3])
-                    }
+    private fun checkThirdParty(requestDataClass : RequestDataClass, filterListEntryDataClass : FilterListEntryDataClass) : Boolean {
+        // Check the third-party status.
+        return if ((filterListEntryDataClass.thirdParty == FilterOptionDisposition.Null) ||  // Ignore the third-party status.
+            ((filterListEntryDataClass.thirdParty == FilterOptionDisposition.Apply) && requestDataClass.isThirdPartyRequest) ||  // Block third-party requests.
+            ((filterListEntryDataClass.thirdParty == FilterOptionDisposition.Override) && !requestDataClass.isThirdPartyRequest)) // Block first-party requests.
+        {
+            // Process the request.
+            processRequest(requestDataClass, filterListEntryDataClass)
+        } else { // The third-party option specified doesn't match this request.  Return `true` to continue processing the URL request.
+            true
+        }
+    }
 
-                    // There are three entries.
-                    5 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2]) && resourceUrl.contains(allowListEntry[3])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}\n${allowListEntry[3]}",
-                            allowListEntry[4])
-                    }
+    private fun processRequest(requestDataClass : RequestDataClass, filterListEntryDataClass : FilterListEntryDataClass) : Boolean {
+        // Populate the filter list and sublist.
+        requestDataClass.filterList = filterListEntryDataClass.filterList
+        requestDataClass.sublist = filterListEntryDataClass.sublist
 
-                    // There are four entries.
-                    6 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2]) && resourceUrl.contains(allowListEntry[3]) &&
-                        resourceUrl.contains(allowListEntry[4])) {
+        Log.i("FilterList", "Filter List:  ${filterListEntryDataClass.filterList}")
 
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_ALLOWLIST,
-                            "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}\n${allowListEntry[3]}\n${allowListEntry[4]}", allowListEntry[5])
-                    }
-                }
-            }
-
-            // Domain initial allow list.
-            for (allowListEntry in filterList[DOMAIN_INITIAL_ALLOWLIST.toInt()]) {
-                when (allowListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.startsWith(allowListEntry[1])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_INITIAL_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}", allowListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.startsWith(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_INITIAL_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}", allowListEntry[3])
-                    }
-
-                    // There are three entries.
-                    5 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.startsWith(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2]) && resourceUrl.startsWith(allowListEntry[3])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_INITIAL_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}\n${allowListEntry[3]}",
-                            allowListEntry[4])
-                    }
-                }
-            }
-
-            // Domain final allow list.
-            for (allowListEntry in filterList[DOMAIN_FINAL_ALLOWLIST.toInt()]) {
-                when (allowListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.endsWith(allowListEntry[1])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_FINAL_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}", allowListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain.endsWith(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.endsWith(allowListEntry[2])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, DOMAIN_FINAL_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}", allowListEntry[3])
-                    }
-                }
-            }
+        // Set the request disposition.
+        when (requestDataClass.sublist) {
+            Sublist.MainAllowList -> requestDataClass.disposition = RequestDisposition.Allowed
+            Sublist.InitialDomainAllowList -> requestDataClass.disposition = RequestDisposition.Allowed
+            Sublist.RegularExpressionAllowList -> requestDataClass.disposition = RequestDisposition.Allowed
+            Sublist.MainBlockList -> requestDataClass.disposition = RequestDisposition.Blocked
+            Sublist.InitialDomainBlockList -> requestDataClass.disposition = RequestDisposition.Blocked
+            Sublist.RegularExpressionBlockList -> requestDataClass.disposition = RequestDisposition.Blocked
         }
 
-        // Only check the third-party allow lists if this is a third-party request.
-        if (isThirdPartyRequest) {
-            // Third-party allow list.
-            for (allowListEntry in filterList[THIRD_PARTY_ALLOWLIST.toInt()]) {
-                when (allowListEntry.size) {
-                    // There is one entry.
-                    2 -> if (resourceUrl.contains(allowListEntry[0])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_ALLOWLIST, allowListEntry[0], allowListEntry[1])
-                    }
+        // Populate the filter list entry data class items.
+        requestDataClass.filterListOriginalEntryString = filterListEntryDataClass.originalEntryString
+        requestDataClass.filterListOriginalFilterOptionsString = filterListEntryDataClass.originalFilterOptionsString
+        requestDataClass.filterListAppliedEntryList = filterListEntryDataClass.appliedEntryList
+        requestDataClass.filterListAppliedFilterOptionsList = filterListEntryDataClass.appliedFilterOptionsList
+        requestDataClass.filterListDomainList = filterListEntryDataClass.domainList
+        requestDataClass.filterListFinalMatch = filterListEntryDataClass.finalMatch
+        requestDataClass.filterListInitialMatch = filterListEntryDataClass.initialMatch
+        requestDataClass.filterListSingleAppliedEntry = filterListEntryDataClass.singleAppliedEntry
+        requestDataClass.filterListSizeOfAppliedEntryList = filterListEntryDataClass.sizeOfAppliedEntryList
+        requestDataClass.filterListDomain = filterListEntryDataClass.domain
+        requestDataClass.filterListThirdParty = filterListEntryDataClass.thirdParty
 
-                    // There are two entries.
-                    3 -> if (resourceUrl.contains(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}", allowListEntry[2])
-                    }
+        // Log the disposition.
+        //Log.i("Request processed", "${requestDataClass.requestUrlString} - Filter list entry:  ${requestDataClass.filterListAppliedEntryList}")
 
-                    // There are three entries.
-                    4 -> if (resourceUrl.contains(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}", allowListEntry[3])
-                    }
-
-                    // There are four entries.
-                    5 -> if (resourceUrl.contains(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2]) && resourceUrl.contains(allowListEntry[3])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}\n${allowListEntry[3]}",
-                            allowListEntry[4])
-                    }
-
-                    // There are five entries.
-                    6 -> if (resourceUrl.contains(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2]) && resourceUrl.contains(allowListEntry[3]) &&
-                        resourceUrl.contains(allowListEntry[4])) {
-
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_ALLOWLIST,
-                            "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}\n${allowListEntry[3]}\n${allowListEntry[4]}", allowListEntry[5])
-                    }
-                }
-            }
-
-            // Third-party domain allow list.
-            for (allowListEntry in filterList[THIRD_PARTY_DOMAIN_ALLOWLIST.toInt()]) {
-                when (allowListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain!!.endsWith(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n", allowListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain!!.endsWith(allowListEntry[0]) && resourceUrl.contains(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}", allowListEntry[3])
-                    }
-                }
-            }
-
-            // Third-party domain initial allow list.
-            for (allowListEntry in filterList[THIRD_PARTY_DOMAIN_INITIAL_ALLOWLIST.toInt()]) {
-                when (allowListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain!!.endsWith(allowListEntry[0]) && resourceUrl.startsWith(allowListEntry[1])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_INITIAL_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n", allowListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain!!.endsWith(allowListEntry[0]) && resourceUrl.startsWith(allowListEntry[1]) && resourceUrl.contains(allowListEntry[2])) {
-                        // Allow the request.
-                        return arrayOf(REQUEST_ALLOWED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_ALLOWLIST, "${allowListEntry[0]}\n${allowListEntry[1]}\n${allowListEntry[2]}", allowListEntry[3])
-                    }
-                }
-            }
-        }
-
-        // Process the block lists.
-        // Main block list.
-        for (blockListEntry in filterList[MAIN_BLOCKLIST.toInt()]) {
-            when (blockListEntry.size) {
-                // There is one entry.
-                2 -> if (resourceUrl.contains(blockListEntry[0])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, MAIN_BLOCKLIST, blockListEntry[0], blockListEntry[1])
-                }
-
-                // There are two entries.
-                3 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, MAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                }
-
-                // There are three entries.
-                4 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, MAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}", blockListEntry[3])
-                }
-
-                // There are four entries.
-                5 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2]) && resourceUrl.contains(blockListEntry[3])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, MAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}\n${blockListEntry[3]}", blockListEntry[4])
-                }
-
-                // There are five entries.
-                6 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2]) && resourceUrl.contains(blockListEntry[3]) &&
-                    resourceUrl.contains(blockListEntry[4])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, MAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}\n${blockListEntry[3]}\n${blockListEntry[4]}",
-                        blockListEntry[5])
-                }
-            }
-        }
-
-        // Initial block list.
-        for (blockListEntry in filterList[INITIAL_BLOCKLIST.toInt()]) {
-            when (blockListEntry.size) {
-                // There is one entry.
-                2 -> if (resourceUrl.startsWith(blockListEntry[0])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, INITIAL_BLOCKLIST, blockListEntry[0], blockListEntry[1])
-                }
-
-                // There are two entries
-                3 -> if (resourceUrl.startsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, INITIAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                }
-            }
-        }
-
-        // Final block list.
-        for (blockListEntry in filterList[FINAL_BLOCKLIST.toInt()]) {
-            when (blockListEntry.size) {
-                // There is one entry.
-                2 -> if (resourceUrl.endsWith(blockListEntry[0])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, FINAL_BLOCKLIST, blockListEntry[0], blockListEntry[1])
-                }
-
-                // There are two entries.
-                3 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.endsWith(blockListEntry[1])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, FINAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                }
-
-                // There are three entries.
-                4 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.endsWith(blockListEntry[2])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, FINAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}", blockListEntry[3])
-                }
-            }
-        }
-
-        // Only check the domain lists if the current domain is not null (like `about:blank`).
-        if (currentDomain != null) {
-            // Domain block list.
-            for (blockListEntry in filterList[DOMAIN_BLOCKLIST.toInt()]) {
-                when (blockListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain.endsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, DOMAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain.endsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, DOMAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}", blockListEntry[3])
-                    }
-
-                    // There are three entries.
-                    5 -> if (currentDomain.endsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2]) && resourceUrl.contains(blockListEntry[3])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, DOMAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}\n${blockListEntry[3]}",
-                            blockListEntry[4])
-                    }
-                }
-            }
-
-            // Domain initial block list.
-            for (blockListEntry in filterList[DOMAIN_INITIAL_BLOCKLIST.toInt()]) {
-                // Store the entry in the resource request log.
-                if (currentDomain.endsWith(blockListEntry[0]) && resourceUrl.startsWith(blockListEntry[1])) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, DOMAIN_INITIAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                }
-            }
-
-            // Domain final block list.
-            for (blockListEntry in filterList[DOMAIN_FINAL_BLOCKLIST.toInt()]) {
-                when (blockListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain.endsWith(blockListEntry[0]) && resourceUrl.endsWith(blockListEntry[1])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, DOMAIN_FINAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain.endsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.endsWith(blockListEntry[2])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, DOMAIN_FINAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}", blockListEntry[3])
-                    }
-                }
-            }
-
-            // Domain regular expression block list.
-            for (blockListEntry in filterList[DOMAIN_REGULAR_EXPRESSION_BLOCKLIST.toInt()]) {
-                if (currentDomain.endsWith(blockListEntry[0]) && Pattern.matches(blockListEntry[1], resourceUrl)) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, DOMAIN_REGULAR_EXPRESSION_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                }
-            }
-        }
-
-        // Only check the third-party block lists if this is a third-party request.
-        if (isThirdPartyRequest) {
-            // Third-party block list.
-            for (blockListEntry in filterList[THIRD_PARTY_BLOCKLIST.toInt()]) {
-                when (blockListEntry.size) {
-                    // There is one entry.
-                    2 -> if (resourceUrl.contains(blockListEntry[0])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_BLOCKLIST, blockListEntry[0], blockListEntry[1])
-                    }
-
-                    // There are two entries.
-                    3 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n", blockListEntry[2])
-                    }
-
-                    // There are three entries.
-                    4 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}", blockListEntry[3])
-                    }
-
-                    // There are four entries.
-                    5 -> if (resourceUrl.contains(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2]) && resourceUrl.contains(blockListEntry[3])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}\n${blockListEntry[3]}",
-                            blockListEntry[4])
-                    }
-                }
-            }
-
-            // Third-party initial block list.
-            for (blockListEntry in filterList[THIRD_PARTY_INITIAL_BLOCKLIST.toInt()]) {
-                when (blockListEntry.size) {
-                    // There is one entry.
-                    2 -> if (resourceUrl.startsWith(blockListEntry[0])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_INITIAL_BLOCKLIST, blockListEntry[0], blockListEntry[1])
-                    }
-
-                    // There are two entries.
-                    3 -> if (resourceUrl.startsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_INITIAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                    }
-                }
-            }
-
-            // Third-party domain block list.
-            for (blockListEntry in filterList[THIRD_PARTY_DOMAIN_BLOCKLIST.toInt()]) {
-                when (blockListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain!!.endsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain!!.endsWith(blockListEntry[0]) && resourceUrl.contains(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}", blockListEntry[3])
-                    }
-                }
-            }
-
-            // Third-party domain initial block list.
-            for (blockListEntry in filterList[THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST.toInt()]) {
-                when (blockListEntry.size) {
-                    // There is one entry.
-                    3 -> if (currentDomain!!.endsWith(blockListEntry[0]) && resourceUrl.startsWith(blockListEntry[1])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n", blockListEntry[2])
-                    }
-
-                    // There are two entries.
-                    4 -> if (currentDomain!!.endsWith(blockListEntry[0]) && resourceUrl.startsWith(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}", blockListEntry[3])
-                    }
-
-                    // There are three entries.
-                    5 -> if (currentDomain!!.endsWith(blockListEntry[0]) && resourceUrl.startsWith(blockListEntry[1]) && resourceUrl.contains(blockListEntry[2]) && resourceUrl.contains(blockListEntry[3])) {
-                        // Block the request.
-                        return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST,
-                            "${blockListEntry[0]}\n${blockListEntry[1]}\n${blockListEntry[2]}\n${blockListEntry[3]}", blockListEntry[4])
-                    }
-                }
-            }
-
-            // Third-party regular expression block list.
-            for (blockListEntry in filterList[THIRD_PARTY_REGULAR_EXPRESSION_BLOCKLIST.toInt()]) {
-                if (Pattern.matches(blockListEntry[0], resourceUrl)) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_REGULAR_EXPRESSION_BLOCKLIST, blockListEntry[0], blockListEntry[1])
-                }
-            }
-
-            // Third-party domain regular expression block list.
-            for (blockListEntry in filterList[THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLOCKLIST.toInt()]) {
-                if (currentDomain!!.endsWith(blockListEntry[0]) && Pattern.matches(blockListEntry[1], resourceUrl)) {
-                    // Block the request.
-                    return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLOCKLIST, "${blockListEntry[0]}\n${blockListEntry[1]}", blockListEntry[2])
-                }
-            }
-        }
-
-        // Regular expression block list.
-        for (blockListEntry in filterList[REGULAR_EXPRESSION_BLOCKLIST.toInt()]) {
-            if (Pattern.matches(blockListEntry[0], resourceUrl)) {
-                // Block the request.
-                return arrayOf(REQUEST_BLOCKED, resourceUrl, filterListName, REGULAR_EXPRESSION_BLOCKLIST, blockListEntry[0], blockListEntry[1])
-            }
-        }
-
-        // Return a default result.
-        return arrayOf(REQUEST_DEFAULT)
+        // Returning `false` stops all processing of the request.
+        return false
     }
 }

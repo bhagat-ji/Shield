@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2017-2025 Soren Stoutner <soren@stoutner.com>
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <ScrollView android:id="@+id/domain_settings_scrollview"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -266,9 +267,9 @@
                 android:importantForAutofill="no" />
         </LinearLayout>
 
-        <!-- EasyList. -->
+        <!-- UltraPrivacy. -->
         <LinearLayout
-            android:id="@+id/easylist_linearlayout"
+            android:id="@+id/ultraprivacy_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
@@ -277,7 +278,7 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/easylist" />
+                android:text="@string/ultraprivacy" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -285,51 +286,7 @@
                 android:orientation="horizontal" >
 
                 <ImageView
-                    android:id="@+id/easylist_imageview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/block_ads_enabled"
-                    app:tint="@color/blue_icon_selector"
-                    android:contentDescription="@string/easylist" />
-
-                <Spinner
-                    android:id="@+id/easylist_spinner"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/easylist_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="36dp"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- EasyPrivacy. -->
-        <LinearLayout
-            android:id="@+id/easyprivacy_linearlayout"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:padding="12dp" >
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:text="@string/easyprivacy" />
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/easyprivacy_imageview"
+                    android:id="@+id/ultraprivacy_imageview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="1dp"
@@ -337,104 +294,16 @@
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/block_tracking_enabled"
                     app:tint="@color/blue_icon_selector"
-                    android:contentDescription="@string/easyprivacy" />
+                    android:contentDescription="@string/ultraprivacy" />
 
                 <Spinner
-                    android:id="@+id/easyprivacy_spinner"
+                    android:id="@+id/ultraprivacy_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/easyprivacy_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="36dp"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- Fanboy's Annoyance List. -->
-        <LinearLayout
-            android:id="@+id/fanboys_annoyance_list_linearlayout"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:padding="12dp" >
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:text="@string/fanboys_annoyance_list" />
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/fanboys_annoyance_list_imageview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/social_media_enabled"
-                    app:tint="@color/blue_icon_selector"
-                    android:contentDescription="@string/fanboys_annoyance_list" />
-
-                <Spinner
-                    android:id="@+id/fanboys_annoyance_list_spinner"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/fanboys_annoyance_list_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="45dp"
-                android:layout_marginEnd="36dp"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- Fanboy's Social Blocking List. -->
-        <LinearLayout
-            android:id="@+id/fanboys_social_blocking_list_linearlayout"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:padding="12dp" >
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:text="@string/fanboys_social_blocking_list" />
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/fanboys_social_blocking_list_imageview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/social_media_enabled"
-                    app:tint="@color/blue_icon_selector"
-                    android:contentDescription="@string/fanboys_social_blocking_list" />
-
-                <Spinner
-                    android:id="@+id/fanboys_social_blocking_list_spinner"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/fanboys_social_blocking_list_textview"
+                android:id="@+id/ultraprivacy_textview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -486,9 +355,9 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- UltraPrivacy. -->
+        <!-- EasyPrivacy. -->
         <LinearLayout
-            android:id="@+id/ultraprivacy_linearlayout"
+            android:id="@+id/easyprivacy_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical"
@@ -497,7 +366,7 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="@string/ultraprivacy" />
+                android:text="@string/easyprivacy" />
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -505,7 +374,7 @@
                 android:orientation="horizontal" >
 
                 <ImageView
-                    android:id="@+id/ultraprivacy_imageview"
+                    android:id="@+id/easyprivacy_imageview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="1dp"
@@ -513,16 +382,104 @@
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/block_tracking_enabled"
                     app:tint="@color/blue_icon_selector"
-                    android:contentDescription="@string/ultraprivacy" />
+                    android:contentDescription="@string/easyprivacy" />
 
                 <Spinner
-                    android:id="@+id/ultraprivacy_spinner"
+                    android:id="@+id/easyprivacy_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/ultraprivacy_textview"
+                android:id="@+id/easyprivacy_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- EasyList. -->
+        <LinearLayout
+            android:id="@+id/easylist_linearlayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/easylist" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/easylist_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/block_ads_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/easylist" />
+
+                <Spinner
+                    android:id="@+id/easylist_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/easylist_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Fanboy's Annoyance List. -->
+        <LinearLayout
+            android:id="@+id/fanboys_annoyance_list_linearlayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:padding="12dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/fanboys_annoyance_list" />
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/fanboys_annoyance_list_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/social_media_enabled"
+                    app:tint="@color/blue_icon_selector"
+                    android:contentDescription="@string/fanboys_annoyance_list" />
+
+                <Spinner
+                    android:id="@+id/fanboys_annoyance_list_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fanboys_annoyance_list_textview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -562,8 +519,7 @@
                 <Spinner
                     android:id="@+id/block_all_third_party_requests_spinner"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    tools:ignore="TooManyViews" />
+                    android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
@@ -655,7 +611,8 @@
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/refresh_enabled"
                     app:tint="@color/blue_icon_selector"
-                    android:contentDescription="@string/swipe_to_refresh" />
+                    android:contentDescription="@string/swipe_to_refresh"
+                    tools:ignore="TooManyViews" />
 
                 <Spinner
                     android:id="@+id/swipe_to_refresh_spinner"

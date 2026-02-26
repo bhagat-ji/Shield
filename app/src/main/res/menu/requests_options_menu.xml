@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2018, 2022-2023, 2025 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2025 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -24,15 +24,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/select_all"
-        android:title="@string/select_all"
+        android:id="@+id/filter_lists"
+        android:title="@string/filterlists"
         android:orderInCategory="10"
-        android:icon="@drawable/select_all"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/bookmarks_database_view"
-        android:title="@string/database_view"
-        android:orderInCategory="20"
         app:showAsAction="never" />
 </menu>

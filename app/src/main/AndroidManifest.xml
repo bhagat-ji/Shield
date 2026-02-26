@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2023 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2023, 2025-2026 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -47,7 +47,7 @@
         <package android:name="org.sufficientlysecure.keychain" />
     </queries>
 
-    <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set.
+    <!-- For API >= 23, app data is automatically backed up to Google Cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set.
         `tools:ignore="DataExtractionRules` removes the warning that backups can still transfer data device to device. -->
     <application
         android:label="@string/privacy_browser"
@@ -157,6 +157,20 @@
         </activity>
 
 
+        <!-- AboutActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
+            `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
+            `tools:ignore="DiscouragedApi"` hides the warning about using `android:screenOrientation`. -->
+        <activity
+            android:name=".activities.AboutActivity"
+            android:label="@string/about_privacy_browser"
+            android:parentActivityName=".activities.MainWebViewActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
+            android:screenOrientation="fullUser"
+            android:persistableMode="persistNever"
+            tools:ignore="DiscouragedApi" />
+
         <!-- BookmarksActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
             `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
             `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
@@ -185,20 +199,6 @@
             android:persistableMode="persistNever"
             tools:ignore="DiscouragedApi" />
 
-        <!-- RequestsActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
-            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
-            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
-            `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
-            `tools:ignore="DiscouragedApi"` hides the warning about using `android:screenOrientation`. -->
-        <activity
-            android:name=".activities.RequestsActivity"
-            android:label="@string/requests"
-            android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
-            android:screenOrientation="fullUser"
-            android:persistableMode="persistNever"
-            tools:ignore="DiscouragedApi" />
-
         <!-- DomainsActivity.  `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
             `android:configChanges="keyboard|keyboardHidden"` makes the activity not reload when a bluetooth keyboard is activated/goes to sleep.
             `android:windowSoftInputMode="stateAlwaysHidden"` keeps the keyboard from displaying when the screen is rotated and after the `AddDomainDialog` is dismissed.
@@ -214,14 +214,28 @@
             android:persistableMode="persistNever"
             tools:ignore="DiscouragedApi" />
 
-        <!-- SettingsActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+        <!--FilterListActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
             `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
             `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="DiscouragedApi"` hides the warning about using `android:screenOrientation`. -->
         <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/settings"
+            android:name=".activities.FilterListsActivity"
+            android:label="@string/filterlists"
+            android:parentActivityName=".activities.RequestsActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
+            android:screenOrientation="fullUser"
+            android:persistableMode="persistNever"
+            tools:ignore="DiscouragedApi" />
+
+        <!-- GuideActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
+            `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
+            `tools:ignore="DiscouragedApi"` hides the warning about using `android:screenOrientation`. -->
+        <activity
+            android:name=".activities.GuideActivity"
+            android:label="@string/guide"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
@@ -256,28 +270,28 @@
             android:persistableMode="persistNever"
             tools:ignore="DiscouragedApi" />
 
-        <!-- GuideActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+        <!-- RequestsActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
             `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
             `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="DiscouragedApi"` hides the warning about using `android:screenOrientation`. -->
         <activity
-            android:name=".activities.GuideActivity"
-            android:label="@string/guide"
+            android:name=".activities.RequestsActivity"
+            android:label="@string/requests"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="DiscouragedApi" />
 
-        <!-- AboutActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+        <!-- SettingsActivity.  `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
             `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
             `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="DiscouragedApi"` hides the warning about using `android:screenOrientation`. -->
         <activity
-            android:name=".activities.AboutActivity"
-            android:label="@string/about_privacy_browser"
+            android:name=".activities.SettingsActivity"
+            android:label="@string/settings"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"

@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2018-2022, 2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2018-2022, 2024-2025 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- `android:dividerHeight` must be at least `1dp` or the list view is inconsistent in calculating how many bookmarks are displayed. -->
+        <!-- `android:dividerHeight` must be at least `1dp` or the list view is inconsistent in calculating how many requests are displayed. -->
         <ListView
             android:id="@+id/requests_listview"
             android:layout_height="match_parent"

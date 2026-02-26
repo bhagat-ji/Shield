@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2024, 2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -116,13 +116,8 @@ class UrlHistoryDialog : DialogFragment() {
 
         // Populate the history array list, descending from the end of the list so that the newest entries are at the top.  `-1` is needed because the history array list is zero-based.
         for (i in webBackForwardList.size - 1 downTo 0) {
-            // Store the favorite icon bitmap.
-            val favoriteIconBitmap = if (webBackForwardList.getItemAtIndex(i).favicon == null) {
-                // If the web back forward list does not have a favorite icon, use Privacy Browser's default world icon.
-                defaultFavoriteIcon
-            } else {  // Use the icon from the web back forward list.
-                webBackForwardList.getItemAtIndex(i).favicon
-            }
+            // Store the favorite icon bitmap, using the default favorite icon if the web back forward list does not have one.
+            val favoriteIconBitmap = webBackForwardList.getItemAtIndex(i).favicon ?: defaultFavoriteIcon
 
             // Store the favorite icon and the URL in history entry.
             val historyDataClassEntry = HistoryDataClass(favoriteIconBitmap!!, webBackForwardList.getItemAtIndex(i).url)
@@ -143,7 +138,7 @@ class UrlHistoryDialog : DialogFragment() {
         // Set the view.
         dialogBuilder.setView(R.layout.url_history_dialog)
 
-        // Setup the clear history button listener.
+        // Set up the clear history button listener.
         dialogBuilder.setNegativeButton(R.string.clear_history) { _: DialogInterface, _: Int ->
             // Clear the history.
             nestedScrollWebView.clearHistory()

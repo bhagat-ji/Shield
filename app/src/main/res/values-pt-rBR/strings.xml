@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2025 Soren Stoutner <soren@stoutner.com>
 
   Translation 2020-2022 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -50,12 +50,11 @@
     <string name="apply">Aplicar</string>
 
     <!-- Loading Filter Lists. -->
-    <string name="loading_easylist">Carregando  EasyList</string>
-    <string name="loading_easyprivacy">Carregando EasyPrivacy</string>
-    <string name="loading_fanboys_annoyance_list">Carregando Fanboy’s Annoyance List</string>
-    <string name="loading_fanboys_social_blocking_list">Carregando Fanboy’s Social Blocking List</string>
-    <string name="loading_ultralist">Carregando UltraList</string>
     <string name="loading_ultraprivacy">Carregando UltraPrivacy</string>
+    <string name="loading_ultralist">Carregando UltraList</string>
+    <string name="loading_easyprivacy">Carregando EasyPrivacy</string>
+    <string name="loading_easylist">Carregando  EasyList</string>
+    <string name="loading_fanboys_annoyance_list">Carregando Fanboy’s Annoyance List</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Ícone dos Favoritos</string>
@@ -131,7 +130,6 @@
         <string name="clear_cookies">Limpar Cookies</string>
         <string name="clear_dom_storage">Limpar Armazenamento DOM</string>
         <string name="options_fanboys_annoyance_list">Lista de Aborrecimento Fanboy’s</string>
-        <string name="options_fanboys_social_blocking_list">Lista de bloqueio social Fanboy’s</string>
         <string name="options_block_all_third_party_requests">Bloquear todas as solicitações de terceiros</string>
     <string name="page">Página</string>
         <string name="options_user_agent">User Agent</string>
@@ -402,12 +400,11 @@
             <string name="system_available_memory">Memória Disponível do Sistema: \u0020</string>
             <string name="system_total_memory">Memória Total do Sistema: \u0020</string>
             <string name="mebibyte">MiB</string>
-            <string name="easylist_label">EasyList: \u0020</string>
-            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
-            <string name="ultralist_label">UltraList: \u0020</string>
             <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
         <string name="package_signature">Assinatura do Pacote</string>
             <string name="issuer_dn">DN do emissor: \u0020</string>
             <string name="subject_dn">Assunto DN: \u0020</string>
@@ -467,12 +464,11 @@
             volta para fechar a guia (ou o aplicativo, se houver apenas uma guia).</string>
         <string name="allow_screenshots">Permitir capturas de tela</string>
         <string name="allow_screenshots_summary">Permitir capturas de tela, gravação de vídeo e visualização em monitores não seguros. Alterar esta configuração irá reiniciar o Privacy Browser.</string>
-        <string name="easylist">EasyList</string>
-        <string name="easyprivacy">EasyPrivacy</string>
-        <string name="fanboys_annoyance_list"> Lista de importunação Fanboy</string>
-        <string name="fanboys_social_blocking_list">Lista de bloqueio social do Fanboy</string>
-        <string name="ultralist">UltraList</string>
         <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultralist">UltraList</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easylist">EasyList</string>
+        <string name="fanboys_annoyance_list"> Lista de importunação Fanboy</string>
         <string name="block_all_third_party_requests">Bloquear todas as solicitações de terceiros</string>
         <string name="block_all_third_party_requests_summary">Bloquear todas as solicitações de terceiros aumenta a privacidade, mas quebra muitos sites.</string>
     <string name="url_modification">Modificação de URL</string>

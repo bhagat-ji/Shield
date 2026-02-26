@@ -1,20 +1,20 @@
-/*
- * Copyright 2016-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2016-2024, 2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
@@ -48,6 +48,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.util.size
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
@@ -341,7 +342,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
                     // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
-                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size()) {
+                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size) {
                         // Check to see if the value for the bookmark is true, meaning it is currently selected.
                         if (checkedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
                             // Only one bookmark should have a value of `true` when move bookmark up is enabled.
@@ -393,7 +394,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
                     // Get the position of the bookmark that is selected.  If other bookmarks have previously been checked they will be included in the sparse boolean array with a value of `false`.
-                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size()) {
+                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size) {
                         // Check to see if the value for the bookmark is true, meaning it is currently selected.
                         if (checkedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
                             // Only one bookmark should have a value of `true` when move bookmark down is enabled.
@@ -565,7 +566,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                     checkedBookmarksPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
                     // Get the position of the bookmark that is selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
-                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size()) {
+                    for (i in 0 until checkedBookmarksPositionsSparseBooleanArray.size) {
                         // Check to see if the value for the bookmark is true, meaning it is currently selected.
                         if (checkedBookmarksPositionsSparseBooleanArray.valueAt(i)) {
                             // Only one bookmark should have a value of `true` when move edit bookmark is enabled.
@@ -646,7 +647,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
                                     bookmarksCursorAdapter.changeCursor(bookmarksCursor)
 
                                     // Get the number of checked bookmarks.
-                                    val numberOfCheckedBookmarks = checkedBookmarksPositionsSparseBooleanArray.size()
+                                    val numberOfCheckedBookmarks = checkedBookmarksPositionsSparseBooleanArray.size
 
                                     // Set the checking many bookmarks flag.
                                     checkingManyBookmarks = true
@@ -786,7 +787,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         val checkedBookmarksArrayList = ArrayList<Int>()
 
         // Add each checked bookmark position to the array list.
-        for (i in 0 until checkedBookmarksSparseBooleanArray.size()) {
+        for (i in 0 until checkedBookmarksSparseBooleanArray.size) {
             // Check to see if the bookmark is currently checked.  Bookmarks that have previously been checked but currently aren't will be populated in the sparse boolean array, but will return false.
             if (checkedBookmarksSparseBooleanArray.valueAt(i)) {
                 // Add the bookmark position to the checked bookmarks array list.
@@ -808,51 +809,67 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
-        // Get a handle for the menu item ID.
-        val menuItemId = menuItem.itemId
+        // Run the commands that correlate to the selected menu item.
+        return when (menuItem.itemId) {
+            android.R.id.home -> {  // Home.  The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
+                if (currentFolderId == HOME_FOLDER_ID) {  // The current folder is the home folder.
+                    // Prepare to finish the activity.
+                    prepareFinish()
+                } else {  // Currently in a subfolder.
+                    // Set the former parent folder as the current folder.
+                    currentFolderId = bookmarksDatabaseHelper.getParentFolderId(currentFolderId)
 
-        // Run the command according to the selected option.
-        if (menuItemId == android.R.id.home) {  // Home.  The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
-            if (currentFolderId == HOME_FOLDER_ID) {  // The current folder is the home folder.
-                // Prepare to finish the activity.
-                prepareFinish()
-            } else {  // Currently in a subfolder.
-                // Set the former parent folder as the current folder.
-                currentFolderId = bookmarksDatabaseHelper.getParentFolderId(currentFolderId)
+                    // Load the new current folder.
+                    loadFolder()
+                }
 
-                // Load the new current folder.
-                loadFolder()
+                // Consume the event.
+                true
             }
-        } else if (menuItemId == R.id.options_menu_select_all_bookmarks) {  // Select all.
-            // Get the total number of bookmarks.
-            val numberOfBookmarks = bookmarksListView.count
 
-            // Set the checking many bookmarks flag.
-            checkingManyBookmarks = true
+            R.id.select_all -> {  // Select all.
+                // Get the total number of bookmarks.
+                val numberOfBookmarks = bookmarksListView.count
 
-            // Select them all.
-            for (i in 0 until numberOfBookmarks) {
-                // Reset the checking many bookmarks flag on the last bookmark so the UI is updated.
-                if (i == (numberOfBookmarks - 1))
-                    checkingManyBookmarks = false
+                // Set the checking many bookmarks flag.
+                checkingManyBookmarks = true
 
-                // Check the bookmark.
-                bookmarksListView.setItemChecked(i, true)
+                // Select them all.
+                for (i in 0 until numberOfBookmarks) {
+                    // Reset the checking many bookmarks flag on the last bookmark so the UI is updated.
+                    if (i == (numberOfBookmarks - 1))
+                        checkingManyBookmarks = false
+
+                    // Check the bookmark.
+                    bookmarksListView.setItemChecked(i, true)
+                }
+
+                // Consume the event.
+                true
             }
-        } else if (menuItemId == R.id.bookmarks_database_view) {
-            // Close the contextual action bar if it is displayed.  This can happen if the bottom app bar is enabled.
-            contextualActionMode?.finish()
 
-            // Create an intent to launch the bookmarks database view activity.
-            val bookmarksDatabaseViewIntent = Intent(this, BookmarksDatabaseViewActivity::class.java)
+            R.id.bookmarks_database_view -> {  // Bookmarks database view.
+                // Close the contextual action bar if it is displayed.  This can happen if the bottom app bar is enabled.
+                contextualActionMode?.finish()
 
-            // Include the favorite icon byte array to the intent.
-            bookmarksDatabaseViewIntent.putExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY, currentFavoriteIconByteArray)
+                // Create an intent to launch the bookmarks database view activity.
+                val bookmarksDatabaseViewIntent = Intent(this, BookmarksDatabaseViewActivity::class.java)
 
-            // Make it so.
-            startActivity(bookmarksDatabaseViewIntent)
+                // Include the favorite icon byte array to the intent.
+                bookmarksDatabaseViewIntent.putExtra(CURRENT_FAVORITE_ICON_BYTE_ARRAY, currentFavoriteIconByteArray)
+
+                // Make it so.
+                startActivity(bookmarksDatabaseViewIntent)
+
+                // Consume the event.
+                true
+            }
+
+            else -> {  // There is no match with the options menu.  Pass the event up to the parent method.
+                // Don't consume the event.
+                super.onOptionsItemSelected(menuItem)
+            }
         }
-        return true
     }
 
     override fun createBookmark(dialogFragment: DialogFragment) {
@@ -1192,7 +1209,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         val checkedBookmarkPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
         // Get the checked bookmarks positions sparse boolean array size.
-        val checkedBookmarkPositionsSparseBooleanArraySize = checkedBookmarkPositionsSparseBooleanArray.size()
+        val checkedBookmarkPositionsSparseBooleanArraySize = checkedBookmarkPositionsSparseBooleanArray.size
 
         // Get the position of the bookmarks that are selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
         for (i in 0 until checkedBookmarkPositionsSparseBooleanArraySize) {
@@ -1278,7 +1295,7 @@ class BookmarksActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBookma
         val checkedBookmarkPositionsSparseBooleanArray = bookmarksListView.checkedItemPositions
 
         // Get the checked bookmarks positions sparse boolean array size.
-        val checkedBookmarkPositionsSparseBooleanArraySize = checkedBookmarkPositionsSparseBooleanArray.size()
+        val checkedBookmarkPositionsSparseBooleanArraySize = checkedBookmarkPositionsSparseBooleanArray.size
 
         // Get the position of the bookmarks that are selected.  If other bookmarks have previously been selected they will be included in the sparse boolean array with a value of `false`.
         for (i in 0 until checkedBookmarkPositionsSparseBooleanArraySize) {

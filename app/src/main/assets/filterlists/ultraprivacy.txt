@@ -1,7 +1,7 @@
 [Adblock Plus 2.0]
-! Version: 3
+! Version: 4
 ! Title: UltraPrivacy
-! Last modified: 27 Apr 2023 19:27 UTC
+! Last modified: 5 Jul 2024 19:10 UTC
 ! Expires: 90 days (update frequency)
 ! Homepage: https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/
 ! Licence: GPLv3+ http://www.gnu.org/licenses/gpl-3.0.html
@@ -12,3 +12,7 @@ analytics
 googletagservices
 ! There shall be no connecting to Facebook on the backend.  <https://redmine.stoutner.com/issues/858>
 connect.facebook
+! Block all HTTP pings.  Currently this can only be processed by Privacy Browser PC, but Privacy Browser Android will also gain this functionality in the 4.x series.  <https://redmine.stoutner.com/issues/1206>
+$ping
+! Block all third-party fonts.  Currently this can only be processed by Privacy Browser PC, but Privacy Browser Android will also gain this functionality in the 4.x series.  <https://redmine.stoutner.com/issues/1202>
+$font,third-party

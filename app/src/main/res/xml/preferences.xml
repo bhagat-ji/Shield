@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2016-2025 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -78,27 +78,9 @@
         app:title="@string/filterlists" >
 
         <SwitchPreferenceCompat
-            app:key="@string/easylist_key"
-            app:title="@string/easylist"
-            app:summary="@string/easylist_summary"
-            app:defaultValue="true" />
-
-        <SwitchPreferenceCompat
-            app:key="@string/easyprivacy_key"
-            app:title="@string/easyprivacy"
-            app:summary="@string/easyprivacy_summary"
-            app:defaultValue="true" />
-
-        <SwitchPreferenceCompat
-            app:key="@string/fanboys_annoyance_list_key"
-            app:title="@string/fanboys_annoyance_list"
-            app:summary="@string/fanboys_annoyance_list_summary"
-            app:defaultValue="true" />
-
-        <SwitchPreferenceCompat
-            app:key="@string/fanboys_social_blocking_list_key"
-            app:title="@string/fanboys_social_blocking_list"
-            app:summary="@string/fanboys_social_blocking_list_summary"
+            app:key="@string/ultraprivacy_key"
+            app:title="@string/ultraprivacy"
+            app:summary="@string/ultraprivacy_summary"
             app:defaultValue="true" />
 
         <SwitchPreferenceCompat
@@ -108,9 +90,21 @@
             app:defaultValue="true" />
 
         <SwitchPreferenceCompat
-            app:key="@string/ultraprivacy_key"
-            app:title="@string/ultraprivacy"
-            app:summary="@string/ultraprivacy_summary"
+            app:key="@string/easyprivacy_key"
+            app:title="@string/easyprivacy"
+            app:summary="@string/easyprivacy_summary"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/easylist_key"
+            app:title="@string/easylist"
+            app:summary="@string/easylist_summary"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="@string/fanboys_annoyance_list_key"
+            app:title="@string/fanboys_annoyance_list"
+            app:summary="@string/fanboys_annoyance_list_summary"
             app:defaultValue="true" />
 
         <SwitchPreferenceCompat

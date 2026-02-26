@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2025 Soren Stoutner <soren@stoutner.com>
 
   Translation 2023 Xin.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -55,12 +55,11 @@
     <string name="apply">请求</string>
 
     <!-- Loading Filter Lists. -->
-    <string name="loading_easylist">加载 EasyList</string>
-    <string name="loading_easyprivacy">加载 EasyPrivacy</string>
-    <string name="loading_fanboys_annoyance_list">加载 Fanboy’s Annoyance List</string>
-    <string name="loading_fanboys_social_blocking_list">加载 Fanboy’s Social Blocking List</string>
-    <string name="loading_ultralist">加载 UltraList</string>
     <string name="loading_ultraprivacy">加载 UltraPrivacy</string>
+    <string name="loading_ultralist">加载 UltraList</string>
+    <string name="loading_easyprivacy">加载 EasyPrivacy</string>
+    <string name="loading_easylist">加载 EasyList</string>
+    <string name="loading_fanboys_annoyance_list">加载 Fanboy’s Annoyance List</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">喜爱的图标</string>
@@ -136,7 +135,6 @@
         <string name="clear_cookies">清空 Cookies</string>
         <string name="clear_dom_storage">清空 DOM 储存</string>
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-        <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">阻止所有第三方请求</string>
     <string name="page">页面</string>
         <string name="options_user_agent">用户代理</string>
@@ -407,12 +405,11 @@
             <string name="system_available_memory">系统可用内存: \u0020</string>
             <string name="system_total_memory">系统所有内存: \u0020</string>
             <string name="mebibyte">兆</string>
-            <string name="easylist_label">EasyList: \u0020</string>
-            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
-            <string name="ultralist_label">UltraList: \u0020</string>
             <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
         <string name="package_signature">包名</string>
             <string name="issuer_dn">发行人 DN:</string>
             <string name="subject_dn">主题 DN:</string>
@@ -470,12 +467,11 @@
         <string name="incognito_mode_summary">在无痕模式中，关闭当前标签页，会清除所有的记录和网页上的痕迹.</string>
         <string name="allow_screenshots">允许截图</string>
         <string name="allow_screenshots_summary">允许截图，录视频，在不安全的显示中查看，更改这个设置会重启本浏览器.</string>
-        <string name="easylist">EasyList</string>
-        <string name="easyprivacy">EasyPrivacy</string>
-        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboys_social_blocking_list">Fanboy’s social 黑名单</string>
-        <string name="ultralist">UltraList</string>
         <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultralist">UltraList</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easylist">EasyList</string>
+        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
         <string name="block_all_third_party_requests">屏蔽第三方请求</string>
         <string name="block_all_third_party_requests_summary">屏蔽所有第三方包括隐私在内的请求，这会使许多网页崩溃。</string>
     <string name="url_modification">修改网址</string>

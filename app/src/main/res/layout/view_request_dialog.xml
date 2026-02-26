@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2018,2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2018, 2020, 2022-2023, 2026 Soren Stoutner <soren@stoutner.com>
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,6 +31,16 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp" >
 
+        <!-- Request. -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/request"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimary"
+            android:gravity="center_horizontal" />
+
         <!-- Disposition. -->
         <TextView
             android:layout_height="wrap_content"
@@ -40,33 +51,144 @@
             android:layout_marginTop="5dp" />
 
         <TextView
-            android:id="@+id/request_disposition"
+            android:id="@+id/request_disposition_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"
             android:textColor="?android:textColorPrimary"
             android:textIsSelectable="true" />
 
-        <!-- URL -->
+        <!-- Web Page URL. -->
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/url"
+            android:text="@string/webpage_url"
             android:textSize="12sp"
             android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/request_url"
+            android:id="@+id/webpage_url_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"
             android:textColor="?android:textColorPrimary"
             android:textIsSelectable="true" />
 
+        <!-- The request URLs card view. -->
+        <androidx.cardview.widget.CardView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/gray_background" >
+
+            <!-- Align the contents of the card vertically. -->
+            <LinearLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_margin="10dp" >
+
+                <!-- Request URL. -->
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/request_url"
+                    android:textSize="12sp"
+                    android:textColor="@color/blue_text" />
+
+                <TextView
+                    android:id="@+id/request_url_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="?android:textColorPrimary"
+                    android:textIsSelectable="true" />
+
+                <!-- Request URL with Separators. -->
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/request_url_with_separators"
+                    android:textSize="12sp"
+                    android:textColor="@color/blue_text"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/request_url_with_separators_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="?android:textColorPrimary"
+                    android:textIsSelectable="true" />
+
+                <!-- Truncated Request URL. -->
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/truncated_request_url"
+                    android:textSize="12sp"
+                    android:textColor="@color/blue_text"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/truncated_request_url_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="?android:textColorPrimary"
+                    android:textIsSelectable="true" />
+
+                <!-- Truncated Request URL with Separators. -->
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/truncated_request_url_with_separators"
+                    android:textSize="12sp"
+                    android:textColor="@color/blue_text"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/truncated_request_url_with_separators_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textSize="16sp"
+                    android:textColor="?android:textColorPrimary"
+                    android:textIsSelectable="true" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Third Party Request. -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/third_party"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/third_party_request_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Filter List Entry. -->
+        <TextView
+            android:id="@+id/filterlist_entry_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/filterlist_entry_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimary"
+            android:gravity="center_horizontal" />
+
         <!-- Filter List -->
         <TextView
-            android:id="@+id/request_filterlist_label"
+            android:id="@+id/filterlist_label_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/filterlist"
@@ -75,7 +197,7 @@
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/request_filterlist"
+            android:id="@+id/filterlist_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"
@@ -84,7 +206,7 @@
 
         <!-- Sublist -->
         <TextView
-            android:id="@+id/request_sublist_label"
+            android:id="@+id/sublist_label_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/sublist"
@@ -93,7 +215,151 @@
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/request_sublist"
+            android:id="@+id/sublist_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Applied Entry List. -->
+        <TextView
+            android:id="@+id/applied_entry_list_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/applied_entry_list"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/applied_entry_list_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Domain. -->
+        <TextView
+            android:id="@+id/domain_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/domain"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/domain_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Domain List. -->
+        <TextView
+            android:id="@+id/domain_list_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/domain_list"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/domain_list_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Third Party Filter List Entry. -->
+        <TextView
+            android:id="@+id/third_party_filter_list_entry_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/third_party"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/third_party_filter_list_entry_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Initial Match. -->
+        <TextView
+            android:id="@+id/initial_match_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/initial_match"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/initial_match_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Final Match. -->
+        <TextView
+            android:id="@+id/final_match_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/final_match"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/final_match_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Applied Filter Options. -->
+        <TextView
+            android:id="@+id/applied_filter_options_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/applied_filter_options"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/applied_filter_options_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Original Filter Options. -->
+        <TextView
+            android:id="@+id/original_filter_options_label_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/original_filter_options"
+            android:textSize="12sp"
+            android:textColor="@color/blue_text"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/original_filter_options_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"
@@ -102,34 +368,16 @@
 
         <!-- Filter List Entries. -->
         <TextView
-            android:id="@+id/request_filterlist_entries_label"
+            android:id="@+id/original_entry_label_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/filterlist_entries"
+            android:text="@string/original_entry"
             android:textSize="12sp"
             android:textColor="@color/blue_text"
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/request_filterlist_entries"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:textSize="16sp"
-            android:textColor="?android:textColorPrimary"
-            android:textIsSelectable="true" />
-
-        <!-- Filter List Entries. -->
-        <TextView
-            android:id="@+id/request_filterlist_original_entry_label"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/filterlist_original_entry"
-            android:textSize="12sp"
-            android:textColor="@color/blue_text"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:id="@+id/request_filterlist_original_entry"
+            android:id="@+id/original_entry_textview"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textSize="16sp"

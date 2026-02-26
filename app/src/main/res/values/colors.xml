@@ -33,6 +33,7 @@
     <color name="domain_settings_url_background">@color/green_200</color>
     <color name="fab_icon">@color/white</color>
     <color name="ghosted_icon">@color/gray_425</color>
+    <color name="gray_background">@color/gray_100</color>
     <color name="icon">@color/gray_925</color>
     <color name="list_selector_activated">@color/blue_200</color>
     <color name="parent_folder_text">@color/gray_700</color>
@@ -122,6 +123,7 @@
     <color name="red_1100">#FF930606</color>
     <color name="red_a700">#FFD50000</color>
     <color name="red_night">#FFE24B4C</color>
+    <color name="red_night_1150">#FF875151</color>
 
     <color name="transparent">#00000000</color>
 

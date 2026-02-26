@@ -37,6 +37,7 @@ import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.ViewCompat
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity
+import com.stoutner.privacybrowser.dataclasses.RequestDataClass
 
 import java.util.Collections
 import java.util.Date
@@ -45,13 +46,12 @@ import kotlin.collections.ArrayList
 
 // Define the public constants.
 const val BLOCKED_REQUESTS = 0
-const val EASYLIST = 1
-const val EASYPRIVACY = 2
-const val FANBOYS_ANNOYANCE_LIST = 3
-const val FANBOYS_SOCIAL_BLOCKING_LIST = 4
-const val ULTRALIST = 5
-const val ULTRAPRIVACY = 6
-const val THIRD_PARTY_REQUESTS = 7
+const val ULTRAPRIVACY = 1
+const val ULTRALIST = 2
+const val EASYLIST = 3
+const val EASYPRIVACY = 4
+const val FANBOYS_ANNOYANCE_LIST = 5
+const val THIRD_PARTY_REQUESTS = 6
 
 // Define the private class constants.
 private const val ACCEPT_COOKIES = "accept_cookies"
@@ -65,7 +65,6 @@ private const val DISPLAY_IMAGES = "display_images"
 private const val EASYLIST_ENABLED = "easylist_enabled"
 private const val EASYPRIVACY_ENABLED = "easyprivacy_enabled"
 private const val FANBOYS_ANNOYANCE_LIST_ENABLED = "fanboys_annoyance_list_enabled"
-private const val FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED = "fanboys_social_blocking_list_enabled"
 private const val FONT_SIZE = "font_size"
 private const val HAS_PINNED_SSL_CERTIFICATE = "has_pinned_ssl_certificate"
 private const val IGNORE_PINNED_DOMAIN_INFORMATION = "ignore_pinned_domain_information"
@@ -100,7 +99,6 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     var easyListEnabled = true
     var easyPrivacyEnabled = true
     var fanboysAnnoyanceListEnabled = true
-    var fanboysSocialBlockingListEnabled = true
     var httpAuthHandler: HttpAuthHandler? = null
     var ignorePinnedDomainInformation = false
     var pinnedIpAddresses = ""
@@ -127,12 +125,11 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     private var pinnedSslIssuedByUName = ""
     private var pinnedSslStartDate = Date(0)
     private var pinnedSslEndDate = Date(0)
-    private val resourceRequests = Collections.synchronizedList(ArrayList<Array<String>>())  // Using a synchronized list makes adding resource requests thread safe.
+    private val resourceRequestsDataClassList = Collections.synchronizedList(ArrayList<RequestDataClass>())  // Using a synchronized list makes adding resource requests thread safe.
     private var blockedRequests = 0
     private var easyListBlockedRequests = 0
     private var easyPrivacyBlockedRequests = 0
     private var fanboysAnnoyanceListBlockedRequests = 0
-    private var fanboysSocialBlockingListBlockedRequests = 0
     private var ultraListBlockedRequests = 0
     private var ultraPrivacyBlockedRequests = 0
     private var thirdPartyBlockedRequests = 0
@@ -236,19 +233,19 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
 
 
     // Resource requests.
-    fun addResourceRequest(resourceRequest: Array<String>) {
+    fun addResourceRequest(resourceRequestDataClass: RequestDataClass) {
         // Add the resource request to the list.
-        resourceRequests.add(resourceRequest)
+        resourceRequestsDataClassList.add(resourceRequestDataClass)
     }
 
-    fun getResourceRequests(): List<Array<String>> {
+    fun getResourceRequestsDataClassList(): List<RequestDataClass> {
         // Return the list of resource requests as an array list.
-        return resourceRequests
+        return resourceRequestsDataClassList
     }
 
-    fun clearResourceRequests() {
+    fun clearResourceRequestsDataClassList() {
         // Clear the resource requests.
-        resourceRequests.clear()
+        resourceRequestsDataClassList.clear()
     }
 
 
@@ -257,12 +254,11 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         // Increment the count of the indicated filter list.
         when (filterList) {
             BLOCKED_REQUESTS -> blockedRequests++
+            ULTRAPRIVACY -> ultraPrivacyBlockedRequests++
+            ULTRALIST -> ultraListBlockedRequests++
             EASYLIST -> easyListBlockedRequests++
             EASYPRIVACY -> easyPrivacyBlockedRequests++
             FANBOYS_ANNOYANCE_LIST -> fanboysAnnoyanceListBlockedRequests++
-            FANBOYS_SOCIAL_BLOCKING_LIST -> fanboysSocialBlockingListBlockedRequests++
-            ULTRALIST -> ultraListBlockedRequests++
-            ULTRAPRIVACY -> ultraPrivacyBlockedRequests++
             THIRD_PARTY_REQUESTS -> thirdPartyBlockedRequests++
         }
     }
@@ -271,12 +267,11 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         // Return the count of the indicated filter list.
         return when (filterList) {
             BLOCKED_REQUESTS -> blockedRequests
+            ULTRAPRIVACY -> ultraPrivacyBlockedRequests
+            ULTRALIST -> ultraListBlockedRequests
             EASYLIST -> easyListBlockedRequests
             EASYPRIVACY -> easyPrivacyBlockedRequests
             FANBOYS_ANNOYANCE_LIST -> fanboysAnnoyanceListBlockedRequests
-            FANBOYS_SOCIAL_BLOCKING_LIST -> fanboysSocialBlockingListBlockedRequests
-            ULTRALIST -> ultraListBlockedRequests
-            ULTRAPRIVACY -> ultraPrivacyBlockedRequests
             THIRD_PARTY_REQUESTS -> thirdPartyBlockedRequests
             else -> 0 // Return 0.  This should never be called, but it is required by the return when statement.
         }
@@ -285,12 +280,11 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
     fun resetRequestsCounters() {
         // Reset all the resource request counters.
         blockedRequests = 0
+        ultraPrivacyBlockedRequests = 0
+        ultraListBlockedRequests = 0
         easyListBlockedRequests = 0
         easyPrivacyBlockedRequests = 0
         fanboysAnnoyanceListBlockedRequests = 0
-        fanboysSocialBlockingListBlockedRequests = 0
-        ultraListBlockedRequests = 0
-        ultraPrivacyBlockedRequests = 0
         thirdPartyBlockedRequests = 0
     }
 
@@ -357,7 +351,7 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
                     scrollDeltaY = preScrollDeltaY - consumedScroll[1]
                 }
 
-                // Check to see if the WebView is at the top and and the scroll action is downward.
+                // Check to see if the WebView is at the top and the scroll action is downward.
                 if (webViewYPosition == 0 && scrollDeltaY < 0) {  // Swipe to refresh is being engaged.
                     // Stop the nested scroll so that swipe to refresh has complete control.  This way releasing the scroll to refresh circle doesn't scroll the WebView at the same time.
                     stopNestedScroll()
@@ -400,7 +394,6 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         savedState.putBoolean(EASYLIST_ENABLED, easyListEnabled)
         savedState.putBoolean(EASYPRIVACY_ENABLED, easyPrivacyEnabled)
         savedState.putBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED, fanboysAnnoyanceListEnabled)
-        savedState.putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED, fanboysSocialBlockingListEnabled)
         savedState.putInt(FONT_SIZE, this.settings.textZoom)
         savedState.putBoolean(HAS_PINNED_SSL_CERTIFICATE, hasPinnedSslCertificate)
         savedState.putBoolean(IGNORE_PINNED_DOMAIN_INFORMATION, ignorePinnedDomainInformation)
@@ -438,7 +431,6 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
         easyListEnabled = savedState.getBoolean(EASYLIST_ENABLED)
         easyPrivacyEnabled = savedState.getBoolean(EASYPRIVACY_ENABLED)
         fanboysAnnoyanceListEnabled = savedState.getBoolean(FANBOYS_ANNOYANCE_LIST_ENABLED)
-        fanboysSocialBlockingListEnabled = savedState.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST_ENABLED)
         this.settings.textZoom = savedState.getInt(FONT_SIZE)
         hasPinnedSslCertificate = savedState.getBoolean(HAS_PINNED_SSL_CERTIFICATE)
         ignorePinnedDomainInformation = savedState.getBoolean(IGNORE_PINNED_DOMAIN_INFORMATION)
@@ -510,13 +502,13 @@ class NestedScrollWebView @JvmOverloads constructor(context: Context, attributeS
 
     // Method from NestedScrollingChild.
     override fun dispatchNestedPreScroll(deltaX: Int, deltaY: Int, consumed: IntArray?, offsetInWindow: IntArray?): Boolean {
-        // Dispatch a nested pre-scroll with the specified deltas, which lets a parent to consume some of the scroll if desired.
+        // Dispatch a nested pre-scroll with the specified deltas, which lets a parent consume some of the scroll if desired.
         return nestedScrollingChildHelper.dispatchNestedPreScroll(deltaX, deltaY, consumed, offsetInWindow)
     }
 
     // Method from NestedScrollingChild2.
     override fun dispatchNestedPreScroll(deltaX: Int, deltaY: Int, consumed: IntArray?, offsetInWindow: IntArray?, type: Int): Boolean {
-        // Dispatch a nested pre-scroll with the specified deltas for the given type of input which caused the scroll event, which lets a parent to consume some of the scroll if desired.
+        // Dispatch a nested pre-scroll with the specified deltas for the given type of input which caused the scroll event, which lets a parent consume some of the scroll if desired.
         return nestedScrollingChildHelper.dispatchNestedPreScroll(deltaX, deltaY, consumed, offsetInWindow, type)
     }
 

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018,2020,2022-2023 Soren Stoutner <soren@stoutner.com>.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  SPDX-FileCopyrightText: 2016-2018, 2020, 2022-2023, 2025 Soren Stoutner <soren@stoutner.com>
 
-  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+  This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
-  Privacy Browser Android is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or (at your option) any later
+  version.
 
-  Privacy Browser Android is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License along with
+  this program.  If not, see <https://www.gnu.org/licenses/>. -->
 
-<!-- The scroll view allows the linear layout to scroll if it exceeds the height of the page. -->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -258,25 +258,7 @@
                 android:paddingTop="12dp" />
 
             <TextView
-                android:id="@+id/easylist"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textIsSelectable="true" />
-
-            <TextView
-                android:id="@+id/easyprivacy"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textIsSelectable="true" />
-
-            <TextView
-                android:id="@+id/fanboy_annoyance"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textIsSelectable="true" />
-
-            <TextView
-                android:id="@+id/fanboy_social"
+                android:id="@+id/ultraprivacy"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textIsSelectable="true" />
@@ -288,7 +270,19 @@
                 android:textIsSelectable="true" />
 
             <TextView
-                android:id="@+id/ultraprivacy"
+                android:id="@+id/easyprivacy"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
+
+            <TextView
+                android:id="@+id/easylist"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
+
+            <TextView
+                android:id="@+id/fanboy_annoyance"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textIsSelectable="true" />

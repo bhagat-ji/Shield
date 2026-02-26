@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2025 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -19,11 +19,13 @@
 
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+
+    // kotlin-parcelize is used to parcelize data classes so they can be added to bundles.
+    id 'kotlin-parcelize'
 }
 
 android {
-    compileSdk 36
+    compileSdk = 36
 
     defaultConfig {
         minSdk 26
@@ -40,8 +42,8 @@ android {
     }
 
     // Specify the Kotlin JVM target.  This must match the compile Java version.  For some reason the system was not setting this correctly.  These can probably be removed in the future.
-    kotlinOptions {
-        jvmTarget = 17
+    kotlin {
+        jvmToolchain(17)
     }
 
     buildTypes {
@@ -82,23 +84,23 @@ android {
 
 dependencies {
     // Include the following AndroidX libraries.
-    implementation "androidx.activity:activity-ktx:1.10.1"
+    implementation "androidx.activity:activity-ktx:1.12.4"
     implementation 'androidx.arch.core:core-common:2.2.0'
     implementation 'androidx.arch.core:core-runtime:2.2.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.3.0'
-    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation 'androidx.core:core-ktx:1.17.0'
     implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
     implementation 'androidx.viewpager:viewpager:1.1.0'
-    implementation 'androidx.webkit:webkit:1.14.0'
+    implementation 'androidx.webkit:webkit:1.15.0'
 
     // Include the Kotlin standard library.  This should be the same version number listed in project build.gradle.
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.1.20'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.10'
 
     // Include the Google material library.
-    implementation 'com.google.android.material:material:1.13.0-alpha14'
+    implementation 'com.google.android.material:material:1.13.0'
 }

@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2018-2023 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2018-2023, 2025-2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -28,16 +28,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
-import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
-import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
-import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
+import com.stoutner.privacybrowser.dataclasses.RequestDataClass
+import com.stoutner.privacybrowser.dataclasses.RequestDisposition
 
 // `0` is the `textViewResourceId`, which is unused in this implementation.
-class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<String>>) : ArrayAdapter<Array<String>>(context, 0, resourceRequestsList) {
-    override fun getView(position: Int, view: View?, parent: ViewGroup): View {
-        // Copy the input view to a new view..
-        var newView = view
+class RequestsArrayAdapter(context: Context, resourceRequestsDataClassList: MutableList<RequestDataClass>) : ArrayAdapter<RequestDataClass>(context, 0, resourceRequestsDataClassList) {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        // Copy the input view to a new view.
+        var newView = convertView
 
         // Inflate the new view if it is null.
         if (newView == null) {
@@ -49,15 +47,15 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
         val dispositionTextView = newView.findViewById<TextView>(R.id.request_item_disposition)
         val urlTextView = newView.findViewById<TextView>(R.id.request_item_url)
 
-        // Get the string array for this entry.
-        val entryStringArray = getItem(position)!!
+        // Get the request data class.
+        val requestDataClass = getItem(position)!!
 
         // The ID is one greater than the position because it is 0 based.
         val id = position + 1
 
         // Set the action text and the background color.
-        when (entryStringArray[0]) {
-            REQUEST_DEFAULT -> {
+        when (requestDataClass.disposition) {
+            RequestDisposition.Default -> {
                 // Set the disposition text.
                 dispositionTextView.text = context.resources.getString(R.string.request_allowed, id)
 
@@ -65,7 +63,7 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
                 linearLayout.setBackgroundColor(context.getColor(R.color.transparent))
             }
 
-            REQUEST_ALLOWED -> {
+            RequestDisposition.Allowed -> {
                 // Set the disposition text.
                 dispositionTextView.text = context.resources.getString(R.string.request_allowed, id)
 
@@ -73,25 +71,25 @@ class RequestsArrayAdapter(context: Context, resourceRequestsList: List<Array<St
                 linearLayout.setBackgroundColor(context.getColor(R.color.requests_blue_background))
             }
 
-            REQUEST_THIRD_PARTY -> {
-                // Set the disposition text.
-                dispositionTextView.text = context.resources.getString(R.string.request_blocked, id)
-
-                // Set the background color.
-                linearLayout.setBackgroundColor(context.getColor(R.color.yellow_background))
-            }
-
-            REQUEST_BLOCKED -> {
+            RequestDisposition.Blocked -> {
                 // Set the disposition text.
                 dispositionTextView.text = context.resources.getString(R.string.request_blocked, id)
 
                 // Set the background color.
                 linearLayout.setBackgroundColor(context.getColor(R.color.red_background))
             }
+
+            RequestDisposition.ThirdParty -> {
+                // Set the disposition text.
+                dispositionTextView.text = context.resources.getString(R.string.request_blocked, id)
+
+                // Set the background color.
+                linearLayout.setBackgroundColor(context.getColor(R.color.yellow_background))
+            }
         }
 
-        // Set the URL text.
-        urlTextView.text = entryStringArray[1]
+        // Set the request URL text.
+        urlTextView.text = requestDataClass.requestUrlString
 
         // Return the modified view.
         return newView

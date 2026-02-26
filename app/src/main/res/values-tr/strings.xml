@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2025 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -44,12 +44,11 @@
     <string name="error">Hata:\u0020 %1$s</string>
 
     <!-- Loading Filter Lists. -->
-    <string name="loading_easylist">EasyList yükleniyor</string>
-    <string name="loading_easyprivacy">EasyPrivacy yükleniyor</string>
-    <string name="loading_fanboys_annoyance_list">Fanboy’s Annoyance List yükleniyor</string>
-    <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking List yükleniyor</string>
-    <string name="loading_ultralist">UltraList yükleniyor</string>
     <string name="loading_ultraprivacy">UltraPrivacy yükleniyor</string>
+    <string name="loading_ultralist">UltraList yükleniyor</string>
+    <string name="loading_easyprivacy">EasyPrivacy yükleniyor</string>
+    <string name="loading_easylist">EasyList yükleniyor</string>
+    <string name="loading_fanboys_annoyance_list">Fanboy’s Annoyance List yükleniyor</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Site Simgesi</string>
@@ -122,7 +121,6 @@
         <string name="clear_cookies">Çerezleri temizle</string>
         <string name="clear_dom_storage">DOM Depolamayı temizle</string>
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-        <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri engelle</string>
     <string name="page">Sayfa</string>
         <string name="options_user_agent">Kullanıcı aracısı</string>
@@ -342,12 +340,11 @@
             <string name="webview_version">WebView Versiyonu: \u0020</string>
             <string name="orbot">Orbot:</string>
             <string name="openkeychain">OpenKeychain: \u0020</string>
-            <string name="easylist_label">EasyList: \u0020</string>
-            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
-            <string name="ultralist_label">UltraList: \u0020</string>
             <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
         <string name="package_signature">Paket İmzası</string>
             <string name="issuer_dn">Yayınlayan DN: \u0020</string>
             <string name="subject_dn">Özne DN: \u0020</string>
@@ -401,12 +398,11 @@
         <string name="allow_screenshots">Ekran görüntülerine izin ver</string>
         <string name="allow_screenshots_summary">Ekran görüntülerine, video kaydına ve güvenli olmayan ekranlarda görüntülenmeye izin verir.
             Bu ayarı değiştirmek Privacy Browser uygulamasını yeniden başlatır.</string>
-        <string name="easylist">EasyList</string>
-        <string name="easyprivacy">EasyPrivacy</string>
-        <string name="fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-        <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
-        <string name="ultralist">UltraList</string>
         <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultralist">UltraList</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easylist">EasyList</string>
+        <string name="fanboys_annoyance_list">Fanboy’s Annoyance List</string>
         <string name="block_all_third_party_requests">Tüm üçüncü taraf istekleri engelle</string>
         <string name="block_all_third_party_requests_summary">Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çoğu web sitesinin çökmesine sebep olur.</string>
     <string name="url_modification">URL Modifikasyonu</string>

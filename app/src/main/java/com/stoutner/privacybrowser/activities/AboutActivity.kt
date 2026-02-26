@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2023 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2023, 2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -33,8 +33,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.adapters.AboutStateAdapter
 
-const val FILTERLIST_VERSIONS = "filterlist_versions"
-
 class AboutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Get a handle for the shared preferences.
@@ -51,12 +49,6 @@ class AboutActivity : AppCompatActivity() {
 
         // Run the default commands.
         super.onCreate(savedInstanceState)
-
-        // Get the intent that launched the activity.
-        val launchingIntent = intent
-
-        // Get the filter list versions.
-        val filterListVersions = launchingIntent.getStringArrayExtra(FILTERLIST_VERSIONS)!!
 
         // Set the content view.
         if (bottomAppBar)
@@ -79,7 +71,7 @@ class AboutActivity : AppCompatActivity() {
         actionBar.setDisplayHomeAsUpEnabled(true)
 
         // Initialize the about state adapter.
-        val aboutStateAdapter = AboutStateAdapter(this, filterListVersions)
+        val aboutStateAdapter = AboutStateAdapter(this)
 
         // Set the view pager adapter.
         aboutViewPager2.adapter = aboutStateAdapter

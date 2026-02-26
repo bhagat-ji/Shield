@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2024 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -76,7 +76,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var easyListPreference: Preference
     private lateinit var easyPrivacyPreference: Preference
     private lateinit var fanboyAnnoyanceListPreference: Preference
-    private lateinit var fanboySocialBlockingListPreference: Preference
     private lateinit var fontSizePreference: Preference
     private lateinit var fullScreenBrowsingModePreference: Preference
     private lateinit var hideAppBarPreference: Preference
@@ -129,12 +128,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         customUserAgentPreference = findPreference(getString(R.string.custom_user_agent_key))!!
         incognitoModePreference = findPreference(getString(R.string.incognito_mode_key))!!
         allowScreenshotsPreference = findPreference(getString(R.string.allow_screenshots_key))!!
-        easyListPreference = findPreference(getString(R.string.easylist_key))!!
-        easyPrivacyPreference = findPreference(getString(R.string.easyprivacy_key))!!
-        fanboyAnnoyanceListPreference = findPreference(getString(R.string.fanboys_annoyance_list_key))!!
-        fanboySocialBlockingListPreference = findPreference(getString(R.string.fanboys_social_blocking_list_key))!!
-        ultraListPreference = findPreference(getString(R.string.ultralist_key))!!
         ultraPrivacyPreference = findPreference(getString(R.string.ultraprivacy_key))!!
+        ultraListPreference = findPreference(getString(R.string.ultralist_key))!!
+        easyPrivacyPreference = findPreference(getString(R.string.easyprivacy_key))!!
+        easyListPreference = findPreference(getString(R.string.easylist_key))!!
+        fanboyAnnoyanceListPreference = findPreference(getString(R.string.fanboys_annoyance_list_key))!!
         blockAllThirdPartyRequestsPreference = findPreference(getString(R.string.block_all_third_party_requests_key))!!
         trackingQueriesPreference = findPreference(getString(R.string.tracking_queries_key))!!
         ampRedirectsPreference = findPreference(getString(R.string.amp_redirects_key))!!
@@ -177,12 +175,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Get booleans that are used in multiple places from the preferences.
         val javaScriptEnabled = sharedPreferences.getBoolean(getString(R.string.javascript_key), false)
         val fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
-        val fanboySocialBlockingEnabled = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
         val fullScreenBrowsingMode = sharedPreferences.getBoolean(getString(R.string.full_screen_browsing_mode_key), false)
         val clearEverything = sharedPreferences.getBoolean(getString(R.string.clear_everything_key), true)
-
-        // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
-        fanboySocialBlockingListPreference.isEnabled = !fanboyAnnoyanceListEnabled
 
 
         // Inflate a WebView to get the default user agent.
@@ -347,35 +341,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else
             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled)
 
-        // Set the EasyList icon.
-        if (sharedPreferences.getBoolean(getString(R.string.easylist_key), true))
-            easyListPreference.setIcon(R.drawable.block_ads_enabled)
+        // Set the UltraPrivacy icon.
+        if (sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true))
+            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
         else
-            easyListPreference.setIcon(R.drawable.block_ads_disabled)
-
-        // Set the EasyPrivacy icon.
-        if (sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true))
-            easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
-        else
-            easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
-
-        // Set the Fanboy lists icons.
-        if (fanboyAnnoyanceListEnabled) {
-            // Set the Fanboy annoyance list icon.
-            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled)
-
-            // Set the Fanboy social blocking list icon.
-            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted)
-        } else {
-            // Set the Fanboy annoyance list icon.
-            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled)
-
-            // Set the Fanboy social blocking list icon.
-            if (fanboySocialBlockingEnabled)
-                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled)
-            else
-                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled)
-        }
+            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
 
         // Set the UltraList icon.
         if (sharedPreferences.getBoolean(getString(R.string.ultralist_key), true))
@@ -383,11 +353,26 @@ class SettingsFragment : PreferenceFragmentCompat() {
         else
             ultraListPreference.setIcon(R.drawable.block_ads_disabled)
 
-        // Set the UltraPrivacy icon.
-        if (sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true))
-            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
+        // Set the EasyPrivacy icon.
+        if (sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true))
+            easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
         else
-            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
+            easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
+
+        // Set the EasyList icon.
+        if (sharedPreferences.getBoolean(getString(R.string.easylist_key), true))
+            easyListPreference.setIcon(R.drawable.block_ads_enabled)
+        else
+            easyListPreference.setIcon(R.drawable.block_ads_disabled)
+
+        // Set the Fanboy lists icons.
+        if (fanboyAnnoyanceListEnabled) {
+            // Set the Fanboy annoyance list icon.
+            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled)
+        } else {
+            // Set the Fanboy annoyance list icon.
+            fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled)
+        }
 
         // Set the block all third-party requests icon.
         if (sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests), false))
@@ -725,55 +710,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     restartPrivacyBrowser()
                 }
 
-                getString(R.string.easylist_key) -> {
+                getString(R.string.ultraprivacy_key) -> {
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.easylist_key), true))
-                        easyListPreference.setIcon(R.drawable.block_ads_enabled)
+                    if (sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true))
+                        ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
                     else
-                        easyListPreference.setIcon(R.drawable.block_ads_disabled)
-                }
-
-                getString(R.string.easyprivacy_key) -> {
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true))
-                        easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
-                    else
-                        easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
-                }
-
-                getString(R.string.fanboys_annoyance_list_key) -> {
-                    // Get the current Fanboy settings.
-                    val currentFanboyAnnoyanceList = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
-                    val currentFanboySocialBlockingList = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
-
-                    // Update the Fanboy icons.
-                    if (currentFanboyAnnoyanceList) {  // Fanboy's annoyance list is enabled.
-                        // Update the Fanboy's annoyance list icon.
-                        fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled)
-
-                        // Update the Fanboy's social blocking list icon.
-                        fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted)
-                    } else {  // Fanboy's annoyance list is disabled.
-                        // Update the Fanboy's annoyance list icon.
-                        fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled)
-
-                        // Update the Fanboy's social blocking list icon.
-                        if (currentFanboySocialBlockingList)
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled)
-                        else
-                            fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled)
-                    }
-
-                    // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list preference is disabled.
-                    fanboySocialBlockingListPreference.isEnabled = !currentFanboyAnnoyanceList
-                }
-
-                getString(R.string.fanboys_social_blocking_list_key) -> {
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true))
-                        fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled)
-                    else
-                        fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled)
+                        ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
                 }
 
                 getString(R.string.ultralist_key) -> {
@@ -784,12 +726,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         ultraListPreference.setIcon(R.drawable.block_ads_disabled)
                 }
 
-                getString(R.string.ultraprivacy_key) -> {
+                getString(R.string.easyprivacy_key) -> {
                     // Update the icon.
-                    if (sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true))
-                        ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
+                    if (sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true))
+                        easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled)
                     else
-                        ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
+                        easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled)
+                }
+
+                getString(R.string.easylist_key) -> {
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean(getString(R.string.easylist_key), true))
+                        easyListPreference.setIcon(R.drawable.block_ads_enabled)
+                    else
+                        easyListPreference.setIcon(R.drawable.block_ads_disabled)
+                }
+
+                getString(R.string.fanboys_annoyance_list_key) -> {
+                    // Update the Fanboy icons.
+                    if (sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)) {  // Fanboy's annoyance list is enabled.
+                        // Update the Fanboy's annoyance list icon.
+                        fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled)
+                    } else {  // Fanboy's annoyance list is disabled.
+                        // Update the Fanboy's annoyance list icon.
+                        fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled)
+                    }
                 }
 
                 getString(R.string.block_all_third_party_requests_key) -> {

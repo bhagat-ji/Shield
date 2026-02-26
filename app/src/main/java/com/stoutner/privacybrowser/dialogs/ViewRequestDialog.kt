@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2018-2023 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2018-2023, 2025-2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -33,54 +33,32 @@ import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
-import com.stoutner.privacybrowser.helpers.DOMAIN_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_FINAL_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_INITIAL_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.DOMAIN_REGULAR_EXPRESSION_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.INITIAL_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
-import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
-import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST_ENTRIES
-import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKLIST_ORIGINAL_ENTRY
-import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
-import com.stoutner.privacybrowser.helpers.REQUEST_DISPOSITION
-import com.stoutner.privacybrowser.helpers.FINAL_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.FINAL_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.MAIN_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.MAIN_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.REGULAR_EXPRESSION_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.REQUEST_SUBLIST
-import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
-import com.stoutner.privacybrowser.helpers.REQUEST_URL
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_DOMAIN_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_INITIAL_BLOCKLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_ALLOWLIST
-import com.stoutner.privacybrowser.helpers.THIRD_PARTY_REGULAR_EXPRESSION_BLOCKLIST
+import com.stoutner.privacybrowser.dataclasses.FilterList
+import com.stoutner.privacybrowser.dataclasses.FilterOptionDisposition
+import com.stoutner.privacybrowser.dataclasses.MatchedUrlType
+import com.stoutner.privacybrowser.dataclasses.RequestDataClass
+import com.stoutner.privacybrowser.dataclasses.RequestDisposition
+import com.stoutner.privacybrowser.dataclasses.Sublist
 
 // Define the class constants.
 private const val ID = "id"
 private const val IS_LAST_REQUEST = "is_last_request"
-private const val REQUEST_DETAILS = "request_details"
+private const val REQUEST_DATA_CLASS = "request_data_class"
+
+// Define the private variables.
+private var blueColor = 0
+private var redColor = 0
 
 class ViewRequestDialog : DialogFragment() {
     companion object {
-        fun request(id: Int, isLastRequest: Boolean, requestDetails: Array<String>): ViewRequestDialog {
+        fun request(id: Int, isLastRequest: Boolean, requestDataClass: RequestDataClass): ViewRequestDialog {
             // Create a bundle.
             val bundle = Bundle()
 
             // Store the request details.
             bundle.putInt(ID, id)
             bundle.putBoolean(IS_LAST_REQUEST, isLastRequest)
-            bundle.putStringArray(REQUEST_DETAILS, requestDetails)
+            bundle.putParcelable(REQUEST_DATA_CLASS, requestDataClass)
 
             // Create a new instance of the view request dialog.
             val viewRequestDialog = ViewRequestDialog()
@@ -115,9 +93,10 @@ class ViewRequestDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments from the bundle.
+        // The deprecated `getParcelable()` method can be updated once the minimum API >= 33.
         val id = requireArguments().getInt(ID)
         val isLastRequest = requireArguments().getBoolean(IS_LAST_REQUEST)
-        val requestDetails = requireArguments().getStringArray(REQUEST_DETAILS)!!
+        @Suppress("DEPRECATION") val requestDataClass = requireArguments().getParcelable<RequestDataClass>(REQUEST_DATA_CLASS)!!
 
         // Use an alert dialog builder to create the alert dialog.
         val dialogBuilder = AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialog)
@@ -156,25 +135,43 @@ class ViewRequestDialog : DialogFragment() {
         val allowScreenshots = sharedPreferences.getBoolean(getString(R.string.allow_screenshots_key), false)
 
         // Disable screenshots if not allowed.
-        if (!allowScreenshots) {
-            // Disable screenshots.
+        if (!allowScreenshots)
             alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
 
-        //The alert dialog must be shown before the contents can be modified.
+        // The alert dialog must be shown before the contents can be modified.
         alertDialog.show()
 
         // Get handles for the dialog views.
-        val requestDisposition = alertDialog.findViewById<TextView>(R.id.request_disposition)!!
-        val requestUrl = alertDialog.findViewById<TextView>(R.id.request_url)!!
-        val requestFilterListLabel = alertDialog.findViewById<TextView>(R.id.request_filterlist_label)!!
-        val requestFilterList = alertDialog.findViewById<TextView>(R.id.request_filterlist)!!
-        val requestSubListLabel = alertDialog.findViewById<TextView>(R.id.request_sublist_label)!!
-        val requestSubList = alertDialog.findViewById<TextView>(R.id.request_sublist)!!
-        val requestFilterListEntriesLabel = alertDialog.findViewById<TextView>(R.id.request_filterlist_entries_label)!!
-        val requestFilterListEntries = alertDialog.findViewById<TextView>(R.id.request_filterlist_entries)!!
-        val requestFilterListOriginalEntryLabel = alertDialog.findViewById<TextView>(R.id.request_filterlist_original_entry_label)!!
-        val requestFilterListOriginalEntry = alertDialog.findViewById<TextView>(R.id.request_filterlist_original_entry)!!
+        val requestDispositionTextView = alertDialog.findViewById<TextView>(R.id.request_disposition_textview)!!
+        val webpageUrlTextView = alertDialog.findViewById<TextView>(R.id.webpage_url_textview)!!
+        val requestUrlTextView = alertDialog.findViewById<TextView>(R.id.request_url_textview)!!
+        val requestUrlWithSeparatorsTextView = alertDialog.findViewById<TextView>(R.id.request_url_with_separators_textview)!!
+        val truncatedRequestUrlTextView = alertDialog.findViewById<TextView>(R.id.truncated_request_url_textview)!!
+        val truncatedRequestUrlWithSeparatorsTextView = alertDialog.findViewById<TextView>(R.id.truncated_request_url_with_separators_textview)!!
+        val thirdPartyRequestTextView = alertDialog.findViewById<TextView>(R.id.third_party_request_textview)!!
+        val filterListEntryTextView = alertDialog.findViewById<TextView>(R.id.filterlist_entry_textview)!!
+        val filterListLabelTextView = alertDialog.findViewById<TextView>(R.id.filterlist_label_textview)!!
+        val filterListTextView = alertDialog.findViewById<TextView>(R.id.filterlist_textview)!!
+        val sublistLabelTextView = alertDialog.findViewById<TextView>(R.id.sublist_label_textview)!!
+        val sublistTextView = alertDialog.findViewById<TextView>(R.id.sublist_textview)!!
+        val appliedEntryListLabelTextView = alertDialog.findViewById<TextView>(R.id.applied_entry_list_label_textview)!!
+        val appliedEntryListTextView = alertDialog.findViewById<TextView>(R.id.applied_entry_list_textview)!!
+        val domainLabelTextView = alertDialog.findViewById<TextView>(R.id.domain_label_textview)!!
+        val domainTextView = alertDialog.findViewById<TextView>(R.id.domain_textview)!!
+        val domainListLabelTextView = alertDialog.findViewById<TextView>(R.id.domain_list_label_textview)!!
+        val domainListTextView = alertDialog.findViewById<TextView>(R.id.domain_list_textview)!!
+        val thirdPartyFilterListEntryLabelTextView = alertDialog.findViewById<TextView>(R.id.third_party_filter_list_entry_label_textview)!!
+        val thirdPartyFilterListEntryTextView = alertDialog.findViewById<TextView>(R.id.third_party_filter_list_entry_textview)!!
+        val initialMatchLabelTextView = alertDialog.findViewById<TextView>(R.id.initial_match_label_textview)!!
+        val initialMatchTextView = alertDialog.findViewById<TextView>(R.id.initial_match_textview)!!
+        val finalMatchLabelTextView = alertDialog.findViewById<TextView>(R.id.final_match_label_textview)!!
+        val finalMatchTextView = alertDialog.findViewById<TextView>(R.id.final_match_textview)!!
+        val appliedFilterOptionsLabelTextView = alertDialog.findViewById<TextView>(R.id.applied_filter_options_label_textview)!!
+        val appliedFilterOptionsTextView = alertDialog.findViewById<TextView>(R.id.applied_filter_options_textview)!!
+        val originalFilterOptionsLabelTextView = alertDialog.findViewById<TextView>(R.id.original_filter_options_label_textview)!!
+        val originalFilterOptionsTextView = alertDialog.findViewById<TextView>(R.id.original_filter_options_textview)!!
+        val originalEntryLabelTextView = alertDialog.findViewById<TextView>(R.id.original_entry_label_textview)!!
+        val originalEntryTextView = alertDialog.findViewById<TextView>(R.id.original_entry_textview)!!
         val previousButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE)
         val nextButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
 
@@ -184,87 +181,230 @@ class ViewRequestDialog : DialogFragment() {
         // Disable the next button if the last resource request is displayed.
         nextButton.isEnabled = !isLastRequest
 
-        // Set the request action text.
-        when (requestDetails[REQUEST_DISPOSITION]) {
-            REQUEST_DEFAULT -> {
-                // Set the text.
-                requestDisposition.setText(R.string.default_allowed)
+        // Get handles for the colors.
+        blueColor = getColor(requireContext(), R.color.requests_blue_background)
+        redColor = getColor(requireContext(), R.color.red_background)
+        val yellowColor = getColor(requireContext(), R.color.yellow_background)
 
-                // Set the background color to be transparent.
-                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.transparent))
+        // Set the request disposition text and associated backgrounds.
+        when (requestDataClass.disposition) {
+            RequestDisposition.Default -> {
+                // Set the request disposition text.
+                requestDispositionTextView.setText(R.string.default_allowed)
+
+                // Set the request disposition background color to be transparent.
+                requestDispositionTextView.setBackgroundColor(getColor(requireContext(), R.color.transparent))
             }
 
-            REQUEST_ALLOWED -> {
-                // Set the text.
-                requestDisposition.setText(R.string.allowed)
+            RequestDisposition.Allowed -> {
+                // Set the request disposition text.
+                requestDispositionTextView.setText(R.string.allowed)
 
-                // Set the background color to be blue.
-                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.requests_blue_background))
+                // Set the request disposition background color to be blue.
+                requestDispositionTextView.setBackgroundColor(blueColor)
+
+                // Set the matched URL background color.
+                when (requestDataClass.matchedUrlType) {
+                    MatchedUrlType.Url -> requestUrlTextView.setBackgroundColor(blueColor)
+                    MatchedUrlType.TruncatedUrl -> truncatedRequestUrlTextView.setBackgroundColor(blueColor)
+                    MatchedUrlType.UrlWithSeparators -> requestUrlWithSeparatorsTextView.setBackgroundColor(blueColor)
+                    MatchedUrlType.TruncatedUrlWithSeparators -> truncatedRequestUrlWithSeparatorsTextView.setBackgroundColor(blueColor)
+                }
+
+                // Set the third party request background color.
+                if (requestDataClass.isThirdPartyRequest)
+                    thirdPartyRequestTextView.setBackgroundColor(blueColor)
+
+                // Set the sublist and applied entry list background color.
+                sublistTextView.setBackgroundColor(blueColor)
+                appliedEntryListTextView.setBackgroundColor(blueColor)
+
+                // Set the filter options background color.
+                setFilterListBackgroundColor(requestDataClass.filterListDomain, domainTextView, true)
+                setFilterListBackgroundColor(requestDataClass.filterListThirdParty, thirdPartyFilterListEntryTextView, true)
+
+                // Set the domain list text view background color to be the same as the domain text view background color.
+                setFilterListBackgroundColor(requestDataClass.filterListDomain, domainListTextView, true)
+
+                // Set the matching text view background color to blue if they are populated.
+                if (requestDataClass.filterListInitialMatch)
+                    initialMatchTextView.setBackgroundColor(blueColor)
+                if (requestDataClass.filterListFinalMatch)
+                    finalMatchTextView.setBackgroundColor(blueColor)
             }
 
-            REQUEST_THIRD_PARTY -> {
+            RequestDisposition.Blocked -> {
+                // Set the request disposition text.
+                requestDispositionTextView.setText(R.string.blocked)
+
+                // Set the request disposition background color to be red.
+                requestDispositionTextView.setBackgroundColor(redColor)
+
+                // Set the matched URL background color.
+                when (requestDataClass.matchedUrlType) {
+                    MatchedUrlType.Url -> requestUrlTextView.setBackgroundColor(redColor)
+                    MatchedUrlType.TruncatedUrl -> truncatedRequestUrlTextView.setBackgroundColor(redColor)
+                    MatchedUrlType.UrlWithSeparators -> requestUrlWithSeparatorsTextView.setBackgroundColor(redColor)
+                    MatchedUrlType.TruncatedUrlWithSeparators -> truncatedRequestUrlWithSeparatorsTextView.setBackgroundColor(redColor)
+                }
+
+                // Set the third party request background color.
+                if (requestDataClass.isThirdPartyRequest)
+                    thirdPartyRequestTextView.setBackgroundColor(redColor)
+
+                // Set the sublist and applied entry list background color.
+                sublistTextView.setBackgroundColor(redColor)
+                appliedEntryListTextView.setBackgroundColor(redColor)
+
+                // Set the filter options background color.
+                setFilterListBackgroundColor(requestDataClass.filterListDomain, domainTextView, false)
+                setFilterListBackgroundColor(requestDataClass.filterListThirdParty, thirdPartyFilterListEntryTextView, false)
+
+                // Set the domain list text view background color to be the same as the domain text view background color.
+                setFilterListBackgroundColor(requestDataClass.filterListDomain, domainListTextView, false)
+
+                // Set the matching text view background color to red if they are populated.
+                if (requestDataClass.filterListInitialMatch)
+                    initialMatchTextView.setBackgroundColor(redColor)
+                if (requestDataClass.filterListFinalMatch)
+                    finalMatchTextView.setBackgroundColor(redColor)
+            }
+
+            RequestDisposition.ThirdParty -> {
                 // Set the text.
-                requestDisposition.setText(R.string.third_party_blocked)
+                requestDispositionTextView.setText(R.string.third_party_blocked)
 
                 // Set the background color to be yellow.
-                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.yellow_background))
-            }
+                requestDispositionTextView.setBackgroundColor(yellowColor)
 
-            REQUEST_BLOCKED -> {
-                // Set the text.
-                requestDisposition.setText(R.string.blocked)
+                // Set the matched URL background color.
+                requestUrlTextView.setBackgroundColor(yellowColor)
 
-                // Set the background color to be red.
-                requestDisposition.setBackgroundColor(getColor(requireContext(), R.color.red_background))
+                // Set the third party request background color.
+                thirdPartyRequestTextView.setBackgroundColor(yellowColor)
             }
         }
 
-        // Display the request URL.
-        requestUrl.text = requestDetails[REQUEST_URL]
+        // Display the webpage URL.
+        webpageUrlTextView.text = requestDataClass.webPageUrlString
+
+        // Display the request URLs.
+        requestUrlTextView.text = requestDataClass.requestUrlString
+        requestUrlWithSeparatorsTextView.text = requestDataClass.requestUrlWithSeparatorsString
+        truncatedRequestUrlTextView.text = requestDataClass.truncatedRequestUrlString
+        truncatedRequestUrlWithSeparatorsTextView.text = requestDataClass.truncatedRequestUrlWithSeparatorsString
+
+        // Display the third party request text.
+        thirdPartyRequestTextView.text = if (requestDataClass.isThirdPartyRequest) getString(R.string.yes) else ""
 
         // Modify the dialog based on the request action.
-        if (requestDetails.size == 2) {  // A default request.
+        if ((requestDataClass.disposition == RequestDisposition.Default) || (requestDataClass.disposition == RequestDisposition.ThirdParty)) {  // A default or third-party request.
             // Hide the unused views.
-            requestFilterListLabel.visibility = View.GONE
-            requestFilterList.visibility = View.GONE
-            requestSubListLabel.visibility = View.GONE
-            requestSubList.visibility = View.GONE
-            requestFilterListEntriesLabel.visibility = View.GONE
-            requestFilterListEntries.visibility = View.GONE
-            requestFilterListOriginalEntryLabel.visibility = View.GONE
-            requestFilterListOriginalEntry.visibility = View.GONE
+            filterListEntryTextView.visibility = View.GONE
+            filterListLabelTextView.visibility = View.GONE
+            filterListTextView.visibility = View.GONE
+            sublistLabelTextView.visibility = View.GONE
+            sublistTextView.visibility = View.GONE
+            appliedEntryListLabelTextView.visibility = View.GONE
+            appliedEntryListTextView.visibility = View.GONE
+            domainLabelTextView.visibility = View.GONE
+            domainTextView.visibility = View.GONE
+            domainListLabelTextView.visibility = View.GONE
+            domainListTextView.visibility = View.GONE
+            thirdPartyFilterListEntryLabelTextView.visibility = View.GONE
+            thirdPartyFilterListEntryTextView.visibility = View.GONE
+            initialMatchLabelTextView.visibility = View.GONE
+            initialMatchTextView.visibility = View.GONE
+            finalMatchLabelTextView.visibility = View.GONE
+            finalMatchTextView.visibility = View.GONE
+            appliedFilterOptionsLabelTextView.visibility = View.GONE
+            appliedFilterOptionsTextView.visibility = View.GONE
+            originalFilterOptionsLabelTextView.visibility = View.GONE
+            originalFilterOptionsTextView.visibility = View.GONE
+            originalEntryLabelTextView.visibility = View.GONE
+            originalEntryTextView.visibility = View.GONE
         } else {  // A blocked or allowed request.
-            // Set the text on the text views.
-            requestFilterList.text = requestDetails[REQUEST_BLOCKLIST]
-            requestFilterListEntries.text = requestDetails[REQUEST_BLOCKLIST_ENTRIES]
-            requestFilterListOriginalEntry.text = requestDetails[REQUEST_BLOCKLIST_ORIGINAL_ENTRY]
-            when (requestDetails[REQUEST_SUBLIST]) {
-                MAIN_ALLOWLIST -> requestSubList.setText(R.string.main_allowlist)
-                FINAL_ALLOWLIST -> requestSubList.setText(R.string.final_allowlist)
-                DOMAIN_ALLOWLIST -> requestSubList.setText(R.string.domain_allowlist)
-                DOMAIN_INITIAL_ALLOWLIST -> requestSubList.setText(R.string.domain_initial_allowlist)
-                DOMAIN_FINAL_ALLOWLIST -> requestSubList.setText(R.string.domain_final_allowlist)
-                THIRD_PARTY_ALLOWLIST -> requestSubList.setText(R.string.third_party_allowlist)
-                THIRD_PARTY_DOMAIN_ALLOWLIST -> requestSubList.setText(R.string.third_party_domain_allowlist)
-                THIRD_PARTY_DOMAIN_INITIAL_ALLOWLIST -> requestSubList.setText(R.string.third_party_domain_initial_allowlist)
-                MAIN_BLOCKLIST -> requestSubList.setText(R.string.main_blocklist)
-                INITIAL_BLOCKLIST -> requestSubList.setText(R.string.initial_blocklist)
-                FINAL_BLOCKLIST -> requestSubList.setText(R.string.final_blocklist)
-                DOMAIN_BLOCKLIST -> requestSubList.setText(R.string.domain_blocklist)
-                DOMAIN_INITIAL_BLOCKLIST -> requestSubList.setText(R.string.domain_initial_blocklist)
-                DOMAIN_FINAL_BLOCKLIST -> requestSubList.setText(R.string.domain_final_blocklist)
-                DOMAIN_REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.domain_regular_expression_blocklist)
-                THIRD_PARTY_BLOCKLIST -> requestSubList.setText(R.string.third_party_blocklist)
-                THIRD_PARTY_INITIAL_BLOCKLIST -> requestSubList.setText(R.string.third_party_initial_blocklist)
-                THIRD_PARTY_DOMAIN_BLOCKLIST -> requestSubList.setText(R.string.third_party_domain_blocklist)
-                THIRD_PARTY_DOMAIN_INITIAL_BLOCKLIST -> requestSubList.setText(R.string.third_party_domain_initial_blocklist)
-                THIRD_PARTY_REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.third_party_regular_expression_blocklist)
-                THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.third_party_domain_regular_expression_blocklist)
-                REGULAR_EXPRESSION_BLOCKLIST -> requestSubList.setText(R.string.regular_expression_blocklist)
+            // Populate the filter list.
+            when (requestDataClass.filterList) {
+                FilterList.UltraPrivacy -> filterListTextView.text = getString(R.string.ultraprivacy)
+                FilterList.UltraList -> filterListTextView.text = getString(R.string.ultralist)
+                FilterList.EasyPrivacy -> filterListTextView.text = getString(R.string.easyprivacy)
+                FilterList.EasyList -> filterListTextView.text = getString(R.string.easylist)
+                FilterList.FanboysAnnoyanceList -> filterListTextView.text = getString(R.string.fanboys_annoyance_list)
+                FilterList.ThirdPartyRequests -> filterListTextView.text = getString(R.string.third_party)
             }
+
+            // Populate the sublist.
+            when (requestDataClass.sublist) {
+                Sublist.MainAllowList -> sublistTextView.text = getString(R.string.main_allowlist)
+                Sublist.InitialDomainAllowList -> sublistTextView.text = getString(R.string.initial_domain_allowlist)
+                Sublist.RegularExpressionAllowList -> sublistTextView.text = getString(R.string.regular_expression_allowlist)
+                Sublist.MainBlockList -> sublistTextView.text = getString(R.string.main_blocklist)
+                Sublist.InitialDomainBlockList -> sublistTextView.text = getString(R.string.initial_domain_blocklist)
+                Sublist.RegularExpressionBlockList -> sublistTextView.text = getString(R.string.regular_expression_blocklist)
+            }
+
+            // Populate the lists.
+            appliedEntryListTextView.text = convertListToString(requestDataClass.filterListAppliedEntryList, "    ")
+            domainListTextView.text = convertListToString(requestDataClass.filterListDomainList, " | ")
+            appliedFilterOptionsTextView.text = convertListToString(requestDataClass.filterListAppliedFilterOptionsList, " , ")
+
+            // Populate the filter options.
+            domainTextView.text = populateFilterOption(requestDataClass.filterListDomain)
+            thirdPartyFilterListEntryTextView.text = populateFilterOption(requestDataClass.filterListThirdParty)
+
+            // Populate the initial and final matches.
+            initialMatchTextView.text = if (requestDataClass.filterListInitialMatch) getString(R.string.yes) else ""
+            finalMatchTextView.text = if (requestDataClass.filterListFinalMatch) getString(R.string.yes) else ""
+
+            // Populate the strings.
+            originalFilterOptionsTextView.text = requestDataClass.filterListOriginalFilterOptionsString
+            originalEntryTextView.text = requestDataClass.filterListOriginalEntryString
         }
 
         // Return the alert dialog.
         return alertDialog
+    }
+
+    private fun convertListToString(stringList: List<String>, separatorString: String): String {
+        // Create a string builder.
+        val stringBuilder = StringBuilder()
+
+        // Add each of the strings from the list.
+        for (string in stringList) {
+            // Append four space if the string builder is already populated.
+            if (stringBuilder.isNotEmpty())
+                stringBuilder.append(separatorString)
+
+            // Append the string.
+            stringBuilder.append(string)
+        }
+
+        // Return the string.
+        return stringBuilder.toString()
+    }
+
+    private fun populateFilterOption(filterOptionDisposition: FilterOptionDisposition) : String {
+        // Return the filter option text.
+        return when (filterOptionDisposition) {
+            FilterOptionDisposition.Null -> ""
+            FilterOptionDisposition.Apply -> getString(R.string.apply)
+            FilterOptionDisposition.Override -> getString(R.string.override)
+        }
+    }
+
+    private fun setFilterListBackgroundColor(filterOptionDisposition: FilterOptionDisposition, textView: TextView, isAllowList: Boolean) {
+        // Set the text view background.
+        if (isAllowList) {  // This is an allow list.
+            if (filterOptionDisposition == FilterOptionDisposition.Apply)  // The filter option is applied on an allow list, set the background to blue.
+                textView.setBackgroundColor(blueColor)
+            else if (filterOptionDisposition == FilterOptionDisposition.Override)  // The filter option is overridden on an allow list, set the background to red.
+                textView.setBackgroundColor(redColor)
+        } else {  // This is a block list.
+            if (filterOptionDisposition == FilterOptionDisposition.Apply)  // The filter option is applied on a block list, set the background to be red.
+                textView.setBackgroundColor(redColor)
+            else if (filterOptionDisposition == FilterOptionDisposition.Override)  // The filter option is overridden on a block list, set the background to be blue.
+                textView.setBackgroundColor(blueColor)
+        }
     }
 }

@@ -1,20 +1,20 @@
-/*
- * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2017-2025 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.activities
@@ -862,12 +862,11 @@ class DomainsActivity : AppCompatActivity(), AddDomainDialog.AddDomainListener, 
         val domStorageSpinner = view.findViewById<Spinner>(R.id.dom_storage_spinner)
         val userAgentSpinner = view.findViewById<Spinner>(R.id.user_agent_spinner)
         val customUserAgentEditText = view.findViewById<EditText>(R.id.custom_user_agent_edittext)
-        val easyListSpinner = view.findViewById<Spinner>(R.id.easylist_spinner)
-        val easyPrivacySpinner = view.findViewById<Spinner>(R.id.easyprivacy_spinner)
-        val fanboysAnnoyanceSpinner = view.findViewById<Spinner>(R.id.fanboys_annoyance_list_spinner)
-        val fanboysSocialBlockingSpinner = view.findViewById<Spinner>(R.id.fanboys_social_blocking_list_spinner)
-        val ultraListSpinner = view.findViewById<Spinner>(R.id.ultralist_spinner)
         val ultraPrivacySpinner = view.findViewById<Spinner>(R.id.ultraprivacy_spinner)
+        val ultraListSpinner = view.findViewById<Spinner>(R.id.ultralist_spinner)
+        val easyPrivacySpinner = view.findViewById<Spinner>(R.id.easyprivacy_spinner)
+        val easyListSpinner = view.findViewById<Spinner>(R.id.easylist_spinner)
+        val fanboysAnnoyanceSpinner = view.findViewById<Spinner>(R.id.fanboys_annoyance_list_spinner)
         val blockAllThirdPartyRequestsSpinner = view.findViewById<Spinner>(R.id.block_all_third_party_requests_spinner)
         val fontSizeSpinner = view.findViewById<Spinner>(R.id.font_size_spinner)
         val customFontSizeEditText = view.findViewById<EditText>(R.id.custom_font_size_edittext)
@@ -886,12 +885,11 @@ class DomainsActivity : AppCompatActivity(), AddDomainDialog.AddDomainListener, 
         val cookiesInt = cookiesSpinner.selectedItemPosition
         val domStorageInt = domStorageSpinner.selectedItemPosition
         val userAgentSwitchPosition = userAgentSpinner.selectedItemPosition
-        val easyListInt = easyListSpinner.selectedItemPosition
-        val easyPrivacyInt = easyPrivacySpinner.selectedItemPosition
-        val fanboysAnnoyanceInt = fanboysAnnoyanceSpinner.selectedItemPosition
-        val fanboysSocialBlockingInt = fanboysSocialBlockingSpinner.selectedItemPosition
-        val ultraListInt = ultraListSpinner.selectedItemPosition
         val ultraPrivacyInt = ultraPrivacySpinner.selectedItemPosition
+        val ultraListInt = ultraListSpinner.selectedItemPosition
+        val easyPrivacyInt = easyPrivacySpinner.selectedItemPosition
+        val easyListInt = easyListSpinner.selectedItemPosition
+        val fanboysAnnoyanceInt = fanboysAnnoyanceSpinner.selectedItemPosition
         val blockAllThirdPartyRequestsInt = blockAllThirdPartyRequestsSpinner.selectedItemPosition
         val fontSizeSwitchPosition = fontSizeSpinner.selectedItemPosition
         val swipeToRefreshInt = swipeToRefreshSpinner.selectedItemPosition
@@ -926,9 +924,10 @@ class DomainsActivity : AppCompatActivity(), AddDomainDialog.AddDomainListener, 
             fontSizeInt = customFontSizeEditText.text.toString().toInt()
 
         // Save the domain settings.
-        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScriptInt, cookiesInt, domStorageInt, userAgentName, easyListInt, easyPrivacyInt, fanboysAnnoyanceInt,
-            fanboysSocialBlockingInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt,
-            pinnedSslCertificate, pinnedIpAddress)
+        domainsDatabaseHelper.updateDomain(currentDomainDatabaseId, domainNameString, javaScriptInt, cookiesInt, domStorageInt, userAgentName,
+            ultraPrivacyInt, ultraListInt,  easyPrivacyInt, easyListInt, fanboysAnnoyanceInt, blockAllThirdPartyRequestsInt,
+            fontSizeInt, swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayWebpageImagesInt, pinnedSslCertificate,
+            pinnedIpAddress)
 
         // Update the pinned SSL certificate if a new one is checked.
         if (currentWebsiteCertificateRadioButton.isChecked)

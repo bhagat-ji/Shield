@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2015-2025 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2015-2026 Soren Stoutner <soren@stoutner.com>
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -91,7 +91,6 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
-
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
@@ -103,8 +102,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
-import androidx.core.view.isGone
 import androidx.core.view.GravityCompat
+import androidx.core.view.isGone
 import androidx.cursoradapter.widget.CursorAdapter
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
@@ -115,13 +114,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
-
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.adapters.WebViewStateAdapter
 import com.stoutner.privacybrowser.coroutines.GetHostIpAddressesCoroutine
@@ -129,7 +126,11 @@ import com.stoutner.privacybrowser.coroutines.PopulateFilterListsCoroutine
 import com.stoutner.privacybrowser.coroutines.PrepareSaveDialogCoroutine
 import com.stoutner.privacybrowser.coroutines.SaveUrlCoroutine
 import com.stoutner.privacybrowser.coroutines.SaveWebpageImageCoroutine
+import com.stoutner.privacybrowser.dataclasses.FilterList
+import com.stoutner.privacybrowser.dataclasses.FilterListDataClass
 import com.stoutner.privacybrowser.dataclasses.PendingDialogDataClass
+import com.stoutner.privacybrowser.dataclasses.RequestDataClass
+import com.stoutner.privacybrowser.dataclasses.RequestDisposition
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog
@@ -144,21 +145,24 @@ import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog
 import com.stoutner.privacybrowser.dialogs.WaitingForProxyDialog
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment
+import com.stoutner.privacybrowser.helpers.BLOCK_ALL_THIRD_PARTY_REQUESTS
 import com.stoutner.privacybrowser.helpers.BOOKMARK_NAME
 import com.stoutner.privacybrowser.helpers.BOOKMARK_URL
+import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
 import com.stoutner.privacybrowser.helpers.COOKIES
+import com.stoutner.privacybrowser.helpers.CheckFilterListHelper
 import com.stoutner.privacybrowser.helpers.DARK_THEME
 import com.stoutner.privacybrowser.helpers.DISABLED
 import com.stoutner.privacybrowser.helpers.DISPLAY_IMAGES
 import com.stoutner.privacybrowser.helpers.DOMAIN_NAME
+import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
+import com.stoutner.privacybrowser.helpers.ENABLED
 import com.stoutner.privacybrowser.helpers.ENABLE_DOM_STORAGE
 import com.stoutner.privacybrowser.helpers.ENABLE_EASYLIST
 import com.stoutner.privacybrowser.helpers.ENABLE_EASYPRIVACY
 import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_ANNOYANCE_LIST
-import com.stoutner.privacybrowser.helpers.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST
 import com.stoutner.privacybrowser.helpers.ENABLE_JAVASCRIPT
 import com.stoutner.privacybrowser.helpers.ENABLE_ULTRAPRIVACY
-import com.stoutner.privacybrowser.helpers.ENABLED
 import com.stoutner.privacybrowser.helpers.FAVORITE_ICON
 import com.stoutner.privacybrowser.helpers.FOLDER_ID
 import com.stoutner.privacybrowser.helpers.FONT_SIZE
@@ -168,10 +172,7 @@ import com.stoutner.privacybrowser.helpers.IS_FOLDER
 import com.stoutner.privacybrowser.helpers.LIGHT_THEME
 import com.stoutner.privacybrowser.helpers.PINNED_IP_ADDRESSES
 import com.stoutner.privacybrowser.helpers.PINNED_SSL_CERTIFICATE
-import com.stoutner.privacybrowser.helpers.REQUEST_ALLOWED
-import com.stoutner.privacybrowser.helpers.REQUEST_BLOCKED
-import com.stoutner.privacybrowser.helpers.REQUEST_DEFAULT
-import com.stoutner.privacybrowser.helpers.REQUEST_THIRD_PARTY
+import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_COMMON_NAME
 import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_ORGANIZATION
 import com.stoutner.privacybrowser.helpers.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT
@@ -180,28 +181,27 @@ import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_ORGANIZATION
 import com.stoutner.privacybrowser.helpers.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT
 import com.stoutner.privacybrowser.helpers.SWIPE_TO_REFRESH
 import com.stoutner.privacybrowser.helpers.SYSTEM_DEFAULT
-import com.stoutner.privacybrowser.helpers.WEBVIEW_THEME
-import com.stoutner.privacybrowser.helpers.WIDE_VIEWPORT
-import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper
-import com.stoutner.privacybrowser.helpers.CheckFilterListHelper
-import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper
-import com.stoutner.privacybrowser.helpers.ProxyHelper
 import com.stoutner.privacybrowser.helpers.SanitizeUrlHelper
 import com.stoutner.privacybrowser.helpers.UrlHelper
+import com.stoutner.privacybrowser.helpers.WEBVIEW_THEME
+import com.stoutner.privacybrowser.helpers.WIDE_VIEWPORT
+import com.stoutner.privacybrowser.helpers.easyListDataClass
+import com.stoutner.privacybrowser.helpers.easyPrivacyDataClass
+import com.stoutner.privacybrowser.helpers.fanboysAnnoyanceDataClass
+import com.stoutner.privacybrowser.helpers.ultraListDataClass
+import com.stoutner.privacybrowser.helpers.ultraPrivacyDataClass
 import com.stoutner.privacybrowser.views.BLOCKED_REQUESTS
 import com.stoutner.privacybrowser.views.EASYLIST
 import com.stoutner.privacybrowser.views.EASYPRIVACY
 import com.stoutner.privacybrowser.views.FANBOYS_ANNOYANCE_LIST
-import com.stoutner.privacybrowser.views.FANBOYS_SOCIAL_BLOCKING_LIST
-import com.stoutner.privacybrowser.views.THIRD_PARTY_REQUESTS
-import com.stoutner.privacybrowser.views.ULTRAPRIVACY
 import com.stoutner.privacybrowser.views.NestedScrollWebView
-
+import com.stoutner.privacybrowser.views.THIRD_PARTY_REQUESTS
+import com.stoutner.privacybrowser.views.ULTRALIST
+import com.stoutner.privacybrowser.views.ULTRAPRIVACY
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -209,15 +209,11 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.UnsupportedEncodingException
-
 import java.net.MalformedURLException
 import java.net.URL
 import java.net.URLDecoder
 import java.net.URLEncoder
-
 import java.text.NumberFormat
-
-import java.util.ArrayList
 import java.util.Date
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
@@ -275,10 +271,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var defaultWebViewTheme: String
     private lateinit var domainsSettingsSet: MutableSet<String>
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var easyList: ArrayList<List<Array<String>>>
-    private lateinit var easyPrivacy: ArrayList<List<Array<String>>>
-    private lateinit var fanboysAnnoyanceList: ArrayList<List<Array<String>>>
-    private lateinit var fanboysSocialList: ArrayList<List<Array<String>>>
     private lateinit var fileChooserCallback: ValueCallback<Array<Uri>>
     private lateinit var finalGrayColorSpan: ForegroundColorSpan
     private lateinit var findOnPageCountTextView: TextView
@@ -306,7 +298,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var optionsEasyListMenuItem: MenuItem
     private lateinit var optionsEasyPrivacyMenuItem: MenuItem
     private lateinit var optionsFanboysAnnoyanceListMenuItem: MenuItem
-    private lateinit var optionsFanboysSocialBlockingListMenuItem: MenuItem
     private lateinit var optionsFilterListsMenuItem: MenuItem
     private lateinit var optionsFontSizeMenuItem: MenuItem
     private lateinit var optionsPrivacyMenuItem: MenuItem
@@ -347,7 +338,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private lateinit var webViewThemeEntryValuesStringArray: Array<String>
     private lateinit var webViewViewPager2: ViewPager2
     private lateinit var windowInsetsController: WindowInsetsController
-    private lateinit var ultraList: ArrayList<List<Array<String>>>
     private lateinit var urlEditText: EditText
     private lateinit var urlRelativeLayout: RelativeLayout
     private lateinit var userAgentDataArray: Array<String>
@@ -370,7 +360,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var defaultEasyList = true
     private var defaultEasyPrivacy = true
     private var defaultFanboysAnnoyanceList = true
-    private var defaultFanboysSocialBlockingList = true
     private var defaultProgressViewEndOffset = 0
     private var defaultProgressViewStartOffset = 0
     private var defaultJavaScript = false
@@ -403,7 +392,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
     private var savedTabPosition = 0
     private var scrollAppBar = false
     private var sortBookmarksAlphabetically = false
-    private var ultraPrivacy: ArrayList<List<Array<String>>>? = null
     private var waitingForProxy = false
 
     // Define the browse file upload activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
@@ -775,7 +763,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         val isWebSearch = (intentAction != null) && (intentAction == Intent.ACTION_WEB_SEARCH)
 
         // Check to see if the app is being restarted from a saved state.
-        if (ultraPrivacy != null) {  // The activity is not being restarted from a saved state.
+        if (fanboysAnnoyanceDataClass != null) {  // The activity is not being restarted from a saved state.
             // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
             if ((intentUriData != null) || (intentStringExtra != null) || isWebSearch) {
                 // Exit the full screen video if it is displayed.
@@ -792,7 +780,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Sanitize the search input and convert it to a search.
                     val encodedSearchString = try {
                         URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8")
-                    } catch (exception: UnsupportedEncodingException) {
+                    } catch (_: UnsupportedEncodingException) {
                         ""
                     }
 
@@ -1071,13 +1059,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         optionsClearDataMenuItem = menu.findItem(R.id.clear_data)
         optionsClearCookiesMenuItem = menu.findItem(R.id.clear_cookies)
         optionsClearDomStorageMenuItem = menu.findItem(R.id.clear_dom_storage)
-        optionsEasyListMenuItem = menu.findItem(R.id.easylist)
-        optionsEasyPrivacyMenuItem = menu.findItem(R.id.easyprivacy)
-        optionsFanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list)
-        optionsFanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list)
-        optionsFilterListsMenuItem = menu.findItem(R.id.filterlists)
-        optionsUltraListMenuItem = menu.findItem(R.id.ultralist)
         optionsUltraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy)
+        optionsUltraListMenuItem = menu.findItem(R.id.ultralist)
+        optionsEasyPrivacyMenuItem = menu.findItem(R.id.easyprivacy)
+        optionsEasyListMenuItem = menu.findItem(R.id.easylist)
+        optionsFanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list)
+        optionsFilterListsMenuItem = menu.findItem(R.id.filterlists)
         optionsBlockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests)
         optionsProxyMenuItem = menu.findItem(R.id.proxy)
         optionsProxyNoneMenuItem = menu.findItem(R.id.proxy_none)
@@ -1152,17 +1139,16 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Get the current user agent from the WebView.
             currentUserAgent = currentWebView!!.settings.userAgentString
 
-            // Get the current font size from the the WebView.
+            // Get the current font size from the WebView.
             fontSize = currentWebView!!.settings.textZoom
 
             // Set the status of the menu item checkboxes.
             optionsDomStorageMenuItem.isChecked = currentWebView!!.settings.domStorageEnabled
-            optionsEasyListMenuItem.isChecked = currentWebView!!.easyListEnabled
-            optionsEasyPrivacyMenuItem.isChecked = currentWebView!!.easyPrivacyEnabled
-            optionsFanboysAnnoyanceListMenuItem.isChecked = currentWebView!!.fanboysAnnoyanceListEnabled
-            optionsFanboysSocialBlockingListMenuItem.isChecked = currentWebView!!.fanboysSocialBlockingListEnabled
-            optionsUltraListMenuItem.isChecked = currentWebView!!.ultraListEnabled
             optionsUltraPrivacyMenuItem.isChecked = currentWebView!!.ultraPrivacyEnabled
+            optionsUltraListMenuItem.isChecked = currentWebView!!.ultraListEnabled
+            optionsEasyPrivacyMenuItem.isChecked = currentWebView!!.easyPrivacyEnabled
+            optionsEasyListMenuItem.isChecked = currentWebView!!.easyListEnabled
+            optionsFanboysAnnoyanceListMenuItem.isChecked = currentWebView!!.fanboysAnnoyanceListEnabled
             optionsBlockAllThirdPartyRequestsMenuItem.isChecked = currentWebView!!.blockAllThirdPartyRequests
             optionsSwipeToRefreshMenuItem.isChecked = currentWebView!!.swipeToRefresh
             optionsWideViewportMenuItem.isChecked = currentWebView!!.settings.useWideViewPort
@@ -1170,12 +1156,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Set the display names for the filter lists with the number of blocked requests.
             optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + currentWebView!!.getRequestsCount(BLOCKED_REQUESTS)
-            optionsEasyListMenuItem.title = currentWebView!!.getRequestsCount(EASYLIST).toString() + " - " + getString(R.string.easylist)
-            optionsEasyPrivacyMenuItem.title = currentWebView!!.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
-            optionsFanboysAnnoyanceListMenuItem.title = currentWebView!!.getRequestsCount(FANBOYS_ANNOYANCE_LIST).toString() + " - " + getString(R.string.fanboys_annoyance_list)
-            optionsFanboysSocialBlockingListMenuItem.title = currentWebView!!.getRequestsCount(FANBOYS_SOCIAL_BLOCKING_LIST).toString() + " - " + getString(R.string.fanboys_social_blocking_list)
-            optionsUltraListMenuItem.title = currentWebView!!.getRequestsCount(com.stoutner.privacybrowser.views.ULTRALIST).toString() + " - " + getString(R.string.ultralist)
             optionsUltraPrivacyMenuItem.title = currentWebView!!.getRequestsCount(ULTRAPRIVACY).toString() + " - " + getString(R.string.ultraprivacy)
+            optionsUltraListMenuItem.title = currentWebView!!.getRequestsCount(ULTRALIST).toString() + " - " + getString(R.string.ultralist)
+            optionsEasyPrivacyMenuItem.title = currentWebView!!.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
+            optionsEasyListMenuItem.title = currentWebView!!.getRequestsCount(EASYLIST).toString() + " - " + getString(R.string.easylist)
+            optionsFanboysAnnoyanceListMenuItem.title = currentWebView!!.getRequestsCount(FANBOYS_ANNOYANCE_LIST).toString() + " - " + getString(R.string.fanboys_annoyance_list)
             optionsBlockAllThirdPartyRequestsMenuItem.title = currentWebView!!.getRequestsCount(THIRD_PARTY_REQUESTS).toString() + " - " + getString(R.string.block_all_third_party_requests)
 
             // Enable DOM Storage if JavaScript is enabled.
@@ -1234,9 +1219,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
         // Enable Clear Data if any of the submenu items are enabled.
         optionsClearDataMenuItem.isEnabled = (optionsClearCookiesMenuItem.isEnabled || optionsClearDomStorageMenuItem.isEnabled)
-
-        // Disable Fanboy's Social Blocking List menu item if Fanboy's Annoyance List is checked.
-        optionsFanboysSocialBlockingListMenuItem.isEnabled = !optionsFanboysAnnoyanceListMenuItem.isChecked
 
         // Set the proxy title and check the applied proxy.
         when (proxyMode) {
@@ -1393,7 +1375,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 updatePrivacyIcons(true)
 
                 // Display a snackbar.
-                if (currentWebView!!.settings.javaScriptEnabled)  // JavaScrip is enabled.
+                if (currentWebView!!.settings.javaScriptEnabled)  // JavaScript is enabled.
                     Snackbar.make(webViewViewPager2, R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show()
                 else if (cookieManager.acceptCookie())  // JavaScript is disabled, but cookies are enabled.
                     Snackbar.make(webViewViewPager2, R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show()
@@ -1508,7 +1490,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                                 // Initialize a handler to manually delete the DOM storage files and directories.
                                 val deleteDomStorageHandler = Handler(Looper.getMainLooper())
 
-                                // Setup a runnable to manually delete the DOM storage files and directories.
+                                // Set up a runnable to manually delete the DOM storage files and directories.
                                 val deleteDomStorageRunnable = Runnable {
                                     try {
                                         // Get a handle for the runtime.
@@ -1539,7 +1521,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                                         deleteWebStorageProcess.waitFor()
                                         deleteDatabasesProcess.waitFor()
                                         deleteBlobStorageProcess.waitFor()
-                                    } catch (exception: Exception) {
+                                    } catch (_: Exception) {
                                         // Do nothing if an error is thrown.
                                     }
                                 }
@@ -1555,57 +1537,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 true
             }
 
-            R.id.easylist -> {  // EasyList.
-                // Toggle the EasyList status.
-                currentWebView!!.easyListEnabled = !currentWebView!!.easyListEnabled
+            R.id.ultraprivacy -> {  // UltraPrivacy.
+                // Toggle the UltraPrivacy status.
+                currentWebView!!.ultraPrivacyEnabled = !currentWebView!!.ultraPrivacyEnabled
 
                 // Update the menu checkbox.
-                menuItem.isChecked = currentWebView!!.easyListEnabled
-
-                // Reload the current WebView.
-                currentWebView!!.reload()
-
-                // Consume the event.
-                true
-            }
-
-            R.id.easyprivacy -> {  // EasyPrivacy.
-                // Toggle the EasyPrivacy status.
-                currentWebView!!.easyPrivacyEnabled = !currentWebView!!.easyPrivacyEnabled
-
-                // Update the menu checkbox.
-                menuItem.isChecked = currentWebView!!.easyPrivacyEnabled
-
-                // Reload the current WebView.
-                currentWebView!!.reload()
-
-                // Consume the event.
-                true
-            }
-
-            R.id.fanboys_annoyance_list -> {  // Fanboy's Annoyance List.
-                // Toggle Fanboy's Annoyance List status.
-                currentWebView!!.fanboysAnnoyanceListEnabled = !currentWebView!!.fanboysAnnoyanceListEnabled
-
-                // Update the menu checkbox.
-                menuItem.isChecked = currentWebView!!.fanboysAnnoyanceListEnabled
-
-                // Update the status of Fanboy's Social Blocking List.
-                optionsFanboysSocialBlockingListMenuItem.isEnabled = !currentWebView!!.fanboysAnnoyanceListEnabled
-
-                // Reload the current WebView.
-                currentWebView!!.reload()
-
-                // Consume the event.
-                true
-            }
-
-            R.id.fanboys_social_blocking_list -> {  // Fanboy's Social Blocking List.
-                // Toggle Fanboy's Social Blocking List status.
-                currentWebView!!.fanboysSocialBlockingListEnabled = !currentWebView!!.fanboysSocialBlockingListEnabled
-
-                // Update the menu checkbox.
-                menuItem.isChecked = currentWebView!!.fanboysSocialBlockingListEnabled
+                menuItem.isChecked = currentWebView!!.ultraPrivacyEnabled
 
                 // Reload the current WebView.
                 currentWebView!!.reload()
@@ -1628,12 +1565,40 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 true
             }
 
-            R.id.ultraprivacy -> {  // UltraPrivacy.
-                // Toggle the UltraPrivacy status.
-                currentWebView!!.ultraPrivacyEnabled = !currentWebView!!.ultraPrivacyEnabled
+            R.id.easyprivacy -> {  // EasyPrivacy.
+                // Toggle the EasyPrivacy status.
+                currentWebView!!.easyPrivacyEnabled = !currentWebView!!.easyPrivacyEnabled
 
                 // Update the menu checkbox.
-                menuItem.isChecked = currentWebView!!.ultraPrivacyEnabled
+                menuItem.isChecked = currentWebView!!.easyPrivacyEnabled
+
+                // Reload the current WebView.
+                currentWebView!!.reload()
+
+                // Consume the event.
+                true
+            }
+
+            R.id.easylist -> {  // EasyList.
+                // Toggle the EasyList status.
+                currentWebView!!.easyListEnabled = !currentWebView!!.easyListEnabled
+
+                // Update the menu checkbox.
+                menuItem.isChecked = currentWebView!!.easyListEnabled
+
+                // Reload the current WebView.
+                currentWebView!!.reload()
+
+                // Consume the event.
+                true
+            }
+
+            R.id.fanboys_annoyance_list -> {  // Fanboy's Annoyance List.
+                // Toggle Fanboy's Annoyance List status.
+                currentWebView!!.fanboysAnnoyanceListEnabled = !currentWebView!!.fanboysAnnoyanceListEnabled
+
+                // Update the menu checkbox.
+                menuItem.isChecked = currentWebView!!.fanboysAnnoyanceListEnabled
 
                 // Reload the current WebView.
                 currentWebView!!.reload()
@@ -2112,16 +2077,18 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     val javaScriptInt = calculateSettingsInt(currentWebView!!.settings.javaScriptEnabled, sharedPreferences.getBoolean(getString(R.string.javascript_key), false))
                     val cookiesInt = calculateSettingsInt(currentWebView!!.acceptCookies, sharedPreferences.getBoolean(getString(R.string.cookies_key), false))
                     val domStorageInt = calculateSettingsInt(currentWebView!!.settings.domStorageEnabled, sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false))
-                    val easyListInt = calculateSettingsInt(currentWebView!!.easyListEnabled, sharedPreferences.getBoolean(getString(R.string.easylist_key), true))
-                    val easyPrivacyInt = calculateSettingsInt(currentWebView!!.easyPrivacyEnabled, sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true))
-                    val fanboysAnnoyanceListInt = calculateSettingsInt(currentWebView!!.fanboysAnnoyanceListEnabled, sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true))
-                    val fanboysSocialBlockingListInt = calculateSettingsInt(currentWebView!!.fanboysSocialBlockingListEnabled, sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true))
-                    val ultraListInt = calculateSettingsInt(currentWebView!!.ultraListEnabled, sharedPreferences.getBoolean(getString(R.string.ultralist_key), true))
                     val ultraPrivacyInt = calculateSettingsInt(currentWebView!!.ultraPrivacyEnabled, sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true))
-                    val blockAllThirdPartyRequestsInt = calculateSettingsInt(currentWebView!!.blockAllThirdPartyRequests, sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), true))
+                    val ultraListInt = calculateSettingsInt(currentWebView!!.ultraListEnabled, sharedPreferences.getBoolean(getString(R.string.ultralist_key), true))
+                    val easyPrivacyInt = calculateSettingsInt(currentWebView!!.easyPrivacyEnabled, sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true))
+                    val easyListInt = calculateSettingsInt(currentWebView!!.easyListEnabled, sharedPreferences.getBoolean(getString(R.string.easylist_key), true))
+                    val fanboysAnnoyanceListInt = calculateSettingsInt(currentWebView!!.fanboysAnnoyanceListEnabled,
+                        sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true))
+                    val blockAllThirdPartyRequestsInt = calculateSettingsInt(currentWebView!!.blockAllThirdPartyRequests,
+                        sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), true))
                     val swipeToRefreshInt = calculateSettingsInt(currentWebView!!.swipeToRefresh, sharedPreferences.getBoolean(getString(R.string.swipe_to_refresh_key), true))
                     val wideViewportInt = calculateSettingsInt(currentWebView!!.settings.useWideViewPort, sharedPreferences.getBoolean(getString(R.string.wide_viewport_key), true))
-                    val displayImagesInt = calculateSettingsInt(currentWebView!!.settings.loadsImagesAutomatically, sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true))
+                    val displayImagesInt = calculateSettingsInt(currentWebView!!.settings.loadsImagesAutomatically,
+                        sharedPreferences.getBoolean(getString(R.string.display_webpage_images_key), true))
 
                     // Get the current user agent string.
                     val currentUserAgentString = currentWebView!!.settings.userAgentString
@@ -2205,7 +2172,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Create the domain and store the database ID.
                     val newDomainDatabaseId = domainsDatabaseHelper!!.addDomain(currentDomain, javaScriptInt, cookiesInt, domStorageInt, userAgentName, easyListInt, easyPrivacyInt,
-                                                                                fanboysAnnoyanceListInt, fanboysSocialBlockingListInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, fontSizeInt,
+                                                                                fanboysAnnoyanceListInt, ultraListInt, ultraPrivacyInt, blockAllThirdPartyRequestsInt, fontSizeInt,
                                                                                 swipeToRefreshInt, webViewThemeInt, wideViewportInt, displayImagesInt)
 
                     // Create an intent to launch the domains activity.
@@ -2313,7 +2280,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             R.id.requests -> {  // Requests.
                 // Populate the resource requests.
-                RequestsActivity.resourceRequests = currentWebView!!.getResourceRequests()
+                RequestsActivity.resourceRequestsDataClassList = currentWebView!!.getResourceRequestsDataClassList()
 
                 // Create an intent to launch the Requests activity.
                 val requestsIntent = Intent(this, RequestsActivity::class.java)
@@ -2336,7 +2303,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                     // Make it so.
                     startActivity(defaultDownloadManagerIntent)
-                } catch (defaultDownloadManagerException: Exception) {  // The system download manager is not available.
+                } catch (_: Exception) {  // The system download manager is not available.
                     // Try a generic file manager.
                     try {
                         // Create a generic file manager intent.
@@ -2350,7 +2317,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // Make it so.
                         startActivity(genericFileManagerIntent)
-                    } catch (genericFileManagerException: Exception) {  // A generic file manager is not available.
+                    } catch (_: Exception) {  // A generic file manager is not available.
                         // Try an alternate file manager.
                         try {
                             // Create an alternate file manager intent.
@@ -2364,7 +2331,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                             // Open the alternate file manager.
                             startActivity(alternateFileManagerIntent)
-                        } catch (alternateFileManagerException: Exception) {
+                        } catch (_: Exception) {
                             // Display a snackbar.
                             Snackbar.make(currentWebView!!, R.string.no_file_manager_detected, Snackbar.LENGTH_INDEFINITE).show()
                         }
@@ -2462,12 +2429,6 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             R.id.about -> {  // About
                 // Create an intent to launch the about activity.
                 val aboutIntent = Intent(this, AboutActivity::class.java)
-
-                // Create a string array for the filter list versions.
-                val filterListVersions = arrayOf(easyList[0][0][0], easyPrivacy[0][0][0], fanboysAnnoyanceList[0][0][0], fanboysSocialList[0][0][0], ultraList[0][0][0], ultraPrivacy!![0][0][0])
-
-                // Add the filter list versions to the intent.
-                aboutIntent.putExtra(FILTERLIST_VERSIONS, filterListVersions)
 
                 // Make it so.
                 startActivity(aboutIntent)
@@ -2616,8 +2577,8 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 imageUrl = hitTestResult.extra!!
 
                 // Set the context menu title.
-                if (imageUrl.startsWith("data:"))  // The image data is contained in within the URL, making it exceedingly long.  Truncate the image URL before making it the title.
-                    contextMenu.setHeaderTitle(imageUrl.substring(0, 100))
+                if (imageUrl.startsWith("data:"))  // The image data is contained in within the URL, making it exceedingly long.  Truncate the image URL at 100 characters before making it the title.
+                    contextMenu.setHeaderTitle(imageUrl.take(100))
                 else  // The image URL does not contain the full image data.  Set the image URL as the title of the context menu.
                     contextMenu.setHeaderTitle(imageUrl)
 
@@ -3011,12 +2972,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         defaultJavaScript = sharedPreferences.getBoolean(getString(R.string.javascript_key), false)
         defaultCookies = sharedPreferences.getBoolean(getString(R.string.cookies_key), false)
         defaultDomStorage = sharedPreferences.getBoolean(getString(R.string.dom_storage_key), false)
-        defaultEasyList = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
-        defaultEasyPrivacy = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
-        defaultFanboysAnnoyanceList = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
-        defaultFanboysSocialBlockingList = sharedPreferences.getBoolean(getString(R.string.fanboys_social_blocking_list_key), true)
-        defaultUltraList = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
         defaultUltraPrivacy = sharedPreferences.getBoolean(getString(R.string.ultraprivacy_key), true)
+        defaultUltraList = sharedPreferences.getBoolean(getString(R.string.ultralist_key), true)
+        defaultEasyPrivacy = sharedPreferences.getBoolean(getString(R.string.easyprivacy_key), true)
+        defaultEasyList = sharedPreferences.getBoolean(getString(R.string.easylist_key), true)
+        defaultFanboysAnnoyanceList = sharedPreferences.getBoolean(getString(R.string.fanboys_annoyance_list_key), true)
         defaultBlockAllThirdPartyRequests = sharedPreferences.getBoolean(getString(R.string.block_all_third_party_requests_key), false)
         defaultFontSizeString = sharedPreferences.getString(getString(R.string.font_size_key), getString(R.string.font_size_default_value))!!
         defaultUserAgentName = sharedPreferences.getString(getString(R.string.user_agent_key), getString(R.string.user_agent_default_value))!!
@@ -3277,7 +3237,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     domainNameInDatabase = "*.$newHostName"
                 }
 
-                // Strip out the lowest subdomain of of the host name.
+                // Strip out the lowest subdomain of the host name.
                 newHostName = newHostName.substring(newHostName.indexOf(".") + 1)
             }
 
@@ -3294,13 +3254,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 val javaScriptInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT))
                 val cookiesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(COOKIES))
                 val domStorageInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE))
-                val easyListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
-                val easyPrivacyInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
-                val fanboysAnnoyanceListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
-                val fanboysSocialBlockingListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST))
-                val ultraListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.ULTRALIST))
                 val ultraPrivacyInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY))
-                val blockAllThirdPartyRequestsInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.BLOCK_ALL_THIRD_PARTY_REQUESTS))
+                val ultraListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.ULTRALIST))
+                val easyPrivacyInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY))
+                val easyListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST))
+                val fanboysAnnoyanceListInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST))
+                val blockAllThirdPartyRequestsInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS))
                 val userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndexOrThrow(com.stoutner.privacybrowser.helpers.USER_AGENT))
                 val fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(FONT_SIZE))
                 val swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndexOrThrow(SWIPE_TO_REFRESH))
@@ -3346,32 +3305,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     DISABLED -> nestedScrollWebView.settings.domStorageEnabled = false
                 }
 
-                // Set the EasyList status.
-                when (easyListInt) {
-                    SYSTEM_DEFAULT -> nestedScrollWebView.easyListEnabled = defaultEasyList
-                    ENABLED -> nestedScrollWebView.easyListEnabled = true
-                    DISABLED -> nestedScrollWebView.easyListEnabled = false
-                }
-
-                // Set the EasyPrivacy status.
-                when (easyPrivacyInt) {
-                    SYSTEM_DEFAULT -> nestedScrollWebView.easyPrivacyEnabled = defaultEasyPrivacy
-                    ENABLED -> nestedScrollWebView.easyPrivacyEnabled = true
-                    DISABLED -> nestedScrollWebView.easyPrivacyEnabled = false
-                }
-
-                // Set the Fanboy's Annoyance List status.
-                when (fanboysAnnoyanceListInt) {
-                    SYSTEM_DEFAULT -> nestedScrollWebView.fanboysAnnoyanceListEnabled = defaultFanboysAnnoyanceList
-                    ENABLED -> nestedScrollWebView.fanboysAnnoyanceListEnabled = true
-                    DISABLED -> nestedScrollWebView.fanboysAnnoyanceListEnabled = false
-                }
-
-                // Set the Fanboy's Social Blocking List status.
-                when (fanboysSocialBlockingListInt) {
-                    SYSTEM_DEFAULT -> nestedScrollWebView.fanboysSocialBlockingListEnabled = defaultFanboysSocialBlockingList
-                    ENABLED -> nestedScrollWebView.fanboysSocialBlockingListEnabled = true
-                    DISABLED -> nestedScrollWebView.fanboysSocialBlockingListEnabled = false
+                // Set the UltraPrivacy status.
+                when (ultraPrivacyInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.ultraPrivacyEnabled = defaultUltraPrivacy
+                    ENABLED -> nestedScrollWebView.ultraPrivacyEnabled = true
+                    DISABLED -> nestedScrollWebView.ultraPrivacyEnabled = false
                 }
 
                 // Set the UltraList status.
@@ -3381,11 +3319,25 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     DISABLED -> nestedScrollWebView.ultraListEnabled = false
                 }
 
-                // Set the UltraPrivacy status.
-                when (ultraPrivacyInt) {
-                    SYSTEM_DEFAULT -> nestedScrollWebView.ultraPrivacyEnabled = defaultUltraPrivacy
-                    ENABLED -> nestedScrollWebView.ultraPrivacyEnabled = true
-                    DISABLED -> nestedScrollWebView.ultraPrivacyEnabled = false
+                // Set the EasyPrivacy status.
+                when (easyPrivacyInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.easyPrivacyEnabled = defaultEasyPrivacy
+                    ENABLED -> nestedScrollWebView.easyPrivacyEnabled = true
+                    DISABLED -> nestedScrollWebView.easyPrivacyEnabled = false
+                }
+
+                // Set the EasyList status.
+                when (easyListInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.easyListEnabled = defaultEasyList
+                    ENABLED -> nestedScrollWebView.easyListEnabled = true
+                    DISABLED -> nestedScrollWebView.easyListEnabled = false
+                }
+
+                // Set the Fanboy's Annoyance List status.
+                when (fanboysAnnoyanceListInt) {
+                    SYSTEM_DEFAULT -> nestedScrollWebView.fanboysAnnoyanceListEnabled = defaultFanboysAnnoyanceList
+                    ENABLED -> nestedScrollWebView.fanboysAnnoyanceListEnabled = true
+                    DISABLED -> nestedScrollWebView.fanboysAnnoyanceListEnabled = false
                 }
 
                 // Set the block all third-party requests status.
@@ -3436,7 +3388,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     } else {  // Apply the font size from domain settings.
                         nestedScrollWebView.settings.textZoom = fontSize
                     }
-                } catch (exception: Exception) {  // The specified font size is invalid
+                } catch (_: Exception) {  // The specified font size is invalid
                     // Set the font size to be 100%
                     nestedScrollWebView.settings.textZoom = 100
                 }
@@ -3449,7 +3401,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                         // Update the swipe refresh layout.
                         if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
-                            // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it sometimes is null).
+                            // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it is sometimes null).
                             if (currentWebView != null) {
                                 // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
                                 swipeRefreshLayout.isEnabled = (currentWebView!!.scrollY == 0)
@@ -3464,7 +3416,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.swipeToRefresh = true
 
-                        // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it sometimes is null).
+                        // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it is sometimes null).
                         if (currentWebView != null) {
                             // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
                             swipeRefreshLayout.isEnabled = (currentWebView!!.scrollY == 0)
@@ -3539,12 +3491,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 nestedScrollWebView.settings.javaScriptEnabled = defaultJavaScript
                 nestedScrollWebView.acceptCookies = defaultCookies
                 nestedScrollWebView.settings.domStorageEnabled = defaultDomStorage
-                nestedScrollWebView.easyListEnabled = defaultEasyList
-                nestedScrollWebView.easyPrivacyEnabled = defaultEasyPrivacy
-                nestedScrollWebView.fanboysAnnoyanceListEnabled = defaultFanboysAnnoyanceList
-                nestedScrollWebView.fanboysSocialBlockingListEnabled = defaultFanboysSocialBlockingList
-                nestedScrollWebView.ultraListEnabled = defaultUltraList
                 nestedScrollWebView.ultraPrivacyEnabled = defaultUltraPrivacy
+                nestedScrollWebView.ultraListEnabled = defaultUltraList
+                nestedScrollWebView.easyPrivacyEnabled = defaultEasyPrivacy
+                nestedScrollWebView.easyListEnabled = defaultEasyList
+                nestedScrollWebView.fanboysAnnoyanceListEnabled = defaultFanboysAnnoyanceList
                 nestedScrollWebView.blockAllThirdPartyRequests = defaultBlockAllThirdPartyRequests
 
                 // Apply the default cookie setting.
@@ -3554,7 +3505,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 try {
                     // Try to set the font size from the value in the app settings.
                     nestedScrollWebView.settings.textZoom = defaultFontSizeString.toInt()
-                } catch (exception: Exception) {
+                } catch (_: Exception) {
                     // If the app settings value is invalid, set the font size to 100%.
                     nestedScrollWebView.settings.textZoom = 100
                 }
@@ -3564,7 +3515,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Update the swipe refresh layout.
                 if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled.
-                    // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it sometimes is null).
+                    // Update the status of the swipe refresh layout if the current WebView is not null (crash reports indicate that in some unexpected way it is sometimes null).
                     if (currentWebView != null) {
                         // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
                         swipeRefreshLayout.isEnabled = currentWebView!!.scrollY == 0
@@ -3698,13 +3649,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             try {
                                 // Show the waiting for proxy alert dialog.
                                 waitingForProxyDialogFragment.show(supportFragmentManager, getString(R.string.waiting_for_proxy_dialog))
-                            } catch (waitingForTorException: Exception) {
+                            } catch (_: Exception) {
                                 // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
                                 pendingDialogsArrayList.add(PendingDialogDataClass(waitingForProxyDialogFragment, getString(R.string.waiting_for_proxy_dialog)))
                             }
                         }
                     }
-                } catch (exception: PackageManager.NameNotFoundException) {  // Orbot is not installed.
+                } catch (_: PackageManager.NameNotFoundException) {  // Orbot is not installed.
                     // Show the Orbot not installed dialog if it is not already displayed.
                     if (supportFragmentManager.findFragmentByTag(getString(R.string.proxy_not_installed_dialog)) == null) {
                         // Get a handle for the Orbot not installed alert dialog.
@@ -3714,7 +3665,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         try {
                             // Display the Orbot not installed alert dialog.
                             orbotNotInstalledDialogFragment.show(supportFragmentManager, getString(R.string.proxy_not_installed_dialog))
-                        } catch (orbotNotInstalledException: Exception) {
+                        } catch (_: Exception) {
                             // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
                             pendingDialogsArrayList.add(PendingDialogDataClass(orbotNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)))
                         }
@@ -3735,11 +3686,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 try {
                     // Check to see if the F-Droid flavor is installed.  This will throw an error and drop to the catch section if it isn't installed.
                     packageManager.getPackageInfo("net.i2p.android.router", 0)
-                } catch (fdroidException: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
+                } catch (_: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
                     try {
                         // Check to see if the Google Play flavor is installed.  This will throw an error and drop to the catch section if it isn't installed.
                         packageManager.getPackageInfo("net.i2p.android", 0)
-                    } catch (googlePlayException: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed.
+                    } catch (_: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed.
                         // Sow the I2P not installed dialog if it is not already displayed.
                         if (supportFragmentManager.findFragmentByTag(getString(R.string.proxy_not_installed_dialog)) == null) {
                             // Get a handle for the waiting for proxy alert dialog.
@@ -3749,7 +3700,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                             try {
                                 // Display the I2P not installed alert dialog.
                                 i2pNotInstalledDialogFragment.show(supportFragmentManager, getString(R.string.proxy_not_installed_dialog))
-                            } catch (i2pNotInstalledException: Exception) {
+                            } catch (_: Exception) {
                                 // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
                                 pendingDialogsArrayList.add(PendingDialogDataClass(i2pNotInstalledDialogFragment, getString(R.string.proxy_not_installed_dialog)))
                             }
@@ -3849,7 +3800,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Wait until the processes have finished.
                 deleteCookiesProcess.waitFor()
                 deleteCookiesJournalProcess.waitFor()
-            } catch (exception: Exception) {
+            } catch (_: Exception) {
                 // Do nothing if an error is thrown.
             }
         }
@@ -3882,7 +3833,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 deleteWebStorageProcess.waitFor()
                 deleteDatabasesProcess.waitFor()
                 deleteBlobStorageProcess.waitFor()
-            } catch (exception: Exception) {
+            } catch (_: Exception) {
                 // Do nothing if an error is thrown.
             }
         }
@@ -3895,9 +3846,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Wait for the process to finish.
                 process.waitFor()
-            } catch (exception: IOException) {
+            } catch (_: IOException) {
                 // Do nothing.
-            } catch (exception: InterruptedException) {
+            } catch (_: InterruptedException) {
                 // Do nothing.
             }
         }
@@ -3934,7 +3885,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Wait until the processes have finished.
                 deleteCacheProcess.waitFor()
                 deleteServiceWorkerProcess.waitFor()
-            } catch (exception: Exception) {
+            } catch (_: Exception) {
                 // Do nothing if an error is thrown.
             }
         }
@@ -3975,7 +3926,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
                 // Wait until the process has finished.
                 deleteAppWebviewProcess.waitFor()
-            } catch (exception: Exception) {
+            } catch (_: Exception) {
                 // Do nothing if an error is thrown.
             }
         }
@@ -4015,7 +3966,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Delete the current tab.
             tabLayout.removeTabAt(currentTabNumber)
 
-            // Delete the current page.  If the selected page number did not change during the delete (because the newly selected tab has has same number as the previously deleted tab), it will return true,
+            // Delete the current page.  If the selected page number did not change during the deletion (because the newly selected tab has the same number as the previously deleted tab), it will return true,
             // meaning that the current WebView must be reset.  Otherwise it will happen automatically as the selected tab number changes.
             if (webViewStateAdapter!!.deletePage(currentTabNumber, webViewViewPager2))
                 setCurrentWebView(currentTabNumber)
@@ -4246,17 +4197,9 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         currentWebView!!.findNext(false)
     }
 
-    override fun finishedPopulatingFilterLists(combinedFilterLists: ArrayList<ArrayList<List<Array<String>>>>) {
-        // Store the filter lists.
-        easyList = combinedFilterLists[0]
-        easyPrivacy = combinedFilterLists[1]
-        fanboysAnnoyanceList = combinedFilterLists[2]
-        fanboysSocialList = combinedFilterLists[3]
-        ultraList = combinedFilterLists[4]
-        ultraPrivacy = combinedFilterLists[5]
-
+    override fun finishedPopulatingFilterLists() {
         // Check to see if the activity has been restarted with a saved state.
-        if ((savedStateArrayList == null) || (savedStateArrayList!!.size == 0)) {  // The activity has not been restarted or it was restarted on start to change the theme.
+        if ((savedStateArrayList == null) || (savedStateArrayList!!.isEmpty())) {  // The activity has not been restarted or it was restarted on start to change the theme.
             // Add the first tab.
             addNewPage(urlString = "", adjacent = false, moveToTab = false)
         } else {  // The activity has been restarted with a saved state.
@@ -4300,7 +4243,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     // Sanitize the search input.
                     val encodedSearchString: String = try {
                         URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8")
-                    } catch (exception: UnsupportedEncodingException) {
+                    } catch (_: UnsupportedEncodingException) {
                         ""
                     }
 
@@ -4747,10 +4690,10 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                         inputMethodManager.hideSoftInputFromWindow(currentWebView!!.windowToken, 0)
                     }
 
-                    // Clear the focus from from the URL text box.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
+                    // Clear the focus from the URL text box.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     urlEditText.clearFocus()
 
-                    // Clear the focus from from the WebView if it is not null, which can happen if a user opens a drawer while the browser is being resumed.
+                    // Clear the focus from the WebView if it is not null, which can happen if a user opens a drawer while the browser is being resumed.
                     // Clearing the focus from the WebView removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     currentWebView?.clearFocus()
                 }
@@ -5087,7 +5030,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 try {
                     // Show the save dialog.
                     saveDialogFragment.show(supportFragmentManager, getString(R.string.save_dialog))
-                } catch (exception: Exception) {  // The dialog could not be shown.
+                } catch (_: Exception) {  // The dialog could not be shown.
                     // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
                     pendingDialogsArrayList.add(PendingDialogDataClass(saveDialogFragment, getString(R.string.save_dialog)))
                 }
@@ -5402,7 +5345,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     try {
                         // Make it so.
                         startActivity(genericIntent)
-                    } catch (exception: ActivityNotFoundException) {
+                    } catch (_: ActivityNotFoundException) {
                         // Display a snackbar.
                         Snackbar.make(nestedScrollWebView, getString(R.string.unrecognized_url, requestUrlString), Snackbar.LENGTH_SHORT).show()
                     }
@@ -5414,21 +5357,52 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
 
             // Check requests against the block lists.
             override fun shouldInterceptRequest(view: WebView, webResourceRequest: WebResourceRequest): WebResourceResponse? {
-                // Get the URL.
-                val requestUrlString = webResourceRequest.url.toString()
+                // Initialize the request data class.
+                val requestDataClass = RequestDataClass()
+
+                // Store the current web page URL string.
+                requestDataClass.webPageUrlString = nestedScrollWebView.currentUrl
+
+                // Populate the request url string.
+                requestDataClass.requestUrlString = webResourceRequest.url.toString()
+
+                // Create a request URL with separators string.
+                requestDataClass.requestUrlWithSeparatorsString = requestDataClass.requestUrlString
+
+                // Replace the separators characters with `^`.
+                requestDataClass.requestUrlWithSeparatorsString = requestDataClass.requestUrlWithSeparatorsString.replace(':', '^')
+                requestDataClass.requestUrlWithSeparatorsString = requestDataClass.requestUrlWithSeparatorsString.replace('/', '^')
+                requestDataClass.requestUrlWithSeparatorsString = requestDataClass.requestUrlWithSeparatorsString.replace('?', '^')
+                requestDataClass.requestUrlWithSeparatorsString = requestDataClass.requestUrlWithSeparatorsString.replace('=', '^')
+                requestDataClass.requestUrlWithSeparatorsString = requestDataClass.requestUrlWithSeparatorsString.replace('&', '^')
+
+                // Add a `^` to the end of the url with separators string if it doesn't already contain one.
+                if (!requestDataClass.requestUrlWithSeparatorsString.endsWith('^'))
+                    requestDataClass.requestUrlWithSeparatorsString += '^'
+
+                // Create request truncated request URL strings and initially populate it with the original request URL strings.
+                requestDataClass.truncatedRequestUrlString = requestDataClass.requestUrlString
+                requestDataClass.truncatedRequestUrlWithSeparatorsString = requestDataClass.requestUrlWithSeparatorsString
+
+                // Get the index of the beginning of the fully qualified domain name.
+                val fqdnIndex = requestDataClass.truncatedRequestUrlString.indexOf("://") + 3
+
+                // Truncate the URL to the beginning of the fully qualified domain name.
+                requestDataClass.truncatedRequestUrlString = requestDataClass.truncatedRequestUrlString.substring(fqdnIndex, requestDataClass.truncatedRequestUrlString.length)
+                requestDataClass.truncatedRequestUrlWithSeparatorsString = requestDataClass.truncatedRequestUrlWithSeparatorsString.substring(fqdnIndex, requestDataClass.truncatedRequestUrlWithSeparatorsString.length)
 
                 // Check to see if the resource request is for the main URL.
-                if (requestUrlString == nestedScrollWebView.currentUrl) {
+                if (requestDataClass.requestUrlString == requestDataClass.webPageUrlString) {
                     // `return null` loads the resource request, which should never be blocked if it is the main URL.
                     return null
                 }
 
                 // Wait until the filter lists have been populated.  When Privacy Browser is being resumed after having the process killed in the background it will try to load the URLs immediately.
-                while (ultraPrivacy == null) {
+                while (fanboysAnnoyanceDataClass == null) {
                     try {
                         // Check to see if the filter lists have been populated after 100 ms.
                         Thread.sleep(100)
-                    } catch (exception: InterruptedException) {
+                    } catch (_: InterruptedException) {
                         // Do nothing.
                     }
                 }
@@ -5436,15 +5410,11 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Create an empty web resource response to be used if the resource request is blocked.
                 val emptyWebResourceResponse = WebResourceResponse("text/plain", "utf8", ByteArrayInputStream("".toByteArray()))
 
-                // Initialize the variables.
-                var allowListResultStringArray: Array<String>? = null
-                var isThirdPartyRequest = false
-
                 // Get the current URL.  `.getUrl()` throws an error because operations on the WebView cannot be made from this thread.
                 var currentBaseDomain = nestedScrollWebView.currentDomainName
 
-                // Store a copy of the current domain for use in later requests.
-                val currentDomain = currentBaseDomain
+                // Populate the request data class web page URL.
+                requestDataClass.firstPartyHostString = currentBaseDomain
 
                 // Get the request host name.
                 var requestBaseDomain = webResourceRequest.url.host
@@ -5464,7 +5434,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     }
 
                     // Update the third party request tracker.
-                    isThirdPartyRequest = currentBaseDomain != requestBaseDomain
+                    requestDataClass.isThirdPartyRequest = currentBaseDomain != requestBaseDomain
                 }
 
                 // Get the current WebView page position.
@@ -5473,276 +5443,100 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Determine if the WebView is currently displayed.
                 val webViewDisplayed = (webViewPagePosition == tabLayout.selectedTabPosition)
 
+                // Initialize a continue checking tracker.  If the tracker changes to false, all processing of the request will be stopped.
+                var continueChecking = true
+
                 // Block third-party requests if enabled.
-                if (isThirdPartyRequest && nestedScrollWebView.blockAllThirdPartyRequests) {
-                    // Add the result to the resource requests.
-                    nestedScrollWebView.addResourceRequest(arrayOf(REQUEST_THIRD_PARTY, requestUrlString))
+                if (requestDataClass.isThirdPartyRequest && nestedScrollWebView.blockAllThirdPartyRequests) {
+                    // Populate the request data class.
+                    requestDataClass.disposition = RequestDisposition.ThirdParty
 
-                    // Increment the blocked requests counters.
-                    nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                    nestedScrollWebView.incrementRequestsCount(THIRD_PARTY_REQUESTS)
+                    // Set the filter list.
+                    requestDataClass.filterList = FilterList.ThirdPartyRequests
 
-                    // Update the titles of the filter lists menu items if the WebView is currently displayed.
-                    if (webViewDisplayed) {
-                        // Updating the UI must be run from the UI thread.
-                        runOnUiThread {
-                            // Update the menu item titles.
-                            navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-
-                            // Update the options menu if it has been populated.
-                            if (optionsMenu != null) {
-                                optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                optionsBlockAllThirdPartyRequestsMenuItem.title =
-                                    nestedScrollWebView.getRequestsCount(THIRD_PARTY_REQUESTS).toString() + " - " + getString(R.string.block_all_third_party_requests)
-                            }
-                        }
-                    }
-
-                    // The resource request was blocked.  Return an empty web resource response.
-                    return emptyWebResourceResponse
+                    // Disable further checking.
+                    continueChecking = false
                 }
 
-                // Check UltraList if it is enabled.
-                if (nestedScrollWebView.ultraListEnabled) {
-                    // Check the URL against UltraList.
-                    val ultraListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, ultraList)
+                // Create a filter list data class list.
+                val filterListDataClassList: MutableList<FilterListDataClass> = mutableListOf()
 
-                    // Process the UltraList results.
-                    if (ultraListResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraList's block list.
-                        // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(arrayOf(ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]))
+                // Populate the filter list data classes.
+                if (nestedScrollWebView.ultraPrivacyEnabled) filterListDataClassList.add(ultraPrivacyDataClass)
+                if (nestedScrollWebView.ultraListEnabled) filterListDataClassList.add(ultraListDataClass)
+                if (nestedScrollWebView.easyPrivacyEnabled) filterListDataClassList.add(easyPrivacyDataClass)
+                if (nestedScrollWebView.easyListEnabled) filterListDataClassList.add(easyListDataClass)
+                if (nestedScrollWebView.fanboysAnnoyanceListEnabled) filterListDataClassList.add(fanboysAnnoyanceDataClass!!)
 
-                        // Increment the blocked requests counters.
-                        nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                        nestedScrollWebView.incrementRequestsCount(com.stoutner.privacybrowser.views.ULTRALIST)
+                // Check each filter list.
+                for (filterListDataClass in filterListDataClassList) {
+                    // Check the list unless a match has been found by a previous list.
+                    if (continueChecking)
+                        continueChecking = checkFilterListHelper.checkFilterList(requestDataClass, filterListDataClass)
+                }
 
-                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
-                        if (webViewDisplayed) {
-                            // Updating the UI must be run from the UI thread.
-                            runOnUiThread {
-                                // Update the menu item titles.
-                                navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
+                // Add the request data class to the resource requests list.
+                nestedScrollWebView.addResourceRequest(requestDataClass)
 
-                                // Update the options menu if it has been populated.
-                                if (optionsMenu != null) {
-                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                    optionsUltraListMenuItem.title = nestedScrollWebView.getRequestsCount(com.stoutner.privacybrowser.views.ULTRALIST).toString() + " - " + getString(R.string.ultralist)
-                                }
-                            }
-                        }
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse
-                    } else if (ultraListResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraList's allow list.
-                        // Add an allow list entry to the resource requests array.
-                        nestedScrollWebView.addResourceRequest(arrayOf(ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]))
-
-                        // The resource request has been allowed by UltraList.  `return null` loads the requested resource.
+                when (requestDataClass.disposition) {
+                    RequestDisposition.Default -> {
+                        // The resource request has not been blocked.  `return null` loads the requested resource.
                         return null
                     }
-                }
 
-                // Check UltraPrivacy if it is enabled.
-                if (nestedScrollWebView.ultraPrivacyEnabled) {
-                    // Check the URL against UltraPrivacy.
-                    val ultraPrivacyResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, ultraPrivacy!!)
-
-                    // Process the UltraPrivacy results.
-                    if (ultraPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched UltraPrivacy's block list.
-                        // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(arrayOf(ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
-                            ultraPrivacyResults[5]))
-
-                        // Increment the blocked requests counters.
-                        nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                        nestedScrollWebView.incrementRequestsCount(ULTRAPRIVACY)
-
-                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
-                        if (webViewDisplayed) {
-                            // Updating the UI must be run from the UI thread.
-                            runOnUiThread {
-                                // Update the menu item titles.
-                                navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-
-                                // Update the options menu if it has been populated.
-                                if (optionsMenu != null) {
-                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                    optionsUltraPrivacyMenuItem.title = nestedScrollWebView.getRequestsCount(ULTRAPRIVACY).toString() + " - " + getString(R.string.ultraprivacy)
-                                }
-                            }
-                        }
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse
-                    } else if (ultraPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched UltraPrivacy's allow list.
-                        // Add an allow list entry to the resource requests array.
-                        nestedScrollWebView.addResourceRequest(arrayOf(ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
-                            ultraPrivacyResults[5]))
-
-                        // The resource request has been allowed by UltraPrivacy.  `return null` loads the requested resource.
+                    RequestDisposition.Allowed -> {
+                        // The resource request has been allowed.  `return null` loads the requested resource.
                         return null
                     }
-                }
 
-                // Check EasyList if it is enabled.
-                if (nestedScrollWebView.easyListEnabled) {
-                    // Check the URL against EasyList.
-                    val easyListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, easyList)
-
-                    // Process the EasyList results.
-                    if (easyListResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyList's block list.
-                        // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(arrayOf(easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5]))
-
-                        // Increment the blocked requests counters.
+                    RequestDisposition.Blocked -> {
+                        // Increment the blocked requests counter.
                         nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                        nestedScrollWebView.incrementRequestsCount(EASYLIST)
+
+                        // Increment the filter list request counter.
+                        when (requestDataClass.filterList) {
+                            FilterList.UltraPrivacy -> nestedScrollWebView.incrementRequestsCount(ULTRAPRIVACY)
+                            FilterList.UltraList -> nestedScrollWebView.incrementRequestsCount(ULTRALIST)
+                            FilterList.EasyPrivacy -> nestedScrollWebView.incrementRequestsCount(EASYPRIVACY)
+                            FilterList.EasyList -> nestedScrollWebView.incrementRequestsCount(EASYLIST)
+                            FilterList.FanboysAnnoyanceList -> nestedScrollWebView.incrementRequestsCount(FANBOYS_ANNOYANCE_LIST)
+                            FilterList.ThirdPartyRequests -> nestedScrollWebView.incrementRequestsCount(THIRD_PARTY_REQUESTS)
+                        }
 
                         // Update the titles of the filter lists menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
                             // Updating the UI must be run from the UI thread.
                             runOnUiThread {
-                                // Update the menu item titles.
+                                // Update the navigation requests menu item title.
                                 navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
 
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
+                                    // Update the main filter lists menu item title.
                                     optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                    optionsEasyListMenuItem.title = nestedScrollWebView.getRequestsCount(EASYLIST).toString() + " - " + getString(R.string.easylist)
+
+                                    // Update the title for the appropriate filter list.
+                                    when (requestDataClass.filterList) {
+                                        FilterList.UltraPrivacy -> optionsUltraPrivacyMenuItem.title = nestedScrollWebView.getRequestsCount(ULTRAPRIVACY).toString() + " - " + getString(R.string.ultraprivacy)
+                                        FilterList.UltraList -> optionsUltraListMenuItem.title = nestedScrollWebView.getRequestsCount(ULTRALIST).toString() + " - " + getString(R.string.ultralist)
+                                        FilterList.EasyPrivacy -> optionsEasyPrivacyMenuItem.title = nestedScrollWebView.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
+                                        FilterList.EasyList -> optionsEasyListMenuItem.title = nestedScrollWebView.getRequestsCount(EASYLIST).toString() + " - " + getString(R.string.easylist)
+                                        FilterList.FanboysAnnoyanceList -> optionsFanboysAnnoyanceListMenuItem.title = nestedScrollWebView.getRequestsCount(FANBOYS_ANNOYANCE_LIST).toString() + " - " + getString(R.string.fanboys_annoyance_list)
+                                        FilterList.ThirdPartyRequests -> optionsBlockAllThirdPartyRequestsMenuItem.title = nestedScrollWebView.getRequestsCount(THIRD_PARTY_REQUESTS).toString() + " - " +getString(R.string.block_all_third_party_requests)
+                                    }
                                 }
                             }
                         }
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (easyListResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyList's allow list.
-                        // Update the allow list result string array tracker.
-                        allowListResultStringArray = arrayOf(easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5])
                     }
-                }
 
-                // Check EasyPrivacy if it is enabled.
-                if (nestedScrollWebView.easyPrivacyEnabled) {
-                    // Check the URL against EasyPrivacy.
-                    val easyPrivacyResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, easyPrivacy)
-
-                    // Process the EasyPrivacy results.
-                    if (easyPrivacyResults[0] == REQUEST_BLOCKED) {  // The resource request matched EasyPrivacy's block list.
-                        // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(arrayOf(easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5]))
-
-                        // Increment the blocked requests counters.
-                        nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                        nestedScrollWebView.incrementRequestsCount(EASYPRIVACY)
-
-                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
-                        if (webViewDisplayed) {
-                            // Updating the UI must be run from the UI thread.
-                            runOnUiThread {
-                                // Update the menu item titles.
-                                navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-
-                                // Update the options menu if it has been populated.
-                                if (optionsMenu != null) {
-                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                    optionsEasyPrivacyMenuItem.title = nestedScrollWebView.getRequestsCount(EASYPRIVACY).toString() + " - " + getString(R.string.easyprivacy)
-                                }
-                            }
-                        }
-
+                    RequestDisposition.ThirdParty -> {
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse
-                    } else if (easyPrivacyResults[0] == REQUEST_ALLOWED) {  // The resource request matched EasyPrivacy's allow list.
-                        // Update the allow list result string array tracker.
-                        allowListResultStringArray = arrayOf(easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5])
                     }
                 }
-
-                // Check Fanboy’s Annoyance List if it is enabled.
-                if (nestedScrollWebView.fanboysAnnoyanceListEnabled) {
-                    // Check the URL against Fanboy's Annoyance List.
-                    val fanboysAnnoyanceListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, fanboysAnnoyanceList)
-
-                    // Process the Fanboy's Annoyance List results.
-                    if (fanboysAnnoyanceListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Annoyance List's block list.
-                        // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
-                            fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]))
-
-                        // Increment the blocked requests counters.
-                        nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                        nestedScrollWebView.incrementRequestsCount(FANBOYS_ANNOYANCE_LIST)
-
-                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
-                        if (webViewDisplayed) {
-                            // Updating the UI must be run from the UI thread.
-                            runOnUiThread {
-                                // Update the menu item titles.
-                                navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-
-                                // Update the options menu if it has been populated.
-                                if (optionsMenu != null) {
-                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                    optionsFanboysAnnoyanceListMenuItem.title = nestedScrollWebView.getRequestsCount(FANBOYS_ANNOYANCE_LIST).toString() + " - " + getString(R.string.fanboys_annoyance_list)
-                                }
-                            }
-                        }
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse
-                    } else if (fanboysAnnoyanceListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Annoyance List's allow list.
-                        // Update the allow list result string array tracker.
-                        allowListResultStringArray = arrayOf(fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
-                            fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5])
-                    }
-                } else if (nestedScrollWebView.fanboysSocialBlockingListEnabled) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
-                    // Check the URL against Fanboy's Annoyance List.
-                    val fanboysSocialListResults = checkFilterListHelper.checkFilterList(currentDomain, requestUrlString, isThirdPartyRequest, fanboysSocialList)
-
-                    // Process the Fanboy's Social Blocking List results.
-                    if (fanboysSocialListResults[0] == REQUEST_BLOCKED) {  // The resource request matched Fanboy's Social Blocking List's block list.
-                        // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(arrayOf(fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3],
-                            fanboysSocialListResults[4], fanboysSocialListResults[5]))
-
-                        // Increment the blocked requests counters.
-                        nestedScrollWebView.incrementRequestsCount(BLOCKED_REQUESTS)
-                        nestedScrollWebView.incrementRequestsCount(FANBOYS_SOCIAL_BLOCKING_LIST)
-
-                        // Update the titles of the filter lists menu items if the WebView is currently displayed.
-                        if (webViewDisplayed) {
-                            // Updating the UI must be run from the UI thread.
-                            runOnUiThread {
-                                // Update the menu item titles.
-                                navigationRequestsMenuItem.title = getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-
-                                // Update the options menu if it has been populated.
-                                if (optionsMenu != null) {
-                                    optionsFilterListsMenuItem.title = getString(R.string.filterlists) + " - " + nestedScrollWebView.getRequestsCount(BLOCKED_REQUESTS)
-                                    optionsFanboysSocialBlockingListMenuItem.title =
-                                        nestedScrollWebView.getRequestsCount(FANBOYS_SOCIAL_BLOCKING_LIST).toString() + " - " + getString(R.string.fanboys_social_blocking_list)
-                                }
-                            }
-                        }
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse
-                    } else if (fanboysSocialListResults[0] == REQUEST_ALLOWED) {  // The resource request matched Fanboy's Social Blocking List's allow list.
-                        // Update the allow list result string array tracker.
-                        allowListResultStringArray = arrayOf(fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3], fanboysSocialListResults[4],
-                            fanboysSocialListResults[5])
-                    }
-                }
-
-                // Add the request to the log because it hasn't been processed by any of the previous checks.
-                if (allowListResultStringArray != null) {  // The request was processed by an allow list.
-                    nestedScrollWebView.addResourceRequest(allowListResultStringArray)
-                } else {  // The request didn't match any filter list entry.  Log it as a default request.
-                    nestedScrollWebView.addResourceRequest(arrayOf(REQUEST_DEFAULT, requestUrlString))
-                }
-
-                // The resource request has not been blocked.  `return null` loads the requested resource.
-                return null
             }
 
             // Handle HTTP authentication requests.
@@ -5757,7 +5551,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 try {
                     // Show the HTTP authentication dialog.
                     httpAuthenticationDialogFragment.show(supportFragmentManager, getString(R.string.http_authentication))
-                } catch (exception: Exception) {  // The dialog could not be shown.
+                } catch (_: Exception) {  // The dialog could not be shown.
                     // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
                     pendingDialogsArrayList.add(PendingDialogDataClass(httpAuthenticationDialogFragment, getString(R.string.http_authentication)))
                 }
@@ -5797,7 +5591,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 }
 
                 // Reset the list of resource requests.
-                nestedScrollWebView.clearResourceRequests()
+                nestedScrollWebView.clearResourceRequestsDataClassList()
 
                 // Reset the requests counters.
                 nestedScrollWebView.resetRequestsCounters()
@@ -5872,7 +5666,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     try {
                         // Delete the main cache directory.
                         Runtime.getRuntime().exec("rm -rf $privateDataDirectoryString/cache")
-                    } catch (exception: IOException) {
+                    } catch (_: IOException) {
                         // Do nothing if an error is thrown.
                     }
 
@@ -5880,7 +5674,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     try {
                         // Clear the logcat.  `-c` clears the logcat.  `-b all` clears all the buffers (instead of just crash, main, and system).
                         Runtime.getRuntime().exec("logcat -b all -c")
-                    } catch (exception: IOException) {
+                    } catch (_: IOException) {
                         // Do nothing.
                     }
                 }
@@ -5889,7 +5683,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 try {
                     // A string array must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
                     Runtime.getRuntime().exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Service Worker/"))
-                } catch (exception: IOException) {
+                } catch (_: IOException) {
                     // Do nothing.
                 }
 
@@ -6002,7 +5796,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     try {
                         // Show the SSL certificate error dialog.
                         sslCertificateErrorDialogFragment.show(supportFragmentManager, getString(R.string.ssl_certificate_error))
-                    } catch (exception: Exception) {
+                    } catch (_: Exception) {
                         // Add the dialog to the pending dialog array list.  It will be displayed in `onStart()`.
                         pendingDialogsArrayList.add(PendingDialogDataClass(sslCertificateErrorDialogFragment, getString(R.string.ssl_certificate_error)))
                     }
@@ -6034,7 +5828,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Sanitize the search input and convert it to a search.
                 val encodedSearchString = try {
                     URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8")
-                } catch (exception: UnsupportedEncodingException) {
+                } catch (_: UnsupportedEncodingException) {
                     ""
                 }
 
@@ -6178,14 +5972,14 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
             // Decode the URI as a UTF-8 string in.
             try {
                 urlString = URLDecoder.decode(uri.build().toString(), "UTF-8")
-            } catch (exception: UnsupportedEncodingException) {
+            } catch (_: UnsupportedEncodingException) {
                 // Do nothing.  The formatted URL string will remain blank.
             }
         } else if (unformattedUrlString.isNotEmpty()) {  // This is not a URL, but rather a search string.
             // Sanitize the search input.
             val encodedSearchString = try {
                 URLEncoder.encode(unformattedUrlString, "UTF-8")
-            } catch (exception: UnsupportedEncodingException) {
+            } catch (_: UnsupportedEncodingException) {
                 ""
             }
 
@@ -6546,7 +6340,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Remove any background on the URL relative layout.
                 urlRelativeLayout.background = AppCompatResources.getDrawable(this, R.color.transparent)
             }
-        }  catch (exception: Exception) {  //  Try again in 10 milliseconds if the WebView has not yet been populated.
+        }  catch (_: Exception) {  //  Try again in 10 milliseconds if the WebView has not yet been populated.
             // Create a handler to set the current WebView.
             val setCurrentWebViewHandler = Handler(Looper.getMainLooper())
 
@@ -6617,7 +6411,7 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
         // Get the font size from the edit text.
         try {
             newFontSize = fontSizeEditText.text.toString().toInt()
-        } catch (exception: Exception) {
+        } catch (_: Exception) {
             // If the edit text does not contain a valid font size do nothing.
         }
 

@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2024 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2026 Soren Stoutner <soren@stoutner.com>
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -57,12 +57,11 @@
     <string name="apply">Apply</string>
 
     <!-- Loading Filter Lists. -->
-    <string name="loading_easylist">Loading EasyList</string>
-    <string name="loading_easyprivacy">Loading EasyPrivacy</string>
-    <string name="loading_fanboys_annoyance_list">Loading Fanboy’s Annoyance List</string>
-    <string name="loading_fanboys_social_blocking_list">Loading Fanboy’s Social Blocking List</string>
-    <string name="loading_ultralist">Loading UltraList</string>
     <string name="loading_ultraprivacy">Loading UltraPrivacy</string>
+    <string name="loading_ultralist">Loading UltraList</string>
+    <string name="loading_easyprivacy">Loading EasyPrivacy</string>
+    <string name="loading_easylist">Loading EasyList</string>
+    <string name="loading_fanboys_annoyance_list">Loading Fanboy’s Annoyance List</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Favorite Icon</string>
@@ -142,7 +141,6 @@
         <string name="clear_cookies">Clear Cookies</string>
         <string name="clear_dom_storage">Clear DOM Storage</string>
         <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-        <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
         <string name="options_block_all_third_party_requests">Block All Third-Party Requests</string>
     <string name="page">Page</string>
         <string name="options_user_agent">User Agent</string>
@@ -313,6 +311,7 @@
     <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">Requests</string>
     <string name="request_details">Request details</string>
+    <string name="request">Request</string>
     <string name="disposition">Disposition</string>
         <string name="all">All</string>
         <string name="default_label">Default</string>
@@ -325,32 +324,34 @@
         <string name="blocked">Blocked</string>
         <string name="request_blocked">%1$d. Blocked</string>
         <string name="blocked_plural">Blocked</string>
+    <string name="webpage_url">Web Page URL</string>
+    <string name="request_url">Request URL</string>
+    <string name="request_url_with_separators">Request URL With Separators</string>
+    <string name="truncated_request_url">Truncated Request URL</string>
+    <string name="truncated_request_url_with_separators">Truncated Request URL With Separators</string>
+    <string name="filterlist_entry_label">Filter List Entry</string>
     <string name="filterlist">Filter list</string>
     <string name="sublist">Sublist</string>
         <string name="main_allowlist">Main allow list</string>
-        <string name="final_allowlist">Final allow list</string>
-        <string name="domain_allowlist">Domain allow list</string>
-        <string name="domain_initial_allowlist">Domain initial allow list</string>
-        <string name="domain_final_allowlist">Domain final allow list</string>
-        <string name="third_party_allowlist">Third-party allow list</string>
-        <string name="third_party_domain_allowlist">Third-party domain allow list</string>
-        <string name="third_party_domain_initial_allowlist">Third-party domain initial allow list</string>
+        <string name="initial_domain_allowlist">Initial domain allow list</string>
+        <string name="regular_expression_allowlist">Regular expression allow list</string>
         <string name="main_blocklist">Main block list</string>
-        <string name="initial_blocklist">Initial block list</string>
-        <string name="final_blocklist">Final block list</string>
-        <string name="domain_blocklist">Domain block list</string>
-        <string name="domain_initial_blocklist">Domain initial block list</string>
-        <string name="domain_final_blocklist">Domain final block list</string>
-        <string name="domain_regular_expression_blocklist">Domain regular expression block list</string>
-        <string name="third_party_blocklist">Third-party block list</string>
-        <string name="third_party_initial_blocklist">Third-party initial block list</string>
-        <string name="third_party_domain_blocklist">Third-party domain block list</string>
-        <string name="third_party_domain_initial_blocklist">Third-party domain initial block list</string>
-        <string name="third_party_regular_expression_blocklist">Third-party regular expression block list</string>
-        <string name="third_party_domain_regular_expression_blocklist">Third-party domain regular expression block list</string>
+        <string name="initial_domain_blocklist">Initial domain block list</string>
         <string name="regular_expression_blocklist">Regular expression block list</string>
-    <string name="filterlist_entries">Filter list entries</string>
-    <string name="filterlist_original_entry">Filter list original entry</string>
+    <string name="original_entry">Filter list original entry</string>
+
+    <!-- Filter Lists. -->
+    <string name="filterlist_view_entry">%1$d. %2$s</string>
+    <string name="filterlist_entry">Filter list entry - %1$d</string>
+    <string name="applied_entry_list">Applied entry list</string>
+    <string name="third_party">Third party</string>
+        <string name="override">Override</string>
+    <string name="initial_match">Initial match</string>
+    <string name="final_match">Final match</string>
+        <string name="yes">Yes</string>
+    <string name="domain_list">Domain list</string>
+    <string name="applied_filter_options">Applied filter options</string>
+    <string name="original_filter_options">Original filter options</string>
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
@@ -379,35 +380,30 @@
         <item>DOM storage enabled</item>
         <item>DOM storage disabled</item>
     </string-array>
-    <string-array name="easylist_array">
+    <string-array name="ultraprivacy_array">
         <item>System default</item>
-        <item>EasyList enabled</item>
-        <item>EasyList disabled</item>
-    </string-array>
-    <string-array name="easyprivacy_array">
-        <item>System default</item>
-        <item>EasyPrivacy enabled</item>
-        <item>EasyPrivacy disabled</item>
-    </string-array>
-    <string-array name="fanboys_annoyance_list_array">
-        <item>System default</item>
-        <item>Fanboy’s Annoyance List enabled</item>
-        <item>Fanboy’s Annoyance List disabled</item>
-    </string-array>
-    <string-array name="fanboys_social_blocking_list_array">
-        <item>System default</item>
-        <item>Fanboy’s Social Blocking List enabled</item>
-        <item>Fanboy’s Social Blocking List disabled</item>
+        <item>UltraPrivacy enabled</item>
+        <item>UltraPrivacy disabled</item>
     </string-array>
     <string-array name="ultralist_array">
         <item>System default</item>
         <item>UltraList enabled</item>
         <item>UltraList disabled</item>
     </string-array>
-    <string-array name="ultraprivacy_array">
+    <string-array name="easyprivacy_array">
         <item>System default</item>
-        <item>UltraPrivacy enabled</item>
-        <item>UltraPrivacy disabled</item>
+        <item>EasyPrivacy enabled</item>
+        <item>EasyPrivacy disabled</item>
+    </string-array>
+    <string-array name="easylist_array">
+        <item>System default</item>
+        <item>EasyList enabled</item>
+        <item>EasyList disabled</item>
+    </string-array>
+    <string-array name="fanboys_annoyance_list_array">
+        <item>System default</item>
+        <item>Fanboy’s Annoyance List enabled</item>
+        <item>Fanboy’s Annoyance List disabled</item>
     </string-array>
     <string-array name="block_all_third_party_requests_array">
         <item>System default</item>
@@ -533,12 +529,11 @@
             <string name="system_available_memory">System Available Memory: \u0020</string>
             <string name="system_total_memory">System Total Memory: \u0020</string>
             <string name="mebibyte">MiB</string>
-            <string name="easylist_label">EasyList: \u0020</string>
-            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
-            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
-            <string name="fanboys_social_label">Fanboy’s Social Blocking List: \u0020</string>
-            <string name="ultralist_label">UltraList: \u0020</string>
             <string name="ultraprivacy_label">UltraPrivacy: \u0020</string>
+            <string name="ultralist_label">UltraList: \u0020</string>
+            <string name="easyprivacy_label">EasyPrivacy: \u0020</string>
+            <string name="easylist_label">EasyList: \u0020</string>
+            <string name="fanboys_annoyance_label">Fanboy’s Annoyance List: \u0020</string>
         <string name="package_signature">Package Signature</string>
             <string name="issuer_dn">Issuer DN: \u0020</string>
             <string name="subject_dn">Subject DN: \u0020</string>
@@ -629,18 +624,16 @@
         <string name="allow_screenshots">Allow screenshots</string>
         <string name="allow_screenshots_summary">Allow screenshots, video recording, and viewing on non-secure displays. Changing this setting will restart Privacy Browser.</string>
     <string name="filterlists">Filter Lists</string>
-        <string name="easylist">EasyList</string>
-        <string name="easylist_summary">Main ad filter list.</string>
-        <string name="easyprivacy">EasyPrivacy</string>
-        <string name="easyprivacy_summary">Main tracker filter list.</string>
-        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboys_annoyance_list_summary">Filter annoying popups and links. Includes Fanboy’s social blocking lists.</string>
-        <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
-        <string name="fanboys_social_blocking_list_summary">Filters third-party social media content.</string>
-        <string name="ultralist">UltraList</string>
-        <string name="ultralist_summary">UltraList filters ads that EasyList doesn’t because doing so can break websites.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy filters trackers that EasyPrivacy doesn’t because doing so can break websites.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList filters ads that EasyList doesn’t because doing so can break websites.</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Main tracker filter list.</string>
+        <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Main ad filter list.</string>
+        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboys_annoyance_list_summary">Filter annoying popups and links. Includes Fanboy’s social blocking lists.</string>
         <string name="block_all_third_party_requests">Block all third-party requests</string>
         <string name="block_all_third_party_requests_summary">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
     <string name="url_modification">URL Modification</string>
@@ -791,7 +784,6 @@
     <string name="easylist_key" translatable="false">easylist</string>
     <string name="easyprivacy_key" translatable="false">easyprivacy</string>
     <string name="fanboys_annoyance_list_key" translatable="false">fanboys_annoyance_list</string>
-    <string name="fanboys_social_blocking_list_key" translatable="false">fanboys_social_blocking_list</string>
     <string name="font_size_key" translatable="false">font_size</string>
     <string name="full_screen_browsing_mode_key" translatable="false">full_screen_browsing_mode</string>
     <string name="full_screen_category_key" translatable="false">full_screen</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2024 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2018-2026 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.helpers
 
 import android.content.ContentValues
 import android.content.Context
+import androidx.core.content.edit
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 
@@ -38,7 +39,7 @@ import java.io.OutputStream
 import java.util.Date
 
 // Define the public constants.
-const val IMPORT_EXPORT_SCHEMA_VERSION = 20
+const val IMPORT_EXPORT_SCHEMA_VERSION = 21
 const val EXPORT_SUCCESSFUL = "export_successful"
 const val IMPORT_SUCCESSFUL = "import_successful"
 
@@ -61,7 +62,6 @@ private const val DOWNLOAD_PROVIDER = "download_provider"
 private const val EASYLIST = "easylist"
 private const val EASYPRIVACY = "easyprivacy"
 private const val FANBOYS_ANNOYANCE_LIST = "fanboys_annoyance_list"
-private const val FANBOYS_SOCIAL_BLOCKING_LIST = "fanboys_social_blocking_list"
 private const val FULL_SCREEN_BROWSING_MODE = "full_screen_browsing_mode"
 private const val HIDE_APP_BAR = "hide_app_bar"
 private const val HOMEPAGE = "homepage"
@@ -496,12 +496,11 @@ class ImportExportDatabaseHelper {
                 val javaScriptDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.javascript_key), false)
                 val cookiesDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.cookies_key), false)
                 val domStorageDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.dom_storage_key), false)
-                val easyListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easylist_key), true)
-                val easyPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easyprivacy_key), true)
-                val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_annoyance_list_key), true)
-                val fanboysSocialBlockingListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_social_blocking_list), true)
-                val ultraListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultralist_key), true)
                 val ultraPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultraprivacy_key), true)
+                val ultraListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.ultralist_key), true)
+                val easyPrivacyDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easyprivacy_key), true)
+                val easyListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.easylist_key), true)
+                val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.fanboys_annoyance_list_key), true)
                 val blockAllThirdPartyRequestsDefaultValue = sharedPreferences.getBoolean(context.getString(R.string.block_all_third_party_requests_key), false)
 
                 // Get a domains cursor.
@@ -511,12 +510,11 @@ class ImportExportDatabaseHelper {
                 val javaScriptColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
                 val cookiesColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(COOKIES)
                 val domStorageColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
-                val easyListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
-                val easyPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
-                val fanboysAnnoyanceListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
-                val fanboysSocialBlockingListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
-                val ultraListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ULTRALIST)
                 val ultraPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)
+                val ultraListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ULTRALIST)
+                val easyPrivacyColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+                val easyListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+                val fanboysAnnoyanceListColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
                 val blockAllThirdPartyRequestsColumnIndex = importDomainsConversionCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
 
                 // Convert the domain from the switch booleans to the spinner integers.
@@ -528,12 +526,11 @@ class ImportExportDatabaseHelper {
                     val javaScriptDomainCurrentValue = importDomainsConversionCursor.getInt(javaScriptColumnIndex)
                     val cookiesDomainCurrentValue = importDomainsConversionCursor.getInt(cookiesColumnIndex)
                     val domStorageDomainCurrentValue = importDomainsConversionCursor.getInt(domStorageColumnIndex)
-                    val easyListDomainCurrentValue = importDomainsConversionCursor.getInt(easyListColumnIndex)
-                    val easyPrivacyDomainCurrentValue = importDomainsConversionCursor.getInt(easyPrivacyColumnIndex)
-                    val fanboysAnnoyanceListCurrentValue = importDomainsConversionCursor.getInt(fanboysAnnoyanceListColumnIndex)
-                    val fanboysSocialBlockingListCurrentValue = importDomainsConversionCursor.getInt(fanboysSocialBlockingListColumnIndex)
-                    val ultraListCurrentValue = importDomainsConversionCursor.getInt(ultraListColumnIndex)
                     val ultraPrivacyCurrentValue = importDomainsConversionCursor.getInt(ultraPrivacyColumnIndex)
+                    val ultraListCurrentValue = importDomainsConversionCursor.getInt(ultraListColumnIndex)
+                    val easyPrivacyDomainCurrentValue = importDomainsConversionCursor.getInt(easyPrivacyColumnIndex)
+                    val easyListDomainCurrentValue = importDomainsConversionCursor.getInt(easyListColumnIndex)
+                    val fanboysAnnoyanceListCurrentValue = importDomainsConversionCursor.getInt(fanboysAnnoyanceListColumnIndex)
                     val blockAllThirdPartyRequestsCurrentValue = importDomainsConversionCursor.getInt(blockAllThirdPartyRequestsColumnIndex)
 
                     // Instantiate a domain content values.
@@ -543,12 +540,11 @@ class ImportExportDatabaseHelper {
                     domainContentValues.put(ENABLE_JAVASCRIPT, convertFromSwitchToSpinner(javaScriptDefaultValue, javaScriptDomainCurrentValue))
                     domainContentValues.put(COOKIES, convertFromSwitchToSpinner(cookiesDefaultValue, cookiesDomainCurrentValue))
                     domainContentValues.put(ENABLE_DOM_STORAGE, convertFromSwitchToSpinner(domStorageDefaultValue, domStorageDomainCurrentValue))
-                    domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
-                    domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
-                    domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
-                    domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, convertFromSwitchToSpinner(fanboysSocialBlockingListDefaultValue, fanboysSocialBlockingListCurrentValue))
-                    domainContentValues.put(ULTRALIST, convertFromSwitchToSpinner(ultraListDefaultValue, ultraListCurrentValue))
                     domainContentValues.put(ENABLE_ULTRAPRIVACY, convertFromSwitchToSpinner(ultraPrivacyDefaultValue, ultraPrivacyCurrentValue))
+                    domainContentValues.put(ULTRALIST, convertFromSwitchToSpinner(ultraListDefaultValue, ultraListCurrentValue))
+                    domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
+                    domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
+                    domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
                     domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, convertFromSwitchToSpinner(blockAllThirdPartyRequestsDefaultValue, blockAllThirdPartyRequestsCurrentValue))
 
                     // Get the current database ID.
@@ -622,6 +618,10 @@ class ImportExportDatabaseHelper {
                     importDatabase.execSQL("UPDATE $PREFERENCES_TABLE SET $SORT_BOOKMARKS_ALPHABETICALLY = 0")
             }
 
+            // Upgrade from schema version 20, first used in Privacy Browser 3.19, to schema version 21, first used in Privacy Browser 3.20.
+            // This upgrade removed `enablefanboyssocialblockinglist` from the Domains table.
+            // There is no need to delete the columns as they will simply be ignored by the import.
+
 
             /* End of database upgrade logic. */
 
@@ -648,7 +648,7 @@ class ImportExportDatabaseHelper {
             val bookmarkFavoriteIconColumnIndex = importBookmarksCursor.getColumnIndexOrThrow(FAVORITE_ICON)
 
             // Copy the data from the import bookmarks cursor into the bookmarks database.
-            for (i in 0 until importBookmarksCursor.count) {
+            (0 until importBookmarksCursor.count).forEach { _ ->
                 // Create a bookmark content values.
                 val bookmarkContentValues = ContentValues()
 
@@ -690,12 +690,11 @@ class ImportExportDatabaseHelper {
             val domainJavaScriptColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
             val domainCookiesColumnIndex = importDomainsCursor.getColumnIndexOrThrow(COOKIES)
             val domainDomStorageColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
-            val domainEasyListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
-            val domainEasyPrivacyColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
-            val domainFanboysAnnoyanceListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
-            val domainFanboysSocialBlockingListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
-            val domainUltraListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ULTRALIST)
             val domainUltraPrivacyColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainUltraListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ULTRALIST)
+            val domainEasyPrivacyColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainEasyListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+            val domainFanboysAnnoyanceListColumnIndex = importDomainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
             val domainBlockAllThirdPartyRequestsColumnIndex = importDomainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
             val domainUserAgentColumnIndex = importDomainsCursor.getColumnIndexOrThrow(USER_AGENT)
             val domainFontSizeColumnIndex = importDomainsCursor.getColumnIndexOrThrow(FONT_SIZE)
@@ -716,7 +715,7 @@ class ImportExportDatabaseHelper {
             val domainIpAddressesColumnIndex = importDomainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)
 
             // Copy the data from the import domains cursor into the domains database.
-            for (i in 0 until importDomainsCursor.count) {
+            (0 until importDomainsCursor.count).forEach { _ ->
                 // Create a domain content values.
                 val domainContentValues = ContentValues()
 
@@ -725,12 +724,11 @@ class ImportExportDatabaseHelper {
                 domainContentValues.put(ENABLE_JAVASCRIPT, importDomainsCursor.getInt(domainJavaScriptColumnIndex))
                 domainContentValues.put(COOKIES, importDomainsCursor.getInt(domainCookiesColumnIndex))
                 domainContentValues.put(ENABLE_DOM_STORAGE, importDomainsCursor.getInt(domainDomStorageColumnIndex))
-                domainContentValues.put(ENABLE_EASYLIST, importDomainsCursor.getInt(domainEasyListColumnIndex))
-                domainContentValues.put(ENABLE_EASYPRIVACY, importDomainsCursor.getInt(domainEasyPrivacyColumnIndex))
-                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, importDomainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
-                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, importDomainsCursor.getInt(domainFanboysSocialBlockingListColumnIndex))
-                domainContentValues.put(ULTRALIST, importDomainsCursor.getInt(domainUltraListColumnIndex))
                 domainContentValues.put(ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(domainUltraPrivacyColumnIndex))
+                domainContentValues.put(ULTRALIST, importDomainsCursor.getInt(domainUltraListColumnIndex))
+                domainContentValues.put(ENABLE_EASYPRIVACY, importDomainsCursor.getInt(domainEasyPrivacyColumnIndex))
+                domainContentValues.put(ENABLE_EASYLIST, importDomainsCursor.getInt(domainEasyListColumnIndex))
+                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, importDomainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
                 domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, importDomainsCursor.getInt(domainBlockAllThirdPartyRequestsColumnIndex))
                 domainContentValues.put(USER_AGENT, importDomainsCursor.getString(domainUserAgentColumnIndex))
                 domainContentValues.put(FONT_SIZE, importDomainsCursor.getInt(domainFontSizeColumnIndex))
@@ -769,49 +767,48 @@ class ImportExportDatabaseHelper {
             importPreferencesCursor.moveToFirst()
 
             // Import the preference data.
-            sharedPreferences.edit()
-                .putBoolean(JAVASCRIPT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(JAVASCRIPT)) == 1)
-                .putBoolean(COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(COOKIES)) == 1)
-                .putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOM_STORAGE)) == 1)
-                .putString(PREFERENCES_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_USER_AGENT)))
-                .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(CUSTOM_USER_AGENT)))
-                .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(INCOGNITO_MODE)) == 1)
-                .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ALLOW_SCREENSHOTS)) == 1)
-                .putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(EASYLIST)) == 1)
-                .putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(EASYPRIVACY)) == 1)
-                .putBoolean(FANBOYS_ANNOYANCE_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FANBOYS_ANNOYANCE_LIST)) == 1)
-                .putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
-                .putBoolean(ULTRALIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRALIST)) == 1)
-                .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRAPRIVACY)) == 1)
-                .putBoolean(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
-                .putBoolean(TRACKING_QUERIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(TRACKING_QUERIES)) == 1)
-                .putBoolean(AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(AMP_REDIRECTS)) == 1)
-                .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH)))
-                .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH_CUSTOM_URL)))
-                .putString(PROXY, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY)))
-                .putString(PROXY_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY_CUSTOM_URL)))
-                .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FULL_SCREEN_BROWSING_MODE)) == 1)
-                .putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(HIDE_APP_BAR)) == 1)
-                .putBoolean(DISPLAY_UNDER_CUTOUTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_UNDER_CUTOUTS)) == 1)
-                .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_EVERYTHING)) == 1)
-                .putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_COOKIES)) == 1)
-                .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_DOM_STORAGE)) == 1)
-                .putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_LOGCAT)) == 1)
-                .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_CACHE)) == 1)
-                .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(HOMEPAGE)))
-                .putString(PREFERENCES_FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_FONT_SIZE)))
-                .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(OPEN_INTENTS_IN_NEW_TAB)) == 1)
-                .putBoolean(PREFERENCES_SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_SWIPE_TO_REFRESH)) == 1)
-                .putString(DOWNLOAD_PROVIDER, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(DOWNLOAD_PROVIDER)))
-                .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SCROLL_APP_BAR)) == 1)
-                .putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BOTTOM_APP_BAR)) == 1)
-                .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
-                .putBoolean(SORT_BOOKMARKS_ALPHABETICALLY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SORT_BOOKMARKS_ALPHABETICALLY)) == 1)
-                .putString(APP_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(APP_THEME)))
-                .putString(WEBVIEW_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
-                .putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)) == 1)
-                .putBoolean(DISPLAY_WEBPAGE_IMAGES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_WEBPAGE_IMAGES)) == 1)
-                .apply()
+            sharedPreferences.edit {
+                putBoolean(JAVASCRIPT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(JAVASCRIPT)) == 1)
+                putBoolean(COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(COOKIES)) == 1)
+                putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DOM_STORAGE)) == 1)
+                putString(PREFERENCES_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_USER_AGENT)))
+                putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(CUSTOM_USER_AGENT)))
+                putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(INCOGNITO_MODE)) == 1)
+                putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ALLOW_SCREENSHOTS)) == 1)
+                putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRAPRIVACY)) == 1)
+                putBoolean(ULTRALIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(ULTRALIST)) == 1)
+                putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(EASYPRIVACY)) == 1)
+                putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(EASYLIST)) == 1)
+                putBoolean(FANBOYS_ANNOYANCE_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FANBOYS_ANNOYANCE_LIST)) == 1)
+                putBoolean(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
+                putBoolean(TRACKING_QUERIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(TRACKING_QUERIES)) == 1)
+                putBoolean(AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(AMP_REDIRECTS)) == 1)
+                putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH)))
+                putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(SEARCH_CUSTOM_URL)))
+                putString(PROXY, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY)))
+                putString(PROXY_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PROXY_CUSTOM_URL)))
+                putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(FULL_SCREEN_BROWSING_MODE)) == 1)
+                putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(HIDE_APP_BAR)) == 1)
+                putBoolean(DISPLAY_UNDER_CUTOUTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_UNDER_CUTOUTS)) == 1)
+                putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_EVERYTHING)) == 1)
+                putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_COOKIES)) == 1)
+                putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_DOM_STORAGE)) == 1)
+                putBoolean(CLEAR_LOGCAT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_LOGCAT)) == 1)
+                putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(CLEAR_CACHE)) == 1)
+                putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(HOMEPAGE)))
+                putString(PREFERENCES_FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_FONT_SIZE)))
+                putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(OPEN_INTENTS_IN_NEW_TAB)) == 1)
+                putBoolean(PREFERENCES_SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(PREFERENCES_SWIPE_TO_REFRESH)) == 1)
+                putString(DOWNLOAD_PROVIDER, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(DOWNLOAD_PROVIDER)))
+                putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SCROLL_APP_BAR)) == 1)
+                putBoolean(BOTTOM_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(BOTTOM_APP_BAR)) == 1)
+                putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
+                putBoolean(SORT_BOOKMARKS_ALPHABETICALLY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(SORT_BOOKMARKS_ALPHABETICALLY)) == 1)
+                putString(APP_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(APP_THEME)))
+                putString(WEBVIEW_THEME, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndexOrThrow(WEBVIEW_THEME)))
+                putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(WIDE_VIEWPORT)) == 1)
+                putBoolean(DISPLAY_WEBPAGE_IMAGES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndexOrThrow(DISPLAY_WEBPAGE_IMAGES)) == 1)
+            }
 
             // Close the preferences cursor and database.
             importPreferencesCursor.close()
@@ -862,7 +859,7 @@ class ImportExportDatabaseHelper {
             val bookmarkFavoriteIconColumnIndex = bookmarksCursor.getColumnIndexOrThrow(FAVORITE_ICON)
 
             // Copy the data from the bookmarks cursor into the export database.
-            for (i in 0 until bookmarksCursor.count) {
+            (0 until bookmarksCursor.count).forEach { _ ->
                 // Create a bookmark content values.
                 val bookmarkContentValues = ContentValues()
 
@@ -904,12 +901,11 @@ class ImportExportDatabaseHelper {
             val domainJavaScriptColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_JAVASCRIPT)
             val domainCookiesColumnIndex = domainsCursor.getColumnIndexOrThrow(COOKIES)
             val domainDomStorageColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_DOM_STORAGE)
-            val domainEasyListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
-            val domainEasyPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
-            val domainFanboysAnnoyanceListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
-            val domainFanboysSocialBlockingListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
-            val domainUltraListColumnIndex = domainsCursor.getColumnIndexOrThrow(ULTRALIST)
             val domainUltraPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainUltraListColumnIndex = domainsCursor.getColumnIndexOrThrow(ULTRALIST)
+            val domainEasyPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
+            val domainEasyListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
+            val domainFanboysAnnoyanceListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
             val domainBlockAllThirdPartyRequestsColumnIndex = domainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
             val domainUserAgentColumnIndex = domainsCursor.getColumnIndexOrThrow(USER_AGENT)
             val domainFontSizeColumnIndex = domainsCursor.getColumnIndexOrThrow(FONT_SIZE)
@@ -930,7 +926,7 @@ class ImportExportDatabaseHelper {
             val domainIpAddressesColumnIndex = domainsCursor.getColumnIndexOrThrow(IP_ADDRESSES)
 
             // Copy the data from the domains cursor into the export database.
-            for (i in 0 until domainsCursor.count) {
+            (0 until domainsCursor.count).forEach { _ ->
                 // Create a domain content values.
                 val domainContentValues = ContentValues()
 
@@ -939,12 +935,11 @@ class ImportExportDatabaseHelper {
                 domainContentValues.put(ENABLE_JAVASCRIPT, domainsCursor.getInt(domainJavaScriptColumnIndex))
                 domainContentValues.put(COOKIES, domainsCursor.getInt(domainCookiesColumnIndex))
                 domainContentValues.put(ENABLE_DOM_STORAGE, domainsCursor.getInt(domainDomStorageColumnIndex))
-                domainContentValues.put(ENABLE_EASYLIST, domainsCursor.getInt(domainEasyListColumnIndex))
-                domainContentValues.put(ENABLE_EASYPRIVACY, domainsCursor.getInt(domainEasyPrivacyColumnIndex))
-                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
-                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainFanboysSocialBlockingListColumnIndex))
-                domainContentValues.put(ULTRALIST, domainsCursor.getInt(domainUltraListColumnIndex))
                 domainContentValues.put(ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainUltraPrivacyColumnIndex))
+                domainContentValues.put(ULTRALIST, domainsCursor.getInt(domainUltraListColumnIndex))
+                domainContentValues.put(ENABLE_EASYPRIVACY, domainsCursor.getInt(domainEasyPrivacyColumnIndex))
+                domainContentValues.put(ENABLE_EASYLIST, domainsCursor.getInt(domainEasyListColumnIndex))
+                domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainFanboysAnnoyanceListColumnIndex))
                 domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainBlockAllThirdPartyRequestsColumnIndex))
                 domainContentValues.put(USER_AGENT, domainsCursor.getString(domainUserAgentColumnIndex))
                 domainContentValues.put(FONT_SIZE, domainsCursor.getInt(domainFontSizeColumnIndex))
@@ -986,12 +981,11 @@ class ImportExportDatabaseHelper {
                     "$CUSTOM_USER_AGENT TEXT, " +
                     "$INCOGNITO_MODE BOOLEAN, " +
                     "$ALLOW_SCREENSHOTS BOOLEAN, " +
-                    "$EASYLIST BOOLEAN, " +
-                    "$EASYPRIVACY BOOLEAN, " +
-                    "$FANBOYS_ANNOYANCE_LIST BOOLEAN, " +
-                    "$FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN, " +
-                    "$ULTRALIST BOOLEAN, " +
                     "$ULTRAPRIVACY BOOLEAN, " +
+                    "$ULTRALIST BOOLEAN, " +
+                    "$EASYPRIVACY BOOLEAN, " +
+                    "$EASYLIST BOOLEAN, " +
+                    "$FANBOYS_ANNOYANCE_LIST BOOLEAN, " +
                     "$PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS BOOLEAN, " +
                     "$TRACKING_QUERIES BOOLEAN, " +
                     "$AMP_REDIRECTS BOOLEAN, " +
@@ -1038,12 +1032,11 @@ class ImportExportDatabaseHelper {
             preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)))
             preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false))
             preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false))
-            preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true))
-            preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true))
-            preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean(FANBOYS_ANNOYANCE_LIST, true))
-            preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, true))
-            preferencesContentValues.put(ULTRALIST, sharedPreferences.getBoolean(ULTRALIST, true))
             preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true))
+            preferencesContentValues.put(ULTRALIST, sharedPreferences.getBoolean(ULTRALIST, true))
+            preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true))
+            preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true))
+            preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean(FANBOYS_ANNOYANCE_LIST, true))
             preferencesContentValues.put(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(PREFERENCES_BLOCK_ALL_THIRD_PARTY_REQUESTS, false))
             preferencesContentValues.put(TRACKING_QUERIES, sharedPreferences.getBoolean(TRACKING_QUERIES, true))
             preferencesContentValues.put(AMP_REDIRECTS, sharedPreferences.getBoolean(AMP_REDIRECTS, true))

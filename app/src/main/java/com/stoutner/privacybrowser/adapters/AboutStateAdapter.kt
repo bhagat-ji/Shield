@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2023 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2023, 2025-2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -26,7 +26,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.stoutner.privacybrowser.fragments.AboutVersionFragment
 import com.stoutner.privacybrowser.fragments.AboutWebViewFragment
 
-class AboutStateAdapter(fragmentActivity: FragmentActivity, private val filterListVersions: Array<String>) : FragmentStateAdapter(fragmentActivity) {
+class AboutStateAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
     // Get the number of tabs.
     override fun getItemCount(): Int {
         // There are seven tabs.
@@ -36,8 +36,8 @@ class AboutStateAdapter(fragmentActivity: FragmentActivity, private val filterLi
     // Create the tab.
     override fun createFragment(tabNumber: Int): Fragment {
         // Return the tab fragment.
-        return if (tabNumber == 0)  // Return the about tab fragment.
-            AboutVersionFragment.createTab(filterListVersions)
+        return if (tabNumber == 0)  // Return the about version fragment.
+            AboutVersionFragment()
         else  // Return a WebView tab.
             AboutWebViewFragment.createTab(tabNumber)
     }

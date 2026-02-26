@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2016-2025 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2016-2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -45,6 +45,7 @@ import android.webkit.WebView
 import android.widget.TextView
 
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -55,6 +56,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.stoutner.privacybrowser.BuildConfig
 import com.stoutner.privacybrowser.R
 import com.stoutner.privacybrowser.coroutines.SaveAboutVersionImageCoroutine
+import com.stoutner.privacybrowser.helpers.easyListDataClass
+import com.stoutner.privacybrowser.helpers.easyPrivacyDataClass
+import com.stoutner.privacybrowser.helpers.fanboysAnnoyanceDataClass
+import com.stoutner.privacybrowser.helpers.ultraListDataClass
+import com.stoutner.privacybrowser.helpers.ultraPrivacyDataClass
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,8 +80,7 @@ import java.text.NumberFormat
 import kotlin.text.StringBuilder
 
 // Define the class constants.
-private const val FILTERLISTS_VERSIONS = "A"
-private const val SCROLL_Y = "B"
+private const val SCROLL_Y = "SCROLL_Y"
 private const val MEBIBYTE = 1048576
 
 class AboutVersionFragment : Fragment() {
@@ -90,7 +95,6 @@ class AboutVersionFragment : Fragment() {
     private lateinit var appMaximumMemoryLabel: String
     private lateinit var appTotalMemoryLabel: String
     private lateinit var blueColorSpan: ForegroundColorSpan
-    private lateinit var filterListsVersions: Array<String>
     private lateinit var memoryInfo: ActivityManager.MemoryInfo
     private lateinit var numberFormat: NumberFormat
     private lateinit var runtime: Runtime
@@ -118,7 +122,6 @@ class AboutVersionFragment : Fragment() {
     private lateinit var easyListTextView: TextView
     private lateinit var easyPrivacyTextView: TextView
     private lateinit var fanboyAnnoyanceTextView: TextView
-    private lateinit var fanboySocialTextView: TextView
     private lateinit var filterListsTextView: TextView
     private lateinit var hardwareTextView: TextView
     private lateinit var i2pTextView: TextView
@@ -141,25 +144,6 @@ class AboutVersionFragment : Fragment() {
     private lateinit var ultraPrivacyTextView: TextView
     private lateinit var webViewProviderTextView: TextView
     private lateinit var webViewVersionTextView: TextView
-
-    companion object {
-        fun createTab(filterListsVersions: Array<String>): AboutVersionFragment {
-            // Create an arguments bundle.
-            val argumentsBundle = Bundle()
-
-            // Store the arguments in the bundle.
-            argumentsBundle.putStringArray(FILTERLISTS_VERSIONS, filterListsVersions)
-
-            // Create a new instance of the tab fragment.
-            val aboutVersionFragment = AboutVersionFragment()
-
-            // Add the arguments bundle to the fragment.
-            aboutVersionFragment.arguments = argumentsBundle
-
-            // Return the new fragment.
-            return aboutVersionFragment
-        }
-    }
 
     // Define the save about version text activity result launcher.  It must be defined before `onCreate()` is run or the app will crash.
     private val saveAboutVersionTextActivityResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { fileUri ->
@@ -209,14 +193,6 @@ class AboutVersionFragment : Fragment() {
         // Save the file if the URI is not null, which happens if the user exits the file picker by pressing back.
         if (fileUri != null)
             SaveAboutVersionImageCoroutine.saveImage(requireActivity(), fileUri, aboutVersionLayout.findViewById(R.id.about_version_linearlayout))
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState)
-
-        // Store the arguments in class variables.
-        filterListsVersions = requireArguments().getStringArray(FILTERLISTS_VERSIONS)!!
     }
 
     override fun onCreateView(layoutInflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -331,12 +307,11 @@ class AboutVersionFragment : Fragment() {
         systemAvailableMemoryTextView = aboutVersionLayout.findViewById(R.id.system_available_memory)
         systemTotalMemoryTextView = aboutVersionLayout.findViewById(R.id.system_total_memory)
         filterListsTextView = aboutVersionLayout.findViewById(R.id.filterlists)
-        easyListTextView = aboutVersionLayout.findViewById(R.id.easylist)
-        easyPrivacyTextView = aboutVersionLayout.findViewById(R.id.easyprivacy)
-        fanboyAnnoyanceTextView = aboutVersionLayout.findViewById(R.id.fanboy_annoyance)
-        fanboySocialTextView = aboutVersionLayout.findViewById(R.id.fanboy_social)
-        ultraListTextView = aboutVersionLayout.findViewById(R.id.ultralist)
         ultraPrivacyTextView = aboutVersionLayout.findViewById(R.id.ultraprivacy)
+        ultraListTextView = aboutVersionLayout.findViewById(R.id.ultralist)
+        easyPrivacyTextView = aboutVersionLayout.findViewById(R.id.easyprivacy)
+        easyListTextView = aboutVersionLayout.findViewById(R.id.easylist)
+        fanboyAnnoyanceTextView = aboutVersionLayout.findViewById(R.id.fanboy_annoyance)
         packageSignatureTextView = aboutVersionLayout.findViewById(R.id.package_signature)
         certificateIssuerDnTextView = aboutVersionLayout.findViewById(R.id.certificate_issuer_dn)
         certificateSubjectDnTextView = aboutVersionLayout.findViewById(R.id.certificate_subject_dn)
@@ -346,7 +321,7 @@ class AboutVersionFragment : Fragment() {
         certificateSerialNumberTextView = aboutVersionLayout.findViewById(R.id.certificate_serial_number)
         certificateSignatureAlgorithmTextView = aboutVersionLayout.findViewById(R.id.certificate_signature_algorithm)
 
-        // Setup the labels.
+        // Set up the labels.
         val version = getString(R.string.version_code, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
         val brandLabel = getString(R.string.brand)
         val manufacturerLabel = getString(R.string.manufacturer)
@@ -366,12 +341,11 @@ class AboutVersionFragment : Fragment() {
         systemConsumedMemoryLabel = getString(R.string.system_consumed_memory)
         systemAvailableMemoryLabel = getString(R.string.system_available_memory)
         systemTotalMemoryLabel = getString(R.string.system_total_memory)
-        val easyListLabel = getString(R.string.easylist_label)
-        val easyPrivacyLabel = getString(R.string.easyprivacy_label)
-        val fanboyAnnoyanceLabel = getString(R.string.fanboys_annoyance_label)
-        val fanboySocialLabel = getString(R.string.fanboys_social_label)
-        val ultraListLabel = getString(R.string.ultralist_label)
         val ultraPrivacyLabel = getString(R.string.ultraprivacy_label)
+        val ultraListLabel = getString(R.string.ultralist_label)
+        val easyPrivacyLabel = getString(R.string.easyprivacy_label)
+        val easyListLabel = getString(R.string.easylist_label)
+        val fanboyAnnoyanceLabel = getString(R.string.fanboys_annoyance_label)
         val issuerDNLabel = getString(R.string.issuer_dn)
         val subjectDNLabel = getString(R.string.subject_dn)
         val startDateLabel = getString(R.string.start_date)
@@ -401,7 +375,7 @@ class AboutVersionFragment : Fragment() {
         val orbot: String = try {
             // If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
             requireContext().packageManager.getPackageInfo("org.torproject.android", 0).versionName ?: ""
-        } catch (exception: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             // Store an empty string.
             ""
         }
@@ -410,11 +384,11 @@ class AboutVersionFragment : Fragment() {
         val i2p: String = try {
             // Check to see if the F-Droid flavor is installed.
             getString(R.string.fdroid_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android.router", 0).versionName)
-        } catch (exception: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
+        } catch (_: PackageManager.NameNotFoundException) {  // The F-Droid flavor is not installed.
             try {
                 // Check to see if the F-Droid flavor is installed.
                 getString(R.string.google_play_flavor, requireContext().packageManager.getPackageInfo("net.i2p.android", 0).versionName)
-            } catch (exception: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed either.
+            } catch (_: PackageManager.NameNotFoundException) {  // The Google Play flavor is not installed either.
                 // Store an empty string.
                 ""
             }
@@ -424,7 +398,7 @@ class AboutVersionFragment : Fragment() {
         val openKeychain: String = try {
             // If the safe call (`?.`) is null, the Elvis operator (`?"`) returns the following value instead, which is an empty string.
             requireContext().packageManager.getPackageInfo("org.sufficientlysecure.keychain", 0).versionName ?: ""
-        } catch (exception: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             // Store an empty string.
             ""
         }
@@ -441,12 +415,11 @@ class AboutVersionFragment : Fragment() {
         val kernelStringBuilder = SpannableStringBuilder(kernelLabel + kernel)
         val webViewProviderStringBuilder = SpannableStringBuilder(webViewProviderLabel + webViewPackageName)
         val webViewVersionStringBuilder = SpannableStringBuilder(webViewVersionLabel + webViewVersion)
-        val easyListStringBuilder = SpannableStringBuilder(easyListLabel + filterListsVersions[0])
-        val easyPrivacyStringBuilder = SpannableStringBuilder(easyPrivacyLabel + filterListsVersions[1])
-        val fanboyAnnoyanceStringBuilder = SpannableStringBuilder(fanboyAnnoyanceLabel + filterListsVersions[2])
-        val fanboySocialStringBuilder = SpannableStringBuilder(fanboySocialLabel + filterListsVersions[3])
-        val ultraListStringBuilder = SpannableStringBuilder(ultraListLabel + filterListsVersions[4])
-        val ultraPrivacyStringBuilder = SpannableStringBuilder(ultraPrivacyLabel + filterListsVersions[5])
+        val ultraPrivacyStringBuilder = SpannableStringBuilder(ultraPrivacyLabel + ultraPrivacyDataClass.versionString)
+        val ultraListStringBuilder = SpannableStringBuilder(ultraListLabel + ultraListDataClass.versionString)
+        val easyPrivacyStringBuilder = SpannableStringBuilder(easyPrivacyLabel + easyPrivacyDataClass.versionString)
+        val easyListStringBuilder = SpannableStringBuilder(easyListLabel + easyListDataClass.versionString)
+        val fanboyAnnoyanceStringBuilder = SpannableStringBuilder(fanboyAnnoyanceLabel + fanboysAnnoyanceDataClass!!.versionString)
 
         // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
         blueColorSpan = ForegroundColorSpan(requireContext().getColor(R.color.alt_blue_text))
@@ -463,12 +436,11 @@ class AboutVersionFragment : Fragment() {
         kernelStringBuilder.setSpan(blueColorSpan, kernelLabel.length, kernelStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         webViewProviderStringBuilder.setSpan(blueColorSpan, webViewProviderLabel.length, webViewProviderStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         webViewVersionStringBuilder.setSpan(blueColorSpan, webViewVersionLabel.length, webViewVersionStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length, easyListStringBuilder.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-        easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length, easyPrivacyStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length, fanboyAnnoyanceStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        fanboySocialStringBuilder.setSpan(blueColorSpan, fanboySocialLabel.length, fanboySocialStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
-        ultraListStringBuilder.setSpan(blueColorSpan, ultraListLabel.length, ultraListStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
         ultraPrivacyStringBuilder.setSpan(blueColorSpan, ultraPrivacyLabel.length, ultraPrivacyStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        ultraListStringBuilder.setSpan(blueColorSpan, ultraListLabel.length, ultraListStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length, easyPrivacyStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length, easyListStringBuilder.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length, fanboyAnnoyanceStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
         // Display the strings in the text boxes.
         versionTextView.text = version
@@ -483,17 +455,16 @@ class AboutVersionFragment : Fragment() {
         kernelTextView.text = kernelStringBuilder
         webViewProviderTextView.text = webViewProviderStringBuilder
         webViewVersionTextView.text = webViewVersionStringBuilder
-        easyListTextView.text = easyListStringBuilder
-        easyPrivacyTextView.text = easyPrivacyStringBuilder
-        fanboyAnnoyanceTextView.text = fanboyAnnoyanceStringBuilder
-        fanboySocialTextView.text = fanboySocialStringBuilder
-        ultraListTextView.text = ultraListStringBuilder
         ultraPrivacyTextView.text = ultraPrivacyStringBuilder
+        ultraListTextView.text = ultraListStringBuilder
+        easyPrivacyTextView.text = easyPrivacyStringBuilder
+        easyListTextView.text = easyListStringBuilder
+        fanboyAnnoyanceTextView.text = fanboyAnnoyanceStringBuilder
 
         // Only populate the radio text view if there is a radio in the device.
         // Null must be checked because some Samsung tablets report a null value for the radio instead of an empty string.  Grrrr.  <https://redmine.stoutner.com/issues/701>
         if (radio != null && radio.isNotEmpty()) {
-            // Setup the label.
+            // Set up the label.
             val radioLabel = getString(R.string.radio)
 
             // Create a spannable string builder.
@@ -511,7 +482,7 @@ class AboutVersionFragment : Fragment() {
 
         // Only populate the Orbot text view if it is installed.
         if (orbot.isNotEmpty()) {
-            // Setup the label.
+            // Set up the label.
             val orbotLabel = getString(R.string.orbot)
 
             // Create a spannable string builder.
@@ -529,7 +500,7 @@ class AboutVersionFragment : Fragment() {
 
         // Only populate the I2P text view if it is installed.
         if (i2p.isNotEmpty()) {
-            // Setup the label.
+            // Set up the label.
             val i2pLabel = getString(R.string.i2p)
 
             // Create a spannable string builder.
@@ -547,7 +518,7 @@ class AboutVersionFragment : Fragment() {
 
         // Only populate the OpenKeychain text view if it is installed.
         if (openKeychain.isNotEmpty()) {
-            // Setup the label.
+            // Set up the label.
             val openKeychainLabel = getString(R.string.openkeychain)
 
             // Create a spannable string builder.
@@ -599,7 +570,7 @@ class AboutVersionFragment : Fragment() {
                 val serialNumberStringBuilder = SpannableStringBuilder(serialNumberLabel + serialNumberBigInteger)
                 val signatureAlgorithmStringBuilder = SpannableStringBuilder(signatureAlgorithmLabel + signatureAlgorithmNameString)
 
-                // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+                // Set up the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
                 issuerDNStringBuilder.setSpan(blueColorSpan, issuerDNLabel.length, issuerDNStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                 subjectDNStringBuilder.setSpan(blueColorSpan, subjectDNLabel.length, subjectDNStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                 startDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length, startDateStringBuilder.length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -616,7 +587,7 @@ class AboutVersionFragment : Fragment() {
                 certificateVersionTextView.text = certificateVersionStringBuilder
                 certificateSerialNumberTextView.text = serialNumberStringBuilder
                 certificateSignatureAlgorithmTextView.text = signatureAlgorithmStringBuilder
-            } catch (certificateException: CertificateException) {
+            } catch (_: CertificateException) {
                 // Do nothing if there is a certificate error.
             }
 
@@ -638,7 +609,7 @@ class AboutVersionFragment : Fragment() {
 
             // Update the memory usage.
             updateMemoryUsage(requireActivity())
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             // Do nothing if the package manager says Privacy Browser isn't installed.
         }
 
@@ -723,7 +694,7 @@ class AboutVersionFragment : Fragment() {
                 val systemAvailableMemoryStringBuilder = SpannableStringBuilder(systemAvailableMemoryLabel + numberFormat.format(systemAvailableMemoryFloat.toDouble()) + " " + mebibyte)
                 val systemTotalMemoryStringBuilder = SpannableStringBuilder(systemTotalMemoryLabel + numberFormat.format(systemTotalMemoryFloat.toDouble()) + " " + mebibyte)
 
-                // Setup the spans to display the memory information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+                // Set up the spans to display the memory information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
                 appConsumedMemoryStringBuilder.setSpan(blueColorSpan, appConsumedMemoryLabel.length, appConsumedMemoryStringBuilder.length - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                 appAvailableMemoryStringBuilder.setSpan(blueColorSpan, appAvailableMemoryLabel.length, appAvailableMemoryStringBuilder.length - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                 appTotalMemoryStringBuilder.setSpan(blueColorSpan, appTotalMemoryLabel.length, appTotalMemoryStringBuilder.length - mebibyteLength, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
@@ -753,7 +724,7 @@ class AboutVersionFragment : Fragment() {
                 // Update the memory usage after 1000 milliseconds
                 updateMemoryUsageHandler.postDelayed(updateMemoryUsageRunnable, 1000)
             }
-        } catch (exception: Exception) {
+        } catch (_: Exception) {
             // Do nothing.
         }
     }
@@ -779,7 +750,7 @@ class AboutVersionFragment : Fragment() {
         aboutVersionStringBuilder.append("\n")
         aboutVersionStringBuilder.append(bootloaderTextView.text)
         aboutVersionStringBuilder.append("\n")
-        if (radioTextView.visibility == View.VISIBLE) {
+        if (radioTextView.isVisible) {
             aboutVersionStringBuilder.append(radioTextView.text)
             aboutVersionStringBuilder.append("\n")
         }
@@ -788,7 +759,7 @@ class AboutVersionFragment : Fragment() {
         aboutVersionStringBuilder.append("\n")
         aboutVersionStringBuilder.append(androidTextView.text)
         aboutVersionStringBuilder.append("\n")
-        if (securityPatchTextView.visibility == View.VISIBLE) {
+        if (securityPatchTextView.isVisible) {
             aboutVersionStringBuilder.append(securityPatchTextView.text)
             aboutVersionStringBuilder.append("\n")
         }
@@ -796,21 +767,21 @@ class AboutVersionFragment : Fragment() {
         aboutVersionStringBuilder.append("\n")
         aboutVersionStringBuilder.append(kernelTextView.text)
         aboutVersionStringBuilder.append("\n")
-        if (webViewProviderTextView.visibility == View.VISIBLE) {
+        if (webViewProviderTextView.isVisible) {
             aboutVersionStringBuilder.append(webViewProviderTextView.text)
             aboutVersionStringBuilder.append("\n")
         }
         aboutVersionStringBuilder.append(webViewVersionTextView.text)
         aboutVersionStringBuilder.append("\n")
-        if (orbotTextView.visibility == View.VISIBLE) {
+        if (orbotTextView.isVisible) {
             aboutVersionStringBuilder.append(orbotTextView.text)
             aboutVersionStringBuilder.append("\n")
         }
-        if (i2pTextView.visibility == View.VISIBLE) {
+        if (i2pTextView.isVisible) {
             aboutVersionStringBuilder.append(i2pTextView.text)
             aboutVersionStringBuilder.append("\n")
         }
-        if (openKeychainTextView.visibility == View.VISIBLE) {
+        if (openKeychainTextView.isVisible) {
             aboutVersionStringBuilder.append(openKeychainTextView.text)
             aboutVersionStringBuilder.append("\n")
         }
@@ -833,17 +804,15 @@ class AboutVersionFragment : Fragment() {
         aboutVersionStringBuilder.append("\n\n")
         aboutVersionStringBuilder.append(filterListsTextView.text)
         aboutVersionStringBuilder.append("\n")
-        aboutVersionStringBuilder.append(easyListTextView.text)
-        aboutVersionStringBuilder.append("\n")
-        aboutVersionStringBuilder.append(easyPrivacyTextView.text)
-        aboutVersionStringBuilder.append("\n")
-        aboutVersionStringBuilder.append(fanboyAnnoyanceTextView.text)
-        aboutVersionStringBuilder.append("\n")
-        aboutVersionStringBuilder.append(fanboySocialTextView.text)
+        aboutVersionStringBuilder.append(ultraPrivacyTextView.text)
         aboutVersionStringBuilder.append("\n")
         aboutVersionStringBuilder.append(ultraListTextView.text)
         aboutVersionStringBuilder.append("\n")
-        aboutVersionStringBuilder.append(ultraPrivacyTextView.text)
+        aboutVersionStringBuilder.append(easyPrivacyTextView.text)
+        aboutVersionStringBuilder.append("\n")
+        aboutVersionStringBuilder.append(easyListTextView.text)
+        aboutVersionStringBuilder.append("\n")
+        aboutVersionStringBuilder.append(fanboyAnnoyanceTextView.text)
         aboutVersionStringBuilder.append("\n\n")
         aboutVersionStringBuilder.append(packageSignatureTextView.text)
         aboutVersionStringBuilder.append("\n")

@@ -1,20 +1,20 @@
-/*
- * Copyright 2017-2024 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2017-2025 Soren Stoutner <soren@stoutner.com>
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.helpers
@@ -31,7 +31,7 @@ import androidx.preference.PreferenceManager
 import com.stoutner.privacybrowser.R
 
 // Define the class constants.
-private const val SCHEMA_VERSION = 17
+private const val SCHEMA_VERSION = 18
 
 // Define the public database constants.
 const val DOMAINS_DATABASE = "domains.db"
@@ -53,7 +53,6 @@ const val ENABLE_DOM_STORAGE = "enabledomstorage"
 const val ENABLE_EASYLIST = "enableeasylist"
 const val ENABLE_EASYPRIVACY = "enableeasyprivacy"
 const val ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist"
-const val ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist"
 const val ENABLE_JAVASCRIPT = "enablejavascript"
 const val ENABLE_ULTRAPRIVACY = "enableultraprivacy"
 const val FONT_SIZE = "fontsize"
@@ -83,12 +82,11 @@ const val CREATE_DOMAINS_TABLE = "CREATE TABLE $DOMAINS_TABLE (" +
         "$COOKIES INTEGER, " +
         "$ENABLE_DOM_STORAGE INTEGER, " +
         "$USER_AGENT TEXT, " +
-        "$ENABLE_EASYLIST INTEGER, " +
-        "$ENABLE_EASYPRIVACY INTEGER, " +
-        "$ENABLE_FANBOYS_ANNOYANCE_LIST INTEGER, " +
-        "$ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST INTEGER, " +
-        "$ULTRALIST INTEGER, " +
         "$ENABLE_ULTRAPRIVACY INTEGER, " +
+        "$ULTRALIST INTEGER, " +
+        "$ENABLE_EASYPRIVACY INTEGER, " +
+        "$ENABLE_EASYLIST INTEGER, " +
+        "$ENABLE_FANBOYS_ANNOYANCE_LIST INTEGER, " +
         "$BLOCK_ALL_THIRD_PARTY_REQUESTS INTEGER, " +
         "$FONT_SIZE INTEGER, " +
         "$SWIPE_TO_REFRESH INTEGER, " +
@@ -149,16 +147,16 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_EASYLIST BOOLEAN")
             domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_EASYPRIVACY BOOLEAN")
             domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_ANNOYANCE_LIST BOOLEAN")
-            domainsDatabase.execSQL("ALTER TABLE $DOMAINS_TABLE ADD COLUMN $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST BOOLEAN")
+
+            // This update originally added `enablefanboyssocialblockinglist` here, but it has been removed in schema version 18.
 
             // Get the default filter list settings.
             val easyListEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.easylist_key), true)
             val easyPrivacyEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.easyprivacy_key), true)
             val fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_annoyance_list_key), true)
-            val fanboySocialBlockingListEnabled = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_social_blocking_list_key), true)
 
             // Set EasyList for existing rows according to the current system-wide default.
-            // This can switch to using the variables directly once the API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
+            // This can switch to using the variables directly once the minimum API >= 30.  <https://www.sqlite.org/datatype3.html#boolean_datatype>
             // <https://developer.android.com/reference/android/database/sqlite/package-summary>
             if (easyListEnabled) {
                 domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_EASYLIST = 1")
@@ -180,12 +178,7 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
                 domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_ANNOYANCE_LIST = 0")
             }
 
-            // Set Fanboy's Social Blocking List for existing rows according to the current system-wide default.
-            if (fanboySocialBlockingListEnabled) {
-                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = 1")
-            } else {
-                domainsDatabase.execSQL("UPDATE $DOMAINS_TABLE SET $ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = 0")
-            }
+            // This update originally set the status of `enablefanboyssocialblockinglist` here, but it has been removed in schema version 18.
         }
 
         // Upgrade from schema version 5, first used in Privacy Browser 2.9, to schema version 6, first used in Privacy Browser 2.11.
@@ -270,7 +263,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             val easyListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.easylist_key), true)
             val easyPrivacyDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.easyprivacy_key), true)
             val fanboysAnnoyanceListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_annoyance_list_key), true)
-            val fanboysSocialBlockingListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.fanboys_social_blocking_list), true)
             val ultraListDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.ultralist_key), true)
             val ultraPrivacyDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.ultraprivacy_key), true)
             val blockAllThirdPartyRequestsDefaultValue = sharedPreferences.getBoolean(appContext.getString(R.string.block_all_third_party_requests_key), false)
@@ -285,7 +277,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             val easyListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYLIST)
             val easyPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_EASYPRIVACY)
             val fanboysAnnoyanceListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_ANNOYANCE_LIST)
-            val fanboysSocialBlockingListColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)
             val ultraListColumnIndex = domainsCursor.getColumnIndexOrThrow(ULTRALIST)
             val ultraPrivacyColumnIndex = domainsCursor.getColumnIndexOrThrow(ENABLE_ULTRAPRIVACY)
             val blockAllThirdPartyRequestsColumnIndex = domainsCursor.getColumnIndexOrThrow(BLOCK_ALL_THIRD_PARTY_REQUESTS)
@@ -302,7 +293,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
                 val easyListDomainCurrentValue = domainsCursor.getInt(easyListColumnIndex)
                 val easyPrivacyDomainCurrentValue = domainsCursor.getInt(easyPrivacyColumnIndex)
                 val fanboysAnnoyanceListCurrentValue = domainsCursor.getInt(fanboysAnnoyanceListColumnIndex)
-                val fanboysSocialBlockingListCurrentValue = domainsCursor.getInt(fanboysSocialBlockingListColumnIndex)
                 val ultraListCurrentValue = domainsCursor.getInt(ultraListColumnIndex)
                 val ultraPrivacyCurrentValue = domainsCursor.getInt(ultraPrivacyColumnIndex)
                 val blockAllThirdPartyRequestsCurrentValue = domainsCursor.getInt(blockAllThirdPartyRequestsColumnIndex)
@@ -317,7 +307,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
                 domainContentValues.put(ENABLE_EASYLIST, convertFromSwitchToSpinner(easyListDefaultValue, easyListDomainCurrentValue))
                 domainContentValues.put(ENABLE_EASYPRIVACY, convertFromSwitchToSpinner(easyPrivacyDefaultValue, easyPrivacyDomainCurrentValue))
                 domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, convertFromSwitchToSpinner(fanboysAnnoyanceListDefaultValue, fanboysAnnoyanceListCurrentValue))
-                domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, convertFromSwitchToSpinner(fanboysSocialBlockingListDefaultValue, fanboysSocialBlockingListCurrentValue))
                 domainContentValues.put(ULTRALIST, convertFromSwitchToSpinner(ultraListDefaultValue, ultraListCurrentValue))
                 domainContentValues.put(ENABLE_ULTRAPRIVACY, convertFromSwitchToSpinner(ultraPrivacyDefaultValue, ultraPrivacyCurrentValue))
                 domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, convertFromSwitchToSpinner(blockAllThirdPartyRequestsDefaultValue, blockAllThirdPartyRequestsCurrentValue))
@@ -334,6 +323,12 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
             // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
             // That will not be supported in Android until the minimum API >= 34.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
             // Although a new table could be created and all the data copied to it, I think I will just leave the `enableformdata` column.  It will be wiped out the next time an import is run.
+
+            // Upgrade from schema version 17, first used in Privacy Browser 3.18, to schema version 18, first used in Privacy Browser 3.20.
+            // This upgrade removed `enablefanboyssocialblockinglist` and reordered the other filter lists.
+            // SQLite amazingly only added a command to drop a column in version 3.35.0.  <https://www.sqlite.org/changes.html>
+            // That will not be supported in Android until the minimum API >= 34.  <https://developer.android.com/reference/android/database/sqlite/package-summary>
+            // Although a new table could be created and all the data copied to it, I think I will just leave the `enablefanboyssocialblockinglist` column.  It will be wiped out the next time an import is run.
 
             // Close the cursor.
             domainsCursor.close()
@@ -411,11 +406,11 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
     fun addDomain(domainName: String): Int {
         // Add the domain with default settings.
         return addDomain(domainName, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, appContext.getString(R.string.system_default_user_agent), SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT,
-                         SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT)
+                         SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT, SYSTEM_DEFAULT)
     }
 
     fun addDomain(domainName: String, javaScriptInt: Int, cookiesInt: Int, domStorageInt: Int, userAgentName: String, easyListInt: Int, easyPrivacyInt: Int, fanboysAnnoyanceListInt: Int,
-                  fanboysSocialBlockingListInt: Int, ultraListInt: Int, ultraPrivacyInt: Int, blockAllThirdPartyRequestsInt: Int, fontSizeInt: Int, swipeToRefreshInt: Int, webViewThemeInt: Int,
+                  ultraListInt: Int, ultraPrivacyInt: Int, blockAllThirdPartyRequestsInt: Int, fontSizeInt: Int, swipeToRefreshInt: Int, webViewThemeInt: Int,
                   wideViewportInt: Int, displayImagesInt: Int): Int {
         // Instantiate a content values.
         val domainContentValues = ContentValues()
@@ -429,7 +424,6 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(ENABLE_EASYLIST, easyListInt)
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyInt)
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceListInt)
-        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingListInt)
         domainContentValues.put(ULTRALIST, ultraListInt)
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyInt)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequestsInt)
@@ -452,9 +446,8 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         return newDomainDatabaseId
     }
 
-    fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, userAgent: String, easyList: Int, easyPrivacy: Int, fanboysAnnoyance: Int,
-                     fanboysSocialBlocking: Int, ultraList: Int, ultraPrivacy: Int, blockAllThirdPartyRequests: Int, fontSize: Int, swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int,
-                     pinnedSslCertificate: Boolean, pinnedIpAddresses: Boolean) {
+    fun updateDomain(databaseId: Int, domainName: String, javaScript: Int, cookies: Int, domStorage: Int, userAgent: String, ultraPrivacy: Int, ultraList: Int, easyPrivacy: Int, easyList: Int, fanboysAnnoyance: Int,
+                     blockAllThirdPartyRequests: Int, fontSize: Int, swipeToRefresh: Int, webViewTheme: Int, wideViewport: Int, displayImages: Int, pinnedSslCertificate: Boolean, pinnedIpAddresses: Boolean) {
 
         // Instantiate a content values.
         val domainContentValues = ContentValues()
@@ -465,12 +458,11 @@ class DomainsDatabaseHelper(private val appContext: Context) : SQLiteOpenHelper(
         domainContentValues.put(COOKIES, cookies)
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorage)
         domainContentValues.put(USER_AGENT, userAgent)
-        domainContentValues.put(ENABLE_EASYLIST, easyList)
-        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy)
-        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyance)
-        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlocking)
-        domainContentValues.put(ULTRALIST, ultraList)
         domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy)
+        domainContentValues.put(ULTRALIST, ultraList)
+        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy)
+        domainContentValues.put(ENABLE_EASYLIST, easyList)
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyance)
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests)
         domainContentValues.put(FONT_SIZE, fontSize)
         domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefresh)
