@@ -5410,31 +5410,13 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // Create an empty web resource response to be used if the resource request is blocked.
                 val emptyWebResourceResponse = WebResourceResponse("text/plain", "utf8", ByteArrayInputStream("".toByteArray()))
 
-                // Get the current URL.  `.getUrl()` throws an error because operations on the WebView cannot be made from this thread.
-                var currentBaseDomain = nestedScrollWebView.currentDomainName
+                // Populate the request data class web page URL.  `.getUrl()` throws an error because operations on the WebView cannot be made from this thread.
+                requestDataClass.firstPartyHostString = nestedScrollWebView.currentDomainName
 
-                // Populate the request data class web page URL.
-                requestDataClass.firstPartyHostString = currentBaseDomain
-
-                // Get the request host name.
-                var requestBaseDomain = webResourceRequest.url.host
-
-                // Only check for third-party requests if the current base domain is not empty and the request domain is not null.
-                if (currentBaseDomain.isNotEmpty() && (requestBaseDomain != null)) {
-                    // Determine the current base domain.
-                    while (currentBaseDomain.indexOf(".", currentBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
-                        // Remove the first subdomain.
-                        currentBaseDomain = currentBaseDomain.substring(currentBaseDomain.indexOf(".") + 1)
-                    }
-
-                    // Determine the request base domain.
-                    while (requestBaseDomain!!.indexOf(".", requestBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
-                        // Remove the first subdomain.
-                        requestBaseDomain = requestBaseDomain.substring(requestBaseDomain.indexOf(".") + 1)
-                    }
-
+                // Only check for third-party requests if the first-party host string is not empty and the request domain is not null.
+                if (requestDataClass.firstPartyHostString.isNotEmpty() && (webResourceRequest.url.host != null)) {
                     // Update the third party request tracker.
-                    requestDataClass.isThirdPartyRequest = currentBaseDomain != requestBaseDomain
+                    requestDataClass.isThirdPartyRequest = (requestDataClass.firstPartyHostString != webResourceRequest.url.host)
                 }
 
                 // Get the current WebView page position.
