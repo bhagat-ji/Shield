@@ -248,6 +248,9 @@
         <string name="blocked_plural">Engellendi</string>
     <string name="sublist">Alt liste</string>
 
+    <!-- Filter Lists. -->
+    <string name="filterlist_view_entry">%1$d. %2$s</string>
+
     <!-- Domains. -->
     <string name="domains">Domainler</string>
     <string name="domain_settings">Domain ayarları</string>

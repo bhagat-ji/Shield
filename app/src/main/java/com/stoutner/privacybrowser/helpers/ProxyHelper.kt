@@ -1,29 +1,29 @@
-/*
- * Copyright © 2016-2022 Soren Stoutner <soren@stoutner.com>.
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2016-2022, 2026 Soren Stoutner <soren@stoutner.com>
  *
- * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android>.
+ * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
- * Privacy Browser Android is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * Privacy Browser Android is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Privacy Browser Android.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.stoutner.privacybrowser.helpers
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.View
 
+import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import androidx.webkit.ProxyConfig
 import androidx.webkit.ProxyController
@@ -92,7 +92,7 @@ class ProxyHelper {
                 try {
                     // Add the proxy to the builder.
                     proxyConfigBuilder.addProxyRule(customProxyUrlString!!)
-                } catch (exception: Exception) {  // The custom proxy URL is invalid.
+                } catch (_: Exception) {  // The custom proxy URL is invalid.
                     // Display a Snackbar.
                     Snackbar.make(activityView, R.string.custom_proxy_invalid, Snackbar.LENGTH_LONG).show()
                 }
@@ -114,7 +114,7 @@ class ProxyHelper {
                 try {
                     // Apply the proxy.  A default executor and runnable are used.
                     proxyController.setProxyOverride(proxyConfig, {}, {})
-                } catch (exception: IllegalArgumentException) {  // The proxy config is invalid.
+                } catch (_: IllegalArgumentException) {  // The proxy config is invalid.
                     // Display a Snackbar.
                     Snackbar.make(activityView, R.string.custom_proxy_invalid, Snackbar.LENGTH_LONG).show()
                 }
@@ -146,12 +146,12 @@ class ProxyHelper {
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
                 // Get the custom proxy URL string.
-                val customProxyUrlString = sharedPreferences.getString(context.getString(R.string.proxy_custom_url_key), context.getString(R.string.proxy_custom_url_default_value))
+                val customProxyUrlString = sharedPreferences.getString(context.getString(R.string.proxy_custom_url_key), context.getString(R.string.proxy_custom_url_default_value))!!
 
                 // Parse the custom proxy URL.
                 try {
                     // Convert the custom proxy URL string to a URI.
-                    val customProxyUri = Uri.parse(customProxyUrlString)
+                    val customProxyUri = customProxyUrlString.toUri()
 
                     // Get the custom socket address.
                     val customSocketAddress: SocketAddress = InetSocketAddress.createUnresolved(customProxyUri.host, customProxyUri.port)
@@ -167,7 +167,7 @@ class ProxyHelper {
                         // Create an HTTP proxy.
                         Proxy(Proxy.Type.HTTP, customSocketAddress)
                     }
-                } catch (exception: Exception) {  // The custom proxy cannot be parsed.
+                } catch (_: Exception) {  // The custom proxy cannot be parsed.
                     // Disable the proxy.
                     Proxy.NO_PROXY
                 }

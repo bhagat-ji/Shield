@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2017-2020, 2022 Soren Stoutner <soren@stoutner.com>
+ * SPDX-FileCopyrightText: 2017-2020, 2022, 2026 Soren Stoutner <soren@stoutner.com>
  *
  * This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
  *
@@ -171,5 +171,14 @@ img.center216 {
   margin-left: auto;
   margin-right: auto;
   height: 780;
+  width: 360;
+}
+
+/* Centered screenshot images with a 2.22 aspect ratio.  An image must be a block to be centered. */
+img.center222 {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 800;
   width: 360;
 }

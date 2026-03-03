@@ -318,6 +318,9 @@
         <string name="main_blocklist">Основной список блокировки</string>
         <string name="regular_expression_blocklist">Список блокировки регулярными выражениями</string>
 
+    <!-- Filter Lists. -->
+    <string name="filterlist_view_entry">%1$d. %2$s</string>
+
     <!-- Domains. -->
     <string name="domains">Домены</string>
     <string name="domain_settings">Настройки домена</string>

@@ -321,6 +321,9 @@
         <string name="main_blocklist">Liste principale de blocage</string>
         <string name="regular_expression_blocklist">Expression régulière de liste de blocage</string>
 
+    <!-- Filter Lists. -->
+    <string name="filterlist_view_entry">%1$d. %2$s</string>
+
     <!-- Domains. -->
     <string name="domains">Domaines</string>
     <string name="domain_settings">Paramétrage domaines</string>

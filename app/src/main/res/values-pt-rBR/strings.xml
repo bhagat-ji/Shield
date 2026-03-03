@@ -282,6 +282,9 @@
         <string name="blocked_plural">Bloqueados</string>
         <string name="sublist">Sublista</string>
 
+    <!-- Filter Lists. -->
+    <string name="filterlist_view_entry">%1$d. %2$s</string>
+
     <!-- Domains. -->
     <string name="domains">Domínios</string>
     <string name="domain_settings">Configurações de domínio</string>
