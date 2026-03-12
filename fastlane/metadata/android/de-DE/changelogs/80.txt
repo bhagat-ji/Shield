@@ -1,0 +1,9 @@
+• Filter-Listen-System überarbeitet.c
+• Unterschiedliche Subdomains werden nun wie Drittanbieter-Anfragen behandelt.
+• Cache wird nun nach jedem Seitenaufruf gelöscht.
+• Fehler behoben, durch welchen die Navigationsleiste im Vollbild-Modus unter Android 10 (API ≤ 29) nicht ausgeblendet wurde.
+• Fehler behoben, durch welchen die Status-Leiste über dem Inhalt der Lesezeichen-Datenbank-Ansicht angezeigt wurde.
+• Fehler behoben, durch welchen Bilder nach einem Neustart geladen wurden, obwohl dies deaktiviert war.
+• Checkbox "Datei als MHT-Web-Archiv öffnen" unter Android 16 (API >= 35) entfernt.
+• Ziel-API auf 36 (Android 16) angehoben.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.

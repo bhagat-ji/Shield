@@ -1,0 +1,8 @@
+• Refactor the filter list system.
+• Consider different subdomains to be third-party requests.
+• Clear the cache after every page load.
+• Fix the navigation bar not hiding in full screen browsing mode on Android 10 (API <= 29).
+• Fix the status bar drawing over the contents of the bookmarks database view.
+• Fix images loading on restart even when disabled.
+• Remove the open file as an MHT web archive checkbox on Android 16 (API >= 35).
+• Bump the target API to 36 (Android 16).

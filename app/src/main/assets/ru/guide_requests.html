@@ -31,16 +31,17 @@
     <body>
         <h3><svg class="header"><use href="../shared_images/local_activity.svg#icon"/></svg> Запросы ресурсов</h3>
 
-        <p>При загрузке URL-адреса обычно происходит ряд запросов ресурсов для CCS, JavaScript, изображений и других файлов. Сведения об этих запросах можно просмотреть в активности запросов.
-            В навигационном меню имеется ссылка на активность запросов, а также показано, сколько запросов было заблокировано.
-            При нажатии на запрос отображаются сведения о том, почему он был разрешен или заблокирован.</p>
+        <p>При загрузке веб-страницы обычно выполняется множество дополнительных запросов на ресурсы: CSS, JavaScript, изображения и другие файлы.
+            Информацию об этих запросах можно посмотреть в разделе «Активность запросов».
+            В навигационном меню есть ссылка на активность запросов, а также отображается количество заблокированных запросов.
+            При нажатии на любой запрос отображаются подробные сведения: почему он был разрешен или заблокирован.</p>
 
-        <img class="center222" src="images/request_details.png" alt="Request Details"/>
+        <img class="center222" src="images/request_details.png" alt="Сведения о запросе"/>
 
-        <p>Before a web page loads a resource, it is checked against the filter lists that are enabled in the following order:</p>
+        <p>Перед загрузкой ресурса веб-страницы он проверяется по включенным спискам фильтров в следующем порядке:</p>
 
         <ol>
-            <li>Block All Third-Party Requests</li>
+            <li>Блокировать все сторонние запросы</li>
             <li>UltraPrivacy</li>
             <li>UltraList</li>
             <li>EasyPrivacy</li>
@@ -48,29 +49,30 @@
             <li>Fanboy’s Annoyance List</li>
         </ol>
 
-        <p>All of these lists except for the first are based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>.
-            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacy</a> and <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a>
-            are maintained by Stoutner. The last three filter lists come from the <a href="https://easylist.to/">EasyList project</a>.</p>
+        <p>Все списки, кроме первого, основаны на <a href="https://adblockplus.org/filters">синтаксисе Adblock</a>.
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacy</a> и <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a>
+            поддерживаются разработчиком Stoutner. Последние три списка взяты из проекта <a href="https://easylist.to/">EasyList</a>.</p>
 
-        <p>The raw entries from the filter lists are processed into 6 sublists.</p>
+        <p>Исходные записи списков фильтров обрабатываются и распределяются по шести вложенным спискам:</p>
 
         <ol>
-            <li>Main Allow List</li>
-            <li>Initial Domain Allow List</li>
-            <li>Regular Expression Allow List</li>
-            <li>Main Block List</li>
-            <li>Initial Domain Block List</li>
-            <li>Regular Expression Block List</li>
+            <li>Основной список разрешений (Main Allow List)</li>
+            <li>Начальный список разрешенных доменов (Initial Domain Allow List)</li>
+            <li>Список разрешений по регулярным выражениям (Regular Expression Allow List)</li>
+            <li>Основной список блокировок (Main Block List)</li>
+            <li>Начальный список блокируемых доменов (Initial Domain Block List)</li>
+            <li>Список блокировок по регулярным выражениям (Regular Expression Block List)</li>
         </ol>
 
-        <p>Initial domain lists check against the beginning of the domain. These are very common and placing them in their own sublist allows for more CPU-efficient checking of resource requests.
-            Regular expression lists follow the <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression syntax</a>.</p>
+        <p>Списки «Начальный домен» проверяют совпадение с началом домена — это очень распространенный случай,
+            и выделение их в отдельный подсписок позволяет существенно ускорить проверку (экономия процессорного времени).
+            Списки регулярных выражений используют стандартный <a href="https://ru.wikipedia.org/wiki/Регулярное_выражение">синтаксис регулярных выражений</a>.</p>
 
-        <p>The contents of the filter lists may be viewed by selecting <code>Filter Lists</code> from the options overflow menu (three dots in the upper-right corner) of the Requests activity.</p>
+        <p>Содержимое списков фильтров можно посмотреть, выбрав пункт «Списки фильтров» в меню переполнения (три точки в правом верхнем углу) экрана «Активность запросов».</p>
 
-        <img class="center222" src="images/filter_list_entry.png" alt="Request Details"/>
+        <img class="center222" src="images/filter_list_entry.png" alt="Filter List Entry"/>
 
-        <p>Because of limitations in Android’s WebView, Privacy Browser implements a simplified interpretation of the Adblock syntax.
-            Более подробное описание того, как обрабатываются записи списка фильтрации, можно найти на <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/">stoutner.com</a>.</p>
+        <p>Из-за ограничений Android WebView Privacy Browser использует упрощенную интерпретацию синтаксиса Adblock.
+            Более подробное описание обработки записей фильтров доступно на странице <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/">stoutner.com</a>.</p>
     </body>
 </html>

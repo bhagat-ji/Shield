@@ -4,7 +4,7 @@
   SPDX-License-Identifier: GPL-3.0-or-later
   SPDX-FileCopyrightText: 2016-2026 Soren Stoutner <soren@stoutner.com>
 
-  Translation 2019-2024 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2024, 2026 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -305,6 +305,7 @@
     <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">Zugriffe</string>
     <string name="request_details">Zugriffs-Details</string>
+    <string name="request">Anfrage</string>
     <string name="disposition">Einteilung</string>
         <string name="all">Alle</string>
         <string name="default_label">Standard</string>
@@ -317,14 +318,34 @@
         <string name="blocked">blockiert</string>
         <string name="request_blocked">%1$d. blockiert</string>
         <string name="blocked_plural">blockiert</string>
+    <string name="webpage_url">Webseiten-URL</string>
+    <string name="request_url">Anfrage-URL</string>
+    <string name="request_url_with_separators">Anfrage-URL mit Trennern</string>
+    <string name="truncated_request_url">Gekürzte Anfrage-URL</string>
+    <string name="truncated_request_url_with_separators">Gekürzte Anfrage-URL mit Trennern</string>
+    <string name="filterlist_entry_label">Filterlisten-Eintrag</string>
     <string name="filterlist">Filter-Liste</string>
     <string name="sublist">Unterliste</string>
-        <string name="main_allowlist">Haupt-Positiv-Liste</string>
-        <string name="main_blocklist">Haupt-Negativ-Liste</string>
-        <string name="regular_expression_blocklist">Negativ-Liste für reguläre Ausdrücke</string>
+        <string name="main_allowlist">Haupt-Erlaubt-Liste</string>
+        <string name="initial_domain_allowlist">Anfangs-Domain-Erlaubt-Liste</string>
+        <string name="regular_expression_allowlist">Erlaubt-Liste regulärer Eindrücke</string>
+        <string name="main_blocklist">Haupt-Blockier-Liste</string>
+        <string name="initial_domain_blocklist">Anfangs-Domain-Blockier-Listec</string>
+        <string name="regular_expression_blocklist">Blockier-Liste regulärer Eindrücke</string>
+    <string name="original_entry">Originaler Filterlisten-Eintrag</string>
 
     <!-- Filter Lists. -->
     <string name="filterlist_view_entry">%1$d. %2$s</string>
+    <string name="filterlist_entry">Filterlisten-Eintrag - %1$d</string>
+    <string name="applied_entry_list">Angewander Listen-Eintrag</string>
+    <string name="third_party">Drittanbieter</string>
+        <string name="override">übersteuern</string>
+    <string name="initial_match">ursprüngliche Übereinstimmung</string>
+    <string name="final_match">Finale Übereinstimmung</string>
+        <string name="yes">Ja</string>
+    <string name="domain_list">Domain-Listec</string>
+    <string name="applied_filter_options">angewandte Filter-Optionen</string>
+    <string name="original_filter_options">originale Filter-Optionen</string>
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
@@ -654,6 +675,8 @@
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Icons zum Neu-Laden von WebView und - so genug Platz zur Verfügung steht -
             zum Öffnen der Lesezeichen und zum Umschalten von Cookies in der App-Leiste anzeigen. Nach Ändern dieser Einstellung wird Privacy Browser neu gestartet.</string>
+        <string name="sort_bookmarks_alphabetically">Lesezeichen alphabetisch sortierenc</string>
+        <string name="sort_bookmarks_alphabetically_summary">Lesezeichen alphabetisch sortieren - Ordner oberhalb der Lesezeichen anzeigen. Dies deaktiviert die manuelle Sortierung der Lesezeichen.</string>
         <string name="app_theme">Erscheinungsbild</string>
         <string-array name="app_theme_entries">
             <item>System-Einstellung</item>

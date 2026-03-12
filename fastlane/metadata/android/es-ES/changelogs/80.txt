@@ -1,0 +1,9 @@
+• Reestructurar el sistema de listas de filtros.
+• Considerar diferentes subdominios como solicitudes de terceros.
+• Borrar la caché tras cada carga de página.
+• Corregir la barra de navegación que no se oculta en el modo de navegación a pantalla completa en Android 10 (API <= 29).
+• Corregir la barra de estado que se dibuja sobre el contenido de la vista de la base de datos de marcadores.
+• Arreglar la carga de imágenes al reiniciar incluso cuando está desactivada.
+• Eliminar la casilla “eliminar el archivo abierto como archivo web MHT”c en Android 16 (API >= 35).
+• Aumentar la API objetivo a 36 (Android 16).
+• Actualizada la traducción al español proporcionada por Jose A. León.

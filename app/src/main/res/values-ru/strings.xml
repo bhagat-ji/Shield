@@ -300,6 +300,7 @@
     <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">Запросы</string>
     <string name="request_details">Детали запроса</string>
+    <string name="request">Запрос</string>
     <string name="disposition">Поведение</string>
         <string name="all">Все</string>
         <string name="default_label">По умолчанию</string>
@@ -312,14 +313,34 @@
         <string name="blocked">Блокирован</string>
         <string name="request_blocked">%1$d. Блокирован</string>
         <string name="blocked_plural">Блокировано</string>
+    <string name="webpage_url">URL веб-страницы</string>
+    <string name="request_url">URL запроса</string>
+    <string name="request_url_with_separators">URL запроса с разделителями</string>
+    <string name="truncated_request_url">Укороченный URL запроса</string>
+    <string name="truncated_request_url_with_separators">Укороченный URL запроса с разделителямиc</string>
+    <string name="filterlist_entry_label">Запись списка фильтров</string>
     <string name="filterlist">Список фильтров</string>
     <string name="sublist">Подсписок</string>
-        <string name="main_allowlist">Основной список разрешенных</string>
-        <string name="main_blocklist">Основной список блокировки</string>
-        <string name="regular_expression_blocklist">Список блокировки регулярными выражениями</string>
+        <string name="main_allowlist">Основной список разрешений</string>c
+        <string name="initial_domain_allowlist">Начальный список разрешенных доменов</string>
+        <string name="regular_expression_allowlist">Список разрешений по регулярным выражениям</string>
+        <string name="main_blocklist">Основной список блокировок</string>
+        <string name="initial_domain_blocklist">Начальный список блокируемых доменов</string>
+        <string name="regular_expression_blocklist">Список блокировок по регулярным выражениям</string>
+    <string name="original_entry">Оригинальная запись списка фильтров</string>
 
     <!-- Filter Lists. -->
     <string name="filterlist_view_entry">%1$d. %2$s</string>
+    <string name="filterlist_entry">Запись списка фильтров - %1$d</string>
+    <string name="applied_entry_list">Список примененных записей</string>
+    <string name="third_party">Сторонний</string>
+        <string name="override">Переопределен</string>
+    <string name="initial_match">Первоначальное совпадение</string>
+    <string name="final_match">Итоговое совпадение</string>
+        <string name="yes">Да</string>
+    <string name="domain_list">Список доменов</string>
+    <string name="applied_filter_options">Примененные параметры фильтра</string>
+    <string name="original_filter_options">Исходные параметры фильтра</string>
 
     <!-- Domains. -->
     <string name="domains">Домены</string>

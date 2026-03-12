@@ -4,7 +4,7 @@
   SPDX-License-Identifier: GPL-3.0-or-later
   SPDX-FileCopyrightText: 2016-2026 Soren Stoutner <soren@stoutner.com>
 
-  Translation 2017-2024 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2024, 2026 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -302,8 +302,9 @@
     <string name="cannot_deselect_bookmark">No se puede deseleccionar un favorito mientras la carpeta superior está seleccionada.</string>
 
     <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
-    <string name="requests">Peticiones</string>
+    <string name="requests">Solicitudes</string>
     <string name="request_details">Detalles de petición</string>
+    <string name="request">Solicitud</string>
     <string name="disposition">Disposición</string>
         <string name="all">Todas</string>
         <string name="default_label">Por defecto</string>
@@ -316,14 +317,34 @@
         <string name="blocked">Bloqueada</string>
         <string name="request_blocked">%1$d. Bloqueada</string>
         <string name="blocked_plural">Bloqueadas</string>
+    <string name="webpage_url">URL de la página web</string>
+    <string name="request_url">URL de solicitud</string>
+    <string name="request_url_with_separators">URL de solicitud con separadores</string>
+    <string name="truncated_request_url">URL de solicitud truncada</string>
+    <string name="truncated_request_url_with_separators">URL de solicitud truncada con separadores</string>
+    <string name="filterlist_entry_label">Entrada de lista de filtros</string>
     <string name="filterlist">Lista de filtros</string>
     <string name="sublist">Sublista</string>
         <string name="main_allowlist">Lista principal de permitidos</string>
+        <string name="initial_domain_allowlist">Lista inicial de dominios permitidos</string>
+        <string name="regular_expression_allowlist">Lista de expresiones regulares permitidas</string>
         <string name="main_blocklist">Lista principal de bloqueos</string>
-        <string name="regular_expression_blocklist">Lista de bloqueo de expresiones regulares</string>
+        <string name="initial_domain_blocklist">Lista inicial de dominios bloqueos</string>
+        <string name="regular_expression_blocklist">Lista de expresiones regulares bloqueas</string>
+    <string name="original_entry">Entrada original de lista de filtros</string>
 
     <!-- Filter Lists. -->
     <string name="filterlist_view_entry">%1$d. %2$s</string>
+    <string name="filterlist_entry">Entrada de lista de filtros - %1$d</string>
+    <string name="applied_entry_list">Lista de entrada aplicadac</string>
+    <string name="third_party">Terceras partes</string>
+    <string name="override">Anular</string>
+    <string name="initial_match">Coincidencia inicial</string>
+    <string name="final_match">Coincidencia finalc</string>
+    <string name="yes">Sí</string>
+    <string name="domain_list">Lista de dominios</string>
+    <string name="applied_filter_options">Opciones de filtros aplicada</string>
+    <string name="original_filter_options">Opciones de filtros originales</string>
 
     <!-- Domains. -->
     <string name="domains">Dominios</string>
@@ -575,7 +596,7 @@
         <string name="fanboys_annoyance_list">Lista molesta de Fanboy</string>
         <string name="fanboys_annoyance_list_summary">Filtra las molestas ventanas emergentes y enlaces. Incluye las listas de bloqueo social de Fanboy.</string>
         <string name="block_all_third_party_requests">Bloquear todas las solicitudes de terceras partes</string>
-        <string name="block_all_third_party_requests_summary">Bloquear todas las solicitudes de terceras  partes aumenta la privacidad, pero rompe muchas páginas web.</string>
+        <string name="block_all_third_party_requests_summary">Bloquear todas las solicitudes de terceras partes aumenta la privacidad, pero rompe muchas páginas web.</string>
     <string name="url_modification">Modificación de URL</string>
         <string name="tracking_queries">Peticiones de seguimiento</string>
         <string name="tracking_queries_summary">Eliminar las peticiones de seguimiento conocidas de las URLs.</string>
@@ -616,9 +637,9 @@
         <string name="hide_app_bar_summary">Ocultar la barra de aplicaciones que contiene la URL.</string>
         <string name="display_under_cutouts">Mostrar bajo los recortes</string>
         <string name="display_under_cutouts_summary">Mostrar el sitio web bajo los recortes, como las muescas de la cámara. Cuando está opción está activada, Navegador Privado también se dibujará bajo el teclado.
--            Al cambiar esta configuración se reiniciará Navegador Privado en Android &lt; 15.</string>
+            Al cambiar esta configuración se reiniciará Navegador Privado en Android &lt; 15.</string>
     <string name="clear_everything">Borrar todo</string>
-        <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, el logcat y la caché de  WebView. A continuación borra manualmente los directorios “app_webview” y “cache”.</string>
+        <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, el logcat y la caché de WebView. A continuación borra manualmente los directorios “app_webview” y “cache”.</string>
         <string name="clear_cookies_preference">Borrar cookies</string>
         <string name="clear_cookies_summary">Borra las cookies.</string>
         <string name="clear_dom_storage_preference">Borrar almacenamiento DOM</string>
@@ -642,9 +663,9 @@
         </string-array>
         <string name="download_with_privacy_browser">Navegador Privado - El descargador integrado de Navegador Privado es sencillo, pero tiene la ventaja de respetar el proxy y usar cookies (si están habilitadas),
             así como la posibilidad de guardar datos: URLs.</string>
-        <string name="download_with_android_download_manager">Gestor de descargas de Android  - El gestor de descargas de Android no respeta la configuración proxy de Navegador Privado,
+        <string name="download_with_android_download_manager">Gestor de descargas de Android - El gestor de descargas de Android no respeta la configuración proxy de Navegador Privado,
             pero sí tiene acceso a las cookies (lo que significa que los archivos descargados de sitios que requieren hacer login probablemente funcionarán).</string>
-        <string name="download_with_external_app">Aplicación externa - Las aplicaciones externas no respetan  la configuración proxy de Navegador Privado y no tienen acceso a las cookies
+        <string name="download_with_external_app">Aplicación externa - Las aplicaciones externas no respetan la configuración proxy de Navegador Privado y no tienen acceso a las cookies
             (lo que significa que es poco probable que funcionen los archivos descargados de sitios que requieren hacer login).</string>
         <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>

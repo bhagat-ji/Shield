@@ -5639,26 +5639,12 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                 // which links to `/data/data/com.stoutner.privacybrowser.standard`.
                 val privateDataDirectoryString = applicationInfo.dataDir
 
-                // Clear the history, and logcat if Incognito Mode is enabled.
-                if (incognitoModeEnabled) {
-                    // Clear the back/forward history.
-                    nestedScrollWebView.clearHistory()
-
-                    // Manually delete cache folders.
-                    try {
-                        // Delete the main cache directory.
-                        Runtime.getRuntime().exec("rm -rf $privateDataDirectoryString/cache")
-                    } catch (_: IOException) {
-                        // Do nothing if an error is thrown.
-                    }
-
-                    // Clear the logcat.
-                    try {
-                        // Clear the logcat.  `-c` clears the logcat.  `-b all` clears all the buffers (instead of just crash, main, and system).
-                        Runtime.getRuntime().exec("logcat -b all -c")
-                    } catch (_: IOException) {
-                        // Do nothing.
-                    }
+                // Manually delete cache folders.
+                try {
+                    // Delete the main cache directory.
+                    Runtime.getRuntime().exec("rm -rf $privateDataDirectoryString/cache")
+                } catch (_: IOException) {
+                    // Do nothing if an error is thrown.
                 }
 
                 // Clear the `Service Worker` directory.
@@ -5667,6 +5653,20 @@ class MainWebViewActivity : AppCompatActivity(), CreateBookmarkDialog.CreateBook
                     Runtime.getRuntime().exec(arrayOf("rm", "-rf", "$privateDataDirectoryString/app_webview/Default/Service Worker/"))
                 } catch (_: IOException) {
                     // Do nothing.
+                }
+
+                // Clear the history, and logcat if Incognito Mode is enabled.
+                if (incognitoModeEnabled) {
+                    // Clear the back/forward history.
+                    nestedScrollWebView.clearHistory()
+
+                    // Clear the logcat.
+                    try {
+                        // Clear the logcat.  `-c` clears the logcat.  `-b all` clears all the buffers (instead of just crash, main, and system).
+                        Runtime.getRuntime().exec("logcat -b all -c")
+                    } catch (_: IOException) {
+                        // Do nothing.
+                    }
                 }
 
                 // Get the current page position.

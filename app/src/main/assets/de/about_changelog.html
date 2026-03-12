@@ -2,7 +2,7 @@
   SPDX-License-Identifier: GPL-3.0-or-later
   SPDX-FileCopyrightText: 2016-2026 Soren Stoutner <soren@stoutner.com>
 
-  Translation 2019-2025 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2026 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -36,14 +36,14 @@
         <h3><a href="https://www.stoutner.com/privacy-browser-android-3-20">3.20</a> (Code-Version 80)</h3>
         <p>12. März 2026 - Mindest-API 26, Ziel-API 36</p>
         <ul>
-            <li>Refactor the <a href="https://redmine.stoutner.com/issues/1207">filter list</a> system.</li>
-            <li>Consider <a href="https://redmine.stoutner.com/issues/481">different subdomains</a> to be third-party requests.</li>
-            <li>Clear the cache <a href="https://redmine.stoutner.com/issues/1275">after every page load</a>.</li>
-            <li>Fix the <a href="https://redmine.stoutner.com/issues/1288">navigation bar not hiding</a> in full screen browsing mode on Android 10 (API <= 29).</li>
-            <li>Fix the status bar <a href="https://redmine.stoutner.com/issues/1286">drawing over the contents</a> of the bookmarks database view.</li>
-            <li>Fix images loading on restart <a href="https://redmine.stoutner.com/issues/1274">even when disabled</a>.</li>
-            <li>Remove the <a href="https://redmine.stoutner.com/issues/1253">open file as an MHT web archive</a> checkbox on Android 16 (API >= 35).</li>
-            <li>Bump the <a href="https://redmine.stoutner.com/issues/1283">target API to 36</a> (Android 16).</li>
+            <li><a href="https://redmine.stoutner.com/issues/1207">Filter-Listen-System</a> überarbeitet.c</li>
+            <li><a href="https://redmine.stoutner.com/issues/481">Unterschiedliche Subdomains</a> werden nun wie Drittanbieter-Anfragen behandelt.</li>
+            <li>Cache wird nun <a href="https://redmine.stoutner.com/issues/1275">nach jedem Seitenaufruf gelöscht</a>.</li>
+            <li>Fehler behoben, durch welchen die <a href="https://redmine.stoutner.com/issues/1288">Navigationsleiste im Vollbild-Modus</a> unter Android 10 (API ≤ 29) nicht ausgeblendet wurde.</li>
+            <li>Fehler behoben, durch welchen <a href="https://redmine.stoutner.com/issues/1286">die Status-Leiste über dem Inhalt der Lesezeichen-Datenbank-Ansicht</a> angezeigt wurde.</li>
+            <li>Fehler behoben, durch welchen <a href="https://redmine.stoutner.com/issues/1274">Bilder nach einem Neustart geladen wurden, obwohl dies deaktiviert war</a>.</li>
+            <li>Checkbox <a href="https://redmine.stoutner.com/issues/1253">"Datei als MHT-Web-Archiv öffnen"</a> unter Android 16 (API >= 35) entfernt.</li>
+            <li><a href="https://redmine.stoutner.com/issues/1283">Ziel-API auf 36</a> (Android 16) angehoben.</li>
             <li>Aktualisierte deutsche Übersetzung von Bernhard G. Keller.</li>
         </ul>
 
@@ -51,14 +51,14 @@
         <p><a href="https://gitweb.stoutner.com/?p=PrivacyBrowserAndroid.git;a=commitdiff;h=492ce8c35dc72821d2cc814fc730d09c3fef46d4;ds=sidebyside">31. Januar 2025</a> - Mindest-API 26, Ziel-API 35</p>
         <ul>
             <li>Problem mit <a href="https://redmine.stoutner.com/issues/1267">Abstürzen auf bestimmten Geräten</a> bei Verwendung der unteren App-Leiste behoben.</li>
-            <li>Problem mit <a href="https://redmine.stoutner.com/issues/1263">Scroll-Position des Navigations-Menüs</a> unter Android <= 14 (API <= 34) behoben.</li>
+            <li>Problem mit <a href="https://redmine.stoutner.com/issues/1263">Scroll-Position des Navigations-Menüs</a> unter Android ≤ 14 (API ≤ 34) behoben.</li>
             <li><a href="https://redmine.stoutner.com/issues/1265">Nutzung des Web Caches</a> deaktiviert.</li>
         </ul>
 
         <h3><a href="https://www.stoutner.com/privacy-browser-android-3-19-2">3.19.2</a> (Code-Version 78)</h3>
         <p><a href="https://gitweb.stoutner.com/?p=PrivacyBrowserAndroid.git;a=commitdiff;h=f8b46833b2246450a0a79067bbb1de044a6f9021;ds=sidebyside">10. Januar 2025</a> - Mindest-API 26, Ziel-API 35</p>
         <ul>
-            <li><a href="https://redmine.stoutner.com/issues/1257">Layout der Lesezeichen-Leiste</a> unter Android <= 10 (API <= 29) korrigiert.</li>
+            <li><a href="https://redmine.stoutner.com/issues/1257">Layout der Lesezeichen-Leiste</a> unter Android ≤ 10 (API ≤ 29) korrigiert.</li>
         </ul>
 
         <h3><a href="https://www.stoutner.com/privacy-browser-android-3-19-1">3.19.1</a> (Code-Version 77)</h3>
@@ -1058,7 +1058,7 @@
             <li>Launcher-Icon aktualisiert um es größer zu machen.</li>
             <li>Alle Toast-Nachrichten durch <a href="https://redmine.stoutner.com/issues/12">Snackbars</a> ersetzt.</li>
             <li><a href="https://redmine.stoutner.com/issues/11">URL-Leiste wird nicht aktualisiert, wenn der Nutzer darin schreibt</a>.</li>
-            <li>Mindest-API von 10 auf 15 hochgestuft.  Privacy Browser ist beim Laden unter API 10 abgestürzt.</li>
+            <li>Mindest-API von 10 auf 15 hochgestuft. Privacy Browser ist beim Laden unter API 10 abgestürzt.</li>
         </ul>
 
         <h3>1.1 (Code-Version 2)</h3>

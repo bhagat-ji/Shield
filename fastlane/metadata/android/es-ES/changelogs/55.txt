@@ -8,9 +8,9 @@
 • Manejar URLs de contenido y certificados SSL no confiables en la Vista de Fuente.
 • Arreglar la congelación de la interfaz de usuario durante la descarga en algunos dispositivos.
 • Arreglar unas pocas y poco frecuente caídas.
-• Hacer leves mejoras al interfaz de usuario.
+• Hacer leves mejoras a la interfaz de usuario.
 • Actualizada la traducción al español proporcionada por Jose A. León.
-• Actualizada la tracuddión al portugués brasileño proporcionada por Thiago Nazareno Conceição Silva de Jesus.
+• Actualizada la traducción al portugués brasileño proporcionada por Thiago Nazareno Conceição Silva de Jesus.
 • Actualizada la traducción al francés proporcionada por Kévin L.
 • Actualizada la traducción al alemán proporcionada por Bernhard G. Keller.
 • Actualizada la traducción al italiano proporcionada por Francesco Buratti.

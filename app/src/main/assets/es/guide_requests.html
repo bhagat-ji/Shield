@@ -2,7 +2,7 @@
   SPDX-License-Identifier: GPL-3.0-or-later
   SPDX-FileCopyrightText: 2018-2020, 2022-2023, 2025-2026 Soren Stoutner <soren@stoutner.com>
 
-  Translation 2018, 2023 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2018, 2023, 2026 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -37,42 +37,43 @@
             Los detalles sobre estas solicitudes se pueden ver en la Actividad de peticiones. El cajón de navegación tiene un enlace a la Actividad de peticiones y también muestra cuántas órdenes se bloquearon.
             Al tocar una solicitud se muestran los detalles de por qué se ha permitido o bloqueado.</p>
 
-        <img class="center222" src="images/request_details.png" alt="Request Details"/>
+        <img class="center222" src="images/request_details.png" alt="Detalles de la solicituds"/>
 
-        <p>Before a web page loads a resource, it is checked against the filter lists that are enabled in the following order:</p>
+        <p>Antes que una página web cargue un recurso, se comprueba con la lista de filtros que está habilitada en el siguiente orden:</p>
 
         <ol>
-            <li>Block All Third-Party Requests</li>
-            <li>UltraPrivacy</li>
+            <li>Bloquear todas las solicitudes de terceros</li>
+            <li>UltraPrivacidad</li>
             <li>UltraList</li>
             <li>EasyPrivacy</li>
             <li>EasyList</li>
-            <li>Fanboy’s Annoyance List</li>
+            <li>Lista molesta de Fanboy</li>
         </ol>
 
-        <p>All of these lists except for the first are based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>.
-            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacy</a> and <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a>
-            are maintained by Stoutner. The last three filter lists come from the <a href="https://easylist.to/">EasyList project</a>.</p>
+        <p>Todas estas listas excepto la primera están basadas en la <a href="https://adblockplus.org/filters">sintaxis de Adblock</a>.
+            <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultraprivacy/">UltraPrivacidad</a> y <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/ultralist/">UltraList</a>
+            son mantenidas por Stoutner. Las tres últimas listas de filtros proceden del <a href="https://easylist.to/">proyecto EasyList</a>.</p>
 
-        <p>The raw entries from the filter lists are processed into 6 sublists.</p>
+        <p>Las entradas sin procesar de las listas de filtros se procesan en 6 sublistas.</p>
 
         <ol>
-            <li>Main Allow List</li>
-            <li>Initial Domain Allow List</li>
-            <li>Regular Expression Allow List</li>
-            <li>Main Block List</li>
-            <li>Initial Domain Block List</li>
-            <li>Regular Expression Block List</li>
+            <li>Lista principal de permitidos</li>
+            <li>Lista inicial de domninios permitidos</li>
+            <li>Lista de expresiones regulares permitidas</li>
+            <li>Lista principal de bloqueos</li>
+            <li>Lista inicial de dominios bloqueos</li>
+            <li>Lista de expresiones regulares bloqueas</li>
         </ol>
 
-        <p>Initial domain lists check against the beginning of the domain. These are very common and placing them in their own sublist allows for more CPU-efficient checking of resource requests.
-            Regular expression lists follow the <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression syntax</a>.</p>
+        <p>Las listas de dominios iniciales se comparan con el comienzo del dominio. Son muy comunes y colocarlas en su propia sublista permite una comprobación más eficiente de la CPU de las solicitudes de recursos.
+            Las lista de expresiones regulares siguen la <a href="https://en.wikipedia.org/wiki/Regular_expression">sintaxis de las expresiones regulares</a>.</p>
 
-        <p>The contents of the filter lists may be viewed by selecting <code>Filter Lists</code> from the options overflow menu (three dots in the upper-right corner) of the Requests activity.</p>
+        <p>El contenido de las listas de filtros se puede ver seleccionando <code>Listas de filtros</code>
+            desde el meníú desplegable de opciones (tres puntos en la esquina superior derecha) de la actividad Solicitudes.</p>
 
-        <img class="center222" src="images/filter_list_entry.png" alt="Request Details"/>
+        <img class="center222" src="images/filter_list_entry.png" alt="Filter List Entry"/>
 
-        <p>Because of limitations in Android’s WebView, Privacy Browser implements a simplified interpretation of the Adblock syntax.
+        <p>Debido a las limitaciones de WebView, Navegador Privado implementa una interpretación simplificada de la sintaxis de Adblock.
             Encontrará una descripción más detallada de cómo se procesan las entradas de la lista de filtros en <a href="https://www.stoutner.com/privacy-browser-android/filter-lists/">stoutner.com</a>.</p>
     </body>
 </html>

@@ -4,7 +4,7 @@
   SPDX-License-Identifier: GPL-3.0-or-later
   SPDX-FileCopyrightText: 2017-2026 Soren Stoutner <soren@stoutner.com>
 
-  Translation 2017-2024 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2024, 2026 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser Android <https://www.stoutner.com/privacy-browser-android/>.
 
@@ -303,6 +303,7 @@
     <!-- Requests.  The `%1$d` code inserts variables into the displayed text and should be preserved in translation.  <https://developer.android.com/reference/kotlin/java/util/Formatter> -->
     <string name="requests">Richieste</string>
     <string name="request_details">Dettagli sulle richieste</string>
+    <string name="request">Richiesta</string>
     <string name="disposition">Scelta</string>
         <string name="all">Tutte</string>
         <string name="default_label">Default</string>
@@ -315,14 +316,34 @@
         <string name="blocked">Bloccata</string>
         <string name="request_blocked">%1$d. Bloccata</string>
         <string name="blocked_plural">Bloccate</string>
+    <string name="webpage_url">URL pagina Web</string>
+    <string name="request_url">URL Richiesta</string>
+    <string name="request_url_with_separators">URL Richiesta Con Separatori</string>
+    <string name="truncated_request_url">URL Richiesta Troncata</string>
+    <string name="truncated_request_url_with_separators">URL Richiesta Troncata Con Separatori</string>
+    <string name="filterlist_entry_label">Elemento Lista Dei Filtri</string>
     <string name="filterlist">Lista dei Filtri</string>
     <string name="sublist">Sublist</string>
-        <string name="main_allowlist">Lista principale dei permessi</string>
-        <string name="main_blocklist">Lista principale bloccati</string>
-        <string name="regular_expression_blocklist">Lista di blocco espressioni regolari</string>
+        <string name="main_allowlist">Lista di Ammissione Principale</string>
+        <string name="initial_domain_allowlist">Lista Domini Inziali Ammessi</string>
+        <string name="regular_expression_allowlist">Lista Espressioni Regolari Ammesse</string>
+        <string name="main_blocklist">Lista di Blocco Principalec</string>
+        <string name="initial_domain_blocklist">Lista di Blocco Domini Iniziali</string>
+        <string name="regular_expression_blocklist">Lista di Blocco Espressioni Regolari</string>
+    <string name="original_entry">Elemento Originale Lista Dei Filtri</string>
 
     <!-- Filter Lists. -->
     <string name="filterlist_view_entry">%1$d. %2$s</string>
+    <string name="filterlist_entry">Elemento Lista Dei Filtri - %1$dc</string>
+    <string name="applied_entry_list">Lista Applicata</string>
+    <string name="third_party">Terza Partec</string>
+        <string name="override">Ignora</string>
+    <string name="initial_match">Corrispondenza Iniziale</string>
+    <string name="final_match">Corrispondenza Finale</string>
+        <string name="yes">Si</string>
+    <string name="domain_list">Lista Dominic</string>
+    <string name="applied_filter_options">Opzioni Filtro Applicatoc</string>
+    <string name="original_filter_options">Opzioni Filtro Originale</string>
 
     <!-- Domains. -->
     <string name="domains">Domini</string>
@@ -525,7 +546,7 @@
         <string name="cookies_preference_summary">I Cookies sono un\'impostazione a livello di app.
             Quando la scheda attiva ha i cookies abilitati, anche ogni altra richiesta di rete effettuata in background da altre schede ha i cookies abilitati.</string>
         <string name="dom_storage_preference">DOM Storage</string>
-        <string name="dom_storage_preference_summary">JavaScript deve essere  abilitato per permettere il funzionamento del Document Object Model storage.</string>
+        <string name="dom_storage_preference_summary">JavaScript deve essere abilitato per permettere il funzionamento del Document Object Model storage.</string>
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>

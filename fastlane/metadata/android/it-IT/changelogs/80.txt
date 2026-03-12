@@ -1,0 +1,9 @@
+• Revisione dellac lista dei filtri system.
+• Definizione deic sottodomini diversi come richieste di terze parti.
+• Pulizia della cache dopo il caricamento di ogni pagina.
+• Sistemazione della barra di navigazione che non si nascondeva nella navigazione a schermo intero su Android 10 (API <= 29).
+• Sistemazione della barra di stato che si sovrapponeva ai contenuti della vista del database dei preferiti.
+• Sistemazione del caricamento delle immagini al riavvioc anche quando disabilitate.
+• Rimozione della possibilità di aprire file come archivi web MHTc su Android 16 (API >= 35).
+• Spostamento della target API a 36 (Android 16).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
