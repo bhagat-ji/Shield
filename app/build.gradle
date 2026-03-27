@@ -35,17 +35,6 @@ android {
         resourceConfigurations += ['en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN']
     }
 
-    // Specify the compile Java version.  This must match the Kotlin JVM target.  For some reason the system was not setting this correctly.  These can probably be removed in the future.
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    // Specify the Kotlin JVM target.  This must match the compile Java version.  For some reason the system was not setting this correctly.  These can probably be removed in the future.
-    kotlin {
-        jvmToolchain(17)
-    }
-
     buildTypes {
         debug {
             minifyEnabled false

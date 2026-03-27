@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2025 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2026 Soren Stoutner <soren@stoutner.com>
 
   Translation 2020-2022 Thiago Nazareno Conceição Silva de Jesus <mochileiro2006-trilhas@yahoo.com.br>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -463,8 +463,6 @@
         </string-array>
         <string name="custom_user_agent">Agente do usuário personalizado</string>
         <string name="incognito_mode">Modo de navegação anônima</string>
-        <string name="incognito_mode_summary">Limpe o histórico e o cache após o término do carregamento de cada página da web. No modo de navegação anônima,
-            volta para fechar a guia (ou o aplicativo, se houver apenas uma guia).</string>
         <string name="allow_screenshots">Permitir capturas de tela</string>
         <string name="allow_screenshots_summary">Permitir capturas de tela, gravação de vídeo e visualização em monitores não seguros. Alterar esta configuração irá reiniciar o Privacy Browser.</string>
         <string name="ultraprivacy">UltraPrivacy</string>

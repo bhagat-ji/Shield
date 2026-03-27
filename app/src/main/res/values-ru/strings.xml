@@ -576,8 +576,8 @@
         </string-array>
         <string name="custom_user_agent">Настраиваемый user agent</string>
         <string name="incognito_mode">Режим инкогнито</string>
-        <string name="incognito_mode_summary">Очистка журнала и кэша по завершении загрузки каждой веб-страницы.
-            В режиме инкогнито нажатие кнопки Назад приведет к закрытию вкладки (или приложения, если открыта только одна вкладка).</string>
+        <string name="incognito_mode_summary">Очистка истории и журнала Logcat после завершения загрузки каждой веб-страницы.
+            В режиме инкогнито нажатие кнопки Назад приводит к закрытию вкладки (или приложения, если была открыта только одна вкладка).</string>
         <string name="allow_screenshots">Разрешить скриншоты</string>
         <string name="allow_screenshots_summary">Разрешить скриншоты, запись видео и просмотр на незащищенных дисплеях. При изменении этого параметра Privacy Browser будет перезапущен.</string>
     <string name="filterlists">Списки фильтрации</string>

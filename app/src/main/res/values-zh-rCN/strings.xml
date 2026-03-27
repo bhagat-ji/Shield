@@ -2,7 +2,7 @@
 
 <!--
   SPDX-License-Identifier: GPL-3.0-or-later
-  SPDX-FileCopyrightText: 2015-2025 Soren Stoutner <soren@stoutner.com>
+  SPDX-FileCopyrightText: 2015-2026 Soren Stoutner <soren@stoutner.com>
 
   Translation 2023 Xin.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -467,7 +467,6 @@
         </string-array>
         <string name="custom_user_agent">自定义用户代理</string>
         <string name="incognito_mode">无痕模式</string>
-        <string name="incognito_mode_summary">在无痕模式中，关闭当前标签页，会清除所有的记录和网页上的痕迹.</string>
         <string name="allow_screenshots">允许截图</string>
         <string name="allow_screenshots_summary">允许截图，录视频，在不安全的显示中查看，更改这个设置会重启本浏览器.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
