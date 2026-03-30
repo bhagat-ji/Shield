@@ -1,0 +1,1 @@
+• Fehler der F-Droid-Builds durch die Verwendung der Standard-Java-Version behoben.

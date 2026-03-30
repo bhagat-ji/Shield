@@ -30,8 +30,8 @@ android {
     defaultConfig {
         minSdk 26
         targetSdk 36
-        versionCode 80
-        versionName "3.20"
+        versionCode 81
+        versionName "3.20.1"
         resourceConfigurations += ['en', 'de', 'es', 'fr', 'it', 'pt-rBR', 'ru', 'tr', 'zh-rCN']
     }
 

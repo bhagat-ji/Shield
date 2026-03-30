@@ -1,0 +1,1 @@
+• Sistemazione della compilazione per F-Droid utilizzando la versione base di Java.

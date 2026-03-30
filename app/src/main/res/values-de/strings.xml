@@ -581,6 +581,8 @@
         </string-array>
         <string name="custom_user_agent">Eigener User Agent</string>
         <string name="incognito_mode">Inkognito-Modus</string>
+        <string name="incognito_mode_summary">Verlauf und Logcat löschen, sobald eine Internet-Seite vollständig geladen wurde.
+            Im Incognito-Modus schließt "Zurück" den aktuell offenen Browser-Tab (oder die App, wenn nur ein Tab geöffnet ist).</string>
         <string name="allow_screenshots">Screenshots zulassen</string>
         <string name="allow_screenshots_summary">Screenshots, Bildschirmvideos und Anzeige auf unsicheren Bildschirmen zulassen. Eine Änderung dieser Einstellung startet Privacy Browser neu.</string>
     <string name="filterlists">Filter-Listen</string>

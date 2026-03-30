@@ -1,0 +1,1 @@
+• Fix the F-Droid builds by using the default Java version.
